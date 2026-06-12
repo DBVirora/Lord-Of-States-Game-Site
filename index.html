@@ -227,12 +227,38 @@ let sb = null;
 function initSupabase(){
   try {
     sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Handle auth callback — Discord redirects back to index.html
+    // with #access_token or ?code= in the URL
+    const hash = window.location.hash;
+    const search = window.location.search;
+    const hasAuthCallback = hash.includes('access_token') ||
+                            hash.includes('error') ||
+                            search.includes('code=');
+
+    if(hasAuthCallback){
+      // Let Supabase process the callback then redirect
+      sb.auth.onAuthStateChange((event, session) => {
+        if(event === 'SIGNED_IN' && session){
+          // Clear the URL params then redirect
+          window.location.replace(GAME_URL);
+        }
+        if(event === 'SIGNED_OUT' || event === 'USER_UPDATED'){
+          // Stay on login
+        }
+      });
+      return;
+    }
+
+    // Normal page load — check if already logged in
     sb.auth.getSession().then(({ data }) => {
-      if(data.session) window.location.href = GAME_URL;
+      if(data.session) window.location.replace(GAME_URL);
     }).catch(() => {});
+
     sb.auth.onAuthStateChange((event, session) => {
-      if(event === 'SIGNED_IN' && session) window.location.href = GAME_URL;
+      if(event === 'SIGNED_IN' && session) window.location.replace(GAME_URL);
     });
+
   } catch(e){ console.warn('Supabase unavailable:', e); }
 }
 
