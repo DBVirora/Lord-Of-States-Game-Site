@@ -438,10 +438,12 @@ function initSupabase(){
   try{
     if(window.supabase && window.supabase.createClient){
       supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      // Check if already logged in
+      // Non-blocking session check — timeout after 3s
+      const sessionTimeout = setTimeout(()=>{}, 3000);
       supabase.auth.getSession().then(({ data: { session } }) => {
+        clearTimeout(sessionTimeout);
         if(session) window.location.href = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/game.html';
-      });
+      }).catch(()=>{});
       supabase.auth.onAuthStateChange((event, session) => {
         if(event === 'SIGNED_IN' && session) window.location.href = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/game.html';
       });
@@ -496,8 +498,8 @@ function showLogin(){
   setTimeout(()=>{
     bootScreen.style.display='none';
     loginScreen.classList.add('visible');
-    // Init Supabase only after login screen is shown
-    initSupabase();
+    // Init Supabase fully async — does NOT block login screen
+    setTimeout(initSupabase, 100);
   },800);
 }
 
