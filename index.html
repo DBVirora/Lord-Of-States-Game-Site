@@ -148,14 +148,76 @@ body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;m
   <div class="login-footer">Lord of Courts VCU &nbsp;·&nbsp; v0.1.0 Pre-Alpha &nbsp;·&nbsp; © 2026 VCU Studios</div>
 </div>
 
-<!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+// ── EARLY AUTH INTERCEPT ──────────────────────────
+// Runs BEFORE anything else — catches Discord OAuth callback
+// which lands on index.html with #access_token in the URL
+(function earlyAuthCheck(){
+  const SUPABASE_URL = 'https://alvldkihwuhgjbgdpbkg.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U';
+  const GAME_URL = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/game.html';
+
+  const hash = window.location.hash || '';
+  const search = window.location.search || '';
+
+  // Discord sends back access_token in the hash
+  // Google sends back a code in the query string
+  const isCallback = hash.includes('access_token') ||
+                     hash.includes('refresh_token') ||
+                     search.includes('code=') ||
+                     search.includes('error=');
+
+  if(!isCallback) return; // Normal page load — continue as usual
+
+  // It's an OAuth callback — hide the boot screen immediately
+  // so the user never sees the loop
+  document.addEventListener('DOMContentLoaded', function(){
+    const boot = document.getElementById('loading-screen');
+    const login = document.getElementById('login-screen');
+    if(boot) boot.style.display = 'none';
+    if(login){
+      login.style.opacity = '0';
+      login.style.pointerEvents = 'none';
+    }
+  });
+
+  // Process the callback with Supabase
+  try{
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // onAuthStateChange fires when Supabase processes the token from URL
+    sb.auth.onAuthStateChange((event, session) => {
+      if(event === 'SIGNED_IN' && session){
+        window.location.replace(GAME_URL);
+      }
+    });
+    // Also check session directly after a short wait
+    setTimeout(async () => {
+      const { data } = await sb.auth.getSession();
+      if(data && data.session){
+        window.location.replace(GAME_URL);
+      } else {
+        // Session not found — go back to login cleanly
+        window.location.replace('https://dbvirora.github.io/Lord-Of-States-Game-Site/');
+      }
+    }, 2000);
+  } catch(e){
+    console.warn('Early auth check failed:', e);
+  }
+})();
+</script>
 
 <script>
 // ── CONFIG ────────────────────────────────────────
 const SUPABASE_URL = 'https://alvldkihwuhgjbgdpbkg.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U';
 const GAME_URL = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/game.html';
+
+// Skip everything if this is an OAuth callback — early intercept handles it
+const _isCallback = (window.location.hash||'').includes('access_token') ||
+                    (window.location.search||'').includes('code=');
+if(_isCallback){ throw new Error('OAuth callback — handled by early intercept.'); }
 
 // ── BINARY RAIN ───────────────────────────────────
 const canvas = document.getElementById('binary-canvas');
