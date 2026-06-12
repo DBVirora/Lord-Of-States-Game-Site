@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Lord of Courts VCU</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#04040f;color:#eee;font-family:'Share Tech Mono',monospace;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;}
+.logo{font-family:'Orbitron',sans-serif;font-size:clamp(24px,5vw,48px);font-weight:900;letter-spacing:6px;color:#fff;text-shadow:0 0 30px #00d4ff,0 0 60px #0099cc;margin-bottom:8px;}
+.logo span{color:#00d4ff;}
+.sub{font-size:11px;letter-spacing:6px;color:rgba(0,180,255,.5);margin-bottom:40px;}
+.status{font-size:13px;color:#22c55e;letter-spacing:2px;margin-bottom:8px;}
+.username{font-size:11px;color:rgba(0,180,255,.6);letter-spacing:2px;margin-bottom:40px;}
+.coming-soon{font-size:12px;color:rgba(100,150,200,.4);letter-spacing:3px;border:1px solid rgba(0,150,220,.2);border-radius:8px;padding:16px 32px;}
+.logout-btn{margin-top:32px;background:none;border:1px solid rgba(100,120,160,.3);border-radius:6px;padding:8px 20px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:rgba(150,180,220,.4);cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.logout-btn:hover{color:rgba(150,180,220,.7);border-color:rgba(100,120,160,.5);}
+</style>
+</head>
+<body>
+
+<div class="logo">LORD OF <span>COURTS</span></div>
+<div class="sub">V C U &nbsp;·&nbsp; T R A D I N G &nbsp; C A R D &nbsp; G A M E</div>
+
+<div class="status" id="status">✓ Authentication Successful</div>
+<div class="username" id="username">Loading user...</div>
+
+<div class="coming-soon">
+  ⚔️ &nbsp; Game Loading Soon &nbsp; ⚔️<br/>
+  <span style="font-size:10px;color:rgba(100,150,200,.3);margin-top:8px;display:block;">v0.1.0 Pre-Alpha</span>
+</div>
+
+<button class="logout-btn" onclick="logout()">[ Sign Out ]</button>
+
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://alvldkihwuhgjbgdpbkg.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Get current user and display their info
+async function init(){
+  const { data: { session } } = await sb.auth.getSession();
+  if(!session){
+    // Not logged in — send back to login
+    window.location.href = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/';
+    return;
+  }
+  const user = session.user;
+  const name = user.user_metadata?.full_name
+    || user.user_metadata?.name
+    || user.user_metadata?.global_name
+    || user.email
+    || 'Player';
+  document.getElementById('username').textContent = '[ ' + name + ' ]';
+}
+
+async function logout(){
+  await sb.auth.signOut();
+  window.location.href = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/';
+}
+
+init();
+</script>
+</body>
+</html>
