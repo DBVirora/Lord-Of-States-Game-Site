@@ -42,10 +42,13 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Get current user and display their info
 async function init(){
+  // Give Supabase a moment to process any auth callback in the URL
+  await new Promise(r => setTimeout(r, 500));
+
   const { data: { session } } = await sb.auth.getSession();
   if(!session){
     // Not logged in — send back to login
-    window.location.href = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/';
+    window.location.replace('https://dbvirora.github.io/Lord-Of-States-Game-Site/');
     return;
   }
   const user = session.user;
@@ -55,6 +58,7 @@ async function init(){
     || user.email
     || 'Player';
   document.getElementById('username').textContent = '[ ' + name + ' ]';
+  document.getElementById('status').textContent = '✓ Welcome back, ' + name;
 }
 
 async function logout(){
