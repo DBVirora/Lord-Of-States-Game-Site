@@ -341,7 +341,10 @@ document.querySelectorAll('.auth-btn, .guest-btn').forEach(btn => {
     if(this.id === 'discord-btn'){
       const { error } = await sb.auth.signInWithOAuth({
         provider: 'discord',
-        options: { redirectTo: GAME_URL }
+        options: {
+          redirectTo: 'https://dbvirora.github.io/Lord-Of-States-Game-Site/game.html',
+          skipBrowserRedirect: false
+        }
       });
       if(error) alert('Discord login error: ' + error.message);
     }
