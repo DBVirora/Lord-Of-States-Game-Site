@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Lord of Courts VCU — Authenticating...</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#04040f;color:#00d4ff;font-family:'Share Tech Mono',monospace;min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;}
 .glyph svg{width:60px;height:60px;animation:spin 2s linear infinite;filter:drop-shadow(0 0 8px #00d4ff);}
@@ -14,6 +14,7 @@ body{background:#04040f;color:#00d4ff;font-family:'Share Tech Mono',monospace;mi
 .sub{font-size:10px;letter-spacing:2px;color:rgba(0,180,255,.3);}
 .dot{animation:blink 1s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+#music-btn{position:fixed;bottom:16px;right:16px;background:rgba(0,20,40,.7);border:1px solid rgba(0,150,220,.3);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;}
 </style>
 </head>
 <body>
@@ -26,6 +27,7 @@ body{background:#04040f;color:#00d4ff;font-family:'Share Tech Mono',monospace;mi
 </div>
 <div class="msg">AUTHENTICATING<span class="dot">...</span></div>
 <div class="sub" id="status-msg">Verifying credentials</div>
+<button id="music-btn" title="Toggle Music">🔊</button>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -34,29 +36,59 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const SETUP_URL         = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/setup.html';
 const GAME_URL          = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/game.html';
 const LOGIN_URL         = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/';
+const MUSIC_SRC         = 'https://github.com/DBVirora/VCU-Lord-Of-States-Scans/raw/refs/heads/main/music/Ancient%20Gamecube%20Quest.mp3';
+const MUSIC_KEY         = 'vcu_music_pos';
+const MUSIC_MUTED_KEY   = 'vcu_music_muted';
 
+// ── MUSIC RESUME ──────────────────────────────────
+let audio = null;
+function initMusic(){
+  audio = new Audio(MUSIC_SRC);
+  audio.loop = false;
+  audio.volume = 0.5;
+  const muted = sessionStorage.getItem(MUSIC_MUTED_KEY) === 'true';
+  audio.muted = muted;
+  document.getElementById('music-btn').textContent = muted ? '🔇' : '🔊';
+  const savedPos = parseFloat(sessionStorage.getItem(MUSIC_KEY) || '0');
+  audio.addEventListener('loadedmetadata', () => {
+    if(savedPos > 0 && savedPos < audio.duration) audio.currentTime = savedPos;
+    audio.play().catch(() => {});
+  });
+  audio.addEventListener('ended', () => {
+    sessionStorage.setItem(MUSIC_KEY, '0');
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+  });
+  setInterval(() => {
+    if(audio && !audio.paused) sessionStorage.setItem(MUSIC_KEY, audio.currentTime.toString());
+  }, 1000);
+  audio.load();
+}
+window.addEventListener('beforeunload', () => {
+  if(audio) sessionStorage.setItem(MUSIC_KEY, audio.currentTime.toString());
+});
+document.getElementById('music-btn').addEventListener('click', () => {
+  if(!audio) return;
+  audio.muted = !audio.muted;
+  sessionStorage.setItem(MUSIC_MUTED_KEY, audio.muted.toString());
+  document.getElementById('music-btn').textContent = audio.muted ? '🔇' : '🔊';
+});
+// Auto-start music resuming from saved position
+setTimeout(() => initMusic(), 100);
+
+// ── AUTH ──────────────────────────────────────────
 const statusEl = document.getElementById('status-msg');
 function setStatus(msg){ statusEl.textContent = msg; }
-
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
 let routed = false;
 
 async function routeUser(session){
   if(routed) return;
   routed = true;
   setStatus('Checking profile...');
-
   try {
-    const { data: profile, error } = await sb
-      .from('profiles')
-      .select('username')
-      .eq('id', session.user.id)
-      .maybeSingle(); // use maybeSingle so no error if row doesn't exist
-
-    // Only go to game if username is a non-empty string
+    const { data: profile } = await sb.from('profiles').select('username').eq('id', session.user.id).maybeSingle();
     const hasUsername = profile && typeof profile.username === 'string' && profile.username.trim().length >= 3;
-
     if(hasUsername){
       setStatus('Welcome back! Entering game...');
       setTimeout(() => window.location.replace(GAME_URL), 600);
@@ -65,27 +97,21 @@ async function routeUser(session){
       setTimeout(() => window.location.replace(SETUP_URL), 600);
     }
   } catch(err){
-    // On any error, send to setup — safer than skipping it
     setStatus('Setting up your account...');
     setTimeout(() => window.location.replace(SETUP_URL), 600);
   }
 }
 
-// PRIMARY: fires when Supabase finishes parsing the token from URL
 sb.auth.onAuthStateChange((event, session) => {
-  if((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session){
-    routeUser(session);
-  }
+  if((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session) routeUser(session);
 });
 
-// FALLBACK: check getSession() after 5s in case event already fired
 setTimeout(async () => {
   if(routed) return;
   setStatus('Checking session...');
   const { data: { session } } = await sb.auth.getSession();
-  if(session){
-    routeUser(session);
-  } else {
+  if(session){ routeUser(session); }
+  else {
     setStatus('Could not verify session — returning to login...');
     setTimeout(() => window.location.replace(LOGIN_URL), 1500);
   }
