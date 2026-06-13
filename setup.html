@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Lord of Courts VCU — Setup</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--blue:#00d4ff;--blue2:#0099cc;--dark:#04040f;}
+body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+.bg-gradient{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 80% 60% at 50% 50%,#0d0535 0%,transparent 70%);}
+.wrap{position:relative;z-index:1;width:100%;max-width:420px;text-align:center;}
+.logo{font-family:'Orbitron',sans-serif;font-size:clamp(20px,4vw,36px);font-weight:900;letter-spacing:5px;color:#fff;text-shadow:0 0 25px var(--blue);margin-bottom:6px;}
+.logo span{color:var(--blue);}
+.tagline{font-size:10px;letter-spacing:4px;color:rgba(0,180,255,.4);margin-bottom:36px;}
+.panel{background:rgba(8,8,28,.9);border:1px solid rgba(0,150,220,.3);border-radius:12px;padding:32px 28px;backdrop-filter:blur(16px);box-shadow:0 0 40px rgba(0,100,200,.15);}
+.panel::before,.panel::after{content:'';position:absolute;width:16px;height:16px;border-color:var(--blue);border-style:solid;opacity:.6;}
+.panel::before{top:8px;left:8px;border-width:2px 0 0 2px;}
+.panel::after{bottom:8px;right:8px;border-width:0 2px 2px 0;}
+.panel-title{font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:5px;color:var(--blue);font-weight:700;text-shadow:0 0 10px var(--blue);margin-bottom:4px;}
+.panel-sub{font-size:10px;letter-spacing:2px;color:rgba(150,200,255,.4);margin-bottom:24px;}
+.avatar-wrap{margin-bottom:20px;}
+.avatar{width:64px;height:64px;border-radius:50%;border:2px solid rgba(0,180,255,.3);background:#1e1e3a;margin:0 auto 8px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:28px;}
+.avatar img{width:100%;height:100%;object-fit:cover;}
+.avatar-name{font-size:11px;color:rgba(0,180,255,.5);letter-spacing:2px;}
+.input-wrap{margin-bottom:16px;text-align:left;}
+.input-label{font-size:10px;letter-spacing:3px;color:rgba(0,180,255,.5);margin-bottom:6px;display:block;}
+.input-field{width:100%;background:rgba(0,20,40,.6);border:1px solid rgba(0,150,220,.3);border-radius:6px;padding:12px 14px;color:#e2e8f0;font-family:'Share Tech Mono',monospace;font-size:13px;letter-spacing:2px;outline:none;transition:border-color .2s;}
+.input-field:focus{border-color:var(--blue);box-shadow:0 0 12px rgba(0,212,255,.15);}
+.input-field::placeholder{color:rgba(100,150,200,.3);}
+.input-hint{font-size:9px;color:rgba(100,150,200,.3);margin-top:5px;letter-spacing:1px;}
+.input-error{font-size:9px;color:#fca5a5;margin-top:5px;letter-spacing:1px;display:none;}
+.submit-btn{width:100%;padding:14px;background:rgba(0,150,220,.15);border:1px solid rgba(0,150,220,.4);border-radius:8px;color:var(--blue);font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:8px;}
+.submit-btn:hover{background:rgba(0,150,220,.25);border-color:var(--blue);box-shadow:0 0 20px rgba(0,212,255,.2);}
+.submit-btn:disabled{opacity:.4;cursor:not-allowed;}
+.divider{display:flex;align-items:center;gap:10px;margin:20px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(0,150,220,.3),transparent);}
+.divider span{font-size:9px;color:rgba(0,150,220,.4);letter-spacing:3px;}
+.skip-btn{display:block;width:100%;background:none;border:1px solid rgba(100,120,160,.2);border-radius:6px;padding:10px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:rgba(150,180,220,.3);cursor:pointer;text-align:center;transition:all .2s;text-transform:uppercase;}
+.skip-btn:hover{color:rgba(150,180,220,.6);border-color:rgba(100,120,160,.4);}
+.checking{color:rgba(0,180,255,.5);font-size:10px;letter-spacing:2px;margin-top:5px;display:none;}
+</style>
+</head>
+<body>
+<div class="bg-gradient"></div>
+<div class="wrap">
+  <div class="logo">LORD OF <span>COURTS</span></div>
+  <div class="tagline">V C U &nbsp;·&nbsp; T R A D I N G &nbsp; C A R D &nbsp; G A M E</div>
+
+  <div class="panel" id="main-panel">
+    <div class="panel-title">CHOOSE YOUR NAME</div>
+    <div class="panel-sub">— This is how other players will know you —</div>
+
+    <!-- Avatar from Discord/Google -->
+    <div class="avatar-wrap">
+      <div class="avatar" id="avatar-el"><span>⚔️</span></div>
+      <div class="avatar-name" id="provider-name">Loading...</div>
+    </div>
+
+    <div class="input-wrap">
+      <label class="input-label" for="username-input">USERNAME</label>
+      <input class="input-field" id="username-input" type="text" maxlength="20"
+        placeholder="Enter username..." autocomplete="off" spellcheck="false"/>
+      <div class="input-hint">3–20 characters · letters, numbers, underscores only</div>
+      <div class="input-error" id="username-error"></div>
+      <div class="checking" id="checking-msg">Checking availability...</div>
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="saveUsername()">
+      CONFIRM USERNAME
+    </button>
+
+    <div class="divider"><span>OR</span></div>
+    <button class="skip-btn" onclick="skipForNow()">[ Skip for now ]</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://alvldkihwuhgjbgdpbkg.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U';
+const GAME_URL  = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/game.html';
+const LOGIN_URL = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let currentUser = null;
+let checkTimeout = null;
+
+async function init(){
+  const { data: { session } } = await sb.auth.getSession();
+  if(!session){ window.location.replace(LOGIN_URL); return; }
+  currentUser = session.user;
+
+  // Show avatar and provider name
+  const meta = currentUser.user_metadata;
+  const displayName = meta?.full_name || meta?.name || meta?.global_name || meta?.user_name || 'Player';
+  const avatarUrl = meta?.avatar_url || meta?.picture || null;
+
+  document.getElementById('provider-name').textContent = displayName;
+  if(avatarUrl){
+    document.getElementById('avatar-el').innerHTML = `<img src="${avatarUrl}" alt="avatar"/>`;
+  }
+
+  // Pre-fill with suggested username from provider
+  const suggested = (meta?.user_name || meta?.name || '')
+    .toLowerCase().replace(/[^a-z0-9_]/g,'_').slice(0,20);
+  if(suggested) document.getElementById('username-input').value = suggested;
+}
+
+// Live username validation as user types
+document.getElementById('username-input').addEventListener('input', function(){
+  clearTimeout(checkTimeout);
+  const val = this.value;
+  hideError();
+  if(val.length < 3) return;
+  document.getElementById('checking-msg').style.display = 'block';
+  checkTimeout = setTimeout(()=>checkUsername(val), 600);
+});
+
+async function checkUsername(name){
+  const valid = /^[a-zA-Z0-9_]{3,20}$/.test(name);
+  if(!valid){
+    showError('Only letters, numbers and underscores. 3–20 chars.');
+    document.getElementById('checking-msg').style.display = 'none';
+    return false;
+  }
+  const { data } = await sb.from('profiles').select('username').eq('username', name).single();
+  document.getElementById('checking-msg').style.display = 'none';
+  if(data){ showError('Username already taken — try another.'); return false; }
+  return true;
+}
+
+async function saveUsername(){
+  const name = document.getElementById('username-input').value.trim();
+  const btn = document.getElementById('submit-btn');
+  if(!name){ showError('Please enter a username.'); return; }
+  const ok = await checkUsername(name);
+  if(!ok) return;
+  btn.disabled = true;
+  btn.textContent = 'SAVING...';
+  const { error } = await sb.from('profiles')
+    .upsert({ id: currentUser.id, username: name }, { onConflict: 'id' });
+  if(error){
+    showError('Error saving username. Try again.');
+    btn.disabled = false;
+    btn.textContent = 'CONFIRM USERNAME';
+    return;
+  }
+  window.location.replace(GAME_URL);
+}
+
+function skipForNow(){ window.location.replace(GAME_URL); }
+function showError(msg){ const el=document.getElementById('username-error');el.textContent=msg;el.style.display='block'; }
+function hideError(){ const el=document.getElementById('username-error');el.style.display='none'; }
+
+init();
+</script>
+</body>
+</html>
