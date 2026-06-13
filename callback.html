@@ -3,74 +3,88 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Auth Debug</title>
+<title>Lord of Courts VCU — Authenticating...</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#04040f;color:#00d4ff;font-family:monospace;padding:24px;font-size:13px;line-height:1.8;}
-h2{color:#fff;margin-bottom:16px;font-size:16px;}
-.section{margin-bottom:20px;background:rgba(0,180,255,.05);border:1px solid rgba(0,180,255,.2);border-radius:8px;padding:16px;}
-.label{color:rgba(0,180,255,.5);font-size:11px;letter-spacing:2px;margin-bottom:6px;}
-.value{color:#6ee7b7;word-break:break-all;white-space:pre-wrap;}
-.error{color:#fca5a5;}
-.ok{color:#6ee7b7;}
+body{background:#04040f;color:#00d4ff;font-family:'Share Tech Mono',monospace;min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;}
+.glyph svg{width:60px;height:60px;animation:spin 2s linear infinite;filter:drop-shadow(0 0 8px #00d4ff);}
+@keyframes spin{to{transform:rotate(360deg)}}
+.msg{font-size:12px;letter-spacing:4px;color:rgba(0,180,255,.7);}
+.sub{font-size:10px;letter-spacing:2px;color:rgba(0,180,255,.3);}
+.dot{animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 </style>
 </head>
 <body>
-<h2>🔍 AUTH CALLBACK DEBUG</h2>
-
-<div class="section">
-  <div class="label">FULL URL</div>
-  <div class="value" id="full-url"></div>
+<div class="glyph">
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="32,4 60,18 60,46 32,60 4,46 4,18" stroke="#00d4ff" stroke-width="1.5" fill="none" opacity=".6"/>
+    <circle cx="32" cy="32" r="6" stroke="#00d4ff" stroke-width="1.5" fill="none"/>
+    <circle cx="32" cy="32" r="2" fill="#00d4ff"/>
+  </svg>
 </div>
-<div class="section">
-  <div class="label">URL HASH (#...)</div>
-  <div class="value" id="url-hash"></div>
-</div>
-<div class="section">
-  <div class="label">URL SEARCH (?...)</div>
-  <div class="value" id="url-search"></div>
-</div>
-<div class="section">
-  <div class="label">SUPABASE getSession() RESULT</div>
-  <div class="value" id="session-result">checking...</div>
-</div>
-<div class="section">
-  <div class="label">onAuthStateChange EVENTS</div>
-  <div class="value" id="auth-events">waiting...</div>
-</div>
+<div class="msg">AUTHENTICATING<span class="dot">...</span></div>
+<div class="sub" id="status-msg">Verifying credentials</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL      = 'https://alvldkihwuhgjbgdpbkg.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U';
+const SETUP_URL         = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/setup.html';
+const GAME_URL          = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/game.html';
+const LOGIN_URL         = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/';
 
-// Show raw URL info
-document.getElementById('full-url').textContent   = window.location.href;
-document.getElementById('url-hash').textContent   = window.location.hash   || '(empty)';
-document.getElementById('url-search').textContent = window.location.search || '(empty)';
+const statusEl = document.getElementById('status-msg');
+function setStatus(msg){ statusEl.textContent = msg; }
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Watch auth events
-const eventsEl = document.getElementById('auth-events');
-let eventLog = [];
-sb.auth.onAuthStateChange((event, session) => {
-  eventLog.push(`EVENT: ${event} | session: ${session ? 'YES — user: ' + session.user.email : 'NO'}`);
-  eventsEl.textContent = eventLog.join('\n');
-});
+let routed = false;
 
-// Try getSession at 1s, 3s, 6s
-async function checkSession(label){
-  const { data: { session }, error } = await sb.auth.getSession();
-  const el = document.getElementById('session-result');
-  const line = `[${label}] ${session ? '✅ SESSION FOUND: ' + session.user.email : '❌ NO SESSION'} ${error ? '| ERROR: '+error.message : ''}`;
-  el.textContent = (el.textContent === 'checking...' ? '' : el.textContent + '\n') + line;
-  el.className = 'value ' + (session ? 'ok' : 'error');
+async function routeUser(session){
+  if(routed) return;
+  routed = true;
+  setStatus('Checking profile...');
+  try {
+    const { data: profile } = await sb
+      .from('profiles')
+      .select('username')
+      .eq('id', session.user.id)
+      .single();
+
+    if(!profile || !profile.username){
+      setStatus('First time here — setting up your profile...');
+      setTimeout(() => window.location.replace(SETUP_URL), 600);
+    } else {
+      setStatus('Welcome back! Entering game...');
+      setTimeout(() => window.location.replace(GAME_URL), 600);
+    }
+  } catch(err){
+    setStatus('Setting up your account...');
+    setTimeout(() => window.location.replace(SETUP_URL), 600);
+  }
 }
 
-setTimeout(() => checkSession('1s'), 1000);
-setTimeout(() => checkSession('3s'), 3000);
-setTimeout(() => checkSession('6s'), 6000);
+// PRIMARY: fires when Supabase finishes parsing the token from URL
+sb.auth.onAuthStateChange((event, session) => {
+  if((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session){
+    routeUser(session);
+  }
+});
+
+// FALLBACK: check getSession() after 5s in case event already fired
+setTimeout(async () => {
+  if(routed) return;
+  setStatus('Checking session...');
+  const { data: { session } } = await sb.auth.getSession();
+  if(session){
+    routeUser(session);
+  } else {
+    setStatus('Could not verify session — returning to login...');
+    setTimeout(() => window.location.replace(LOGIN_URL), 1500);
+  }
+}, 5000);
 </script>
 </body>
 </html>
