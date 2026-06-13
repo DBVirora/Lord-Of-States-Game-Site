@@ -5,47 +5,106 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Lord of Courts VCU — Authenticating...</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#04040f;color:#00d4ff;font-family:'Share Tech Mono',monospace;min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
-.msg{font-size:13px;letter-spacing:3px;}
+body{background:#04040f;color:#00d4ff;font-family:'Share Tech Mono',monospace;min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;}
+.glyph svg{width:60px;height:60px;animation:spin 2s linear infinite;filter:drop-shadow(0 0 8px #00d4ff);}
+@keyframes spin{to{transform:rotate(360deg)}}
+.msg{font-size:12px;letter-spacing:4px;color:rgba(0,180,255,.7);}
+.sub{font-size:10px;letter-spacing:2px;color:rgba(0,180,255,.3);}
 .dot{animation:blink 1s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 </style>
 </head>
 <body>
+<div class="glyph">
+  <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="32,4 60,18 60,46 32,60 4,46 4,18" stroke="#00d4ff" stroke-width="1.5" fill="none" opacity=".6"/>
+    <circle cx="32" cy="32" r="6" stroke="#00d4ff" stroke-width="1.5" fill="none"/>
+    <circle cx="32" cy="32" r="2" fill="#00d4ff"/>
+  </svg>
+</div>
 <div class="msg">AUTHENTICATING<span class="dot">...</span></div>
+<div class="sub" id="status-msg">Verifying credentials</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = 'https://alvldkihwuhgjbgdpbkg.supabase.co';
+const SUPABASE_URL      = 'https://alvldkihwuhgjbgdpbkg.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U';
-const GAME_URL   = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/game.html';
-const LOGIN_URL  = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/';
+const SETUP_URL         = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/setup.html';
+const GAME_URL          = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/game.html';
+const LOGIN_URL         = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/';
+
+const statusEl = document.getElementById('status-msg');
+
+function setStatus(msg){ statusEl.textContent = msg; }
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 async function handleCallback(){
-  // Give Supabase time to parse the token from the URL hash
-  await new Promise(r => setTimeout(r, 800));
+  try {
+    setStatus('Exchanging auth token...');
 
-  const { data: { session }, error } = await sb.auth.getSession();
+    // Supabase automatically reads the token from:
+    //   - URL hash (#access_token=...) for implicit flow (Discord)
+    //   - URL query (?code=...) for PKCE flow (Google)
+    // We just need to call getSession() after a brief moment.
 
-  if(session){
-    // Logged in — check if they have a username set
-    const { data: profile } = await sb.from('profiles')
+    // Wait for Supabase to process the URL
+    await new Promise(r => setTimeout(r, 1000));
+
+    setStatus('Verifying session...');
+    const { data: { session }, error } = await sb.auth.getSession();
+
+    if(error){
+      console.error('Session error:', error);
+      setStatus('Auth error — redirecting...');
+      setTimeout(() => window.location.replace(LOGIN_URL), 1500);
+      return;
+    }
+
+    if(!session){
+      // Try once more after another delay — sometimes takes a moment
+      setStatus('Waiting for session...');
+      await new Promise(r => setTimeout(r, 1500));
+      const { data: retry } = await sb.auth.getSession();
+      if(!retry.session){
+        setStatus('No session found — returning to login...');
+        setTimeout(() => window.location.replace(LOGIN_URL), 1500);
+        return;
+      }
+      return routeUser(retry.session);
+    }
+
+    routeUser(session);
+
+  } catch(err){
+    console.error('Callback error:', err);
+    setStatus('Something went wrong — returning to login...');
+    setTimeout(() => window.location.replace(LOGIN_URL), 2000);
+  }
+}
+
+async function routeUser(session){
+  setStatus('Checking profile...');
+  try {
+    const { data: profile } = await sb
+      .from('profiles')
       .select('username')
       .eq('id', session.user.id)
       .single();
 
     if(!profile || !profile.username){
-      // No username yet — go to username setup
-      window.location.replace('https://dbvirora.github.io/Lord-Of-States-Game-Site/setup.html');
+      setStatus('Setting up your account...');
+      setTimeout(() => window.location.replace(SETUP_URL), 500);
     } else {
-      // Has username — go straight to game
-      window.location.replace(GAME_URL);
+      setStatus('Welcome back! Entering game...');
+      setTimeout(() => window.location.replace(GAME_URL), 500);
     }
-  } else {
-    // Auth failed — back to login
-    window.location.replace(LOGIN_URL);
+  } catch(err){
+    // If profiles table query fails, send to setup just in case
+    setStatus('Setting up your account...');
+    setTimeout(() => window.location.replace(SETUP_URL), 500);
   }
 }
 
