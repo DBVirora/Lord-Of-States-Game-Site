@@ -191,7 +191,7 @@ const SUPABASE_URL      = 'https://alvldkihwuhgjbgdpbkg.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U';
 const CALLBACK_URL      = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/callback.html';
 const GAME_URL          = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/game.html';
-const MUSIC_SRC         = 'https://github.com/DBVirora/VCU-Lord-Of-States-Scans/raw/refs/heads/main/music/Ancient%20Gamecube%20Quest.mp3';
+const MUSIC_SRC = 'https://alvldkihwuhgjbgdpbkg.supabase.co/storage/v1/object/sign/Lord%20Of%20States%20Website%20Assets/Audio/LoginMusic.mp3?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8wNjM4YmZjZS05YzliLTRjMjYtOTFhNy1iNGM2OGZhN2NkMDciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMb3JkIE9mIFN0YXRlcyBXZWJzaXRlIEFzc2V0cy9BdWRpby9Mb2dpbk11c2ljLm1wMyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODEzMjE2MjcsImV4cCI6NDkzNDkyMTYyN30.h_lT9s3j7K70bGaOy3TE_JjRU_3xHyILAnXIbrGNkyg';
 const MUSIC_KEY         = 'vcu_music_pos'; // sessionStorage key for playback position
 const MUSIC_MUTED_KEY   = 'vcu_music_muted';
 
@@ -201,7 +201,7 @@ let audio = null;
 function initMusic(){
   audio = new Audio(MUSIC_SRC);
   audio.loop = false; // we handle looping manually so position tracking works
-  audio.volume = 0.5;
+  audio.volume = 0.35;
 
   // Restore muted preference
   const muted = sessionStorage.getItem(MUSIC_MUTED_KEY) === 'true';
