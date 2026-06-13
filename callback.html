@@ -36,56 +36,15 @@ const GAME_URL          = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/g
 const LOGIN_URL         = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/';
 
 const statusEl = document.getElementById('status-msg');
-
 function setStatus(msg){ statusEl.textContent = msg; }
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-async function handleCallback(){
-  try {
-    setStatus('Exchanging auth token...');
-
-    // Supabase automatically reads the token from:
-    //   - URL hash (#access_token=...) for implicit flow (Discord)
-    //   - URL query (?code=...) for PKCE flow (Google)
-    // We just need to call getSession() after a brief moment.
-
-    // Wait for Supabase to process the URL
-    await new Promise(r => setTimeout(r, 1000));
-
-    setStatus('Verifying session...');
-    const { data: { session }, error } = await sb.auth.getSession();
-
-    if(error){
-      console.error('Session error:', error);
-      setStatus('Auth error — redirecting...');
-      setTimeout(() => window.location.replace(LOGIN_URL), 1500);
-      return;
-    }
-
-    if(!session){
-      // Try once more after another delay — sometimes takes a moment
-      setStatus('Waiting for session...');
-      await new Promise(r => setTimeout(r, 1500));
-      const { data: retry } = await sb.auth.getSession();
-      if(!retry.session){
-        setStatus('No session found — returning to login...');
-        setTimeout(() => window.location.replace(LOGIN_URL), 1500);
-        return;
-      }
-      return routeUser(retry.session);
-    }
-
-    routeUser(session);
-
-  } catch(err){
-    console.error('Callback error:', err);
-    setStatus('Something went wrong — returning to login...');
-    setTimeout(() => window.location.replace(LOGIN_URL), 2000);
-  }
-}
+let routed = false; // prevent double-redirect
 
 async function routeUser(session){
+  if(routed) return;
+  routed = true;
   setStatus('Checking profile...');
   try {
     const { data: profile } = await sb
@@ -95,20 +54,44 @@ async function routeUser(session){
       .single();
 
     if(!profile || !profile.username){
-      setStatus('Setting up your account...');
-      setTimeout(() => window.location.replace(SETUP_URL), 500);
+      setStatus('First time here — setting up your profile...');
+      setTimeout(() => window.location.replace(SETUP_URL), 600);
     } else {
       setStatus('Welcome back! Entering game...');
-      setTimeout(() => window.location.replace(GAME_URL), 500);
+      setTimeout(() => window.location.replace(GAME_URL), 600);
     }
   } catch(err){
-    // If profiles table query fails, send to setup just in case
+    // profiles query failed — send to setup to be safe
     setStatus('Setting up your account...');
-    setTimeout(() => window.location.replace(SETUP_URL), 500);
+    setTimeout(() => window.location.replace(SETUP_URL), 600);
   }
 }
 
-handleCallback();
+// PRIMARY METHOD: onAuthStateChange fires when Supabase
+// finishes parsing the token from the URL hash (Discord implicit flow)
+// or exchanges the code (Google PKCE flow)
+sb.auth.onAuthStateChange((event, session) => {
+  console.log('Auth event:', event, session ? 'session found' : 'no session');
+  if((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session){
+    routeUser(session);
+  }
+});
+
+// FALLBACK: also check getSession() after a delay in case
+// the auth state change already fired before our listener attached
+setTimeout(async () => {
+  if(routed) return;
+  setStatus('Checking session...');
+  const { data: { session } } = await sb.auth.getSession();
+  if(session){
+    routeUser(session);
+  } else {
+    // Still nothing after 5s — something went wrong
+    setStatus('Could not verify session — returning to login...');
+    setTimeout(() => window.location.replace(LOGIN_URL), 1500);
+  }
+}, 5000);
+
 </script>
 </body>
 </html>
