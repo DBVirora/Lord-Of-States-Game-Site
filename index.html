@@ -19,7 +19,6 @@ body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;m
 .vignette{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.7) 100%);}
 .edge-line-top,.edge-line-bottom{position:fixed;left:0;right:0;height:1px;z-index:3;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(0,180,255,.3) 30%,rgba(0,180,255,.3) 70%,transparent);}
 .edge-line-top{top:0}.edge-line-bottom{bottom:0}
-
 /* LOADING */
 #loading-screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s ease;}
 #loading-screen.fade-out{opacity:0;pointer-events:none;}
@@ -38,7 +37,6 @@ body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;m
 .boot-log{font-size:11px;color:rgba(0,180,255,.6);letter-spacing:2px;height:16px;text-align:center;min-width:320px;}
 .boot-log span{animation:logFade .4s ease;}
 @keyframes logFade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-
 /* LOGIN */
 #login-screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .8s ease;padding:20px;overflow-y:auto;}
 #login-screen.visible{opacity:1;pointer-events:all;}
@@ -70,7 +68,6 @@ body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;m
 .panel-footer-links a:hover{color:rgba(100,150,200,.6);}
 .login-footer{text-align:center;margin-top:20px;font-size:9px;letter-spacing:3px;color:rgba(80,120,160,.3);}
 @keyframes rippleAnim{to{transform:scale(1.5);opacity:0}}
-
 /* EMAIL FORM */
 .email-form{display:none;margin-top:4px;}
 .email-form.active{display:block;}
@@ -88,6 +85,9 @@ body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;m
 .auth-success{font-size:10px;color:#6ee7b7;letter-spacing:1px;text-align:center;margin-bottom:8px;display:none;}
 .email-toggle-btn{display:block;width:100%;background:none;border:1px solid rgba(0,150,220,.2);border-radius:6px;padding:11px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:rgba(0,180,255,.4);cursor:pointer;text-align:center;transition:all .2s;text-transform:uppercase;margin-bottom:12px;}
 .email-toggle-btn:hover{color:rgba(0,180,255,.7);border-color:rgba(0,150,220,.5);}
+/* MUSIC TOGGLE */
+#music-btn{position:fixed;bottom:16px;right:16px;z-index:20;background:rgba(0,20,40,.7);border:1px solid rgba(0,150,220,.3);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:16px;}
+#music-btn:hover{border-color:var(--blue);box-shadow:0 0 12px rgba(0,212,255,.2);}
 </style>
 </head>
 <body>
@@ -98,6 +98,9 @@ body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;m
 <div class="vignette"></div>
 <div class="edge-line-top"></div>
 <div class="edge-line-bottom"></div>
+
+<!-- MUSIC TOGGLE BUTTON -->
+<button id="music-btn" title="Toggle Music">🔊</button>
 
 <!-- LOADING SCREEN -->
 <div id="loading-screen">
@@ -136,8 +139,6 @@ body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;m
     <div class="panel-title">ACCESS PORTAL</div>
     <div class="panel-sub">— Authenticate to Enter the Network —</div>
     <div class="panel-divider"><span>SECURE LOGIN</span></div>
-
-    <!-- Discord -->
     <a href="#" class="auth-btn btn-discord" id="discord-btn">
       <div class="auth-btn-icon">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="#8b9eff">
@@ -146,8 +147,6 @@ body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;m
       </div>
       Sign in with Discord
     </a>
-
-    <!-- Google -->
     <a href="#" class="auth-btn btn-google" id="google-btn">
       <div class="auth-btn-icon">
         <svg width="22" height="22" viewBox="0 0 24 24">
@@ -159,15 +158,10 @@ body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;m
       </div>
       Sign in with Google
     </a>
-
-    <!-- Email toggle -->
     <button class="email-toggle-btn" id="email-toggle-btn">[ Sign in with Email ]</button>
-
-    <!-- Email/Password Form -->
     <div class="email-form" id="email-form">
       <div class="auth-error" id="auth-error"></div>
       <div class="auth-success" id="auth-success"></div>
-
       <div class="input-wrap">
         <label class="input-label" for="email-input">EMAIL</label>
         <input class="input-field" id="email-input" type="email" placeholder="your@email.com" autocomplete="email"/>
@@ -176,14 +170,11 @@ body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;m
         <label class="input-label" for="password-input">PASSWORD</label>
         <input class="input-field" id="password-input" type="password" placeholder="••••••••" autocomplete="current-password"/>
       </div>
-
       <button class="email-submit-btn" id="email-submit-btn">SIGN IN</button>
       <button class="toggle-mode" id="toggle-mode-btn">Don't have an account? Create one →</button>
     </div>
-
     <div class="panel-divider"><span>OR</span></div>
     <a href="#" class="guest-btn" id="guest-btn">[ Continue as Guest ]</a>
-
     <div class="panel-footer-links">
       <a href="#">Help / Support</a>
       <a href="#">Privacy Policy</a>
@@ -200,6 +191,76 @@ const SUPABASE_URL      = 'https://alvldkihwuhgjbgdpbkg.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U';
 const CALLBACK_URL      = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/callback.html';
 const GAME_URL          = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/game.html';
+const MUSIC_SRC         = 'https://github.com/DBVirora/VCU-Lord-Of-States-Scans/raw/refs/heads/main/music/Ancient%20Gamecube%20Quest.mp3';
+const MUSIC_KEY         = 'vcu_music_pos'; // sessionStorage key for playback position
+const MUSIC_MUTED_KEY   = 'vcu_music_muted';
+
+// ── MUSIC SYSTEM ──────────────────────────────────
+let audio = null;
+
+function initMusic(){
+  audio = new Audio(MUSIC_SRC);
+  audio.loop = false; // we handle looping manually so position tracking works
+  audio.volume = 0.5;
+
+  // Restore muted preference
+  const muted = sessionStorage.getItem(MUSIC_MUTED_KEY) === 'true';
+  audio.muted = muted;
+  document.getElementById('music-btn').textContent = muted ? '🔇' : '🔊';
+
+  // Restore playback position from sessionStorage
+  const savedPos = parseFloat(sessionStorage.getItem(MUSIC_KEY) || '0');
+
+  audio.addEventListener('loadedmetadata', () => {
+    if(savedPos > 0 && savedPos < audio.duration){
+      audio.currentTime = savedPos;
+    }
+    audio.play().catch(() => {});
+  });
+
+  // When song ends, loop from beginning
+  audio.addEventListener('ended', () => {
+    sessionStorage.setItem(MUSIC_KEY, '0');
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+  });
+
+  // Save position every second so next page can resume
+  setInterval(() => {
+    if(audio && !audio.paused){
+      sessionStorage.setItem(MUSIC_KEY, audio.currentTime.toString());
+    }
+  }, 1000);
+
+  audio.load();
+}
+
+// Save position before navigating away
+window.addEventListener('beforeunload', () => {
+  if(audio) sessionStorage.setItem(MUSIC_KEY, audio.currentTime.toString());
+});
+
+// Music toggle button
+document.getElementById('music-btn').addEventListener('click', () => {
+  if(!audio) return;
+  audio.muted = !audio.muted;
+  sessionStorage.setItem(MUSIC_MUTED_KEY, audio.muted.toString());
+  document.getElementById('music-btn').textContent = audio.muted ? '🔇' : '🔊';
+});
+
+// Start music on first user interaction (browser autoplay policy)
+let musicStarted = false;
+function tryStartMusic(){
+  if(musicStarted) return;
+  musicStarted = true;
+  initMusic();
+  document.removeEventListener('click', tryStartMusic);
+  document.removeEventListener('keydown', tryStartMusic);
+}
+document.addEventListener('click', tryStartMusic);
+document.addEventListener('keydown', tryStartMusic);
+// Also try immediately (works on some browsers)
+setTimeout(() => { if(!musicStarted){ musicStarted = true; initMusic(); } }, 500);
 
 // ── BINARY RAIN ───────────────────────────────────
 const canvas = document.getElementById('binary-canvas');
@@ -269,32 +330,26 @@ let sb = null;
 function initSupabase(){
   try {
     sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    // If already logged in, go straight to game (skip login)
     sb.auth.getSession().then(({ data }) => {
       if(data.session) window.location.replace(GAME_URL);
     }).catch(() => {});
-
   } catch(e){ console.warn('Supabase unavailable:', e); }
 }
 
 // ── EMAIL/PASSWORD TOGGLE ─────────────────────────
-let emailMode = 'signin'; // 'signin' or 'signup'
-
+let emailMode = 'signin';
 document.getElementById('email-toggle-btn').addEventListener('click', function(){
   const form = document.getElementById('email-form');
   const isOpen = form.classList.contains('active');
   form.classList.toggle('active', !isOpen);
   this.textContent = isOpen ? '[ Sign in with Email ]' : '[ Hide Email Login ]';
 });
-
 document.getElementById('toggle-mode-btn').addEventListener('click', function(){
   emailMode = emailMode === 'signin' ? 'signup' : 'signin';
   document.getElementById('email-submit-btn').textContent = emailMode === 'signup' ? 'CREATE ACCOUNT' : 'SIGN IN';
   this.textContent = emailMode === 'signup' ? 'Already have an account? Sign in →' : "Don't have an account? Create one →";
   hideAuthMsg();
 });
-
 document.getElementById('email-submit-btn').addEventListener('click', async function(){
   const email    = document.getElementById('email-input').value.trim();
   const password = document.getElementById('password-input').value;
@@ -303,11 +358,8 @@ document.getElementById('email-submit-btn').addEventListener('click', async func
   this.disabled = true;
   this.textContent = 'PLEASE WAIT...';
   hideAuthMsg();
-
   if(emailMode === 'signup'){
-    const { error } = await sb.auth.signUp({ email, password,
-      options: { emailRedirectTo: CALLBACK_URL }
-    });
+    const { error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: CALLBACK_URL } });
     this.disabled = false;
     this.textContent = 'CREATE ACCOUNT';
     if(error){ showAuthError(error.message); return; }
@@ -318,9 +370,7 @@ document.getElementById('email-submit-btn').addEventListener('click', async func
     this.textContent = 'SIGN IN';
     if(error){ showAuthError(error.message); return; }
     if(data.session){
-      // Check if user has a username
-      const { data: profile } = await sb.from('profiles')
-        .select('username').eq('id', data.session.user.id).single();
+      const { data: profile } = await sb.from('profiles').select('username').eq('id', data.session.user.id).maybeSingle();
       if(!profile?.username){
         window.location.replace('https://dbvirora.github.io/Lord-Of-States-Game-Site/setup.html');
       } else {
@@ -329,50 +379,29 @@ document.getElementById('email-submit-btn').addEventListener('click', async func
     }
   }
 });
-
-function showAuthError(msg){
-  const el = document.getElementById('auth-error');
-  el.textContent = msg; el.style.display = 'block';
-}
-function showAuthSuccess(msg){
-  const el = document.getElementById('auth-success');
-  el.textContent = msg; el.style.display = 'block';
-}
-function hideAuthMsg(){
-  document.getElementById('auth-error').style.display = 'none';
-  document.getElementById('auth-success').style.display = 'none';
-}
+function showAuthError(msg){ const el=document.getElementById('auth-error');el.textContent=msg;el.style.display='block'; }
+function showAuthSuccess(msg){ const el=document.getElementById('auth-success');el.textContent=msg;el.style.display='block'; }
+function hideAuthMsg(){ document.getElementById('auth-error').style.display='none';document.getElementById('auth-success').style.display='none'; }
 
 // ── OAUTH + GUEST BUTTONS ─────────────────────────
 document.querySelectorAll('.auth-btn, .guest-btn').forEach(btn => {
   btn.addEventListener('click', async function(e){
     e.preventDefault();
-    // Ripple effect
     const r = document.createElement('span');
     const rect = this.getBoundingClientRect();
     const sz = Math.max(rect.width, rect.height);
     r.style.cssText = `position:absolute;border-radius:50%;transform:scale(0);animation:rippleAnim .5s ease-out;width:${sz}px;height:${sz}px;left:${e.clientX-rect.left-sz/2}px;top:${e.clientY-rect.top-sz/2}px;background:rgba(0,200,255,.15);pointer-events:none;`;
     this.appendChild(r);
     setTimeout(() => r.remove(), 500);
-
     if(!sb){ alert('Auth not ready yet — please try again in a moment.'); return; }
-
     if(this.id === 'discord-btn'){
-      const { error } = await sb.auth.signInWithOAuth({
-        provider: 'discord',
-        options: { redirectTo: CALLBACK_URL }  // ✅ Goes to callback.html
-      });
+      const { error } = await sb.auth.signInWithOAuth({ provider: 'discord', options: { redirectTo: CALLBACK_URL } });
       if(error) alert('Discord login error: ' + error.message);
     }
-
     if(this.id === 'google-btn'){
-      const { error } = await sb.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: CALLBACK_URL }  // ✅ Goes to callback.html
-      });
+      const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: CALLBACK_URL } });
       if(error) alert('Google login error: ' + error.message);
     }
-
     if(this.id === 'guest-btn'){
       const { error } = await sb.auth.signInAnonymously();
       if(error){ alert('Guest error: ' + error.message); return; }
