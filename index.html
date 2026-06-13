@@ -7,7 +7,10 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--blue:#00d4ff;--blue2:#0099cc;--dark:#04040f;}
+:root{
+  --blue:#00d4ff;--blue2:#0099cc;--violet:#7c3aed;
+  --dark:#04040f;--panel:#0a0a1e;
+}
 body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;min-height:100vh;overflow:hidden;position:relative;}
 #binary-canvas{position:fixed;inset:0;z-index:0;opacity:.18}
 .bg-gradient{position:fixed;inset:0;z-index:1;background:radial-gradient(ellipse 80% 60% at 50% 50%,#0d0535 0%,transparent 70%),radial-gradient(ellipse 40% 80% at 10% 50%,#030818 0%,transparent 60%);}
@@ -37,7 +40,7 @@ body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;m
 @keyframes logFade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
 /* LOGIN */
-#login-screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .8s ease;padding:20px;}
+#login-screen{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .8s ease;padding:20px;overflow-y:auto;}
 #login-screen.visible{opacity:1;pointer-events:all;}
 .login-logo-wrap{text-align:center;margin-bottom:28px;animation:logoFloat 4s ease-in-out infinite;}
 @keyframes logoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
@@ -50,7 +53,7 @@ body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;m
 .login-panel::after{bottom:8px;right:8px;border-width:0 2px 2px 0;}
 .panel-title{font-family:'Orbitron',sans-serif;font-size:15px;letter-spacing:6px;color:var(--blue);font-weight:700;text-shadow:0 0 12px var(--blue);text-align:center;}
 .panel-sub{font-size:10px;letter-spacing:2px;color:rgba(150,200,255,.5);margin-top:4px;text-align:center;margin-bottom:6px;}
-.panel-divider{display:flex;align-items:center;gap:10px;margin:20px 0;}
+.panel-divider{display:flex;align-items:center;gap:10px;margin:16px 0;}
 .panel-divider::before,.panel-divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(0,150,220,.3),transparent);}
 .panel-divider span{font-size:9px;color:rgba(0,150,220,.4);letter-spacing:3px;white-space:nowrap;}
 .auth-btn{display:flex;align-items:center;gap:14px;width:100%;padding:14px 20px;border-radius:8px;border:1px solid;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:2px;font-weight:600;transition:all .2s ease;margin-bottom:12px;position:relative;overflow:hidden;text-decoration:none;}
@@ -67,6 +70,24 @@ body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;m
 .panel-footer-links a:hover{color:rgba(100,150,200,.6);}
 .login-footer{text-align:center;margin-top:20px;font-size:9px;letter-spacing:3px;color:rgba(80,120,160,.3);}
 @keyframes rippleAnim{to{transform:scale(1.5);opacity:0}}
+
+/* EMAIL FORM */
+.email-form{display:none;margin-top:4px;}
+.email-form.active{display:block;}
+.input-wrap{margin-bottom:12px;text-align:left;}
+.input-label{font-size:9px;letter-spacing:3px;color:rgba(0,180,255,.5);margin-bottom:5px;display:block;}
+.input-field{width:100%;background:rgba(0,20,40,.6);border:1px solid rgba(0,150,220,.3);border-radius:6px;padding:11px 14px;color:#e2e8f0;font-family:'Share Tech Mono',monospace;font-size:13px;letter-spacing:1px;outline:none;transition:border-color .2s;}
+.input-field:focus{border-color:var(--blue);box-shadow:0 0 12px rgba(0,212,255,.15);}
+.input-field::placeholder{color:rgba(100,150,200,.3);}
+.email-submit-btn{width:100%;padding:13px;background:rgba(0,150,220,.15);border:1px solid rgba(0,150,220,.4);border-radius:8px;color:var(--blue);font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:3px;font-weight:700;cursor:pointer;transition:all .2s;margin-bottom:8px;}
+.email-submit-btn:hover{background:rgba(0,150,220,.25);border-color:var(--blue);box-shadow:0 0 20px rgba(0,212,255,.2);}
+.email-submit-btn:disabled{opacity:.4;cursor:not-allowed;}
+.toggle-mode{background:none;border:none;color:rgba(0,180,255,.4);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;cursor:pointer;width:100%;text-align:center;padding:4px;transition:color .2s;}
+.toggle-mode:hover{color:rgba(0,180,255,.7);}
+.auth-error{font-size:10px;color:#fca5a5;letter-spacing:1px;text-align:center;margin-bottom:8px;display:none;}
+.auth-success{font-size:10px;color:#6ee7b7;letter-spacing:1px;text-align:center;margin-bottom:8px;display:none;}
+.email-toggle-btn{display:block;width:100%;background:none;border:1px solid rgba(0,150,220,.2);border-radius:6px;padding:11px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:rgba(0,180,255,.4);cursor:pointer;text-align:center;transition:all .2s;text-transform:uppercase;margin-bottom:12px;}
+.email-toggle-btn:hover{color:rgba(0,180,255,.7);border-color:rgba(0,150,220,.5);}
 </style>
 </head>
 <body>
@@ -115,6 +136,8 @@ body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;m
     <div class="panel-title">ACCESS PORTAL</div>
     <div class="panel-sub">— Authenticate to Enter the Network —</div>
     <div class="panel-divider"><span>SECURE LOGIN</span></div>
+
+    <!-- Discord -->
     <a href="#" class="auth-btn btn-discord" id="discord-btn">
       <div class="auth-btn-icon">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="#8b9eff">
@@ -123,6 +146,8 @@ body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;m
       </div>
       Sign in with Discord
     </a>
+
+    <!-- Google -->
     <a href="#" class="auth-btn btn-google" id="google-btn">
       <div class="auth-btn-icon">
         <svg width="22" height="22" viewBox="0 0 24 24">
@@ -134,8 +159,31 @@ body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;m
       </div>
       Sign in with Google
     </a>
+
+    <!-- Email toggle -->
+    <button class="email-toggle-btn" id="email-toggle-btn">[ Sign in with Email ]</button>
+
+    <!-- Email/Password Form -->
+    <div class="email-form" id="email-form">
+      <div class="auth-error" id="auth-error"></div>
+      <div class="auth-success" id="auth-success"></div>
+
+      <div class="input-wrap">
+        <label class="input-label" for="email-input">EMAIL</label>
+        <input class="input-field" id="email-input" type="email" placeholder="your@email.com" autocomplete="email"/>
+      </div>
+      <div class="input-wrap">
+        <label class="input-label" for="password-input">PASSWORD</label>
+        <input class="input-field" id="password-input" type="password" placeholder="••••••••" autocomplete="current-password"/>
+      </div>
+
+      <button class="email-submit-btn" id="email-submit-btn">SIGN IN</button>
+      <button class="toggle-mode" id="toggle-mode-btn">Don't have an account? Create one →</button>
+    </div>
+
     <div class="panel-divider"><span>OR</span></div>
     <a href="#" class="guest-btn" id="guest-btn">[ Continue as Guest ]</a>
+
     <div class="panel-footer-links">
       <a href="#">Help / Support</a>
       <a href="#">Privacy Policy</a>
@@ -145,34 +193,15 @@ body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;m
   <div class="login-footer">Lord of Courts VCU &nbsp;·&nbsp; v0.1.0 Pre-Alpha &nbsp;·&nbsp; © 2026 VCU Studios</div>
 </div>
 
-<!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL  = 'https://alvldkihwuhgjbgdpbkg.supabase.co';
+// ── CONFIG ────────────────────────────────────────
+const SUPABASE_URL      = 'https://alvldkihwuhgjbgdpbkg.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U';
-const GAME_URL = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/game.html';
+const CALLBACK_URL      = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/callback.html';
+const GAME_URL          = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/game.html';
 
-// ── STEP 1: CHECK FOR SESSION BEFORE ANYTHING RENDERS ──
-// This runs synchronously before the boot animation
-// If Discord redirected back here with a token, we catch it immediately
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// Listen for auth state — fires when Supabase processes
-// the #access_token hash that Discord puts in the URL
-sb.auth.onAuthStateChange((event, session) => {
-  if(event === 'SIGNED_IN' && session){
-    window.location.replace(GAME_URL);
-  }
-});
-
-// Also do an immediate session check
-sb.auth.getSession().then(({ data }) => {
-  if(data && data.session){
-    window.location.replace(GAME_URL);
-  }
-});
-
-// ── STEP 2: BINARY RAIN ───────────────────────────────
+// ── BINARY RAIN ───────────────────────────────────
 const canvas = document.getElementById('binary-canvas');
 const ctx = canvas.getContext('2d');
 let cols, drops;
@@ -200,7 +229,7 @@ initCanvas();
 window.addEventListener('resize', initCanvas);
 setInterval(drawRain, 60);
 
-// ── STEP 3: BOOT SEQUENCE ─────────────────────────────
+// ── BOOT SEQUENCE ─────────────────────────────────
 const LOGS = [
   'Initializing Core Systems...',
   'Loading Card Database...',
@@ -220,6 +249,7 @@ function showLogin(){
   setTimeout(() => {
     bootScr.style.display = 'none';
     loginScr.classList.add('visible');
+    setTimeout(initSupabase, 200);
   }, 800);
 }
 
@@ -234,10 +264,90 @@ function nextLog(){
 }
 setTimeout(nextLog, 400);
 
-// ── STEP 4: BUTTONS ───────────────────────────────────
+// ── SUPABASE ──────────────────────────────────────
+let sb = null;
+function initSupabase(){
+  try {
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // If already logged in, go straight to game (skip login)
+    sb.auth.getSession().then(({ data }) => {
+      if(data.session) window.location.replace(GAME_URL);
+    }).catch(() => {});
+
+  } catch(e){ console.warn('Supabase unavailable:', e); }
+}
+
+// ── EMAIL/PASSWORD TOGGLE ─────────────────────────
+let emailMode = 'signin'; // 'signin' or 'signup'
+
+document.getElementById('email-toggle-btn').addEventListener('click', function(){
+  const form = document.getElementById('email-form');
+  const isOpen = form.classList.contains('active');
+  form.classList.toggle('active', !isOpen);
+  this.textContent = isOpen ? '[ Sign in with Email ]' : '[ Hide Email Login ]';
+});
+
+document.getElementById('toggle-mode-btn').addEventListener('click', function(){
+  emailMode = emailMode === 'signin' ? 'signup' : 'signin';
+  document.getElementById('email-submit-btn').textContent = emailMode === 'signup' ? 'CREATE ACCOUNT' : 'SIGN IN';
+  this.textContent = emailMode === 'signup' ? 'Already have an account? Sign in →' : "Don't have an account? Create one →";
+  hideAuthMsg();
+});
+
+document.getElementById('email-submit-btn').addEventListener('click', async function(){
+  const email    = document.getElementById('email-input').value.trim();
+  const password = document.getElementById('password-input').value;
+  if(!email || !password){ showAuthError('Please enter your email and password.'); return; }
+  if(!sb){ showAuthError('Auth not ready — try again in a moment.'); return; }
+  this.disabled = true;
+  this.textContent = 'PLEASE WAIT...';
+  hideAuthMsg();
+
+  if(emailMode === 'signup'){
+    const { error } = await sb.auth.signUp({ email, password,
+      options: { emailRedirectTo: CALLBACK_URL }
+    });
+    this.disabled = false;
+    this.textContent = 'CREATE ACCOUNT';
+    if(error){ showAuthError(error.message); return; }
+    showAuthSuccess('Check your email to confirm your account!');
+  } else {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    this.disabled = false;
+    this.textContent = 'SIGN IN';
+    if(error){ showAuthError(error.message); return; }
+    if(data.session){
+      // Check if user has a username
+      const { data: profile } = await sb.from('profiles')
+        .select('username').eq('id', data.session.user.id).single();
+      if(!profile?.username){
+        window.location.replace('https://dbvirora.github.io/Lord-Of-States-Game-Site/setup.html');
+      } else {
+        window.location.replace(GAME_URL);
+      }
+    }
+  }
+});
+
+function showAuthError(msg){
+  const el = document.getElementById('auth-error');
+  el.textContent = msg; el.style.display = 'block';
+}
+function showAuthSuccess(msg){
+  const el = document.getElementById('auth-success');
+  el.textContent = msg; el.style.display = 'block';
+}
+function hideAuthMsg(){
+  document.getElementById('auth-error').style.display = 'none';
+  document.getElementById('auth-success').style.display = 'none';
+}
+
+// ── OAUTH + GUEST BUTTONS ─────────────────────────
 document.querySelectorAll('.auth-btn, .guest-btn').forEach(btn => {
   btn.addEventListener('click', async function(e){
     e.preventDefault();
+    // Ripple effect
     const r = document.createElement('span');
     const rect = this.getBoundingClientRect();
     const sz = Math.max(rect.width, rect.height);
@@ -245,26 +355,33 @@ document.querySelectorAll('.auth-btn, .guest-btn').forEach(btn => {
     this.appendChild(r);
     setTimeout(() => r.remove(), 500);
 
+    if(!sb){ alert('Auth not ready yet — please try again in a moment.'); return; }
+
     if(this.id === 'discord-btn'){
-      await sb.auth.signInWithOAuth({
+      const { error } = await sb.auth.signInWithOAuth({
         provider: 'discord',
-        options: { redirectTo: GAME_URL }
+        options: { redirectTo: CALLBACK_URL }  // ✅ Goes to callback.html
       });
+      if(error) alert('Discord login error: ' + error.message);
     }
+
     if(this.id === 'google-btn'){
-      await sb.auth.signInWithOAuth({
+      const { error } = await sb.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: GAME_URL }
+        options: { redirectTo: CALLBACK_URL }  // ✅ Goes to callback.html
       });
+      if(error) alert('Google login error: ' + error.message);
     }
+
     if(this.id === 'guest-btn'){
       const { error } = await sb.auth.signInAnonymously();
-      if(!error) window.location.replace(GAME_URL);
+      if(error){ alert('Guest error: ' + error.message); return; }
+      window.location.replace(GAME_URL);
     }
   });
 });
 
-// ── PANEL CORNERS ─────────────────────────────────────
+// ── PANEL CORNERS ─────────────────────────────────
 (function(){
   const panel = document.getElementById('login-panel');
   [{top:'8px',right:'8px',borderTop:'2px solid',borderRight:'2px solid'},
