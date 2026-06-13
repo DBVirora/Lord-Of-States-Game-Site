@@ -33,37 +33,35 @@ body{background:#04040f;color:#eee;font-family:'Share Tech Mono',monospace;min-h
 
 <button class="logout-btn" onclick="logout()">[ Sign Out ]</button>
 
-<!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = 'https://alvldkihwuhgjbgdpbkg.supabase.co';
+const SUPABASE_URL      = 'https://alvldkihwuhgjbgdpbkg.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U';
+const LOGIN_URL         = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Get current user and display their info
 async function init(){
-  // Give Supabase a moment to process any auth callback in the URL
-  await new Promise(r => setTimeout(r, 500));
-
   const { data: { session } } = await sb.auth.getSession();
   if(!session){
-    // Not logged in — send back to login
-    window.location.replace('https://dbvirora.github.io/Lord-Of-States-Game-Site/');
+    window.location.replace(LOGIN_URL);
     return;
   }
-  const user = session.user;
-  const name = user.user_metadata?.full_name
-    || user.user_metadata?.name
-    || user.user_metadata?.global_name
-    || user.email
-    || 'Player';
+
+  // Always pull from profiles table — never from OAuth metadata
+  const { data: profile } = await sb
+    .from('profiles')
+    .select('username')
+    .eq('id', session.user.id)
+    .maybeSingle();
+
+  const name = profile?.username || session.user.email || 'Player';
   document.getElementById('username').textContent = '[ ' + name + ' ]';
   document.getElementById('status').textContent = '✓ Welcome back, ' + name;
 }
 
 async function logout(){
   await sb.auth.signOut();
-  window.location.href = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/';
+  window.location.replace(LOGIN_URL);
 }
 
 init();
