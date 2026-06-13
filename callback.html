@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Lord of Courts VCU — Authenticating...</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#04040f;color:#00d4ff;font-family:'Share Tech Mono',monospace;min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+.msg{font-size:13px;letter-spacing:3px;}
+.dot{animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+</style>
+</head>
+<body>
+<div class="msg">AUTHENTICATING<span class="dot">...</span></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://alvldkihwuhgjbgdpbkg.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U';
+const GAME_URL   = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/game.html';
+const LOGIN_URL  = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/';
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function handleCallback(){
+  // Give Supabase time to parse the token from the URL hash
+  await new Promise(r => setTimeout(r, 800));
+
+  const { data: { session }, error } = await sb.auth.getSession();
+
+  if(session){
+    // Logged in — check if they have a username set
+    const { data: profile } = await sb.from('profiles')
+      .select('username')
+      .eq('id', session.user.id)
+      .single();
+
+    if(!profile || !profile.username){
+      // No username yet — go to username setup
+      window.location.replace('https://dbvirora.github.io/Lord-Of-States-Game-Site/setup.html');
+    } else {
+      // Has username — go straight to game
+      window.location.replace(GAME_URL);
+    }
+  } else {
+    // Auth failed — back to login
+    window.location.replace(LOGIN_URL);
+  }
+}
+
+handleCallback();
+</script>
+</body>
+</html>
