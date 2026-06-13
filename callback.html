@@ -46,21 +46,26 @@ async function routeUser(session){
   if(routed) return;
   routed = true;
   setStatus('Checking profile...');
+
   try {
-    const { data: profile } = await sb
+    const { data: profile, error } = await sb
       .from('profiles')
       .select('username')
       .eq('id', session.user.id)
-      .single();
+      .maybeSingle(); // use maybeSingle so no error if row doesn't exist
 
-    if(!profile || !profile.username){
-      setStatus('First time here — setting up your profile...');
-      setTimeout(() => window.location.replace(SETUP_URL), 600);
-    } else {
+    // Only go to game if username is a non-empty string
+    const hasUsername = profile && typeof profile.username === 'string' && profile.username.trim().length >= 3;
+
+    if(hasUsername){
       setStatus('Welcome back! Entering game...');
       setTimeout(() => window.location.replace(GAME_URL), 600);
+    } else {
+      setStatus('First time here — setting up your profile...');
+      setTimeout(() => window.location.replace(SETUP_URL), 600);
     }
   } catch(err){
+    // On any error, send to setup — safer than skipping it
     setStatus('Setting up your account...');
     setTimeout(() => window.location.replace(SETUP_URL), 600);
   }
