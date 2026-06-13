@@ -40,9 +40,12 @@ body{background:var(--dark);color:#eee;font-family:'Share Tech Mono',monospace;m
 .skip-btn{display:block;width:100%;background:none;border:1px solid rgba(100,120,160,.2);border-radius:6px;padding:10px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:rgba(150,180,220,.3);cursor:pointer;text-align:center;transition:all .2s;text-transform:uppercase;}
 .skip-btn:hover{color:rgba(150,180,220,.6);border-color:rgba(100,120,160,.4);}
 .checking{color:rgba(0,180,255,.5);font-size:10px;letter-spacing:2px;margin-top:5px;display:none;}
+
+#music-btn{position:fixed;bottom:16px;right:16px;z-index:20;background:rgba(0,20,40,.7);border:1px solid rgba(0,150,220,.3);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;}
 </style>
 </head>
 <body>
+<button id="music-btn" title="Toggle Music">🔊</button>
 <div class="bg-gradient"></div>
 <div class="wrap">
   <div class="logo">LORD OF <span>COURTS</span></div>
@@ -92,20 +95,23 @@ async function init(){
   if(!session){ window.location.replace(LOGIN_URL); return; }
   currentUser = session.user;
 
-  // Show avatar and provider name
   const meta = currentUser.user_metadata;
-  const displayName = meta?.full_name || meta?.name || meta?.global_name || meta?.user_name || 'Player';
   const avatarUrl = meta?.avatar_url || meta?.picture || null;
-
-  document.getElementById('provider-name').textContent = displayName;
   if(avatarUrl){
     document.getElementById('avatar-el').innerHTML = `<img src="${avatarUrl}" alt="avatar"/>`;
   }
 
-  // Pre-fill with suggested username from provider
-  const suggested = (meta?.user_name || meta?.name || '')
-    .toLowerCase().replace(/[^a-z0-9_]/g,'_').slice(0,20);
-  if(suggested) document.getElementById('username-input').value = suggested;
+  // Check for existing saved username in profiles table
+  const { data: profile } = await sb.from('profiles').select('username').eq('id', currentUser.id).maybeSingle();
+  if(profile?.username && profile.username.trim().length >= 3){
+    document.getElementById('provider-name').textContent = profile.username;
+    document.getElementById('username-input').value = profile.username;
+  } else {
+    const suggested = (meta?.user_name || meta?.name || meta?.full_name || '')
+      .toLowerCase().replace(/[^a-z0-9_]/g,'_').slice(0,20);
+    document.getElementById('provider-name').textContent = suggested || 'New Player';
+    if(suggested) document.getElementById('username-input').value = suggested;
+  }
 }
 
 // Live username validation as user types
@@ -153,6 +159,44 @@ async function saveUsername(){
 function skipForNow(){ window.location.replace(GAME_URL); }
 function showError(msg){ const el=document.getElementById('username-error');el.textContent=msg;el.style.display='block'; }
 function hideError(){ const el=document.getElementById('username-error');el.style.display='none'; }
+
+// ── MUSIC RESUME ──────────────────────────────────
+const MUSIC_SRC       = 'https://github.com/DBVirora/VCU-Lord-Of-States-Scans/raw/refs/heads/main/music/Ancient%20Gamecube%20Quest.mp3';
+const MUSIC_KEY       = 'vcu_music_pos';
+const MUSIC_MUTED_KEY = 'vcu_music_muted';
+let audio = null;
+function initMusic(){
+  audio = new Audio(MUSIC_SRC);
+  audio.loop = false;
+  audio.volume = 0.5;
+  const muted = sessionStorage.getItem(MUSIC_MUTED_KEY) === 'true';
+  audio.muted = muted;
+  document.getElementById('music-btn').textContent = muted ? '🔇' : '🔊';
+  const savedPos = parseFloat(sessionStorage.getItem(MUSIC_KEY) || '0');
+  audio.addEventListener('loadedmetadata', () => {
+    if(savedPos > 0 && savedPos < audio.duration) audio.currentTime = savedPos;
+    audio.play().catch(() => {});
+  });
+  audio.addEventListener('ended', () => {
+    sessionStorage.setItem(MUSIC_KEY, '0');
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+  });
+  setInterval(() => {
+    if(audio && !audio.paused) sessionStorage.setItem(MUSIC_KEY, audio.currentTime.toString());
+  }, 1000);
+  audio.load();
+}
+window.addEventListener('beforeunload', () => {
+  if(audio) sessionStorage.setItem(MUSIC_KEY, audio.currentTime.toString());
+});
+document.getElementById('music-btn').addEventListener('click', () => {
+  if(!audio) return;
+  audio.muted = !audio.muted;
+  sessionStorage.setItem(MUSIC_MUTED_KEY, audio.muted.toString());
+  document.getElementById('music-btn').textContent = audio.muted ? '🔇' : '🔊';
+});
+setTimeout(() => initMusic(), 100);
 
 init();
 </script>
