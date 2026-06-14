@@ -469,6 +469,25 @@ body{padding-top:46px;}
 .col-card-img{width:36px;height:50px;border-radius:4px;object-fit:cover;background:#0a0a1a;flex-shrink:0;}
 .col-card-name{font-size:11px;font-weight:700;color:#e2e8f0;}
 .col-card-count{font-size:10px;color:#fbbf24;margin-top:2px;}
+
+/* ADMIN PANEL */
+.admin-section{background:rgba(139,18,18,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:14px;margin-bottom:12px;}
+.admin-section-title{font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:3px;color:#fca5a5;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.admin-toggle{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(8,8,28,.6);border:1px solid var(--border);border-radius:8px;margin-bottom:6px;cursor:pointer;transition:all .15s;}
+.admin-toggle:hover{border-color:var(--violet2);background:rgba(124,58,237,.08);}
+.admin-toggle-label{font-size:11px;color:#e2e8f0;font-weight:700;}
+.admin-toggle-desc{font-size:9px;color:#6b7280;margin-top:2px;}
+.admin-toggle-switch{width:38px;height:20px;background:rgba(75,85,99,.4);border-radius:12px;position:relative;transition:background .2s;border:1px solid rgba(100,120,160,.3);flex-shrink:0;}
+.admin-toggle-switch.on{background:rgba(34,197,94,.35);border-color:rgba(34,197,94,.6);}
+.admin-toggle-knob{width:14px;height:14px;background:#9ca3af;border-radius:50%;position:absolute;top:2px;left:2px;transition:all .2s;}
+.admin-toggle-switch.on .admin-toggle-knob{left:20px;background:#22c55e;box-shadow:0 0 6px rgba(34,197,94,.5);}
+.admin-action-btn{width:100%;padding:9px;background:rgba(124,58,237,.15);border:1px solid var(--border-v);border-radius:7px;color:#c4b5fd;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;cursor:pointer;transition:all .2s;margin-top:6px;}
+.admin-action-btn:hover{background:rgba(124,58,237,.3);border-color:var(--violet2);}
+.admin-action-btn.danger{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.35);color:#fca5a5;}
+.admin-action-btn.danger:hover{background:rgba(239,68,68,.25);border-color:#ef4444;}
+.admin-input{background:rgba(8,8,28,.6);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:#e2e8f0;font-family:'Share Tech Mono',monospace;font-size:11px;width:100%;}
+.admin-input:focus{outline:none;border-color:var(--violet2);}
+.admin-status{font-size:9px;color:#6b7280;margin-top:4px;letter-spacing:1px;}
 </style>
 </head>
 <body>
@@ -4043,6 +4062,8 @@ function refreshProfileScreen(){
   const fwStatus=document.getElementById('first-win-status');
   if(fwStatus)fwStatus.textContent=_celData.first_win_date===today?'✓ Claimed today':'Play to earn!';
   if(fwStatus)fwStatus.style.color=_celData.first_win_date===today?'#22c55e':'#6b7280';
+  // Admin badge
+  updateAdminBadge();
   // Achievements count badge (don't auto-open panel)
   const _total=Object.keys(ACHIEVEMENTS).length;
   const _unlocked=Object.keys(ACHIEVEMENTS).filter(id=>!!_achData['ach_'+id]).length;
@@ -4228,6 +4249,10 @@ function isAdmin(){
   return _celUserId && ADMIN_USER_IDS.includes(_celUserId);
 }
 
+function adminHasUnlimitedCards(){
+  return isAdmin() && _adminToggles.admin_unlimited_cards!==false;
+}
+
 async function loadCollection(){
   if(!_celSB||!_celUserId)return;
   try{
@@ -4244,7 +4269,7 @@ async function saveCollection(){
 }
 
 function getOwnedCount(cid){
-  if(isAdmin())return 4; // admin always has 4 copies
+  if(adminHasUnlimitedCards())return 4; // admin override
   return _collection[cid]||0;
 }
 
@@ -4429,6 +4454,127 @@ function renderProfileCollection(){
   });
 }
 
+
+// ═══════════════════════════════════════════════════
+// ADMIN PANEL SYSTEM
+// ═══════════════════════════════════════════════════
+let _adminToggles={
+  shop_enabled:true,
+  events_enabled:false,
+  achievements_enabled:true,
+  admin_unlimited_cards:true
+};
+
+async function loadAdminToggles(){
+  if(!_celSB||!_celUserId||!isAdmin())return;
+  try{
+    const {data}=await _celSB.from('profiles').select('admin_toggles').eq('id',_celUserId).maybeSingle();
+    if(data&&data.admin_toggles){
+      try{ _adminToggles={..._adminToggles,...JSON.parse(data.admin_toggles)};}catch(e){}
+    }
+  }catch(e){console.warn('[ADMIN] load error:',e);}
+}
+
+async function saveAdminToggles(){
+  if(!_celSB||!_celUserId||!isAdmin())return;
+  try{
+    await _celSB.from('profiles').update({admin_toggles:JSON.stringify(_adminToggles)}).eq('id',_celUserId);
+  }catch(e){console.warn('[ADMIN] save error:',e);}
+}
+
+function isFeatureEnabled(key){
+  // Non-admins always get default (shop on, events off, achievements on)
+  if(!isAdmin())return key==='events_enabled'?false:true;
+  return _adminToggles[key]!==false;
+}
+
+function openAdminPanel(){
+  if(!isAdmin()){
+    alert('Admin access required.');
+    showScreen('menu-screen');
+    return;
+  }
+  // Populate user info
+  const uid=document.getElementById('admin-user-id');
+  if(uid)uid.textContent=_celUserId||'—';
+  const uname=document.getElementById('admin-username');
+  if(uname)uname.textContent=document.getElementById('hud-username')?.textContent||'—';
+  // Render toggles
+  Object.keys(_adminToggles).forEach(key=>{
+    const sw=document.getElementById('admin-tg-'+key);
+    if(sw)sw.classList.toggle('on',_adminToggles[key]===true);
+  });
+}
+
+async function adminToggle(key){
+  if(!isAdmin())return;
+  _adminToggles[key]=!_adminToggles[key];
+  const sw=document.getElementById('admin-tg-'+key);
+  if(sw)sw.classList.toggle('on',_adminToggles[key]);
+  await saveAdminToggles();
+  // Apply effect immediately for relevant toggles
+  applyAdminToggleEffects();
+}
+
+function applyAdminToggleEffects(){
+  // Hide shop button if disabled
+  const shopBtns=document.querySelectorAll('.menu-btn.util-btn');
+  shopBtns.forEach(b=>{
+    if(b.textContent.includes('Shop')){
+      b.style.display=isFeatureEnabled('shop_enabled')?'':'none';
+    }
+  });
+}
+
+async function adminGrantCelestium(){
+  if(!isAdmin())return;
+  await awardCelestium(1000,'Admin Grant');
+  alert('✓ +1000 Celestium added.');
+}
+
+async function adminUnlockAllAchievements(){
+  if(!isAdmin())return;
+  if(!confirm('Unlock all achievements?'))return;
+  Object.keys(ACHIEVEMENTS).forEach(id=>{
+    _achData['ach_'+id]=new Date().toISOString();
+  });
+  // Set flags too
+  _achData.has_entered_match=true;
+  _achData.has_transformed=true;
+  await saveAchievements();
+  alert('✓ All achievements unlocked.');
+}
+
+async function adminGrantAllCards(){
+  if(!isAdmin())return;
+  if(!confirm('Grant 4 copies of every card to your collection?'))return;
+  getCardPool().forEach(cid=>{
+    _collection[cid]=4;
+  });
+  await saveCollection();
+  alert('✓ All cards granted (4 copies each).');
+}
+
+async function adminResetProfile(){
+  if(!isAdmin())return;
+  if(!confirm('⚠ This will RESET your Celestium, achievements, and collection. Continue?'))return;
+  if(!confirm('Are you absolutely sure? This cannot be undone.'))return;
+  _celData={celestium:0,wins:0,losses:0,matches:0,last_login:null,first_win_date:null};
+  _celLog=[];
+  _achData={};
+  _collection={};
+  await Promise.all([saveCelestium(),saveAchievements(),saveCollection()]);
+  updateCelDisplay();
+  alert('✓ Profile reset.');
+  showScreen('menu-screen');
+}
+
+// ── Show/hide admin badge based on user ─────────────
+function updateAdminBadge(){
+  const badge=document.getElementById('admin-badge-btn');
+  if(badge)badge.style.display=isAdmin()?'inline-flex':'none';
+}
+
 // ═══════════════════════════════════════════════════
 // STARTUP
 // ═══════════════════════════════════════════════════
@@ -4516,6 +4662,9 @@ window.addEventListener('load',async()=>{
       await loadCelestium();
       await loadAchievements();
       await loadCollection();
+      await loadAdminToggles();
+      updateAdminBadge();
+      applyAdminToggleEffects();
       // Sign out
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){
@@ -4576,6 +4725,9 @@ window.addEventListener('load',async()=>{
       await loadCelestium();
       await loadAchievements();
       await loadCollection();
+      await loadAdminToggles();
+      updateAdminBadge();
+      applyAdminToggleEffects();
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){console.error('[AUTH] error:',e);window.signOutUser=function(){window.location.replace(LOGIN);};}
   }
@@ -4679,7 +4831,10 @@ window.addEventListener('load',async()=>{
   <div style="display:flex;align-items:center;gap:16px;background:rgba(8,8,28,.7);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px">
     <div id="profile-avatar" style="width:56px;height:56px;border-radius:50%;border:2px solid rgba(0,180,255,.4);background:#0d0d2a;display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden;flex-shrink:0">?</div>
     <div>
-      <div style="font-size:18px;font-weight:700;color:#e2e8f0;font-family:'Orbitron',sans-serif" id="profile-username">—</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="font-size:18px;font-weight:700;color:#e2e8f0;font-family:'Orbitron',sans-serif" id="profile-username">—</div>
+        <button id="admin-badge-btn" onclick="showScreen('admin-screen');openAdminPanel()" style="display:none;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);border-radius:5px;padding:2px 8px;font-size:9px;letter-spacing:1px;color:#fca5a5;cursor:pointer;font-family:'Share Tech Mono',monospace">⚡ ADMIN</button>
+      </div>
       <div style="font-size:10px;color:#4b5563;margin-top:3px;letter-spacing:1px" id="profile-provider">—</div>
     </div>
     <div class="cel-badge" style="margin-left:auto;padding:6px 14px">
@@ -4856,6 +5011,73 @@ window.addEventListener('load',async()=>{
   <div class="pack-open-title">✨ NEW CARDS ✨</div>
   <div class="pack-cards-grid" id="pack-cards-grid"></div>
   <button class="btn-primary" onclick="closePackOpenModal()" style="padding:10px 30px;font-size:11px;letter-spacing:3px">[ CONTINUE ]</button>
+</div>
+
+<!-- ADMIN PANEL SCREEN (only accessible to admin users) -->
+<div id="admin-screen" class="screen" style="padding:20px;max-width:680px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+    <button class="btn-gray btn-sm" onclick="showScreen('profile-screen');refreshProfileScreen()">← Back</button>
+    <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:#fca5a5;text-shadow:0 0 10px rgba(239,68,68,.5)">⚡ ADMIN PANEL</div>
+    <div style="margin-left:auto;font-size:9px;color:#fca5a5;letter-spacing:1px;padding:3px 10px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:10px">RESTRICTED</div>
+  </div>
+
+  <!-- SYSTEM TOGGLES -->
+  <div class="admin-section">
+    <div class="admin-section-title">⚙ SYSTEM TOGGLES</div>
+
+    <div class="admin-toggle" onclick="adminToggle('shop_enabled')">
+      <div>
+        <div class="admin-toggle-label">🏪 Shop System</div>
+        <div class="admin-toggle-desc">Allow players to buy packs and cards</div>
+      </div>
+      <div class="admin-toggle-switch" id="admin-tg-shop_enabled"><div class="admin-toggle-knob"></div></div>
+    </div>
+
+    <div class="admin-toggle" onclick="adminToggle('events_enabled')">
+      <div>
+        <div class="admin-toggle-label">🎉 Events Tab</div>
+        <div class="admin-toggle-desc">Show seasonal events in shop</div>
+      </div>
+      <div class="admin-toggle-switch" id="admin-tg-events_enabled"><div class="admin-toggle-knob"></div></div>
+    </div>
+
+    <div class="admin-toggle" onclick="adminToggle('achievements_enabled')">
+      <div>
+        <div class="admin-toggle-label">🏅 Achievements</div>
+        <div class="admin-toggle-desc">Enable achievement tracking</div>
+      </div>
+      <div class="admin-toggle-switch" id="admin-tg-achievements_enabled"><div class="admin-toggle-knob"></div></div>
+    </div>
+
+    <div class="admin-toggle" onclick="adminToggle('admin_unlimited_cards')">
+      <div>
+        <div class="admin-toggle-label">🎴 Admin Card Override</div>
+        <div class="admin-toggle-desc">Always have 4 copies of every card (for testing)</div>
+      </div>
+      <div class="admin-toggle-switch" id="admin-tg-admin_unlimited_cards"><div class="admin-toggle-knob"></div></div>
+    </div>
+  </div>
+
+  <!-- ADMIN ACTIONS -->
+  <div class="admin-section">
+    <div class="admin-section-title">⚡ QUICK ACTIONS</div>
+
+    <button class="admin-action-btn" onclick="adminGrantCelestium()">+ GRANT YOURSELF 1000 CELESTIUM</button>
+    <button class="admin-action-btn" onclick="adminUnlockAllAchievements()">+ UNLOCK ALL ACHIEVEMENTS</button>
+    <button class="admin-action-btn" onclick="adminGrantAllCards()">+ GRANT ALL CARDS (4 OF EACH)</button>
+    <button class="admin-action-btn danger" onclick="adminResetProfile()">⚠ RESET MY PROFILE</button>
+  </div>
+
+  <!-- ADMIN INFO -->
+  <div class="admin-section" style="border-color:rgba(0,180,255,.2);background:rgba(0,180,255,.04)">
+    <div class="admin-section-title" style="color:#7dd3fc">ℹ INFO</div>
+    <div style="font-size:10px;color:#9ca3af;line-height:1.6">
+      <div>User ID: <span style="color:#7dd3fc;font-family:'Share Tech Mono',monospace" id="admin-user-id">—</span></div>
+      <div>Username: <span style="color:#7dd3fc" id="admin-username">—</span></div>
+      <div>Toggles are saved to your profile and apply only to your account.</div>
+      <div style="margin-top:6px;color:#fcd34d">⚠ These changes do NOT affect other players.</div>
+    </div>
+  </div>
 </div>
 </body>
 </html>
