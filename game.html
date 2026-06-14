@@ -3572,52 +3572,9 @@ window.addEventListener('load',async()=>{
   },2000);
 })();
 
-</script>
 
-<!-- BURST WINDOW MODAL (hidden — burst is now just an instant card type) -->
-<div class="modal-overlay" id="burst-modal">
-  <div class="modal" style="max-width:340px;background:#0a0a1e;border:2px solid #f59e0b">
-    <div class="burst-title">⚡ BURST WINDOW</div>
-    <div class="burst-sub" id="burst-context">— Reactive Phase —</div>
-    <!-- Defender (non-active player) panel — goes first -->
-    <div class="burst-player-panel" id="burst-defender-panel">
-      <div class="burst-player-label" id="burst-defender-label">DEFENDER</div>
-      <div class="burst-action-row" id="burst-defender-actions"></div>
-    </div>
-    <!-- Attacker panel -->
-    <div class="burst-player-panel" id="burst-attacker-panel">
-      <div class="burst-player-label" id="burst-attacker-label">ATTACKER</div>
-      <div class="burst-action-row" id="burst-attacker-actions"></div>
-    </div>
-    <div class="burst-status" id="burst-status">Waiting for responses...</div>
-  </div>
-</div>
 
-<!-- POWER STRUGGLE MODAL -->
-<div class="modal-overlay" id="powerstruggle-modal">
-  <div class="modal" style="max-width:360px;background:#0a0a1e;border:2px solid #ef4444;text-align:center;padding:20px">
-    <div class="ps-title">⚔ POWER STRUGGLE ⚔</div>
-    <div class="ps-sub" id="ps-matchup">Equal ATK — Roll to decide!</div>
-    <div class="ps-fighters">
-      <div class="ps-fighter">
-        <div class="ps-fighter-name" id="ps-p1-name">ATTACKER</div>
-        <div class="ps-dice" id="ps-p1-dice">🎲</div>
-        <div class="ps-roll-val" id="ps-p1-roll">?</div>
-      </div>
-      <div class="ps-vs">VS</div>
-      <div class="ps-fighter">
-        <div class="ps-fighter-name" id="ps-p2-name">DEFENDER</div>
-        <div class="ps-dice" id="ps-p2-dice">🎲</div>
-        <div class="ps-roll-val" id="ps-p2-roll">?</div>
-      </div>
-    </div>
-    <div class="ps-result" id="ps-result"></div>
-    <button class="btn-primary" id="ps-roll-btn" style="width:100%;font-size:13px;letter-spacing:2px" onclick="doPowerStruggleRoll()">ROLL DICE</button>
-    <button class="btn-gray btn-sm" id="ps-done-btn" style="width:100%;margin-top:6px;display:none" onclick="finishPowerStruggle()">Continue →</button>
-  </div>
-</div>
-</body>
-</html>// AUTH GUARD + HUD
+// AUTH GUARD + HUD
 (function(){
   var SURL='https://alvldkihwuhgjbgdpbkg.supabase.co';
   var SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U';
@@ -3694,3 +3651,51 @@ window.addEventListener('load',async()=>{
 
   init();
 })();
+
+
+</script>
+
+<!-- BURST WINDOW MODAL (hidden — burst is now just an instant card type) -->
+<div class="modal-overlay" id="burst-modal">
+  <div class="modal" style="max-width:340px;background:#0a0a1e;border:2px solid #f59e0b">
+    <div class="burst-title">⚡ BURST WINDOW</div>
+    <div class="burst-sub" id="burst-context">— Reactive Phase —</div>
+    <!-- Defender (non-active player) panel — goes first -->
+    <div class="burst-player-panel" id="burst-defender-panel">
+      <div class="burst-player-label" id="burst-defender-label">DEFENDER</div>
+      <div class="burst-action-row" id="burst-defender-actions"></div>
+    </div>
+    <!-- Attacker panel -->
+    <div class="burst-player-panel" id="burst-attacker-panel">
+      <div class="burst-player-label" id="burst-attacker-label">ATTACKER</div>
+      <div class="burst-action-row" id="burst-attacker-actions"></div>
+    </div>
+    <div class="burst-status" id="burst-status">Waiting for responses...</div>
+  </div>
+</div>
+
+<!-- POWER STRUGGLE MODAL -->
+<div class="modal-overlay" id="powerstruggle-modal">
+  <div class="modal" style="max-width:360px;background:#0a0a1e;border:2px solid #ef4444;text-align:center;padding:20px">
+    <div class="ps-title">⚔ POWER STRUGGLE ⚔</div>
+    <div class="ps-sub" id="ps-matchup">Equal ATK — Roll to decide!</div>
+    <div class="ps-fighters">
+      <div class="ps-fighter">
+        <div class="ps-fighter-name" id="ps-p1-name">ATTACKER</div>
+        <div class="ps-dice" id="ps-p1-dice">🎲</div>
+        <div class="ps-roll-val" id="ps-p1-roll">?</div>
+      </div>
+      <div class="ps-vs">VS</div>
+      <div class="ps-fighter">
+        <div class="ps-fighter-name" id="ps-p2-name">DEFENDER</div>
+        <div class="ps-dice" id="ps-p2-dice">🎲</div>
+        <div class="ps-roll-val" id="ps-p2-roll">?</div>
+      </div>
+    </div>
+    <div class="ps-result" id="ps-result"></div>
+    <button class="btn-primary" id="ps-roll-btn" style="width:100%;font-size:13px;letter-spacing:2px" onclick="doPowerStruggleRoll()">ROLL DICE</button>
+    <button class="btn-gray btn-sm" id="ps-done-btn" style="width:100%;margin-top:6px;display:none" onclick="finishPowerStruggle()">Continue →</button>
+  </div>
+</div>
+</body>
+</html>
