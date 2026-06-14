@@ -347,6 +347,17 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .hud-signout:hover{color:#fca5a5;border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.08);}
 body{padding-top:46px;}
 #game-screen{height:calc(100vh - 46px);}
+
+/* DECK SELECT — compact redesign */
+.ds-deck-row{display:flex;align-items:center;gap:8px;padding:6px 8px;background:rgba(8,8,28,.6);border:1px solid rgba(124,58,237,.2);border-radius:7px;cursor:pointer;transition:all .15s;}
+.ds-deck-row:hover{border-color:var(--violet2);background:rgba(124,58,237,.12);}
+.ds-deck-row.selected{border-color:#22c55e;background:rgba(34,197,94,.08);box-shadow:0 0 8px rgba(34,197,94,.2);}
+.ds-mode-btn{background:rgba(8,8,28,.6);border:1px solid rgba(124,58,237,.2);border-radius:8px;padding:8px 6px;cursor:pointer;transition:all .15s;text-align:center;font-family:'Share Tech Mono',monospace;}
+.ds-mode-btn:hover{border-color:var(--violet2);background:rgba(124,58,237,.12);}
+.ds-mode-btn.selected{border-color:var(--violet2);background:rgba(124,58,237,.2);box-shadow:0 0 10px rgba(168,85,247,.2);}
+.ds-opt-btn{background:rgba(8,8,28,.6);border:1px solid rgba(100,120,160,.2);border-radius:5px;padding:3px 8px;font-size:10px;color:#9ca3af;cursor:pointer;transition:all .15s;font-family:'Share Tech Mono',monospace;}
+.ds-opt-btn:hover{border-color:var(--violet2);color:#c4b5fd;}
+.ds-opt-btn.selected{border-color:var(--violet2);background:rgba(124,58,237,.2);color:#c4b5fd;}
 </style>
 </head>
 <body>
@@ -383,65 +394,106 @@ body{padding-top:46px;}
 </div>
 
 <!-- DECK SELECT -->
-<div id="deck-select-screen" class="screen">
-  <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">
+<div id="deck-select-screen" class="screen" style="padding:10px;max-width:700px;margin:0 auto">
+
+  <!-- HEADER -->
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
     <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
-    <h2 style="color:#c8a0ff" id="deck-select-title">Choose Decks</h2>
+    <div style="font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;color:var(--blue)" id="deck-select-title">CHOOSE DECKS</div>
+    <div id="deck-select-status" style="font-size:10px;color:#6b7280;margin-left:auto">Select a deck for each player</div>
   </div>
-  <div style="margin-bottom:14px">
-    <div style="font-weight:700;color:#a5b4fc;margin-bottom:8px;font-size:13px">🟦 Player 1 Deck</div>
-    <div id="p1-deck-options" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px"></div>
-    <div class="deck-select-card" id="p1-random-opt" onclick="selectDeck(1,'__random__')" style="margin-top:2px">
-      <div style="font-size:20px">🎲</div><div style="font-weight:700;color:#c8a0ff;margin-top:3px">Random</div>
-      <div style="font-size:10px;color:#6b7280">Random from saved decks</div>
-    </div>
-  </div>
-  <div id="p2-deck-section">
-    <div style="font-weight:700;color:#86efac;margin-bottom:8px;font-size:13px" id="p2-deck-label">🟩 Opponent Deck</div>
-    <div id="p2-deck-options" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px"></div>
-    <div class="deck-select-card" id="p2-random-opt" onclick="selectDeck(2,'__random__')" style="margin-top:2px">
-      <div style="font-size:20px">🎲</div><div style="font-weight:700;color:#c8a0ff;margin-top:3px">Random</div>
-      <div style="font-size:10px;color:#6b7280">Random from saved decks</div>
-    </div>
-  </div>
-  <!-- GAME MODE SELECTOR -->
-  <div style="margin-top:14px;margin-bottom:4px">
-    <div style="font-size:11px;font-weight:700;color:#a855f7;letter-spacing:2px;margin-bottom:8px">⚡ GAME MODE</div>
-    <button class="mode-btn selected" id="mode-prize" onclick="selectGameMode('prize')">
-      🏆 Prize Mode <span style="font-size:10px;color:#6b7280;margin-left:6px">Claim all 6 Prize Cards to win</span>
-    </button>
-    <button class="mode-btn" id="mode-lifeforce" onclick="selectGameMode('lifeforce')">
-      ❤️ Life Force Mode <span style="font-size:10px;color:#6b7280;margin-left:6px">Reduce opponent HP to 0 to win</span>
-    </button>
-    <button class="mode-btn" id="mode-combined" onclick="selectGameMode('combined')">
-      ⚔️ Combined Mode <span style="font-size:10px;color:#6b7280;margin-left:6px">Win by Prizes OR Life Force</span>
-    </button>
-    <!-- Life Force HP selector (shown in lifeforce/combined modes) -->
-    <div id="lf-hp-wrap" style="display:none;margin-top:8px;padding:8px;background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.2);border-radius:8px">
-      <div style="font-size:10px;color:#fca5a5;margin-bottom:6px;letter-spacing:1px">STARTING LIFE FORCE</div>
-      <div class="lf-hp-selector">
-        <button class="lf-hp-btn selected" onclick="selectLFHP(100)" data-hp="100">100 HP</button>
-        <button class="lf-hp-btn" onclick="selectLFHP(125)" data-hp="125">125 HP</button>
-        <button class="lf-hp-btn" onclick="selectLFHP(150)" data-hp="150">150 HP</button>
-        <button class="lf-hp-btn" onclick="selectLFHP(175)" data-hp="175">175 HP</button>
-        <button class="lf-hp-btn" onclick="selectLFHP(200)" data-hp="200">200 HP</button>
+
+  <!-- TWO PLAYER COLUMNS -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+
+    <!-- P1 -->
+    <div style="background:rgba(30,27,75,.3);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:10px">
+      <div style="font-size:9px;font-weight:700;color:#a5b4fc;letter-spacing:2px;margin-bottom:8px;display:flex;align-items:center;gap:5px">
+        <span style="width:8px;height:8px;border-radius:50%;background:#6366f1;display:inline-block"></span>
+        PLAYER 1
+      </div>
+      <div id="p1-deck-options" style="display:flex;flex-direction:column;gap:4px"></div>
+      <div class="ds-deck-row" id="p1-random-opt" onclick="selectDeck(1,'__random__')" style="margin-top:4px;border-style:dashed">
+        <span style="font-size:14px">🎲</span>
+        <div style="flex:1">
+          <div style="font-size:11px;font-weight:700;color:#c8a0ff">Random</div>
+          <div style="font-size:9px;color:#4b5563">Pick from saved decks</div>
+        </div>
       </div>
     </div>
-    <!-- Prize count selector (shown in prize + combined modes) -->
-    <div id="prize-count-wrap" style="margin-top:8px;padding:8px;background:rgba(251,191,36,.05);border:1px solid rgba(251,191,36,.2);border-radius:8px">
-      <div style="font-size:10px;color:#fbbf24;margin-bottom:6px;letter-spacing:1px">PRIZE CARD COUNT</div>
-      <div class="lf-hp-selector">
-        <button class="lf-hp-btn selected" onclick="selectPrizeCount(6)" data-pc="6" style="border-color:rgba(251,191,36,.3);color:#fcd34d">6</button>
-        <button class="lf-hp-btn" onclick="selectPrizeCount(7)" data-pc="7" style="border-color:rgba(251,191,36,.3);color:#fcd34d">7</button>
-        <button class="lf-hp-btn" onclick="selectPrizeCount(8)" data-pc="8" style="border-color:rgba(251,191,36,.3);color:#fcd34d">8</button>
-        <button class="lf-hp-btn" onclick="selectPrizeCount(9)" data-pc="9" style="border-color:rgba(251,191,36,.3);color:#fcd34d">9</button>
-        <button class="lf-hp-btn" onclick="selectPrizeCount(10)" data-pc="10" style="border-color:rgba(251,191,36,.3);color:#fcd34d">10</button>
+
+    <!-- P2 -->
+    <div style="background:rgba(20,83,45,.2);border:1px solid rgba(34,197,94,.15);border-radius:10px;padding:10px">
+      <div style="font-size:9px;font-weight:700;color:#86efac;letter-spacing:2px;margin-bottom:8px;display:flex;align-items:center;gap:5px" id="p2-deck-label">
+        <span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>
+        PLAYER 2
       </div>
-      <div style="font-size:9px;color:#6b7280;margin-top:4px">Combined Mode: prize cards are only claimed by hitting the opponent's Herald</div>
+      <div id="p2-deck-options" style="display:flex;flex-direction:column;gap:4px"></div>
+      <div class="ds-deck-row" id="p2-random-opt" onclick="selectDeck(2,'__random__')" style="margin-top:4px;border-style:dashed">
+        <span style="font-size:14px">🎲</span>
+        <div style="flex:1">
+          <div style="font-size:11px;font-weight:700;color:#c8a0ff">Random</div>
+          <div style="font-size:9px;color:#4b5563">Pick from saved decks</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- GAME MODE + SETTINGS ROW -->
+  <div style="background:rgba(8,8,28,.6);border:1px solid var(--border-v);border-radius:10px;padding:10px;margin-bottom:10px">
+    <div style="font-size:9px;font-weight:700;color:var(--violet2);letter-spacing:2px;margin-bottom:8px">⚡ GAME MODE</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">
+      <button class="ds-mode-btn selected" id="mode-prize" onclick="selectGameMode('prize')">
+        <div style="font-size:14px">🏆</div>
+        <div style="font-size:10px;font-weight:700;color:#c4b5fd">Prize</div>
+        <div style="font-size:8px;color:#4b5563">6 prizes</div>
+      </button>
+      <button class="ds-mode-btn" id="mode-lifeforce" onclick="selectGameMode('lifeforce')">
+        <div style="font-size:14px">❤️</div>
+        <div style="font-size:10px;font-weight:700;color:#c4b5fd">Life Force</div>
+        <div style="font-size:8px;color:#4b5563">HP battle</div>
+      </button>
+      <button class="ds-mode-btn" id="mode-combined" onclick="selectGameMode('combined')">
+        <div style="font-size:14px">⚔️</div>
+        <div style="font-size:10px;font-weight:700;color:#c4b5fd">Combined</div>
+        <div style="font-size:8px;color:#4b5563">Both ways</div>
+      </button>
+    </div>
+
+    <!-- Settings row: LF HP + Prize count side by side -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <!-- Life Force HP -->
+      <div id="lf-hp-wrap" style="display:none">
+        <div style="font-size:9px;color:#fca5a5;margin-bottom:4px;letter-spacing:1px">LIFE FORCE HP</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">
+          <button class="ds-opt-btn selected" onclick="selectLFHP(100)" data-hp="100">100</button>
+          <button class="ds-opt-btn" onclick="selectLFHP(125)" data-hp="125">125</button>
+          <button class="ds-opt-btn" onclick="selectLFHP(150)" data-hp="150">150</button>
+          <button class="ds-opt-btn" onclick="selectLFHP(175)" data-hp="175">175</button>
+          <button class="ds-opt-btn" onclick="selectLFHP(200)" data-hp="200">200</button>
+        </div>
+      </div>
+      <!-- Prize count -->
+      <div id="prize-count-wrap">
+        <div style="font-size:9px;color:#fbbf24;margin-bottom:4px;letter-spacing:1px">PRIZE COUNT</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">
+          <button class="ds-opt-btn selected" onclick="selectPrizeCount(6)" data-pc="6">6</button>
+          <button class="ds-opt-btn" onclick="selectPrizeCount(7)" data-pc="7">7</button>
+          <button class="ds-opt-btn" onclick="selectPrizeCount(8)" data-pc="8">8</button>
+          <button class="ds-opt-btn" onclick="selectPrizeCount(9)" data-pc="9">9</button>
+          <button class="ds-opt-btn" onclick="selectPrizeCount(10)" data-pc="10">10</button>
+        </div>
+      </div>
     </div>
   </div>
-  <button class="btn-primary" id="start-game-btn" onclick="launchGame()" style="width:100%;margin-top:10px;padding:11px;font-size:14px" disabled>▶ Start Game</button>
-  <div id="deck-select-status" style="text-align:center;font-size:11px;color:#6b7280;margin-top:5px">Select a deck for each player</div>
+
+  <!-- START BUTTON -->
+  <button class="btn-primary" id="start-game-btn" onclick="launchGame()"
+    style="width:100%;padding:12px;font-size:13px;font-family:'Orbitron',sans-serif;letter-spacing:3px;font-weight:700" disabled>
+    ▶ START GAME
+  </button>
+
 </div>
 
 <!-- DECK BUILDER -->
@@ -1197,24 +1249,51 @@ async function goToDeckSelect(mode){
 
 function renderDeckSelectOptions(){
   [1,2].forEach(p=>{
-    const container=document.getElementById(`p${p}-deck-options`);container.innerHTML='';
-    Object.entries(SAVED_DECKS).forEach(([id,deck])=>{
-      if(!deck||!deck.cards)return; // safety check
-      const div=document.createElement('div');div.className='deck-select-card';div.id=`p${p}-deck-${id}`;
-      const thumbs=(deck.cards||[]).slice(0,3).map(cid=>{const url=getImg(cid);return url?`<img src="${url}" style="width:18px;height:25px;object-fit:cover;border-radius:2px" alt=""/>`:`<span style="font-size:11px">${DB[cid]?.sym||'?'}</span>`;}).join('');
-      div.innerHTML=`<div style="display:flex;gap:2px;justify-content:center;margin-bottom:4px">${thumbs}</div><div style="font-weight:700;color:#c8a0ff;font-size:12px">${deck.name}</div><div style="font-size:10px;color:#6b7280">${(deck.cards||[]).length} cards</div>`;
-      div.onclick=()=>selectDeck(p,id);container.appendChild(div);
+    const container=document.getElementById('p'+p+'-deck-options');if(!container)return;
+    container.innerHTML='';
+    const decks=Object.entries(SAVED_DECKS);
+    if(!decks.length){
+      container.innerHTML='<div style="font-size:10px;color:#4b5563;padding:4px">No saved decks yet — build one first.</div>';
+      return;
+    }
+    decks.forEach(([id,deck])=>{
+      if(!deck||!deck.cards)return;
+      const colDefs=deck.cards.reduce((acc,cid)=>{const col=DB[cid]?.color;if(col&&!acc.includes(col))acc.push(col);return acc;},[]);
+      const colorPips=colDefs.slice(0,4).map(c=>{const hex=COLOR_DEFS[c]?.hex||'#6b7280';return '<span style="width:6px;height:6px;border-radius:50%;background:'+hex+';display:inline-block;flex-shrink:0"></span>';}).join('');
+      const thumb=deck.cards.slice(0,1).map(cid=>{const url=getImg(cid);return url?'<img src="'+url+'" style="width:28px;height:38px;object-fit:cover;border-radius:3px;flex-shrink:0"/>':`<span style="font-size:16px;width:28px;text-align:center">${DB[cid]?.sym||'?'}</span>`;}).join('');
+      const div=document.createElement('div');
+      div.className='ds-deck-row';div.id='p'+p+'-deck-'+id;
+      div.innerHTML=thumb
+        +'<div style="flex:1;min-width:0">'
+        +'<div style="font-size:11px;font-weight:700;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+deck.name+'</div>'
+        +'<div style="display:flex;align-items:center;gap:4px;margin-top:2px">'
+        +'<span style="font-size:9px;color:#6b7280">'+deck.cards.length+' cards</span>'
+        +(colorPips?'<span style="display:flex;gap:2px;align-items:center">'+colorPips+'</span>':'')
+        +'</div></div>';
+      div.onclick=()=>selectDeck(p,id);
+      container.appendChild(div);
     });
-    if(!Object.keys(SAVED_DECKS).length)container.innerHTML='<div style="color:#6b7280;font-size:11px;padding:6px">No saved decks — pick Random or build one.</div>';
   });
 }
 
 function selectDeck(player,deckId){
-  if(player===1){pendingP1Deck=deckId;document.querySelectorAll('[id^="p1-deck-"]').forEach(el=>el.classList.remove('selected'));const el=deckId==='__random__'?document.getElementById('p1-random-opt'):document.getElementById(`p1-deck-${deckId}`);if(el)el.classList.add('selected');}
-  else{pendingP2Deck=deckId;document.querySelectorAll('[id^="p2-deck-"]').forEach(el=>el.classList.remove('selected'));const el=deckId==='__random__'?document.getElementById('p2-random-opt'):document.getElementById(`p2-deck-${deckId}`);if(el)el.classList.add('selected');}
+  const p=player;
+  if(p===1){
+    pendingP1Deck=deckId;
+    document.querySelectorAll('[id^="p1-deck-"]').forEach(el=>el.classList.remove('selected'));
+    const el=deckId==='__random__'?document.getElementById('p1-random-opt'):document.getElementById('p1-deck-'+deckId);
+    if(el)el.classList.add('selected');
+  } else {
+    pendingP2Deck=deckId;
+    document.querySelectorAll('[id^="p2-deck-"]').forEach(el=>el.classList.remove('selected'));
+    const el=deckId==='__random__'?document.getElementById('p2-random-opt'):document.getElementById('p2-deck-'+deckId);
+    if(el)el.classList.add('selected');
+  }
   const can=pendingP1Deck!==null&&pendingP2Deck!==null;
-  document.getElementById('start-game-btn').disabled=!can;
-  document.getElementById('deck-select-status').textContent=can?'Ready!':'Select a deck for each player.';
+  const btn=document.getElementById('start-game-btn');
+  const status=document.getElementById('deck-select-status');
+  if(btn)btn.disabled=!can;
+  if(status)status.textContent=can?'✓ Ready to battle!':'Select a deck for each player.';
 }
 
 function launchGame(){if(!pendingP1Deck||!pendingP2Deck)return;startGame(pendingMode,getDeckList(pendingP1Deck),getDeckList(pendingP2Deck));}
@@ -3020,11 +3099,10 @@ function selectGameMode(mode){
   pendingGameMode=mode;
   ['prize','lifeforce','combined'].forEach(m=>{
     const btn=document.getElementById('mode-'+m);
-    if(btn)btn.className='mode-btn'+(mode===m?' selected':'');
+    if(btn){btn.className='ds-mode-btn'+(mode===m?' selected':'');}
   });
   const lfWrap=document.getElementById('lf-hp-wrap');
   if(lfWrap)lfWrap.style.display=(mode==='lifeforce'||mode==='combined')?'block':'none';
-  // Prize count selector: show in prize + combined modes, hide in lifeforce only
   const pcWrap=document.getElementById('prize-count-wrap');
   if(pcWrap)pcWrap.style.display=(mode==='lifeforce')?'none':'block';
 }
@@ -3032,14 +3110,14 @@ function selectGameMode(mode){
 function selectLFHP(hp){
   pendingLFHP=hp;
   document.querySelectorAll('[data-hp]').forEach(b=>{
-    b.classList.toggle('selected',parseInt(b.dataset.hp)===hp);
+    b.className='ds-opt-btn'+(parseInt(b.dataset.hp)===hp?' selected':'');
   });
 }
 
 function selectPrizeCount(n){
   pendingPrizeCount=n;
   document.querySelectorAll('[data-pc]').forEach(b=>{
-    b.classList.toggle('selected',parseInt(b.dataset.pc)===n);
+    b.className='ds-opt-btn'+(parseInt(b.dataset.pc)===n?' selected':'');
   });
 }
 
