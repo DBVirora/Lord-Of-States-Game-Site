@@ -398,24 +398,29 @@ body{padding-top:46px;}
       <div class="hud-provider" id="hud-provider"></div>
     </div>
   </div>
-  <button class="hud-signout" onclick="signOutUser()">[ Sign Out ]</button>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="cel-badge" id="hud-celestium" onclick="showScreen('profile-screen');refreshProfileScreen()" title="Celestium — click to view profile" style="cursor:pointer">
+      <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" class="cel-icon" alt="C"/>
+      <span class="cel-amount" id="hud-cel-amount">—</span>
+    </div>
+    <button class="hud-signout" onclick="signOutUser()">[ Sign Out ]</button>
+  </div>
 </div>
 
 <!-- MENU -->
-<div id="menu-screen" class="active">
-  <div style="font-size:40px;margin-bottom:4px">⚔️</div>
-  <h1>Lord of Courts</h1>
-  <div style="color:#7c3aed;font-size:11px;letter-spacing:2px;margin-bottom:4px">VCU TRADING CARD GAME</div>
-  <p style="color:#4b5563;font-size:11px;max-width:240px;margin-bottom:10px">Claim 6 Prize Cards · Transform · Outplay</p>
+<div id="menu-screen" class="screen active">
+  <h1>LORD OF <span>COURTS</span></h1>
+  <div class="menu-tagline">V C U &nbsp;·&nbsp; T R A D I N G &nbsp; C A R D &nbsp; G A M E</div>
   <div class="menu-section-label">— BATTLE —</div>
   <button class="menu-btn" onclick="goToDeckSelect('pvp')">⚔️ Player vs Player</button>
   <button class="menu-btn ai-btn" onclick="goToDeckSelect('easy')">🤖 vs AI — Easy</button>
   <button class="menu-btn ai-btn" onclick="goToDeckSelect('medium')">🤖 vs AI — Medium</button>
   <button class="menu-btn ai-btn" onclick="goToDeckSelect('hard')">🤖 vs AI — Hard</button>
-  <div style="width:230px;height:1px;background:#1e1e38;margin:3px 0"></div>
-  <button class="menu-btn" onclick="showScreen('builder-screen')">🃏 Deck Builder</button>
-  <button class="menu-btn" onclick="showScreen('upload-screen')" style="font-size:12px">🖼 Card Images</button>
-  <button class="menu-btn" onclick="showRulesScreen()" style="font-size:12px">📖 Rules & Cards</button>
+  <div class="menu-section-label">— TOOLS —</div>
+  <button class="menu-btn util-btn" onclick="showScreen('profile-screen');refreshProfileScreen()">👤 Profile</button>
+  <button class="menu-btn util-btn" onclick="showScreen('builder-screen');renderBuilderCards()">🃏 Deck Builder</button>
+  <button class="menu-btn util-btn" onclick="showScreen('upload-screen');buildUploadScreen()">🖼 Card Images</button>
+  <button class="menu-btn util-btn" onclick="showRulesScreen()">📖 Rules & Cards</button>
 </div>
 
 <!-- DECK SELECT -->
