@@ -2423,8 +2423,12 @@ function onHandClick(p,uid,fc){
   const pl=G.players[p];
   const fco=pl.hand.find(f=>f.uid===uid);if(!fco)return;
   const c=DB[fco.cid];if(!c)return;
-  // Energy cards: handled separately
-  if(c.type==='energy_card'){playEnergyCard(p,fco.cid);return;}
+  // Energy cards can always be played on your turn during/after main phase
+  if(c.type==='energy_card'){
+    if(G.activePlayer===p) playEnergyCard(p,fco.cid);
+    else log('Not your turn.','dmg');
+    return;
+  }
   if(c.transformOnly){log(`${c.name} — Transform Only (not playable from hand).`,'dmg');return;}
   const effectiveCost=Math.max(0,c.cost+(fco.costMod||0));
   if(pl.energy<effectiveCost){log(`Need ${effectiveCost}⚡.`,'dmg');return;}
@@ -2699,7 +2703,16 @@ function activateAbility(fc,abl){
 // PHASES
 // ═══════════════════════════════════════════════════
 function doPhase(ph){
-  if(G.activePlayer!==1||G.phasesDone.includes(ph))return;
+  if(G.activePlayer!==1)return;
+  // End turn is always allowed — skip directly regardless of phase order
+  if(ph==='end'){
+    if(!G.phasesDone.includes('end')){G.phasesDone.push('end');execEnd();}
+    return;
+  }
+  // Attack phase: auto power-up if skipped
+  if(ph==='attack'&&G.phasesDone.includes('attack'))return;
+  // Already done phases cannot be repeated
+  if(G.phasesDone.includes(ph))return;
   G.phasesDone.push(ph);G.phase=ph;
   if(ph==='draw'){
     G.players[1].energy+=1;resetEnergyCardFlag(1);drawCard(1);log('+1⚡ (banked energy)','gain');
@@ -2715,11 +2728,18 @@ function doPhase(ph){
   else if(ph==='resource'){let g=0;G.players[1].field.filter(f=>isLoc(DB[f.cid])).forEach(()=>g++);if(g>0){G.players[1].energy+=g;log(`+${g}⚡ locations.`,'gain');}}
   else if(ph==='main')log('Main Phase.','info');
   else if(ph==='attack'){log('Attack — green char → target.','info');G.selectedAttacker=null;}
-  else if(ph==='end'){execEnd();return;}
+  // end is handled above
   renderAll();
 }
 
 function execEnd(){
+  // Power Up: if attack phase was never entered or no attacks made, +2 energy
+  const didAttack=G.players[1].field.some(f=>(f.attacksThisTurn||0)>0)||(G.players[1].herald?.attacksThisTurn||0)>0;
+  const attackPhaseUsed=G.phasesDone.includes('attack');
+  if(!didAttack&&G.activePlayer===1){
+    G.players[1].energy+=2;
+    log('⚡ Power Up! Attack skipped — +2 Energy!','gain');
+  }
   endTurnFx(G.activePlayer);log(`P${G.activePlayer} ends turn.`,'info');
   const nx=G.activePlayer===1?2:1;
   G.activePlayer=nx;G.turn++;G.phase='draw';G.phasesDone=[];G.selectedAttacker=null;
@@ -2971,7 +2991,21 @@ function renderColorEnergyBreakdown(p){
 // ═══════════════════════════════════════════════════
 function playEnergyCard(p, cid){
   const pl=G.players[p];const c=DB[cid];
-  if(G.activePlayer!==p||G.phase!=='main'){log('Play Energy Cards during Main Phase.','dmg');return;}
+  // Allow playing energy cards during main OR if main phase has been entered
+  const canPlay=G.activePlayer===p&&(G.phase==='main'||G.phasesDone.includes('main'));
+  if(!canPlay){
+    // Auto-advance to main phase if not there yet
+    if(G.activePlayer===p&&!G.phasesDone.includes('main')){
+      // Push through to main phase
+      if(!G.phasesDone.includes('draw')){G.phasesDone.push('draw');G.players[p].energy+=1;resetEnergyCardFlag(p);drawCard(p);}
+      if(!G.phasesDone.includes('resource'))G.phasesDone.push('resource');
+      G.phasesDone.push('main');G.phase='main';
+      log('Auto-advanced to Main Phase to play energy card.','info');
+      renderAll();
+    } else {
+      log('Play Energy Cards during Main Phase.','dmg');return;
+    }
+  }
   if(pl.energyCardPlayedThisTurn){log('Already played an Energy Card this turn.','dmg');return;}
   if(!pl.hand.includes(cid)){log('Energy Card not in hand.','dmg');return;}
   // Apply effect
@@ -3548,7 +3582,9 @@ function renderPhaseBar(){
     btn.className='phase-btn';
     if(G.phasesDone.includes(ph))btn.classList.add('done-phase');
     else if(ph===G.phase)btn.classList.add('active-phase');
-    btn.disabled=G.activePlayer!==1||G.phasesDone.includes(ph);
+    // End turn always clickable on player's turn (even if phases skipped)
+    if(ph==='end') btn.disabled=G.activePlayer!==1||G.phasesDone.includes('end');
+    else btn.disabled=G.activePlayer!==1||G.phasesDone.includes(ph);
   });
 }
 function renderBanner(){
