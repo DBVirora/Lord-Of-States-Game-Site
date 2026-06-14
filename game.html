@@ -294,13 +294,59 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .lf-hp-btn{padding:4px 10px;border-radius:5px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.08);color:#fca5a5;font-size:11px;cursor:pointer;transition:all .2s;}
 .lf-hp-btn:hover,.lf-hp-btn.selected{border-color:#ef4444;background:rgba(239,68,68,.2);color:#fff;}
 
-/* AUTH BAR */
-#auth-bar{position:fixed;top:0;left:0;right:0;z-index:999;background:rgba(4,4,15,.95);border-bottom:1px solid rgba(0,150,220,.2);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:space-between;padding:5px 14px;height:36px;}
-#auth-bar .auth-user{font-size:11px;color:rgba(0,180,255,.7);letter-spacing:1px;font-family:'Share Tech Mono',monospace;}
-#auth-bar .auth-signout{background:none;border:1px solid rgba(100,120,160,.3);border-radius:5px;padding:3px 10px;font-size:10px;letter-spacing:2px;color:rgba(150,180,220,.4);cursor:pointer;transition:all .2s;font-family:'Share Tech Mono',monospace;}
-#auth-bar .auth-signout:hover{color:rgba(150,180,220,.8);border-color:rgba(100,120,160,.6);}
-body{padding-top:36px;}
-#game-screen{height:calc(100vh - 36px);}
+/* AUTH HUD */
+#auth-bar{
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  background:rgba(4,4,15,.96);
+  border-bottom:1px solid rgba(0,150,220,.2);
+  backdrop-filter:blur(16px);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px;height:46px;
+  box-shadow:0 2px 20px rgba(0,0,0,.5);
+}
+#auth-bar::after{
+  content:'';position:absolute;bottom:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,180,255,.3),transparent);
+}
+/* LEFT — logo */
+.hud-logo{
+  font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;
+  letter-spacing:3px;color:rgba(255,255,255,.8);
+  text-shadow:0 0 12px var(--blue);white-space:nowrap;
+}
+.hud-logo span{color:var(--blue);}
+/* CENTER — player identity */
+.hud-identity{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(0,150,220,.06);
+  border:1px solid rgba(0,150,220,.15);
+  border-radius:20px;padding:4px 12px 4px 6px;
+}
+.hud-avatar{
+  width:28px;height:28px;border-radius:50%;
+  border:1.5px solid rgba(0,180,255,.4);
+  overflow:hidden;display:flex;align-items:center;justify-content:center;
+  background:#0d0d2a;flex-shrink:0;font-size:14px;
+}
+.hud-avatar img{width:100%;height:100%;object-fit:cover;}
+.hud-name-wrap{display:flex;flex-direction:column;line-height:1.2;}
+.hud-welcome{font-size:8px;color:rgba(0,180,255,.4);letter-spacing:2px;text-transform:uppercase;}
+.hud-username{font-size:12px;font-weight:700;color:#e2e8f0;letter-spacing:1px;font-family:'Share Tech Mono',monospace;}
+.hud-provider{font-size:8px;letter-spacing:1px;margin-top:1px;}
+.hud-provider.discord{color:#8b9eff;}
+.hud-provider.google{color:#7dc8ff;}
+.hud-provider.email{color:rgba(0,180,255,.5);}
+.hud-provider.guest{color:rgba(150,180,220,.4);}
+/* RIGHT — sign out */
+.hud-signout{
+  background:none;border:1px solid rgba(100,120,160,.25);border-radius:6px;
+  padding:4px 12px;font-size:10px;letter-spacing:2px;
+  color:rgba(150,180,220,.4);cursor:pointer;transition:all .2s;
+  font-family:'Share Tech Mono',monospace;white-space:nowrap;
+}
+.hud-signout:hover{color:#fca5a5;border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.08);}
+body{padding-top:46px;}
+#game-screen{height:calc(100vh - 46px);}
 </style>
 </head>
 <body>
@@ -3359,19 +3405,60 @@ window.addEventListener('load',async()=>{
 
 
 // ═══════════════════════════════════════════════════
-// AUTH GUARD
+// AUTH GUARD + HUD
 // ═══════════════════════════════════════════════════
 (async function initAuth(){
+  const SUPA_URL='https://alvldkihwuhgjbgdpbkg.supabase.co';
+  const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U';
+  const LOGIN='https://dbvirora.github.io/Lord-Of-States-Game-Site/';
   try {
-    const sb=window.supabase.createClient('https://alvldkihwuhgjbgdpbkg.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U');
+    const sb=window.supabase.createClient(SUPA_URL,SUPA_KEY);
     const {data:{session}}=await sb.auth.getSession();
-    if(!session){window.location.replace('https://dbvirora.github.io/Lord-Of-States-Game-Site/');return;}
+    if(!session){window.location.replace(LOGIN);return;}
+
+    // Get custom username from profiles table
     const {data:profile}=await sb.from('profiles').select('username').eq('id',session.user.id).maybeSingle();
     const name=profile?.username||session.user.email||'Player';
-    document.getElementById('auth-username').textContent='⚔️  '+name;
-    window.signOutUser=async function(){await sb.auth.signOut();window.location.replace('https://dbvirora.github.io/Lord-Of-States-Game-Site/');};
+
+    // Detect provider
+    const provider=session.user.app_metadata?.provider||'email';
+    const meta=session.user.user_metadata||{};
+
+    // Get avatar URL from OAuth metadata
+    const avatarUrl=meta.avatar_url||meta.picture||null;
+
+    // Populate HUD
+    const usernameEl=document.getElementById('hud-username');
+    const avatarEl=document.getElementById('hud-avatar');
+    const providerEl=document.getElementById('hud-provider');
+
+    if(usernameEl)usernameEl.textContent=name;
+
+    // Avatar
+    if(avatarEl){
+      if(avatarUrl){
+        avatarEl.innerHTML='<img src="'+avatarUrl+'" alt="avatar" onerror="this.parentElement.textContent=String.fromCodePoint(9876,65039)"/>';
+      } else {
+        avatarEl.textContent='⚔️';
+      }
+    }
+
+    // Provider label
+    if(providerEl){
+      const labels={discord:'via Discord',google:'via Google',email:'via Email',anonymous:'Guest'};
+      const cls={discord:'discord',google:'google',email:'email',anonymous:'guest'}[provider]||'email';
+      providerEl.textContent=labels[provider]||'via '+provider;
+      providerEl.className='hud-provider '+cls;
+    }
+
+    window.signOutUser=async function(){
+      await sb.auth.signOut();
+      window.location.replace(LOGIN);
+    };
   } catch(e){
     console.warn('Auth error:',e);
+    const un=document.getElementById('hud-username');
+    if(un)un.textContent='Player';
     window.signOutUser=()=>{window.location.replace('https://dbvirora.github.io/Lord-Of-States-Game-Site/');};
   }
 })();
