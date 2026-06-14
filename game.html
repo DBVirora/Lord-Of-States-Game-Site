@@ -1683,8 +1683,11 @@ function startGame(mode,deck1,deck2){
   if(h1)log(`P1 Herald: ${DB[h1.cid].name} enters play!`,'gain');
   if(h2)log(`P2 Herald: ${DB[h2.cid].name} enters play!`,'gain');
   log('Game started! P1 goes first.','info');
-  // Check Step Into the Courts achievement on first match
-  setTimeout(()=>checkAchievements(),1000);
+  // Step Into the Courts — award immediately on first ever match
+  if(!_achData.has_entered_match){
+    _achData.has_entered_match=true;
+    setTimeout(()=>checkAchievements(),800);
+  }
   showScreen('game-screen');renderAll();
 }
 
@@ -3926,7 +3929,7 @@ const ACHIEVEMENTS={
     desc:"Enter your first match in any game mode.",
     icon:'⚔️',
     reward:50,
-    check:()=>_celData.matches>=1
+    check:()=>_achData.has_entered_match===true
   },
 };
 
