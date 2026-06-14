@@ -656,7 +656,7 @@ body{padding-top:46px;}
     <button class="phase-btn" id="ph-resource" onclick="doPhase('resource')">Resource</button>
     <button class="phase-btn" id="ph-main" onclick="doPhase('main')">Main</button>
     <button class="phase-btn" id="ph-attack" onclick="doPhase('attack')">Attack</button>
-    <button class="phase-btn" id="ph-end" onclick="doPhase('end')">End</button>
+    <button class="phase-btn" id="ph-end" onclick="endTurnNow()">End Turn</button>
     <button class="btn-gray btn-sm" onclick="flipCoin()">🪙</button>
     <button class="btn-gray btn-sm" onclick="openDiceModal()">🎲</button>
     <button class="btn-primary btn-sm" onclick="openTransformModal()">⬆TF</button>
@@ -2702,6 +2702,12 @@ function activateAbility(fc,abl){
 // ═══════════════════════════════════════════════════
 // PHASES
 // ═══════════════════════════════════════════════════
+function endTurnNow(){
+  if(G.activePlayer!==1)return;
+  if(G.gameOver)return;
+  execEnd();
+}
+
 function doPhase(ph){
   if(G.activePlayer!==1)return;
   // End turn is always allowed — skip directly regardless of phase order
@@ -3582,9 +3588,13 @@ function renderPhaseBar(){
     btn.className='phase-btn';
     if(G.phasesDone.includes(ph))btn.classList.add('done-phase');
     else if(ph===G.phase)btn.classList.add('active-phase');
-    // End turn always clickable on player's turn (even if phases skipped)
-    if(ph==='end') btn.disabled=G.activePlayer!==1||G.phasesDone.includes('end');
-    else btn.disabled=G.activePlayer!==1||G.phasesDone.includes(ph);
+    // End turn ALWAYS enabled on player's turn, never disabled
+    if(ph==='end'){
+      btn.disabled=G.activePlayer!==1;
+      btn.classList.remove('done-phase'); // never grey out End button
+    } else {
+      btn.disabled=G.activePlayer!==1||G.phasesDone.includes(ph);
+    }
   });
 }
 function renderBanner(){
