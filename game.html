@@ -4458,33 +4458,67 @@ function renderProfileCollection(){
 // ═══════════════════════════════════════════════════
 // ADMIN PANEL SYSTEM
 // ═══════════════════════════════════════════════════
+// GLOBAL admin toggles — stored in app_settings table, applied to ALL users
 let _adminToggles={
   shop_enabled:true,
   events_enabled:false,
   achievements_enabled:true,
-  admin_unlimited_cards:true
+  admin_unlimited_cards:true // this one is admin-only, stored locally
 };
 
 async function loadAdminToggles(){
-  if(!_celSB||!_celUserId||!isAdmin())return;
+  if(!_celSB)return;
   try{
-    const {data}=await _celSB.from('profiles').select('admin_toggles').eq('id',_celUserId).maybeSingle();
-    if(data&&data.admin_toggles){
-      try{ _adminToggles={..._adminToggles,...JSON.parse(data.admin_toggles)};}catch(e){}
+    // Load global app settings (readable by everyone)
+    const {data}=await _celSB.from('app_settings').select('value').eq('key','feature_flags').maybeSingle();
+    if(data&&data.value){
+      try{
+        const globalSettings=JSON.parse(data.value);
+        // Merge global settings but keep admin_unlimited_cards local
+        const localAdminCards=_adminToggles.admin_unlimited_cards;
+        _adminToggles={..._adminToggles,...globalSettings};
+        if(isAdmin())_adminToggles.admin_unlimited_cards=localAdminCards;
+      }catch(e){}
+    }
+    // For admin: also load their personal admin_unlimited_cards override
+    if(isAdmin()){
+      const {data:p}=await _celSB.from('profiles').select('admin_toggles').eq('id',_celUserId).maybeSingle();
+      if(p&&p.admin_toggles){
+        try{
+          const personal=JSON.parse(p.admin_toggles);
+          if(typeof personal.admin_unlimited_cards==='boolean'){
+            _adminToggles.admin_unlimited_cards=personal.admin_unlimited_cards;
+          }
+        }catch(e){}
+      }
     }
   }catch(e){console.warn('[ADMIN] load error:',e);}
 }
 
 async function saveAdminToggles(){
-  if(!_celSB||!_celUserId||!isAdmin())return;
+  if(!isAdmin()||!_celSB)return;
   try{
-    await _celSB.from('profiles').update({admin_toggles:JSON.stringify(_adminToggles)}).eq('id',_celUserId);
+    // Save global feature flags (shop, events, achievements) to app_settings
+    const globalFlags={
+      shop_enabled:_adminToggles.shop_enabled,
+      events_enabled:_adminToggles.events_enabled,
+      achievements_enabled:_adminToggles.achievements_enabled
+    };
+    await _celSB.from('app_settings').upsert(
+      {key:'feature_flags',value:JSON.stringify(globalFlags),updated_at:new Date().toISOString()},
+      {onConflict:'key'}
+    );
+    // Save admin_unlimited_cards separately to admin's own profile
+    await _celSB.from('profiles').update({
+      admin_toggles:JSON.stringify({admin_unlimited_cards:_adminToggles.admin_unlimited_cards})
+    }).eq('id',_celUserId);
   }catch(e){console.warn('[ADMIN] save error:',e);}
 }
 
 function isFeatureEnabled(key){
-  // Non-admins always get default (shop on, events off, achievements on)
-  if(!isAdmin())return key==='events_enabled'?false:true;
+  // ADMIN ALWAYS gets everything (bypass all toggles)
+  if(isAdmin())return true;
+  // Everyone else gets the global toggle value
   return _adminToggles[key]!==false;
 }
 
@@ -4517,7 +4551,8 @@ async function adminToggle(key){
 }
 
 function applyAdminToggleEffects(){
-  // Hide shop button if disabled
+  // Shop button: hidden for non-admins if shop_enabled is false
+  // Admin ALWAYS sees the shop button regardless of toggle state
   const shopBtns=document.querySelectorAll('.menu-btn.util-btn');
   shopBtns.forEach(b=>{
     if(b.textContent.includes('Shop')){
@@ -5025,34 +5060,36 @@ window.addEventListener('load',async()=>{
   <div class="admin-section">
     <div class="admin-section-title">⚙ SYSTEM TOGGLES</div>
 
+    <div style="font-size:9px;color:#fcd34d;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:6px;padding:8px 10px;margin-bottom:10px;letter-spacing:1px">⚠ GLOBAL: These toggles affect ALL players. You as admin always have access.</div>
+
     <div class="admin-toggle" onclick="adminToggle('shop_enabled')">
       <div>
-        <div class="admin-toggle-label">🏪 Shop System</div>
-        <div class="admin-toggle-desc">Allow players to buy packs and cards</div>
+        <div class="admin-toggle-label">🏪 Shop System <span style="font-size:8px;color:#7dd3fc">GLOBAL</span></div>
+        <div class="admin-toggle-desc">Allow ALL players to access the shop (you always see it)</div>
       </div>
       <div class="admin-toggle-switch" id="admin-tg-shop_enabled"><div class="admin-toggle-knob"></div></div>
     </div>
 
     <div class="admin-toggle" onclick="adminToggle('events_enabled')">
       <div>
-        <div class="admin-toggle-label">🎉 Events Tab</div>
-        <div class="admin-toggle-desc">Show seasonal events in shop</div>
+        <div class="admin-toggle-label">🎉 Events Tab <span style="font-size:8px;color:#7dd3fc">GLOBAL</span></div>
+        <div class="admin-toggle-desc">Show seasonal events tab in shop</div>
       </div>
       <div class="admin-toggle-switch" id="admin-tg-events_enabled"><div class="admin-toggle-knob"></div></div>
     </div>
 
     <div class="admin-toggle" onclick="adminToggle('achievements_enabled')">
       <div>
-        <div class="admin-toggle-label">🏅 Achievements</div>
-        <div class="admin-toggle-desc">Enable achievement tracking</div>
+        <div class="admin-toggle-label">🏅 Achievements <span style="font-size:8px;color:#7dd3fc">GLOBAL</span></div>
+        <div class="admin-toggle-desc">Enable achievement tracking for everyone</div>
       </div>
       <div class="admin-toggle-switch" id="admin-tg-achievements_enabled"><div class="admin-toggle-knob"></div></div>
     </div>
 
     <div class="admin-toggle" onclick="adminToggle('admin_unlimited_cards')">
       <div>
-        <div class="admin-toggle-label">🎴 Admin Card Override</div>
-        <div class="admin-toggle-desc">Always have 4 copies of every card (for testing)</div>
+        <div class="admin-toggle-label">🎴 Admin Card Override <span style="font-size:8px;color:#fca5a5">ADMIN ONLY</span></div>
+        <div class="admin-toggle-desc">YOU always have 4 copies of every card (does not affect others)</div>
       </div>
       <div class="admin-toggle-switch" id="admin-tg-admin_unlimited_cards"><div class="admin-toggle-knob"></div></div>
     </div>
@@ -5074,8 +5111,9 @@ window.addEventListener('load',async()=>{
     <div style="font-size:10px;color:#9ca3af;line-height:1.6">
       <div>User ID: <span style="color:#7dd3fc;font-family:'Share Tech Mono',monospace" id="admin-user-id">—</span></div>
       <div>Username: <span style="color:#7dd3fc" id="admin-username">—</span></div>
-      <div>Toggles are saved to your profile and apply only to your account.</div>
-      <div style="margin-top:6px;color:#fcd34d">⚠ These changes do NOT affect other players.</div>
+      <div>GLOBAL toggles affect every player on the platform.</div>
+      <div>ADMIN ONLY toggles affect only your own session.</div>
+      <div style="margin-top:6px;color:#22c55e">✓ You as admin always have full access regardless of toggle state.</div>
     </div>
   </div>
 </div>
