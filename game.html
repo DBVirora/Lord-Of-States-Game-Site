@@ -1184,21 +1184,25 @@ function getDeckList(deckId){
   return SAVED_DECKS[deckId]?[...SAVED_DECKS[deckId].cards]:generateRandomDeck();
 }
 
-function goToDeckSelect(mode){
+async function goToDeckSelect(mode){
   pendingMode=mode;pendingP1Deck=null;pendingP2Deck=null;
   document.getElementById('deck-select-title').textContent=mode==='pvp'?'⚔️ PvP — Choose Decks':'🤖 vs AI — Choose Decks';
   document.getElementById('p2-deck-label').textContent=mode==='pvp'?'🟩 Player 2':'🟩 AI Deck';
   document.getElementById('start-game-btn').disabled=true;
-  renderDeckSelectOptions();showScreen('deck-select-screen');
+  showScreen('deck-select-screen');
+  // Reload decks fresh each time deck select opens
+  await loadDecksFromStorage();
+  renderDeckSelectOptions();
 }
 
 function renderDeckSelectOptions(){
   [1,2].forEach(p=>{
     const container=document.getElementById(`p${p}-deck-options`);container.innerHTML='';
     Object.entries(SAVED_DECKS).forEach(([id,deck])=>{
+      if(!deck||!deck.cards)return; // safety check
       const div=document.createElement('div');div.className='deck-select-card';div.id=`p${p}-deck-${id}`;
-      const thumbs=deck.cards.slice(0,3).map(cid=>{const url=getImg(cid);return url?`<img src="${url}" style="width:18px;height:25px;object-fit:cover;border-radius:2px" alt=""/>`:`<span style="font-size:11px">${DB[cid]?.sym||'?'}</span>`;}).join('');
-      div.innerHTML=`<div style="display:flex;gap:2px;justify-content:center;margin-bottom:4px">${thumbs}</div><div style="font-weight:700;color:#c8a0ff;font-size:12px">${deck.name}</div><div style="font-size:10px;color:#6b7280">${deck.cards.length} cards</div>`;
+      const thumbs=(deck.cards||[]).slice(0,3).map(cid=>{const url=getImg(cid);return url?`<img src="${url}" style="width:18px;height:25px;object-fit:cover;border-radius:2px" alt=""/>`:`<span style="font-size:11px">${DB[cid]?.sym||'?'}</span>`;}).join('');
+      div.innerHTML=`<div style="display:flex;gap:2px;justify-content:center;margin-bottom:4px">${thumbs}</div><div style="font-weight:700;color:#c8a0ff;font-size:12px">${deck.name}</div><div style="font-size:10px;color:#6b7280">${(deck.cards||[]).length} cards</div>`;
       div.onclick=()=>selectDeck(p,id);container.appendChild(div);
     });
     if(!Object.keys(SAVED_DECKS).length)container.innerHTML='<div style="color:#6b7280;font-size:11px;padding:6px">No saved decks — pick Random or build one.</div>';
@@ -1216,7 +1220,8 @@ function selectDeck(player,deckId){
 function launchGame(){if(!pendingP1Deck||!pendingP2Deck)return;startGame(pendingMode,getDeckList(pendingP1Deck),getDeckList(pendingP2Deck));}
 
 // ── DECK BUILDER ──
-function openDeckManager(){
+async function openDeckManager(){
+  await loadDecksFromStorage();
   const body=document.createElement('div');
   if(!Object.keys(SAVED_DECKS).length){body.innerHTML='<p style="color:#6b7280;font-size:12px">No saved decks yet.</p>';}
   else Object.entries(SAVED_DECKS).forEach(([id,deck])=>{
@@ -3332,7 +3337,7 @@ function showScreen(id){
   else el.classList.add('active');
   if(id==='upload-screen')buildUploadScreen();
   if(id==='builder-screen'){renderBuilderCards();renderBuilderDeck();}
-  if(id==='deck-select-screen')renderDeckSelectOptions();
+  if(id==='deck-select-screen'){loadDecksFromStorage().then(()=>renderDeckSelectOptions());}
 }
 
 function showRulesScreen(){
