@@ -438,6 +438,37 @@ body{padding-top:46px;}
 .energy-modal-empty{font-size:10px;color:#4b5563;text-align:center;padding:10px;font-style:italic;}
 .energy-modal-close{width:100%;padding:8px;margin-top:14px;background:rgba(100,120,160,.1);border:1px solid rgba(100,120,160,.3);border-radius:6px;color:#9ca3af;font-size:10px;letter-spacing:2px;cursor:pointer;transition:all .2s;font-family:'Share Tech Mono',monospace;}
 .energy-modal-close:hover{border-color:var(--violet2);color:#c4b5fd;}
+
+/* SHOP */
+.shop-tab{flex:1;padding:10px 16px;background:rgba(8,8,28,.6);border:1px solid rgba(124,58,237,.2);border-radius:8px 8px 0 0;color:#9ca3af;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;cursor:pointer;transition:all .2s;border-bottom:none;}
+.shop-tab:hover{color:#c4b5fd;border-color:rgba(124,58,237,.4);}
+.shop-tab.active{background:rgba(124,58,237,.15);color:#c4b5fd;border-color:var(--violet2);border-bottom:1px solid rgba(124,58,237,.15);}
+.shop-tab-content{background:rgba(8,8,28,.4);border:1px solid var(--border-v);border-radius:0 8px 8px 8px;padding:18px;min-height:300px;}
+.shop-pack-card{background:rgba(8,8,28,.7);border:1px solid var(--border-v);border-radius:10px;padding:18px;text-align:center;transition:all .2s;}
+.shop-pack-card:hover{border-color:var(--violet2);box-shadow:0 0 16px rgba(124,58,237,.2);transform:translateY(-2px);}
+.shop-pack-icon{font-size:48px;margin-bottom:10px;filter:drop-shadow(0 0 12px rgba(124,58,237,.4));}
+.shop-pack-name{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:#e2e8f0;letter-spacing:2px;margin-bottom:6px;}
+.shop-pack-desc{font-size:10px;color:#6b7280;margin-bottom:14px;min-height:30px;}
+.shop-pack-price{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3);border-radius:7px;margin-bottom:10px;}
+.shop-pack-price-num{font-size:16px;font-weight:700;color:#fbbf24;font-family:'Orbitron',sans-serif;}
+.shop-buy-btn{width:100%;padding:9px;background:rgba(124,58,237,.2);border:1px solid var(--violet2);border-radius:7px;color:#c4b5fd;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;cursor:pointer;transition:all .2s;}
+.shop-buy-btn:hover{background:rgba(124,58,237,.35);box-shadow:0 0 12px rgba(124,58,237,.3);}
+.shop-buy-btn:disabled{opacity:.4;cursor:not-allowed;background:rgba(75,85,99,.2);border-color:rgba(75,85,99,.4);color:#6b7280;}
+/* Pack opening modal */
+.pack-open-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(8px);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:20px;}
+.pack-open-modal.open{display:flex;}
+.pack-open-title{font-family:'Orbitron',sans-serif;font-size:18px;letter-spacing:4px;color:var(--blue);text-shadow:0 0 16px var(--blue);}
+.pack-cards-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:680px;padding:14px;background:rgba(8,8,28,.5);border-radius:12px;border:1px solid var(--border-v);}
+.pack-card-reveal{aspect-ratio:5/7;background:rgba(8,8,28,.8);border:1px solid var(--border-v);border-radius:6px;overflow:hidden;transform:scale(.2);opacity:0;transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s;display:flex;align-items:center;justify-content:center;}
+.pack-card-reveal.revealed{transform:scale(1);opacity:1;}
+.pack-card-reveal img{width:100%;height:100%;object-fit:cover;}
+.pack-card-reveal-placeholder{font-size:24px;color:#4b5563;}
+/* Collection tab */
+.col-card-mini{background:rgba(8,8,28,.6);border:1px solid var(--border-v);border-radius:7px;padding:6px;display:flex;align-items:center;gap:8px;transition:all .15s;cursor:pointer;}
+.col-card-mini:hover{border-color:var(--violet2);background:rgba(124,58,237,.1);}
+.col-card-img{width:36px;height:50px;border-radius:4px;object-fit:cover;background:#0a0a1a;flex-shrink:0;}
+.col-card-name{font-size:11px;font-weight:700;color:#e2e8f0;}
+.col-card-count{font-size:10px;color:#fbbf24;margin-top:2px;}
 </style>
 </head>
 <body>
@@ -472,6 +503,7 @@ body{padding-top:46px;}
   <button class="menu-btn ai-btn" onclick="goToDeckSelect('medium')">🤖 vs AI — Medium</button>
   <button class="menu-btn ai-btn" onclick="goToDeckSelect('hard')">🤖 vs AI — Hard</button>
   <div class="menu-section-label">— TOOLS —</div>
+  <button class="menu-btn util-btn" onclick="showScreen('shop-screen');openShop()">🏪 Shop</button>
   <button class="menu-btn util-btn" onclick="showScreen('profile-screen');refreshProfileScreen()">👤 Profile</button>
   <button class="menu-btn util-btn" onclick="showScreen('builder-screen');renderBuilderCards()">🃏 Deck Builder</button>
   <button class="menu-btn util-btn" onclick="showScreen('upload-screen');buildUploadScreen()">🖼 Card Images</button>
@@ -4182,6 +4214,221 @@ function renderAchievementsSection(){
   if(badge){badge.textContent=unlocked+' / '+total;badge.style.background=unlocked===total?'rgba(251,191,36,.3)':'rgba(251,191,36,.1)';}
 }
 
+
+// ═══════════════════════════════════════════════════
+// SHOP + COLLECTION SYSTEM
+// ═══════════════════════════════════════════════════
+let _collection={}; // {cid: count}
+let _shopTab='packs';
+const ADMIN_USER_IDS=['7a2584a5-31cd-408e-83a0-be4e133ae79c']; // your user id
+const PACK_COSTS={basic:300,premium:850,event:650};
+const PACK_SIZE=10;
+
+function isAdmin(){
+  return _celUserId && ADMIN_USER_IDS.includes(_celUserId);
+}
+
+async function loadCollection(){
+  if(!_celSB||!_celUserId)return;
+  try{
+    const {data}=await _celSB.from('profiles').select('collection').eq('id',_celUserId).maybeSingle();
+    _collection=data&&data.collection?JSON.parse(data.collection):{};
+  }catch(e){console.warn('[COL] load error:',e);}
+}
+
+async function saveCollection(){
+  if(!_celSB||!_celUserId)return;
+  try{
+    await _celSB.from('profiles').update({collection:JSON.stringify(_collection)}).eq('id',_celUserId);
+  }catch(e){console.warn('[COL] save error:',e);}
+}
+
+function getOwnedCount(cid){
+  if(isAdmin())return 4; // admin always has 4 copies
+  return _collection[cid]||0;
+}
+
+function addCardToCollection(cid){
+  // Max 4 copies per card
+  const current=_collection[cid]||0;
+  if(current>=4)return false;
+  _collection[cid]=current+1;
+  return true;
+}
+
+// Get pool of obtainable cards (excludes heralds — those are unlockable separately later)
+function getCardPool(){
+  return Object.keys(DB).filter(id=>{
+    const c=DB[id];
+    return c&&!c.isToken&&!c.transformOnly&&c.type!=='token'&&c.type!=='system';
+  });
+}
+
+function openShop(){
+  // Update Celestium display
+  const cel=document.getElementById('shop-cel-amount');
+  if(cel)cel.textContent=(_celData.celestium||0).toLocaleString();
+  switchShopTab('packs');
+  renderSingleCardsShop();
+  // Disable buy buttons if not enough celestium
+  updateShopButtons();
+}
+
+function switchShopTab(tab){
+  _shopTab=tab;
+  ['packs','cards','events'].forEach(t=>{
+    const btn=document.getElementById('shop-tab-'+t);
+    const content=document.getElementById('shop-content-'+t);
+    if(btn)btn.classList.toggle('active',t===tab);
+    if(content)content.style.display=t===tab?'block':'none';
+  });
+  if(tab==='cards')renderSingleCardsShop();
+}
+
+function updateShopButtons(){
+  const cel=_celData.celestium||0;
+  const basicBtn=document.getElementById('buy-basic-btn');
+  const premBtn=document.getElementById('buy-premium-btn');
+  if(basicBtn){basicBtn.disabled=cel<PACK_COSTS.basic;basicBtn.textContent=cel<PACK_COSTS.basic?'Not enough Celestium':'▸ PURCHASE';}
+  if(premBtn){premBtn.disabled=cel<PACK_COSTS.premium;premBtn.textContent=cel<PACK_COSTS.premium?'Not enough Celestium':'▸ PURCHASE';}
+}
+
+async function buyPack(type){
+  const cost=PACK_COSTS[type];
+  if(!cost)return;
+  if(_celData.celestium<cost){alert('Not enough Celestium!');return;}
+  // Pull random cards from pool
+  const pool=getCardPool();
+  if(pool.length===0){alert('Card pool is empty.');return;}
+  const pulled=[];
+  for(let i=0;i<PACK_SIZE;i++){
+    const cid=pool[Math.floor(Math.random()*pool.length)];
+    pulled.push(cid);
+  }
+  // Deduct cost
+  _celData.celestium-=cost;
+  // Add to collection (4-copy max enforced inside)
+  pulled.forEach(cid=>addCardToCollection(cid));
+  // Persist
+  await Promise.all([saveCelestium(),saveCollection()]);
+  updateCelDisplay();
+  updateShopButtons();
+  // Show opening animation
+  showPackOpening(pulled);
+}
+
+function showPackOpening(cardIds){
+  const grid=document.getElementById('pack-cards-grid');
+  if(!grid)return;
+  grid.innerHTML='';
+  cardIds.forEach(cid=>{
+    const card=document.createElement('div');
+    card.className='pack-card-reveal';
+    const url=getImg(cid);
+    if(url){
+      card.innerHTML='<img src="'+url+'" alt="'+(DB[cid]?.name||cid)+'"/>';
+    } else {
+      card.innerHTML='<div class="pack-card-reveal-placeholder">'+(DB[cid]?.sym||'?')+'</div>';
+    }
+    grid.appendChild(card);
+  });
+  document.getElementById('pack-open-modal').classList.add('open');
+  // Reveal each card with a stagger
+  setTimeout(()=>{
+    [...grid.children].forEach((el,i)=>{
+      setTimeout(()=>el.classList.add('revealed'),i*120);
+    });
+  },200);
+}
+
+function closePackOpenModal(){
+  document.getElementById('pack-open-modal').classList.remove('open');
+}
+
+function renderSingleCardsShop(){
+  const list=document.getElementById('shop-single-cards-list');
+  if(!list)return;
+  // Rotate based on date — same selection per day
+  const today=new Date().toDateString();
+  const seed=[...today].reduce((s,c)=>s+c.charCodeAt(0),0);
+  const pool=getCardPool();
+  const rng=(n)=>{seed_state=(seed+n*7919)%pool.length;return seed_state;};
+  let seed_state=seed;
+  // Pick 6 cards deterministically
+  const picks=new Set();
+  let attempts=0;
+  while(picks.size<6&&attempts<50){
+    attempts++;
+    const idx=Math.floor((seed_state=(seed_state*9301+49297)%233280)/233280*pool.length);
+    picks.add(pool[idx]);
+  }
+  list.innerHTML='';
+  Array.from(picks).forEach(cid=>{
+    const c=DB[cid];if(!c)return;
+    const url=getImg(cid);
+    const price=400+Math.floor(((cid.charCodeAt(0)*7)%2100)); // 400-2500 pseudo-random
+    const owned=getOwnedCount(cid);
+    const div=document.createElement('div');
+    div.style.cssText='background:rgba(8,8,28,.7);border:1px solid var(--border-v);border-radius:9px;padding:10px;display:flex;flex-direction:column;align-items:center;text-align:center';
+    div.innerHTML=
+      (url?'<img src="'+url+'" style="width:80px;height:112px;border-radius:6px;object-fit:cover;margin-bottom:8px;border:1px solid '+(COLOR_DEFS[c.color]?.hex||'#444')+'"/>':'<div style="width:80px;height:112px;background:#0a0a1a;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:8px">'+(c.sym||'?')+'</div>')
+      +'<div style="font-size:11px;font-weight:700;color:#e2e8f0;margin-bottom:2px">'+c.name+'</div>'
+      +'<div style="font-size:9px;color:#6b7280;margin-bottom:6px">Owned: '+owned+'/4</div>'
+      +'<div class="shop-pack-price" style="margin-bottom:8px;padding:5px 8px"><img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" style="width:14px;height:14px;border-radius:50%"/><span style="font-size:13px;font-weight:700;color:#fbbf24">'+price+'</span></div>'
+      +'<button class="shop-buy-btn" '+(_celData.celestium<price||owned>=4?'disabled':'')+' onclick="buySingleCard(\''+cid+'\','+price+')">'+(owned>=4?'MAX':(_celData.celestium<price?'Not enough':'▸ BUY'))+'</button>';
+    list.appendChild(div);
+  });
+}
+
+async function buySingleCard(cid,price){
+  if(_celData.celestium<price)return;
+  if(!addCardToCollection(cid)){alert('You already own 4 copies of this card!');return;}
+  _celData.celestium-=price;
+  await Promise.all([saveCelestium(),saveCollection()]);
+  updateCelDisplay();
+  renderSingleCardsShop();
+  showPackOpening([cid]);
+}
+
+// ── Profile Collection panel ──────────────────────
+function toggleCollection(){
+  const panel=document.getElementById('col-panel');
+  const chev=document.getElementById('col-chevron');
+  const btn=document.getElementById('col-toggle-btn');
+  if(!panel)return;
+  const open=panel.style.display==='none'||panel.style.display==='';
+  panel.style.display=open?'block':'none';
+  if(chev)chev.style.transform=open?'rotate(180deg)':'rotate(0deg)';
+  if(btn)btn.style.borderRadius=open?'12px 12px 0 0':'12px';
+  if(open)renderProfileCollection();
+}
+
+function renderProfileCollection(){
+  const el=document.getElementById('profile-collection');
+  if(!el)return;
+  const owned=Object.entries(_collection).filter(([cid,n])=>n>0);
+  // Count total unique vs total in pool
+  const totalPool=getCardPool().length;
+  const uniqueOwned=owned.length;
+  const badge=document.getElementById('col-count-badge');
+  if(badge)badge.textContent=uniqueOwned+' / '+totalPool+(isAdmin()?' (ADMIN)':'');
+  if(!owned.length){
+    el.innerHTML='<div style="font-size:11px;color:#4b5563;text-align:center;padding:20px;grid-column:1/-1">No cards collected yet.<br>Visit the Shop to buy your first booster pack!</div>';
+    return;
+  }
+  el.innerHTML='';
+  owned.sort(([a],[b])=>(DB[a]?.name||a).localeCompare(DB[b]?.name||b)).forEach(([cid,count])=>{
+    const c=DB[cid];if(!c)return;
+    const url=getImg(cid);
+    const div=document.createElement('div');
+    div.className='col-card-mini';
+    div.innerHTML=
+      (url?'<img src="'+url+'" class="col-card-img"/>':'<div class="col-card-img" style="display:flex;align-items:center;justify-content:center;font-size:18px">'+(c.sym||'?')+'</div>')
+      +'<div><div class="col-card-name">'+c.name+'</div><div class="col-card-count">x'+count+'</div></div>';
+    el.appendChild(div);
+  });
+}
+
 // ═══════════════════════════════════════════════════
 // STARTUP
 // ═══════════════════════════════════════════════════
@@ -4268,6 +4515,7 @@ window.addEventListener('load',async()=>{
       initCelestium(sb,session.user.id);
       await loadCelestium();
       await loadAchievements();
+      await loadCollection();
       // Sign out
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){
@@ -4327,6 +4575,7 @@ window.addEventListener('load',async()=>{
       initCelestium(sb,session.user.id);
       await loadCelestium();
       await loadAchievements();
+      await loadCollection();
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){console.error('[AUTH] error:',e);window.signOutUser=function(){window.location.replace(LOGIN);};}
   }
@@ -4491,6 +4740,24 @@ window.addEventListener('load',async()=>{
     </div>
   </div>
 
+  <!-- Collection summary -->
+  <div style="margin-bottom:16px">
+    <button onclick="toggleCollection()" id="col-toggle-btn"
+      style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(8,8,28,.7);border:1px solid var(--border-v);border-radius:12px;cursor:pointer;font-family:'Share Tech Mono',monospace;transition:all .2s">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:16px">📚</span>
+        <span style="font-size:10px;font-weight:700;color:var(--violet2);letter-spacing:2px">CARD COLLECTION</span>
+        <span id="col-count-badge" style="background:rgba(124,58,237,.15);border:1px solid var(--border-v);border-radius:10px;padding:1px 8px;font-size:9px;color:#c4b5fd">0 / 0</span>
+      </div>
+      <span id="col-chevron" style="color:var(--violet2);font-size:14px;transition:transform .2s">▼</span>
+    </button>
+    <div id="col-panel" style="display:none;background:rgba(8,8,28,.5);border:1px solid var(--border-v);border-top:none;border-radius:0 0 12px 12px;padding:12px">
+      <div id="profile-collection" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;max-height:320px;overflow-y:auto">
+        <div style="font-size:11px;color:#4b5563;text-align:center;padding:10px;grid-column:1/-1">Loading...</div>
+      </div>
+    </div>
+  </div>
+
   <!-- Celestium log -->
   <div style="background:rgba(8,8,28,.7);border:1px solid var(--border);border-radius:12px;padding:14px">
     <div style="font-size:10px;font-weight:700;color:var(--violet2);letter-spacing:2px;margin-bottom:10px">📋 RECENT EARNINGS</div>
@@ -4512,6 +4779,83 @@ window.addEventListener('load',async()=>{
     <div class="energy-modal-list" id="energy-modal-list"></div>
     <button class="energy-modal-close" onclick="closeEnergyModal()">[ CLOSE ]</button>
   </div>
+</div>
+
+<!-- SHOP SCREEN -->
+<div id="shop-screen" class="screen" style="padding:20px;max-width:780px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+    <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
+    <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:var(--blue);text-shadow:0 0 10px var(--blue)">🏪 SHOP</div>
+    <div class="cel-badge" style="margin-left:auto">
+      <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" class="cel-icon" alt="C"/>
+      <span class="cel-amount" id="shop-cel-amount">—</span>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div style="display:flex;gap:4px;margin-bottom:0">
+    <button class="shop-tab active" id="shop-tab-packs" onclick="switchShopTab('packs')">🎁 BOOSTER PACKS</button>
+    <button class="shop-tab" id="shop-tab-cards" onclick="switchShopTab('cards')">🎴 SINGLE CARDS</button>
+    <button class="shop-tab" id="shop-tab-events" onclick="switchShopTab('events')">🎉 EVENTS</button>
+  </div>
+
+  <!-- BOOSTER PACKS TAB -->
+  <div class="shop-tab-content" id="shop-content-packs">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+      <div class="shop-pack-card">
+        <div class="shop-pack-icon">📦</div>
+        <div class="shop-pack-name">BASIC PACK</div>
+        <div class="shop-pack-desc">10 random cards from the standard pool</div>
+        <div class="shop-pack-price">
+          <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" style="width:18px;height:18px;border-radius:50%"/>
+          <span class="shop-pack-price-num">300</span>
+        </div>
+        <button class="shop-buy-btn" id="buy-basic-btn" onclick="buyPack('basic')">▸ PURCHASE</button>
+      </div>
+      <div class="shop-pack-card" style="border-color:rgba(251,191,36,.4)">
+        <div class="shop-pack-icon">💎</div>
+        <div class="shop-pack-name">PREMIUM PACK</div>
+        <div class="shop-pack-desc">10 cards with improved pull chances</div>
+        <div class="shop-pack-price">
+          <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" style="width:18px;height:18px;border-radius:50%"/>
+          <span class="shop-pack-price-num">850</span>
+        </div>
+        <button class="shop-buy-btn" id="buy-premium-btn" onclick="buyPack('premium')" style="border-color:#fbbf24;color:#fbbf24;background:rgba(251,191,36,.12)">▸ PURCHASE</button>
+      </div>
+      <div class="shop-pack-card" style="border-color:rgba(75,85,99,.3);opacity:.6">
+        <div class="shop-pack-icon">🎪</div>
+        <div class="shop-pack-name">EVENT PACK</div>
+        <div class="shop-pack-desc">Limited-time themed packs<br><span style="color:#fbbf24;font-size:9px">[ COMING SOON ]</span></div>
+        <div class="shop-pack-price" style="background:rgba(75,85,99,.1);border-color:rgba(75,85,99,.25)">
+          <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" style="width:18px;height:18px;border-radius:50%;filter:grayscale(1)"/>
+          <span class="shop-pack-price-num" style="color:#6b7280">650</span>
+        </div>
+        <button class="shop-buy-btn" disabled>Unavailable</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SINGLE CARDS TAB -->
+  <div class="shop-tab-content" id="shop-content-cards" style="display:none">
+    <div style="font-size:10px;color:#6b7280;letter-spacing:1px;margin-bottom:14px">Rotating selection of individual cards. Refreshes daily.</div>
+    <div id="shop-single-cards-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px"></div>
+  </div>
+
+  <!-- EVENTS TAB -->
+  <div class="shop-tab-content" id="shop-content-events" style="display:none">
+    <div style="text-align:center;padding:40px 20px;color:#6b7280">
+      <div style="font-size:48px;margin-bottom:12px;opacity:.4">🎉</div>
+      <div style="font-size:14px;font-weight:700;color:#9ca3af;letter-spacing:2px;margin-bottom:6px">NO ACTIVE EVENTS</div>
+      <div style="font-size:11px;color:#4b5563">Special event content will appear here during limited-time events.<br>Earn unique cards, exclusive packs, and seasonal rewards.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PACK OPENING MODAL -->
+<div class="pack-open-modal" id="pack-open-modal">
+  <div class="pack-open-title">✨ NEW CARDS ✨</div>
+  <div class="pack-cards-grid" id="pack-cards-grid"></div>
+  <button class="btn-primary" onclick="closePackOpenModal()" style="padding:10px 30px;font-size:11px;letter-spacing:3px">[ CONTINUE ]</button>
 </div>
 </body>
 </html>
