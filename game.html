@@ -1105,34 +1105,36 @@ function initDeckStorage(sb, userId){
 }
 
 async function saveDecksToStorage(){
+  console.log('[DECKS] saveDecksToStorage called. _deckUserId=',_deckUserId,'_deckSB=',!!_deckSB);
   if(_deckSB&&_deckUserId){
     try{
-      const {error}=await _deckSB.from('decks').upsert(
-        {user_id:_deckUserId,data:JSON.stringify(SAVED_DECKS),updated_at:new Date().toISOString()},
-        {onConflict:'user_id'}
-      );
-      if(error)throw error;
-      console.log('Decks saved to Supabase for user',_deckUserId);
+      const payload={user_id:_deckUserId,data:JSON.stringify(SAVED_DECKS),updated_at:new Date().toISOString()};
+      console.log('[DECKS] upserting to Supabase, deck count:',Object.keys(SAVED_DECKS).length);
+      const {error}=await _deckSB.from('decks').upsert(payload,{onConflict:'user_id'});
+      if(error){console.error('[DECKS] upsert error:',error);throw error;}
+      console.log('[DECKS] saved successfully to Supabase');
       return;
-    }catch(e){console.warn('Supabase deck save failed:',e);}
+    }catch(e){console.warn('[DECKS] Supabase save failed:',e);}
   }
-  // Guest fallback
+  console.log('[DECKS] falling back to local storage');
   try{await window.storage.set('saved_decks',JSON.stringify(SAVED_DECKS));}catch(e){}
 }
 
 async function loadDecksFromStorage(){
+  console.log('[DECKS] loadDecksFromStorage called. _deckUserId=',_deckUserId,'_deckSB=',!!_deckSB);
   if(_deckSB&&_deckUserId){
     try{
       const {data,error}=await _deckSB.from('decks').select('data').eq('user_id',_deckUserId).maybeSingle();
+      console.log('[DECKS] load result: data=',!!data,'error=',error?.message);
       if(!error&&data?.data){
         SAVED_DECKS=JSON.parse(data.data);
-        console.log('Decks loaded from Supabase:',Object.keys(SAVED_DECKS).length,'decks');
+        console.log('[DECKS] loaded from Supabase:',Object.keys(SAVED_DECKS).length,'decks');
         renderDeckSelectOptions();
         return;
       }
-    }catch(e){console.warn('Supabase deck load failed:',e);}
+    }catch(e){console.warn('[DECKS] Supabase load failed:',e);}
   }
-  // Guest fallback
+  console.log('[DECKS] falling back to local storage');
   try{const r=await window.storage.get('saved_decks');if(r&&r.value)SAVED_DECKS=JSON.parse(r.value);}catch(e){}
 }
 
@@ -3476,42 +3478,49 @@ window.addEventListener('load',async()=>{
   const LOGIN='https://dbvirora.github.io/Lord-Of-States-Game-Site/';
   try {
     const sb=window.supabase.createClient(SUPA_URL,SUPA_KEY);
-    const {data:{session}}=await sb.auth.getSession();
+    const {data:{session},error:sessErr}=await sb.auth.getSession();
+
+    console.log('[AUTH] session:', session ? 'found' : 'null', sessErr ? 'err:'+sessErr.message : '');
     if(!session){window.location.replace(LOGIN);return;}
 
-    // Get custom username from profiles table
+    console.log('[AUTH] user id:', session.user.id);
+    console.log('[AUTH] app_metadata:', JSON.stringify(session.user.app_metadata));
+    console.log('[AUTH] identities:', JSON.stringify(session.user.identities?.map(i=>({provider:i.provider,id:i.id}))));
+    console.log('[AUTH] user_metadata keys:', Object.keys(session.user.user_metadata||{}));
+
+    // Get custom username
     const {data:profile}=await sb.from('profiles').select('username').eq('id',session.user.id).maybeSingle();
     const name=profile?.username||session.user.email||'Player';
+    console.log('[AUTH] username:', name);
 
-    // Detect provider — check identities array for accuracy
+    // Detect provider from identities array
     const meta=session.user.user_metadata||{};
     const identities=session.user.identities||[];
     let provider='email';
-    if(identities.length>0){
-      const p=identities[0].provider||'';
-      if(p==='discord')provider='discord';
-      else if(p==='google')provider='google';
-      else if(p)provider=p;
-    } else if(session.user.is_anonymous){
+    if(session.user.is_anonymous){
       provider='anonymous';
+    } else if(identities.length>0){
+      const rawProvider=identities[0].provider||'';
+      console.log('[AUTH] raw provider from identities:', rawProvider);
+      provider=rawProvider||'email';
+    } else {
+      const appProvider=session.user.app_metadata?.provider||'';
+      console.log('[AUTH] raw provider from app_metadata:', appProvider);
+      provider=appProvider||'email';
     }
+    console.log('[AUTH] resolved provider:', provider);
 
-    // Get avatar URL from OAuth metadata
+    // Avatar
     const avatarUrl=meta.avatar_url||meta.picture||null;
+    console.log('[AUTH] avatarUrl:', avatarUrl);
 
-    // Populate HUD
+    // ── HUD ──────────────────────────────────────
     const usernameEl=document.getElementById('hud-username');
     const avatarEl=document.getElementById('hud-avatar');
     const providerEl=document.getElementById('hud-provider');
 
     if(usernameEl)usernameEl.textContent=name;
-    // Share the auth client + userId with deck storage system
-    initDeckStorage(sb, session.user.id);
-    // Now load this user's decks
-    await loadDecksFromStorage();
-    renderDeckSelectOptions();
 
-    // Avatar
     if(avatarEl){
       if(avatarUrl){
         avatarEl.innerHTML='<img src="'+avatarUrl+'" alt="avatar" onerror="this.parentElement.textContent=String.fromCodePoint(9876,65039)"/>';
@@ -3520,20 +3529,33 @@ window.addEventListener('load',async()=>{
       }
     }
 
-    // Provider label
     if(providerEl){
-      const labels={discord:'via Discord',google:'via Google',email:'via Email',anonymous:'Guest'};
-      const cls={discord:'discord',google:'google',email:'email',anonymous:'guest'}[provider]||'email';
-      providerEl.textContent=labels[provider]||'via '+provider;
-      providerEl.className='hud-provider '+cls;
+      const providerLabels={
+        discord:'🎮 Discord',google:'🔵 Google',
+        email:'✉️ Email',anonymous:'👤 Guest'
+      };
+      const providerCls={
+        discord:'discord',google:'google',
+        email:'email',anonymous:'guest'
+      };
+      providerEl.textContent=providerLabels[provider]||'🔑 '+provider;
+      providerEl.className='hud-provider '+(providerCls[provider]||'email');
     }
 
+    // ── DECK STORAGE ─────────────────────────────
+    initDeckStorage(sb, session.user.id);
+    console.log('[DECKS] initDeckStorage called with userId:', session.user.id);
+    await loadDecksFromStorage();
+    renderDeckSelectOptions();
+
+    // ── SIGN OUT ──────────────────────────────────
     window.signOutUser=async function(){
       await sb.auth.signOut();
       window.location.replace(LOGIN);
     };
+
   } catch(e){
-    console.warn('Auth error:',e);
+    console.error('[AUTH] error:', e);
     const un=document.getElementById('hud-username');
     if(un)un.textContent='Player';
     window.signOutUser=()=>{window.location.replace('https://dbvirora.github.io/Lord-Of-States-Game-Site/');};
