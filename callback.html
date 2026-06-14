@@ -82,15 +82,13 @@ async function routeUser(session){
     var hasUser=pr.data&&typeof pr.data.username==='string'&&pr.data.username.trim().length>=3;
     setStatus(hasUser?'Welcome back! Entering game...':'Setting up your profile...');
 
-    // Store tokens in sessionStorage so game.html can pick them up
-    // This is the reliable cross-page token passing method
+    // Pass tokens in URL hash — works reliably across page navigations
     var tok=session.access_token;
     var ref=session.refresh_token;
-    sessionStorage.setItem('vcu_access_token', tok);
-    sessionStorage.setItem('vcu_refresh_token', ref);
-    console.log('[CALLBACK] tokens stored, routing to', hasUser?'game':'setup');
-
-    window.location.replace(hasUser ? GAME_URL : SETUP_URL);
+    var dest=hasUser ? GAME_URL : SETUP_URL;
+    var url=dest+'#access_token='+encodeURIComponent(tok)+'&refresh_token='+encodeURIComponent(ref)+'&type=recovery';
+    console.log('[CALLBACK] routing to', hasUser?'game':'setup', 'with tokens in hash');
+    window.location.replace(url);
   }catch(err){
     console.error('[CALLBACK] routeUser error:',err);
     setStatus('Error — redirecting...');
