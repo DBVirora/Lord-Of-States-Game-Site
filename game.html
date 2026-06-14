@@ -1088,8 +1088,61 @@ let SAVED_DECKS={};
 let builderDeck=[];
 let pendingMode='',pendingP1Deck=null,pendingP2Deck=null;
 
-async function saveDecksToStorage(){try{await window.storage.set('saved_decks',JSON.stringify(SAVED_DECKS));}catch(e){}}
-async function loadDecksFromStorage(){try{const r=await window.storage.get('saved_decks');if(r&&r.value)SAVED_DECKS=JSON.parse(r.value);}catch(e){}}
+// ── SUPABASE DECK STORAGE ─────────────────────────
+// Decks are stored per-user in Supabase.
+// Falls back to window.storage for guests.
+
+let _deckSB=null; // shared Supabase client for deck ops
+let _deckUserId=null;
+
+// Supabase 'decks' table needs:
+//   user_id UUID (primary key, references auth.users)
+//   data    TEXT (JSON string of all decks)
+//   updated_at TIMESTAMPTZ
+// SQL: CREATE TABLE decks (user_id UUID PRIMARY KEY REFERENCES auth.users, data TEXT, updated_at TIMESTAMPTZ);
+//      ALTER TABLE decks ENABLE ROW LEVEL SECURITY;
+//      CREATE POLICY "Users manage own decks" ON decks USING (auth.uid()=user_id) WITH CHECK (auth.uid()=user_id);
+async function getDeckClient(){
+  if(_deckSB)return _deckSB;
+  try{
+    _deckSB=window.supabase.createClient(
+      'https://alvldkihwuhgjbgdpbkg.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U'
+    );
+    const {data:{session}}=await _deckSB.auth.getSession();
+    _deckUserId=session?.user?.id||null;
+  }catch(e){_deckSB=null;}
+  return _deckSB;
+}
+
+async function saveDecksToStorage(){
+  const sb=await getDeckClient();
+  if(sb&&_deckUserId){
+    // Save to Supabase — one row per user with all decks as JSON
+    try{
+      const {error}=await sb.from('decks').upsert(
+        {user_id:_deckUserId, data:JSON.stringify(SAVED_DECKS), updated_at:new Date().toISOString()},
+        {onConflict:'user_id'}
+      );
+      if(error)throw error;
+      return;
+    }catch(e){console.warn('Supabase deck save failed, falling back to local:',e);}
+  }
+  // Guest fallback — local storage
+  try{await window.storage.set('saved_decks',JSON.stringify(SAVED_DECKS));}catch(e){}
+}
+
+async function loadDecksFromStorage(){
+  const sb=await getDeckClient();
+  if(sb&&_deckUserId){
+    try{
+      const {data,error}=await sb.from('decks').select('data').eq('user_id',_deckUserId).maybeSingle();
+      if(!error&&data?.data){SAVED_DECKS=JSON.parse(data.data);renderDeckSelectOptions();return;}
+    }catch(e){console.warn('Supabase deck load failed, falling back to local:',e);}
+  }
+  // Guest fallback
+  try{const r=await window.storage.get('saved_decks');if(r&&r.value)SAVED_DECKS=JSON.parse(r.value);}catch(e){}
+}
 
 function generateRandomDeck(){
   const ids=Object.keys(DB).filter(id=>!DB[id].transformOnly&&!DB[id].isToken&&DB[id].type!=='herald');
@@ -1152,7 +1205,7 @@ function openDeckManager(){
     const bw=document.createElement('div');bw.style.cssText='display:flex;gap:5px';
     const eb=document.createElement('button');eb.className='btn-primary btn-sm';eb.textContent='✏ Edit';eb.onclick=()=>{loadDeckIntoBuilder(id);closeAllModals();};
     const db=document.createElement('button');db.className='btn-red btn-sm';db.textContent='🗑';
-    db.onclick=async()=>{if(confirm(`Delete "${deck.name}"?`)){delete SAVED_DECKS[id];await saveDecksToStorage();closeAllModals();renderDeckSelectOptions();}};
+    db.onclick=async()=>{if(confirm('Delete "'+deck.name+'"?')){delete SAVED_DECKS[id];await saveDecksToStorage();closeAllModals();renderDeckSelectOptions();}};
     bw.appendChild(eb);bw.appendChild(db);row.appendChild(bw);body.appendChild(row);
   });
   showModalEl('📂 My Decks',body);
@@ -1177,8 +1230,11 @@ async function saveDeck(){
   if(total>60){alert(`${total} cards — max 60.`);return;}
   const cards=[];builderDeck.forEach(e=>{for(let i=0;i<e.count;i++)cards.push(e.cid);});
   const id=builderDeck._editId||('deck_'+Date.now());
-  SAVED_DECKS[id]={name,cards};
+  SAVED_DECKS[id]={name,cards,updatedAt:new Date().toISOString()};
+  const saveStatus=document.getElementById('deck-save-status');
+  if(saveStatus){saveStatus.textContent='Saving...';saveStatus.style.color='#fbbf24';}
   await saveDecksToStorage();
+  if(saveStatus){saveStatus.textContent='✓ Saved to your profile';saveStatus.style.color='#22c55e';setTimeout(()=>saveStatus.textContent='',3000);}
   renderDeckSelectOptions();
   alert(`✓ "${name}" saved (${cards.length} cards)!`);
 }
@@ -3387,7 +3443,11 @@ function renderRulesCardGrid(cards){
 // ═══════════════════════════════════════════════════
 window.addEventListener('load',async()=>{
   await loadUploads();
-  await loadDecksFromStorage();
+  // Deck loading happens after auth resolves (see initAuth)
+  // For guests or if auth fails, load from local storage immediately
+  setTimeout(async()=>{
+    if(!_deckUserId) await loadDecksFromStorage();
+  }, 2000);
 });
 
 // ── BACKGROUND BINARY RAIN ────────────────────────
@@ -3447,6 +3507,9 @@ window.addEventListener('load',async()=>{
     const providerEl=document.getElementById('hud-provider');
 
     if(usernameEl)usernameEl.textContent=name;
+    // Load this user's decks from Supabase now that we have their session
+    await loadDecksFromStorage();
+    renderDeckSelectOptions();
 
     // Avatar
     if(avatarEl){
