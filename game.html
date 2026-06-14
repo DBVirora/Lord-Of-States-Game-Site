@@ -407,6 +407,37 @@ body{padding-top:46px;}
 .ach-card-desc{font-size:10px;color:#6b7280}
 .ach-card-reward{font-size:9px;color:#fbbf24;margin-top:3px;font-weight:700}
 .ach-card-status{font-size:9px;text-align:right;flex-shrink:0}
+
+/* ENERGY HUD */
+.energy-hud{display:inline-flex;align-items:center;gap:0;background:rgba(8,8,28,.85);border:1px solid rgba(124,58,237,.35);border-radius:8px;padding:3px 4px 3px 7px;cursor:pointer;transition:all .15s;backdrop-filter:blur(6px);font-family:'Share Tech Mono',monospace;}
+.energy-hud:hover{border-color:var(--violet2);background:rgba(124,58,237,.15);box-shadow:0 0 8px rgba(124,58,237,.25);}
+.energy-hud-total{display:flex;align-items:center;gap:4px;padding-right:6px;border-right:1px solid rgba(124,58,237,.2);}
+.energy-hud-icon{font-size:13px;}
+.energy-hud-amount{font-size:13px;font-weight:700;color:#fbbf24;text-shadow:0 0 6px rgba(251,191,36,.4);}
+.energy-hud-pips{display:flex;align-items:center;gap:2px;padding-left:5px;padding-right:3px;}
+.energy-hud-pip{display:flex;align-items:center;gap:2px;font-size:10px;color:#9ca3af;}
+.energy-hud-pip-dot{width:7px;height:7px;border-radius:50%;border:1px solid;display:inline-block;}
+.energy-hud-expand{font-size:9px;color:rgba(124,58,237,.5);margin-left:4px;}
+/* Expanded energy modal */
+.energy-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);z-index:200;align-items:center;justify-content:center;}
+.energy-modal.open{display:flex;}
+.energy-modal-card{background:rgba(8,8,28,.97);border:1px solid var(--border-v);border-radius:12px;padding:18px;width:380px;max-width:90vw;box-shadow:0 0 40px rgba(124,58,237,.25);position:relative;}
+.energy-modal-card::before,.energy-modal-card::after{content:'';position:absolute;width:12px;height:12px;border-color:var(--blue);border-style:solid;opacity:.5;}
+.energy-modal-card::before{top:6px;left:6px;border-width:1px 0 0 1px;}
+.energy-modal-card::after{bottom:6px;right:6px;border-width:0 1px 1px 0;}
+.energy-modal-title{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:3px;color:var(--blue);margin-bottom:14px;text-align:center;}
+.energy-modal-total{text-align:center;margin-bottom:16px;padding:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.25);border-radius:8px;}
+.energy-modal-total-num{font-size:32px;font-weight:700;color:#fbbf24;font-family:'Orbitron',sans-serif;text-shadow:0 0 12px rgba(251,191,36,.4);}
+.energy-modal-total-lbl{font-size:9px;color:#fbbf24;letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+.energy-modal-section{font-size:9px;color:#6b7280;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.energy-modal-list{display:flex;flex-direction:column;gap:5px;}
+.energy-modal-row{display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(0,0,0,.3);border:1px solid;border-radius:7px;}
+.energy-modal-row-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:2px solid rgba(255,255,255,.15);}
+.energy-modal-row-name{flex:1;font-size:11px;font-weight:700;text-transform:capitalize;}
+.energy-modal-row-amount{font-size:14px;font-weight:700;font-family:'Orbitron',sans-serif;}
+.energy-modal-empty{font-size:10px;color:#4b5563;text-align:center;padding:10px;font-style:italic;}
+.energy-modal-close{width:100%;padding:8px;margin-top:14px;background:rgba(100,120,160,.1);border:1px solid rgba(100,120,160,.3);border-radius:6px;color:#9ca3af;font-size:10px;letter-spacing:2px;cursor:pointer;transition:all .2s;font-family:'Share Tech Mono',monospace;}
+.energy-modal-close:hover{border-color:var(--violet2);color:#c4b5fd;}
 </style>
 </head>
 <body>
@@ -615,7 +646,7 @@ body{padding-top:46px;}
       <div style="display:flex;gap:3px" id="p2-prizes"></div>
       <div style="display:flex;gap:4px;align-items:center">
         <div id="p2-energy-wrap">
-          <div class="energy-badge">⚡<span id="p2-energy">5</span></div>
+          <div class="energy-hud" id="p2-energy-hud" onclick="openEnergyModal(2)" title="Click to view full energy breakdown"><div class="energy-hud-total"><span class="energy-hud-icon">⚡</span><span class="energy-hud-amount" id="p2-energy">5</span></div><div class="energy-hud-pips" id="p2-energy-pips"></div><span class="energy-hud-expand">▸</span></div>
           <div class="energy-breakdown" id="p2-color-energy"></div>
         </div>
         <div class="discard-badge" onclick="showDiscard(2)" title="Otherworld — recoverable discard pile">🗑<span id="p2-discard-count">0</span></div>
@@ -678,7 +709,7 @@ body{padding-top:46px;}
       <div style="display:flex;gap:3px" id="p1-prizes"></div>
       <div style="display:flex;gap:4px;align-items:center">
         <div id="p1-energy-wrap">
-          <div class="energy-badge">⚡<span id="p1-energy">5</span></div>
+          <div class="energy-hud" id="p1-energy-hud" onclick="openEnergyModal(1)" title="Click to view full energy breakdown"><div class="energy-hud-total"><span class="energy-hud-icon">⚡</span><span class="energy-hud-amount" id="p1-energy">5</span></div><div class="energy-hud-pips" id="p1-energy-pips"></div><span class="energy-hud-expand">▸</span></div>
           <div class="energy-breakdown" id="p1-color-energy"></div>
         </div>
         <div class="discard-badge" onclick="showDiscard(1)">🗑<span id="p1-discard-count">0</span></div>
@@ -3016,18 +3047,70 @@ function spendEnergy(p, amount, cardColor){
 }
 
 function renderColorEnergyBreakdown(p){
-  const el=document.getElementById('p'+p+'-color-energy');if(!el)return;
-  if(!G||!G.players||!G.players[p]){el.innerHTML='';return;}
+  // Render color pips inside the energy-hud pill (max 4 visible, +N if more)
+  const pipsEl=document.getElementById('p'+p+'-energy-pips');
+  if(!pipsEl||!G||!G.players||!G.players[p])return;
   const pl=G.players[p];
   const ce=pl.colorEnergy||{};
-  const entries=Object.entries(ce).filter(([c,v])=>v>0);
-  if(!entries.length){el.innerHTML='';return;}
-  el.innerHTML=entries.map(([col,amt])=>{
+  const entries=Object.entries(ce).filter(([c,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+  if(!entries.length){pipsEl.innerHTML='';return;}
+  const maxShow=4;
+  const shown=entries.slice(0,maxShow);
+  const hidden=entries.length-maxShow;
+  let html=shown.map(([col,amt])=>{
     const def=COLOR_DEFS[col];if(!def)return '';
-    return '<span class="energy-orb" style="border-color:'+def.hex+';color:'+def.hex+'">'
-      +'<span style="width:6px;height:6px;border-radius:50%;background:'+def.hex+';display:inline-block;margin-right:2px"></span>'
-      +amt+'</span>';
+    return '<span class="energy-hud-pip"><span class="energy-hud-pip-dot" style="border-color:'+def.hex+';background:'+def.hex+'33;"></span>'+amt+'</span>';
   }).join('');
+  if(hidden>0)html+='<span class="energy-hud-pip" style="color:#6b7280">+'+hidden+'</span>';
+  pipsEl.innerHTML=html;
+  // Legacy element if it exists - clear it
+  const old=document.getElementById('p'+p+'-color-energy');
+  if(old)old.innerHTML='';
+}
+
+function openEnergyModal(p){
+  if(!G||!G.players||!G.players[p])return;
+  const pl=G.players[p];
+  const ce=pl.colorEnergy||{};
+  // Title
+  const title=document.getElementById('energy-modal-title');
+  if(title)title.textContent='⚡ '+(p===1?'YOUR':'OPPONENT')+' ENERGY BANK';
+  // Total
+  const totalEl=document.getElementById('energy-modal-total');
+  if(totalEl)totalEl.textContent=pl.energy||0;
+  // Breakdown list
+  const listEl=document.getElementById('energy-modal-list');
+  if(listEl){
+    const entries=Object.entries(ce).filter(([c,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+    const totalColored=entries.reduce((s,[,v])=>s+v,0);
+    const generic=Math.max(0,(pl.energy||0)-totalColored);
+    if(!entries.length&&generic===0){
+      listEl.innerHTML='<div class="energy-modal-empty">No energy banked. Play energy cards or use locations to gain energy.</div>';
+    } else {
+      let html='';
+      entries.forEach(([col,amt])=>{
+        const def=COLOR_DEFS[col];if(!def)return;
+        html+='<div class="energy-modal-row" style="border-color:'+def.hex+'40">'
+          +'<span class="energy-modal-row-dot" style="background:'+def.hex+'"></span>'
+          +'<span class="energy-modal-row-name" style="color:'+def.hex+'">'+col+'</span>'
+          +'<span class="energy-modal-row-amount" style="color:'+def.hex+'">'+amt+'</span>'
+          +'</div>';
+      });
+      if(generic>0){
+        html+='<div class="energy-modal-row" style="border-color:rgba(251,191,36,.3)">'
+          +'<span class="energy-modal-row-dot" style="background:#fbbf24;border-color:#fbbf24"></span>'
+          +'<span class="energy-modal-row-name" style="color:#fbbf24">Generic ⚡</span>'
+          +'<span class="energy-modal-row-amount" style="color:#fbbf24">'+generic+'</span>'
+          +'</div>';
+      }
+      listEl.innerHTML=html;
+    }
+  }
+  document.getElementById('energy-modal').classList.add('open');
+}
+
+function closeEnergyModal(){
+  document.getElementById('energy-modal').classList.remove('open');
 }
 
 // ═══════════════════════════════════════════════════
@@ -4410,6 +4493,20 @@ window.addEventListener('load',async()=>{
     <div id="cel-log" style="max-height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:4px">
       <div style="font-size:11px;color:#4b5563;text-align:center;padding:10px">No earnings yet</div>
     </div>
+  </div>
+</div>
+
+<!-- ENERGY DETAIL MODAL -->
+<div class="energy-modal" id="energy-modal" onclick="if(event.target===this)closeEnergyModal()">
+  <div class="energy-modal-card">
+    <div class="energy-modal-title" id="energy-modal-title">⚡ ENERGY BANK</div>
+    <div class="energy-modal-total">
+      <div class="energy-modal-total-num" id="energy-modal-total">0</div>
+      <div class="energy-modal-total-lbl">Total Energy</div>
+    </div>
+    <div class="energy-modal-section">Color Breakdown</div>
+    <div class="energy-modal-list" id="energy-modal-list"></div>
+    <button class="energy-modal-close" onclick="closeEnergyModal()">[ CLOSE ]</button>
   </div>
 </div>
 </body>
