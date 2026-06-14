@@ -366,6 +366,23 @@ body{padding-top:46px;}
 .ds-pick-p2:hover{background:rgba(34,197,94,.18);border-color:#22c55e;}
 .ds-pick-random{background:rgba(8,8,28,.4);border-style:dashed;color:#6b7280;}
 .ds-pick-random:hover{color:#9ca3af;border-color:#4b5563;}
+
+/* CELESTIUM */
+.cel-badge{display:flex;align-items:center;gap:5px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:20px;padding:3px 10px;cursor:default;transition:all .2s;}
+.cel-badge:hover{border-color:rgba(251,191,36,.5);background:rgba(251,191,36,.12);}
+.cel-icon{width:18px;height:18px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+.cel-amount{font-size:12px;font-weight:700;color:#fbbf24;letter-spacing:.5px;font-family:'Share Tech Mono',monospace;}
+.cel-earn-popup{position:fixed;top:56px;right:14px;z-index:9999;background:rgba(8,8,28,.95);border:1px solid rgba(251,191,36,.4);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 0 20px rgba(251,191,36,.2);animation:cel-slide-in .3s ease,cel-fade-out .4s ease 2.6s forwards;pointer-events:none;}
+@keyframes cel-slide-in{from{transform:translateX(20px);opacity:0}to{transform:none;opacity:1}}
+@keyframes cel-fade-out{to{opacity:0;transform:translateY(-8px)}}
+.cel-earn-icon{width:28px;height:28px;border-radius:50%;object-fit:cover;}
+.cel-earn-text{display:flex;flex-direction:column;}
+.cel-earn-title{font-size:10px;color:rgba(251,191,36,.6);letter-spacing:1px;}
+.cel-earn-amount{font-size:16px;font-weight:700;color:#fbbf24;}
+/* Profile screen */
+.profile-stat-card{background:rgba(8,8,28,.7);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
+.profile-stat-val{font-size:22px;font-weight:700;color:#e2e8f0;font-family:'Orbitron',sans-serif;}
+.profile-stat-lbl{font-size:9px;color:#4b5563;letter-spacing:2px;margin-top:3px;text-transform:uppercase;}
 </style>
 </head>
 <body>
@@ -3661,6 +3678,154 @@ function renderRulesCardGrid(cards){
   }).join('');
 }
 
+
+// ═══════════════════════════════════════════════════
+// CELESTIUM CURRENCY SYSTEM
+// ═══════════════════════════════════════════════════
+const CEL_IMG='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png';
+let _celSB=null;
+let _celUserId=null;
+let _celData={celestium:0,wins:0,losses:0,matches:0,last_login:null,first_win_date:null};
+let _celLog=[];
+
+function initCelestium(sb,userId){
+  _celSB=sb;_celUserId=userId;
+}
+
+async function loadCelestium(){
+  if(!_celSB||!_celUserId)return;
+  try{
+    const {data,error}=await _celSB.from('profiles')
+      .select('celestium,wins,losses,matches,last_login,first_win_date,cel_log')
+      .eq('id',_celUserId).maybeSingle();
+    if(!error&&data){
+      _celData.celestium=data.celestium||0;
+      _celData.wins=data.wins||0;
+      _celData.losses=data.losses||0;
+      _celData.matches=data.matches||0;
+      _celData.last_login=data.last_login||null;
+      _celData.first_win_date=data.first_win_date||null;
+      _celLog=data.cel_log?JSON.parse(data.cel_log):[];
+    }
+    updateCelDisplay();
+    await checkDailyLogin();
+  }catch(e){console.warn('[CEL] load error:',e);}
+}
+
+async function saveCelestium(){
+  if(!_celSB||!_celUserId)return;
+  try{
+    await _celSB.from('profiles').update({
+      celestium:_celData.celestium,
+      wins:_celData.wins,
+      losses:_celData.losses,
+      matches:_celData.matches,
+      last_login:_celData.last_login,
+      first_win_date:_celData.first_win_date,
+      cel_log:JSON.stringify(_celLog.slice(-20)) // keep last 20 entries
+    }).eq('id',_celUserId);
+  }catch(e){console.warn('[CEL] save error:',e);}
+}
+
+async function awardCelestium(amount,reason){
+  _celData.celestium+=amount;
+  const entry={amount,reason,ts:new Date().toISOString()};
+  _celLog.unshift(entry);
+  updateCelDisplay();
+  showCelEarnPopup(amount,reason);
+  await saveCelestium();
+}
+
+function updateCelDisplay(){
+  const amt=_celData.celestium.toLocaleString();
+  const hudEl=document.getElementById('hud-cel-amount');
+  if(hudEl)hudEl.textContent=amt;
+  const profileEl=document.getElementById('profile-cel-amount');
+  if(profileEl)profileEl.textContent=amt;
+}
+
+function showCelEarnPopup(amount,reason){
+  // Remove existing popup
+  const old=document.getElementById('cel-earn-popup');if(old)old.remove();
+  const popup=document.createElement('div');
+  popup.id='cel-earn-popup';popup.className='cel-earn-popup';
+  popup.innerHTML='<img src="'+CEL_IMG+'" class="cel-earn-icon" alt="C"/>'
+    +'<div class="cel-earn-text">'
+    +'<div class="cel-earn-title">'+reason+'</div>'
+    +'<div class="cel-earn-amount">+'+amount+' Celestium</div>'
+    +'</div>';
+  document.body.appendChild(popup);
+  setTimeout(()=>popup.remove(),3200);
+}
+
+async function checkDailyLogin(){
+  const today=new Date().toDateString();
+  if(_celData.last_login===today)return; // already claimed today
+  _celData.last_login=today;
+  await awardCelestium(150,'Daily Login Bonus');
+}
+
+async function onMatchEnd(won){
+  _celData.matches++;
+  if(won){
+    _celData.wins++;
+    await awardCelestium(75,'Match Win');
+    // First win of the day bonus
+    const today=new Date().toDateString();
+    if(_celData.first_win_date!==today){
+      _celData.first_win_date=today;
+      await awardCelestium(100,'First Win of the Day');
+    }
+  } else {
+    _celData.losses++;
+    await saveCelestium(); // save stats even on loss
+  }
+}
+
+function refreshProfileScreen(){
+  // Username + avatar from HUD
+  const hudName=document.getElementById('hud-username')?.textContent||'Player';
+  const hudProv=document.getElementById('hud-provider')?.textContent||'';
+  const hudAv=document.getElementById('hud-avatar');
+  const profName=document.getElementById('profile-username');
+  const profProv=document.getElementById('profile-provider');
+  const profAv=document.getElementById('profile-avatar');
+  if(profName)profName.textContent=hudName;
+  if(profProv)profProv.textContent=hudProv;
+  if(profAv&&hudAv){profAv.innerHTML=hudAv.innerHTML;}
+  // Stats
+  const w=document.getElementById('profile-wins');if(w)w.textContent=_celData.wins;
+  const l=document.getElementById('profile-losses');if(l)l.textContent=_celData.losses;
+  const m=document.getElementById('profile-matches');if(m)m.textContent=_celData.matches;
+  updateCelDisplay();
+  // Daily status
+  const today=new Date().toDateString();
+  const dlStatus=document.getElementById('daily-login-status');
+  if(dlStatus)dlStatus.textContent=_celData.last_login===today?'✓ Claimed today':'Available tomorrow';
+  if(dlStatus)dlStatus.style.color=_celData.last_login===today?'#22c55e':'#6b7280';
+  const fwStatus=document.getElementById('first-win-status');
+  if(fwStatus)fwStatus.textContent=_celData.first_win_date===today?'✓ Claimed today':'Play to earn!';
+  if(fwStatus)fwStatus.style.color=_celData.first_win_date===today?'#22c55e':'#6b7280';
+  // Log
+  const logEl=document.getElementById('cel-log');
+  if(logEl){
+    if(!_celLog.length){
+      logEl.innerHTML='<div style="font-size:11px;color:#4b5563;text-align:center;padding:10px">No earnings yet</div>';
+    } else {
+      logEl.innerHTML=_celLog.slice(0,15).map(e=>{
+        const d=new Date(e.ts);
+        const time=d.toLocaleDateString()+' '+d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
+        return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04)">'
+          +'<img src="'+CEL_IMG+'" style="width:14px;height:14px;border-radius:50%;object-fit:cover;flex-shrink:0"/>'
+          +'<div style="flex:1;font-size:10px;color:#9ca3af">'+e.reason+'</div>'
+          +'<div style="font-size:11px;font-weight:700;color:#fbbf24">+'+e.amount+'</div>'
+          +'<div style="font-size:9px;color:#4b5563;white-space:nowrap">'+time+'</div>'
+          +'</div>';
+      }).join('');
+    }
+  }
+}
+
 // ═══════════════════════════════════════════════════
 // STARTUP
 // ═══════════════════════════════════════════════════
@@ -3744,6 +3909,8 @@ window.addEventListener('load',async()=>{
       initDeckStorage(sb,session.user.id);
       await loadDecksFromStorage();
       renderDeckSelectOptions();
+      initCelestium(sb,session.user.id);
+      await loadCelestium();
       // Sign out
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){
@@ -3800,6 +3967,8 @@ window.addEventListener('load',async()=>{
       initDeckStorage(sb,session.user.id);
       await loadDecksFromStorage();
       renderDeckSelectOptions();
+      initCelestium(sb,session.user.id);
+      await loadCelestium();
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){console.error('[AUTH] error:',e);window.signOutUser=function(){window.location.replace(LOGIN);};}
   }
@@ -3889,6 +4058,69 @@ window.addEventListener('load',async()=>{
     <div class="ps-result" id="ps-result"></div>
     <button class="btn-primary" id="ps-roll-btn" style="width:100%;font-size:13px;letter-spacing:2px" onclick="doPowerStruggleRoll()">ROLL DICE</button>
     <button class="btn-gray btn-sm" id="ps-done-btn" style="width:100%;margin-top:6px;display:none" onclick="finishPowerStruggle()">Continue →</button>
+  </div>
+</div>
+
+<!-- PROFILE SCREEN -->
+<div id="profile-screen" class="screen" style="padding:20px;max-width:600px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+    <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
+    <div style="font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:4px;color:var(--blue)">PROFILE</div>
+  </div>
+
+  <!-- Avatar + Username -->
+  <div style="display:flex;align-items:center;gap:16px;background:rgba(8,8,28,.7);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px">
+    <div id="profile-avatar" style="width:56px;height:56px;border-radius:50%;border:2px solid rgba(0,180,255,.4);background:#0d0d2a;display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden;flex-shrink:0">?</div>
+    <div>
+      <div style="font-size:18px;font-weight:700;color:#e2e8f0;font-family:'Orbitron',sans-serif" id="profile-username">—</div>
+      <div style="font-size:10px;color:#4b5563;margin-top:3px;letter-spacing:1px" id="profile-provider">—</div>
+    </div>
+    <div class="cel-badge" style="margin-left:auto;padding:6px 14px">
+      <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" style="width:22px;height:22px;border-radius:50%;object-fit:cover" alt="C"/>
+      <span style="font-size:16px;font-weight:700;color:#fbbf24;font-family:'Orbitron',sans-serif" id="profile-cel-amount">—</span>
+      <span style="font-size:9px;color:rgba(251,191,36,.5);margin-left:2px">CELESTIUM</span>
+    </div>
+  </div>
+
+  <!-- Stats grid -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="profile-wins">—</div>
+      <div class="profile-stat-lbl">Wins</div>
+    </div>
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="profile-losses">—</div>
+      <div class="profile-stat-lbl">Losses</div>
+    </div>
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="profile-matches">—</div>
+      <div class="profile-stat-lbl">Matches</div>
+    </div>
+  </div>
+
+  <!-- Daily rewards status -->
+  <div style="background:rgba(8,8,28,.7);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px">
+    <div style="font-size:10px;font-weight:700;color:var(--violet2);letter-spacing:2px;margin-bottom:10px">⚡ DAILY REWARDS</div>
+    <div style="display:flex;gap:10px">
+      <div style="flex:1;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:10px;text-align:center">
+        <div style="font-size:11px;color:#fbbf24;font-weight:700">Daily Login</div>
+        <div style="font-size:18px;font-weight:700;color:#fbbf24;font-family:'Orbitron',sans-serif">+150</div>
+        <div style="font-size:9px;margin-top:4px" id="daily-login-status" style="color:#4b5563">—</div>
+      </div>
+      <div style="flex:1;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:10px;text-align:center">
+        <div style="font-size:11px;color:#fbbf24;font-weight:700">First Win</div>
+        <div style="font-size:18px;font-weight:700;color:#fbbf24;font-family:'Orbitron',sans-serif">+100</div>
+        <div style="font-size:9px;margin-top:4px" id="first-win-status">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Celestium log -->
+  <div style="background:rgba(8,8,28,.7);border:1px solid var(--border);border-radius:12px;padding:14px">
+    <div style="font-size:10px;font-weight:700;color:var(--violet2);letter-spacing:2px;margin-bottom:10px">📋 RECENT EARNINGS</div>
+    <div id="cel-log" style="max-height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:4px">
+      <div style="font-size:11px;color:#4b5563;text-align:center;padding:10px">No earnings yet</div>
+    </div>
   </div>
 </div>
 </body>
