@@ -385,7 +385,7 @@ body{padding-top:46px;}
 .profile-stat-lbl{font-size:9px;color:#4b5563;letter-spacing:2px;margin-top:3px;text-transform:uppercase;}
 
 /* ACHIEVEMENTS */
-.ach-popup{position:fixed;bottom:20px;right:20px;z-index:9999;background:rgba(8,8,28,.97);border:1px solid rgba(251,191,36,.5);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 0 30px rgba(251,191,36,.25);animation:ach-slide .4s ease,ach-out .5s ease 4.5s forwards;pointer-events:none;max-width:300px;}
+.ach-popup{position:fixed;bottom:20px;right:20px;z-index:9999;background:rgba(8,8,28,.97);border:1px solid rgba(251,191,36,.5);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 0 30px rgba(251,191,36,.25);animation:ach-slide .4s ease,ach-out .5s ease 4.5s forwards;pointer-events:none;max-width:320px;min-width:260px;}
 @keyframes ach-slide{from{transform:translateX(60px);opacity:0}to{transform:none;opacity:1}}
 @keyframes ach-out{to{opacity:0;transform:translateY(10px)}}
 .ach-icon-wrap{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#f59e0b);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;box-shadow:0 0 12px rgba(251,191,36,.4);}
@@ -398,7 +398,7 @@ body{padding-top:46px;}
 .ach-card{display:flex;align-items:center;gap:12px;padding:12px;background:rgba(8,8,28,.6);border:1px solid;border-radius:10px;transition:all .2s;}
 .ach-card.unlocked{border-color:rgba(251,191,36,.35);background:rgba(251,191,36,.05);}
 .ach-card.locked{border-color:rgba(75,85,99,.3);opacity:.55;filter:grayscale(.7);}
-.ach-card-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.ach-card-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
 .ach-card.unlocked .ach-card-icon{background:linear-gradient(135deg,#fbbf24,#f59e0b);box-shadow:0 0 10px rgba(251,191,36,.3);}
 .ach-card.locked .ach-card-icon{background:rgba(55,65,81,.4);}
 .ach-card-info{flex:1}
@@ -3899,11 +3899,21 @@ function refreshProfileScreen(){
 // ACHIEVEMENT SYSTEM
 // ═══════════════════════════════════════════════════
 const ACHIEVEMENTS={
+  step_into_courts:{
+    id:'step_into_courts',
+    title:"Step Into the Courts",
+    desc:"Enter your first match in any game mode.",
+    icon:'⚔️',
+    img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Achivements%20emblems/Step%20Into%20the%20Courts%20%231%20ACH.png',
+    reward:50,
+    check:()=>_achData.has_entered_match===true
+  },
   new_beginnings:{
     id:'new_beginnings',
     title:"Architect of Fate",
     desc:"Create your first full deck (60 cards).",
     icon:'🃏',
+    img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Achivements%20emblems/Architect%20of%20Fate%20%232%20ACH.png',
     reward:75,
     check:()=>Object.values(SAVED_DECKS).some(d=>d.cards&&d.cards.length>=60)
   },
@@ -3912,6 +3922,7 @@ const ACHIEVEMENTS={
     title:"First Light of the Cosmos",
     desc:"Win your first match.",
     icon:'⭐',
+    img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Achivements%20emblems/First%20Light%20of%20the%20Cosmos%20%233%20ACH.png',
     reward:175,
     check:()=>_celData.wins>=1
   },
@@ -3920,16 +3931,9 @@ const ACHIEVEMENTS={
     title:"The First Transformation",
     desc:"Transform a character for the first time.",
     icon:'⚡',
+    img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Achivements%20emblems/The%20First%20Transformation%20%234%20ACH.png',
     reward:100,
     check:()=>_achData.has_transformed===true
-  },
-  step_into_courts:{
-    id:'step_into_courts',
-    title:"Step Into the Courts",
-    desc:"Enter your first match in any game mode.",
-    icon:'⚔️',
-    reward:50,
-    check:()=>_achData.has_entered_match===true
   },
 };
 
@@ -3968,10 +3972,13 @@ function showAchievementPopup(ach){
   const old=document.getElementById('ach-popup');if(old)old.remove();
   const popup=document.createElement('div');
   popup.id='ach-popup';popup.className='ach-popup';
+  const iconHtml=ach.img
+    ?'<img src="'+ach.img+'" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid rgba(251,191,36,.5);flex-shrink:0" alt="'+ach.title+'"/>'
+    :'<div class="ach-icon-wrap">'+ach.icon+'</div>';
   popup.innerHTML=
-    '<div class="ach-icon-wrap">'+ach.icon+'</div>'
+    iconHtml
     +'<div class="ach-text">'
-    +'<div class="ach-label">Achievement Unlocked!</div>'
+    +'<div class="ach-label">🏅 Achievement Unlocked!</div>'
     +'<div class="ach-title">'+ach.title+'</div>'
     +'<div class="ach-desc">'+ach.desc+'</div>'
     +'<div class="ach-reward">+'+ach.reward+' Celestium</div>'
@@ -4000,8 +4007,12 @@ function renderAchievementsSection(){
     const unlockedDate=_achData['ach_'+ach.id]?new Date(_achData['ach_'+ach.id]).toLocaleDateString():'';
     const card=document.createElement('div');
     card.className='ach-card '+(unlocked?'unlocked':'locked');
+    // Icon: use image if available, fallback to emoji
+    const achIconHtml=ach.img
+      ?'<img src="'+ach.img+'" style="width:44px;height:44px;border-radius:50%;object-fit:cover;'+(unlocked?'border:2px solid rgba(251,191,36,.5);':'border:2px solid rgba(75,85,99,.3);filter:grayscale(1);opacity:.5;')+'"/>'
+      :'<div class="ach-card-icon">'+(unlocked?ach.icon:'🔒')+'</div>';
     card.innerHTML=
-      '<div class="ach-card-icon">'+ach.icon+'</div>'
+      achIconHtml
       +'<div class="ach-card-info">'
       +'<div class="ach-card-title">'+ach.title+'</div>'
       +'<div class="ach-card-desc">'+ach.desc+'</div>'
@@ -4009,8 +4020,8 @@ function renderAchievementsSection(){
       +'</div>'
       +'<div class="ach-card-status">'
       +(unlocked
-        ?'<div style="color:#fbbf24;font-size:16px">✓</div><div style="font-size:8px;color:#6b7280">'+unlockedDate+'</div>'
-        :'<div style="color:#374151;font-size:16px">🔒</div>'
+        ?'<div style="color:#fbbf24;font-size:18px">✓</div><div style="font-size:8px;color:#6b7280;white-space:nowrap">'+unlockedDate+'</div>'
+        :'<div style="color:#374151;font-size:18px">🔒</div><div style="font-size:8px;color:#374151">Locked</div>'
       )
       +'</div>';
     el.appendChild(card);
