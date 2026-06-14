@@ -1093,49 +1093,75 @@ let pendingMode='',pendingP1Deck=null,pendingP2Deck=null;
 // Falls back to window.storage for guests.
 
 // ── DECK STORAGE VIA SUPABASE ─────────────────────
-// _deckSB and _deckUserId are set by initAuth() once session is confirmed.
-// Never create a separate client — reuse the one from auth.
+// ── DECK STORAGE (Supabase per-user) ─────────────
+// Uses a self-contained client that reads session fresh each time.
+// This avoids any client-sharing timing issues.
+const _DECK_SURL='https://alvldkihwuhgjbgdpbkg.supabase.co';
+const _DECK_SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U';
 let _deckSB=null;
 let _deckUserId=null;
 
-// Called by initAuth after session confirmed — sets shared client + userId
-function initDeckStorage(sb, userId){
+function initDeckStorage(sb,userId){
   _deckSB=sb;
   _deckUserId=userId;
+  console.log('[DECKS] initDeckStorage: userId=',userId,'sb=',!!sb);
+}
+
+async function getDeckSB(){
+  // Always try the shared client first
+  if(_deckSB&&_deckUserId)return {sb:_deckSB,uid:_deckUserId};
+  // Fall back: create fresh client and get session
+  try{
+    const sb=window.supabase.createClient(_DECK_SURL,_DECK_SKEY);
+    const {data:{session}}=await sb.auth.getSession();
+    if(session){
+      _deckSB=sb;_deckUserId=session.user.id;
+      console.log('[DECKS] getDeckSB: recovered session uid=',_deckUserId);
+      return {sb:_deckSB,uid:_deckUserId};
+    }
+  }catch(e){console.warn('[DECKS] getDeckSB error:',e);}
+  return null;
 }
 
 async function saveDecksToStorage(){
-  console.log('[DECKS] saveDecksToStorage called. _deckUserId=',_deckUserId,'_deckSB=',!!_deckSB);
-  if(_deckSB&&_deckUserId){
+  const client=await getDeckSB();
+  console.log('[DECKS] save: client=',!!client,'decks=',Object.keys(SAVED_DECKS).length);
+  if(client){
     try{
-      const payload={user_id:_deckUserId,data:JSON.stringify(SAVED_DECKS),updated_at:new Date().toISOString()};
-      console.log('[DECKS] upserting to Supabase, deck count:',Object.keys(SAVED_DECKS).length);
-      const {error}=await _deckSB.from('decks').upsert(payload,{onConflict:'user_id'});
-      if(error){console.error('[DECKS] upsert error:',error);throw error;}
-      console.log('[DECKS] saved successfully to Supabase');
-      return;
-    }catch(e){console.warn('[DECKS] Supabase save failed:',e);}
+      const payload={user_id:client.uid,data:JSON.stringify(SAVED_DECKS),updated_at:new Date().toISOString()};
+      const {error}=await client.sb.from('decks').upsert(payload,{onConflict:'user_id'});
+      if(error){console.error('[DECKS] upsert error:',JSON.stringify(error));throw error;}
+      console.log('[DECKS] SAVED to Supabase successfully for uid=',client.uid);
+      return true;
+    }catch(e){console.error('[DECKS] save failed:',e);}
   }
+  // Local fallback
   console.log('[DECKS] falling back to local storage');
   try{await window.storage.set('saved_decks',JSON.stringify(SAVED_DECKS));}catch(e){}
+  return false;
 }
 
 async function loadDecksFromStorage(){
-  console.log('[DECKS] loadDecksFromStorage called. _deckUserId=',_deckUserId,'_deckSB=',!!_deckSB);
-  if(_deckSB&&_deckUserId){
+  const client=await getDeckSB();
+  console.log('[DECKS] load: client=',!!client);
+  if(client){
     try{
-      const {data,error}=await _deckSB.from('decks').select('data').eq('user_id',_deckUserId).maybeSingle();
-      console.log('[DECKS] load result: data=',!!data,'error=',error?.message);
-      if(!error&&data?.data){
+      const {data,error}=await client.sb.from('decks').select('data').eq('user_id',client.uid).maybeSingle();
+      console.log('[DECKS] load result: data=',!!data?.data,'error=',error?.message||'none');
+      if(!error&&data&&data.data){
         SAVED_DECKS=JSON.parse(data.data);
-        console.log('[DECKS] loaded from Supabase:',Object.keys(SAVED_DECKS).length,'decks');
+        console.log('[DECKS] LOADED from Supabase:',Object.keys(SAVED_DECKS).length,'decks');
         renderDeckSelectOptions();
         return;
       }
-    }catch(e){console.warn('[DECKS] Supabase load failed:',e);}
+      if(!data||!data.data){
+        console.log('[DECKS] no decks found in Supabase for this user yet');
+      }
+    }catch(e){console.error('[DECKS] load failed:',e);}
   }
+  // Local fallback
   console.log('[DECKS] falling back to local storage');
-  try{const r=await window.storage.get('saved_decks');if(r&&r.value)SAVED_DECKS=JSON.parse(r.value);}catch(e){}
+  try{const r=await window.storage.get('saved_decks');if(r&&r.value){SAVED_DECKS=JSON.parse(r.value);console.log('[DECKS] loaded from local:',Object.keys(SAVED_DECKS).length,'decks');}}catch(e){}
 }
 
 function generateRandomDeck(){
@@ -1227,8 +1253,12 @@ async function saveDeck(){
   SAVED_DECKS[id]={name,cards,updatedAt:new Date().toISOString()};
   const saveStatus=document.getElementById('deck-save-status');
   if(saveStatus){saveStatus.textContent='Saving...';saveStatus.style.color='#fbbf24';}
-  await saveDecksToStorage();
-  if(saveStatus){saveStatus.textContent='✓ Saved to your profile';saveStatus.style.color='#22c55e';setTimeout(()=>saveStatus.textContent='',3000);}
+  const saved=await saveDecksToStorage();
+  if(saveStatus){
+    if(saved){saveStatus.textContent='✓ Saved to your profile';saveStatus.style.color='#22c55e';}
+    else{saveStatus.textContent='⚠ Saved locally (not logged in)';saveStatus.style.color='#f59e0b';}
+    setTimeout(()=>saveStatus.textContent='',4000);
+  }
   renderDeckSelectOptions();
   alert(`✓ "${name}" saved (${cards.length} cards)!`);
 }
@@ -3593,20 +3623,16 @@ window.addEventListener('load',async()=>{
   async function go(session){
     if(handled)return;
     handled=true;
-    if(!session){console.log('[AUTH] no session, redirecting');window.location.replace(LOGIN);return;}
+    if(!session){console.log('[AUTH] no session -> login');window.location.replace(LOGIN);return;}
     try{
-      console.log('[AUTH] session uid='+session.user.id);
-      // Username
+      console.log('[AUTH] uid=',session.user.id);
       var pr=await sb.from('profiles').select('username').eq('id',session.user.id).maybeSingle();
       var name=(pr.data&&pr.data.username)||session.user.email||'Player';
-      // Provider
       var ids=session.user.identities||[];
-      var prov=session.user.is_anonymous?'anonymous':ids.length>0?(ids[0].provider||'email'):(session.user.app_metadata&&session.user.app_metadata.provider)||'email';
-      // Avatar
+      var prov=session.user.is_anonymous?'anonymous':ids.length>0?(ids[0].provider||'email'):((session.user.app_metadata&&session.user.app_metadata.provider)||'email');
       var meta=session.user.user_metadata||{};
       var avu=meta.avatar_url||meta.picture||null;
       console.log('[AUTH] name='+name+' prov='+prov);
-      // HUD
       var uel=document.getElementById('hud-username');if(uel)uel.textContent=name;
       var ael=document.getElementById('hud-avatar');
       if(ael){
@@ -3614,66 +3640,50 @@ window.addEventListener('load',async()=>{
         else{ael.textContent='?';}
       }
       var pel=document.getElementById('hud-provider');
-      if(pel){
-        var lbl={discord:'Discord',google:'Google',email:'Email',anonymous:'Guest'};
-        pel.textContent=lbl[prov]||prov;
-        pel.className='hud-provider '+(lbl[prov]?prov:'email');
-      }
-      // Decks
+      if(pel){var lbl={discord:'Discord',google:'Google',email:'Email',anonymous:'Guest'};pel.textContent=lbl[prov]||prov;pel.className='hud-provider '+(lbl[prov]?prov:'email');}
       initDeckStorage(sb,session.user.id);
       await loadDecksFromStorage();
       renderDeckSelectOptions();
-      // Sign out
-      window.signOutUser=async function(){
-        sessionStorage.removeItem('vcu_access_token');
-        sessionStorage.removeItem('vcu_refresh_token');
-        await sb.auth.signOut();
-        window.location.replace(LOGIN);
-      };
+      window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){console.error('[AUTH] error:',e);window.signOutUser=function(){window.location.replace(LOGIN);};}
   }
 
   async function init(){
-    // Step 1: Check sessionStorage for tokens passed from callback.html
-    var accessToken=sessionStorage.getItem('vcu_access_token');
-    var refreshToken=sessionStorage.getItem('vcu_refresh_token');
-
-    if(accessToken&&refreshToken){
-      console.log('[AUTH] found tokens in sessionStorage, setting session');
-      // Clear them so they are not reused
-      sessionStorage.removeItem('vcu_access_token');
-      sessionStorage.removeItem('vcu_refresh_token');
-      // Set the session manually using the tokens
-      var res=await sb.auth.setSession({access_token:accessToken,refresh_token:refreshToken});
-      console.log('[AUTH] setSession result:',res.data&&res.data.session?'ok':'failed',res.error?res.error.message:'');
-      if(res.data&&res.data.session){
-        go(res.data.session);
-        return;
+    // Step 1: Check URL hash for tokens passed from callback.html
+    var hash=window.location.hash;
+    if(hash&&hash.includes('access_token')){
+      console.log('[AUTH] found tokens in URL hash');
+      var params=new URLSearchParams(hash.replace('#',''));
+      var accessToken=params.get('access_token');
+      var refreshToken=params.get('refresh_token');
+      // Clear hash from URL without reloading
+      window.history.replaceState(null,'',window.location.pathname);
+      if(accessToken&&refreshToken){
+        try{
+          var res=await sb.auth.setSession({access_token:accessToken,refresh_token:refreshToken});
+          console.log('[AUTH] setSession:',res.data&&res.data.session?'OK':'failed',res.error?res.error.message:'');
+          if(res.data&&res.data.session){go(res.data.session);return;}
+        }catch(e){console.error('[AUTH] setSession error:',e);}
       }
     }
 
-    // Step 2: Try getSession (works if Supabase persisted to localStorage)
-    var r=await sb.auth.getSession();
-    console.log('[AUTH] getSession:',r.data&&r.data.session?'found':'null');
-    if(r.data&&r.data.session){
-      go(r.data.session);
-      return;
-    }
+    // Step 2: Check existing session in localStorage
+    try{
+      var r=await sb.auth.getSession();
+      console.log('[AUTH] getSession:',r.data&&r.data.session?'found uid='+r.data.session.user.id:'null');
+      if(r.data&&r.data.session){go(r.data.session);return;}
+    }catch(e){console.error('[AUTH] getSession error:',e);}
 
-    // Step 3: Wait for onAuthStateChange INITIAL_SESSION
-    console.log('[AUTH] waiting for onAuthStateChange...');
+    // Step 3: Listen for auth state
     sb.auth.onAuthStateChange(function(evt,sess){
-      console.log('[AUTH] event:',evt,'sess:',sess?sess.user.id:'null');
-      if((evt==='INITIAL_SESSION'||evt==='SIGNED_IN')&&sess){go(sess);}
+      console.log('[AUTH] event:',evt,sess?sess.user.id:'null');
+      if((evt==='SIGNED_IN'||evt==='TOKEN_REFRESHED')&&sess){go(sess);}
       else if(evt==='SIGNED_OUT'){window.location.replace(LOGIN);}
     });
 
     // Final fallback
     setTimeout(function(){
-      if(!handled){
-        console.log('[AUTH] final fallback - no session found');
-        window.location.replace(LOGIN);
-      }
+      if(!handled){console.log('[AUTH] timeout - no session');window.location.replace(LOGIN);}
     },5000);
   }
 
