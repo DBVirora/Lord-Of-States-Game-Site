@@ -2738,18 +2738,29 @@ function doPhase(ph){
   renderAll();
 }
 
+let _endingTurn=false;
 function execEnd(){
-  // Power Up: if attack phase was never entered or no attacks made, +2 energy
+  if(_endingTurn)return; // prevent double-firing
+  _endingTurn=true;
+  const p=G.activePlayer;
+  // Power Up: if no attacks made this turn, +2 energy
   const didAttack=G.players[1].field.some(f=>(f.attacksThisTurn||0)>0)||(G.players[1].herald?.attacksThisTurn||0)>0;
-  const attackPhaseUsed=G.phasesDone.includes('attack');
-  if(!didAttack&&G.activePlayer===1){
+  if(p===1&&!didAttack){
     G.players[1].energy+=2;
     log('⚡ Power Up! Attack skipped — +2 Energy!','gain');
   }
-  endTurnFx(G.activePlayer);log(`P${G.activePlayer} ends turn.`,'info');
-  const nx=G.activePlayer===1?2:1;
-  G.activePlayer=nx;G.turn++;G.phase='draw';G.phasesDone=[];G.selectedAttacker=null;
-  renderAll();if(gameMode!=='pvp'&&G.activePlayer===2)setTimeout(runAI,700);
+  endTurnFx(p);
+  log('P'+p+' ends turn.','info');
+  const nx=p===1?2:1;
+  G.activePlayer=nx;
+  G.turn++;
+  G.phase='draw';
+  G.phasesDone=[];
+  G.selectedAttacker=null;
+  G.heraldAttacking=false;
+  _endingTurn=false;
+  renderAll();
+  if(gameMode!=='pvp'&&nx===2)setTimeout(runAI,700);
 }
 
 function endTurnFx(p){
@@ -3013,7 +3024,9 @@ function playEnergyCard(p, cid){
     }
   }
   if(pl.energyCardPlayedThisTurn){log('Already played an Energy Card this turn.','dmg');return;}
-  if(!pl.hand.includes(cid)){log('Energy Card not in hand.','dmg');return;}
+  // Energy cards in hand are FC objects — find by cid property
+  const ecIdx=pl.hand.findIndex(fc=>fc.cid===cid);
+  if(ecIdx===-1){log('Energy Card not in hand.','dmg');return;}
   // Apply effect
   const gained=c.energyGain||1;
   pl.energy+=gained;
@@ -3024,8 +3037,7 @@ function playEnergyCard(p, cid){
   }
   pl.energyCardPlayedThisTurn=true;
   // Remove from hand — find by cid since energy cards are in hand as fc objects
-  const handIdx=pl.hand.findIndex(f=>f.cid===cid);
-  if(handIdx>-1)pl.hand.splice(handIdx,1);
+  pl.hand.splice(ecIdx,1);
   if(!pl.discard)pl.discard=[];
   pl.discard.push(cid);
   log(c.name+': +'+gained+'⚡ (total: '+pl.energy+'⚡)','gain');
