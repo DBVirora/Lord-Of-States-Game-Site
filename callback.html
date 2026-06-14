@@ -31,91 +31,90 @@ body{background:#04040f;color:#00d4ff;font-family:'Share Tech Mono',monospace;mi
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL      = 'https://alvldkihwuhgjbgdpbkg.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U';
-const SETUP_URL         = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/setup.html';
-const GAME_URL          = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/game.html';
-const LOGIN_URL         = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/';
-const MUSIC_SRC = 'https://alvldkihwuhgjbgdpbkg.supabase.co/storage/v1/object/sign/Lord%20Of%20States%20Website%20Assets/Audio/LoginMusic.mp3?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8wNjM4YmZjZS05YzliLTRjMjYtOTFhNy1iNGM2OGZhN2NkMDciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMb3JkIE9mIFN0YXRlcyBXZWJzaXRlIEFzc2V0cy9BdWRpby9Mb2dpbk11c2ljLm1wMyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODEzMjE2MjcsImV4cCI6NDkzNDkyMTYyN30.h_lT9s3j7K70bGaOy3TE_JjRU_3xHyILAnXIbrGNkyg';
-const MUSIC_KEY         = 'vcu_music_pos';
-const MUSIC_MUTED_KEY   = 'vcu_music_muted';
+var SUPABASE_URL      = 'https://alvldkihwuhgjbgdpbkg.supabase.co';
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U';
+var SETUP_URL  = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/setup.html';
+var GAME_URL   = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/game.html';
+var LOGIN_URL  = 'https://dbvirora.github.io/Lord-Of-States-Game-Site/';
+var MUSIC_SRC  = 'https://alvldkihwuhgjbgdpbkg.supabase.co/storage/v1/object/sign/Lord%20Of%20States%20Website%20Assets/Audio/LoginMusic.mp3?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8wNjM4YmZjZS05YzliLTRjMjYtOTFhNy1iNGM2OGZhN2NkMDciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJMb3JkIE9mIFN0YXRlcyBXZWJzaXRlIEFzc2V0cy9BdWRpby9Mb2dpbk11c2ljLm1wMyIsInNjb3BlIjoiZG93bmxvYWQiLCJpYXQiOjE3ODEzMjE2MjcsImV4cCI6NDkzNDkyMTYyN30.h_lT9s3j7K70bGaOy3TE_JjRU_3xHyILAnXIbrGNkyg';
+var MUSIC_KEY  = 'vcu_music_pos';
+var MUSIC_KEY2 = 'vcu_music_muted';
 
-// ── MUSIC RESUME ──────────────────────────────────
-let audio = null;
+// ── MUSIC ─────────────────────────────────────────
+var audio=null;
 function initMusic(){
-  audio = new Audio(MUSIC_SRC);
-  audio.loop = false;
-  audio.volume = 0.35;
-  const muted = sessionStorage.getItem(MUSIC_MUTED_KEY) === 'true';
-  audio.muted = muted;
-  document.getElementById('music-btn').textContent = muted ? '🔇' : '🔊';
-  const savedPos = parseFloat(sessionStorage.getItem(MUSIC_KEY) || '0');
-  audio.addEventListener('loadedmetadata', () => {
-    if(savedPos > 0 && savedPos < audio.duration) audio.currentTime = savedPos;
-    audio.play().catch(() => {});
+  audio=new Audio(MUSIC_SRC);audio.loop=false;audio.volume=0.35;
+  var muted=sessionStorage.getItem(MUSIC_KEY2)==='true';
+  audio.muted=muted;
+  document.getElementById('music-btn').textContent=muted?'🔇':'🔊';
+  var pos=parseFloat(sessionStorage.getItem(MUSIC_KEY)||'0');
+  audio.addEventListener('loadedmetadata',function(){
+    if(pos>0&&pos<audio.duration)audio.currentTime=pos;
+    audio.play().catch(function(){});
   });
-  audio.addEventListener('ended', () => {
-    sessionStorage.setItem(MUSIC_KEY, '0');
-    audio.currentTime = 0;
-    audio.play().catch(() => {});
+  audio.addEventListener('ended',function(){
+    sessionStorage.setItem(MUSIC_KEY,'0');
+    audio.currentTime=0;audio.play().catch(function(){});
   });
-  setInterval(() => {
-    if(audio && !audio.paused) sessionStorage.setItem(MUSIC_KEY, audio.currentTime.toString());
-  }, 1000);
+  setInterval(function(){if(audio&&!audio.paused)sessionStorage.setItem(MUSIC_KEY,audio.currentTime.toString());},1000);
   audio.load();
 }
-window.addEventListener('beforeunload', () => {
-  if(audio) sessionStorage.setItem(MUSIC_KEY, audio.currentTime.toString());
+window.addEventListener('beforeunload',function(){if(audio)sessionStorage.setItem(MUSIC_KEY,audio.currentTime.toString());});
+document.getElementById('music-btn').addEventListener('click',function(){
+  if(!audio)return;audio.muted=!audio.muted;
+  sessionStorage.setItem(MUSIC_KEY2,audio.muted.toString());
+  document.getElementById('music-btn').textContent=audio.muted?'🔇':'🔊';
 });
-document.getElementById('music-btn').addEventListener('click', () => {
-  if(!audio) return;
-  audio.muted = !audio.muted;
-  sessionStorage.setItem(MUSIC_MUTED_KEY, audio.muted.toString());
-  document.getElementById('music-btn').textContent = audio.muted ? '🔇' : '🔊';
-});
-// Auto-start music resuming from saved position
-setTimeout(() => initMusic(), 100);
+setTimeout(function(){initMusic();},100);
 
 // ── AUTH ──────────────────────────────────────────
-const statusEl = document.getElementById('status-msg');
-function setStatus(msg){ statusEl.textContent = msg; }
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-let routed = false;
+var statusEl=document.getElementById('status-msg');
+function setStatus(msg){statusEl.textContent=msg;}
+var sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+var routed=false;
 
 async function routeUser(session){
-  if(routed) return;
-  routed = true;
+  if(routed)return;
+  routed=true;
   setStatus('Checking profile...');
-  try {
-    const { data: profile } = await sb.from('profiles').select('username').eq('id', session.user.id).maybeSingle();
-    const hasUsername = profile && typeof profile.username === 'string' && profile.username.trim().length >= 3;
-    if(hasUsername){
-      setStatus('Welcome back! Entering game...');
-      setTimeout(() => window.location.replace(GAME_URL), 600);
-    } else {
-      setStatus('First time here — setting up your profile...');
-      setTimeout(() => window.location.replace(SETUP_URL), 600);
-    }
-  } catch(err){
-    setStatus('Setting up your account...');
-    setTimeout(() => window.location.replace(SETUP_URL), 600);
+  try{
+    var pr=await sb.from('profiles').select('username').eq('id',session.user.id).maybeSingle();
+    var hasUser=pr.data&&typeof pr.data.username==='string'&&pr.data.username.trim().length>=3;
+    setStatus(hasUser?'Welcome back! Entering game...':'Setting up your profile...');
+
+    // Store tokens in sessionStorage so game.html can pick them up
+    // This is the reliable cross-page token passing method
+    var tok=session.access_token;
+    var ref=session.refresh_token;
+    sessionStorage.setItem('vcu_access_token', tok);
+    sessionStorage.setItem('vcu_refresh_token', ref);
+    console.log('[CALLBACK] tokens stored, routing to', hasUser?'game':'setup');
+
+    window.location.replace(hasUser ? GAME_URL : SETUP_URL);
+  }catch(err){
+    console.error('[CALLBACK] routeUser error:',err);
+    setStatus('Error — redirecting...');
+    window.location.replace(LOGIN_URL);
   }
 }
 
-sb.auth.onAuthStateChange((event, session) => {
-  if((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session) routeUser(session);
+sb.auth.onAuthStateChange(function(event,session){
+  console.log('[CALLBACK] event:',event,'session:',session?session.user.id:'none');
+  if(event==='SIGNED_IN'&&session){
+    routeUser(session);
+  }
+  if(event==='TOKEN_REFRESHED'&&session){
+    routeUser(session);
+  }
 });
 
-setTimeout(async () => {
-  if(routed) return;
-  setStatus('Checking session...');
-  const { data: { session } } = await sb.auth.getSession();
-  if(session){ routeUser(session); }
-  else {
-    setStatus('Could not verify session — returning to login...');
-    setTimeout(() => window.location.replace(LOGIN_URL), 1500);
+// Timeout fallback
+setTimeout(function(){
+  if(!routed){
+    setStatus('Timed out — returning to login...');
+    window.location.replace(LOGIN_URL);
   }
-}, 5000);
+},12000);
 </script>
 </body>
 </html>
