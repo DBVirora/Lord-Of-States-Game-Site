@@ -1229,23 +1229,75 @@ async function loadDecksFromStorage(){
 }
 
 function generateRandomDeck(){
-  const ids=Object.keys(DB).filter(id=>!DB[id].transformOnly&&!DB[id].isToken&&DB[id].type!=='herald');
-  const charIds=ids.filter(id=>['base_char','char','team'].includes(DB[id].type));
-  const otherIds=ids.filter(id=>!['base_char','char','team'].includes(DB[id].type)&&DB[id].type!=='energy_card');
-  const deck=[];
-  // Add exactly 1 random herald
+  // Separate card pools
   const heraldIds=Object.keys(DB).filter(id=>DB[id].type==='herald');
-  if(heraldIds.length>0)deck.push(heraldIds[Math.floor(Math.random()*heraldIds.length)]);
-  // Fill 29 char slots
-  while(deck.length<30){const id=charIds[Math.floor(Math.random()*charIds.length)];if(deck.filter(c=>c===id).length<4)deck.push(id);}
-  // Fill remaining with non-char, non-herald cards
-  while(deck.length<60){const id=otherIds[Math.floor(Math.random()*otherIds.length)];if(deck.filter(c=>c===id).length<4)deck.push(id);}
+  const charIds=Object.keys(DB).filter(id=>
+    ['base_char','char','team'].includes(DB[id].type)&&
+    !DB[id].transformOnly&&!DB[id].isToken
+  );
+  const otherIds=Object.keys(DB).filter(id=>
+    !['base_char','char','team','herald','token'].includes(DB[id].type)&&
+    !DB[id].isToken
+  );
+
+  console.log('[DECK] generateRandomDeck: heralds='+heraldIds.length+' chars='+charIds.length+' other='+otherIds.length);
+
+  const deck=[];
+
+  // 1 herald
+  if(heraldIds.length>0){
+    deck.push(heraldIds[Math.floor(Math.random()*heraldIds.length)]);
+  }
+
+  // Fill to 40 with characters (up to 4 copies each)
+  // Use fallback: if charIds is empty, skip
+  if(charIds.length>0){
+    let attempts=0;
+    while(deck.length<40&&attempts<2000){
+      attempts++;
+      const id=charIds[Math.floor(Math.random()*charIds.length)];
+      const copies=deck.filter(c=>c===id).length;
+      if(copies<4)deck.push(id);
+    }
+  }
+
+  // Fill remaining to 60 with other cards
+  // If not enough other cards, fill back with chars
+  const fillPool=otherIds.length>0?otherIds:charIds;
+  if(fillPool.length>0){
+    let attempts=0;
+    while(deck.length<60&&attempts<2000){
+      attempts++;
+      const id=fillPool[Math.floor(Math.random()*fillPool.length)];
+      const copies=deck.filter(c=>c===id).length;
+      if(copies<4)deck.push(id);
+    }
+  }
+
+  // If still under 60, pad with chars
+  if(charIds.length>0){
+    let attempts=0;
+    while(deck.length<60&&attempts<500){
+      attempts++;
+      const id=charIds[Math.floor(Math.random()*charIds.length)];
+      const copies=deck.filter(c=>c===id).length;
+      if(copies<4)deck.push(id);
+    }
+  }
+
+  console.log('[DECK] generated deck size:',deck.length);
   return shuffle([...deck]);
 }
 
 function getDeckList(deckId){
-  if(deckId==='__random__'){const keys=Object.keys(SAVED_DECKS);if(keys.length>0)return[...SAVED_DECKS[keys[Math.floor(Math.random()*keys.length)]].cards];return generateRandomDeck();}
-  return SAVED_DECKS[deckId]?[...SAVED_DECKS[deckId].cards]:generateRandomDeck();
+  // __random__ always generates a fresh random deck — never uses saved decks
+  if(deckId==='__random__')return generateRandomDeck();
+  // Named deck — use saved, fall back to random if missing
+  if(SAVED_DECKS[deckId]&&SAVED_DECKS[deckId].cards&&SAVED_DECKS[deckId].cards.length>0){
+    return [...SAVED_DECKS[deckId].cards];
+  }
+  console.warn('[DECK] saved deck not found:',deckId,'— generating random');
+  return generateRandomDeck();
 }
 
 async function goToDeckSelect(mode){
