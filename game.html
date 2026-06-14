@@ -358,6 +358,14 @@ body{padding-top:46px;}
 .ds-opt-btn{background:rgba(8,8,28,.6);border:1px solid rgba(100,120,160,.2);border-radius:5px;padding:3px 8px;font-size:10px;color:#9ca3af;cursor:pointer;transition:all .15s;font-family:'Share Tech Mono',monospace;}
 .ds-opt-btn:hover{border-color:var(--violet2);color:#c4b5fd;}
 .ds-opt-btn.selected{border-color:var(--violet2);background:rgba(124,58,237,.2);color:#c4b5fd;}
+
+/* DECK SELECT v2 */
+.ds-pick-btn{width:100%;padding:10px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.35);border-radius:8px;color:#c4b5fd;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;cursor:pointer;transition:all .2s;display:block;}
+.ds-pick-btn:hover{background:rgba(124,58,237,.25);border-color:var(--violet2);box-shadow:0 0 12px rgba(124,58,237,.2);}
+.ds-pick-p2{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);color:#86efac;}
+.ds-pick-p2:hover{background:rgba(34,197,94,.18);border-color:#22c55e;}
+.ds-pick-random{background:rgba(8,8,28,.4);border-style:dashed;color:#6b7280;}
+.ds-pick-random:hover{color:#9ca3af;border-color:#4b5563;}
 </style>
 </head>
 <body>
@@ -394,79 +402,74 @@ body{padding-top:46px;}
 </div>
 
 <!-- DECK SELECT -->
-<div id="deck-select-screen" class="screen" style="padding:10px;max-width:700px;margin:0 auto">
+<div id="deck-select-screen" class="screen" style="padding:20px;max-width:820px;margin:0 auto">
 
   <!-- HEADER -->
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
     <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
-    <div style="font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;color:var(--blue)" id="deck-select-title">CHOOSE DECKS</div>
-    <div id="deck-select-status" style="font-size:10px;color:#6b7280;margin-left:auto">Select a deck for each player</div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:var(--blue);text-shadow:0 0 10px var(--blue)" id="deck-select-title">CHOOSE DECKS</div>
+    <div id="deck-select-status" style="font-size:10px;color:#6b7280;margin-left:auto;letter-spacing:1px">Select a deck for each player</div>
   </div>
 
-  <!-- TWO PLAYER COLUMNS -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+  <!-- TWO PLAYER DECK PICKERS -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
 
     <!-- P1 -->
-    <div style="background:rgba(30,27,75,.3);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:10px">
-      <div style="font-size:9px;font-weight:700;color:#a5b4fc;letter-spacing:2px;margin-bottom:8px;display:flex;align-items:center;gap:5px">
-        <span style="width:8px;height:8px;border-radius:50%;background:#6366f1;display:inline-block"></span>
+    <div style="background:rgba(30,27,75,.35);border:1px solid rgba(99,102,241,.25);border-radius:12px;padding:16px">
+      <div style="font-size:10px;font-weight:700;color:#a5b4fc;letter-spacing:3px;margin-bottom:14px;display:flex;align-items:center;gap:6px">
+        <span style="width:9px;height:9px;border-radius:50%;background:#6366f1;display:inline-block;box-shadow:0 0 6px #6366f1"></span>
         PLAYER 1
       </div>
-      <div id="p1-deck-options" style="display:flex;flex-direction:column;gap:4px"></div>
-      <div class="ds-deck-row" id="p1-random-opt" onclick="selectDeck(1,'__random__')" style="margin-top:4px;border-style:dashed">
-        <span style="font-size:14px">🎲</span>
-        <div style="flex:1">
-          <div style="font-size:11px;font-weight:700;color:#c8a0ff">Random</div>
-          <div style="font-size:9px;color:#4b5563">Pick from saved decks</div>
-        </div>
+      <!-- Chosen deck display -->
+      <div id="p1-chosen-display" style="background:rgba(8,8,28,.6);border:1px dashed rgba(99,102,241,.3);border-radius:8px;padding:14px;text-align:center;margin-bottom:10px;min-height:72px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px">
+        <div style="font-size:22px">🃏</div>
+        <div style="font-size:11px;color:#4b5563;letter-spacing:1px">No deck selected</div>
       </div>
+      <button class="ds-pick-btn" onclick="openDeckPicker(1)">⊕ Choose Deck</button>
+      <button class="ds-pick-btn ds-pick-random" onclick="selectDeck(1,'__random__')" style="margin-top:6px">🎲 Random</button>
     </div>
 
     <!-- P2 -->
-    <div style="background:rgba(20,83,45,.2);border:1px solid rgba(34,197,94,.15);border-radius:10px;padding:10px">
-      <div style="font-size:9px;font-weight:700;color:#86efac;letter-spacing:2px;margin-bottom:8px;display:flex;align-items:center;gap:5px" id="p2-deck-label">
-        <span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>
+    <div style="background:rgba(20,83,45,.2);border:1px solid rgba(34,197,94,.2);border-radius:12px;padding:16px">
+      <div style="font-size:10px;font-weight:700;color:#86efac;letter-spacing:3px;margin-bottom:14px;display:flex;align-items:center;gap:6px" id="p2-deck-label">
+        <span style="width:9px;height:9px;border-radius:50%;background:#22c55e;display:inline-block;box-shadow:0 0 6px #22c55e"></span>
         PLAYER 2
       </div>
-      <div id="p2-deck-options" style="display:flex;flex-direction:column;gap:4px"></div>
-      <div class="ds-deck-row" id="p2-random-opt" onclick="selectDeck(2,'__random__')" style="margin-top:4px;border-style:dashed">
-        <span style="font-size:14px">🎲</span>
-        <div style="flex:1">
-          <div style="font-size:11px;font-weight:700;color:#c8a0ff">Random</div>
-          <div style="font-size:9px;color:#4b5563">Pick from saved decks</div>
-        </div>
+      <!-- Chosen deck display -->
+      <div id="p2-chosen-display" style="background:rgba(8,8,28,.6);border:1px dashed rgba(34,197,94,.2);border-radius:8px;padding:14px;text-align:center;margin-bottom:10px;min-height:72px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px">
+        <div style="font-size:22px">🃏</div>
+        <div style="font-size:11px;color:#4b5563;letter-spacing:1px">No deck selected</div>
       </div>
+      <button class="ds-pick-btn ds-pick-p2" onclick="openDeckPicker(2)">⊕ Choose Deck</button>
+      <button class="ds-pick-btn ds-pick-random ds-pick-p2" onclick="selectDeck(2,'__random__')" style="margin-top:6px">🎲 Random</button>
     </div>
 
   </div>
 
-  <!-- GAME MODE + SETTINGS ROW -->
-  <div style="background:rgba(8,8,28,.6);border:1px solid var(--border-v);border-radius:10px;padding:10px;margin-bottom:10px">
-    <div style="font-size:9px;font-weight:700;color:var(--violet2);letter-spacing:2px;margin-bottom:8px">⚡ GAME MODE</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">
+  <!-- GAME MODE -->
+  <div style="background:rgba(8,8,28,.6);border:1px solid var(--border-v);border-radius:12px;padding:16px;margin-bottom:16px">
+    <div style="font-size:10px;font-weight:700;color:var(--violet2);letter-spacing:3px;margin-bottom:12px">⚡ GAME MODE</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
       <button class="ds-mode-btn selected" id="mode-prize" onclick="selectGameMode('prize')">
-        <div style="font-size:14px">🏆</div>
-        <div style="font-size:10px;font-weight:700;color:#c4b5fd">Prize</div>
-        <div style="font-size:8px;color:#4b5563">6 prizes</div>
+        <div style="font-size:20px;margin-bottom:4px">🏆</div>
+        <div style="font-size:11px;font-weight:700;color:#c4b5fd">Prize Mode</div>
+        <div style="font-size:9px;color:#4b5563;margin-top:2px">Claim all prizes to win</div>
       </button>
       <button class="ds-mode-btn" id="mode-lifeforce" onclick="selectGameMode('lifeforce')">
-        <div style="font-size:14px">❤️</div>
-        <div style="font-size:10px;font-weight:700;color:#c4b5fd">Life Force</div>
-        <div style="font-size:8px;color:#4b5563">HP battle</div>
+        <div style="font-size:20px;margin-bottom:4px">❤️</div>
+        <div style="font-size:11px;font-weight:700;color:#c4b5fd">Life Force</div>
+        <div style="font-size:9px;color:#4b5563;margin-top:2px">Reduce HP to 0</div>
       </button>
       <button class="ds-mode-btn" id="mode-combined" onclick="selectGameMode('combined')">
-        <div style="font-size:14px">⚔️</div>
-        <div style="font-size:10px;font-weight:700;color:#c4b5fd">Combined</div>
-        <div style="font-size:8px;color:#4b5563">Both ways</div>
+        <div style="font-size:20px;margin-bottom:4px">⚔️</div>
+        <div style="font-size:11px;font-weight:700;color:#c4b5fd">Combined</div>
+        <div style="font-size:9px;color:#4b5563;margin-top:2px">Prizes or HP wins</div>
       </button>
     </div>
-
-    <!-- Settings row: LF HP + Prize count side by side -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-      <!-- Life Force HP -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <div id="lf-hp-wrap" style="display:none">
-        <div style="font-size:9px;color:#fca5a5;margin-bottom:4px;letter-spacing:1px">LIFE FORCE HP</div>
-        <div style="display:flex;gap:4px;flex-wrap:wrap">
+        <div style="font-size:9px;color:#fca5a5;margin-bottom:6px;letter-spacing:2px">LIFE FORCE HP</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
           <button class="ds-opt-btn selected" onclick="selectLFHP(100)" data-hp="100">100</button>
           <button class="ds-opt-btn" onclick="selectLFHP(125)" data-hp="125">125</button>
           <button class="ds-opt-btn" onclick="selectLFHP(150)" data-hp="150">150</button>
@@ -474,10 +477,9 @@ body{padding-top:46px;}
           <button class="ds-opt-btn" onclick="selectLFHP(200)" data-hp="200">200</button>
         </div>
       </div>
-      <!-- Prize count -->
       <div id="prize-count-wrap">
-        <div style="font-size:9px;color:#fbbf24;margin-bottom:4px;letter-spacing:1px">PRIZE COUNT</div>
-        <div style="display:flex;gap:4px;flex-wrap:wrap">
+        <div style="font-size:9px;color:#fbbf24;margin-bottom:6px;letter-spacing:2px">PRIZE COUNT</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
           <button class="ds-opt-btn selected" onclick="selectPrizeCount(6)" data-pc="6">6</button>
           <button class="ds-opt-btn" onclick="selectPrizeCount(7)" data-pc="7">7</button>
           <button class="ds-opt-btn" onclick="selectPrizeCount(8)" data-pc="8">8</button>
@@ -488,12 +490,22 @@ body{padding-top:46px;}
     </div>
   </div>
 
-  <!-- START BUTTON -->
+  <!-- START -->
   <button class="btn-primary" id="start-game-btn" onclick="launchGame()"
-    style="width:100%;padding:12px;font-size:13px;font-family:'Orbitron',sans-serif;letter-spacing:3px;font-weight:700" disabled>
+    style="width:100%;padding:14px;font-size:14px;font-family:'Orbitron',sans-serif;letter-spacing:4px;font-weight:700" disabled>
     ▶ START GAME
   </button>
 
+</div>
+
+<!-- DECK PICKER MODAL -->
+<div class="modal-overlay" id="deck-picker-modal" onclick="if(event.target===this)document.getElementById('deck-picker-modal').classList.remove('open')">
+  <div class="modal" style="max-width:440px;padding:20px">
+    <div style="font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;color:var(--blue);margin-bottom:4px" id="deck-picker-title">SELECT DECK</div>
+    <div style="font-size:10px;color:#4b5563;margin-bottom:14px" id="deck-picker-sub">Choose a deck for this player</div>
+    <div id="deck-picker-list" style="display:flex;flex-direction:column;gap:6px;max-height:360px;overflow-y:auto;margin-bottom:14px"></div>
+    <button class="btn-gray btn-sm" style="width:100%" onclick="document.getElementById('deck-picker-modal').classList.remove('open')">Cancel</button>
+  </div>
 </div>
 
 <!-- DECK BUILDER -->
@@ -1248,52 +1260,104 @@ async function goToDeckSelect(mode){
 }
 
 function renderDeckSelectOptions(){
+  // Reset chosen displays when deck select opens
   [1,2].forEach(p=>{
-    const container=document.getElementById('p'+p+'-deck-options');if(!container)return;
-    container.innerHTML='';
-    const decks=Object.entries(SAVED_DECKS);
-    if(!decks.length){
-      container.innerHTML='<div style="font-size:10px;color:#4b5563;padding:4px">No saved decks yet — build one first.</div>';
-      return;
+    const display=document.getElementById('p'+p+'-chosen-display');
+    if(display){
+      display.innerHTML='<div style="font-size:22px">🃏</div><div style="font-size:11px;color:#4b5563;letter-spacing:1px">No deck selected</div>';
+      display.style.border='1px dashed rgba(99,102,241,.3)';
+      display.style.background='rgba(8,8,28,.6)';
     }
+  });
+  // Reset selections
+  pendingP1Deck=null;pendingP2Deck=null;
+  const btn=document.getElementById('start-game-btn');
+  if(btn)btn.disabled=true;
+  const status=document.getElementById('deck-select-status');
+  if(status)status.textContent='Select a deck for each player.';
+}
+
+let _deckPickerPlayer=1;
+
+function openDeckPicker(player){
+  _deckPickerPlayer=player;
+  const isP2=player===2;
+  const title=document.getElementById('deck-picker-title');
+  const sub=document.getElementById('deck-picker-sub');
+  const list=document.getElementById('deck-picker-list');
+  if(title)title.textContent=isP2?'SELECT DECK — PLAYER 2':'SELECT DECK — PLAYER 1';
+  if(sub)sub.textContent='Choose a deck to bring into battle';
+  if(!list)return;
+  list.innerHTML='';
+  const decks=Object.entries(SAVED_DECKS);
+  if(!decks.length){
+    list.innerHTML='<div style="color:#4b5563;font-size:12px;text-align:center;padding:20px">No saved decks yet.<br>Build one in the Deck Builder first.</div>';
+  } else {
     decks.forEach(([id,deck])=>{
       if(!deck||!deck.cards)return;
       const colDefs=deck.cards.reduce((acc,cid)=>{const col=DB[cid]?.color;if(col&&!acc.includes(col))acc.push(col);return acc;},[]);
-      const colorPips=colDefs.slice(0,4).map(c=>{const hex=COLOR_DEFS[c]?.hex||'#6b7280';return '<span style="width:6px;height:6px;border-radius:50%;background:'+hex+';display:inline-block;flex-shrink:0"></span>';}).join('');
-      const thumb=deck.cards.slice(0,1).map(cid=>{const url=getImg(cid);return url?'<img src="'+url+'" style="width:28px;height:38px;object-fit:cover;border-radius:3px;flex-shrink:0"/>':`<span style="font-size:16px;width:28px;text-align:center">${DB[cid]?.sym||'?'}</span>`;}).join('');
-      const div=document.createElement('div');
-      div.className='ds-deck-row';div.id='p'+p+'-deck-'+id;
-      div.innerHTML=thumb
+      const colorPips=colDefs.slice(0,5).map(c=>{const hex=COLOR_DEFS[c]?.hex||'#6b7280';return '<span style="width:8px;height:8px;border-radius:50%;background:'+hex+';display:inline-block"></span>';}).join('');
+      const thumbs=deck.cards.slice(0,3).map(cid=>{const url=getImg(cid);return url?'<img src="'+url+'" style="width:30px;height:42px;object-fit:cover;border-radius:4px;flex-shrink:0"/>':`<span style="font-size:18px">${DB[cid]?.sym||'?'}</span>`;}).join('');
+      const row=document.createElement('div');
+      row.style.cssText='display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(8,8,28,.6);border:1px solid rgba(124,58,237,.2);border-radius:8px;cursor:pointer;transition:all .15s';
+      row.onmouseenter=()=>{row.style.borderColor='var(--violet2)';row.style.background='rgba(124,58,237,.12)';};
+      row.onmouseleave=()=>{row.style.borderColor='rgba(124,58,237,.2)';row.style.background='rgba(8,8,28,.6)';};
+      row.innerHTML='<div style="display:flex;gap:3px;flex-shrink:0">'+thumbs+'</div>'
         +'<div style="flex:1;min-width:0">'
-        +'<div style="font-size:11px;font-weight:700;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+deck.name+'</div>'
-        +'<div style="display:flex;align-items:center;gap:4px;margin-top:2px">'
-        +'<span style="font-size:9px;color:#6b7280">'+deck.cards.length+' cards</span>'
-        +(colorPips?'<span style="display:flex;gap:2px;align-items:center">'+colorPips+'</span>':'')
-        +'</div></div>';
-      div.onclick=()=>selectDeck(p,id);
-      container.appendChild(div);
+        +'<div style="font-size:13px;font-weight:700;color:#e2e8f0;margin-bottom:3px">'+deck.name+'</div>'
+        +'<div style="display:flex;align-items:center;gap:6px">'
+        +'<span style="font-size:10px;color:#6b7280">'+deck.cards.length+' cards</span>'
+        +(colorPips?'<span style="display:flex;gap:3px;align-items:center">'+colorPips+'</span>':'')
+        +'</div></div>'
+        +'<div style="font-size:18px;color:rgba(124,58,237,.4)">›</div>';
+      row.onclick=()=>{selectDeck(player,id);document.getElementById('deck-picker-modal').classList.remove('open');};
+      list.appendChild(row);
     });
-  });
+  }
+  // Random option
+  const randRow=document.createElement('div');
+  randRow.style.cssText='display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(8,8,28,.4);border:1px dashed rgba(100,120,160,.25);border-radius:8px;cursor:pointer;transition:all .15s';
+  randRow.onmouseenter=()=>{randRow.style.borderColor='#4b5563';};
+  randRow.onmouseleave=()=>{randRow.style.borderColor='rgba(100,120,160,.25)';};
+  randRow.innerHTML='<span style="font-size:24px">🎲</span><div><div style="font-size:13px;font-weight:700;color:#9ca3af">Random</div><div style="font-size:10px;color:#4b5563">Pick a random saved deck</div></div>';
+  randRow.onclick=()=>{selectDeck(player,'__random__');document.getElementById('deck-picker-modal').classList.remove('open');};
+  list.appendChild(randRow);
+  document.getElementById('deck-picker-modal').classList.add('open');
 }
 
 function selectDeck(player,deckId){
-  const p=player;
-  if(p===1){
-    pendingP1Deck=deckId;
-    document.querySelectorAll('[id^="p1-deck-"]').forEach(el=>el.classList.remove('selected'));
-    const el=deckId==='__random__'?document.getElementById('p1-random-opt'):document.getElementById('p1-deck-'+deckId);
-    if(el)el.classList.add('selected');
-  } else {
-    pendingP2Deck=deckId;
-    document.querySelectorAll('[id^="p2-deck-"]').forEach(el=>el.classList.remove('selected'));
-    const el=deckId==='__random__'?document.getElementById('p2-random-opt'):document.getElementById('p2-deck-'+deckId);
-    if(el)el.classList.add('selected');
+  if(player===1){pendingP1Deck=deckId;}
+  else{pendingP2Deck=deckId;}
+  // Update chosen display
+  const display=document.getElementById('p'+player+'-chosen-display');
+  if(display){
+    if(deckId==='__random__'){
+      display.innerHTML='<div style="font-size:22px">🎲</div><div style="font-size:12px;font-weight:700;color:#c8a0ff">Random Deck</div><div style="font-size:10px;color:#6b7280">Selected</div>';
+    } else {
+      const deck=SAVED_DECKS[deckId];
+      if(deck){
+        const colDefs=deck.cards.reduce((acc,cid)=>{const col=DB[cid]?.color;if(col&&!acc.includes(col))acc.push(col);return acc;},[]);
+        const colorPips=colDefs.slice(0,5).map(c=>{const hex=COLOR_DEFS[c]?.hex||'#6b7280';return '<span style="width:8px;height:8px;border-radius:50%;background:'+hex+';display:inline-block"></span>';}).join('');
+        const thumb=deck.cards.slice(0,1).map(cid=>{const url=getImg(cid);return url?'<img src="'+url+'" style="width:36px;height:50px;object-fit:cover;border-radius:5px"/>':`<span style="font-size:22px">${DB[cid]?.sym||'?'}</span>`;}).join('');
+        display.innerHTML='<div style="display:flex;align-items:center;gap:10px;width:100%">'
+          +thumb
+          +'<div style="flex:1;text-align:left">'
+          +'<div style="font-size:13px;font-weight:700;color:#e2e8f0;margin-bottom:3px">'+deck.name+'</div>'
+          +'<div style="font-size:10px;color:#6b7280;margin-bottom:4px">'+deck.cards.length+' cards</div>'
+          +(colorPips?'<div style="display:flex;gap:3px">'+colorPips+'</div>':'')
+          +'</div>'
+          +'<div style="font-size:10px;color:#22c55e;font-weight:700">✓</div>'
+          +'</div>';
+        display.style.border='1px solid rgba(34,197,94,.3)';
+        display.style.background='rgba(34,197,94,.05)';
+      }
+    }
   }
   const can=pendingP1Deck!==null&&pendingP2Deck!==null;
   const btn=document.getElementById('start-game-btn');
   const status=document.getElementById('deck-select-status');
   if(btn)btn.disabled=!can;
-  if(status)status.textContent=can?'✓ Ready to battle!':'Select a deck for each player.';
+  if(status)status.textContent=can?'✓ Ready to battle! Click Start Game':'Select a deck for each player.';
 }
 
 function launchGame(){if(!pendingP1Deck||!pendingP2Deck)return;startGame(pendingMode,getDeckList(pendingP1Deck),getDeckList(pendingP2Deck));}
