@@ -383,6 +383,30 @@ body{padding-top:46px;}
 .profile-stat-card{background:rgba(8,8,28,.7);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
 .profile-stat-val{font-size:22px;font-weight:700;color:#e2e8f0;font-family:'Orbitron',sans-serif;}
 .profile-stat-lbl{font-size:9px;color:#4b5563;letter-spacing:2px;margin-top:3px;text-transform:uppercase;}
+
+/* ACHIEVEMENTS */
+.ach-popup{position:fixed;bottom:20px;right:20px;z-index:9999;background:rgba(8,8,28,.97);border:1px solid rgba(251,191,36,.5);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 0 30px rgba(251,191,36,.25);animation:ach-slide .4s ease,ach-out .5s ease 4.5s forwards;pointer-events:none;max-width:300px;}
+@keyframes ach-slide{from{transform:translateX(60px);opacity:0}to{transform:none;opacity:1}}
+@keyframes ach-out{to{opacity:0;transform:translateY(10px)}}
+.ach-icon-wrap{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#f59e0b);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;box-shadow:0 0 12px rgba(251,191,36,.4);}
+.ach-text{flex:1}
+.ach-label{font-size:8px;color:rgba(251,191,36,.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px}
+.ach-title{font-size:12px;font-weight:700;color:#fbbf24;font-family:'Orbitron',sans-serif;line-height:1.2}
+.ach-desc{font-size:9px;color:#9ca3af;margin-top:2px}
+.ach-reward{font-size:10px;color:#fbbf24;font-weight:700;margin-top:3px}
+/* Profile achievement cards */
+.ach-card{display:flex;align-items:center;gap:12px;padding:12px;background:rgba(8,8,28,.6);border:1px solid;border-radius:10px;transition:all .2s;}
+.ach-card.unlocked{border-color:rgba(251,191,36,.35);background:rgba(251,191,36,.05);}
+.ach-card.locked{border-color:rgba(75,85,99,.3);opacity:.55;filter:grayscale(.7);}
+.ach-card-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.ach-card.unlocked .ach-card-icon{background:linear-gradient(135deg,#fbbf24,#f59e0b);box-shadow:0 0 10px rgba(251,191,36,.3);}
+.ach-card.locked .ach-card-icon{background:rgba(55,65,81,.4);}
+.ach-card-info{flex:1}
+.ach-card-title{font-size:12px;font-weight:700;color:#e2e8f0;margin-bottom:2px}
+.ach-card.locked .ach-card-title{color:#6b7280}
+.ach-card-desc{font-size:10px;color:#6b7280}
+.ach-card-reward{font-size:9px;color:#fbbf24;margin-top:3px;font-weight:700}
+.ach-card-status{font-size:9px;text-align:right;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -1312,14 +1336,23 @@ function generateRandomDeck(){
 }
 
 function getDeckList(deckId){
-  // __random__ always generates a fresh random deck — never uses saved decks
   if(deckId==='__random__')return generateRandomDeck();
-  // Named deck — use saved, fall back to random if missing
   if(SAVED_DECKS[deckId]&&SAVED_DECKS[deckId].cards&&SAVED_DECKS[deckId].cards.length>0){
     return [...SAVED_DECKS[deckId].cards];
   }
-  console.warn('[DECK] saved deck not found:',deckId,'— generating random');
+  console.warn('[DECK] saved deck not found:',deckId,'generating random');
   return generateRandomDeck();
+}
+
+function validateDeckForPlay(deckId){
+  if(deckId==='__random__')return true;
+  const deck=SAVED_DECKS[deckId];
+  if(!deck||!deck.cards)return false;
+  if(deck.cards.length<60){
+    alert('❌ "'+deck.name+'" only has '+deck.cards.length+'/60 cards. A deck must be exactly 60 cards to play. Finish building it in the Deck Builder first.');
+    return false;
+  }
+  return true;
 }
 
 async function goToDeckSelect(mode){
@@ -1417,7 +1450,7 @@ function selectDeck(player,deckId){
           +thumb
           +'<div style="flex:1;text-align:left">'
           +'<div style="font-size:13px;font-weight:700;color:#e2e8f0;margin-bottom:3px">'+deck.name+'</div>'
-          +'<div style="font-size:10px;color:#6b7280;margin-bottom:4px">'+deck.cards.length+' cards</div>'
+          +'<div style="font-size:10px;'+(deck.cards.length<60?'color:#f59e0b':' color:#6b7280')+';margin-bottom:4px">'+deck.cards.length+'/60 cards'+(deck.cards.length<60?' ⚠ needs '+(60-deck.cards.length)+' more':' ✓')+'</div>'
           +(colorPips?'<div style="display:flex;gap:3px">'+colorPips+'</div>':'')
           +'</div>'
           +'<div style="font-size:10px;color:#22c55e;font-weight:700">✓</div>'
@@ -1434,7 +1467,11 @@ function selectDeck(player,deckId){
   if(status)status.textContent=can?'✓ Ready to battle! Click Start Game':'Select a deck for each player.';
 }
 
-function launchGame(){if(!pendingP1Deck||!pendingP2Deck)return;startGame(pendingMode,getDeckList(pendingP1Deck),getDeckList(pendingP2Deck));}
+function launchGame(){
+  if(!pendingP1Deck||!pendingP2Deck)return;
+  if(!validateDeckForPlay(pendingP1Deck)||!validateDeckForPlay(pendingP2Deck))return;
+  startGame(pendingMode,getDeckList(pendingP1Deck),getDeckList(pendingP2Deck));
+}
 
 // ── DECK BUILDER ──
 async function openDeckManager(){
@@ -1483,6 +1520,8 @@ async function saveDeck(){
   }
   renderDeckSelectOptions();
   alert(`✓ "${name}" saved (${cards.length} cards)!`);
+  // Check New Beginnings achievement
+  if(cards.length>=60)setTimeout(()=>checkAchievements(),500);
 }
 
 function addCardToBuilder(cid){
@@ -2559,6 +2598,11 @@ function doTransform(fieldUid,newCid,handUid,cost){
   fc.hpBonus=0;fc.atkBonus=0;fc.abilityUsed={};fc.damagedThisTurn=false;fc.markedDamage=0;
   // Keep persistent attachments
   fc.attachments=prevAttachments.filter(eqId=>{const eq=DB[eqId];return eq&&eq.persistent!==false;});
+  // Flag for First Transformation achievement
+  if(!_achData.has_transformed){
+    _achData.has_transformed=true;
+    setTimeout(()=>checkAchievements(),600);
+  }
   closeAllModals();renderAll();
 }
 
@@ -3781,9 +3825,11 @@ async function onMatchEnd(won){
       _celData.first_win_date=today;
       await awardCelestium(100,'First Win of the Day');
     }
+    // Check First Light achievement
+    setTimeout(()=>checkAchievements(),800);
   } else {
     _celData.losses++;
-    await saveCelestium(); // save stats even on loss
+    await saveCelestium();
   }
 }
 
@@ -3811,6 +3857,8 @@ function refreshProfileScreen(){
   const fwStatus=document.getElementById('first-win-status');
   if(fwStatus)fwStatus.textContent=_celData.first_win_date===today?'✓ Claimed today':'Play to earn!';
   if(fwStatus)fwStatus.style.color=_celData.first_win_date===today?'#22c55e':'#6b7280';
+  // Achievements
+  renderAchievementsSection();
   // Log
   const logEl=document.getElementById('cel-log');
   if(logEl){
@@ -3829,6 +3877,109 @@ function refreshProfileScreen(){
       }).join('');
     }
   }
+}
+
+
+// ═══════════════════════════════════════════════════
+// ACHIEVEMENT SYSTEM
+// ═══════════════════════════════════════════════════
+const ACHIEVEMENTS={
+  new_beginnings:{
+    id:'new_beginnings',
+    title:"New Beginnings",
+    desc:"Create your first full deck (60 cards).",
+    icon:'🃏',
+    reward:75,
+    check:()=>Object.values(SAVED_DECKS).some(d=>d.cards&&d.cards.length>=60)
+  },
+  first_light:{
+    id:'first_light',
+    title:"First Light of the Cosmos",
+    desc:"Win your first match.",
+    icon:'⭐',
+    reward:175,
+    check:()=>_celData.wins>=1
+  },
+  first_transform:{
+    id:'first_transform',
+    title:"The First Transformation",
+    desc:"Transform a character for the first time.",
+    icon:'⚡',
+    reward:100,
+    check:()=>_achData.has_transformed===true
+  },
+};
+
+let _achData={};  // stores which achievements are unlocked + extra flags
+
+async function loadAchievements(){
+  if(!_celSB||!_celUserId)return;
+  try{
+    const {data}=await _celSB.from('profiles').select('achievements').eq('id',_celUserId).maybeSingle();
+    _achData=data&&data.achievements?JSON.parse(data.achievements):{};
+  }catch(e){console.warn('[ACH] load error:',e);}
+}
+
+async function saveAchievements(){
+  if(!_celSB||!_celUserId)return;
+  try{
+    await _celSB.from('profiles').update({achievements:JSON.stringify(_achData)}).eq('id',_celUserId);
+  }catch(e){console.warn('[ACH] save error:',e);}
+}
+
+async function checkAchievements(){
+  let anyNew=false;
+  for(const [id,ach] of Object.entries(ACHIEVEMENTS)){
+    if(_achData['ach_'+id])continue; // already unlocked
+    if(ach.check()){
+      _achData['ach_'+id]=new Date().toISOString();
+      anyNew=true;
+      showAchievementPopup(ach);
+      await awardCelestium(ach.reward,'Achievement: '+ach.title);
+    }
+  }
+  if(anyNew)await saveAchievements();
+}
+
+function showAchievementPopup(ach){
+  const old=document.getElementById('ach-popup');if(old)old.remove();
+  const popup=document.createElement('div');
+  popup.id='ach-popup';popup.className='ach-popup';
+  popup.innerHTML=
+    '<div class="ach-icon-wrap">'+ach.icon+'</div>'
+    +'<div class="ach-text">'
+    +'<div class="ach-label">Achievement Unlocked!</div>'
+    +'<div class="ach-title">'+ach.title+'</div>'
+    +'<div class="ach-desc">'+ach.desc+'</div>'
+    +'<div class="ach-reward">+'+ach.reward+' Celestium</div>'
+    +'</div>';
+  document.body.appendChild(popup);
+  setTimeout(()=>{if(popup.parentNode)popup.remove();},5200);
+}
+
+function renderAchievementsSection(){
+  const el=document.getElementById('profile-achievements');if(!el)return;
+  el.innerHTML='';
+  Object.values(ACHIEVEMENTS).forEach(ach=>{
+    const unlocked=!!_achData['ach_'+ach.id];
+    const unlockedDate=_achData['ach_'+ach.id]?new Date(_achData['ach_'+ach.id]).toLocaleDateString():'';
+    const card=document.createElement('div');
+    card.className='ach-card '+(unlocked?'unlocked':'locked');
+    card.innerHTML=
+      '<div class="ach-card-icon">'+ach.icon+'</div>'
+      +'<div class="ach-card-info">'
+      +'<div class="ach-card-title">'+ach.title+'</div>'
+      +'<div class="ach-card-desc">'+ach.desc+'</div>'
+      +'<div class="ach-card-reward">+'+ach.reward+' Celestium</div>'
+      +'</div>'
+      +'<div class="ach-card-status">'
+      +(unlocked
+        ?'<div style="color:#fbbf24;font-size:16px">✓</div><div style="font-size:8px;color:#6b7280">'+unlockedDate+'</div>'
+        :'<div style="color:#374151;font-size:16px">🔒</div>'
+      )
+      +'</div>';
+    el.appendChild(card);
+  });
 }
 
 // ═══════════════════════════════════════════════════
@@ -3916,6 +4067,7 @@ window.addEventListener('load',async()=>{
       renderDeckSelectOptions();
       initCelestium(sb,session.user.id);
       await loadCelestium();
+      await loadAchievements();
       // Sign out
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){
@@ -3974,6 +4126,7 @@ window.addEventListener('load',async()=>{
       renderDeckSelectOptions();
       initCelestium(sb,session.user.id);
       await loadCelestium();
+      await loadAchievements();
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){console.error('[AUTH] error:',e);window.signOutUser=function(){window.location.replace(LOGIN);};}
   }
@@ -4117,6 +4270,14 @@ window.addEventListener('load',async()=>{
         <div style="font-size:18px;font-weight:700;color:#fbbf24;font-family:'Orbitron',sans-serif">+100</div>
         <div style="font-size:9px;margin-top:4px" id="first-win-status">—</div>
       </div>
+    </div>
+  </div>
+
+  <!-- Achievements -->
+  <div style="background:rgba(8,8,28,.7);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px">
+    <div style="font-size:10px;font-weight:700;color:#fbbf24;letter-spacing:2px;margin-bottom:10px">🏅 ACHIEVEMENTS</div>
+    <div id="profile-achievements" style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:11px;color:#4b5563;text-align:center;padding:10px">Loading...</div>
     </div>
   </div>
 
