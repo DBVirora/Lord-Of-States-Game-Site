@@ -351,6 +351,20 @@ body{padding-top:46px;}
 </head>
 <body>
 
+<!-- AUTH HUD -->
+<div id="auth-bar">
+  <div class="hud-logo">LORD OF <span>COURTS</span></div>
+  <div class="hud-identity">
+    <div class="hud-avatar" id="hud-avatar">⚔️</div>
+    <div class="hud-name-wrap">
+      <div class="hud-welcome">Welcome back</div>
+      <div class="hud-username" id="hud-username">Loading...</div>
+      <div class="hud-provider" id="hud-provider"></div>
+    </div>
+  </div>
+  <button class="hud-signout" onclick="signOutUser()">[ Sign Out ]</button>
+</div>
+
 <!-- MENU -->
 <div id="menu-screen" class="active">
   <div style="font-size:40px;margin-bottom:4px">⚔️</div>
