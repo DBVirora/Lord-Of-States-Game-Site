@@ -2740,27 +2740,54 @@ function doPhase(ph){
 
 let _endingTurn=false;
 function execEnd(){
-  if(_endingTurn)return; // prevent double-firing
+  if(_endingTurn)return;
   _endingTurn=true;
   const p=G.activePlayer;
-  // Power Up: if no attacks made this turn, +2 energy
-  const didAttack=G.players[1].field.some(f=>(f.attacksThisTurn||0)>0)||(G.players[1].herald?.attacksThisTurn||0)>0;
-  if(p===1&&!didAttack){
-    G.players[1].energy+=2;
-    log('⚡ Power Up! Attack skipped — +2 Energy!','gain');
+  try {
+    const didAttack=G.players[1].field.some(f=>(f.attacksThisTurn||0)>0)||(G.players[1].herald?.attacksThisTurn||0)>0;
+    if(p===1&&!didAttack){
+      G.players[1].energy+=2;
+      log('⚡ Power Up! Attack skipped — +2 Energy!','gain');
+    }
+    endTurnFx(p);
+    log('P'+p+' ends turn.','info');
+    const nx=p===1?2:1;
+    G.activePlayer=nx;
+    G.turn++;
+    G.phase='draw';
+    G.phasesDone=[];
+    G.selectedAttacker=null;
+    G.heraldAttacking=false;
+    renderAll();
+    if(gameMode!=='pvp'&&nx===2)setTimeout(runAI,700);
+  } catch(err){
+    console.error('[END] error:',err);
+    log('Error ending turn — check console.','dmg');
+  } finally {
+    _endingTurn=false;
   }
-  endTurnFx(p);
-  log('P'+p+' ends turn.','info');
-  const nx=p===1?2:1;
-  G.activePlayer=nx;
-  G.turn++;
-  G.phase='draw';
-  G.phasesDone=[];
-  G.selectedAttacker=null;
-  G.heraldAttacking=false;
-  _endingTurn=false;
-  renderAll();
-  if(gameMode!=='pvp'&&nx===2)setTimeout(runAI,700);
+}
+
+// Hand overflow penalty at end of turn (Life Force / Combined modes deal LF damage)
+function applyEndOfTurnHandPenalty(p){
+  if(!G||!G.players[p])return;
+  const pl=G.players[p];
+  if(pl.hand.length<=MAX_HAND)return;
+  const excess=pl.hand.length-MAX_HAND;
+  if(G.gameMode==='lifeforce'||G.gameMode==='combined'){
+    // Deal LF damage per excess card
+    if(typeof damageLifeForce==='function'){
+      damageLifeForce(p,excess,'hand overflow');
+    }
+  } else {
+    // Prize Mode: auto-discard excess cards
+    while(pl.hand.length>MAX_HAND){
+      const d=pl.hand.pop();
+      if(!pl.discard)pl.discard=[];
+      pl.discard.push(d.cid);
+      log(`Auto-discard: ${DB[d.cid]?.name||d.cid}`,'dmg');
+    }
+  }
 }
 
 function endTurnFx(p){
