@@ -809,6 +809,7 @@ body{padding-top:46px;}
     <button class="btn-gold btn-sm" onclick="openEquipModal()">🛡Eq</button>
     <button class="btn-green btn-sm" onclick="openAbilityModal()">✨</button>
     <button class="btn-orange btn-sm" onclick="openSacrificeModal()">💀Sac</button>
+    <button class="btn-red btn-sm" id="forfeit-btn" onclick="forfeitMatch()" style="display:none">🏳 Forfeit</button>
     <button class="btn-red btn-sm" onclick="confirmReturnMenu()">🏠</button>
   </div>
 
@@ -977,10 +978,14 @@ body{padding-top:46px;}
 </div>
 <div class="modal-overlay" id="win-modal">
   <div class="modal" style="text-align:center">
-    <div style="font-size:48px;margin-bottom:10px">🏆</div>
-    <h2 id="win-text" style="color:#fbbf24;font-size:20px;margin-bottom:6px"></h2>
+    <div id="win-emoji" style="font-size:48px;margin-bottom:10px">🏆</div>
+    <h2 id="win-text" style="color:#fbbf24;font-size:22px;margin-bottom:6px"></h2>
     <p id="win-reason" style="color:#6b7280;font-size:12px;margin-bottom:16px"></p>
-    <button class="btn-primary" style="width:100%;padding:12px;font-size:14px" onclick="returnToMenuFromWin()">🏠 Return to Main Menu</button>
+    <div id="win-celestium" style="font-size:11px;color:#fbbf24;margin-bottom:16px"></div>
+    <div id="win-buttons" style="display:flex;flex-direction:column;gap:8px">
+      <button class="btn-primary" id="win-rematch-btn" style="width:100%;padding:11px;font-size:13px;display:none" onclick="requestRematch()">🔄 Rematch</button>
+      <button class="btn-primary" style="width:100%;padding:11px;font-size:13px" onclick="returnToMenuFromWin()">🏠 Return to Main Menu</button>
+    </div>
   </div>
 </div>
 <div class="modal-overlay" id="deck-search-modal" onclick="if(event.target===this)closeAllModals()">
@@ -1934,13 +1939,47 @@ function checkWin(){
   });
 }
 function triggerWin(p,r){
-  if(G.gameOver)return; // already handled
+  if(G.gameOver)return;
   G.gameOver=true;
-  document.getElementById('win-text').textContent=G.players[p].name+' Wins!';
-  document.getElementById('win-reason').textContent=r;
-  document.getElementById('win-modal').classList.add('open');
-  // Award Celestium + check achievements (Player 1 = the local user)
+  G.winner=p;        // local winner (1 or 2)
+  G.winReason=r;
+  // In online mode, broadcast game over so opponent's screen updates too
+  if(G.onlineMode){
+    // Broadcast the game over state (winner translated to canonical)
+    setTimeout(()=>broadcastGameState(),100);
+  }
+  showWinScreen(p,r,false);
+  // Award Celestium (p===1 means local player won)
   setTimeout(()=>onMatchEnd(p===1),600);
+}
+
+function showWinScreen(p,r,forfeited){
+  const iWon=(p===1); // I'm always P1 locally
+  const emoji=document.getElementById('win-emoji');
+  const text=document.getElementById('win-text');
+  const reason=document.getElementById('win-reason');
+  const celEl=document.getElementById('win-celestium');
+  const rematchBtn=document.getElementById('win-rematch-btn');
+  if(emoji)emoji.textContent=iWon?'🏆':'💀';
+  if(text){
+    text.textContent=iWon?'YOU WIN!':'YOU LOSE';
+    text.style.color=iWon?'#fbbf24':'#fca5a5';
+  }
+  if(reason)reason.textContent=r;
+  if(celEl){
+    if(G.onlineMode){
+      if(iWon){
+        celEl.textContent=forfeited?'+50 Celestium (forfeit win)':'+75 Celestium for winning!';
+      } else {
+        celEl.textContent='';
+      }
+    } else {
+      celEl.textContent='';
+    }
+  }
+  // Show rematch button only in online mode
+  if(rematchBtn)rematchBtn.style.display=G.onlineMode?'block':'none';
+  document.getElementById('win-modal').classList.add('open');
 }
 function returnToMenuFromWin(){
   document.getElementById('win-modal').classList.remove('open');
@@ -2727,7 +2766,7 @@ function doTransform(fieldUid,newCid,handUid,cost){
   if(pl.energy<actualCost){log('Not enough energy!','dmg');return;}
   // Remove from hand — FIX: no duplicates
   pl.hand=pl.hand.filter(f=>f.uid!==handUid);
-  spendEnergy(p, actualCost, DB[newCid]?.color||null);
+  spendEnergy(1, actualCost, DB[newCid]?.color||null);
   log(`${DB[fc.cid].name} → ${nc.name}!`,'gain');
   // Replace in place — keep uid and attachments
   const prevAttachments=fc.attachments||[];
@@ -4094,6 +4133,16 @@ async function checkDailyLogin(){
 }
 
 async function onMatchEnd(won){
+  // Forfeit win in online mode = only 50 Celestium
+  if(G&&G.onlineMode&&G.forfeited&&won){
+    _celData.matches++;
+    _celData.wins++;
+    await awardCelestium(50,'Forfeit Win');
+    setTimeout(()=>checkAchievements(),800);
+    return;
+  }
+  // Forfeiting player gets nothing (handled in forfeitMatch)
+  if(G&&G.forfeited&&!won)return;
   _celData.matches++;
   if(won){
     _celData.wins++;
@@ -5018,6 +5067,7 @@ let _onlineRoom=null;        // current room data
 let _onlineChannel=null;     // Supabase realtime channel
 let _channelReady=false;     // is the channel subscribed?
 let _applyingRemoteState=false; // suppress broadcast while applying received state
+let _winScreenShown=false; // prevent double win screen
 let _lastBroadcastTime=0;    // throttle broadcasts
 let _broadcastPending=false; // is a broadcast queued?
 let _onlineRole=null;        // 'host' or 'guest'
@@ -5225,6 +5275,7 @@ function enterOnlineGame(room){
 
   // Full reset
   G={};gameMode='';
+  _winScreenShown=false;
   if(typeof pendingMode!=='undefined')pendingMode='';
   const winModal=document.getElementById('win-modal');if(winModal)winModal.classList.remove('open');
   const powerModal=document.getElementById('power-struggle-modal');if(powerModal)powerModal.classList.remove('open');
@@ -5248,6 +5299,7 @@ function enterOnlineGame(room){
     G.onlineOpponentName=room.guest_name;
     G.onlineMyName=room.host_name;
     showScreen('game-screen');
+    const ffBtn=document.getElementById('forfeit-btn');if(ffBtn)ffBtn.style.display='inline-block';
     renderAll();
     // Broadcast authoritative state repeatedly until guest acks
     let tries=0;
@@ -5270,6 +5322,7 @@ function enterOnlineGame(room){
     G.activePlayer=2; // opponent (host) goes first
     G.waitingForHostState=true;
     showScreen('game-screen');
+    const ffBtn=document.getElementById('forfeit-btn');if(ffBtn)ffBtn.style.display='inline-block';
     renderAll();
     // Show a "syncing" message
     log('Connecting to host... waiting for game state.','info');
@@ -5303,6 +5356,9 @@ function broadcastGameState(){
     selectedAttacker:G.selectedAttacker,
     heraldAttacking:G.heraldAttacking,
     log:(G.log||[]).slice(-30),
+    winner:G.winner?(isHost?G.winner:(G.winner===1?2:1)):null,
+    winReason:G.winReason||null,
+    forfeited:G.forfeited||false,
     players:{}
   };
   if(isHost){
@@ -5384,9 +5440,22 @@ function onReceiveGameState(payload){
 
   console.log('[RECV] applied. local activePlayer='+G.activePlayer+' P1.hand='+G.players[1].hand.length+' P2.hand='+G.players[2].hand.length);
 
-  if(G.gameOver)setTimeout(()=>checkWin(),200);
+  // If opponent declared game over, show my result
+  if(G.gameOver&&!_winScreenShown){
+    _winScreenShown=true;
+    // Translate canonical winner to my local view
+    // incoming.winner is canonical (1=host, 2=guest)
+    let localWinner;
+    if(isHost){
+      localWinner=incoming.winner||1;
+    } else {
+      localWinner=incoming.winner===1?2:1; // swap for guest
+    }
+    const reason=incoming.winReason||'Match ended';
+    showWinScreen(localWinner,reason,incoming.forfeited||false);
+    setTimeout(()=>onMatchEnd(localWinner===1),600);
+  }
   clearDisconnectTimer();
-  // Suppress broadcast during this render (we're applying received state, not making a move)
   _applyingRemoteState=true;
   renderAll();
   _applyingRemoteState=false;
@@ -5844,6 +5913,55 @@ async function acceptInvite(roomCode, hostDeckId){
 
 function declineInvite(){
   const popup=document.getElementById('invite-notif-popup');if(popup)popup.remove();
+}
+
+
+// ═══════════════════════════════════════════════════
+// FORFEIT + REMATCH
+// ═══════════════════════════════════════════════════
+function forfeitMatch(){
+  if(!G||!G.onlineMode)return;
+  if(G.gameOver)return;
+  if(!confirm('Forfeit this match? Your opponent will win and you gain 0 Celestium.'))return;
+  G.gameOver=true;
+  G.winner=2; // opponent wins (I'm P1 locally, so P2/opponent wins)
+  G.winReason='Opponent forfeited the match';
+  G.forfeited=true;
+  // Broadcast the forfeit so opponent sees their win
+  if(G.onlineMode){
+    setTimeout(()=>broadcastGameState(),100);
+  }
+  // Show my lose screen (no celestium for forfeiting)
+  showWinScreen(2,'You forfeited the match',true);
+  // Forfeiting player gets 0 Celestium — just record the loss
+  _celData.matches++;
+  _celData.losses++;
+  saveCelestium();
+}
+
+async function requestRematch(){
+  // Return to the lobby waiting room for a rematch with deck choice
+  document.getElementById('win-modal').classList.remove('open');
+  const wasHost=_onlineRole==='host';
+  const roomCode=_onlineRoom?.code;
+  // Clean up current game but keep the room
+  G={};
+  _winScreenShown=false;
+  _endingTurn=false;
+  if(wasHost){
+    // Host: reset room to waiting and go back to lobby
+    if(roomCode){
+      const sb=getOnlineSB();
+      await sb.from('online_rooms').update({status:'waiting',guest_id:null,guest_name:null,guest_deck:null}).eq('code',roomCode);
+    }
+    showScreen('online-lobby-screen');
+    showWaitingRoom(roomCode,_onlineRoom.host_name,true);
+  } else {
+    // Guest: go back to lobby create/join screen
+    cleanupOnlineSession();
+    showScreen('online-lobby-screen');
+    openOnlineLobby();
+  }
 }
 
 // ═══════════════════════════════════════════════════
