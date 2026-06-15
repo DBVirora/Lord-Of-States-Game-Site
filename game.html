@@ -488,6 +488,33 @@ body{padding-top:46px;}
 .admin-input{background:rgba(8,8,28,.6);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:#e2e8f0;font-family:'Share Tech Mono',monospace;font-size:11px;width:100%;}
 .admin-input:focus{outline:none;border-color:var(--violet2);}
 .admin-status{font-size:9px;color:#6b7280;margin-top:4px;letter-spacing:1px;}
+
+/* FRIENDS */
+.friend-tab{flex:1;padding:9px 14px;background:rgba(8,8,28,.6);border:1px solid rgba(124,58,237,.2);border-radius:8px 8px 0 0;color:#9ca3af;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;cursor:pointer;transition:all .2s;border-bottom:none;position:relative;}
+.friend-tab:hover{color:#c4b5fd;border-color:rgba(124,58,237,.4);}
+.friend-tab.active{background:rgba(124,58,237,.15);color:#c4b5fd;border-color:var(--violet2);border-bottom:1px solid rgba(124,58,237,.15);}
+.friend-tab-badge{display:inline-block;background:#ef4444;color:#fff;font-size:8px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:6px;vertical-align:middle;animation:pulse 2s infinite;}
+@keyframes pulse{50%{opacity:.6}}
+.friend-content{background:rgba(8,8,28,.4);border:1px solid var(--border-v);border-radius:0 8px 8px 8px;padding:14px;min-height:280px;}
+.friend-row{display:flex;align-items:center;gap:12px;padding:10px 12px;background:rgba(8,8,28,.6);border:1px solid var(--border-v);border-radius:8px;margin-bottom:6px;transition:all .15s;}
+.friend-row:hover{border-color:var(--violet2);background:rgba(124,58,237,.08);}
+.friend-avatar{width:36px;height:36px;border-radius:50%;background:#0d0d2a;border:2px solid rgba(0,180,255,.3);display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;flex-shrink:0;position:relative;}
+.friend-avatar img{width:100%;height:100%;object-fit:cover;}
+.friend-status-dot{position:absolute;bottom:-2px;right:-2px;width:11px;height:11px;border-radius:50%;border:2px solid #04040f;}
+.friend-status-dot.online{background:#22c55e;box-shadow:0 0 4px rgba(34,197,94,.5);}
+.friend-status-dot.offline{background:#6b7280;}
+.friend-info{flex:1;min-width:0;}
+.friend-name{font-size:13px;font-weight:700;color:#e2e8f0;}
+.friend-meta{font-size:9px;color:#6b7280;letter-spacing:1px;margin-top:1px;}
+.friend-actions{display:flex;gap:6px;flex-shrink:0;}
+.friend-btn{padding:5px 10px;background:rgba(124,58,237,.15);border:1px solid var(--border-v);border-radius:6px;color:#c4b5fd;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.friend-btn:hover{background:rgba(124,58,237,.3);border-color:var(--violet2);}
+.friend-btn.accept{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.4);color:#86efac;}
+.friend-btn.accept:hover{background:rgba(34,197,94,.3);border-color:#22c55e;}
+.friend-btn.danger{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.35);color:#fca5a5;}
+.friend-btn.danger:hover{background:rgba(239,68,68,.25);border-color:#ef4444;}
+.friend-empty{text-align:center;padding:40px 20px;color:#6b7280;font-size:11px;}
+.friend-empty-icon{font-size:42px;opacity:.3;margin-bottom:10px;}
 </style>
 </head>
 <body>
@@ -522,6 +549,7 @@ body{padding-top:46px;}
   <button class="menu-btn ai-btn" onclick="goToDeckSelect('medium')">🤖 vs AI — Medium</button>
   <button class="menu-btn ai-btn" onclick="goToDeckSelect('hard')">🤖 vs AI — Hard</button>
   <div class="menu-section-label">— TOOLS —</div>
+  <button class="menu-btn util-btn" id="menu-friends-btn" onclick="showScreen('friends-screen');openFriends()">👥 Friends <span id="menu-friends-badge" style="display:none;background:#ef4444;color:#fff;border-radius:10px;padding:1px 6px;font-size:9px;margin-left:4px">0</span></button>
   <button class="menu-btn util-btn" onclick="showScreen('shop-screen');openShop()">🏪 Shop</button>
   <button class="menu-btn util-btn" onclick="showScreen('profile-screen');refreshProfileScreen()">👤 Profile</button>
   <button class="menu-btn util-btn" onclick="showScreen('builder-screen');renderBuilderCards()">🃏 Deck Builder</button>
@@ -4610,6 +4638,332 @@ function updateAdminBadge(){
   if(badge)badge.style.display=isAdmin()?'inline-flex':'none';
 }
 
+
+// ═══════════════════════════════════════════════════
+// FRIENDS SYSTEM
+// ═══════════════════════════════════════════════════
+let _friendsList=[];
+let _pendingRequests=[];
+let _friendsTab='friends';
+let _presenceInterval=null;
+const ONLINE_THRESHOLD_MS=60*1000; // 60 seconds
+
+async function loadFriends(){
+  if(!_celSB||!_celUserId)return;
+  try{
+    // Load accepted friendships (where I'm either user_a or user_b)
+    const {data:rows,error}=await _celSB
+      .from('friendships')
+      .select('*')
+      .or('user_a.eq.'+_celUserId+',user_b.eq.'+_celUserId);
+    if(error){console.warn('[FRIENDS] load error:',error);return;}
+    const accepted=(rows||[]).filter(r=>r.status==='accepted');
+    const pendingIncoming=(rows||[]).filter(r=>r.status==='pending'&&r.user_b===_celUserId);
+    // Resolve other-side usernames
+    const otherIds=accepted.map(r=>r.user_a===_celUserId?r.user_b:r.user_a);
+    const senderIds=pendingIncoming.map(r=>r.user_a);
+    const allIds=[...new Set([...otherIds,...senderIds])];
+    if(allIds.length>0){
+      const {data:profiles}=await _celSB.from('profiles').select('id,username,last_active').in('id',allIds);
+      const profileMap={};
+      (profiles||[]).forEach(p=>{profileMap[p.id]=p;});
+      _friendsList=accepted.map(r=>{
+        const otherId=r.user_a===_celUserId?r.user_b:r.user_a;
+        const prof=profileMap[otherId]||{};
+        return {id:r.id,user_id:otherId,username:prof.username||'Unknown',last_active:prof.last_active,created_at:r.created_at};
+      });
+      _pendingRequests=pendingIncoming.map(r=>{
+        const prof=profileMap[r.user_a]||{};
+        return {id:r.id,from_user_id:r.user_a,from_username:prof.username||'Unknown',created_at:r.created_at};
+      });
+    } else {
+      _friendsList=[];_pendingRequests=[];
+    }
+    updateFriendsBadges();
+  }catch(e){console.warn('[FRIENDS] error:',e);}
+}
+
+function isUserOnline(lastActive){
+  if(!lastActive)return false;
+  return (Date.now()-new Date(lastActive).getTime())<ONLINE_THRESHOLD_MS;
+}
+
+async function startPresenceHeartbeat(){
+  if(!_celSB||!_celUserId)return;
+  if(_presenceInterval)clearInterval(_presenceInterval);
+  // Update presence immediately
+  await updatePresence();
+  // Then every 30 seconds
+  _presenceInterval=setInterval(()=>updatePresence(),30000);
+}
+
+async function updatePresence(){
+  if(!_celSB||!_celUserId)return;
+  try{
+    await _celSB.from('profiles').update({last_active:new Date().toISOString()}).eq('id',_celUserId);
+  }catch(e){}
+}
+
+function updateFriendsBadges(){
+  // Online count
+  const onlineEl=document.getElementById('friends-online-count');
+  if(onlineEl)onlineEl.textContent=_friendsList.filter(f=>isUserOnline(f.last_active)).length;
+  // Friends tab count
+  const ftCount=document.getElementById('friends-tab-count');
+  if(ftCount)ftCount.textContent='('+_friendsList.length+')';
+  // Pending badge in tab and menu
+  const pendBadge=document.getElementById('friends-pending-badge');
+  const menuBadge=document.getElementById('menu-friends-badge');
+  if(_pendingRequests.length>0){
+    if(pendBadge){pendBadge.style.display='inline-block';pendBadge.textContent=_pendingRequests.length;}
+    if(menuBadge){menuBadge.style.display='inline-block';menuBadge.textContent=_pendingRequests.length;}
+  } else {
+    if(pendBadge)pendBadge.style.display='none';
+    if(menuBadge)menuBadge.style.display='none';
+  }
+}
+
+async function openFriends(){
+  await loadFriends();
+  switchFriendsTab('friends');
+  renderFriendsList();
+  renderPendingList();
+  updateFriendsBadges();
+}
+
+function switchFriendsTab(tab){
+  _friendsTab=tab;
+  ['friends','pending','add'].forEach(t=>{
+    const btn=document.getElementById('ft-'+t);
+    const content=document.getElementById('fc-'+t);
+    if(btn)btn.classList.toggle('active',t===tab);
+    if(content)content.style.display=t===tab?'block':'none';
+  });
+  if(tab==='friends')renderFriendsList();
+  else if(tab==='pending')renderPendingList();
+  else if(tab==='add'){
+    renderMyInviteCode();
+    const inp=document.getElementById('friend-search-input');
+    if(inp)inp.value='';
+    const codeInp=document.getElementById('invite-code-input');
+    if(codeInp)codeInp.value='';
+    const res=document.getElementById('friend-search-results');
+    if(res)res.innerHTML='';
+  }
+}
+
+function renderFriendsList(){
+  const el=document.getElementById('friends-list');
+  if(!el)return;
+  if(!_friendsList.length){
+    el.innerHTML='<div class="friend-empty"><div class="friend-empty-icon">👥</div><div style="font-weight:700;color:#9ca3af;letter-spacing:2px;margin-bottom:4px">No friends yet</div><div style="font-size:10px;color:#4b5563">Click "+ ADD FRIEND" to find someone to play with</div></div>';
+    return;
+  }
+  // Sort: online first, then by username
+  const sorted=[..._friendsList].sort((a,b)=>{
+    const aOn=isUserOnline(a.last_active),bOn=isUserOnline(b.last_active);
+    if(aOn!==bOn)return aOn?-1:1;
+    return (a.username||'').localeCompare(b.username||'');
+  });
+  el.innerHTML='';
+  sorted.forEach(f=>{
+    const online=isUserOnline(f.last_active);
+    const row=document.createElement('div');
+    row.className='friend-row';
+    row.innerHTML=
+      '<div class="friend-avatar"><span>'+((f.username||'?')[0].toUpperCase())+'</span><div class="friend-status-dot '+(online?'online':'offline')+'"></div></div>'
+      +'<div class="friend-info"><div class="friend-name">'+f.username+'</div><div class="friend-meta">'+(online?'<span style="color:#22c55e">● ONLINE</span>':'OFFLINE')+'</div></div>'
+      +'<div class="friend-actions">'
+      +'<button class="friend-btn" disabled title="Coming in Phase 2">⚔ INVITE</button>'
+      +'<button class="friend-btn danger" onclick="removeFriend(\''+f.id+'\',\''+(f.username||'').replace(/[\\\\\']/g,'')+'\')">✕</button>'
+      +'</div>';
+    el.appendChild(row);
+  });
+}
+
+function renderPendingList(){
+  const el=document.getElementById('pending-list');
+  if(!el)return;
+  if(!_pendingRequests.length){
+    el.innerHTML='<div class="friend-empty"><div class="friend-empty-icon">📬</div><div style="font-weight:700;color:#9ca3af;letter-spacing:2px;margin-bottom:4px">No pending requests</div><div style="font-size:10px;color:#4b5563">Friend requests will appear here</div></div>';
+    return;
+  }
+  el.innerHTML='';
+  _pendingRequests.forEach(r=>{
+    const row=document.createElement('div');
+    row.className='friend-row';
+    row.innerHTML=
+      '<div class="friend-avatar">'+((r.from_username||'?')[0].toUpperCase())+'</div>'
+      +'<div class="friend-info"><div class="friend-name">'+r.from_username+'</div><div class="friend-meta">SENT YOU A FRIEND REQUEST</div></div>'
+      +'<div class="friend-actions">'
+      +'<button class="friend-btn accept" onclick="respondToRequest(\''+r.id+'\',true)">✓ ACCEPT</button>'
+      +'<button class="friend-btn danger" onclick="respondToRequest(\''+r.id+'\',false)">✕ DECLINE</button>'
+      +'</div>';
+    el.appendChild(row);
+  });
+}
+
+async function searchFriends(){
+  const inp=document.getElementById('friend-search-input');
+  const res=document.getElementById('friend-search-results');
+  if(!inp||!res)return;
+  const q=inp.value.trim();
+  if(q.length<3){res.innerHTML='<div style="font-size:10px;color:#fbbf24;padding:10px;text-align:center">Enter at least 3 characters.</div>';return;}
+  res.innerHTML='<div style="font-size:11px;color:#6b7280;padding:10px;text-align:center">Searching...</div>';
+  try{
+    const {data,error}=await _celSB.from('profiles').select('id,username,last_active').ilike('username',q+'%').limit(10);
+    if(error){res.innerHTML='<div style="color:#fca5a5;font-size:11px;padding:10px">Search failed.</div>';return;}
+    const results=(data||[]).filter(p=>p.id!==_celUserId);
+    if(!results.length){res.innerHTML='<div class="friend-empty"><div class="friend-empty-icon">🔍</div><div style="font-size:11px">No users found matching "'+q+'"</div></div>';return;}
+    res.innerHTML='';
+    results.forEach(u=>{
+      const online=isUserOnline(u.last_active);
+      const alreadyFriend=_friendsList.some(f=>f.user_id===u.id);
+      const row=document.createElement('div');
+      row.className='friend-row';
+      row.innerHTML=
+        '<div class="friend-avatar"><span>'+((u.username||'?')[0].toUpperCase())+'</span><div class="friend-status-dot '+(online?'online':'offline')+'"></div></div>'
+        +'<div class="friend-info"><div class="friend-name">'+u.username+'</div><div class="friend-meta">'+(online?'<span style="color:#22c55e">● ONLINE</span>':'OFFLINE')+'</div></div>'
+        +'<div class="friend-actions">'
+        +(alreadyFriend?'<button class="friend-btn" disabled>✓ FRIENDS</button>':'<button class="friend-btn accept" onclick="sendFriendRequest(\''+u.id+'\',\''+(u.username||'').replace(/[\\\\\']/g,'')+'\')">+ ADD</button>')
+        +'</div>';
+      res.appendChild(row);
+    });
+  }catch(e){res.innerHTML='<div style="color:#fca5a5;font-size:11px;padding:10px">Search error.</div>';}
+}
+
+async function sendFriendRequest(targetId,targetName){
+  if(!_celSB||!_celUserId)return;
+  try{
+    // Sort IDs lexicographically so (A,B) and (B,A) don't both insert
+    const a=_celUserId<targetId?_celUserId:targetId;
+    const b=_celUserId<targetId?targetId:_celUserId;
+    // Set initiator separately so we know who sent it
+    const {error}=await _celSB.from('friendships').insert({
+      user_a:_celUserId,user_b:targetId,initiator:_celUserId,status:'pending'
+    });
+    if(error){
+      if(error.code==='23505'){alert('You already sent a request or are already friends with '+targetName+'.');}
+      else{alert('Failed to send request: '+error.message);}
+      return;
+    }
+    alert('✓ Friend request sent to '+targetName+'!');
+    searchFriends(); // refresh search to show "request pending"
+  }catch(e){alert('Error: '+e.message);}
+}
+
+async function respondToRequest(reqId,accept){
+  if(!_celSB)return;
+  try{
+    if(accept){
+      await _celSB.from('friendships').update({status:'accepted'}).eq('id',reqId);
+    } else {
+      await _celSB.from('friendships').delete().eq('id',reqId);
+    }
+    await loadFriends();
+    renderPendingList();
+    renderFriendsList();
+    updateFriendsBadges();
+  }catch(e){alert('Error: '+e.message);}
+}
+
+async function removeFriend(friendshipId,name){
+  if(!confirm('Remove '+name+' from your friends list?'))return;
+  try{
+    await _celSB.from('friendships').delete().eq('id',friendshipId);
+    await loadFriends();
+    renderFriendsList();
+    updateFriendsBadges();
+  }catch(e){alert('Error: '+e.message);}
+}
+
+
+// ═══════════════════════════════════════════════════
+// INVITE CODE SYSTEM
+// ═══════════════════════════════════════════════════
+
+// Generate a deterministic invite code from user ID
+// Format: VCU-XXXX (always same for same user)
+function generateInviteCode(userId){
+  if(!userId)return '——————';
+  // Use first 8 chars of UUID, encode as 4 alphanumeric chars
+  const hex=userId.replace(/-/g,'').substring(0,8);
+  const num=parseInt(hex,16)%1000000;
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no ambiguous chars (I,O,0,1)
+  let code='';
+  let n=num;
+  for(let i=0;i<4;i++){code=chars[n%chars.length]+code;n=Math.floor(n/chars.length);}
+  return 'VCU-'+code;
+}
+
+// Build reverse lookup: code → userId by checking profiles
+async function addByInviteCode(){
+  const inp=document.getElementById('invite-code-input');
+  const res=document.getElementById('friend-search-results');
+  if(!inp||!res)return;
+  const code=inp.value.trim().toUpperCase();
+  if(!code.startsWith('VCU-')||code.length!==8){
+    res.innerHTML='<div style="color:#fca5a5;font-size:11px;padding:10px;text-align:center">Invalid code format. Should be VCU-XXXX</div>';
+    return;
+  }
+  res.innerHTML='<div style="font-size:11px;color:#6b7280;padding:10px;text-align:center">Looking up code...</div>';
+  try{
+    // Fetch all profiles and find matching code
+    // We look up by invite_code column which we'll store on profile
+    const {data,error}=await _celSB.from('profiles').select('id,username,last_active,invite_code').eq('invite_code',code).maybeSingle();
+    if(error||!data){
+      // Fallback: search all and generate codes client-side (slower but works without extra column)
+      const {data:all}=await _celSB.from('profiles').select('id,username,last_active').limit(500);
+      const match=(all||[]).find(p=>generateInviteCode(p.id)===code);
+      if(!match){
+        res.innerHTML='<div style="color:#fca5a5;font-size:11px;padding:10px;text-align:center">No player found with code <strong>'+code+'</strong>. Double-check the code.</div>';
+        return;
+      }
+      showFoundPlayer(match);
+    } else {
+      showFoundPlayer(data);
+    }
+  }catch(e){res.innerHTML='<div style="color:#fca5a5;font-size:11px;padding:10px">Error: '+e.message+'</div>';}
+}
+
+function showFoundPlayer(u){
+  const res=document.getElementById('friend-search-results');
+  if(!res)return;
+  if(u.id===_celUserId){
+    res.innerHTML='<div style="color:#fbbf24;font-size:11px;padding:10px;text-align:center">That\'s your own code!</div>';
+    return;
+  }
+  const online=isUserOnline(u.last_active);
+  const alreadyFriend=_friendsList.some(f=>f.user_id===u.id);
+  const row=document.createElement('div');
+  row.className='friend-row';
+  row.style.background='rgba(34,197,94,.06)';row.style.borderColor='rgba(34,197,94,.3)';
+  row.innerHTML=
+    '<div class="friend-avatar"><span>'+((u.username||'?')[0].toUpperCase())+'</span><div class="friend-status-dot '+(online?'online':'offline')+'"></div></div>'
+    +'<div class="friend-info"><div class="friend-name">'+u.username+'</div><div class="friend-meta">'+(online?'<span style="color:#22c55e">● ONLINE</span>':'OFFLINE')+'</div></div>'
+    +'<div class="friend-actions">'
+    +(alreadyFriend?'<button class="friend-btn" disabled>✓ FRIENDS</button>':'<button class="friend-btn accept" onclick="sendFriendRequest(\''+u.id+'\',\''+(u.username||'').replace(/[\\\']/g,'')+'\')">+ ADD</button>')
+    +'</div>';
+  res.innerHTML='';
+  res.appendChild(row);
+}
+
+function renderMyInviteCode(){
+  const el=document.getElementById('my-invite-code');
+  if(!el||!_celUserId)return;
+  el.textContent=generateInviteCode(_celUserId);
+}
+
+function copyInviteCode(){
+  const code=generateInviteCode(_celUserId);
+  navigator.clipboard.writeText(code).then(()=>{
+    const btn=document.getElementById('copy-code-btn');
+    if(btn){btn.textContent='✓ COPIED';setTimeout(()=>{btn.textContent='📋 COPY';},2000);}
+  }).catch(()=>{
+    prompt('Your invite code:',code);
+  });
+}
+
 // ═══════════════════════════════════════════════════
 // STARTUP
 // ═══════════════════════════════════════════════════
@@ -4700,6 +5054,8 @@ window.addEventListener('load',async()=>{
       await loadAdminToggles();
       updateAdminBadge();
       applyAdminToggleEffects();
+      await loadFriends();
+      startPresenceHeartbeat();
       // Sign out
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){
@@ -4763,6 +5119,8 @@ window.addEventListener('load',async()=>{
       await loadAdminToggles();
       updateAdminBadge();
       applyAdminToggleEffects();
+      await loadFriends();
+      startPresenceHeartbeat();
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){console.error('[AUTH] error:',e);window.signOutUser=function(){window.location.replace(LOGIN);};}
   }
@@ -5115,6 +5473,83 @@ window.addEventListener('load',async()=>{
       <div>ADMIN ONLY toggles affect only your own session.</div>
       <div style="margin-top:6px;color:#22c55e">✓ You as admin always have full access regardless of toggle state.</div>
     </div>
+  </div>
+</div>
+
+<!-- FRIENDS SCREEN -->
+<div id="friends-screen" class="screen" style="padding:20px;max-width:640px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+    <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
+    <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:var(--blue);text-shadow:0 0 10px var(--blue)">👥 FRIENDS</div>
+    <div style="margin-left:auto;font-size:9px;color:#22c55e;letter-spacing:1px;padding:3px 10px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.3);border-radius:10px"><span id="friends-online-count">0</span> ONLINE</div>
+  </div>
+
+  <!-- TABS -->
+  <div style="display:flex;gap:4px;margin-bottom:0">
+    <button class="friend-tab active" id="ft-friends" onclick="switchFriendsTab('friends')">FRIENDS <span id="friends-tab-count" style="font-size:9px;color:#6b7280;margin-left:4px"></span></button>
+    <button class="friend-tab" id="ft-pending" onclick="switchFriendsTab('pending')">PENDING <span id="friends-pending-badge" style="display:none" class="friend-tab-badge">0</span></button>
+    <button class="friend-tab" id="ft-add" onclick="switchFriendsTab('add')">+ ADD FRIEND</button>
+  </div>
+
+  <!-- FRIENDS LIST TAB -->
+  <div class="friend-content" id="fc-friends">
+    <div id="friends-list">
+      <div class="friend-empty">
+        <div class="friend-empty-icon">👥</div>
+        <div style="font-weight:700;color:#9ca3af;letter-spacing:2px;margin-bottom:4px">Loading...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PENDING TAB -->
+  <div class="friend-content" id="fc-pending" style="display:none">
+    <div id="pending-list">
+      <div class="friend-empty">
+        <div class="friend-empty-icon">📬</div>
+        <div style="font-weight:700;color:#9ca3af;letter-spacing:2px;margin-bottom:4px">No pending requests</div>
+        <div style="font-size:10px;color:#4b5563">Friend requests will appear here</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD FRIEND TAB -->
+  <div class="friend-content" id="fc-add" style="display:none">
+
+    <!-- YOUR INVITE CODE -->
+    <div style="background:rgba(124,58,237,.08);border:1px solid var(--border-v);border-radius:10px;padding:14px;margin-bottom:14px">
+      <div style="font-size:9px;color:var(--violet2);letter-spacing:2px;margin-bottom:8px">YOUR INVITE CODE</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="flex:1;font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700;color:#c4b5fd;letter-spacing:6px;padding:10px 14px;background:rgba(8,8,28,.6);border:1px solid var(--border-v);border-radius:8px;text-align:center" id="my-invite-code">——————</div>
+        <button class="friend-btn" onclick="copyInviteCode()" style="padding:9px 14px" id="copy-code-btn">📋 COPY</button>
+      </div>
+      <div style="font-size:9px;color:#4b5563;margin-top:6px;text-align:center">Share this code with friends so they can add you</div>
+    </div>
+
+    <!-- DIVIDER -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.06)"></div>
+      <div style="font-size:9px;color:#4b5563;letter-spacing:2px">FIND FRIENDS</div>
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.06)"></div>
+    </div>
+
+    <!-- ENTER INVITE CODE -->
+    <div style="margin-bottom:10px">
+      <div style="font-size:9px;color:#6b7280;letter-spacing:2px;margin-bottom:5px">ENTER INVITE CODE</div>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="invite-code-input" placeholder="e.g. VCU-X4K9" class="admin-input" style="flex:1;letter-spacing:3px;text-transform:uppercase" maxlength="10" oninput="this.value=this.value.toUpperCase()" onkeypress="if(event.key==='Enter')addByInviteCode()"/>
+        <button class="friend-btn accept" onclick="addByInviteCode()" style="padding:7px 16px">+ ADD</button>
+      </div>
+    </div>
+
+    <!-- SEARCH BY USERNAME -->
+    <div style="margin-bottom:10px">
+      <div style="font-size:9px;color:#6b7280;letter-spacing:2px;margin-bottom:5px">SEARCH BY USERNAME</div>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="friend-search-input" placeholder="Enter username..." class="admin-input" style="flex:1" maxlength="30" onkeypress="if(event.key==='Enter')searchFriends()"/>
+        <button class="friend-btn" onclick="searchFriends()" style="padding:7px 16px">🔍</button>
+      </div>
+    </div>
+    <div id="friend-search-results"></div>
   </div>
 </div>
 </body>
