@@ -515,6 +515,28 @@ body{padding-top:46px;}
 .friend-btn.danger:hover{background:rgba(239,68,68,.25);border-color:#ef4444;}
 .friend-empty{text-align:center;padding:40px 20px;color:#6b7280;font-size:11px;}
 .friend-empty-icon{font-size:42px;opacity:.3;margin-bottom:10px;}
+
+/* ONLINE PVP */
+.room-code-display{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:900;letter-spacing:10px;color:#00d4ff;text-shadow:0 0 20px #00d4ff,0 0 40px rgba(0,180,255,.4);text-align:center;padding:16px;background:rgba(0,150,220,.06);border:1px solid rgba(0,150,220,.3);border-radius:10px;margin:14px 0;}
+.pvp-lobby-card{background:rgba(8,8,28,.85);border:1px solid var(--border-v);border-radius:12px;padding:20px;max-width:480px;margin:0 auto;position:relative;}
+.pvp-lobby-card::before,.pvp-lobby-card::after{content:'';position:absolute;width:14px;height:14px;border-color:var(--blue);border-style:solid;opacity:.5;}
+.pvp-lobby-card::before{top:6px;left:6px;border-width:2px 0 0 2px;}
+.pvp-lobby-card::after{bottom:6px;right:6px;border-width:0 2px 2px 0;}
+.pvp-player-slot{display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;}
+.pvp-player-slot.filled{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.05);}
+.pvp-player-slot.waiting{border-color:rgba(251,191,36,.3);border-style:dashed;animation:pvp-wait .8s ease-in-out infinite alternate;}
+@keyframes pvp-wait{from{border-color:rgba(251,191,36,.2)}to{border-color:rgba(251,191,36,.5)}}
+.pvp-slot-avatar{width:40px;height:40px;border-radius:50%;background:#0d0d2a;border:2px solid rgba(0,180,255,.3);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;}
+.pvp-slot-name{font-size:13px;font-weight:700;color:#e2e8f0;}
+.pvp-slot-status{font-size:9px;letter-spacing:1px;margin-top:2px;}
+.pvp-conn-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:8px;letter-spacing:1px;font-weight:700;}
+.pvp-conn-badge.connected{background:rgba(34,197,94,.2);color:#22c55e;border:1px solid rgba(34,197,94,.4);}
+.pvp-conn-badge.waiting{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3);}
+.pvp-conn-badge.disconnected{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);}
+/* Disconnect overlay */
+.disconnect-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);backdrop-filter:blur(8px);z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+.disconnect-overlay.open{display:flex;}
+.disconnect-timer{font-size:48px;font-weight:900;font-family:'Orbitron',sans-serif;color:#ef4444;text-shadow:0 0 20px rgba(239,68,68,.5);}
 </style>
 </head>
 <body>
@@ -544,7 +566,8 @@ body{padding-top:46px;}
   <h1>LORD OF <span>COURTS</span></h1>
   <div class="menu-tagline">V C U &nbsp;·&nbsp; T R A D I N G &nbsp; C A R D &nbsp; G A M E</div>
   <div class="menu-section-label">— BATTLE —</div>
-  <button class="menu-btn" onclick="goToDeckSelect('pvp')">⚔️ Player vs Player</button>
+  <button class="menu-btn" onclick="showScreen('online-lobby-screen');openOnlineLobby()">🌐 Online PvP</button>
+  <button class="menu-btn" onclick="goToDeckSelect('pvp')">⚔️ Local PvP</button>
   <button class="menu-btn ai-btn" onclick="goToDeckSelect('easy')">🤖 vs AI — Easy</button>
   <button class="menu-btn ai-btn" onclick="goToDeckSelect('medium')">🤖 vs AI — Medium</button>
   <button class="menu-btn ai-btn" onclick="goToDeckSelect('hard')">🤖 vs AI — Hard</button>
@@ -4774,7 +4797,7 @@ function renderFriendsList(){
       '<div class="friend-avatar"><span>'+((f.username||'?')[0].toUpperCase())+'</span><div class="friend-status-dot '+(online?'online':'offline')+'"></div></div>'
       +'<div class="friend-info"><div class="friend-name">'+f.username+'</div><div class="friend-meta">'+(online?'<span style="color:#22c55e">● ONLINE</span>':'OFFLINE')+'</div></div>'
       +'<div class="friend-actions">'
-      +'<button class="friend-btn" disabled title="Coming in Phase 2">⚔ INVITE</button>'
+      +'<button class="friend-btn accept" onclick="inviteFriendToMatch(\''+f.user_id+'\',\''+f.username+'\')" title="Invite to Online Match">⚔ INVITE</button>'
       +'<button class="friend-btn danger" onclick="removeFriend(\''+f.id+'\',\''+(f.username||'').replace(/[\\\\\']/g,'')+'\')">✕</button>'
       +'</div>';
     el.appendChild(row);
@@ -4962,6 +4985,327 @@ function copyInviteCode(){
   }).catch(()=>{
     prompt('Your invite code:',code);
   });
+}
+
+
+// ═══════════════════════════════════════════════════
+// ONLINE PVP — PHASE 2
+// ═══════════════════════════════════════════════════
+let _onlineRoom=null;        // current room data
+let _onlineChannel=null;     // Supabase realtime channel
+let _onlineRole=null;        // 'host' or 'guest'
+let _onlineDeckId=null;      // selected deck for online match
+let _disconnectTimer=null;   // forfeit countdown
+let _disconnectSeconds=120;
+let _onlineSB=null;          // Supabase client for realtime
+
+function getOnlineSB(){
+  if(_onlineSB)return _onlineSB;
+  _onlineSB=window.supabase.createClient(
+    'https://alvldkihwuhgjbgdpbkg.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U'
+  );
+  return _onlineSB;
+}
+
+function generateRoomCode(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ';
+  let code='';
+  for(let i=0;i<6;i++)code+=chars[Math.floor(Math.random()*chars.length)];
+  return code;
+}
+
+function openOnlineLobby(){
+  document.getElementById('lobby-create-join').style.display='block';
+  document.getElementById('lobby-waiting-room').style.display='none';
+  // Render deck selector
+  const sel=document.getElementById('lobby-deck-selector');
+  if(!sel)return;
+  const decks=Object.entries(SAVED_DECKS);
+  if(!decks.length){
+    sel.innerHTML='<div style="font-size:10px;color:#fca5a5;padding:8px;text-align:center">No saved decks. Build one in the Deck Builder first.</div>';
+    return;
+  }
+  sel.innerHTML='<select id="lobby-deck-select" class="admin-input" style="width:100%">'
+    +decks.map(([id,d])=>'<option value="'+id+'">'+d.name+' ('+d.cards.length+' cards)</option>').join('')
+    +'</select>';
+  _onlineDeckId=decks[0][0];
+  const selectEl=document.getElementById('lobby-deck-select');
+  if(selectEl)selectEl.onchange=function(){_onlineDeckId=this.value;};
+}
+
+async function createOnlineRoom(){
+  const sb=getOnlineSB();
+  if(!_celUserId){alert('You must be logged in.');return;}
+  const selEl=document.getElementById('lobby-deck-select');
+  if(selEl)_onlineDeckId=selEl.value;
+  if(!_onlineDeckId||!SAVED_DECKS[_onlineDeckId]){alert('Please select a deck first.');return;}
+  if(SAVED_DECKS[_onlineDeckId].cards.length<60){alert('Deck must have 60 cards to play online!');return;}
+  const code=generateRoomCode();
+  try{
+    const myName=document.getElementById('hud-username')?.textContent||'Player';
+    const {data,error}=await sb.from('online_rooms').insert({
+      code:code,
+      host_id:_celUserId,
+      host_name:myName,
+      host_deck:_onlineDeckId,
+      status:'waiting',
+      created_at:new Date().toISOString()
+    }).select().single();
+    if(error)throw error;
+    _onlineRoom=data;
+    _onlineRole='host';
+    showWaitingRoom(code,myName,true);
+    subscribeToRoom(code);
+  }catch(e){alert('Failed to create room: '+e.message);}
+}
+
+async function joinOnlineRoom(){
+  const sb=getOnlineSB();
+  if(!_celUserId){alert('You must be logged in.');return;}
+  const codeInput=document.getElementById('join-room-code-input');
+  const code=(codeInput?.value||'').trim().toUpperCase();
+  if(code.length!==6){alert('Enter a valid 6-letter room code.');return;}
+  // Need a deck too
+  const decks=Object.entries(SAVED_DECKS);
+  if(!decks.length){alert('You need at least one saved deck to join a match.');return;}
+  // Pick first valid 60-card deck
+  const validDeck=decks.find(([id,d])=>d.cards.length>=60);
+  if(!validDeck){alert('You need a 60-card deck to play online!');return;}
+  _onlineDeckId=validDeck[0];
+  const myName=document.getElementById('hud-username')?.textContent||'Player';
+  try{
+    const {data:room,error}=await sb.from('online_rooms').select('*').eq('code',code).eq('status','waiting').maybeSingle();
+    if(error||!room){alert('Room not found or already started. Check the code and try again.');return;}
+    // Update room with guest
+    const {error:upErr}=await sb.from('online_rooms').update({
+      guest_id:_celUserId,
+      guest_name:myName,
+      guest_deck:_onlineDeckId,
+      status:'ready'
+    }).eq('code',code);
+    if(upErr)throw upErr;
+    _onlineRoom={...room,guest_id:_celUserId,guest_name:myName,guest_deck:_onlineDeckId,status:'ready'};
+    _onlineRole='guest';
+    showWaitingRoom(code,myName,false);
+    subscribeToRoom(code);
+  }catch(e){alert('Failed to join room: '+e.message);}
+}
+
+function showWaitingRoom(code,myName,isHost){
+  document.getElementById('lobby-create-join').style.display='none';
+  document.getElementById('lobby-waiting-room').style.display='block';
+  document.getElementById('lobby-room-code-display').textContent=code;
+  document.getElementById('lobby-room-label').textContent=isHost?'ROOM CODE — SHARE WITH OPPONENT':'ROOM CODE';
+  // Fill my slot
+  if(isHost){
+    document.getElementById('lobby-p1-name').textContent=myName+' (You)';
+  } else {
+    document.getElementById('lobby-p1-name').textContent=_onlineRoom.host_name;
+    const p2slot=document.getElementById('lobby-player-2-slot');
+    p2slot.className='pvp-player-slot filled';
+    p2slot.innerHTML=
+      '<div class="pvp-slot-avatar">⚔️</div>'
+      +'<div style="flex:1"><div class="pvp-slot-name">'+myName+' (You)</div>'
+      +'<div class="pvp-slot-status"><span class="pvp-conn-badge connected">CONNECTED</span></div></div>';
+    const startBtn=document.getElementById('lobby-start-btn');
+    if(startBtn){startBtn.disabled=true;startBtn.textContent='WAITING FOR HOST...';}
+  }
+}
+
+function subscribeToRoom(code){
+  const sb=getOnlineSB();
+  if(_onlineChannel)sb.removeChannel(_onlineChannel);
+  _onlineChannel=sb.channel('room:'+code)
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'online_rooms',filter:'code=eq.'+code},(payload)=>{
+      onRoomUpdate(payload.new);
+    })
+    .on('broadcast',{event:'game_state'},(payload)=>{
+      onReceiveGameState(payload.payload);
+    })
+    .on('broadcast',{event:'game_action'},(payload)=>{
+      onReceiveGameAction(payload.payload);
+    })
+    .subscribe();
+}
+
+function onRoomUpdate(room){
+  _onlineRoom=room;
+  // Guest joined — update host UI
+  if(_onlineRole==='host'&&room.guest_id&&room.status==='ready'){
+    const p2slot=document.getElementById('lobby-player-2-slot');
+    if(p2slot){
+      p2slot.className='pvp-player-slot filled';
+      p2slot.innerHTML=
+        '<div class="pvp-slot-avatar">⚔️</div>'
+        +'<div style="flex:1"><div class="pvp-slot-name">'+room.guest_name+'</div>'
+        +'<div class="pvp-slot-status"><span class="pvp-conn-badge connected">CONNECTED</span></div></div>';
+    }
+    const startBtn=document.getElementById('lobby-start-btn');
+    if(startBtn){startBtn.disabled=false;startBtn.textContent='▸ START MATCH';}
+  }
+  // Host started — guest enters game
+  if(_onlineRole==='guest'&&room.status==='playing'){
+    enterOnlineGame(room);
+  }
+}
+
+async function startOnlineMatch(){
+  if(!_onlineRoom||_onlineRole!=='host')return;
+  const sb=getOnlineSB();
+  const gameMode=document.getElementById('lobby-game-mode')?.value||'prize';
+  const prizeCount=parseInt(document.getElementById('lobby-prize-count')?.value||'6');
+  await sb.from('online_rooms').update({status:'playing',game_mode:gameMode,prize_count:prizeCount}).eq('code',_onlineRoom.code);
+  enterOnlineGame({..._onlineRoom,status:'playing',game_mode:gameMode,prize_count:prizeCount});
+}
+
+function enterOnlineGame(room){
+  _onlineRoom=room;
+  // Set global game mode settings from room
+  pendingGameMode=room.game_mode||'prize';
+  pendingPrizeCount=room.prize_count||6;
+  pendingLFHP=room.lf_hp||100;
+  // Host is P1, guest is P2
+  const isHost=_onlineRole==='host';
+  const myDeckId=isHost?room.host_deck:room.guest_deck;
+  const oppDeckId=isHost?room.guest_deck:room.host_deck;
+  // Set game mode to online pvp
+  pendingMode='online';
+  const myDeck=getDeckList(myDeckId);
+  const oppDeck=getDeckList(oppDeckId);
+  // Host = P1 (goes first), Guest = P2
+  startGame('online', isHost?myDeck:oppDeck, isHost?oppDeck:myDeck);
+  // Set online flag
+  G.onlineMode=true;
+  G.onlineRole=_onlineRole; // 'host' or 'guest'
+  G.onlineOpponentName=isHost?room.guest_name:room.host_name;
+  // Update P2 name display
+  const p2name=document.getElementById('p2-name-display');
+  if(p2name)p2name.textContent=G.onlineOpponentName;
+  // If guest, we are actually P2 — flip perspective
+  if(!isHost){
+    G.onlinePlayerNum=2; // I am player 2
+  } else {
+    G.onlinePlayerNum=1;
+  }
+  showScreen('game-screen');
+  renderAll();
+  // Broadcast initial state if host
+  if(isHost)broadcastGameState();
+}
+
+// ── BROADCAST / RECEIVE ───────────────────────────
+function broadcastGameState(){
+  if(!_onlineChannel||!G.onlineMode)return;
+  // Sanitize G for broadcast (remove functions)
+  const state=JSON.parse(JSON.stringify(G,(key,val)=>typeof val==='function'?undefined:val));
+  _onlineChannel.send({type:'broadcast',event:'game_state',payload:{state,from:_onlineRole}});
+}
+
+function onReceiveGameState(payload){
+  if(!G||!G.onlineMode)return;
+  if(payload.from===_onlineRole)return; // ignore own broadcasts
+  // Merge opponent's state — preserve our perspective
+  const incoming=payload.state;
+  if(!incoming)return;
+  // Update game state from authoritative sender
+  G.turn=incoming.turn;
+  G.activePlayer=incoming.activePlayer;
+  G.phase=incoming.phase;
+  G.phasesDone=incoming.phasesDone;
+  G.gameOver=incoming.gameOver;
+  G.prizeCount=incoming.prizeCount;
+  G.gameMode=incoming.gameMode;
+  G.startingLF=incoming.startingLF;
+  // Sync both player states
+  if(incoming.players){
+    [1,2].forEach(p=>{
+      if(!incoming.players[p])return;
+      const src=incoming.players[p];
+      const dst=G.players[p];
+      if(!dst)return;
+      dst.energy=src.energy;
+      dst.colorEnergy=src.colorEnergy||{};
+      dst.hand=src.hand||[];
+      dst.field=src.field||[];
+      dst.discard=src.discard||[];
+      dst.prizes=src.prizes||[];
+      dst.prizesClaimed=src.prizesClaimed||0;
+      dst.lifeForce=src.lifeForce||0;
+      dst.herald=src.herald||null;
+      dst.rift=src.rift||[];
+      dst.phasesDone=src.phasesDone||[];
+    });
+  }
+  if(incoming.gameOver&&!_disconnectTimer){
+    checkWin();
+  }
+  renderAll();
+  // Clear disconnect overlay if we receive state
+  clearDisconnectTimer();
+}
+
+// ── DISCONNECT HANDLING ───────────────────────────
+function startDisconnectTimer(){
+  if(_disconnectTimer)return;
+  _disconnectSeconds=120;
+  document.getElementById('disconnect-overlay').classList.add('open');
+  _disconnectTimer=setInterval(()=>{
+    _disconnectSeconds--;
+    const el=document.getElementById('disconnect-timer');
+    if(el)el.textContent=_disconnectSeconds;
+    if(_disconnectSeconds<=0){
+      clearDisconnectTimer();
+      claimDisconnectWin();
+    }
+  },1000);
+}
+
+function clearDisconnectTimer(){
+  if(_disconnectTimer){clearInterval(_disconnectTimer);_disconnectTimer=null;}
+  document.getElementById('disconnect-overlay').classList.remove('open');
+}
+
+function claimDisconnectWin(){
+  clearDisconnectTimer();
+  if(G&&G.onlineMode)triggerWin(G.onlinePlayerNum||1,'Opponent disconnected!');
+}
+
+async function cancelOnlineRoom(){
+  if(_onlineRoom){
+    const sb=getOnlineSB();
+    await sb.from('online_rooms').delete().eq('code',_onlineRoom.code);
+    if(_onlineChannel){sb.removeChannel(_onlineChannel);_onlineChannel=null;}
+    _onlineRoom=null;
+  }
+  showScreen('menu-screen');
+}
+
+// ── HOOK INTO GAME ACTIONS ────────────────────────
+// Called after every local action to sync state
+function syncOnlineState(){
+  if(G&&G.onlineMode&&_onlineRole){
+    // Only the active player's actions are authoritative
+    const iAmActivePlayer=(G.activePlayer===1&&_onlineRole==='host')||(G.activePlayer===2&&_onlineRole==='guest');
+    if(iAmActivePlayer)broadcastGameState();
+  }
+}
+
+
+function inviteFriendToMatch(friendId,friendName){
+  if(!confirm('Invite '+friendName+' to an online match?'))return;
+  // Open online lobby and pre-fill or auto-create
+  showScreen('online-lobby-screen');
+  openOnlineLobby();
+  // Copy room code to clipboard after creating
+  setTimeout(async()=>{
+    await createOnlineRoom();
+    const code=document.getElementById('lobby-room-code-display')?.textContent;
+    if(code&&code!=='——————'){
+      if(navigator.clipboard)navigator.clipboard.writeText(code);
+      alert('Room created! Code: '+code+'\n\nSend this to '+friendName+' or they can find you by entering the code in Online PvP.');
+    }
+  },300);
 }
 
 // ═══════════════════════════════════════════════════
@@ -5551,6 +5895,91 @@ window.addEventListener('load',async()=>{
     </div>
     <div id="friend-search-results"></div>
   </div>
+</div>
+
+<!-- ONLINE LOBBY SCREEN -->
+<div id="online-lobby-screen" class="screen" style="padding:20px;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center">
+  <div id="lobby-create-join" style="width:100%;max-width:480px">
+    <div style="font-family:'Orbitron',sans-serif;font-size:16px;letter-spacing:4px;color:var(--blue);text-align:center;margin-bottom:6px;text-shadow:0 0 12px var(--blue)">⚔️ ONLINE PVP</div>
+    <div style="font-size:10px;color:#6b7280;text-align:center;letter-spacing:2px;margin-bottom:20px">PRIVATE ROOM</div>
+
+    <!-- CREATE A ROOM -->
+    <div class="pvp-lobby-card" style="margin-bottom:14px">
+      <div style="font-size:10px;color:var(--violet2);letter-spacing:2px;margin-bottom:14px">🆕 CREATE A ROOM</div>
+      <div style="font-size:10px;color:#6b7280;margin-bottom:10px">Choose your deck then share the room code with your opponent</div>
+      <div id="lobby-deck-selector" style="margin-bottom:12px"></div>
+      <button class="btn-primary" style="width:100%;padding:11px;font-family:'Orbitron',sans-serif;letter-spacing:3px;font-size:11px" onclick="createOnlineRoom()">▸ CREATE ROOM</button>
+    </div>
+
+    <!-- JOIN A ROOM -->
+    <div class="pvp-lobby-card">
+      <div style="font-size:10px;color:var(--violet2);letter-spacing:2px;margin-bottom:14px">🔑 JOIN A ROOM</div>
+      <div style="font-size:10px;color:#6b7280;margin-bottom:10px">Enter the 6-letter room code your opponent shared with you</div>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="join-room-code-input" placeholder="ROOM CODE" class="admin-input" style="flex:1;text-align:center;letter-spacing:6px;font-size:14px;font-family:'Orbitron',sans-serif;text-transform:uppercase" maxlength="6" oninput="this.value=this.value.toUpperCase()"/>
+        <button class="btn-primary" style="padding:9px 18px;font-family:'Orbitron',sans-serif;letter-spacing:2px;font-size:11px" onclick="joinOnlineRoom()">JOIN</button>
+      </div>
+    </div>
+
+    <button class="btn-gray btn-sm" style="width:100%;margin-top:14px;padding:9px;letter-spacing:2px" onclick="showScreen('menu-screen')">← BACK TO MENU</button>
+  </div>
+
+  <!-- WAITING ROOM (shown after creating/joining) -->
+  <div id="lobby-waiting-room" style="display:none;width:100%;max-width:480px">
+    <div class="pvp-lobby-card">
+      <div style="font-size:10px;color:var(--violet2);letter-spacing:2px;margin-bottom:6px" id="lobby-room-label">ROOM CODE</div>
+      <div class="room-code-display" id="lobby-room-code-display">——————</div>
+      <div style="font-size:9px;color:#6b7280;text-align:center;margin-bottom:16px">Share this code with your opponent</div>
+
+      <!-- Player slots -->
+      <div id="lobby-player-1-slot" class="pvp-player-slot filled">
+        <div class="pvp-slot-avatar" id="lobby-p1-avatar">?</div>
+        <div style="flex:1">
+          <div class="pvp-slot-name" id="lobby-p1-name">—</div>
+          <div class="pvp-slot-status"><span class="pvp-conn-badge connected">CONNECTED</span> <span style="color:#6b7280;font-size:8px">HOST</span></div>
+        </div>
+      </div>
+      <div id="lobby-player-2-slot" class="pvp-player-slot waiting">
+        <div class="pvp-slot-avatar">⏳</div>
+        <div style="flex:1">
+          <div class="pvp-slot-name" style="color:#6b7280">Waiting for opponent...</div>
+          <div class="pvp-slot-status"><span class="pvp-conn-badge waiting">WAITING</span></div>
+        </div>
+      </div>
+
+      <!-- Game mode -->
+      <div style="margin-top:14px;padding:12px;background:rgba(8,8,28,.5);border:1px solid var(--border);border-radius:8px">
+        <div style="font-size:9px;color:#6b7280;letter-spacing:2px;margin-bottom:8px">GAME SETTINGS</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <select id="lobby-game-mode" class="admin-input" style="flex:1">
+            <option value="prize">🏆 Prize Mode</option>
+            <option value="lifeforce">❤️ Life Force Mode</option>
+            <option value="combined">⚔️ Combined Mode</option>
+          </select>
+          <select id="lobby-prize-count" class="admin-input" style="width:80px">
+            <option value="6">6 Prizes</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;display:flex;gap:8px">
+        <button class="btn-gray btn-sm" style="flex:1;padding:10px;letter-spacing:2px" onclick="cancelOnlineRoom()">✕ CANCEL</button>
+        <button class="btn-primary" id="lobby-start-btn" style="flex:2;padding:10px;font-family:'Orbitron',sans-serif;letter-spacing:3px;font-size:11px" onclick="startOnlineMatch()" disabled>WAITING...</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DISCONNECT OVERLAY -->
+<div class="disconnect-overlay" id="disconnect-overlay">
+  <div style="font-size:14px;color:#fca5a5;letter-spacing:3px;font-family:'Orbitron',sans-serif">OPPONENT DISCONNECTED</div>
+  <div class="disconnect-timer" id="disconnect-timer">120</div>
+  <div style="font-size:11px;color:#6b7280;letter-spacing:1px">Waiting for reconnect...</div>
+  <button class="btn-red btn-sm" style="margin-top:8px;padding:8px 20px;letter-spacing:2px" onclick="claimDisconnectWin()">CLAIM WIN</button>
 </div>
 </body>
 </html>
