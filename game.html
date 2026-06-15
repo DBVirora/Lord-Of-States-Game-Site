@@ -5009,6 +5009,7 @@ function copyInviteCode(){
 let _onlineRoom=null;        // current room data
 let _onlineChannel=null;     // Supabase realtime channel
 let _channelReady=false;     // is the channel subscribed?
+let _applyingRemoteState=false; // suppress broadcast while applying received state
 let _lastBroadcastTime=0;    // throttle broadcasts
 let _broadcastPending=false; // is a broadcast queued?
 let _onlineRole=null;        // 'host' or 'guest'
@@ -5293,6 +5294,7 @@ function broadcastGameState(){
     startingLF:G.startingLF,
     selectedAttacker:G.selectedAttacker,
     heraldAttacking:G.heraldAttacking,
+    log:(G.log||[]).slice(-30),
     players:{}
   };
   if(isHost){
@@ -5355,6 +5357,8 @@ function onReceiveGameState(payload){
   G.startingLF=incoming.startingLF||100;
   G.selectedAttacker=incoming.selectedAttacker||null;
   G.heraldAttacking=incoming.heraldAttacking||false;
+  // Sync the game log so both players see the same play-by-play
+  if(incoming.log)G.log=incoming.log;
 
   if(incoming.players){
     if(isHost){
@@ -5374,7 +5378,10 @@ function onReceiveGameState(payload){
 
   if(G.gameOver)setTimeout(()=>checkWin(),200);
   clearDisconnectTimer();
+  // Suppress broadcast during this render (we're applying received state, not making a move)
+  _applyingRemoteState=true;
   renderAll();
+  _applyingRemoteState=false;
 }
 
 function applyPlayer(dst,src){
@@ -5475,8 +5482,11 @@ function cleanupOnlineSession(){
 // Called after every local action to sync state
 function syncOnlineState(){
   if(!G||!G.onlineMode||!_onlineRole)return;
-  // Both players are P1 in their local view — broadcast when I am active (P1)
-  if(G.activePlayer===1)broadcastGameState();
+  if(_applyingRemoteState)return; // don't echo back received state
+  // Broadcast when I am the active player (local P1)
+  if(G.activePlayer===1){
+    broadcastGameState();
+  }
 }
 
 
