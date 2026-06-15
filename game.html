@@ -2901,7 +2901,9 @@ function execEnd(){
       log('⚡ Power Up! Attack skipped — +2 Energy!','gain');
     }
     endTurnFx(p);
-    log('P'+p+' ends turn.','info');
+    // Use real player label for online so opponent sees correct name
+    const turnLabel=(G.onlineMode)?(G.onlineMyName||'Player'):('P'+p);
+    log(turnLabel+' ends turn.','info');
     const nx=p===1?2:1;
     G.activePlayer=nx;
     G.turn++;
@@ -2910,6 +2912,12 @@ function execEnd(){
     G.selectedAttacker=null;
     G.heraldAttacking=false;
     renderAll();
+    // ONLINE: explicitly broadcast the turn handoff — renderAll's syncOnlineState
+    // won't fire because activePlayer is now 2 (opponent's turn from my view)
+    if(G.onlineMode){
+      console.log('[END] online turn handoff — force broadcasting end state');
+      broadcastGameState();
+    }
     if(gameMode!=='pvp'&&gameMode!=='online'&&nx===2)setTimeout(runAI,700);
   } catch(err){
     console.error('[END] error:',err);
