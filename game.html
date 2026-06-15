@@ -2854,19 +2854,12 @@ function activateAbility(fc,abl){
 // ═══════════════════════════════════════════════════
 function endTurnNow(){
   if(G.gameOver)return;
-  // Online: check if it's my turn
-  if(G.onlineMode){
-    const myNum=G.onlinePlayerNum||1;
-    if(G.activePlayer!==myNum)return;
-  } else {
-    if(G.activePlayer!==1)return;
-  }
+  if(G.activePlayer!==1)return; // I'm always P1 in my local view
   execEnd();
 }
 
 function doPhase(ph){
-  const myNum=(G.onlineMode&&G.onlinePlayerNum)?G.onlinePlayerNum:1;
-  if(G.activePlayer!==myNum)return;
+  if(G.activePlayer!==1)return;
   // End turn is always allowed — skip directly regardless of phase order
   if(ph==='end'){
     if(!G.phasesDone.includes('end')){G.phasesDone.push('end');execEnd();}
@@ -3836,13 +3829,11 @@ function renderPhaseBar(){
     btn.className='phase-btn';
     if(G.phasesDone.includes(ph))btn.classList.add('done-phase');
     else if(ph===G.phase)btn.classList.add('active-phase');
-    // Online: check against my player number
-    const _myNum=(G.onlineMode&&G.onlinePlayerNum)?G.onlinePlayerNum:1;
     if(ph==='end'){
-      btn.disabled=G.activePlayer!==_myNum;
+      btn.disabled=G.activePlayer!==1;
       btn.classList.remove('done-phase');
     } else {
-      btn.disabled=G.activePlayer!==_myNum||G.phasesDone.includes(ph);
+      btn.disabled=G.activePlayer!==1||G.phasesDone.includes(ph);
     }
   });
 }
@@ -5242,59 +5233,109 @@ function enterOnlineGame(room){
   pendingPrizeCount=parseInt(room.prize_count)||6;
   pendingLFHP=parseInt(room.lf_hp)||100;
 
-  // ── Start game — HOST is always P1 ──────────────
-  // Always pass host deck as P1, guest deck as P2
-  startGame('online', hostDeckCards, guestDeckCards);
+  // ── Start game ──────────────────────────────────
+  // Each player sees THEMSELVES as P1 in the UI
+  // Host: P1=host, P2=guest (canonical)
+  // Guest: P1=guest, P2=host (swapped locally)
+  // When syncing, we swap back to canonical for broadcast
+  if(isHost){
+    startGame('online', hostDeckCards, guestDeckCards);
+    G.players[1].name=room.host_name+' (You)';
+    G.players[2].name=(room.guest_name||'Opponent')+' (Opponent)';
+  } else {
+    // Guest sees themselves as P1 locally
+    startGame('online', guestDeckCards, hostDeckCards);
+    G.players[1].name=(room.guest_name||'You')+' (You)';
+    G.players[2].name=room.host_name+' (Opponent)';
+  }
 
   // ── Tag game as online ───────────────────────────
   G.onlineMode=true;
   G.onlineRole=_onlineRole;
-  G.onlinePlayerNum=isHost?1:2; // my player number
+  // We always think we are P1 locally — but for canonical state translation:
+  G.onlinePlayerNum=1; // I am always P1 in MY local view
+  G.canonicalPlayerNum=isHost?1:2; // my number in the SHARED authoritative state
   G.onlineOpponentName=isHost?room.guest_name:room.host_name;
   G.onlineMyName=isHost?room.host_name:room.guest_name;
-
-  // ── For GUEST: swap the UI perspective ───────────
-  // Guest is P2 in the G object but needs to SEE the board
-  // as if they are the active player — we swap display labels
+  // For the SHARED state, host plays first (canonical activePlayer=1 means host goes first)
+  // In my LOCAL view, both should start with their own turn or wait
+  // If I'm guest and it's host's turn, in my view activePlayer=2 (opponent goes first)
   if(!isHost){
-    // Swap player names in the banner
-    G.players[1].name=room.host_name+' (Opponent)';
-    G.players[2].name=room.guest_name+' (You)';
-    // Guest controls P2 — override activePlayer control
-    // All hand/field clicks by guest should use p=2
-    G.onlineGuestMode=true;
-  } else {
-    G.players[1].name=room.host_name+' (You)';
-    G.players[2].name=room.guest_name+' (Opponent)';
-    G.onlineGuestMode=false;
+    G.activePlayer=2; // host (opponent) goes first from guest's view
   }
 
   showScreen('game-screen');
   renderAll();
-  // Host is authoritative — broadcast starting state
+  // Host is authoritative — broadcast starting state after a delay
   if(isHost){
-    setTimeout(()=>broadcastGameState(),800);
+    setTimeout(()=>broadcastGameState(),1000);
   }
 }
 
 // ── BROADCAST / RECEIVE ───────────────────────────
 function broadcastGameState(){
-  if(!_onlineChannel||!G.onlineMode)return;
-  // Sanitize G for broadcast (remove functions)
-  const state=JSON.parse(JSON.stringify(G,(key,val)=>typeof val==='function'?undefined:val));
-  _onlineChannel.send({type:'broadcast',event:'game_state',payload:{state,from:_onlineRole}});
+  if(!_onlineChannel||!G.onlineMode){console.log('[BCAST] skipped');return;}
+  // Build canonical state (host's perspective = P1=host, P2=guest)
+  const isHost=_onlineRole==='host';
+  const canonical={
+    turn:G.turn,
+    activePlayer:isHost?G.activePlayer:(G.activePlayer===1?2:1), // swap for guest
+    phase:G.phase,
+    phasesDone:G.phasesDone,
+    gameOver:G.gameOver,
+    prizeCount:G.prizeCount,
+    gameMode:G.gameMode,
+    startingLF:G.startingLF,
+    selectedAttacker:G.selectedAttacker,
+    heraldAttacking:G.heraldAttacking,
+    players:{}
+  };
+  // Players: if I'm guest, my P1 is canonical P2 and vice versa
+  if(isHost){
+    canonical.players[1]=sanitizePlayer(G.players[1]);
+    canonical.players[2]=sanitizePlayer(G.players[2]);
+  } else {
+    canonical.players[1]=sanitizePlayer(G.players[2]); // host's data is in my slot 2
+    canonical.players[2]=sanitizePlayer(G.players[1]); // my data goes to slot 2
+  }
+  console.log('[BCAST] from='+_onlineRole+' canonical activePlayer='+canonical.activePlayer);
+  _onlineChannel.send({type:'broadcast',event:'game_state',payload:{state:canonical,from:_onlineRole}});
+}
+
+function sanitizePlayer(pl){
+  if(!pl)return null;
+  return JSON.parse(JSON.stringify({
+    energy:pl.energy,
+    colorEnergy:pl.colorEnergy||{},
+    hand:pl.hand||[],
+    field:pl.field||[],
+    discard:pl.discard||[],
+    deck:pl.deck||[],
+    rift:pl.rift||[],
+    prizes:pl.prizes||[],
+    prizesClaimed:pl.prizesClaimed||0,
+    lifeForce:pl.lifeForce||0,
+    herald:pl.herald||null
+  },(k,v)=>typeof v==='function'?undefined:v));
 }
 
 function onReceiveGameState(payload){
   if(!G||!G.onlineMode)return;
-  if(payload.from===_onlineRole)return; // ignore own
+  if(payload.from===_onlineRole)return;
   const incoming=payload.state;
   if(!incoming)return;
-  console.log('[ONLINE] received state from',payload.from,'turn='+incoming.turn,'activePlayer='+incoming.activePlayer);
+  const isHost=_onlineRole==='host';
+  console.log('[RECV] from='+payload.from+' canonical activePlayer='+incoming.activePlayer+' I am '+_onlineRole);
 
-  // Full state replace from authoritative source
+  // Preserve perspective fields
+  const myP1Name=G.players[1]?.name;
+  const myP2Name=G.players[2]?.name;
+
   G.turn=incoming.turn;
-  G.activePlayer=incoming.activePlayer;
+  // Translate canonical activePlayer to local view:
+  // Host: canonical=local (1↔1, 2↔2)
+  // Guest: canonical swapped (canonical 1 = host = my P2; canonical 2 = guest = my P1)
+  G.activePlayer=isHost?incoming.activePlayer:(incoming.activePlayer===1?2:1);
   G.phase=incoming.phase;
   G.phasesDone=incoming.phasesDone||[];
   G.gameOver=incoming.gameOver||false;
@@ -5305,28 +5346,39 @@ function onReceiveGameState(payload){
   G.heraldAttacking=incoming.heraldAttacking||false;
 
   if(incoming.players){
-    [1,2].forEach(p=>{
-      if(!incoming.players[p]||!G.players[p])return;
-      const src=incoming.players[p];
-      const dst=G.players[p];
-      dst.energy=src.energy||0;
-      dst.colorEnergy=src.colorEnergy||{};
-      dst.hand=src.hand||[];
-      dst.field=src.field||[];
-      dst.discard=src.discard||[];
-      dst.rift=src.rift||[];
-      dst.prizes=src.prizes||[];
-      dst.prizesClaimed=src.prizesClaimed||0;
-      dst.lifeForce=src.lifeForce||0;
-      dst.herald=src.herald||null;
-      // Preserve names we set
-      if(src.name)dst.name=src.name;
-    });
+    if(isHost){
+      // Direct mapping
+      applyPlayer(G.players[1],incoming.players[1]);
+      applyPlayer(G.players[2],incoming.players[2]);
+    } else {
+      // Swap: canonical P1 (host) → my P2, canonical P2 (guest=me) → my P1
+      applyPlayer(G.players[1],incoming.players[2]);
+      applyPlayer(G.players[2],incoming.players[1]);
+    }
   }
+  if(myP1Name)G.players[1].name=myP1Name;
+  if(myP2Name)G.players[2].name=myP2Name;
+
+  console.log('[RECV] applied. local activePlayer='+G.activePlayer+' P1.hand='+G.players[1].hand.length+' P2.hand='+G.players[2].hand.length);
 
   if(G.gameOver)setTimeout(()=>checkWin(),200);
   clearDisconnectTimer();
   renderAll();
+}
+
+function applyPlayer(dst,src){
+  if(!dst||!src)return;
+  dst.energy=src.energy||0;
+  dst.colorEnergy=src.colorEnergy||{};
+  dst.hand=src.hand||[];
+  dst.field=src.field||[];
+  dst.discard=src.discard||[];
+  dst.deck=src.deck||[];
+  dst.rift=src.rift||[];
+  dst.prizes=src.prizes||[];
+  dst.prizesClaimed=src.prizesClaimed||0;
+  dst.lifeForce=src.lifeForce||0;
+  dst.herald=src.herald||null;
 }
 
 // ── DISCONNECT HANDLING ───────────────────────────
@@ -5409,10 +5461,8 @@ function cleanupOnlineSession(){
 // Called after every local action to sync state
 function syncOnlineState(){
   if(!G||!G.onlineMode||!_onlineRole)return;
-  // Host controls P1, Guest controls P2
-  const myPlayerNum=G.onlinePlayerNum||(_onlineRole==='host'?1:2);
-  const iAmActive=G.activePlayer===myPlayerNum;
-  if(iAmActive)broadcastGameState();
+  // Both players are P1 in their local view — broadcast when I am active (P1)
+  if(G.activePlayer===1)broadcastGameState();
 }
 
 
