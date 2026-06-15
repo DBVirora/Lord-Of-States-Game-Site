@@ -2852,13 +2852,20 @@ function activateAbility(fc,abl){
 // PHASES
 // ═══════════════════════════════════════════════════
 function endTurnNow(){
-  if(G.activePlayer!==1)return;
   if(G.gameOver)return;
+  // Online: check if it's my turn
+  if(G.onlineMode){
+    const myNum=G.onlinePlayerNum||1;
+    if(G.activePlayer!==myNum)return;
+  } else {
+    if(G.activePlayer!==1)return;
+  }
   execEnd();
 }
 
 function doPhase(ph){
-  if(G.activePlayer!==1)return;
+  const myNum=(G.onlineMode&&G.onlinePlayerNum)?G.onlinePlayerNum:1;
+  if(G.activePlayer!==myNum)return;
   // End turn is always allowed — skip directly regardless of phase order
   if(ph==='end'){
     if(!G.phasesDone.includes('end')){G.phasesDone.push('end');execEnd();}
@@ -2908,7 +2915,7 @@ function execEnd(){
     G.selectedAttacker=null;
     G.heraldAttacking=false;
     renderAll();
-    if(gameMode!=='pvp'&&nx===2)setTimeout(runAI,700);
+    if(gameMode!=='pvp'&&gameMode!=='online'&&nx===2)setTimeout(runAI,700);
   } catch(err){
     console.error('[END] error:',err);
     log('Error ending turn — check console.','dmg');
@@ -3828,12 +3835,13 @@ function renderPhaseBar(){
     btn.className='phase-btn';
     if(G.phasesDone.includes(ph))btn.classList.add('done-phase');
     else if(ph===G.phase)btn.classList.add('active-phase');
-    // End turn ALWAYS enabled on player's turn, never disabled
+    // Online: check against my player number
+    const _myNum=(G.onlineMode&&G.onlinePlayerNum)?G.onlinePlayerNum:1;
     if(ph==='end'){
-      btn.disabled=G.activePlayer!==1;
-      btn.classList.remove('done-phase'); // never grey out End button
+      btn.disabled=G.activePlayer!==_myNum;
+      btn.classList.remove('done-phase');
     } else {
-      btn.disabled=G.activePlayer!==1||G.phasesDone.includes(ph);
+      btn.disabled=G.activePlayer!==_myNum||G.phasesDone.includes(ph);
     }
   });
 }
@@ -5200,37 +5208,58 @@ async function startOnlineMatch(){
 
 function enterOnlineGame(room){
   _onlineRoom=room;
-  // Set global game mode settings from room
-  pendingGameMode=room.game_mode||'prize';
-  pendingPrizeCount=room.prize_count||6;
-  pendingLFHP=room.lf_hp||100;
-  // Host is P1, guest is P2
   const isHost=_onlineRole==='host';
-  const myDeckId=isHost?room.host_deck:room.guest_deck;
-  const oppDeckId=isHost?room.guest_deck:room.host_deck;
-  // Set game mode to online pvp
-  pendingMode='online';
-  const myDeck=getDeckList(myDeckId);
-  const oppDeck=getDeckList(oppDeckId);
-  // Host = P1 (goes first), Guest = P2
-  startGame('online', isHost?myDeck:oppDeck, isHost?oppDeck:myDeck);
-  // Set online flag
+
+  // ── Resolve decks from saved decks ──────────────
+  // host_deck and guest_deck are deck IDs stored in Supabase
+  // We need actual card arrays
+  const hostDeckCards=SAVED_DECKS[room.host_deck]?.cards
+    ? [...SAVED_DECKS[room.host_deck].cards]
+    : generateRandomDeck();
+  const guestDeckCards=SAVED_DECKS[room.guest_deck]?.cards
+    ? [...SAVED_DECKS[room.guest_deck].cards]
+    : generateRandomDeck();
+
+  console.log('[ONLINE] isHost='+isHost+' hostDeck='+hostDeckCards.length+' guestDeck='+guestDeckCards.length);
+
+  // ── Set game mode ─────────────────────────────────
+  pendingGameMode=room.game_mode||'prize';
+  pendingPrizeCount=parseInt(room.prize_count)||6;
+  pendingLFHP=parseInt(room.lf_hp)||100;
+
+  // ── Start game — HOST is always P1 ──────────────
+  // Always pass host deck as P1, guest deck as P2
+  startGame('online', hostDeckCards, guestDeckCards);
+
+  // ── Tag game as online ───────────────────────────
   G.onlineMode=true;
-  G.onlineRole=_onlineRole; // 'host' or 'guest'
+  G.onlineRole=_onlineRole;
+  G.onlinePlayerNum=isHost?1:2; // my player number
   G.onlineOpponentName=isHost?room.guest_name:room.host_name;
-  // Update P2 name display
-  const p2name=document.getElementById('p2-name-display');
-  if(p2name)p2name.textContent=G.onlineOpponentName;
-  // If guest, we are actually P2 — flip perspective
+  G.onlineMyName=isHost?room.host_name:room.guest_name;
+
+  // ── For GUEST: swap the UI perspective ───────────
+  // Guest is P2 in the G object but needs to SEE the board
+  // as if they are the active player — we swap display labels
   if(!isHost){
-    G.onlinePlayerNum=2; // I am player 2
+    // Swap player names in the banner
+    G.players[1].name=room.host_name+' (Opponent)';
+    G.players[2].name=room.guest_name+' (You)';
+    // Guest controls P2 — override activePlayer control
+    // All hand/field clicks by guest should use p=2
+    G.onlineGuestMode=true;
   } else {
-    G.onlinePlayerNum=1;
+    G.players[1].name=room.host_name+' (You)';
+    G.players[2].name=room.guest_name+' (Opponent)';
+    G.onlineGuestMode=false;
   }
+
   showScreen('game-screen');
   renderAll();
-  // Broadcast initial state if host
-  if(isHost)broadcastGameState();
+  // Host is authoritative — broadcast starting state
+  if(isHost){
+    setTimeout(()=>broadcastGameState(),800);
+  }
 }
 
 // ── BROADCAST / RECEIVE ───────────────────────────
@@ -5243,45 +5272,46 @@ function broadcastGameState(){
 
 function onReceiveGameState(payload){
   if(!G||!G.onlineMode)return;
-  if(payload.from===_onlineRole)return; // ignore own broadcasts
-  // Merge opponent's state — preserve our perspective
+  if(payload.from===_onlineRole)return; // ignore own
   const incoming=payload.state;
   if(!incoming)return;
-  // Update game state from authoritative sender
+  console.log('[ONLINE] received state from',payload.from,'turn='+incoming.turn,'activePlayer='+incoming.activePlayer);
+
+  // Full state replace from authoritative source
   G.turn=incoming.turn;
   G.activePlayer=incoming.activePlayer;
   G.phase=incoming.phase;
-  G.phasesDone=incoming.phasesDone;
-  G.gameOver=incoming.gameOver;
-  G.prizeCount=incoming.prizeCount;
-  G.gameMode=incoming.gameMode;
-  G.startingLF=incoming.startingLF;
-  // Sync both player states
+  G.phasesDone=incoming.phasesDone||[];
+  G.gameOver=incoming.gameOver||false;
+  G.prizeCount=incoming.prizeCount||6;
+  G.gameMode=incoming.gameMode||'prize';
+  G.startingLF=incoming.startingLF||100;
+  G.selectedAttacker=incoming.selectedAttacker||null;
+  G.heraldAttacking=incoming.heraldAttacking||false;
+
   if(incoming.players){
     [1,2].forEach(p=>{
-      if(!incoming.players[p])return;
+      if(!incoming.players[p]||!G.players[p])return;
       const src=incoming.players[p];
       const dst=G.players[p];
-      if(!dst)return;
-      dst.energy=src.energy;
+      dst.energy=src.energy||0;
       dst.colorEnergy=src.colorEnergy||{};
       dst.hand=src.hand||[];
       dst.field=src.field||[];
       dst.discard=src.discard||[];
+      dst.rift=src.rift||[];
       dst.prizes=src.prizes||[];
       dst.prizesClaimed=src.prizesClaimed||0;
       dst.lifeForce=src.lifeForce||0;
       dst.herald=src.herald||null;
-      dst.rift=src.rift||[];
-      dst.phasesDone=src.phasesDone||[];
+      // Preserve names we set
+      if(src.name)dst.name=src.name;
     });
   }
-  if(incoming.gameOver&&!_disconnectTimer){
-    checkWin();
-  }
-  renderAll();
-  // Clear disconnect overlay if we receive state
+
+  if(G.gameOver)setTimeout(()=>checkWin(),200);
   clearDisconnectTimer();
+  renderAll();
 }
 
 // ── DISCONNECT HANDLING ───────────────────────────
@@ -5323,11 +5353,11 @@ async function cancelOnlineRoom(){
 // ── HOOK INTO GAME ACTIONS ────────────────────────
 // Called after every local action to sync state
 function syncOnlineState(){
-  if(G&&G.onlineMode&&_onlineRole){
-    // Only the active player's actions are authoritative
-    const iAmActivePlayer=(G.activePlayer===1&&_onlineRole==='host')||(G.activePlayer===2&&_onlineRole==='guest');
-    if(iAmActivePlayer)broadcastGameState();
-  }
+  if(!G||!G.onlineMode||!_onlineRole)return;
+  // Host controls P1, Guest controls P2
+  const myPlayerNum=G.onlinePlayerNum||(_onlineRole==='host'?1:2);
+  const iAmActive=G.activePlayer===myPlayerNum;
+  if(iAmActive)broadcastGameState();
 }
 
 
