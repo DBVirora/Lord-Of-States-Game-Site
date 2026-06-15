@@ -537,6 +537,17 @@ body{padding-top:46px;}
 .disconnect-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);backdrop-filter:blur(8px);z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
 .disconnect-overlay.open{display:flex;}
 .disconnect-timer{font-size:48px;font-weight:900;font-family:'Orbitron',sans-serif;color:#ef4444;text-shadow:0 0 20px rgba(239,68,68,.5);}
+
+/* MATCHMAKING */
+.mm-spinner{width:60px;height:60px;border:3px solid rgba(0,180,255,.15);border-top-color:var(--blue);border-radius:50%;animation:mm-spin 1s linear infinite;margin:0 auto;}
+@keyframes mm-spin{to{transform:rotate(360deg)}}
+.mm-pulse{animation:mm-pulse-anim 2s ease-in-out infinite;}
+@keyframes mm-pulse-anim{0%,100%{opacity:.6;transform:scale(.97)}50%{opacity:1;transform:scale(1)}}
+.match-room-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(8,8,28,.7);border:1px solid var(--border-v);border-radius:8px;margin-bottom:6px;transition:all .2s;cursor:pointer;}
+.match-room-row:hover{border-color:var(--violet2);background:rgba(124,58,237,.1);}
+.match-room-badge{font-size:9px;letter-spacing:1px;padding:2px 8px;border-radius:8px;font-weight:700;}
+.match-room-badge.open{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.4);}
+.match-room-badge.full{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);}
 </style>
 </head>
 <body>
@@ -566,7 +577,8 @@ body{padding-top:46px;}
   <h1>LORD OF <span>COURTS</span></h1>
   <div class="menu-tagline">V C U &nbsp;·&nbsp; T R A D I N G &nbsp; C A R D &nbsp; G A M E</div>
   <div class="menu-section-label">— BATTLE —</div>
-  <button class="menu-btn" onclick="showScreen('online-lobby-screen');openOnlineLobby()">🌐 Online PvP</button>
+  <button class="menu-btn" onclick="showScreen('matchmaking-screen');openMatchmaking()">🔍 Find Match</button>
+  <button class="menu-btn" onclick="showScreen('online-lobby-screen');openOnlineLobby()">🌐 Private Room</button>
   <button class="menu-btn" onclick="goToDeckSelect('pvp')">⚔️ Local PvP</button>
   <button class="menu-btn ai-btn" onclick="goToDeckSelect('easy')">🤖 vs AI — Easy</button>
   <button class="menu-btn ai-btn" onclick="goToDeckSelect('medium')">🤖 vs AI — Medium</button>
@@ -5116,47 +5128,74 @@ function showWaitingRoom(code,myName,isHost){
 function subscribeToRoom(code){
   const sb=getOnlineSB();
   if(_onlineChannel)sb.removeChannel(_onlineChannel);
-  _onlineChannel=sb.channel('room:'+code)
-    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'online_rooms',filter:'code=eq.'+code},(payload)=>{
-      onRoomUpdate(payload.new);
+  _onlineChannel=sb.channel('room:'+code,{config:{broadcast:{self:false}}})
+    // Guest joined broadcast
+    .on('broadcast',{event:'player_joined'},(payload)=>{
+      console.log('[ROOM] player_joined received:',payload.payload);
+      if(_onlineRole==='host'){
+        const {guest_name,guest_id,guest_deck}=payload.payload;
+        _onlineRoom={..._onlineRoom,guest_id,guest_name,guest_deck,status:'ready'};
+        const p2slot=document.getElementById('lobby-player-2-slot');
+        if(p2slot){
+          p2slot.className='pvp-player-slot filled';
+          p2slot.innerHTML='<div class="pvp-slot-avatar">⚔️</div>'
+            +'<div style="flex:1"><div class="pvp-slot-name">'+guest_name+'</div>'
+            +'<div class="pvp-slot-status"><span class="pvp-conn-badge connected">CONNECTED</span></div></div>';
+        }
+        const startBtn=document.getElementById('lobby-start-btn');
+        if(startBtn){startBtn.disabled=false;startBtn.textContent='▸ START MATCH';}
+      }
     })
+    // Host started match
+    .on('broadcast',{event:'match_started'},(payload)=>{
+      console.log('[ROOM] match_started received');
+      if(_onlineRole==='guest'){
+        const room=payload.payload;
+        _onlineRoom={..._onlineRoom,...room};
+        enterOnlineGame(_onlineRoom);
+      }
+    })
+    // Game state sync
     .on('broadcast',{event:'game_state'},(payload)=>{
       onReceiveGameState(payload.payload);
     })
     .on('broadcast',{event:'game_action'},(payload)=>{
       onReceiveGameAction(payload.payload);
     })
-    .subscribe();
+    .subscribe((status)=>{
+      console.log('[ROOM] channel status:',status,'code:',code);
+      // After subscribed, if guest: announce joining
+      if(status==='SUBSCRIBED'&&_onlineRole==='guest'){
+        const myName=document.getElementById('hud-username')?.textContent||'Player';
+        setTimeout(()=>{
+          _onlineChannel.send({type:'broadcast',event:'player_joined',payload:{
+            guest_id:_celUserId,
+            guest_name:myName,
+            guest_deck:_onlineDeckId
+          }});
+        },500);
+      }
+    });
 }
 
-function onRoomUpdate(room){
-  _onlineRoom=room;
-  // Guest joined — update host UI
-  if(_onlineRole==='host'&&room.guest_id&&room.status==='ready'){
-    const p2slot=document.getElementById('lobby-player-2-slot');
-    if(p2slot){
-      p2slot.className='pvp-player-slot filled';
-      p2slot.innerHTML=
-        '<div class="pvp-slot-avatar">⚔️</div>'
-        +'<div style="flex:1"><div class="pvp-slot-name">'+room.guest_name+'</div>'
-        +'<div class="pvp-slot-status"><span class="pvp-conn-badge connected">CONNECTED</span></div></div>';
-    }
-    const startBtn=document.getElementById('lobby-start-btn');
-    if(startBtn){startBtn.disabled=false;startBtn.textContent='▸ START MATCH';}
-  }
-  // Host started — guest enters game
-  if(_onlineRole==='guest'&&room.status==='playing'){
-    enterOnlineGame(room);
-  }
-}
+// onRoomUpdate now handled via broadcast events in subscribeToRoom
+function onRoomUpdate(room){_onlineRoom=room;}
 
 async function startOnlineMatch(){
   if(!_onlineRoom||_onlineRole!=='host')return;
   const sb=getOnlineSB();
   const gameMode=document.getElementById('lobby-game-mode')?.value||'prize';
   const prizeCount=parseInt(document.getElementById('lobby-prize-count')?.value||'6');
-  await sb.from('online_rooms').update({status:'playing',game_mode:gameMode,prize_count:prizeCount}).eq('code',_onlineRoom.code);
-  enterOnlineGame({..._onlineRoom,status:'playing',game_mode:gameMode,prize_count:prizeCount});
+  const lfHp=parseInt(document.getElementById('lobby-lf-hp')?.value||'100');
+  const roomData={..._onlineRoom,status:'playing',game_mode:gameMode,prize_count:prizeCount,lf_hp:lfHp};
+  // Update DB
+  await sb.from('online_rooms').update({status:'playing',game_mode:gameMode,prize_count:prizeCount,lf_hp:lfHp}).eq('code',_onlineRoom.code);
+  // Broadcast to guest via channel
+  if(_onlineChannel){
+    await _onlineChannel.send({type:'broadcast',event:'match_started',payload:roomData});
+  }
+  // Small delay so broadcast reaches guest before host enters game
+  setTimeout(()=>enterOnlineGame(roomData),300);
 }
 
 function enterOnlineGame(room){
@@ -5292,20 +5331,352 @@ function syncOnlineState(){
 }
 
 
-function inviteFriendToMatch(friendId,friendName){
+async function inviteFriendToMatch(friendId,friendName){
   if(!confirm('Invite '+friendName+' to an online match?'))return;
-  // Open online lobby and pre-fill or auto-create
-  showScreen('online-lobby-screen');
-  openOnlineLobby();
-  // Copy room code to clipboard after creating
-  setTimeout(async()=>{
-    await createOnlineRoom();
-    const code=document.getElementById('lobby-room-code-display')?.textContent;
-    if(code&&code!=='——————'){
-      if(navigator.clipboard)navigator.clipboard.writeText(code);
-      alert('Room created! Code: '+code+'\n\nSend this to '+friendName+' or they can find you by entering the code in Online PvP.');
+  const deckIds=Object.keys(SAVED_DECKS);
+  const validDeck=deckIds.find(id=>SAVED_DECKS[id].cards&&SAVED_DECKS[id].cards.length>=60);
+  if(!validDeck){alert('You need a 60-card deck to create a match!');return;}
+  _onlineDeckId=validDeck;
+  const myName=document.getElementById('hud-username')?.textContent||'Player';
+  const sb=getOnlineSB();
+  const code=generateRoomCode();
+  try{
+    // Create the room
+    const {data}=await sb.from('online_rooms').insert({
+      code,host_id:_celUserId,host_name:myName,host_deck:validDeck,
+      status:'waiting',game_mode:'prize',prize_count:6,
+      created_at:new Date().toISOString()
+    }).select().single();
+    _onlineRoom=data;_onlineRole='host';
+    // Send invite notification to friend via their personal channel
+    const friendNotifChannel=sb.channel('invites:'+friendId);
+    await friendNotifChannel.subscribe();
+    setTimeout(()=>{
+      friendNotifChannel.send({type:'broadcast',event:'friend_invite',payload:{
+        from_name:myName,
+        from_id:_celUserId,
+        room_code:code,
+        host_deck_id:validDeck
+      }});
+      console.log('[INVITE] Sent invite to',friendName,'on channel invites:'+friendId);
+    },600);
+    // Show waiting room for host
+    showScreen('online-lobby-screen');
+    showWaitingRoom(code,myName,true);
+    subscribeToRoom(code);
+  }catch(e){alert('Failed to create invite: '+e.message);}
+}
+
+
+// ═══════════════════════════════════════════════════
+// PHASE 3 — PUBLIC MATCHMAKING
+// ═══════════════════════════════════════════════════
+let _mmInterval=null;
+let _mmElapsed=0;
+let _mmQueueId=null;
+let _mmPollInterval=null;
+
+function openMatchmaking(){
+  // Populate deck select
+  const sel=document.getElementById('mm-deck-select');
+  if(sel){
+    const decks=Object.entries(SAVED_DECKS);
+    sel.innerHTML=!decks.length
+      ?'<option value="">No decks — build one first</option>'
+      :decks.map(([id,d])=>'<option value="'+id+'">'+d.name+' ('+d.cards.length+')</option>').join('');
+  }
+  // Reset UI
+  document.getElementById('mm-searching').style.display='none';
+  document.getElementById('mm-rooms-panel').style.display='none';
+}
+
+// ── QUICK MATCH ───────────────────────────────────
+async function startQuickMatch(){
+  const sb=getOnlineSB();
+  const deckId=document.getElementById('mm-deck-select')?.value;
+  const gameMode=document.getElementById('mm-game-mode')?.value||'prize';
+  const prizeCount=parseInt(document.getElementById('mm-prize-count')?.value||'6');
+  if(!deckId||!SAVED_DECKS[deckId]){alert('Select a valid deck first.');return;}
+  if(SAVED_DECKS[deckId].cards.length<60){alert('Deck must have 60 cards!');return;}
+  const myName=document.getElementById('hud-username')?.textContent||'Player';
+  // Show spinner
+  document.getElementById('mm-searching').style.display='block';
+  document.getElementById('mm-rooms-panel').style.display='none';
+  _mmElapsed=0;
+  _mmInterval=setInterval(()=>{
+    _mmElapsed++;
+    const el=document.getElementById('mm-wait-time');
+    if(el)el.textContent='Elapsed: '+_mmElapsed+'s';
+  },1000);
+  // Try to find an open queue entry first
+  try{
+    const {data:existing}=await sb.from('matchmaking_queue')
+      .select('*')
+      .eq('game_mode',gameMode)
+      .eq('prize_count',prizeCount)
+      .eq('status','waiting')
+      .neq('user_id',_celUserId)
+      .order('created_at',{ascending:true})
+      .limit(1)
+      .maybeSingle();
+    if(existing){
+      // Found someone — create room and match them
+      await matchWithQueueEntry(existing,deckId,gameMode,prizeCount,myName);
+    } else {
+      // Nobody waiting — join the queue
+      const {data:entry}=await sb.from('matchmaking_queue').insert({
+        user_id:_celUserId,
+        user_name:myName,
+        deck_id:deckId,
+        game_mode:gameMode,
+        prize_count:prizeCount,
+        status:'waiting',
+        created_at:new Date().toISOString()
+      }).select().single();
+      _mmQueueId=entry?.id;
+      // Poll for a match every 3 seconds
+      _mmPollInterval=setInterval(()=>checkForMatch(gameMode,prizeCount,deckId),3000);
     }
-  },300);
+  }catch(e){
+    cancelMatchmaking();
+    alert('Matchmaking error: '+e.message);
+  }
+}
+
+async function matchWithQueueEntry(opponent,myDeckId,gameMode,prizeCount,myName){
+  const sb=getOnlineSB();
+  // Claim the queue entry
+  await sb.from('matchmaking_queue').update({status:'matched'}).eq('id',opponent.id);
+  // Create a room
+  const code=generateRoomCode();
+  await sb.from('online_rooms').insert({
+    code,
+    host_id:opponent.user_id,
+    host_name:opponent.user_name,
+    host_deck:opponent.deck_id,
+    guest_id:_celUserId,
+    guest_name:myName,
+    guest_deck:myDeckId,
+    status:'playing',
+    game_mode:gameMode,
+    prize_count:prizeCount
+  });
+  // Notify via broadcast
+  const ch=sb.channel('mm:'+opponent.user_id);
+  await ch.subscribe();
+  ch.send({type:'broadcast',event:'match_found',payload:{code,role:'host',opponent_name:myName}});
+  cancelMatchmaking();
+  // I join as guest
+  _onlineRole='guest';
+  _onlineRoom={code,host_id:opponent.user_id,host_name:opponent.user_name,host_deck:opponent.deck_id,
+    guest_id:_celUserId,guest_name:myName,guest_deck:myDeckId,
+    status:'playing',game_mode:gameMode,prize_count:prizeCount};
+  subscribeToRoom(code);
+  enterOnlineGame(_onlineRoom);
+}
+
+async function checkForMatch(gameMode,prizeCount,myDeckId){
+  if(!_mmQueueId)return;
+  const sb=getOnlineSB();
+  // Check if our queue entry was claimed (someone else matched us)
+  const {data:entry}=await sb.from('matchmaking_queue').select('*').eq('id',_mmQueueId).maybeSingle();
+  if(!entry||entry.status==='matched'){
+    cancelMatchmaking();
+    // The room should now exist — find and enter it
+    const {data:room}=await sb.from('online_rooms').select('*')
+      .or('host_id.eq.'+_celUserId+',guest_id.eq.'+_celUserId)
+      .eq('status','playing')
+      .order('created_at',{ascending:false})
+      .limit(1).maybeSingle();
+    if(room){
+      _onlineRoom=room;
+      _onlineRole=room.host_id===_celUserId?'host':'guest';
+      subscribeToRoom(room.code);
+      enterOnlineGame(room);
+    }
+    return;
+  }
+  // Also listen for direct match notification
+  const ch=sb.channel('mm:'+_celUserId);
+  ch.on('broadcast',{event:'match_found'},(payload)=>{
+    cancelMatchmaking();
+    const {code,role,opponent_name}=payload.payload;
+    _onlineRole=role;
+    // Load room and enter
+    sb.from('online_rooms').select('*').eq('code',code).maybeSingle().then(({data:room})=>{
+      if(room){_onlineRoom=room;subscribeToRoom(code);enterOnlineGame(room);}
+    });
+  }).subscribe();
+}
+
+function cancelMatchmaking(){
+  if(_mmInterval){clearInterval(_mmInterval);_mmInterval=null;}
+  if(_mmPollInterval){clearInterval(_mmPollInterval);_mmPollInterval=null;}
+  if(_mmQueueId&&_celSB){
+    _celSB.from('matchmaking_queue').delete().eq('id',_mmQueueId).then(()=>{});
+    _mmQueueId=null;
+  }
+  _mmElapsed=0;
+  document.getElementById('mm-searching').style.display='none';
+}
+
+// ── PUBLIC MATCH ROOMS ────────────────────────────
+function showMatchRooms(){
+  document.getElementById('mm-searching').style.display='none';
+  document.getElementById('mm-rooms-panel').style.display='block';
+  loadPublicRooms();
+}
+
+async function loadPublicRooms(){
+  const sb=getOnlineSB();
+  const listEl=document.getElementById('mm-rooms-list');
+  if(!listEl)return;
+  listEl.innerHTML='<div style="text-align:center;padding:20px;color:#6b7280;font-size:11px">Loading...</div>';
+  try{
+    const {data:rooms}=await sb.from('online_rooms')
+      .select('*')
+      .eq('status','waiting')
+      .eq('public',true)
+      .order('created_at',{ascending:false})
+      .limit(20);
+    if(!rooms||!rooms.length){
+      listEl.innerHTML='<div style="text-align:center;padding:30px;color:#6b7280"><div style="font-size:28px;margin-bottom:8px;opacity:.3">🚪</div><div style="font-size:11px">No public rooms open right now.<br>Create one and wait for someone to join!</div></div>';
+      return;
+    }
+    listEl.innerHTML='';
+    rooms.forEach(r=>{
+      const modeLabel={prize:'🏆 Prize',lifeforce:'❤️ LF',combined:'⚔️ Combined'}[r.game_mode]||r.game_mode;
+      const row=document.createElement('div');
+      row.className='match-room-row';
+      row.onclick=()=>joinPublicRoom(r);
+      row.innerHTML=
+        '<div style="flex:1">'
+        +'<div style="font-size:13px;font-weight:700;color:#e2e8f0">'+r.host_name+'\'s Room</div>'
+        +'<div style="font-size:9px;color:#6b7280;margin-top:2px">'+modeLabel+' · '+r.prize_count+' Prizes</div>'
+        +'</div>'
+        +'<span class="match-room-badge open">OPEN</span>'
+        +'<span style="font-size:11px;color:#6b7280;margin-left:6px">1/2</span>';
+      listEl.appendChild(row);
+    });
+  }catch(e){listEl.innerHTML='<div style="color:#fca5a5;font-size:11px;padding:10px">Failed to load rooms.</div>';}
+}
+
+async function createPublicRoom(){
+  const sb=getOnlineSB();
+  const deckId=document.getElementById('mm-deck-select')?.value;
+  const gameMode=document.getElementById('mm-game-mode')?.value||'prize';
+  const prizeCount=parseInt(document.getElementById('mm-prize-count')?.value||'6');
+  if(!deckId||!SAVED_DECKS[deckId]){alert('Select a valid deck first.');return;}
+  if(SAVED_DECKS[deckId].cards.length<60){alert('Deck must have 60 cards!');return;}
+  const myName=document.getElementById('hud-username')?.textContent||'Player';
+  const code=generateRoomCode();
+  try{
+    const {data}=await sb.from('online_rooms').insert({
+      code,host_id:_celUserId,host_name:myName,host_deck:deckId,
+      status:'waiting',game_mode:gameMode,prize_count:prizeCount,
+      public:true,created_at:new Date().toISOString()
+    }).select().single();
+    _onlineRoom=data;_onlineRole='host';
+    // Switch to private lobby waiting room UI to show the code + wait
+    showScreen('online-lobby-screen');
+    showWaitingRoom(code,myName,true);
+    subscribeToRoom(code);
+  }catch(e){alert('Failed to create room: '+e.message);}
+}
+
+async function joinPublicRoom(room){
+  const sb=getOnlineSB();
+  const deckId=document.getElementById('mm-deck-select')?.value;
+  if(!deckId||!SAVED_DECKS[deckId]){alert('Select a valid deck first.');return;}
+  if(SAVED_DECKS[deckId].cards.length<60){alert('Deck must have 60 cards!');return;}
+  const myName=document.getElementById('hud-username')?.textContent||'Player';
+  try{
+    await sb.from('online_rooms').update({
+      guest_id:_celUserId,guest_name:myName,guest_deck:deckId,status:'ready'
+    }).eq('code',room.code);
+    _onlineRoom={...room,guest_id:_celUserId,guest_name:myName,guest_deck:deckId,status:'ready'};
+    _onlineRole='guest';
+    subscribeToRoom(room.code);
+    showScreen('online-lobby-screen');
+    showWaitingRoom(room.code,myName,false);
+  }catch(e){alert('Failed to join room: '+e.message);}
+}
+
+
+// ═══════════════════════════════════════════════════
+// INVITE NOTIFICATION SYSTEM
+// ═══════════════════════════════════════════════════
+let _notifChannel=null;
+
+function startInviteListener(){
+  if(!_celUserId)return;
+  const sb=getOnlineSB();
+  if(_notifChannel)sb.removeChannel(_notifChannel);
+  _notifChannel=sb.channel('invites:'+_celUserId,{config:{broadcast:{self:false}}})
+    .on('broadcast',{event:'friend_invite'},(payload)=>{
+      showInviteNotification(payload.payload);
+    })
+    .subscribe();
+  console.log('[INVITE] Listening for invites on channel: invites:'+_celUserId);
+}
+
+function showInviteNotification(data){
+  const old=document.getElementById('invite-notif-popup');if(old)old.remove();
+  const popup=document.createElement('div');
+  popup.id='invite-notif-popup';
+  popup.style.cssText='position:fixed;top:56px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(8,8,28,.97);border:1px solid var(--violet2);border-radius:12px;padding:16px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;box-shadow:0 0 30px rgba(124,58,237,.3);min-width:280px;max-width:360px';
+  // Build content
+  const title=document.createElement('div');title.style.cssText='font-size:9px;color:var(--violet2);letter-spacing:2px';title.textContent='MATCH INVITE';
+  const msg=document.createElement('div');msg.style.cssText='font-size:13px;font-weight:700;color:#e2e8f0;text-align:center';
+  msg.innerHTML='<span style="color:#c4b5fd">'+data.from_name+'</span> wants you to join their match!';
+  const codeEl=document.createElement('div');codeEl.style.cssText='font-size:10px;color:#6b7280';
+  codeEl.textContent='Room Code: '+data.room_code;
+  const btnRow=document.createElement('div');btnRow.style.cssText='display:flex;gap:8px;width:100%';
+  const acceptBtn=document.createElement('button');
+  acceptBtn.style.cssText='flex:1;padding:9px;background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.5);border-radius:7px;color:#86efac;font-size:11px;letter-spacing:2px;cursor:pointer';
+  acceptBtn.textContent='ACCEPT';
+  acceptBtn.onclick=()=>acceptInvite(data.room_code,data.host_deck_id);
+  const declineBtn=document.createElement('button');
+  declineBtn.style.cssText='flex:1;padding:9px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);border-radius:7px;color:#fca5a5;font-size:11px;letter-spacing:2px;cursor:pointer';
+  declineBtn.textContent='DECLINE';
+  declineBtn.onclick=declineInvite;
+  btnRow.appendChild(acceptBtn);btnRow.appendChild(declineBtn);
+  popup.appendChild(title);popup.appendChild(msg);popup.appendChild(codeEl);popup.appendChild(btnRow);
+  document.body.appendChild(popup);
+  setTimeout(()=>{if(popup.parentNode)popup.remove();},30000);
+}
+
+async function acceptInvite(roomCode, hostDeckId){
+  const popup=document.getElementById('invite-notif-popup');if(popup)popup.remove();
+  // Need a valid deck
+  const decks=Object.entries(SAVED_DECKS);
+  const validDeck=decks.find(([id,d])=>d.cards&&d.cards.length>=60);
+  if(!validDeck){
+    alert('You need a 60-card deck to accept a match invite! Build one first.');
+    return;
+  }
+  _onlineDeckId=validDeck[0];
+  const myName=document.getElementById('hud-username')?.textContent||'Player';
+  const sb=getOnlineSB();
+  try{
+    // Find and join the room
+    const {data:room}=await sb.from('online_rooms').select('*').eq('code',roomCode).maybeSingle();
+    if(!room){alert('Room not found — it may have been cancelled.');return;}
+    // Update room with guest
+    await sb.from('online_rooms').update({
+      guest_id:_celUserId,guest_name:myName,guest_deck:_onlineDeckId,status:'ready'
+    }).eq('code',roomCode);
+    _onlineRoom={...room,guest_id:_celUserId,guest_name:myName,guest_deck:_onlineDeckId,status:'ready'};
+    _onlineRole='guest';
+    // Switch to lobby waiting room
+    showScreen('online-lobby-screen');
+    showWaitingRoom(roomCode,myName,false);
+    subscribeToRoom(roomCode);
+  }catch(e){alert('Failed to join: '+e.message);}
+}
+
+function declineInvite(){
+  const popup=document.getElementById('invite-notif-popup');if(popup)popup.remove();
 }
 
 // ═══════════════════════════════════════════════════
@@ -5400,6 +5771,7 @@ window.addEventListener('load',async()=>{
       applyAdminToggleEffects();
       await loadFriends();
       startPresenceHeartbeat();
+      startInviteListener();
       // Sign out
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){
@@ -5465,6 +5837,7 @@ window.addEventListener('load',async()=>{
       applyAdminToggleEffects();
       await loadFriends();
       startPresenceHeartbeat();
+      startInviteListener();
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){console.error('[AUTH] error:',e);window.signOutUser=function(){window.location.replace(LOGIN);};}
   }
@@ -5963,6 +6336,13 @@ window.addEventListener('load',async()=>{
             <option value="9">9</option>
             <option value="10">10</option>
           </select>
+          <select id="lobby-lf-hp" class="admin-input" style="width:90px">
+            <option value="100">100 HP</option>
+            <option value="125">125 HP</option>
+            <option value="150">150 HP</option>
+            <option value="175">175 HP</option>
+            <option value="200">200 HP</option>
+          </select>
         </div>
       </div>
 
@@ -5980,6 +6360,83 @@ window.addEventListener('load',async()=>{
   <div class="disconnect-timer" id="disconnect-timer">120</div>
   <div style="font-size:11px;color:#6b7280;letter-spacing:1px">Waiting for reconnect...</div>
   <button class="btn-red btn-sm" style="margin-top:8px;padding:8px 20px;letter-spacing:2px" onclick="claimDisconnectWin()">CLAIM WIN</button>
+</div>
+
+<!-- MATCHMAKING SCREEN — PHASE 3 -->
+<div id="matchmaking-screen" class="screen" style="padding:20px;max-width:620px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+    <button class="btn-gray btn-sm" onclick="cancelMatchmaking();showScreen('menu-screen')">← Back</button>
+    <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:var(--blue)">🔍 FIND MATCH</div>
+  </div>
+
+  <!-- GAME MODE SETTINGS -->
+  <div style="background:rgba(8,8,28,.6);border:1px solid var(--border-v);border-radius:10px;padding:14px;margin-bottom:14px">
+    <div style="font-size:9px;color:var(--violet2);letter-spacing:2px;margin-bottom:10px">⚙ MATCH SETTINGS</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
+      <div>
+        <div style="font-size:9px;color:#6b7280;margin-bottom:4px">DECK</div>
+        <select id="mm-deck-select" class="admin-input" style="width:100%;font-size:11px"></select>
+      </div>
+      <div>
+        <div style="font-size:9px;color:#6b7280;margin-bottom:4px">GAME MODE</div>
+        <select id="mm-game-mode" class="admin-input" style="width:100%;font-size:11px">
+          <option value="prize">🏆 Prize</option>
+          <option value="lifeforce">❤️ Life Force</option>
+          <option value="combined">⚔️ Combined</option>
+        </select>
+      </div>
+      <div>
+        <div style="font-size:9px;color:#6b7280;margin-bottom:4px">PRIZES</div>
+        <select id="mm-prize-count" class="admin-input" style="width:100%;font-size:11px">
+          <option value="6">6</option><option value="7">7</option><option value="8">8</option>
+          <option value="9">9</option><option value="10">10</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- TWO MATCH OPTIONS -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+
+    <!-- QUICK MATCH -->
+    <div style="background:rgba(8,8,28,.7);border:1px solid var(--border-v);border-radius:10px;padding:16px;text-align:center">
+      <div style="font-size:28px;margin-bottom:8px">⚡</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;color:#c4b5fd;margin-bottom:6px">QUICK MATCH</div>
+      <div style="font-size:10px;color:#6b7280;margin-bottom:12px">Get matched with a random opponent instantly</div>
+      <button class="btn-primary" style="width:100%;padding:9px;font-size:11px;letter-spacing:2px" onclick="startQuickMatch()">▸ FIND MATCH</button>
+    </div>
+
+    <!-- MATCH ROOMS -->
+    <div style="background:rgba(8,8,28,.7);border:1px solid var(--border-v);border-radius:10px;padding:16px;text-align:center">
+      <div style="font-size:28px;margin-bottom:8px">🚪</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;color:#c4b5fd;margin-bottom:6px">MATCH ROOMS</div>
+      <div style="font-size:10px;color:#6b7280;margin-bottom:12px">Browse public rooms or create one others can join</div>
+      <button class="btn-primary" style="width:100%;padding:9px;font-size:11px;letter-spacing:2px" onclick="showMatchRooms()">▸ BROWSE ROOMS</button>
+    </div>
+  </div>
+
+  <!-- QUICK MATCH SPINNER (hidden until searching) -->
+  <div id="mm-searching" style="display:none;text-align:center;padding:30px">
+    <div class="mm-spinner" style="margin-bottom:20px"></div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;color:var(--blue);margin-bottom:6px mm-pulse">SEARCHING FOR OPPONENT</div>
+    <div style="font-size:10px;color:#6b7280;margin-bottom:4px" id="mm-wait-time">Elapsed: 0s</div>
+    <div style="font-size:9px;color:#4b5563">Looking for a player with the same settings...</div>
+    <button class="btn-gray btn-sm" style="margin-top:16px;padding:8px 20px;letter-spacing:2px" onclick="cancelMatchmaking()">✕ CANCEL</button>
+  </div>
+
+  <!-- MATCH ROOMS LIST (hidden until Browse clicked) -->
+  <div id="mm-rooms-panel" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="font-size:10px;color:var(--violet2);letter-spacing:2px">PUBLIC ROOMS</div>
+      <div style="display:flex;gap:6px">
+        <button class="friend-btn" onclick="loadPublicRooms()" style="padding:5px 12px;font-size:9px">🔄 REFRESH</button>
+        <button class="friend-btn accept" onclick="createPublicRoom()" style="padding:5px 12px;font-size:9px">+ CREATE ROOM</button>
+      </div>
+    </div>
+    <div id="mm-rooms-list">
+      <div style="text-align:center;padding:20px;color:#6b7280;font-size:11px">Loading rooms...</div>
+    </div>
+  </div>
 </div>
 </body>
 </html>
