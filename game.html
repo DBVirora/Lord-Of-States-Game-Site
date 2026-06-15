@@ -32,6 +32,7 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 #game-screen{display:none;padding:4px;height:100vh;grid-template-rows:auto auto 52px auto auto;gap:3px}
 #game-screen.active{display:grid}
 .screen{display:none;padding:14px;position:relative;z-index:5;min-height:100vh}.screen.active{display:block}
+#online-lobby-screen.active{display:flex !important;flex-direction:column;align-items:center;justify-content:center;}
 /* VCU PANEL */
 .vcu-panel{background:rgba(8,8,28,.85);border:1px solid var(--border);border-radius:10px;padding:16px;position:relative;backdrop-filter:blur(12px);box-shadow:0 0 30px rgba(0,100,200,.1)}
 .vcu-panel::before,.vcu-panel::after{content:'';position:absolute;width:14px;height:14px;border-color:var(--blue);border-style:solid;opacity:.5}
@@ -5005,6 +5006,9 @@ function copyInviteCode(){
 // ═══════════════════════════════════════════════════
 let _onlineRoom=null;        // current room data
 let _onlineChannel=null;     // Supabase realtime channel
+let _channelReady=false;     // is the channel subscribed?
+let _lastBroadcastTime=0;    // throttle broadcasts
+let _broadcastPending=false; // is a broadcast queued?
 let _onlineRole=null;        // 'host' or 'guest'
 let _onlineDeckId=null;      // selected deck for online match
 let _disconnectTimer=null;   // forfeit countdown
@@ -5157,6 +5161,7 @@ function subscribeToRoom(code){
     })
     // Game state sync
     .on('broadcast',{event:'game_state'},(payload)=>{
+      console.log('[ROOM] ✓ game_state broadcast received');
       onReceiveGameState(payload.payload);
     })
     .on('broadcast',{event:'game_action'},(payload)=>{
@@ -5164,16 +5169,21 @@ function subscribeToRoom(code){
     })
     .subscribe((status)=>{
       console.log('[ROOM] channel status:',status,'code:',code);
-      // After subscribed, if guest: announce joining
-      if(status==='SUBSCRIBED'&&_onlineRole==='guest'){
-        const myName=document.getElementById('hud-username')?.textContent||'Player';
-        setTimeout(()=>{
-          _onlineChannel.send({type:'broadcast',event:'player_joined',payload:{
-            guest_id:_celUserId,
-            guest_name:myName,
-            guest_deck:_onlineDeckId
-          }});
-        },500);
+      if(status==='SUBSCRIBED'){
+        _channelReady=true;
+        console.log('[ROOM] ✓ Channel ready for broadcasts');
+        // Guest announces joining
+        if(_onlineRole==='guest'){
+          const myName=document.getElementById('hud-username')?.textContent||'Player';
+          setTimeout(()=>{
+            _onlineChannel.send({type:'broadcast',event:'player_joined',payload:{
+              guest_id:_celUserId,guest_name:myName,guest_deck:_onlineDeckId
+            }});
+          },500);
+        }
+      } else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){
+        _channelReady=false;
+        console.error('[ROOM] Channel error:',status);
       }
     });
 }
@@ -5202,84 +5212,77 @@ function enterOnlineGame(room){
   _onlineRoom=room;
   const isHost=_onlineRole==='host';
 
-  // ── FULL RESET before starting ────────────────────
-  // Clear any leftover game state from previous match
-  G={};
-  gameMode='';
-  // Reset phase/selection globals
+  // Full reset
+  G={};gameMode='';
   if(typeof pendingMode!=='undefined')pendingMode='';
-  // Clear any lingering UI state
-  const winModal=document.getElementById('win-modal');
-  if(winModal)winModal.classList.remove('open');
-  const powerModal=document.getElementById('power-struggle-modal');
-  if(powerModal)powerModal.classList.remove('open');
-  // Reset ending lock
+  const winModal=document.getElementById('win-modal');if(winModal)winModal.classList.remove('open');
+  const powerModal=document.getElementById('power-struggle-modal');if(powerModal)powerModal.classList.remove('open');
   if(typeof _endingTurn!=='undefined')_endingTurn=false;
 
-  // ── Resolve decks from saved decks ──────────────
-  // host_deck and guest_deck are deck IDs stored in Supabase
-  // We need actual card arrays
-  const hostDeckCards=SAVED_DECKS[room.host_deck]?.cards
-    ? [...SAVED_DECKS[room.host_deck].cards]
-    : generateRandomDeck();
-  const guestDeckCards=SAVED_DECKS[room.guest_deck]?.cards
-    ? [...SAVED_DECKS[room.guest_deck].cards]
-    : generateRandomDeck();
-
-  console.log('[ONLINE] isHost='+isHost+' hostDeck='+hostDeckCards.length+' guestDeck='+guestDeckCards.length);
-
-  // ── Set game mode ─────────────────────────────────
   pendingGameMode=room.game_mode||'prize';
   pendingPrizeCount=parseInt(room.prize_count)||6;
   pendingLFHP=parseInt(room.lf_hp)||100;
 
-  // ── Start game ──────────────────────────────────
-  // Each player sees THEMSELVES as P1 in the UI
-  // Host: P1=host, P2=guest (canonical)
-  // Guest: P1=guest, P2=host (swapped locally)
-  // When syncing, we swap back to canonical for broadcast
   if(isHost){
+    // HOST builds the authoritative game state
+    const hostDeckCards=SAVED_DECKS[room.host_deck]?.cards?[...SAVED_DECKS[room.host_deck].cards]:generateRandomDeck();
+    const guestDeckCards=SAVED_DECKS[room.guest_deck]?.cards?[...SAVED_DECKS[room.guest_deck].cards]:generateRandomDeck();
+    console.log('[ONLINE] HOST building game. hostDeck='+hostDeckCards.length+' guestDeck='+guestDeckCards.length);
     startGame('online', hostDeckCards, guestDeckCards);
     G.players[1].name=room.host_name+' (You)';
     G.players[2].name=(room.guest_name||'Opponent')+' (Opponent)';
+    G.onlineMode=true;
+    G.onlineRole='host';
+    G.onlinePlayerNum=1;
+    G.onlineOpponentName=room.guest_name;
+    G.onlineMyName=room.host_name;
+    showScreen('game-screen');
+    renderAll();
+    // Broadcast authoritative state repeatedly until guest acks
+    let tries=0;
+    const initBroadcast=setInterval(()=>{
+      tries++;
+      broadcastGameState();
+      if(tries>=5)clearInterval(initBroadcast); // send 5 times over 2.5s to ensure guest gets it
+    },500);
   } else {
-    // Guest sees themselves as P1 locally
-    startGame('online', guestDeckCards, hostDeckCards);
+    // GUEST waits for host's state — build a placeholder shell
+    console.log('[ONLINE] GUEST waiting for host state...');
+    startGame('online', generateRandomDeck(), generateRandomDeck());
     G.players[1].name=(room.guest_name||'You')+' (You)';
     G.players[2].name=room.host_name+' (Opponent)';
-  }
-
-  // ── Tag game as online ───────────────────────────
-  G.onlineMode=true;
-  G.onlineRole=_onlineRole;
-  // We always think we are P1 locally — but for canonical state translation:
-  G.onlinePlayerNum=1; // I am always P1 in MY local view
-  G.canonicalPlayerNum=isHost?1:2; // my number in the SHARED authoritative state
-  G.onlineOpponentName=isHost?room.guest_name:room.host_name;
-  G.onlineMyName=isHost?room.host_name:room.guest_name;
-  // For the SHARED state, host plays first (canonical activePlayer=1 means host goes first)
-  // In my LOCAL view, both should start with their own turn or wait
-  // If I'm guest and it's host's turn, in my view activePlayer=2 (opponent goes first)
-  if(!isHost){
-    G.activePlayer=2; // host (opponent) goes first from guest's view
-  }
-
-  showScreen('game-screen');
-  renderAll();
-  // Host is authoritative — broadcast starting state after a delay
-  if(isHost){
-    setTimeout(()=>broadcastGameState(),1000);
+    G.onlineMode=true;
+    G.onlineRole='guest';
+    G.onlinePlayerNum=1;
+    G.onlineOpponentName=room.host_name;
+    G.onlineMyName=room.guest_name;
+    G.activePlayer=2; // opponent (host) goes first
+    G.waitingForHostState=true;
+    showScreen('game-screen');
+    renderAll();
+    // Show a "syncing" message
+    log('Connecting to host... waiting for game state.','info');
   }
 }
 
 // ── BROADCAST / RECEIVE ───────────────────────────
 function broadcastGameState(){
-  if(!_onlineChannel||!G.onlineMode){console.log('[BCAST] skipped');return;}
-  // Build canonical state (host's perspective = P1=host, P2=guest)
+  if(!_onlineChannel||!G||!G.onlineMode){return;}
+  if(!_channelReady){console.log('[BCAST] channel not ready, queuing');_broadcastPending=true;setTimeout(()=>{if(_broadcastPending){_broadcastPending=false;broadcastGameState();}},400);return;}
+  // Throttle: max 1 broadcast per 150ms, but always send the latest
+  const now=Date.now();
+  if(now-_lastBroadcastTime<150){
+    if(!_broadcastPending){
+      _broadcastPending=true;
+      setTimeout(()=>{_broadcastPending=false;broadcastGameState();},160);
+    }
+    return;
+  }
+  _lastBroadcastTime=now;
   const isHost=_onlineRole==='host';
   const canonical={
     turn:G.turn,
-    activePlayer:isHost?G.activePlayer:(G.activePlayer===1?2:1), // swap for guest
+    activePlayer:isHost?G.activePlayer:(G.activePlayer===1?2:1),
     phase:G.phase,
     phasesDone:G.phasesDone,
     gameOver:G.gameOver,
@@ -5290,16 +5293,17 @@ function broadcastGameState(){
     heraldAttacking:G.heraldAttacking,
     players:{}
   };
-  // Players: if I'm guest, my P1 is canonical P2 and vice versa
   if(isHost){
     canonical.players[1]=sanitizePlayer(G.players[1]);
     canonical.players[2]=sanitizePlayer(G.players[2]);
   } else {
-    canonical.players[1]=sanitizePlayer(G.players[2]); // host's data is in my slot 2
-    canonical.players[2]=sanitizePlayer(G.players[1]); // my data goes to slot 2
+    canonical.players[1]=sanitizePlayer(G.players[2]);
+    canonical.players[2]=sanitizePlayer(G.players[1]);
   }
-  console.log('[BCAST] from='+_onlineRole+' canonical activePlayer='+canonical.activePlayer);
-  _onlineChannel.send({type:'broadcast',event:'game_state',payload:{state:canonical,from:_onlineRole}});
+  console.log('[BCAST] ✓ sending from='+_onlineRole+' turn='+canonical.turn+' active='+canonical.activePlayer+' myhand='+(G.players[1].hand.length));
+  _onlineChannel.send({type:'broadcast',event:'game_state',payload:{state:canonical,from:_onlineRole}})
+    .then(()=>console.log('[BCAST] ✓ sent OK'))
+    .catch(e=>console.error('[BCAST] send failed:',e));
 }
 
 function sanitizePlayer(pl){
@@ -5325,6 +5329,11 @@ function onReceiveGameState(payload){
   const incoming=payload.state;
   if(!incoming)return;
   const isHost=_onlineRole==='host';
+  // Guest: first state from host clears the waiting flag
+  if(G.waitingForHostState){
+    G.waitingForHostState=false;
+    log('✓ Connected! Game synced.','gain');
+  }
   console.log('[RECV] from='+payload.from+' canonical activePlayer='+incoming.activePlayer+' I am '+_onlineRole);
 
   // Preserve perspective fields
@@ -5440,6 +5449,9 @@ function cleanupOnlineSession(){
   _onlineRole=null;
   _onlineDeckId=null;
   _endingTurn=false;
+  _channelReady=false;
+  _broadcastPending=false;
+  _lastBroadcastTime=0;
   clearDisconnectTimer();
   // Reset lobby UI to create/join view
   const createJoin=document.getElementById('lobby-create-join');
@@ -6406,7 +6418,7 @@ window.addEventListener('load',async()=>{
 </div>
 
 <!-- ONLINE LOBBY SCREEN -->
-<div id="online-lobby-screen" class="screen" style="padding:20px;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center">
+<div id="online-lobby-screen" class="screen" style="padding:20px;min-height:100vh">
   <div id="lobby-create-join" style="width:100%;max-width:480px">
     <div style="font-family:'Orbitron',sans-serif;font-size:16px;letter-spacing:4px;color:var(--blue);text-align:center;margin-bottom:6px;text-shadow:0 0 12px var(--blue)">⚔️ ONLINE PVP</div>
     <div style="font-size:10px;color:#6b7280;text-align:center;letter-spacing:2px;margin-bottom:20px">PRIVATE ROOM</div>
