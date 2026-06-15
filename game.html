@@ -1943,6 +1943,7 @@ function triggerWin(p,r){
 }
 function returnToMenuFromWin(){
   document.getElementById('win-modal').classList.remove('open');
+  if(G&&G.onlineMode)cleanupOnlineSession();
   showScreen('menu-screen');
 }
 function confirmReturnMenu(){if(confirm('Return to main menu?'))showScreen('menu-screen');}
@@ -5210,6 +5211,20 @@ function enterOnlineGame(room){
   _onlineRoom=room;
   const isHost=_onlineRole==='host';
 
+  // ── FULL RESET before starting ────────────────────
+  // Clear any leftover game state from previous match
+  G={};
+  gameMode='';
+  // Reset phase/selection globals
+  if(typeof pendingMode!=='undefined')pendingMode='';
+  // Clear any lingering UI state
+  const winModal=document.getElementById('win-modal');
+  if(winModal)winModal.classList.remove('open');
+  const powerModal=document.getElementById('power-struggle-modal');
+  if(powerModal)powerModal.classList.remove('open');
+  // Reset ending lock
+  if(typeof _endingTurn!=='undefined')_endingTurn=false;
+
   // ── Resolve decks from saved decks ──────────────
   // host_deck and guest_deck are deck IDs stored in Supabase
   // We need actual card arrays
@@ -5340,14 +5355,54 @@ function claimDisconnectWin(){
   if(G&&G.onlineMode)triggerWin(G.onlinePlayerNum||1,'Opponent disconnected!');
 }
 
+function updateLobbyModeSettings(){
+  const mode=document.getElementById('lobby-game-mode')?.value||'prize';
+  const prizeEl=document.getElementById('lobby-prize-count');
+  const hpEl=document.getElementById('lobby-lf-hp');
+  const descEl=document.getElementById('lobby-mode-desc');
+  if(prizeEl)prizeEl.style.display=(mode==='lifeforce')?'none':'block';
+  if(hpEl)hpEl.style.display=(mode==='prize')?'none':'block';
+  if(descEl){
+    const descs={
+      prize:'Win by claiming all Prize Cards',
+      lifeforce:'Reduce your opponent Life Force to 0',
+      combined:'Win by Prizes OR Life Force — whichever comes first'
+    };
+    descEl.textContent=descs[mode]||'';
+  }
+}
+
 async function cancelOnlineRoom(){
   if(_onlineRoom){
     const sb=getOnlineSB();
     await sb.from('online_rooms').delete().eq('code',_onlineRoom.code);
-    if(_onlineChannel){sb.removeChannel(_onlineChannel);_onlineChannel=null;}
-    _onlineRoom=null;
   }
+  cleanupOnlineSession();
   showScreen('menu-screen');
+}
+
+function cleanupOnlineSession(){
+  const sb=getOnlineSB();
+  if(_onlineChannel){sb.removeChannel(_onlineChannel);_onlineChannel=null;}
+  _onlineRoom=null;
+  _onlineRole=null;
+  _onlineDeckId=null;
+  _endingTurn=false;
+  clearDisconnectTimer();
+  // Reset lobby UI to create/join view
+  const createJoin=document.getElementById('lobby-create-join');
+  const waiting=document.getElementById('lobby-waiting-room');
+  if(createJoin)createJoin.style.display='block';
+  if(waiting)waiting.style.display='none';
+  // Reset start button
+  const startBtn=document.getElementById('lobby-start-btn');
+  if(startBtn){startBtn.disabled=true;startBtn.textContent='WAITING...';}
+  // Reset P2 slot
+  const p2slot=document.getElementById('lobby-player-2-slot');
+  if(p2slot){
+    p2slot.className='pvp-player-slot waiting';
+    p2slot.innerHTML='<div class="pvp-slot-avatar">⏳</div><div style="flex:1"><div class="pvp-slot-name" style="color:#6b7280">Waiting for opponent...</div><div class="pvp-slot-status"><span class="pvp-conn-badge waiting">WAITING</span></div></div>';
+  }
 }
 
 // ── HOOK INTO GAME ACTIONS ────────────────────────
@@ -6353,20 +6408,22 @@ window.addEventListener('load',async()=>{
       <!-- Game mode -->
       <div style="margin-top:14px;padding:12px;background:rgba(8,8,28,.5);border:1px solid var(--border);border-radius:8px">
         <div style="font-size:9px;color:#6b7280;letter-spacing:2px;margin-bottom:8px">GAME SETTINGS</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <select id="lobby-game-mode" class="admin-input" style="flex:1">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <select id="lobby-game-mode" class="admin-input" style="flex:1" onchange="updateLobbyModeSettings()">
             <option value="prize">🏆 Prize Mode</option>
             <option value="lifeforce">❤️ Life Force Mode</option>
             <option value="combined">⚔️ Combined Mode</option>
           </select>
-          <select id="lobby-prize-count" class="admin-input" style="width:80px">
+          <!-- Prize count: Prize + Combined only -->
+          <select id="lobby-prize-count" class="admin-input" style="width:90px">
             <option value="6">6 Prizes</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
+            <option value="7">7 Prizes</option>
+            <option value="8">8 Prizes</option>
+            <option value="9">9 Prizes</option>
+            <option value="10">10 Prizes</option>
           </select>
-          <select id="lobby-lf-hp" class="admin-input" style="width:90px">
+          <!-- Life Force HP: Life Force + Combined only -->
+          <select id="lobby-lf-hp" class="admin-input" style="width:90px;display:none">
             <option value="100">100 HP</option>
             <option value="125">125 HP</option>
             <option value="150">150 HP</option>
@@ -6374,6 +6431,7 @@ window.addEventListener('load',async()=>{
             <option value="200">200 HP</option>
           </select>
         </div>
+        <div id="lobby-mode-desc" style="font-size:9px;color:#6b7280;margin-top:6px;letter-spacing:1px">Win by claiming all Prize Cards</div>
       </div>
 
       <div style="margin-top:14px;display:flex;gap:8px">
