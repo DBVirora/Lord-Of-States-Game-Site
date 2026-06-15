@@ -3721,6 +3721,8 @@ function renderAll(){
     const colors=getDeckColors(allCids);
     el.innerHTML=renderColorPips(colors);
   });
+  // Online PvP — broadcast state after every render (when it's my turn)
+  syncOnlineState();
 }
 
 function updateHandLimitDisplay(p){
