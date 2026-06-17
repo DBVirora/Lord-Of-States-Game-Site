@@ -2469,7 +2469,9 @@ textarea{
 /* Multiple foil styles — applied via .holo-* class  */
 /* ════════════════════════════════════════════════ */
 
-/* Base holo container — all variants share */
+/* ──────────────────────────────────────────── */
+/* HOLO BASE — All cards share these properties  */
+/* ──────────────────────────────────────────── */
 .holo-card{
   position:relative;
   overflow:hidden;
@@ -2490,190 +2492,429 @@ textarea{
   z-index:1;
 }
 
-/* All holos add a shine layer pinned over the image */
-.holo-card::before{
-  content:'';
+/* All holo effect layers (injected via JS for multi-layer richness) */
+.holo-layer{
   position:absolute;
   inset:0;
   z-index:2;
   pointer-events:none;
-  mix-blend-mode:color-dodge;
+  border-radius:inherit;
   opacity:0;
-  transition:opacity .3s ease;
+  transition:opacity .35s ease;
 }
-.holo-card:hover::before,
-.holo-card.always-on::before{
+.holo-card:hover .holo-layer,
+.holo-card.always-on .holo-layer{
   opacity:1;
 }
 
-/* All holos add a sparkle/grain layer */
-.holo-card::after{
-  content:'';
-  position:absolute;
-  inset:0;
-  z-index:3;
-  pointer-events:none;
-  opacity:0;
-  transition:opacity .3s ease;
-}
-.holo-card:hover::after,
-.holo-card.always-on::after{
-  opacity:.65;
-}
+/* ════════════════════════════════════════════════ */
+/* STYLE 1: CLASSIC HOLO                             */
+/* True Pokémon TCG holo: cross-hatched foil pattern */
+/* + rainbow shimmer + clean white sparkles          */
+/* ════════════════════════════════════════════════ */
 
-/* ──────────────────────────────────────────── */
-/* STYLE 1: CLASSIC POKEMON-STYLE RAINBOW HOLO  */
-/* ──────────────────────────────────────────── */
-.holo-classic::before{
-  /* Narrower rainbow band, softer alpha — more like crisp foil reflection */
-  background:linear-gradient(110deg,
-    transparent 42%,
-    rgba(255,130,170,.32) 47%,
-    rgba(170,210,255,.32) 50%,
-    rgba(170,255,180,.32) 53%,
-    rgba(255,240,170,.32) 56%,
-    rgba(220,170,255,.30) 59%,
-    transparent 64%);
-  background-size:220% 220%;
-  background-position:var(--bg-x,50%) var(--bg-y,50%);
-  animation:holo-classic-shimmer 7s ease-in-out infinite;
-  mix-blend-mode:overlay;
-}
-.holo-classic::after{
-  /* Very subtle sparkle — only on hover with mouse position */
+/* Layer 1: Cross-hatch foil pattern (the iconic holo texture) */
+.holo-classic .holo-layer-1{
   background:
-    radial-gradient(circle at 25% 30%, rgba(255,255,255,.5) 0.4px, transparent 1px),
-    radial-gradient(circle at 75% 65%, rgba(255,255,255,.4) 0.4px, transparent 1px),
-    radial-gradient(circle at 50% 85%, rgba(255,255,255,.35) 0.3px, transparent .8px);
-  background-size:140px 140px,180px 180px,160px 160px;
+    repeating-linear-gradient(45deg,
+      rgba(255,255,255,.06) 0px,
+      rgba(255,255,255,.06) 1px,
+      transparent 1px,
+      transparent 4px),
+    repeating-linear-gradient(-45deg,
+      rgba(255,255,255,.06) 0px,
+      rgba(255,255,255,.06) 1px,
+      transparent 1px,
+      transparent 4px);
   mix-blend-mode:screen;
-  opacity:.3 !important;
-}
-.holo-classic:hover::after{
-  opacity:.55 !important;
-}
-@keyframes holo-classic-shimmer{
-  0%,100%{background-position:30% 30%;}
-  50%{background-position:70% 70%;}
+  opacity:.85 !important;
 }
 
-/* ──────────────────────────────────────────── */
-/* STYLE 2: COSMIC HOLO — Stars + Nebula        */
-/* ──────────────────────────────────────────── */
-.holo-cosmic::before{
+/* Layer 2: Rainbow gradient sweep — follows mouse */
+.holo-classic .holo-layer-2{
   background:
-    radial-gradient(ellipse at 30% 40%, rgba(124,58,237,.5) 0%, transparent 40%),
-    radial-gradient(ellipse at 70% 60%, rgba(74,144,226,.5) 0%, transparent 40%),
-    radial-gradient(ellipse at 50% 20%, rgba(200,164,74,.3) 0%, transparent 35%);
+    radial-gradient(
+      ellipse 50% 80% at var(--bg-x,50%) var(--bg-y,50%),
+      rgba(255,255,255,.0) 0%,
+      rgba(255,100,150,.35) 18%,
+      rgba(255,200,100,.40) 28%,
+      rgba(200,255,150,.40) 38%,
+      rgba(100,200,255,.40) 48%,
+      rgba(200,150,255,.35) 58%,
+      transparent 75%);
+  mix-blend-mode:color-dodge;
+  filter:saturate(1.4);
+}
+
+/* Layer 3: Diagonal shine sweep — continuous animation */
+.holo-classic .holo-layer-3{
+  background:linear-gradient(115deg,
+    transparent 35%,
+    rgba(255,255,255,.0) 45%,
+    rgba(255,255,255,.55) 50%,
+    rgba(255,255,255,.0) 55%,
+    transparent 65%);
   background-size:200% 200%;
-  background-position:var(--bg-x,0%) var(--bg-y,0%);
-  animation:holo-cosmic-drift 8s ease-in-out infinite alternate;
-  mix-blend-mode:screen;
+  animation:holo-classic-sweep 4.5s ease-in-out infinite;
+  mix-blend-mode:overlay;
+  opacity:.7 !important;
 }
-.holo-cosmic::after{
+
+/* Layer 4: White sparkle dust */
+.holo-classic .holo-layer-4{
+  background:
+    radial-gradient(circle at 18% 22%, rgba(255,255,255,.9) 0.6px, transparent 1.2px),
+    radial-gradient(circle at 78% 35%, rgba(255,255,255,.8) 0.8px, transparent 1.6px),
+    radial-gradient(circle at 42% 68%, rgba(255,255,255,.9) 0.7px, transparent 1.4px),
+    radial-gradient(circle at 88% 78%, rgba(255,255,255,.75) 0.6px, transparent 1.2px),
+    radial-gradient(circle at 12% 88%, rgba(255,255,255,.85) 0.5px, transparent 1px),
+    radial-gradient(circle at 55% 15%, rgba(255,255,255,.7) 0.5px, transparent 1px);
+  background-size:120px 120px, 150px 150px, 110px 110px, 140px 140px, 100px 100px, 130px 130px;
+  mix-blend-mode:screen;
+  animation:holo-classic-sparkle 3.5s ease-in-out infinite;
+  opacity:.85 !important;
+}
+
+@keyframes holo-classic-sweep{
+  0%,100%{background-position:0% 0%;}
+  50%{background-position:100% 100%;}
+}
+@keyframes holo-classic-sparkle{
+  0%,100%{transform:translate(0,0) scale(1); opacity:.85;}
+  50%{transform:translate(3px,-3px) scale(1.05); opacity:1;}
+}
+
+.holo-classic{
+  box-shadow:
+    0 0 20px rgba(180,210,255,.35),
+    0 0 0 1px rgba(255,255,255,.15) inset;
+}
+
+
+/* ════════════════════════════════════════════════ */
+/* STYLE 2: COSMIC HOLO                              */
+/* Drifting nebula, twinkling stars                  */
+/* ════════════════════════════════════════════════ */
+.holo-cosmic .holo-layer-1{
+  background:
+    radial-gradient(ellipse 60% 70% at 30% 40%, rgba(124,58,237,.6) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 80% at 70% 60%, rgba(74,144,226,.55) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 50% 20%, rgba(200,164,74,.35) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 60% at 80% 85%, rgba(180,100,200,.4) 0%, transparent 55%);
+  background-size:180% 180%;
+  background-position:var(--bg-x,50%) var(--bg-y,50%);
+  animation:holo-cosmic-drift 12s ease-in-out infinite alternate;
+  mix-blend-mode:screen;
+  filter:saturate(1.3) blur(.5px);
+}
+
+.holo-cosmic .holo-layer-2{
   background:
     radial-gradient(circle at 15% 25%, #fff 0.7px, transparent 1.5px),
-    radial-gradient(circle at 35% 65%, rgba(180,200,255,.9) 0.6px, transparent 1.2px),
-    radial-gradient(circle at 75% 35%, #fff 0.8px, transparent 1.6px),
-    radial-gradient(circle at 60% 85%, rgba(255,215,180,.9) 0.6px, transparent 1.2px),
+    radial-gradient(circle at 35% 65%, rgba(180,200,255,.95) 0.6px, transparent 1.2px),
+    radial-gradient(circle at 75% 35%, #fff 0.9px, transparent 1.8px),
+    radial-gradient(circle at 60% 85%, rgba(255,215,180,.95) 0.7px, transparent 1.4px),
     radial-gradient(circle at 85% 75%, #fff 0.5px, transparent 1.2px),
-    radial-gradient(circle at 25% 90%, rgba(200,180,255,.9) 0.7px, transparent 1.4px);
-  background-size:60px 60px,80px 80px,90px 90px,70px 70px,100px 100px,75px 75px;
+    radial-gradient(circle at 25% 90%, rgba(200,180,255,.95) 0.7px, transparent 1.4px),
+    radial-gradient(circle at 50% 50%, #fff 0.6px, transparent 1.3px),
+    radial-gradient(circle at 92% 18%, rgba(255,230,200,.9) 0.5px, transparent 1px);
+  background-size:60px 60px,80px 80px,90px 90px,70px 70px,100px 100px,75px 75px,85px 85px,95px 95px;
   mix-blend-mode:screen;
   animation:holo-cosmic-twinkle 4s ease-in-out infinite;
-}
-@keyframes holo-cosmic-drift{
-  from{background-position:0% 0%;}
-  to{background-position:60% 40%;}
-}
-@keyframes holo-cosmic-twinkle{
-  0%,100%{opacity:.55;transform:translate(0,0);}
-  50%{opacity:.85;transform:translate(2px,-3px);}
+  opacity:.9 !important;
 }
 
-/* ──────────────────────────────────────────── */
-/* STYLE 3: GOLD FOIL — Premium metallic        */
-/* ──────────────────────────────────────────── */
-.holo-gold::before{
-  background:linear-gradient(110deg,
-    transparent 25%,
-    rgba(255,215,120,.7) 35%,
-    rgba(255,250,200,.85) 45%,
-    rgba(255,215,120,.7) 55%,
-    rgba(200,160,74,.5) 65%,
-    transparent 75%);
-  background-size:300% 300%;
+.holo-cosmic .holo-layer-3{
+  /* Cinematic light ray */
+  background:linear-gradient(120deg,
+    transparent 30%,
+    rgba(200,200,255,.0) 45%,
+    rgba(200,200,255,.25) 50%,
+    rgba(200,200,255,.0) 55%,
+    transparent 70%);
+  background-size:200% 200%;
   background-position:var(--bg-x,0%) var(--bg-y,0%);
-  animation:holo-gold-sheen 3.5s ease-in-out infinite;
+  animation:holo-cosmic-ray 8s ease-in-out infinite;
+  mix-blend-mode:screen;
+  opacity:.6 !important;
+}
+
+@keyframes holo-cosmic-drift{
+  from{background-position:0% 0%; filter:saturate(1.3) blur(.5px) hue-rotate(0deg);}
+  to{background-position:60% 40%; filter:saturate(1.5) blur(.5px) hue-rotate(15deg);}
+}
+@keyframes holo-cosmic-twinkle{
+  0%,100%{opacity:.7; transform:translate(0,0);}
+  50%{opacity:1; transform:translate(2px,-3px);}
+}
+@keyframes holo-cosmic-ray{
+  0%,100%{background-position:-30% 30%;}
+  50%{background-position:130% 70%;}
+}
+
+.holo-cosmic{
+  box-shadow:
+    0 0 25px rgba(124,58,237,.4),
+    0 0 40px rgba(74,144,226,.2),
+    0 0 0 1px rgba(180,150,255,.25) inset;
+}
+
+
+/* ════════════════════════════════════════════════ */
+/* STYLE 3: GOLD FOIL                                */
+/* Premium metallic sheen                            */
+/* ════════════════════════════════════════════════ */
+.holo-gold .holo-layer-1{
+  /* Gold base wash */
+  background:linear-gradient(135deg,
+    rgba(255,215,120,.25) 0%,
+    rgba(200,160,74,.30) 50%,
+    rgba(255,225,150,.25) 100%);
   mix-blend-mode:overlay;
 }
-.holo-gold::after{
-  background:
-    radial-gradient(circle at 25% 35%, rgba(255,230,170,.7) 0.5px, transparent 1.2px),
-    radial-gradient(circle at 65% 55%, rgba(255,240,200,.6) 0.7px, transparent 1.5px),
-    radial-gradient(circle at 80% 25%, rgba(255,220,150,.8) 0.6px, transparent 1.4px),
-    radial-gradient(circle at 45% 75%, rgba(255,230,180,.5) 0.5px, transparent 1.1px);
-  background-size:70px 70px,90px 90px,80px 80px,100px 100px;
-  mix-blend-mode:screen;
-  filter:drop-shadow(0 0 2px rgba(255,215,120,.4));
+
+.holo-gold .holo-layer-2{
+  /* Diagonal sheen sweep */
+  background:linear-gradient(110deg,
+    transparent 30%,
+    rgba(255,215,120,.4) 42%,
+    rgba(255,250,210,.85) 50%,
+    rgba(255,215,120,.4) 58%,
+    transparent 70%);
+  background-size:300% 300%;
+  background-position:var(--bg-x,0%) var(--bg-y,0%);
+  animation:holo-gold-sheen 4s ease-in-out infinite;
+  mix-blend-mode:overlay;
 }
+
+.holo-gold .holo-layer-3{
+  /* Gold dust sparkles */
+  background:
+    radial-gradient(circle at 25% 35%, rgba(255,230,170,.85) 0.5px, transparent 1.2px),
+    radial-gradient(circle at 65% 55%, rgba(255,240,200,.75) 0.7px, transparent 1.5px),
+    radial-gradient(circle at 80% 25%, rgba(255,220,150,.9) 0.6px, transparent 1.4px),
+    radial-gradient(circle at 45% 75%, rgba(255,230,180,.7) 0.5px, transparent 1.1px),
+    radial-gradient(circle at 15% 80%, rgba(255,240,180,.8) 0.6px, transparent 1.3px);
+  background-size:70px 70px,90px 90px,80px 80px,100px 100px,85px 85px;
+  mix-blend-mode:screen;
+  filter:drop-shadow(0 0 2px rgba(255,215,120,.5));
+  animation:holo-gold-sparkle 3s ease-in-out infinite;
+}
+
 @keyframes holo-gold-sheen{
   0%,100%{background-position:-50% 0%;}
   50%{background-position:150% 100%;}
 }
-/* Gold variant also gets a warm border glow */
-.holo-gold{
-  box-shadow:0 0 24px rgba(200,164,74,.4),0 0 8px rgba(255,215,120,.25) inset;
+@keyframes holo-gold-sparkle{
+  0%,100%{opacity:.9; transform:scale(1);}
+  50%{opacity:1; transform:scale(1.08);}
 }
 
-/* ──────────────────────────────────────────── */
-/* STYLE 4: REVERSE HOLO — subtle border-only   */
-/* ──────────────────────────────────────────── */
-.holo-reverse{
-  /* Animated gradient border + soft halo */
+.holo-gold{
   box-shadow:
-    0 0 18px rgba(124,200,255,.45),
-    0 0 30px rgba(180,150,255,.25),
-    0 0 0 1px rgba(180,200,255,.4) inset;
-  position:relative;
+    0 0 24px rgba(200,164,74,.5),
+    0 0 40px rgba(255,215,120,.25),
+    0 0 8px rgba(255,215,120,.35) inset;
 }
-.holo-reverse::before{
-  /* Subtle inner color wash across the WHOLE card, very low opacity */
-  background:linear-gradient(125deg,
-    rgba(140,200,255,.10) 0%,
-    rgba(200,160,255,.14) 50%,
-    rgba(140,200,255,.10) 100%);
-  background-size:300% 300%;
-  background-position:var(--bg-x,0%) var(--bg-y,0%);
-  animation:holo-reverse-flow 6s ease-in-out infinite;
+
+
+/* ════════════════════════════════════════════════ */
+/* STYLE 4: REVERSE HOLO                             */
+/* Crystalline ice with frosted prism shimmer        */
+/* ════════════════════════════════════════════════ */
+
+/* Layer 1: Frosted crystal pattern — distinctive icy texture */
+.holo-reverse .holo-layer-1{
+  background:
+    repeating-linear-gradient(60deg,
+      rgba(160,210,255,.08) 0px,
+      rgba(160,210,255,.08) 2px,
+      transparent 2px,
+      transparent 8px),
+    repeating-linear-gradient(-60deg,
+      rgba(200,170,255,.08) 0px,
+      rgba(200,170,255,.08) 2px,
+      transparent 2px,
+      transparent 8px),
+    repeating-linear-gradient(0deg,
+      rgba(255,255,255,.04) 0px,
+      rgba(255,255,255,.04) 1px,
+      transparent 1px,
+      transparent 6px);
   mix-blend-mode:screen;
-  opacity:.7 !important;
+  opacity:.9 !important;
 }
-.holo-reverse::after{
-  /* Animated outline glow — sits ON the edge with no padding hacks */
-  display:block !important;
+
+/* Layer 2: Soft prismatic wash that follows mouse */
+.holo-reverse .holo-layer-2{
+  background:
+    radial-gradient(
+      ellipse 60% 80% at var(--bg-x,50%) var(--bg-y,50%),
+      rgba(180,220,255,.45) 0%,
+      rgba(220,190,255,.40) 25%,
+      rgba(180,255,230,.35) 45%,
+      rgba(220,200,255,.30) 65%,
+      transparent 85%);
+  mix-blend-mode:screen;
+  filter:blur(8px) saturate(1.2);
+  opacity:.85 !important;
+}
+
+/* Layer 3: Animated outer glow ring */
+.holo-reverse .holo-layer-3{
   background:linear-gradient(125deg,
-    rgba(140,210,255,.5) 0%,
-    rgba(210,170,255,.5) 50%,
-    rgba(140,210,255,.5) 100%);
+    rgba(140,210,255,.7) 0%,
+    rgba(210,170,255,.7) 35%,
+    rgba(180,255,220,.7) 65%,
+    rgba(140,210,255,.7) 100%);
   background-size:300% 300%;
   background-position:var(--bg-x,0%) var(--bg-y,0%);
-  animation:holo-reverse-flow 6s ease-in-out infinite;
+  animation:holo-reverse-flow 5s ease-in-out infinite;
   border-radius:inherit;
-  /* Hollow ring: outer fully colored, inner cut out */
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
   -webkit-mask-composite:xor;
           mask-composite:exclude;
-  padding:3px;
-  opacity:.85 !important;
+  padding:4px;
   mix-blend-mode:screen;
+  opacity:.95 !important;
 }
+
+/* Layer 4: Crystal facet sparkles */
+.holo-reverse .holo-layer-4{
+  background:
+    radial-gradient(circle at 20% 30%, rgba(180,220,255,.9) 0.8px, transparent 1.6px),
+    radial-gradient(circle at 60% 20%, rgba(220,200,255,.85) 0.7px, transparent 1.5px),
+    radial-gradient(circle at 80% 50%, rgba(180,255,230,.85) 0.7px, transparent 1.5px),
+    radial-gradient(circle at 35% 75%, rgba(220,210,255,.85) 0.6px, transparent 1.3px),
+    radial-gradient(circle at 70% 85%, rgba(190,230,255,.8) 0.7px, transparent 1.4px);
+  background-size:80px 80px, 100px 100px, 90px 90px, 110px 110px, 95px 95px;
+  mix-blend-mode:screen;
+  animation:holo-reverse-twinkle 3s ease-in-out infinite;
+  filter:drop-shadow(0 0 2px rgba(180,220,255,.6));
+}
+
 @keyframes holo-reverse-flow{
   0%,100%{background-position:0% 50%;}
   50%{background-position:100% 50%;}
 }
+@keyframes holo-reverse-twinkle{
+  0%,100%{opacity:.7; transform:rotate(0deg) scale(1);}
+  50%{opacity:1; transform:rotate(2deg) scale(1.08);}
+}
+
+.holo-reverse{
+  box-shadow:
+    0 0 22px rgba(180,220,255,.5),
+    0 0 40px rgba(200,170,255,.3),
+    0 0 0 1px rgba(200,230,255,.4) inset;
+}
+
+
+/* ════════════════════════════════════════════════ */
+/* STYLE 5: RUBY HOLO  — NEW                         */
+/* Deep red crimson gemstone, cracked-glass refract  */
+/* ════════════════════════════════════════════════ */
+
+/* Layer 1: Deep crimson gemstone base */
+.holo-ruby .holo-layer-1{
+  background:
+    radial-gradient(ellipse 65% 75% at 30% 35%, rgba(220,30,60,.45) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 70% at 75% 65%, rgba(255,40,90,.42) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 50% 100%, rgba(180,15,40,.5) 0%, transparent 60%),
+    linear-gradient(135deg,
+      rgba(120,0,20,.15) 0%,
+      rgba(220,30,60,.25) 50%,
+      rgba(255,80,120,.2) 100%);
+  mix-blend-mode:color-dodge;
+  filter:saturate(1.6);
+  opacity:.9 !important;
+}
+
+/* Layer 2: Crystalline facet pattern — like cut ruby */
+.holo-ruby .holo-layer-2{
+  background:
+    repeating-linear-gradient(30deg,
+      rgba(255,180,200,.10) 0px,
+      rgba(255,180,200,.10) 2px,
+      transparent 2px,
+      transparent 12px),
+    repeating-linear-gradient(-30deg,
+      rgba(255,150,180,.08) 0px,
+      rgba(255,150,180,.08) 2px,
+      transparent 2px,
+      transparent 12px),
+    repeating-linear-gradient(90deg,
+      rgba(255,255,255,.04) 0px,
+      rgba(255,255,255,.04) 1px,
+      transparent 1px,
+      transparent 9px);
+  mix-blend-mode:screen;
+  opacity:.85 !important;
+}
+
+/* Layer 3: Light refraction through gem — follows mouse */
+.holo-ruby .holo-layer-3{
+  background:
+    radial-gradient(
+      ellipse 55% 65% at var(--bg-x,50%) var(--bg-y,50%),
+      rgba(255,255,255,.7) 0%,
+      rgba(255,200,210,.55) 15%,
+      rgba(255,150,170,.4) 28%,
+      rgba(220,50,80,.3) 42%,
+      transparent 65%);
+  mix-blend-mode:overlay;
+  filter:saturate(1.4);
+}
+
+/* Layer 4: Brilliant white sparkles + deep red glints */
+.holo-ruby .holo-layer-4{
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255,255,255,.95) 0.7px, transparent 1.5px),
+    radial-gradient(circle at 78% 30%, rgba(255,220,230,.9) 0.6px, transparent 1.3px),
+    radial-gradient(circle at 40% 65%, rgba(255,255,255,.95) 0.8px, transparent 1.6px),
+    radial-gradient(circle at 88% 75%, rgba(255,180,200,.9) 0.6px, transparent 1.3px),
+    radial-gradient(circle at 25% 85%, rgba(255,255,255,.85) 0.7px, transparent 1.4px),
+    radial-gradient(circle at 60% 12%, rgba(255,200,215,.85) 0.5px, transparent 1.2px),
+    radial-gradient(circle at 92% 50%, rgba(255,255,255,.9) 0.6px, transparent 1.3px);
+  background-size:90px 90px, 110px 110px, 100px 100px, 130px 130px, 95px 95px, 85px 85px, 120px 120px;
+  mix-blend-mode:screen;
+  filter:drop-shadow(0 0 3px rgba(255,80,120,.6));
+  animation:holo-ruby-flash 3.5s ease-in-out infinite;
+}
+
+/* Layer 5: Diagonal sheen sweep */
+.holo-ruby .holo-layer-5{
+  background:linear-gradient(115deg,
+    transparent 35%,
+    rgba(255,200,215,.0) 45%,
+    rgba(255,240,245,.7) 50%,
+    rgba(255,200,215,.0) 55%,
+    transparent 65%);
+  background-size:200% 200%;
+  animation:holo-ruby-sweep 4.5s ease-in-out infinite;
+  mix-blend-mode:overlay;
+  opacity:.75 !important;
+}
+
+@keyframes holo-ruby-flash{
+  0%,100%{opacity:.85; transform:scale(1) translate(0,0);}
+  50%{opacity:1; transform:scale(1.05) translate(2px,-2px);}
+}
+@keyframes holo-ruby-sweep{
+  0%,100%{background-position:0% 0%;}
+  50%{background-position:100% 100%;}
+}
+
+.holo-ruby{
+  box-shadow:
+    0 0 28px rgba(220,30,60,.55),
+    0 0 48px rgba(255,80,120,.3),
+    0 0 0 1px rgba(255,150,170,.35) inset,
+    0 0 12px rgba(180,15,40,.4) inset;
+}
+
 
 /* ──────────────────────────────────────────── */
 /* HOLO STYLE PICKER in card preview modal      */
@@ -2861,6 +3102,83 @@ textarea{
   border-color:#c8a44a;
   color:#e8c570;
   box-shadow:0 0 10px rgba(200,164,74,.25);
+}
+
+/* ═══ HOLO BADGES (next to card names) ═══ */
+.holo-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:3px;
+  font-family:'Cinzel',serif;
+  font-size:8px;
+  font-weight:700;
+  letter-spacing:1px;
+  padding:1px 6px;
+  border-radius:8px;
+  white-space:nowrap;
+  flex-shrink:0;
+  vertical-align:middle;
+  box-shadow:0 0 8px currentColor;
+  opacity:.95;
+  animation:holo-badge-pulse 2.5s ease-in-out infinite;
+}
+@keyframes holo-badge-pulse{
+  0%,100%{opacity:.85; transform:scale(1);}
+  50%{opacity:1; transform:scale(1.04);}
+}
+.holo-badge-classic{
+  background:linear-gradient(90deg,#ff6b9b,#ffb86b,#6bff9b,#6bb8ff,#b86bff);
+  color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,.6);
+  box-shadow:0 0 8px rgba(255,150,200,.6);
+}
+.holo-badge-cosmic{
+  background:linear-gradient(90deg,#7c3aed,#4a90e2,#c8a44a);
+  color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,.6);
+  box-shadow:0 0 8px rgba(124,58,237,.6);
+}
+.holo-badge-gold{
+  background:linear-gradient(90deg,#c8a44a,#e8c570,#c8a44a);
+  color:#1a1408;
+  text-shadow:0 0 4px rgba(255,255,255,.4);
+  box-shadow:0 0 10px rgba(200,164,74,.7);
+}
+.holo-badge-reverse{
+  background:linear-gradient(90deg,#9ad0ff,#c5a8ff,#9af0d4);
+  color:#0a1428;
+  text-shadow:0 0 4px rgba(255,255,255,.5);
+  box-shadow:0 0 8px rgba(150,210,255,.6);
+}
+.holo-badge-ruby{
+  background:linear-gradient(90deg,#7a0a1a,#dc1e3c,#ff5070,#dc1e3c,#7a0a1a);
+  color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,.7),0 0 4px rgba(255,80,120,.8);
+  box-shadow:0 0 12px rgba(220,30,60,.7),0 0 4px rgba(255,150,170,.5) inset;
+}
+
+/* ═══ HOLO THUMBNAIL GLOW (overlay on card thumb in deck builder) ═══ */
+.holo-thumb-glow{
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  border:1px solid currentColor;
+  box-shadow:0 0 6px currentColor inset, 0 0 8px currentColor;
+  animation:holo-thumb-shine 3s ease-in-out infinite;
+}
+@keyframes holo-thumb-shine{
+  0%,100%{opacity:.65;}
+  50%{opacity:1;}
+}
+.holo-thumb-classic{color:#ffb6e0;}
+.holo-thumb-cosmic{color:#a78bfa;}
+.holo-thumb-gold{color:#fbbf24;}
+.holo-thumb-reverse{color:#9ad0ff;}
+.holo-thumb-ruby{color:#ff5070;}
+
+.db-card-row.has-holo{
+  position:relative;
 }
 </style>
 </head>
@@ -3083,6 +3401,16 @@ textarea{
         <option value="yellow">🟡 Yellow</option>
         <option value="green">🟢 Green</option>
         <option value="white">⚪ White</option>
+      </select>
+      <select id="builder-holo-filter" onchange="renderBuilderCards()" style="background:#111126;color:#e2e8f0;border:1px solid #3a3a5c;border-radius:6px;padding:3px 7px;font-size:11px">
+        <option value="all">✨ All Holos</option>
+        <option value="any">✨ Any Holo</option>
+        <option value="classic">🌈 Classic</option>
+        <option value="cosmic">✨ Cosmic</option>
+        <option value="gold">👑 Gold</option>
+        <option value="reverse">💎 Reverse</option>
+        <option value="ruby">❤️‍🔥 Ruby</option>
+        <option value="normal">Normal Only</option>
       </select>
     </div>
   </div>
@@ -4027,6 +4355,7 @@ function renderBuilderCards(){
   const pool=document.getElementById('builder-card-pool');if(!pool)return;
   const filter=document.getElementById('builder-filter')?.value||'all';
   const colorFilter=document.getElementById('builder-color-filter')?.value||'all';
+  const holoFilter=document.getElementById('builder-holo-filter')?.value||'all';
   const search=(document.getElementById('builder-search')?.value||'').toLowerCase();
   pool.innerHTML='';
   Object.values(DB).filter(c=>{
@@ -4034,6 +4363,20 @@ function renderBuilderCards(){
     if(!isCardPlayable(c.id))return false; // gated for non-admins
     if(filter!=='all'&&c.type!==filter)return false;
     if(colorFilter!=='all'&&c.color!==colorFilter)return false;
+    // Holo filter — admin sees everything (no ownership check), regular players check _holoOwned
+    if(holoFilter!=='all'){
+      const ownedStyle = getOwnedHoloStyle(c.id); // null if not owned as holo
+      if(holoFilter==='normal'){
+        // Show only cards NOT owned as holo
+        if(ownedStyle)return false;
+      } else if(holoFilter==='any'){
+        // Show any holo style they own
+        if(!ownedStyle)return false;
+      } else {
+        // Specific style: classic / cosmic / gold / reverse / ruby
+        if(ownedStyle !== holoFilter)return false;
+      }
+    }
     if(search&&!c.name.toLowerCase().includes(search)&&!(c.color||'').includes(search)&&!(c.keywords||[]).some(k=>k.includes(search)))return false;
     return true;
   }).forEach(c=>{
@@ -4041,12 +4384,14 @@ function renderBuilderCards(){
     const count=inDeck?inDeck.count:0;
     const colDef=c.color&&COLOR_DEFS[c.color]?COLOR_DEFS[c.color]:null;
     const borderCol=colDef?colDef.hex:'#2a2a4a';
-    const row=document.createElement('div');row.className='db-card-row'+(count>0?' in-deck':'');
+    const ownedHolo=getOwnedHoloStyle(c.id); // for badge rendering
+    const holoBadge = ownedHolo ? buildHoloBadge(ownedHolo) : '';
+    const row=document.createElement('div');row.className='db-card-row'+(count>0?' in-deck':'')+(ownedHolo?' has-holo':'');
     if(colDef){row.style.borderColor=borderCol;row.style.boxShadow='0 0 5px '+borderCol+'44';}
     const url=getImg(c.id);
-    row.innerHTML=`<div class="db-thumb" style="${colDef?'border:1px solid '+colDef.hex+';':''};cursor:zoom-in" onclick="event.stopPropagation();showFullCard('${c.id}',null)" title="Click to view">${url?`<img src="${url}"/>`:(c.sym||'?')}</div>
+    row.innerHTML=`<div class="db-thumb" style="${colDef?'border:1px solid '+colDef.hex+';':''};cursor:zoom-in;position:relative" onclick="event.stopPropagation();showFullCard('${c.id}',null)" title="Click to view">${url?`<img src="${url}"/>`:(c.sym||'?')}${ownedHolo?`<div class="holo-thumb-glow holo-thumb-${ownedHolo}"></div>`:''}</div>
       <div style="flex:1;min-width:0;cursor:pointer" onclick="event.stopPropagation();addCardToBuilder('${c.id}')">
-        <div style="font-size:11px;font-weight:700;color:#c8a0ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:3px">${colDef?`<span style="width:6px;height:6px;border-radius:50%;background:${colDef.hex};flex-shrink:0"></span>`:''} ${c.name}</div>
+        <div style="font-size:11px;font-weight:700;color:#c8a0ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:3px">${colDef?`<span style="width:6px;height:6px;border-radius:50%;background:${colDef.hex};flex-shrink:0"></span>`:''} ${c.name} ${holoBadge}</div>
         <div style="font-size:10px;color:#6b7280">${c.type.replace('_',' ')}·⚡${c.cost}${colDef?` · <span style="color:${colDef.hex}">${colDef.label}</span>`:''}</div>
         ${c.atk>0?`<div style="font-size:10px;color:#fbbf24">⚔${c.atk}♥${c.hp}</div>`:''}
         ${c.transformOnly?'<div style="font-size:9px;color:#f59e0b">🔒 TF Only</div>':''}
@@ -4082,10 +4427,15 @@ function renderBuilderDeck(){
       const row=document.createElement('div');row.className='deck-card-item';
       const url=getImg(e.cid);
       const dc=DB[e.cid];const dColDef=dc?.color&&COLOR_DEFS[dc.color]?COLOR_DEFS[dc.color]:null;
+      const deckOwnedHolo = getOwnedHoloStyle(e.cid);
+      const deckHoloBadge = deckOwnedHolo ? buildHoloBadge(deckOwnedHolo) : '';
       row.innerHTML=`<div style="display:flex;align-items:center;flex:1;min-width:0;gap:4px">
-          ${url?`<img src="${url}" style="width:22px;height:30px;object-fit:cover;border-radius:3px;flex-shrink:0;${dColDef?'border:1px solid '+dColDef.hex+';':''}"/>`:`<span style="font-size:11px">${c.sym||'?'}</span>`}
+          <div style="position:relative;flex-shrink:0">
+            ${url?`<img src="${url}" style="width:22px;height:30px;object-fit:cover;border-radius:3px;${dColDef?'border:1px solid '+dColDef.hex+';':''}"/>`:`<span style="font-size:11px">${c.sym||'?'}</span>`}
+            ${deckOwnedHolo?`<div class="holo-thumb-glow holo-thumb-${deckOwnedHolo}" style="width:22px;height:30px"></div>`:''}
+          </div>
           <div style="min-width:0">
-            <div style="font-size:11px;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.name}</div>
+            <div style="font-size:11px;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:3px">${c.name} ${deckHoloBadge}</div>
             ${dColDef?`<div style="font-size:9px;color:${dColDef.hex}">${dColDef.label}</div>`:''}
           </div>
         </div>
@@ -6064,6 +6414,26 @@ async function loadAdminHoloMode(){
 
 // ═══════════════════════════════════════════════════
 // HOLO CARD INTERACTION
+
+// ═══════════════════════════════════════════════════
+// HOLO BADGE — small label shown next to card names
+// when the user owns a holo copy
+// ═══════════════════════════════════════════════════
+function buildHoloBadge(style){
+  if(!style) return '';
+  const labels = {
+    classic:  {icon:'🌈', name:'HOLO',     cls:'classic'},
+    cosmic:   {icon:'✨', name:'COSMIC',   cls:'cosmic'},
+    gold:     {icon:'👑', name:'GOLD',     cls:'gold'},
+    reverse:  {icon:'💎', name:'CRYSTAL',  cls:'reverse'},
+    ruby:     {icon:'❤️‍🔥', name:'RUBY',  cls:'ruby'}
+  };
+  const def = labels[style];
+  if(!def) return '';
+  return '<span class="holo-badge holo-badge-' + def.cls + '" title="You own a ' + def.name + ' holo variant of this card">' + def.icon + ' ' + def.name + '</span>';
+}
+
+
 // ═══════════════════════════════════════════════════
 function bindHoloMouseTilt(el){
   if(!el || el._holoBound) return;
@@ -6093,10 +6463,22 @@ function bindHoloMouseTilt(el){
 function setHoloStyle(style){
   const wrap = document.querySelector('#fullcard-content .fullcard-img-wrap');
   if(!wrap) return;
-  // Remove all holo style classes
-  wrap.classList.remove('holo-card','holo-classic','holo-cosmic','holo-gold','holo-reverse','tilt-on-hover','always-on');
+  // Remove all holo classes
+  wrap.classList.remove('holo-card','holo-classic','holo-cosmic','holo-gold','holo-reverse','holo-ruby','tilt-on-hover','always-on');
+  // Remove existing layer divs
+  wrap.querySelectorAll('.holo-layer').forEach(el => el.remove());
+
   if(style && style !== 'none'){
     wrap.classList.add('holo-card','tilt-on-hover','always-on','holo-' + style);
+    // Determine how many layers this style uses (each style has different richness)
+    const layerCounts = {classic:4, cosmic:3, gold:3, reverse:4, ruby:5};
+    const n = layerCounts[style] || 3;
+    // Inject layer divs as siblings of img
+    for(let i=1; i<=n; i++){
+      const layer = document.createElement('div');
+      layer.className = 'holo-layer holo-layer-' + i;
+      wrap.appendChild(layer);
+    }
     bindHoloMouseTilt(wrap);
   }
   // Update picker button active state
@@ -6141,7 +6523,8 @@ function showFullCard(cid,fc){
         + '<button class="holo-picker-btn" data-holo="classic" onclick="setHoloStyle(\'classic\')">🌈 CLASSIC</button>'
         + '<button class="holo-picker-btn" data-holo="cosmic" onclick="setHoloStyle(\'cosmic\')">✨ COSMIC</button>'
         + '<button class="holo-picker-btn" data-holo="gold" onclick="setHoloStyle(\'gold\')">👑 GOLD</button>'
-        + '<button class="holo-picker-btn" data-holo="reverse" onclick="setHoloStyle(\'reverse\')">💎 REVERSE</button>';
+        + '<button class="holo-picker-btn" data-holo="reverse" onclick="setHoloStyle(\'reverse\')">💎 REVERSE</button>'
+    + '<button class="holo-picker-btn" data-holo="ruby" onclick="setHoloStyle(\'ruby\')">❤️‍🔥 RUBY</button>';
       wrap.appendChild(holoPicker);
     } else if(holoMode === 'owned' && ownedHoloStyle){
       // Auto-apply owned holo, no picker
