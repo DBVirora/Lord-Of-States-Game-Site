@@ -711,7 +711,14 @@ body{padding-top:46px;}
 .bp-page-arrow:hover:not(:disabled){background:rgba(124,58,237,.15);border-color:var(--violet2);}
 .bp-page-arrow:disabled{opacity:.3;cursor:not-allowed;}
 
-.bp-tier-page{display:grid;grid-template-rows:auto 1fr 1fr;gap:6px;background:rgba(8,8,28,.5);border:1px solid var(--border-v);border-radius:12px;padding:10px;}
+.bp-tier-page{display:grid;grid-template-rows:repeat(7,auto);gap:6px;background:rgba(8,8,28,.5);border:1px solid var(--border-v);border-radius:12px;padding:10px;}
+.bp-track-label-row{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;}
+.bp-track-label{font-size:8px;letter-spacing:2px;font-weight:700;text-align:left;padding:4px 0 2px 2px;grid-column:1 / -1;}
+.bp-track-label.free{color:#9ca3af;}
+.bp-track-label.standard{color:#c4b5fd;margin-top:6px;}
+.bp-track-label.premium{color:#fbbf24;margin-top:6px;}
+.bp-tier-page-row.standard-row .bp-reward-tile{border-color:rgba(124,58,237,.35);background:linear-gradient(180deg,rgba(30,15,60,.6),rgba(20,10,40,.5));}
+.bp-tier-page-row.standard-row .bp-reward-tile.locked{filter:grayscale(.7);opacity:.45;}
 .bp-tier-page-headers{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;}
 .bp-tier-page-header{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;color:#9ca3af;text-align:center;padding:3px;background:rgba(255,255,255,.04);border-radius:6px;}
 .bp-tier-page-header.current{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.4);}
@@ -747,6 +754,379 @@ body{padding-top:46px;}
 .missions-tab-header{margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.06);}
 .missions-tab-title{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:3px;color:#a5b4fc;}
 .missions-tab-sub{font-size:9px;color:#6b7280;letter-spacing:1px;margin-top:2px;}
+
+/* ════════════════════════════════════════════════ */
+/* MENU OVERHAUL — ROYAL COSMIC FANTASY            */
+/* ════════════════════════════════════════════════ */
+
+/* Layered atmospheric background */
+.menu-bg-layer{position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden;}
+.menu-bg-cosmos{
+  position:absolute;inset:-20%;
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(76,29,149,.35) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(30,58,138,.4) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 50%, rgba(120,53,15,.12) 0%, transparent 70%),
+    linear-gradient(180deg, #03020a 0%, #0a0820 40%, #1a0a3a 70%, #050310 100%);
+  animation:cosmos-drift 60s ease-in-out infinite alternate;
+}
+@keyframes cosmos-drift{
+  from{transform:translate(0,0) scale(1);}
+  to{transform:translate(-2%,2%) scale(1.05);}
+}
+
+/* Stars / particles */
+.menu-bg-stars{
+  position:absolute;inset:0;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,.7), transparent),
+    radial-gradient(1px 1px at 60% 70%, rgba(255,215,150,.5), transparent),
+    radial-gradient(2px 2px at 80% 20%, rgba(180,200,255,.6), transparent),
+    radial-gradient(1px 1px at 40% 80%, rgba(255,255,255,.4), transparent),
+    radial-gradient(1px 1px at 90% 50%, rgba(200,180,255,.5), transparent),
+    radial-gradient(1px 1px at 10% 60%, rgba(255,235,170,.5), transparent),
+    radial-gradient(1px 1px at 35% 15%, rgba(255,255,255,.6), transparent),
+    radial-gradient(1px 1px at 70% 45%, rgba(180,150,255,.4), transparent);
+  background-size: 400px 400px, 500px 500px, 600px 600px, 350px 350px, 450px 450px, 550px 550px, 380px 380px, 480px 480px;
+  animation:stars-twinkle 8s ease-in-out infinite alternate;
+  opacity:.85;
+}
+@keyframes stars-twinkle{
+  0%,100%{opacity:.7;}
+  50%{opacity:.95;}
+}
+
+/* Slow drifting nebula clouds */
+.menu-bg-nebula{
+  position:absolute;inset:-10%;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(124,58,237,.18) 0%, transparent 35%),
+    radial-gradient(circle at 70% 60%, rgba(0,180,255,.12) 0%, transparent 40%),
+    radial-gradient(circle at 50% 20%, rgba(251,191,36,.06) 0%, transparent 30%);
+  filter:blur(40px);
+  animation:nebula-float 40s ease-in-out infinite alternate;
+}
+@keyframes nebula-float{
+  from{transform:translate(0,0) rotate(0deg);}
+  to{transform:translate(3%,-2%) rotate(2deg);}
+}
+
+/* Subtle light sweep / godrays */
+.menu-bg-rays{
+  position:absolute;top:-30%;left:50%;transform:translateX(-50%);
+  width:140%;height:160%;
+  background:conic-gradient(from 90deg at 50% 0%,
+    transparent 0deg,
+    rgba(251,191,36,.04) 30deg,
+    transparent 60deg,
+    rgba(180,180,255,.03) 120deg,
+    transparent 180deg,
+    rgba(251,191,36,.03) 240deg,
+    transparent 300deg,
+    rgba(180,180,255,.04) 330deg,
+    transparent 360deg);
+  pointer-events:none;
+  animation:rays-rotate 80s linear infinite;
+  opacity:.55;
+}
+@keyframes rays-rotate{from{transform:translateX(-50%) rotate(0deg);}to{transform:translateX(-50%) rotate(360deg);}}
+
+/* Floating particles (motes of dust/light) */
+.menu-particle{
+  position:absolute;width:3px;height:3px;border-radius:50%;
+  background:radial-gradient(circle, rgba(251,191,36,.8) 0%, rgba(251,191,36,0) 70%);
+  pointer-events:none;
+  animation:particle-float 18s linear infinite;
+}
+@keyframes particle-float{
+  0%{transform:translateY(100vh) translateX(0);opacity:0;}
+  10%{opacity:1;}
+  90%{opacity:.7;}
+  100%{transform:translateY(-10vh) translateX(20px);opacity:0;}
+}
+
+/* MENU SCREEN OVERRIDE */
+#menu-screen{
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  min-height:100vh;
+  padding:40px 24px 50px;
+  position:relative;
+  z-index:5;
+  text-align:center;
+  gap:0;
+}
+#menu-screen.active{display:flex;}
+
+/* Title block */
+.menu-title-wrap{
+  position:relative;
+  margin-bottom:6px;
+  padding:30px 50px 18px;
+}
+.menu-title-wrap::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at center, rgba(251,191,36,.08) 0%, transparent 60%);
+  pointer-events:none;
+}
+#menu-screen h1{
+  font-family:'Cinzel','Orbitron',serif;
+  font-size:clamp(34px,6vw,68px);
+  font-weight:900;
+  letter-spacing:8px;
+  color:#f4ecd0;
+  margin:0;
+  text-shadow:
+    0 0 18px rgba(251,191,36,.55),
+    0 0 38px rgba(124,58,237,.45),
+    0 2px 0 rgba(0,0,0,.5),
+    0 4px 14px rgba(0,0,0,.8);
+  position:relative;
+  z-index:2;
+  background:linear-gradient(180deg,#fff8dc 0%,#f4ecd0 40%,#c9a44a 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:title-glow 5s ease-in-out infinite alternate;
+}
+@keyframes title-glow{
+  from{filter:drop-shadow(0 0 8px rgba(251,191,36,.35));}
+  to{filter:drop-shadow(0 0 18px rgba(251,191,36,.7));}
+}
+#menu-screen h1 span{
+  color:transparent;
+  background:linear-gradient(180deg,#c4b5fd 0%,#9ca3af 50%,#7c3aed 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+/* Title flourish — decorative crown line */
+.menu-title-flourish{
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  font-family:'Cinzel',serif;
+  font-size:11px;letter-spacing:6px;
+  color:rgba(251,191,36,.55);
+  margin:8px 0 4px;
+}
+.menu-title-flourish::before,.menu-title-flourish::after{
+  content:'';height:1px;width:80px;
+  background:linear-gradient(90deg,transparent,rgba(251,191,36,.55),transparent);
+}
+
+.menu-tagline{
+  font-family:'Cinzel',serif;
+  font-size:11px;letter-spacing:6px;
+  color:rgba(196,181,253,.55);
+  margin-bottom:32px;
+  text-transform:uppercase;
+}
+
+/* SECTION LABELS */
+.menu-section-label{
+  font-family:'Cinzel',serif;
+  font-size:10px;
+  letter-spacing:5px;
+  color:rgba(251,191,36,.45);
+  margin:18px 0 8px;
+  text-transform:uppercase;
+  position:relative;
+  display:flex;align-items:center;gap:14px;
+}
+.menu-section-label::before,.menu-section-label::after{
+  content:'';
+  height:1px;
+  width:60px;
+  background:linear-gradient(90deg,transparent,rgba(251,191,36,.4),transparent);
+}
+
+/* MENU BUTTONS — GLASS / ROYAL */
+.menu-btn{
+  width:300px;
+  padding:14px 20px;
+  font-family:'Cinzel','Share Tech Mono',serif;
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:3px;
+  border-radius:6px;
+  border:1px solid rgba(251,191,36,.18);
+  background:linear-gradient(135deg,rgba(15,12,40,.7) 0%,rgba(8,8,28,.85) 50%,rgba(20,14,50,.7) 100%);
+  color:rgba(244,236,208,.85);
+  cursor:pointer;
+  transition:all .35s cubic-bezier(.2,.8,.2,1);
+  position:relative;
+  overflow:hidden;
+  margin-bottom:8px;
+  backdrop-filter:blur(8px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.05),
+    inset 0 0 0 1px rgba(124,58,237,.08),
+    0 2px 8px rgba(0,0,0,.4);
+}
+
+/* Decorative corner accents */
+.menu-btn::before,.menu-btn::after{
+  content:'';
+  position:absolute;
+  width:10px;height:10px;
+  border:1px solid rgba(251,191,36,.4);
+  transition:all .35s;
+}
+.menu-btn::before{top:5px;left:5px;border-right:none;border-bottom:none;}
+.menu-btn::after{bottom:5px;right:5px;border-left:none;border-top:none;}
+
+/* Light sweep on hover */
+.menu-btn{position:relative;}
+.menu-btn .menu-btn-sweep{
+  position:absolute;inset:0;
+  background:linear-gradient(110deg,transparent 0%,transparent 35%,rgba(251,191,36,.18) 50%,transparent 65%,transparent 100%);
+  transform:translateX(-100%);
+  transition:transform .8s ease;
+  pointer-events:none;
+}
+
+.menu-btn:hover{
+  background:linear-gradient(135deg,rgba(40,25,80,.85) 0%,rgba(20,15,55,.9) 50%,rgba(50,30,90,.8) 100%);
+  border-color:rgba(251,191,36,.55);
+  color:#fff8dc;
+  transform:translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.15),
+    inset 0 0 18px rgba(124,58,237,.18),
+    0 6px 22px rgba(124,58,237,.35),
+    0 0 28px rgba(251,191,36,.18);
+  letter-spacing:3.5px;
+}
+.menu-btn:hover::before,.menu-btn:hover::after{
+  border-color:#fbbf24;
+  width:14px;height:14px;
+}
+.menu-btn:hover .menu-btn-sweep{transform:translateX(100%);}
+.menu-btn:active{transform:translateY(0);box-shadow:inset 0 2px 6px rgba(0,0,0,.5);}
+
+/* AI button variant — cosmic blue */
+.menu-btn.ai-btn{
+  border-color:rgba(0,180,255,.22);
+  color:rgba(180,220,255,.8);
+}
+.menu-btn.ai-btn:hover{
+  background:linear-gradient(135deg,rgba(15,40,80,.85) 0%,rgba(8,20,55,.9) 50%,rgba(20,50,100,.8) 100%);
+  border-color:rgba(0,200,255,.65);
+  color:#e0f2fe;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.15),
+    inset 0 0 18px rgba(0,180,255,.2),
+    0 6px 22px rgba(0,180,255,.3),
+    0 0 26px rgba(180,200,255,.18);
+}
+.menu-btn.ai-btn::before,.menu-btn.ai-btn::after{border-color:rgba(0,200,255,.4);}
+.menu-btn.ai-btn:hover::before,.menu-btn.ai-btn:hover::after{border-color:#7dd3fc;}
+
+/* Util button — smaller, secondary */
+.menu-btn.util-btn{
+  width:260px;
+  padding:10px 16px;
+  font-size:11px;
+  letter-spacing:2.5px;
+  border-color:rgba(180,180,200,.12);
+  color:rgba(200,210,230,.55);
+  font-family:'Cinzel','Share Tech Mono',monospace;
+}
+.menu-btn.util-btn::before,.menu-btn.util-btn::after{border-color:rgba(180,180,200,.25);width:8px;height:8px;}
+.menu-btn.util-btn:hover{
+  background:linear-gradient(135deg,rgba(20,20,40,.85) 0%,rgba(15,15,35,.9) 50%,rgba(25,25,50,.8) 100%);
+  border-color:rgba(196,181,253,.5);
+  color:#e2e8f0;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    0 4px 14px rgba(124,58,237,.18);
+  letter-spacing:3px;
+}
+.menu-btn.util-btn:hover::before,.menu-btn.util-btn:hover::after{border-color:rgba(196,181,253,.7);}
+
+/* Section grouping container */
+.menu-section{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  width:100%;
+  position:relative;
+  z-index:3;
+  margin-bottom:10px;
+}
+
+/* Crown insignia between title and menu */
+.menu-crown{
+  font-size:22px;
+  color:rgba(251,191,36,.65);
+  margin:-4px 0 6px;
+  text-shadow:0 0 12px rgba(251,191,36,.5);
+  animation:crown-pulse 4s ease-in-out infinite alternate;
+}
+@keyframes crown-pulse{
+  from{text-shadow:0 0 8px rgba(251,191,36,.4);}
+  to{text-shadow:0 0 18px rgba(251,191,36,.8);}
+}
+
+/* Featured card panel */
+.featured-card-panel{
+  width:300px;
+  margin-bottom:20px;
+  padding:14px 16px;
+  border-radius:8px;
+  background:linear-gradient(135deg,rgba(40,20,70,.65),rgba(15,10,40,.8));
+  border:1px solid rgba(251,191,36,.25);
+  display:flex;align-items:center;gap:12px;
+  box-shadow:0 4px 18px rgba(124,58,237,.2),inset 0 1px 0 rgba(255,255,255,.05);
+  position:relative;
+  overflow:hidden;
+}
+.featured-card-panel::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 80% 50%,rgba(251,191,36,.08),transparent 60%);
+  pointer-events:none;
+}
+.featured-card-symbol{
+  width:38px;height:38px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(124,58,237,.4),rgba(8,8,28,.7));
+  border:1px solid rgba(251,191,36,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+  flex-shrink:0;
+  box-shadow:0 0 12px rgba(124,58,237,.3);
+}
+.featured-card-info{flex:1;text-align:left;position:relative;z-index:1;}
+.featured-card-label{
+  font-family:'Cinzel',serif;
+  font-size:8px;letter-spacing:3px;
+  color:rgba(251,191,36,.7);
+  margin-bottom:3px;
+}
+.featured-card-name{
+  font-family:'Cinzel',serif;
+  font-size:12px;font-weight:700;
+  color:#f4ecd0;letter-spacing:1.5px;
+}
+
+/* Screen transition fade-in */
+.screen.active{
+  animation:screen-fade-in .4s ease;
+}
+@keyframes screen-fade-in{
+  from{opacity:0;transform:translateY(6px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* Responsive */
+@media(max-width:480px){
+  #menu-screen{padding:30px 16px 40px;}
+  #menu-screen h1{letter-spacing:5px;}
+  .menu-btn{width:90%;max-width:300px;}
+  .menu-btn.util-btn{width:85%;}
+}
 </style>
 </head>
 <body>
@@ -773,24 +1153,55 @@ body{padding-top:46px;}
 
 <!-- MENU -->
 <div id="menu-screen" class="screen active">
-  <h1>LORD OF <span>COURTS</span></h1>
+  <!-- Atmospheric background layers -->
+  <div class="menu-bg-layer">
+    <div class="menu-bg-cosmos"></div>
+    <div class="menu-bg-nebula"></div>
+    <div class="menu-bg-stars"></div>
+    <div class="menu-bg-rays"></div>
+    <div id="menu-particles"></div>
+  </div>
+
+  <!-- Title block -->
+  <div class="menu-title-flourish">⟡ THE REALM ETERNAL ⟡</div>
+  <div class="menu-title-wrap">
+    <h1>LORD OF <span>COURTS</span></h1>
+  </div>
+  <div class="menu-crown">✦</div>
   <div class="menu-tagline">V C U &nbsp;·&nbsp; T R A D I N G &nbsp; C A R D &nbsp; G A M E</div>
-  <div class="menu-section-label">— BATTLE —</div>
-  <button class="menu-btn" onclick="showScreen('campaign-worlds-screen');openCampaign()">🗺️ Campaign</button>
-  <button class="menu-btn" onclick="showScreen('battle-pass-screen');openBattlePass()">⚔ Battle Pass</button>
-  <button class="menu-btn" onclick="showScreen('matchmaking-screen');openMatchmaking()">🔍 Find Match</button>
-  <button class="menu-btn" onclick="showScreen('online-lobby-screen');openOnlineLobby()">🌐 Private Room</button>
-  <button class="menu-btn" onclick="goToDeckSelect('pvp')">⚔️ Local PvP</button>
-  <button class="menu-btn ai-btn" onclick="goToDeckSelect('easy')">🤖 vs AI — Easy</button>
-  <button class="menu-btn ai-btn" onclick="goToDeckSelect('medium')">🤖 vs AI — Medium</button>
-  <button class="menu-btn ai-btn" onclick="goToDeckSelect('hard')">🤖 vs AI — Hard</button>
-  <div class="menu-section-label">— TOOLS —</div>
-  <button class="menu-btn util-btn" id="menu-friends-btn" onclick="showScreen('friends-screen');openFriends()">👥 Friends <span id="menu-friends-badge" style="display:none;background:#ef4444;color:#fff;border-radius:10px;padding:1px 6px;font-size:9px;margin-left:4px">0</span></button>
-  <button class="menu-btn util-btn" onclick="showScreen('shop-screen');openShop()">🏪 Shop</button>
-  <button class="menu-btn util-btn" onclick="showScreen('profile-screen');refreshProfileScreen()">👤 Profile</button>
-  <button class="menu-btn util-btn" onclick="showScreen('builder-screen');renderBuilderCards()">🃏 Deck Builder</button>
-  <button class="menu-btn util-btn" onclick="showScreen('upload-screen');buildUploadScreen()">🖼 Card Images</button>
-  <button class="menu-btn util-btn" onclick="showRulesScreen()">📖 Rules & Cards</button>
+
+  <!-- Featured card / news panel -->
+  <div class="featured-card-panel" id="menu-featured-card" onclick="showScreen('shop-screen');openShop()" style="cursor:pointer">
+    <div class="featured-card-symbol">◆</div>
+    <div class="featured-card-info">
+      <div class="featured-card-label">FEATURED EVENT</div>
+      <div class="featured-card-name">VOID PRISM — Coming Soon</div>
+    </div>
+  </div>
+
+  <!-- BATTLE section -->
+  <div class="menu-section">
+    <div class="menu-section-label">Battle</div>
+    <button class="menu-btn" onclick="showScreen('campaign-worlds-screen');openCampaign()"><span class="menu-btn-sweep"></span>🗺  CAMPAIGN</button>
+    <button class="menu-btn" onclick="showScreen('battle-pass-screen');openBattlePass()"><span class="menu-btn-sweep"></span>⚔  BATTLE PASS</button>
+    <button class="menu-btn" onclick="showScreen('matchmaking-screen');openMatchmaking()"><span class="menu-btn-sweep"></span>🔍  FIND MATCH</button>
+    <button class="menu-btn" onclick="showScreen('online-lobby-screen');openOnlineLobby()"><span class="menu-btn-sweep"></span>🌐  PRIVATE ROOM</button>
+    <button class="menu-btn" onclick="goToDeckSelect('pvp')"><span class="menu-btn-sweep"></span>⚔  LOCAL PVP</button>
+    <button class="menu-btn ai-btn" onclick="goToDeckSelect('easy')"><span class="menu-btn-sweep"></span>🤖  AI · EASY</button>
+    <button class="menu-btn ai-btn" onclick="goToDeckSelect('medium')"><span class="menu-btn-sweep"></span>🤖  AI · MEDIUM</button>
+    <button class="menu-btn ai-btn" onclick="goToDeckSelect('hard')"><span class="menu-btn-sweep"></span>🤖  AI · HARD</button>
+  </div>
+
+  <!-- TOOLS section -->
+  <div class="menu-section">
+    <div class="menu-section-label">Tools</div>
+    <button class="menu-btn util-btn" id="menu-friends-btn" onclick="showScreen('friends-screen');openFriends()"><span class="menu-btn-sweep"></span>👥  FRIENDS <span id="menu-friends-badge" style="display:none;background:#ef4444;color:#fff;border-radius:10px;padding:1px 6px;font-size:9px;margin-left:4px">0</span></button>
+    <button class="menu-btn util-btn" onclick="showScreen('shop-screen');openShop()"><span class="menu-btn-sweep"></span>🏪  SHOP</button>
+    <button class="menu-btn util-btn" onclick="showScreen('profile-screen');refreshProfileScreen()"><span class="menu-btn-sweep"></span>👤  PROFILE</button>
+    <button class="menu-btn util-btn" onclick="showScreen('builder-screen');renderBuilderCards()"><span class="menu-btn-sweep"></span>🃏  DECK BUILDER</button>
+    <button class="menu-btn util-btn" onclick="showScreen('upload-screen');buildUploadScreen()"><span class="menu-btn-sweep"></span>🖼  CARD IMAGES</button>
+    <button class="menu-btn util-btn" onclick="showRulesScreen()"><span class="menu-btn-sweep"></span>📖  RULES &amp; CARDS</button>
+  </div>
 </div>
 
 <!-- DECK SELECT -->
@@ -7055,12 +7466,14 @@ function startBPTimer(){
 function updateBPTimer(){
   const el=document.getElementById('bp-time-left');
   if(!el||!BP_CONFIG)return;
+  if(BP_CONFIG.ended){el.textContent='SEASON ENDED';el.style.color='#fca5a5';return;}
   if(!BP_CONFIG.startDate){el.textContent='—';return;}
   const start=new Date(BP_CONFIG.startDate).getTime();
   const dur=(BP_CONFIG.durationDays||30)*24*60*60*1000;
   const end=start+dur;
   const remaining=end-Date.now();
-  if(remaining<=0){el.textContent='ENDED';return;}
+  if(remaining<=0){el.textContent='SEASON ENDED';el.style.color='#fca5a5';return;}
+  el.style.color='#fbbf24';
   const days=Math.floor(remaining/(24*60*60*1000));
   const hours=Math.floor((remaining%(24*60*60*1000))/(60*60*1000));
   el.textContent=days+'d '+hours+'h';
@@ -7182,6 +7595,24 @@ async function startBPSeasonNow(){
       {onConflict:'key'}
     );
     alert('✓ Season started! It will end in '+(BP_CONFIG.durationDays||30)+' days.');
+  }catch(e){alert('Failed: '+e.message);}
+}
+
+async function endBPSeasonNow(){
+  if(!isAdmin()||!_celSB)return;
+  if(!confirm('END the current season NOW?\n\nThis sets the season as expired. All players will see "ENDED" and progress for this season locks. To start a new season, change the Season ID in the BP Editor (which resets everyone\'s progress for the new season) and click START SEASON NOW.'))return;
+  if(!BP_CONFIG)BP_CONFIG={...BP_DEFAULT_CONFIG};
+  // Set startDate so that the season is already over (start - duration = ended)
+  const past=new Date();
+  past.setDate(past.getDate()-(BP_CONFIG.durationDays||30)-1);
+  BP_CONFIG.startDate=past.toISOString();
+  BP_CONFIG.ended=true;
+  try{
+    await _celSB.from('app_settings').upsert(
+      {key:'battle_pass_config',value:JSON.stringify(BP_CONFIG),updated_at:new Date().toISOString()},
+      {onConflict:'key'}
+    );
+    alert('✓ Season ended! Players will see "SEASON ENDED" until you start a new season.');
   }catch(e){alert('Failed: '+e.message);}
 }
 
@@ -7413,20 +7844,22 @@ function renderBPTierPage(){
   const startTier=_bpCurrentPage*BP_TIERS_PER_PAGE+1;
   const endTier=Math.min(maxTier,startTier+BP_TIERS_PER_PAGE-1);
 
-  // Update page info
+  // Page info
   const pageInfo=document.getElementById('bp-season-page-info');
   if(pageInfo)pageInfo.textContent='PAGE '+(_bpCurrentPage+1)+' / '+bpPageCount();
 
-  // Disable arrows at bounds
+  // Arrows
   const prevBtn=document.getElementById('bp-page-prev');
   const nextBtn=document.getElementById('bp-page-next');
   if(prevBtn)prevBtn.disabled=_bpCurrentPage===0;
   if(nextBtn)nextBtn.disabled=_bpCurrentPage>=bpPageCount()-1;
 
-  // Build header row + 2 reward rows (free + premium tracks)
+  // Header row: tier numbers
   let headerHtml='<div class="bp-tier-page-headers">';
-  let freeRowHtml='<div class="bp-tier-page-row">';
-  let premRowHtml='<div class="bp-tier-page-row">';
+  // Three reward rows: Free, Standard, Premium
+  let freeRowHtml='<div class="bp-tier-page-row free-row">';
+  let stdRowHtml='<div class="bp-tier-page-row standard-row">';
+  let premRowHtml='<div class="bp-tier-page-row premium-row">';
 
   for(let t=startTier;t<=endTier;t++){
     const isCurrent=_bpPlayerData.tier===t;
@@ -7437,23 +7870,27 @@ function renderBPTierPage(){
     headerHtml+='<div class="'+headerClass+'">'+t+'</div>';
 
     const rewardData=BP_CONFIG.rewards.find(r=>r.tier===t);
-    // Free track tile
     freeRowHtml+=buildRewardTile(t,'free',rewardData?.free,reached);
-    // Premium track tile (shows premium if owned, else standard)
-    const premReward=_bpPlayerData.hasPremium?rewardData?.premium:rewardData?.standard;
-    const premTrack=_bpPlayerData.hasPremium?'premium':'standard';
-    premRowHtml+=buildRewardTile(t,premTrack,premReward,reached);
+    stdRowHtml+=buildRewardTile(t,'standard',rewardData?.standard,reached);
+    premRowHtml+=buildRewardTile(t,'premium',rewardData?.premium,reached);
   }
-  // Pad remaining slots if last page is short
   for(let i=endTier-startTier+1;i<BP_TIERS_PER_PAGE;i++){
     headerHtml+='<div></div>';
     freeRowHtml+='<div></div>';
+    stdRowHtml+='<div></div>';
     premRowHtml+='<div></div>';
   }
   headerHtml+='</div>';
   freeRowHtml+='</div>';
+  stdRowHtml+='</div>';
   premRowHtml+='</div>';
-  page.innerHTML=headerHtml+freeRowHtml+premRowHtml;
+
+  // Track labels above each row
+  const freeLabelHtml='<div class="bp-track-label free">⚡ FREE TRACK</div>';
+  const stdLabelHtml='<div class="bp-track-label standard">💎 STANDARD TRACK'+(_bpPlayerData.hasStandard?'':' <span style="color:#6b7280;font-weight:400">— Buy pass to unlock</span>')+'</div>';
+  const premLabelHtml='<div class="bp-track-label premium">👑 PREMIUM TRACK'+(_bpPlayerData.hasPremium?'':' <span style="color:#6b7280;font-weight:400">— Buy pass to unlock</span>')+'</div>';
+
+  page.innerHTML=headerHtml+freeLabelHtml+freeRowHtml+stdLabelHtml+stdRowHtml+premLabelHtml+premRowHtml;
 }
 
 function buildRewardTile(tier,track,reward,tierReached){
@@ -7523,6 +7960,34 @@ function autoPageToCurrentTier(){
   const tier=_bpPlayerData?.tier||1;
   _bpCurrentPage=Math.floor((tier-1)/BP_TIERS_PER_PAGE);
 }
+
+
+// ═══════════════════════════════════════════════════
+// MENU ATMOSPHERIC PARTICLES
+// ═══════════════════════════════════════════════════
+function spawnMenuParticles(){
+  const container=document.getElementById('menu-particles');
+  if(!container)return;
+  // Don't spawn if menu not visible
+  if(!document.getElementById('menu-screen')?.classList.contains('active'))return;
+  // Cap concurrent particles
+  if(container.childElementCount>15)return;
+  const p=document.createElement('div');
+  p.className='menu-particle';
+  p.style.left=(Math.random()*100)+'%';
+  p.style.animationDuration=(14+Math.random()*10)+'s';
+  p.style.animationDelay='0s';
+  // Random color variation
+  const colors=['rgba(251,191,36,.7)','rgba(196,181,253,.6)','rgba(180,200,255,.6)'];
+  p.style.background='radial-gradient(circle, '+colors[Math.floor(Math.random()*colors.length)]+' 0%, transparent 70%)';
+  const size=2+Math.random()*3;
+  p.style.width=size+'px';p.style.height=size+'px';
+  container.appendChild(p);
+  // Auto-remove after animation
+  setTimeout(()=>p.remove(),25000);
+}
+// Spawn particles continuously
+setInterval(spawnMenuParticles,800);
 
 // ═══════════════════════════════════════════════════
 // STARTUP
@@ -8045,6 +8510,7 @@ window.addEventListener('load',async()=>{
     </div>
     <button class="admin-action-btn" onclick="openBPEditor()">📝 OPEN BP EDITOR</button>
     <button class="admin-action-btn" onclick="startBPSeasonNow()" style="margin-top:6px">▶ START SEASON NOW</button>
+    <button class="admin-action-btn danger" onclick="endBPSeasonNow()" style="margin-top:6px">⏹ END SEASON NOW</button>
     <button class="admin-action-btn" onclick="resetBPToDefault()" style="margin-top:6px">🔄 RESET BP TO DEFAULT</button>
     <button class="admin-action-btn danger" onclick="resetMyBPProgress()" style="margin-top:6px">⚠ RESET MY BP PROGRESS</button>
   </div>
