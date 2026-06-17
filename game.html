@@ -685,6 +685,68 @@ body{padding-top:46px;}
 .bp-mission-prog-text{display:flex;justify-content:space-between;align-items:center;font-size:9px;color:#6b7280;}
 .bp-mission-claim-btn{padding:3px 10px;background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.5);border-radius:5px;color:#86efac;font-size:9px;letter-spacing:1px;cursor:pointer;font-family:'Share Tech Mono',monospace;}
 .bp-mission-claim-btn:hover{background:rgba(34,197,94,.35);}
+
+/* BP NAV TABS (Fortnite-style top nav) */
+.bp-nav-tab{padding:6px 14px;background:transparent;border:none;color:#6b7280;font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;cursor:pointer;transition:all .15s;border-bottom:2px solid transparent;}
+.bp-nav-tab:hover{color:#c4b5fd;}
+.bp-nav-tab.active{color:#fbbf24;border-bottom-color:#fbbf24;}
+
+/* SEASON STRIP (top header bar like Fortnite) */
+.bp-season-strip{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;background:linear-gradient(135deg,rgba(20,15,50,.85),rgba(8,8,28,.85));border:1px solid var(--border-v);border-radius:14px;padding:18px 22px;margin-bottom:14px;box-shadow:0 0 24px rgba(124,58,237,.15);position:relative;overflow:hidden;}
+.bp-season-strip::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 30%,rgba(124,58,237,.15),transparent 60%);pointer-events:none;}
+.bp-season-tier-card{background:rgba(8,8,28,.65);border:1px solid var(--violet2);border-radius:10px;padding:10px 18px;text-align:center;position:relative;z-index:1;min-width:130px;}
+.bp-season-tier-label{font-size:8px;letter-spacing:3px;color:#9ca3af;font-weight:700;}
+.bp-season-tier-num{font-family:'Orbitron',sans-serif;font-size:34px;font-weight:900;color:#fbbf24;line-height:1;text-shadow:0 0 12px rgba(251,191,36,.5);margin:2px 0;}
+.bp-season-tier-xp{font-size:9px;color:#fbbf24;font-family:'Share Tech Mono',monospace;margin-bottom:5px;}
+.bp-season-tier-bar{height:5px;background:rgba(0,0,0,.5);border-radius:3px;overflow:hidden;}
+.bp-season-tier-fill{height:100%;background:linear-gradient(90deg,var(--violet2),#fbbf24);transition:width .4s;}
+.bp-season-title-block{text-align:center;position:relative;z-index:1;}
+.bp-season-name{font-family:'Orbitron',sans-serif;font-size:24px;font-weight:900;letter-spacing:6px;color:var(--blue);text-shadow:0 0 14px var(--blue);margin-bottom:4px;}
+.bp-season-sub{font-size:10px;letter-spacing:2px;color:#9ca3af;margin-bottom:8px;}
+.bp-season-page{font-size:10px;letter-spacing:2px;color:#6b7280;font-family:'Share Tech Mono',monospace;position:relative;z-index:1;}
+
+/* TIER PAGE (10 tiers visible horizontally) */
+.bp-tier-page-wrap{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:stretch;margin-bottom:14px;}
+.bp-page-arrow{background:rgba(8,8,28,.7);border:1px solid var(--border-v);border-radius:10px;color:var(--blue);font-size:18px;cursor:pointer;padding:0 14px;transition:all .15s;font-family:'Share Tech Mono',monospace;}
+.bp-page-arrow:hover:not(:disabled){background:rgba(124,58,237,.15);border-color:var(--violet2);}
+.bp-page-arrow:disabled{opacity:.3;cursor:not-allowed;}
+
+.bp-tier-page{display:grid;grid-template-rows:auto 1fr 1fr;gap:6px;background:rgba(8,8,28,.5);border:1px solid var(--border-v);border-radius:12px;padding:10px;}
+.bp-tier-page-headers{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;}
+.bp-tier-page-header{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;color:#9ca3af;text-align:center;padding:3px;background:rgba(255,255,255,.04);border-radius:6px;}
+.bp-tier-page-header.current{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.4);}
+.bp-tier-page-header.reached{color:#c4b5fd;}
+
+.bp-tier-page-row{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;}
+.bp-reward-tile{position:relative;aspect-ratio:1/1.15;background:linear-gradient(180deg,rgba(8,8,28,.7),rgba(20,15,50,.7));border:2px solid rgba(124,58,237,.25);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 4px;cursor:pointer;transition:all .2s;overflow:hidden;}
+.bp-reward-tile:hover{transform:translateY(-2px);border-color:var(--violet2);box-shadow:0 6px 16px rgba(124,58,237,.3);}
+.bp-reward-tile.free-track{border-color:rgba(100,120,160,.4);background:linear-gradient(180deg,rgba(40,40,55,.6),rgba(20,20,30,.6));}
+.bp-reward-tile.premium-track{border-color:rgba(251,191,36,.4);background:linear-gradient(180deg,rgba(40,30,10,.6),rgba(60,40,15,.5));}
+.bp-reward-tile.locked{opacity:.55;cursor:not-allowed;filter:grayscale(.5);}
+.bp-reward-tile.locked:hover{transform:none;box-shadow:none;}
+.bp-reward-tile.claimed{border-color:rgba(34,197,94,.5);background:linear-gradient(180deg,rgba(20,40,25,.6),rgba(15,30,20,.6));}
+.bp-reward-tile.claimable{border-color:#fbbf24;box-shadow:0 0 10px rgba(251,191,36,.3);animation:bp-pulse 2s infinite;}
+@keyframes bp-pulse{50%{box-shadow:0 0 16px rgba(251,191,36,.6);}}
+.bp-reward-tile-icon{font-size:24px;margin-bottom:4px;}
+.bp-reward-tile-label{font-size:9px;color:#e2e8f0;text-align:center;line-height:1.1;font-weight:700;}
+.bp-reward-tile.locked .bp-reward-tile-label{color:#6b7280;}
+.bp-reward-tile-lock{position:absolute;top:4px;right:4px;font-size:11px;color:rgba(255,255,255,.4);}
+.bp-reward-tile-check{position:absolute;top:3px;right:3px;width:16px;height:16px;border-radius:50%;background:#22c55e;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;border:2px solid #04040f;}
+
+/* Right-side focus panel */
+.bp-reward-focus{margin-top:12px;background:linear-gradient(135deg,rgba(20,15,50,.6),rgba(8,8,28,.7));border:1px solid var(--border-v);border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px;}
+.bp-reward-focus-icon{font-size:38px;width:60px;height:60px;border-radius:10px;background:rgba(8,8,28,.5);border:1px solid var(--violet2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.bp-reward-focus-label{font-size:9px;letter-spacing:2px;color:#fbbf24;margin-bottom:2px;}
+.bp-reward-focus-name{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;color:#e2e8f0;letter-spacing:2px;margin-bottom:4px;}
+.bp-reward-focus-desc{font-size:10px;color:#9ca3af;line-height:1.4;}
+
+/* Missions tab layout */
+.missions-tab-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:780px){.missions-tab-grid{grid-template-columns:1fr}}
+.missions-tab-col{background:rgba(8,8,28,.6);border:1px solid var(--border-v);border-radius:12px;padding:16px;}
+.missions-tab-header{margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.06);}
+.missions-tab-title{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:3px;color:#a5b4fc;}
+.missions-tab-sub{font-size:9px;color:#6b7280;letter-spacing:1px;margin-top:2px;}
 </style>
 </head>
 <body>
@@ -4735,6 +4797,7 @@ let _adminToggles={
   shop_enabled:true,
   events_enabled:false,
   achievements_enabled:true,
+  battle_pass_enabled:false, // WIP — hidden by default
   admin_unlimited_cards:true // this one is admin-only, stored locally
 };
 
@@ -4774,7 +4837,8 @@ async function saveAdminToggles(){
     const globalFlags={
       shop_enabled:_adminToggles.shop_enabled,
       events_enabled:_adminToggles.events_enabled,
-      achievements_enabled:_adminToggles.achievements_enabled
+      achievements_enabled:_adminToggles.achievements_enabled,
+      battle_pass_enabled:_adminToggles.battle_pass_enabled
     };
     await _celSB.from('app_settings').upsert(
       {key:'feature_flags',value:JSON.stringify(globalFlags),updated_at:new Date().toISOString()},
@@ -4829,6 +4893,14 @@ function applyAdminToggleEffects(){
   shopBtns.forEach(b=>{
     if(b.textContent.includes('Shop')){
       b.style.display=isFeatureEnabled('shop_enabled')?'':'none';
+    }
+  });
+  // Battle Pass button: hidden for non-admins if battle_pass_enabled is false
+  // Admin always sees it
+  const bpBtns=document.querySelectorAll('.menu-btn');
+  bpBtns.forEach(b=>{
+    if(b.textContent.includes('Battle Pass')){
+      b.style.display=isFeatureEnabled('battle_pass_enabled')?'':'none';
     }
   });
 }
@@ -6903,15 +6975,31 @@ function renderBattlePass(){
     }
   }
   if(buyRow&&_bpPlayerData.hasStandard&&_bpPlayerData.hasPremium)buyRow.style.display='none';
-  // Tier rows
-  renderBPTierRows();
+  // New Fortnite-style tier page
+  autoPageToCurrentTier();
+  renderBPTierPage();
   // Missions
   renderMissions();
-  // Scroll to current tier
-  setTimeout(()=>{
-    const row=document.querySelector('.bp-tier-row.current');
-    if(row)row.scrollIntoView({block:'center',behavior:'smooth'});
-  },100);
+  // Set reset timers immediately
+  setBPResetTimers();
+}
+
+function setBPResetTimers(){
+  if(!_bpPlayerData||!_bpPlayerData.missionResetDate)return;
+  const dEl=document.getElementById('bp-daily-reset');
+  const wEl=document.getElementById('bp-weekly-reset');
+  if(dEl&&_bpPlayerData.missionResetDate.daily){
+    const ms=new Date(_bpPlayerData.missionResetDate.daily).getTime()-Date.now();
+    const h=Math.max(0,Math.floor(ms/(60*60*1000)));
+    const m=Math.max(0,Math.floor((ms%(60*60*1000))/(60*1000)));
+    dEl.textContent='Resets in '+h+'h '+m+'m';
+  }
+  if(wEl&&_bpPlayerData.missionResetDate.weekly){
+    const ms=new Date(_bpPlayerData.missionResetDate.weekly).getTime()-Date.now();
+    const d=Math.max(0,Math.floor(ms/(24*60*60*1000)));
+    const h=Math.max(0,Math.floor((ms%(24*60*60*1000))/(60*60*1000)));
+    wEl.textContent='Resets in '+d+'d '+h+'h';
+  }
 }
 
 function renderBPTierRows(){
@@ -7280,6 +7368,160 @@ function renderMissionList(scope,missions,containerId){
       +'</div>';
     c.appendChild(row);
   });
+}
+
+
+// ═══════════════════════════════════════════════════
+// BATTLE PASS — FORTNITE-STYLE LAYOUT JS
+// ═══════════════════════════════════════════════════
+let _bpCurrentPage=0;     // 0-indexed page (10 tiers per page)
+const BP_TIERS_PER_PAGE=10;
+let _bpFocusedReward=null;
+
+function switchBPTab(tab){
+  const passTab=document.getElementById('bp-tab-pass');
+  const missionsTab=document.getElementById('bp-tab-missions');
+  const passContent=document.getElementById('bp-tab-content-pass');
+  const missionsContent=document.getElementById('bp-tab-content-missions');
+  if(passTab&&missionsTab){
+    passTab.classList.toggle('active',tab==='pass');
+    missionsTab.classList.toggle('active',tab==='missions');
+  }
+  if(passContent)passContent.style.display=tab==='pass'?'block':'none';
+  if(missionsContent)missionsContent.style.display=tab==='missions'?'block':'none';
+  if(tab==='missions')renderMissions();
+}
+
+function bpPageCount(){
+  const maxTier=(BP_CONFIG&&BP_CONFIG.maxTier)||50;
+  return Math.ceil(maxTier/BP_TIERS_PER_PAGE);
+}
+
+function bpPagePrev(){
+  if(_bpCurrentPage>0){_bpCurrentPage--;renderBPTierPage();}
+}
+
+function bpPageNext(){
+  if(_bpCurrentPage<bpPageCount()-1){_bpCurrentPage++;renderBPTierPage();}
+}
+
+function renderBPTierPage(){
+  if(!BP_CONFIG||!_bpPlayerData)return;
+  const page=document.getElementById('bp-tier-page');
+  if(!page)return;
+  const maxTier=BP_CONFIG.maxTier||50;
+  const startTier=_bpCurrentPage*BP_TIERS_PER_PAGE+1;
+  const endTier=Math.min(maxTier,startTier+BP_TIERS_PER_PAGE-1);
+
+  // Update page info
+  const pageInfo=document.getElementById('bp-season-page-info');
+  if(pageInfo)pageInfo.textContent='PAGE '+(_bpCurrentPage+1)+' / '+bpPageCount();
+
+  // Disable arrows at bounds
+  const prevBtn=document.getElementById('bp-page-prev');
+  const nextBtn=document.getElementById('bp-page-next');
+  if(prevBtn)prevBtn.disabled=_bpCurrentPage===0;
+  if(nextBtn)nextBtn.disabled=_bpCurrentPage>=bpPageCount()-1;
+
+  // Build header row + 2 reward rows (free + premium tracks)
+  let headerHtml='<div class="bp-tier-page-headers">';
+  let freeRowHtml='<div class="bp-tier-page-row">';
+  let premRowHtml='<div class="bp-tier-page-row">';
+
+  for(let t=startTier;t<=endTier;t++){
+    const isCurrent=_bpPlayerData.tier===t;
+    const reached=_bpPlayerData.tier>=t;
+    let headerClass='bp-tier-page-header';
+    if(isCurrent)headerClass+=' current';
+    else if(reached)headerClass+=' reached';
+    headerHtml+='<div class="'+headerClass+'">'+t+'</div>';
+
+    const rewardData=BP_CONFIG.rewards.find(r=>r.tier===t);
+    // Free track tile
+    freeRowHtml+=buildRewardTile(t,'free',rewardData?.free,reached);
+    // Premium track tile (shows premium if owned, else standard)
+    const premReward=_bpPlayerData.hasPremium?rewardData?.premium:rewardData?.standard;
+    const premTrack=_bpPlayerData.hasPremium?'premium':'standard';
+    premRowHtml+=buildRewardTile(t,premTrack,premReward,reached);
+  }
+  // Pad remaining slots if last page is short
+  for(let i=endTier-startTier+1;i<BP_TIERS_PER_PAGE;i++){
+    headerHtml+='<div></div>';
+    freeRowHtml+='<div></div>';
+    premRowHtml+='<div></div>';
+  }
+  headerHtml+='</div>';
+  freeRowHtml+='</div>';
+  premRowHtml+='</div>';
+  page.innerHTML=headerHtml+freeRowHtml+premRowHtml;
+}
+
+function buildRewardTile(tier,track,reward,tierReached){
+  if(!reward){
+    return '<div class="bp-reward-tile locked" style="opacity:.2"><div class="bp-reward-tile-icon">—</div></div>';
+  }
+  const claimedKey='claimed'+track.charAt(0).toUpperCase()+track.slice(1);
+  const claimed=_bpPlayerData[claimedKey]&&_bpPlayerData[claimedKey][tier];
+  let hasAccess=true;
+  if(track==='standard')hasAccess=_bpPlayerData.hasStandard;
+  if(track==='premium')hasAccess=_bpPlayerData.hasPremium;
+
+  let cls='bp-reward-tile';
+  if(track==='free')cls+=' free-track';
+  if(track==='premium')cls+=' premium-track';
+  if(claimed)cls+=' claimed';
+  else if(!tierReached||!hasAccess)cls+=' locked';
+  else cls+=' claimable';
+
+  const icon={celestium:'💠',pack:'🎁',card:'🎴',cosmetic:'✨'}[reward.type]||'🎁';
+  let inner=
+    (claimed?'<div class="bp-reward-tile-check">✓</div>':(!tierReached||!hasAccess?'<div class="bp-reward-tile-lock">🔒</div>':''))
+    +'<div class="bp-reward-tile-icon">'+icon+'</div>'
+    +'<div class="bp-reward-tile-label">'+(reward.label||reward.type)+'</div>';
+
+  return '<div class="'+cls+'" onclick="showRewardFocus('+tier+',\''+track+'\')" data-tier="'+tier+'" data-track="'+track+'">'+inner+'</div>';
+}
+
+function showRewardFocus(tier,track){
+  if(!BP_CONFIG)return;
+  const rewardData=BP_CONFIG.rewards.find(r=>r.tier===tier);
+  if(!rewardData)return;
+  const reward=rewardData[track];
+  if(!reward)return;
+  _bpFocusedReward={tier,track,reward};
+  const claimedKey='claimed'+track.charAt(0).toUpperCase()+track.slice(1);
+  const claimed=_bpPlayerData[claimedKey]&&_bpPlayerData[claimedKey][tier];
+  let hasAccess=true;
+  if(track==='standard')hasAccess=_bpPlayerData.hasStandard;
+  if(track==='premium')hasAccess=_bpPlayerData.hasPremium;
+  const tierReached=_bpPlayerData.tier>=tier;
+  const canClaim=tierReached&&hasAccess&&!claimed;
+
+  const icon={celestium:'💠',pack:'🎁',card:'🎴',cosmetic:'✨'}[reward.type]||'🎁';
+  const iconEl=document.getElementById('bp-reward-focus-icon');
+  const labelEl=document.getElementById('bp-reward-focus-label');
+  const nameEl=document.getElementById('bp-reward-focus-name');
+  const descEl=document.getElementById('bp-reward-focus-desc');
+  if(iconEl)iconEl.textContent=icon;
+  if(labelEl)labelEl.textContent='TIER '+tier+' • '+track.toUpperCase()+' TRACK';
+  if(nameEl)nameEl.textContent=reward.label||reward.type;
+  if(descEl){
+    let desc='';
+    if(claimed)desc='✓ Already claimed.';
+    else if(!tierReached)desc='🔒 Reach Tier '+tier+' to unlock.';
+    else if(!hasAccess)desc='💎 Requires '+track.charAt(0).toUpperCase()+track.slice(1)+' Pass.';
+    else desc='✨ Available now! ';
+    if(canClaim){
+      desc+='<br><button class="btn-primary" style="margin-top:6px;padding:6px 14px;font-size:11px;letter-spacing:2px" onclick="claimBPReward('+tier+',\''+track+'\')">▸ CLAIM REWARD</button>';
+    }
+    descEl.innerHTML=desc;
+  }
+}
+
+// Auto-focus current tier on open
+function autoPageToCurrentTier(){
+  const tier=_bpPlayerData?.tier||1;
+  _bpCurrentPage=Math.floor((tier-1)/BP_TIERS_PER_PAGE);
 }
 
 // ═══════════════════════════════════════════════════
@@ -7768,6 +8010,14 @@ window.addEventListener('load',async()=>{
       <div class="admin-toggle-switch" id="admin-tg-achievements_enabled"><div class="admin-toggle-knob"></div></div>
     </div>
 
+    <div class="admin-toggle" onclick="adminToggle('battle_pass_enabled')">
+      <div>
+        <div class="admin-toggle-label">⚔ Battle Pass <span style="font-size:8px;color:#7dd3fc">GLOBAL</span></div>
+        <div class="admin-toggle-desc">Show Battle Pass on menu for everyone (you always see it)</div>
+      </div>
+      <div class="admin-toggle-switch" id="admin-tg-battle_pass_enabled"><div class="admin-toggle-knob"></div></div>
+    </div>
+
     <div class="admin-toggle" onclick="adminToggle('admin_unlimited_cards')">
       <div>
         <div class="admin-toggle-label">🎴 Admin Card Override <span style="font-size:8px;color:#fca5a5">ADMIN ONLY</span></div>
@@ -8186,18 +8436,102 @@ window.addEventListener('load',async()=>{
 </div>
 
 <!-- BATTLE PASS SCREEN -->
-<div id="battle-pass-screen" class="screen" style="padding:20px;max-width:920px;margin:0 auto">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+<div id="battle-pass-screen" class="screen" style="padding:16px;max-width:1100px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
     <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
     <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:var(--blue);text-shadow:0 0 10px var(--blue)">⚔ BATTLE PASS</div>
+    <div style="display:flex;gap:4px;margin-left:18px">
+      <button class="bp-nav-tab active" id="bp-tab-pass" onclick="switchBPTab('pass')">BATTLE PASS</button>
+      <button class="bp-nav-tab" id="bp-tab-missions" onclick="switchBPTab('missions')">CHALLENGES</button>
+    </div>
     <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
       <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" style="width:18px;height:18px;border-radius:50%"/>
       <span id="bp-cel-amount" style="font-size:13px;font-weight:700;color:#fbbf24">—</span>
     </div>
   </div>
 
-  <!-- HEADER + PROGRESS -->
-  <div class="bp-header">
+  <!-- ════════ PASS TAB ════════ -->
+  <div id="bp-tab-content-pass">
+
+  <!-- TOP STRIP (Fortnite-style season header) -->
+  <div class="bp-season-strip">
+    <div class="bp-season-tier-card">
+      <div class="bp-season-tier-label">TIER</div>
+      <div class="bp-season-tier-num" id="bp-current-tier">1</div>
+      <div class="bp-season-tier-xp" id="bp-xp-text">0 / 400</div>
+      <div class="bp-season-tier-bar"><div class="bp-season-tier-fill" id="bp-progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="bp-season-title-block">
+      <div class="bp-season-name" id="bp-season-name">VOID PRISM</div>
+      <div class="bp-season-sub" id="bp-season-sub">SEASON 1 • <span id="bp-time-left">—</span> remaining</div>
+      <div class="bp-pass-status" id="bp-pass-status">
+        <div class="bp-pass-badge free">⚡ FREE TRACK</div>
+      </div>
+    </div>
+    <div class="bp-season-page" id="bp-season-page-info">PAGE 1 / 5</div>
+  </div>
+
+  <!-- BUY ROW (only visible if not all passes owned) -->
+  <div class="bp-buy-row" id="bp-buy-row" style="display:flex;gap:8px;margin-bottom:12px">
+    <button class="bp-buy-btn" id="bp-buy-standard" onclick="buyStandardPass()">
+      <span>💎</span><span>STANDARD PASS — 3,000 Cel</span>
+    </button>
+    <button class="bp-buy-btn premium" id="bp-buy-premium" onclick="buyPremiumPass()">
+      <span>👑</span><span>+ PREMIUM — 1,500 Cel</span>
+    </button>
+  </div>
+
+  <!-- TIER PAGE (10 tiers visible at once, paginated) -->
+  <div class="bp-tier-page-wrap">
+    <button class="bp-page-arrow" id="bp-page-prev" onclick="bpPagePrev()">◀</button>
+    <div class="bp-tier-page" id="bp-tier-page">
+      <!-- rendered by JS -->
+    </div>
+    <button class="bp-page-arrow" id="bp-page-next" onclick="bpPageNext()">▶</button>
+  </div>
+
+  <!-- Reward focus panel (right side, like Fortnite shows the outfit) -->
+  <div class="bp-reward-focus" id="bp-reward-focus">
+    <div class="bp-reward-focus-icon" id="bp-reward-focus-icon">🎁</div>
+    <div class="bp-reward-focus-label" id="bp-reward-focus-label">SELECT A REWARD</div>
+    <div class="bp-reward-focus-name" id="bp-reward-focus-name">Click any tier reward to view details</div>
+    <div class="bp-reward-focus-desc" id="bp-reward-focus-desc"></div>
+  </div>
+
+  </div><!-- /pass tab -->
+
+  <!-- ════════ MISSIONS / CHALLENGES TAB ════════ -->
+  <div id="bp-tab-content-missions" style="display:none">
+    <div class="missions-tab-grid">
+      <div class="missions-tab-col">
+        <div class="missions-tab-header">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:18px">🌅</span>
+            <div>
+              <div class="missions-tab-title">DAILY CHALLENGES</div>
+              <div class="missions-tab-sub" id="bp-daily-reset">Resets in —</div>
+            </div>
+          </div>
+        </div>
+        <div id="bp-daily-missions"></div>
+      </div>
+      <div class="missions-tab-col">
+        <div class="missions-tab-header">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:18px">📅</span>
+            <div>
+              <div class="missions-tab-title" style="color:#fbbf24">WEEKLY CHALLENGES</div>
+              <div class="missions-tab-sub" id="bp-weekly-reset">Resets in —</div>
+            </div>
+          </div>
+        </div>
+        <div id="bp-weekly-missions"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HIDDEN OLD HEADER (kept for compat with JS that still references it) -->
+  <div class="bp-header" style="display:none">
     <div class="bp-season-name" id="bp-season-name">VOID PRISM</div>
     <div class="bp-season-sub" id="bp-season-sub">SEASON 1 — TIER PROGRESSION</div>
 
@@ -8231,35 +8565,11 @@ window.addEventListener('load',async()=>{
     </div>
   </div>
 
-  <!-- MISSIONS SECTION -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
-    <!-- Daily -->
-    <div style="background:rgba(8,8,28,.6);border:1px solid var(--border-v);border-radius:12px;padding:14px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div style="font-size:11px;color:#a5b4fc;letter-spacing:2px;font-family:Orbitron,sans-serif">🌅 DAILY MISSIONS</div>
-        <div style="font-size:9px;color:#6b7280" id="bp-daily-reset">Resets in —</div>
-      </div>
-      <div id="bp-daily-missions"></div>
-    </div>
-    <!-- Weekly -->
-    <div style="background:rgba(8,8,28,.6);border:1px solid var(--border-v);border-radius:12px;padding:14px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div style="font-size:11px;color:#fbbf24;letter-spacing:2px;font-family:Orbitron,sans-serif">📅 WEEKLY MISSIONS</div>
-        <div style="font-size:9px;color:#6b7280" id="bp-weekly-reset">Resets in —</div>
-      </div>
-      <div id="bp-weekly-missions"></div>
-    </div>
-  </div>
 
-  <!-- TIERS GRID -->
-  <div class="bp-tier-grid">
-    <div class="bp-tier-rows-header">
-      <div style="text-align:center">TIER</div>
-      <div class="bp-track-header bp-track-free">⚡ FREE</div>
-      <div class="bp-track-header bp-track-standard">💎 STANDARD</div>
-      <div class="bp-track-header bp-track-premium">👑 PREMIUM</div>
-    </div>
-    <div id="bp-tier-rows" style="max-height:520px;overflow-y:auto"></div>
+
+  <!-- Old tier rows kept hidden for compat -->
+  <div class="bp-tier-grid" style="display:none">
+    <div id="bp-tier-rows"></div>
   </div>
 </div>
 
