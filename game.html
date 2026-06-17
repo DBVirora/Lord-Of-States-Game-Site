@@ -5901,7 +5901,7 @@ function showRulesScreen(){
       ${['all','herald','energy_card','base_char','char','location','equipment','instant','token'].map(t=>`
         <button onclick="setRulesFilter('${t}')" data-rfilter="${t}"
           style="background:${t==='all'?'#7c3aed':'#1e1e3a'};border:1px solid ${t==='all'?'#a855f7':'#3a3a5c'};border-radius:5px;padding:3px 9px;font-size:10px;color:${t==='all'?'#fff':'#9ca3af'};cursor:pointer;font-family:inherit;letter-spacing:.3px">
-          ${{all:'All',herald:'👑 Heralds',energy_card:'⚡ Energy',base_char:'Base Chars',char:'Characters',location:'Locations',equipment:'Equipment',instant:'Instants',token:'Tokens'}[t]}
+          ${({all:'All',herald:'👑 Heralds',energy_card:'⚡ Energy',base_char:'Base Chars',char:'Characters',location:'Locations',equipment:'Equipment',instant:'Instants',token:'Tokens'})[t]}
         </button>`).join('')}
     </div>
   </div>
