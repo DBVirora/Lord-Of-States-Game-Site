@@ -612,6 +612,79 @@ body{padding-top:46px;}
 .campaign-edit-card{background:rgba(8,8,28,.7);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:12px;margin-bottom:8px;}
 .campaign-edit-row{display:flex;gap:8px;margin-bottom:6px;align-items:center;}
 .campaign-edit-label{font-size:9px;color:#9ca3af;letter-spacing:1px;width:80px;flex-shrink:0;}
+
+/* BATTLE PASS */
+.bp-header{background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(8,8,28,.85));border:1px solid var(--border-v);border-radius:14px;padding:20px;margin-bottom:16px;}
+.bp-season-name{font-family:'Orbitron',sans-serif;font-size:18px;letter-spacing:5px;color:var(--blue);text-shadow:0 0 14px var(--blue);margin-bottom:4px;}
+.bp-season-sub{font-size:10px;color:#9ca3af;letter-spacing:2px;margin-bottom:14px;}
+.bp-progress-section{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;margin-bottom:12px;}
+.bp-tier-badge{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#1a0a3a,#7c3aed);border:3px solid var(--violet2);display:flex;align-items:center;justify-content:center;flex-direction:column;flex-shrink:0;box-shadow:0 0 18px rgba(124,58,237,.4);}
+.bp-tier-num{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;color:#fff;line-height:1;}
+.bp-tier-lbl{font-size:7px;letter-spacing:2px;color:rgba(255,255,255,.6);margin-top:1px;}
+.bp-progress-info{flex:1;}
+.bp-progress-label{font-size:9px;color:#9ca3af;letter-spacing:2px;margin-bottom:4px;}
+.bp-progress-bar{height:10px;background:rgba(8,8,28,.7);border:1px solid var(--border);border-radius:5px;overflow:hidden;position:relative;}
+.bp-progress-fill{height:100%;background:linear-gradient(90deg,var(--violet2),#fbbf24);transition:width .5s;}
+.bp-xp-text{font-size:10px;color:#fbbf24;font-family:'Share Tech Mono',monospace;margin-top:4px;}
+.bp-timer{text-align:center;}
+.bp-timer-val{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;color:#fbbf24;}
+.bp-timer-lbl{font-size:8px;color:#6b7280;letter-spacing:2px;}
+.bp-pass-status{display:flex;gap:8px;margin-top:10px;}
+.bp-pass-badge{padding:6px 12px;border-radius:8px;font-size:9px;letter-spacing:2px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.bp-pass-badge.free{background:rgba(75,85,99,.2);color:#9ca3af;border:1px solid rgba(100,120,160,.3);}
+.bp-pass-badge.standard{background:rgba(124,58,237,.15);color:#c4b5fd;border:1px solid var(--violet2);}
+.bp-pass-badge.premium{background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(239,68,68,.1));color:#fbbf24;border:1px solid #fbbf24;box-shadow:0 0 8px rgba(251,191,36,.3);}
+.bp-buy-row{display:flex;gap:8px;margin-top:10px;}
+.bp-buy-btn{flex:1;padding:10px;background:rgba(124,58,237,.15);border:1px solid var(--violet2);border-radius:8px;color:#c4b5fd;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.bp-buy-btn:hover:not(:disabled){background:rgba(124,58,237,.3);box-shadow:0 0 10px rgba(124,58,237,.3);}
+.bp-buy-btn.premium{background:linear-gradient(135deg,rgba(251,191,36,.1),rgba(239,68,68,.05));border-color:#fbbf24;color:#fbbf24;}
+.bp-buy-btn.premium:hover:not(:disabled){box-shadow:0 0 12px rgba(251,191,36,.3);}
+.bp-buy-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* Tiers grid */
+.bp-tier-grid{background:rgba(8,8,28,.5);border:1px solid var(--border-v);border-radius:14px;padding:16px;overflow-x:auto;}
+.bp-tier-rows-header{display:grid;grid-template-columns:60px 1fr 1fr 1fr;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:8px;font-size:9px;letter-spacing:2px;color:#6b7280;font-weight:700;}
+.bp-tier-row{display:grid;grid-template-columns:60px 1fr 1fr 1fr;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.03);align-items:center;}
+.bp-tier-row.current{background:rgba(124,58,237,.08);border-radius:8px;padding:8px;border-left:3px solid var(--violet2);}
+.bp-tier-col-num{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:#9ca3af;text-align:center;}
+.bp-tier-row.unlocked .bp-tier-col-num{color:var(--blue);}
+.bp-reward-cell{background:rgba(8,8,28,.5);border:1px solid var(--border);border-radius:6px;padding:6px 8px;display:flex;align-items:center;gap:6px;font-size:10px;}
+.bp-reward-cell.claimed{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.05);}
+.bp-reward-cell.locked{opacity:.35;}
+.bp-reward-cell.unavailable{opacity:.5;filter:grayscale(.5);}
+.bp-reward-icon{font-size:14px;}
+.bp-reward-label{flex:1;color:#e2e8f0;font-size:10px;}
+.bp-reward-claim-btn{padding:3px 8px;background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.5);border-radius:5px;color:#86efac;font-size:9px;letter-spacing:1px;cursor:pointer;font-family:'Share Tech Mono',monospace;}
+.bp-reward-claim-btn:hover{background:rgba(34,197,94,.35);}
+.bp-reward-claim-btn:disabled{opacity:.4;cursor:not-allowed;}
+.bp-track-header{font-size:9px;letter-spacing:2px;font-weight:700;text-align:center;padding:4px;}
+.bp-track-free{color:#9ca3af;}
+.bp-track-standard{color:#c4b5fd;}
+.bp-track-premium{color:#fbbf24;}
+
+/* Level up popup */
+.bp-levelup-popup{position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:9999;background:linear-gradient(135deg,rgba(8,8,28,.97),rgba(40,20,70,.97));border:2px solid var(--violet2);border-radius:14px;padding:16px 24px;display:flex;align-items:center;gap:14px;box-shadow:0 0 40px rgba(124,58,237,.5);animation:ach-slide .3s ease,ach-out .5s ease 3.5s forwards;pointer-events:none;}
+.bp-levelup-icon{font-size:36px;animation:bp-bounce 1s ease infinite alternate;}
+@keyframes bp-bounce{from{transform:translateY(0)}to{transform:translateY(-4px)}}
+
+/* Pass buy modal */
+.bp-buy-modal-content{background:rgba(8,8,28,.97);border:1px solid var(--border-v);border-radius:14px;padding:24px;max-width:420px;width:90vw;text-align:center;}
+
+/* Admin BP editor */
+.bp-edit-row{display:flex;gap:8px;margin-bottom:6px;align-items:center;}
+.bp-edit-label{font-size:9px;color:#9ca3af;letter-spacing:1px;width:100px;flex-shrink:0;}
+
+/* MISSIONS */
+.bp-mission-row{background:rgba(8,8,28,.5);border:1px solid var(--border);border-radius:8px;padding:9px 11px;margin-bottom:6px;}
+.bp-mission-row.complete{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.06);}
+.bp-mission-row.claimed{opacity:.5;}
+.bp-mission-title{font-size:11px;color:#e2e8f0;margin-bottom:5px;display:flex;align-items:center;justify-content:space-between;}
+.bp-mission-reward{font-size:9px;color:#fbbf24;font-weight:700;}
+.bp-mission-prog-bar{height:4px;background:rgba(75,85,99,.3);border-radius:2px;overflow:hidden;margin-bottom:5px;}
+.bp-mission-prog-fill{height:100%;background:linear-gradient(90deg,var(--violet2),#fbbf24);}
+.bp-mission-prog-text{display:flex;justify-content:space-between;align-items:center;font-size:9px;color:#6b7280;}
+.bp-mission-claim-btn{padding:3px 10px;background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.5);border-radius:5px;color:#86efac;font-size:9px;letter-spacing:1px;cursor:pointer;font-family:'Share Tech Mono',monospace;}
+.bp-mission-claim-btn:hover{background:rgba(34,197,94,.35);}
 </style>
 </head>
 <body>
@@ -642,6 +715,7 @@ body{padding-top:46px;}
   <div class="menu-tagline">V C U &nbsp;·&nbsp; T R A D I N G &nbsp; C A R D &nbsp; G A M E</div>
   <div class="menu-section-label">— BATTLE —</div>
   <button class="menu-btn" onclick="showScreen('campaign-worlds-screen');openCampaign()">🗺️ Campaign</button>
+  <button class="menu-btn" onclick="showScreen('battle-pass-screen');openBattlePass()">⚔ Battle Pass</button>
   <button class="menu-btn" onclick="showScreen('matchmaking-screen');openMatchmaking()">🔍 Find Match</button>
   <button class="menu-btn" onclick="showScreen('online-lobby-screen');openOnlineLobby()">🌐 Private Room</button>
   <button class="menu-btn" onclick="goToDeckSelect('pvp')">⚔️ Local PvP</button>
@@ -2695,6 +2769,10 @@ function onHandClick(p,uid,fc){
     if(isChar(DB[fco.cid])&&!DB[fco.cid]?.isToken&&namedFighters>=MAX_FIELD){log('Fighter zone full! (max 5 named fighters).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     if(!isChar(DB[fco.cid])&&otherCards>=MAX_OTHER){log('Field full! (max 5 other cards on field).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     pl.field.push(fco);log(`P${p} plays ${c.name}.`,'info');onEntry(p,fco);
+    // Mission tracking: unique characters (only for local player)
+    if(p===1&&typeof trackUniqueCharacter==='function'&&['base_char','char','team'].includes(c.type)){
+      trackUniqueCharacter(c.charName||c.id||fco.cid);
+    }
   } else if(isLoc(c)){
     const locCount=pl.field.filter(f=>isLoc(DB[f.cid])).length;
     if(locCount>=MAX_LOC){log(`Location zone full! (max ${MAX_LOC}).`,'dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
@@ -4194,9 +4272,14 @@ async function checkDailyLogin(){
   if(_celData.last_login===today)return; // already claimed today
   _celData.last_login=today;
   await awardCelestium(150,'Daily Login Bonus');
+  // Battle Pass: award login XP
+  if(typeof bpOnDailyLogin==='function')await bpOnDailyLogin();
 }
 
 async function onMatchEnd(won){
+  // Battle Pass XP — every match awards play XP, wins award bonus
+  if(typeof bpOnMatchEnd==='function')setTimeout(()=>bpOnMatchEnd(),100);
+  if(won&&typeof bpOnMatchWin==='function')setTimeout(()=>bpOnMatchWin(),200);
   // Campaign match win
   if(won&&G_campaignActiveMatch)setTimeout(()=>onCampaignMatchWin(),200);
   // Forfeit win in online mode = only 50 Celestium
@@ -6474,6 +6557,731 @@ async function resetMyCampaignProgress(){
   alert('✓ Your campaign progress reset.');
 }
 
+
+// ═══════════════════════════════════════════════════
+// BATTLE PASS SYSTEM
+// ═══════════════════════════════════════════════════
+
+// Default season config — admin can override via Supabase app_settings
+// Per-tier XP curve from official design doc.
+// Level N requires (375 + N*25) XP to advance to level N+1.
+// Level 1 → 2 = 400, Level 2 → 3 = 425, ... Level 50 caps progression.
+function bpXpToAdvance(tier){
+  // Returns XP required to go from THIS tier to the next.
+  // Level 1 needs 400 XP to reach Level 2, etc.
+  return 375+(tier*25);
+}
+
+const BP_DEFAULT_CONFIG={
+  seasonId:'void_prism_s1',
+  seasonName:'VOID PRISM',
+  seasonNumber:1,
+  startDate:null,
+  durationDays:30,
+  maxTier:50,
+  // XP curve type — 'progressive' uses bpXpToAdvance() function above
+  xpCurve:'progressive',
+  // Direct XP rewards from actions (used outside of mission system)
+  xpPerWin:50,
+  xpPerMatch:20,
+  // Pass costs
+  standardCost:3000,
+  premiumCost:1500,
+  // ── DAILY MISSIONS ────────────────────────────────
+  // Reset every calendar day. Players complete to earn XP.
+  dailyMissions:[
+    {id:'win_2',name:'Win 2 matches',type:'wins',target:2,xp:300},
+    {id:'play_3',name:'Play 3 matches',type:'matches',target:3,xp:200},
+    {id:'use_2_chars',name:'Use 2 different characters',type:'unique_chars',target:2,xp:150},
+    {id:'complete_1_daily',name:'Complete 1 daily mission',type:'meta_complete_daily',target:1,xp:100}
+  ],
+  // ── WEEKLY MISSIONS ───────────────────────────────
+  // Reset every Monday. Bigger XP rewards.
+  weeklyMissions:[
+    {id:'win_10',name:'Win 10 matches',type:'wins',target:10,xp:800},
+    {id:'reach_5_levels',name:'Gain 5 Battle Pass levels',type:'levels_gained',target:5,xp:600},
+    {id:'play_15',name:'Play 15 matches',type:'matches',target:15,xp:500},
+    {id:'use_5_chars',name:'Use 5 different characters',type:'unique_chars',target:5,xp:400}
+  ],
+  // ── PER-TIER REWARDS ──────────────────────────────
+  rewards:Array.from({length:50},(_,i)=>{
+    const tier=i+1;
+    return {
+      tier,
+      free:tier%5===0?{type:'celestium',amount:50,label:'+50 Cel'}:null,
+      standard:{type:'celestium',amount:100,label:'+100 Cel'},
+      premium:tier%5===0?{type:'pack',amount:1,label:'+1 Pack'}:{type:'celestium',amount:150,label:'+150 Cel'}
+    };
+  })
+};
+
+let BP_CONFIG=null;            // Loaded config (defaults + admin overrides)
+let _bpPlayerData={
+  xp:0,
+  tier:1,
+  hasStandard:false,
+  hasPremium:false,
+  claimedFree:{},   // {tier: timestamp}
+  claimedStandard:{},
+  claimedPremium:{}
+};
+let _bpTimerInterval=null;
+
+async function loadBattlePass(){
+  // Load config (admin override or default)
+  if(_celSB){
+    try{
+      const {data}=await _celSB.from('app_settings').select('value').eq('key','battle_pass_config').maybeSingle();
+      if(data&&data.value){
+        try{BP_CONFIG=JSON.parse(data.value);}catch(e){BP_CONFIG={...BP_DEFAULT_CONFIG};}
+      } else {
+        BP_CONFIG={...BP_DEFAULT_CONFIG};
+      }
+    }catch(e){BP_CONFIG={...BP_DEFAULT_CONFIG};}
+  } else {
+    BP_CONFIG={...BP_DEFAULT_CONFIG};
+  }
+  // Load player progress
+  await loadBPPlayerData();
+}
+
+async function loadBPPlayerData(){
+  if(!_celSB||!_celUserId)return;
+  try{
+    const {data}=await _celSB.from('profiles').select('battle_pass_data').eq('id',_celUserId).maybeSingle();
+    if(data&&data.battle_pass_data){
+      try{
+        const parsed=JSON.parse(data.battle_pass_data);
+        // Check if it's the current season
+        if(parsed.seasonId===BP_CONFIG.seasonId){
+          _bpPlayerData={..._bpPlayerData,...parsed};
+        } else {
+          // New season — reset
+          _bpPlayerData={xp:0,tier:1,hasStandard:false,hasPremium:false,claimedFree:{},claimedStandard:{},claimedPremium:{},seasonId:BP_CONFIG.seasonId};
+          await saveBPPlayerData();
+        }
+      }catch(e){}
+    }
+  }catch(e){console.warn('[BP] load error:',e);}
+}
+
+async function saveBPPlayerData(){
+  if(!_celSB||!_celUserId)return;
+  try{
+    const toSave={..._bpPlayerData,seasonId:BP_CONFIG.seasonId};
+    await _celSB.from('profiles').update({battle_pass_data:JSON.stringify(toSave)}).eq('id',_celUserId);
+  }catch(e){console.warn('[BP] save error:',e);}
+}
+
+// ─── XP / TIER LOGIC ─────────────────────────────
+// Per-tier XP using progressive curve from design doc
+function bpXpRequiredForTier(tier){
+  // XP needed to advance FROM this tier to next
+  if(BP_CONFIG&&BP_CONFIG.xpCurve==='flat'&&BP_CONFIG.xpPerTier){return BP_CONFIG.xpPerTier;}
+  return 375+(tier*25); // 400, 425, 450, ... 1625
+}
+
+function bpTotalXpForTier(targetTier){
+  // Cumulative XP to REACH a given tier (sum of all previous tier requirements)
+  let total=0;
+  for(let t=1;t<targetTier;t++){total+=bpXpRequiredForTier(t);}
+  return total;
+}
+
+function bpCurrentTierFromXP(totalXp){
+  const maxTier=(BP_CONFIG&&BP_CONFIG.maxTier)||50;
+  let acc=0;
+  for(let t=1;t<=maxTier;t++){
+    const need=bpXpRequiredForTier(t);
+    if(acc+need>totalXp)return t;
+    acc+=need;
+  }
+  return maxTier;
+}
+
+function bpXpIntoCurrentTier(totalXp){
+  const tier=bpCurrentTierFromXP(totalXp);
+  const consumed=bpTotalXpForTier(tier);
+  return Math.max(0,totalXp-consumed);
+}
+
+async function awardBPXp(amount,reason){
+  if(!BP_CONFIG)return;
+  if(!_bpPlayerData)return;
+  const oldTier=_bpPlayerData.tier;
+  _bpPlayerData.xp=(_bpPlayerData.xp||0)+amount;
+  const newTier=bpCurrentTierFromXP(_bpPlayerData.xp);
+  _bpPlayerData.tier=newTier;
+  if(newTier>oldTier){
+    showBPLevelUp(newTier,reason);
+    // Track weekly mission: levels gained
+    const gained=newTier-oldTier;
+    if(typeof incrementMissionProgress==='function')await incrementMissionProgress('levels_gained',gained);
+  }
+  await saveBPPlayerData();
+  updateBPHudIfVisible();
+}
+
+function updateBPHudIfVisible(){
+  // If battle pass screen is visible, refresh it
+  if(document.getElementById('battle-pass-screen')?.classList.contains('active')){
+    renderBattlePass();
+  }
+}
+
+function showBPLevelUp(newTier,reason){
+  const old=document.getElementById('bp-levelup-popup');if(old)old.remove();
+  const popup=document.createElement('div');
+  popup.id='bp-levelup-popup';
+  popup.className='bp-levelup-popup';
+  popup.innerHTML=
+    '<div class="bp-levelup-icon">⬆️</div>'
+    +'<div>'
+      +'<div style="font-size:9px;color:var(--violet2);letter-spacing:2px">BATTLE PASS</div>'
+      +'<div style="font-size:14px;font-weight:700;color:#fbbf24;font-family:Orbitron,sans-serif">TIER '+newTier+' UNLOCKED!</div>'
+    +'</div>';
+  document.body.appendChild(popup);
+  setTimeout(()=>{if(popup.parentNode)popup.remove();},4000);
+}
+
+// ─── HOOKS INTO GAME EVENTS ──────────────────────
+async function bpOnMatchWin(){
+  if(!BP_CONFIG)return;
+  await awardBPXp(BP_CONFIG.xpPerWin||50,'Match Win');
+  await incrementMissionProgress('wins',1);
+}
+
+async function bpOnMatchEnd(){
+  if(!BP_CONFIG)return;
+  await awardBPXp(BP_CONFIG.xpPerMatch||20,'Match Played');
+  await incrementMissionProgress('matches',1);
+}
+
+async function bpOnDailyLogin(){
+  if(!BP_CONFIG)return;
+  await awardBPXp(BP_CONFIG.xpPerLoginStreak||150,'Daily Login');
+}
+
+// ─── PASS PURCHASE ───────────────────────────────
+let _bpPendingPurchase=null;
+
+function buyStandardPass(){
+  if(_bpPlayerData.hasStandard){alert('You already own the Standard Pass!');return;}
+  _bpPendingPurchase='standard';
+  document.getElementById('bp-buy-icon').textContent='💎';
+  document.getElementById('bp-buy-title').textContent='STANDARD PASS';
+  document.getElementById('bp-buy-desc').textContent='Unlock the Standard reward track for the entire '+(BP_CONFIG.seasonName||'Season')+' season.';
+  document.getElementById('bp-buy-cost').textContent=(BP_CONFIG.standardCost||3000).toLocaleString()+' Celestium';
+  document.getElementById('bp-buy-modal').classList.add('open');
+}
+
+function buyPremiumPass(){
+  if(_bpPlayerData.hasPremium){alert('You already own the Premium Pass!');return;}
+  _bpPendingPurchase='premium';
+  document.getElementById('bp-buy-icon').textContent='👑';
+  document.getElementById('bp-buy-title').textContent='PREMIUM PASS';
+  const hasStd=_bpPlayerData.hasStandard;
+  const cost=hasStd?(BP_CONFIG.premiumCost||1500):((BP_CONFIG.standardCost||3000)+(BP_CONFIG.premiumCost||1500));
+  document.getElementById('bp-buy-desc').textContent=hasStd
+    ?'Upgrade to Premium — unlock the exclusive Premium reward track.'
+    :'Unlock BOTH Standard and Premium reward tracks. Best value!';
+  document.getElementById('bp-buy-cost').textContent=cost.toLocaleString()+' Celestium';
+  document.getElementById('bp-buy-modal').classList.add('open');
+}
+
+async function confirmPassPurchase(){
+  if(!_bpPendingPurchase)return;
+  const isPremium=_bpPendingPurchase==='premium';
+  const hasStd=_bpPlayerData.hasStandard;
+  let cost;
+  if(isPremium){
+    cost=hasStd?(BP_CONFIG.premiumCost||1500):((BP_CONFIG.standardCost||3000)+(BP_CONFIG.premiumCost||1500));
+  } else {
+    cost=BP_CONFIG.standardCost||3000;
+  }
+  if((_celData.celestium||0)<cost){alert('Not enough Celestium!');return;}
+  _celData.celestium-=cost;
+  if(isPremium){
+    _bpPlayerData.hasPremium=true;
+    if(!hasStd)_bpPlayerData.hasStandard=true; // bundled
+    await awardCelestium(0,'Premium Battle Pass Purchased'); // log entry
+    _celData.cel_log=_celData.cel_log;
+    _celLog.unshift({amount:-cost,reason:'Premium Battle Pass',ts:new Date().toISOString()});
+  } else {
+    _bpPlayerData.hasStandard=true;
+    _celLog.unshift({amount:-cost,reason:'Standard Battle Pass',ts:new Date().toISOString()});
+  }
+  await Promise.all([saveCelestium(),saveBPPlayerData()]);
+  updateCelDisplay();
+  document.getElementById('bp-buy-modal').classList.remove('open');
+  renderBattlePass();
+  alert('✓ Pass purchased! Rewards unlocked.');
+  _bpPendingPurchase=null;
+}
+
+// ─── REWARD CLAIMING ─────────────────────────────
+async function claimBPReward(tier,track){
+  if(!BP_CONFIG||!_bpPlayerData)return;
+  if(_bpPlayerData.tier<tier){alert('You haven\'t reached Tier '+tier+' yet!');return;}
+  if(track==='standard'&&!_bpPlayerData.hasStandard){alert('Standard Pass required.');return;}
+  if(track==='premium'&&!_bpPlayerData.hasPremium){alert('Premium Pass required.');return;}
+  const claimedKey='claimed'+track.charAt(0).toUpperCase()+track.slice(1);
+  if(_bpPlayerData[claimedKey][tier]){alert('Already claimed!');return;}
+  // Find the reward
+  const rewardData=BP_CONFIG.rewards.find(r=>r.tier===tier);
+  if(!rewardData||!rewardData[track]){alert('No reward at this tier.');return;}
+  const reward=rewardData[track];
+  // Grant the reward
+  if(reward.type==='celestium'){
+    await awardCelestium(reward.amount,'BP Tier '+tier+' ('+track+')');
+  } else if(reward.type==='pack'){
+    // Add a placeholder note — pack opening logic deferred to admin filling
+    _celLog.unshift({amount:0,reason:'BP Pack reward (Tier '+tier+')',ts:new Date().toISOString()});
+    await saveCelestium();
+    alert('🎁 Pack reward claimed! (Pack opening for BP rewards coming soon)');
+  } else if(reward.type==='card'){
+    if(reward.cid&&typeof addCardToCollection==='function'){
+      addCardToCollection(reward.cid);
+      await saveCollection();
+    }
+    alert('🎴 Card unlocked: '+(reward.label||reward.cid)+'!');
+  } else {
+    alert('🎁 Reward claimed: '+(reward.label||'reward'));
+  }
+  _bpPlayerData[claimedKey][tier]=new Date().toISOString();
+  await saveBPPlayerData();
+  renderBattlePass();
+}
+
+// ─── UI RENDERING ────────────────────────────────
+async function openBattlePass(){
+  if(!BP_CONFIG)await loadBattlePass();
+  renderBattlePass();
+  startBPTimer();
+}
+
+function renderBattlePass(){
+  if(!BP_CONFIG||!_bpPlayerData)return;
+  // Celestium
+  const cel=document.getElementById('bp-cel-amount');
+  if(cel)cel.textContent=(_celData.celestium||0).toLocaleString();
+  // Season name
+  const nameEl=document.getElementById('bp-season-name');
+  if(nameEl)nameEl.textContent=BP_CONFIG.seasonName||'SEASON';
+  const subEl=document.getElementById('bp-season-sub');
+  if(subEl)subEl.textContent='SEASON '+(BP_CONFIG.seasonNumber||1)+' — TIER PROGRESSION';
+  // Tier badge
+  const tierEl=document.getElementById('bp-current-tier');
+  if(tierEl)tierEl.textContent=_bpPlayerData.tier;
+  // Progress bar — uses progressive XP curve
+  const maxTier=BP_CONFIG.maxTier||50;
+  const isMax=_bpPlayerData.tier>=maxTier;
+  const xpForThisTier=bpXpRequiredForTier(_bpPlayerData.tier);
+  const xpIntoTier=bpXpIntoCurrentTier(_bpPlayerData.xp);
+  const pct=isMax?100:Math.min(100,(xpIntoTier/xpForThisTier)*100);
+  const fillEl=document.getElementById('bp-progress-fill');
+  if(fillEl)fillEl.style.width=pct+'%';
+  const xpText=document.getElementById('bp-xp-text');
+  if(xpText)xpText.textContent=isMax?'MAX TIER REACHED':(xpIntoTier.toLocaleString()+' / '+xpForThisTier.toLocaleString()+' XP');
+  // Pass status badges
+  const statusEl=document.getElementById('bp-pass-status');
+  if(statusEl){
+    let badges='<div class="bp-pass-badge free">⚡ FREE TRACK</div>';
+    if(_bpPlayerData.hasStandard)badges+='<div class="bp-pass-badge standard">💎 STANDARD</div>';
+    if(_bpPlayerData.hasPremium)badges+='<div class="bp-pass-badge premium">👑 PREMIUM</div>';
+    statusEl.innerHTML=badges;
+  }
+  // Buy buttons — hide if already owned
+  const buyRow=document.getElementById('bp-buy-row');
+  const stdBtn=document.getElementById('bp-buy-standard');
+  const premBtn=document.getElementById('bp-buy-premium');
+  if(stdBtn)stdBtn.style.display=_bpPlayerData.hasStandard?'none':'flex';
+  if(premBtn){
+    premBtn.style.display=_bpPlayerData.hasPremium?'none':'flex';
+    if(!_bpPlayerData.hasStandard){
+      premBtn.innerHTML='<span>👑</span><span>BUNDLE: STANDARD + PREMIUM — '+((BP_CONFIG.standardCost||3000)+(BP_CONFIG.premiumCost||1500)).toLocaleString()+' Cel</span>';
+    }
+  }
+  if(buyRow&&_bpPlayerData.hasStandard&&_bpPlayerData.hasPremium)buyRow.style.display='none';
+  // Tier rows
+  renderBPTierRows();
+  // Missions
+  renderMissions();
+  // Scroll to current tier
+  setTimeout(()=>{
+    const row=document.querySelector('.bp-tier-row.current');
+    if(row)row.scrollIntoView({block:'center',behavior:'smooth'});
+  },100);
+}
+
+function renderBPTierRows(){
+  const rowsEl=document.getElementById('bp-tier-rows');
+  if(!rowsEl||!BP_CONFIG)return;
+  rowsEl.innerHTML='';
+  const maxTier=BP_CONFIG.maxTier||50;
+  for(let t=1;t<=maxTier;t++){
+    const rewardData=BP_CONFIG.rewards.find(r=>r.tier===t);
+    const tierUnlocked=_bpPlayerData.tier>=t;
+    const isCurrent=_bpPlayerData.tier===t;
+    const row=document.createElement('div');
+    row.className='bp-tier-row'+(tierUnlocked?' unlocked':'')+(isCurrent?' current':'');
+    row.innerHTML=
+      '<div class="bp-tier-col-num">'+t+'</div>'
+      +bpRewardCellHtml(t,'free',rewardData?.free,tierUnlocked,true)
+      +bpRewardCellHtml(t,'standard',rewardData?.standard,tierUnlocked,_bpPlayerData.hasStandard)
+      +bpRewardCellHtml(t,'premium',rewardData?.premium,tierUnlocked,_bpPlayerData.hasPremium);
+    rowsEl.appendChild(row);
+  }
+}
+
+function bpRewardCellHtml(tier,track,reward,tierUnlocked,hasAccess){
+  if(!reward)return '<div class="bp-reward-cell" style="opacity:.2"><div style="flex:1;text-align:center;color:#4b5563;font-size:9px">—</div></div>';
+  const claimedKey='claimed'+track.charAt(0).toUpperCase()+track.slice(1);
+  const claimed=_bpPlayerData[claimedKey]&&_bpPlayerData[claimedKey][tier];
+  const canClaim=tierUnlocked&&hasAccess&&!claimed;
+  let cellClass='bp-reward-cell';
+  if(claimed)cellClass+=' claimed';
+  else if(!tierUnlocked)cellClass+=' locked';
+  else if(!hasAccess)cellClass+=' unavailable';
+  const icon={celestium:'💠',pack:'🎁',card:'🎴',cosmetic:'✨'}[reward.type]||'🎁';
+  return '<div class="'+cellClass+'">'
+    +'<span class="bp-reward-icon">'+icon+'</span>'
+    +'<span class="bp-reward-label">'+(reward.label||reward.type)+'</span>'
+    +(claimed
+      ?'<span style="color:#22c55e;font-size:11px">✓</span>'
+      :(canClaim
+        ?'<button class="bp-reward-claim-btn" onclick="claimBPReward('+tier+',\''+track+'\')">CLAIM</button>'
+        :(!tierUnlocked
+          ?'<span style="color:#4b5563;font-size:11px">🔒</span>'
+          :'<span style="color:#6b7280;font-size:9px">'+(track==='standard'?'BUY PASS':(track==='premium'?'BUY PREM':''))+'</span>')))
+    +'</div>';
+}
+
+// ─── SEASON TIMER ────────────────────────────────
+function startBPTimer(){
+  if(_bpTimerInterval)clearInterval(_bpTimerInterval);
+  updateBPTimer();
+  _bpTimerInterval=setInterval(updateBPTimer,1000);
+}
+
+function updateBPTimer(){
+  const el=document.getElementById('bp-time-left');
+  if(!el||!BP_CONFIG)return;
+  if(!BP_CONFIG.startDate){el.textContent='—';return;}
+  const start=new Date(BP_CONFIG.startDate).getTime();
+  const dur=(BP_CONFIG.durationDays||30)*24*60*60*1000;
+  const end=start+dur;
+  const remaining=end-Date.now();
+  if(remaining<=0){el.textContent='ENDED';return;}
+  const days=Math.floor(remaining/(24*60*60*1000));
+  const hours=Math.floor((remaining%(24*60*60*1000))/(60*60*1000));
+  el.textContent=days+'d '+hours+'h';
+}
+
+
+// ═══════════════════════════════════════════════════
+// ADMIN BATTLE PASS EDITOR
+// ═══════════════════════════════════════════════════
+let _editorBPConfig=null;
+
+function openBPEditor(){
+  if(!isAdmin()){alert('Admin only');return;}
+  _editorBPConfig=JSON.parse(JSON.stringify(BP_CONFIG||BP_DEFAULT_CONFIG));
+  showScreen('bp-editor-screen');
+  fillBPEditorFields();
+  renderBPRewardsEditor();
+}
+
+function fillBPEditorFields(){
+  document.getElementById('bp-edit-seasonId').value=_editorBPConfig.seasonId||'';
+  document.getElementById('bp-edit-seasonName').value=_editorBPConfig.seasonName||'';
+  document.getElementById('bp-edit-seasonNumber').value=_editorBPConfig.seasonNumber||1;
+  document.getElementById('bp-edit-startDate').value=_editorBPConfig.startDate?_editorBPConfig.startDate.slice(0,16):'';
+  document.getElementById('bp-edit-durationDays').value=_editorBPConfig.durationDays||30;
+  document.getElementById('bp-edit-maxTier').value=_editorBPConfig.maxTier||50;
+  document.getElementById('bp-edit-xpPerTier').value=_editorBPConfig.xpPerTier||1000;
+  document.getElementById('bp-edit-xpPerWin').value=_editorBPConfig.xpPerWin||100;
+  document.getElementById('bp-edit-xpPerMatch').value=_editorBPConfig.xpPerMatch||30;
+  document.getElementById('bp-edit-xpPerDailyQuest').value=_editorBPConfig.xpPerDailyQuest||75;
+  document.getElementById('bp-edit-xpPerLoginStreak').value=_editorBPConfig.xpPerLoginStreak||150;
+  document.getElementById('bp-edit-standardCost').value=_editorBPConfig.standardCost||3000;
+  document.getElementById('bp-edit-premiumCost').value=_editorBPConfig.premiumCost||1500;
+}
+
+function renderBPRewardsEditor(){
+  const c=document.getElementById('bp-rewards-editor');
+  if(!c)return;
+  c.innerHTML='';
+  // Ensure rewards array length matches maxTier
+  const maxTier=_editorBPConfig.maxTier||50;
+  while(_editorBPConfig.rewards.length<maxTier){
+    const t=_editorBPConfig.rewards.length+1;
+    _editorBPConfig.rewards.push({tier:t,free:null,standard:null,premium:null});
+  }
+  for(let i=0;i<maxTier;i++){
+    const r=_editorBPConfig.rewards[i];
+    const div=document.createElement('div');
+    div.style.cssText='background:rgba(8,8,28,.5);border:1px solid var(--border);border-radius:7px;padding:8px;margin-bottom:6px';
+    div.innerHTML=
+      '<div style="font-size:10px;color:var(--violet2);letter-spacing:1px;margin-bottom:6px;font-weight:700">TIER '+(i+1)+'</div>'
+      +bpRewardEditorCell(i,'free','⚡ Free',r.free)
+      +bpRewardEditorCell(i,'standard','💎 Standard',r.standard)
+      +bpRewardEditorCell(i,'premium','👑 Premium',r.premium);
+    c.appendChild(div);
+  }
+}
+
+function bpRewardEditorCell(idx,track,label,reward){
+  const type=reward?.type||'';
+  const amount=reward?.amount||0;
+  const lblTxt=reward?.label||'';
+  return '<div style="display:grid;grid-template-columns:90px 110px 80px 1fr;gap:6px;margin-bottom:4px;align-items:center">'
+    +'<div style="font-size:9px;color:#9ca3af">'+label+'</div>'
+    +'<select class="admin-input" style="font-size:10px;padding:4px" onchange="bpSetRewardField('+idx+',\''+track+'\',\'type\',this.value)">'
+    +'<option value=""'+(type===''?' selected':'')+'>— None —</option>'
+    +'<option value="celestium"'+(type==='celestium'?' selected':'')+'>💠 Celestium</option>'
+    +'<option value="pack"'+(type==='pack'?' selected':'')+'>🎁 Pack</option>'
+    +'<option value="card"'+(type==='card'?' selected':'')+'>🎴 Card</option>'
+    +'<option value="cosmetic"'+(type==='cosmetic'?' selected':'')+'>✨ Cosmetic</option>'
+    +'</select>'
+    +'<input class="admin-input" type="number" placeholder="amount" value="'+amount+'" style="font-size:10px;padding:4px" onchange="bpSetRewardField('+idx+',\''+track+'\',\'amount\',parseInt(this.value)||0)"/>'
+    +'<input class="admin-input" type="text" placeholder="label (e.g. +100 Cel)" value="'+escapeAttr(lblTxt)+'" style="font-size:10px;padding:4px" onchange="bpSetRewardField('+idx+',\''+track+'\',\'label\',this.value)"/>'
+    +'</div>';
+}
+
+function bpSetRewardField(tierIdx,track,field,value){
+  if(!_editorBPConfig.rewards[tierIdx]){_editorBPConfig.rewards[tierIdx]={tier:tierIdx+1,free:null,standard:null,premium:null};}
+  if(field==='type'&&!value){_editorBPConfig.rewards[tierIdx][track]=null;return;}
+  if(!_editorBPConfig.rewards[tierIdx][track])_editorBPConfig.rewards[tierIdx][track]={};
+  _editorBPConfig.rewards[tierIdx][track][field]=value;
+}
+
+async function saveBPFromEditor(){
+  if(!isAdmin()||!_celSB)return;
+  // Pull current field values
+  _editorBPConfig.seasonId=document.getElementById('bp-edit-seasonId').value;
+  _editorBPConfig.seasonName=document.getElementById('bp-edit-seasonName').value;
+  _editorBPConfig.seasonNumber=parseInt(document.getElementById('bp-edit-seasonNumber').value)||1;
+  const dateVal=document.getElementById('bp-edit-startDate').value;
+  _editorBPConfig.startDate=dateVal?new Date(dateVal).toISOString():null;
+  _editorBPConfig.durationDays=parseInt(document.getElementById('bp-edit-durationDays').value)||30;
+  _editorBPConfig.maxTier=parseInt(document.getElementById('bp-edit-maxTier').value)||50;
+  _editorBPConfig.xpPerTier=parseInt(document.getElementById('bp-edit-xpPerTier').value)||1000;
+  _editorBPConfig.xpPerWin=parseInt(document.getElementById('bp-edit-xpPerWin').value)||100;
+  _editorBPConfig.xpPerMatch=parseInt(document.getElementById('bp-edit-xpPerMatch').value)||30;
+  _editorBPConfig.xpPerDailyQuest=parseInt(document.getElementById('bp-edit-xpPerDailyQuest').value)||75;
+  _editorBPConfig.xpPerLoginStreak=parseInt(document.getElementById('bp-edit-xpPerLoginStreak').value)||150;
+  _editorBPConfig.standardCost=parseInt(document.getElementById('bp-edit-standardCost').value)||3000;
+  _editorBPConfig.premiumCost=parseInt(document.getElementById('bp-edit-premiumCost').value)||1500;
+  try{
+    await _celSB.from('app_settings').upsert(
+      {key:'battle_pass_config',value:JSON.stringify(_editorBPConfig),updated_at:new Date().toISOString()},
+      {onConflict:'key'}
+    );
+    BP_CONFIG=_editorBPConfig;
+    alert('✓ Battle Pass saved! Live for all players.');
+  }catch(e){alert('Failed to save: '+e.message);}
+}
+
+async function startBPSeasonNow(){
+  if(!isAdmin()||!_celSB)return;
+  if(!confirm('Start the current season NOW? This sets startDate to right now.'))return;
+  if(!BP_CONFIG)BP_CONFIG={...BP_DEFAULT_CONFIG};
+  BP_CONFIG.startDate=new Date().toISOString();
+  try{
+    await _celSB.from('app_settings').upsert(
+      {key:'battle_pass_config',value:JSON.stringify(BP_CONFIG),updated_at:new Date().toISOString()},
+      {onConflict:'key'}
+    );
+    alert('✓ Season started! It will end in '+(BP_CONFIG.durationDays||30)+' days.');
+  }catch(e){alert('Failed: '+e.message);}
+}
+
+async function resetBPToDefault(){
+  if(!isAdmin())return;
+  if(!confirm('Reset Battle Pass config to default? This affects all players.'))return;
+  try{
+    await _celSB.from('app_settings').delete().eq('key','battle_pass_config');
+    BP_CONFIG=JSON.parse(JSON.stringify(BP_DEFAULT_CONFIG));
+    alert('✓ Battle Pass reset to default.');
+  }catch(e){alert('Failed: '+e.message);}
+}
+
+async function resetMyBPProgress(){
+  if(!isAdmin())return;
+  if(!confirm('Reset YOUR battle pass progress? (Other players unaffected)'))return;
+  _bpPlayerData={xp:0,tier:1,hasStandard:false,hasPremium:false,claimedFree:{},claimedStandard:{},claimedPremium:{},seasonId:BP_CONFIG.seasonId};
+  await saveBPPlayerData();
+  alert('✓ Your BP progress reset.');
+}
+
+
+// ═══════════════════════════════════════════════════
+// MISSION SYSTEM (Daily + Weekly)
+// ═══════════════════════════════════════════════════
+
+// Mission progress is stored on the player in BP data:
+// _bpPlayerData.missionProgress = { daily: {missionId: count}, weekly: {missionId: count} }
+// _bpPlayerData.missionClaimed = { daily: {missionId: true}, weekly: {missionId: true} }
+// _bpPlayerData.missionResetDate = { daily: ISO, weekly: ISO }
+// _bpPlayerData.dailyChars = [...] (set of cids used today for unique chars mission)
+// _bpPlayerData.weeklyChars = [...]
+
+function getDailyResetTime(){
+  // Resets at midnight local time
+  const tomorrow=new Date();
+  tomorrow.setHours(24,0,0,0);
+  return tomorrow.toISOString();
+}
+
+function getWeeklyResetTime(){
+  // Resets next Monday 00:00 local
+  const now=new Date();
+  const day=now.getDay()||7; // Sunday=0→7
+  const daysToMon=8-day;
+  const monday=new Date(now);
+  monday.setDate(now.getDate()+daysToMon);
+  monday.setHours(0,0,0,0);
+  return monday.toISOString();
+}
+
+function ensureMissionState(){
+  if(!_bpPlayerData)return;
+  if(!_bpPlayerData.missionProgress)_bpPlayerData.missionProgress={daily:{},weekly:{}};
+  if(!_bpPlayerData.missionClaimed)_bpPlayerData.missionClaimed={daily:{},weekly:{}};
+  if(!_bpPlayerData.missionResetDate)_bpPlayerData.missionResetDate={};
+  if(!_bpPlayerData.dailyChars)_bpPlayerData.dailyChars=[];
+  if(!_bpPlayerData.weeklyChars)_bpPlayerData.weeklyChars=[];
+  // Check resets
+  const now=Date.now();
+  if(!_bpPlayerData.missionResetDate.daily||new Date(_bpPlayerData.missionResetDate.daily).getTime()<now){
+    _bpPlayerData.missionProgress.daily={};
+    _bpPlayerData.missionClaimed.daily={};
+    _bpPlayerData.dailyChars=[];
+    _bpPlayerData.missionResetDate.daily=getDailyResetTime();
+  }
+  if(!_bpPlayerData.missionResetDate.weekly||new Date(_bpPlayerData.missionResetDate.weekly).getTime()<now){
+    _bpPlayerData.missionProgress.weekly={};
+    _bpPlayerData.missionClaimed.weekly={};
+    _bpPlayerData.weeklyChars=[];
+    _bpPlayerData.missionResetDate.weekly=getWeeklyResetTime();
+  }
+}
+
+async function incrementMissionProgress(type,amount){
+  if(!BP_CONFIG||!_bpPlayerData)return;
+  ensureMissionState();
+  ['daily','weekly'].forEach(scope=>{
+    const list=scope==='daily'?BP_CONFIG.dailyMissions:BP_CONFIG.weeklyMissions;
+    if(!list)return;
+    list.forEach(m=>{
+      if(m.type===type){
+        const cur=_bpPlayerData.missionProgress[scope][m.id]||0;
+        if(cur<m.target){
+          _bpPlayerData.missionProgress[scope][m.id]=Math.min(m.target,cur+amount);
+        }
+      }
+    });
+  });
+  await saveBPPlayerData();
+  updateBPHudIfVisible();
+}
+
+async function trackUniqueCharacter(cid){
+  // Called when player plays a character card. Adds to unique character lists.
+  if(!BP_CONFIG||!_bpPlayerData||!cid)return;
+  ensureMissionState();
+  let changed=false;
+  if(!_bpPlayerData.dailyChars.includes(cid)){_bpPlayerData.dailyChars.push(cid);changed=true;}
+  if(!_bpPlayerData.weeklyChars.includes(cid)){_bpPlayerData.weeklyChars.push(cid);changed=true;}
+  if(changed){
+    // Update unique_chars mission progress
+    ['daily','weekly'].forEach(scope=>{
+      const list=scope==='daily'?BP_CONFIG.dailyMissions:BP_CONFIG.weeklyMissions;
+      if(!list)return;
+      list.forEach(m=>{
+        if(m.type==='unique_chars'){
+          const charsList=scope==='daily'?_bpPlayerData.dailyChars:_bpPlayerData.weeklyChars;
+          _bpPlayerData.missionProgress[scope][m.id]=Math.min(m.target,charsList.length);
+        }
+      });
+    });
+    await saveBPPlayerData();
+    updateBPHudIfVisible();
+  }
+}
+
+async function claimMissionReward(scope,missionId){
+  if(!BP_CONFIG||!_bpPlayerData)return;
+  ensureMissionState();
+  const list=scope==='daily'?BP_CONFIG.dailyMissions:BP_CONFIG.weeklyMissions;
+  const mission=list?.find(m=>m.id===missionId);
+  if(!mission){alert('Mission not found.');return;}
+  const prog=_bpPlayerData.missionProgress[scope][missionId]||0;
+  if(prog<mission.target){alert('Mission not complete yet!');return;}
+  if(_bpPlayerData.missionClaimed[scope][missionId]){alert('Already claimed!');return;}
+  // Award XP
+  await awardBPXp(mission.xp,'Mission: '+mission.name);
+  _bpPlayerData.missionClaimed[scope][missionId]=true;
+  // Track meta mission progress (complete 1 daily mission)
+  if(scope==='daily'){
+    await incrementMissionProgress('meta_complete_daily',1);
+  }
+  await saveBPPlayerData();
+  renderMissions();
+}
+
+function renderMissions(){
+  if(!BP_CONFIG||!_bpPlayerData)return;
+  ensureMissionState();
+  renderMissionList('daily',BP_CONFIG.dailyMissions,'bp-daily-missions');
+  renderMissionList('weekly',BP_CONFIG.weeklyMissions,'bp-weekly-missions');
+  // Update reset times
+  const dailyResetEl=document.getElementById('bp-daily-reset');
+  const weeklyResetEl=document.getElementById('bp-weekly-reset');
+  if(dailyResetEl){
+    const ms=new Date(_bpPlayerData.missionResetDate.daily).getTime()-Date.now();
+    const h=Math.max(0,Math.floor(ms/(60*60*1000)));
+    const m=Math.max(0,Math.floor((ms%(60*60*1000))/(60*1000)));
+    dailyResetEl.textContent='Resets in '+h+'h '+m+'m';
+  }
+  if(weeklyResetEl){
+    const ms=new Date(_bpPlayerData.missionResetDate.weekly).getTime()-Date.now();
+    const d=Math.max(0,Math.floor(ms/(24*60*60*1000)));
+    const h=Math.max(0,Math.floor((ms%(24*60*60*1000))/(60*60*1000)));
+    weeklyResetEl.textContent='Resets in '+d+'d '+h+'h';
+  }
+}
+
+function renderMissionList(scope,missions,containerId){
+  const c=document.getElementById(containerId);
+  if(!c||!missions)return;
+  c.innerHTML='';
+  missions.forEach(m=>{
+    const prog=_bpPlayerData.missionProgress[scope][m.id]||0;
+    const claimed=_bpPlayerData.missionClaimed[scope][m.id];
+    const complete=prog>=m.target;
+    const row=document.createElement('div');
+    row.className='bp-mission-row'+(complete?' complete':'')+(claimed?' claimed':'');
+    const pct=Math.min(100,(prog/m.target)*100);
+    row.innerHTML=
+      '<div class="bp-mission-title">'
+        +'<span>'+m.name+'</span>'
+        +'<span class="bp-mission-reward">+'+m.xp+' XP</span>'
+      +'</div>'
+      +'<div class="bp-mission-prog-bar"><div class="bp-mission-prog-fill" style="width:'+pct+'%"></div></div>'
+      +'<div class="bp-mission-prog-text">'
+        +'<span>'+prog+' / '+m.target+'</span>'
+        +(claimed
+          ?'<span style="color:#22c55e;font-size:10px">✓ CLAIMED</span>'
+          :(complete
+            ?'<button class="bp-mission-claim-btn" onclick="claimMissionReward(\''+scope+'\',\''+m.id+'\')">CLAIM</button>'
+            :'<span style="color:#4b5563">In progress</span>'))
+      +'</div>';
+    c.appendChild(row);
+  });
+}
+
 // ═══════════════════════════════════════════════════
 // STARTUP
 // ═══════════════════════════════════════════════════
@@ -6568,6 +7376,7 @@ window.addEventListener('load',async()=>{
       startPresenceHeartbeat();
       startInviteListener();
       await loadCampaign();
+      await loadBattlePass();
       // Sign out
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){
@@ -6635,6 +7444,7 @@ window.addEventListener('load',async()=>{
       startPresenceHeartbeat();
       startInviteListener();
       await loadCampaign();
+      await loadBattlePass();
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){console.error('[AUTH] error:',e);window.signOutUser=function(){window.location.replace(LOGIN);};}
   }
@@ -6975,6 +7785,18 @@ window.addEventListener('load',async()=>{
     <button class="admin-action-btn" onclick="adminUnlockAllAchievements()">+ UNLOCK ALL ACHIEVEMENTS</button>
     <button class="admin-action-btn" onclick="adminGrantAllCards()">+ GRANT ALL CARDS (4 OF EACH)</button>
     <button class="admin-action-btn danger" onclick="adminResetProfile()">⚠ RESET MY PROFILE</button>
+  </div>
+
+  <!-- BATTLE PASS EDITOR -->
+  <div class="admin-section">
+    <div class="admin-section-title">⚔ BATTLE PASS EDITOR</div>
+    <div style="font-size:9px;color:#9ca3af;margin-bottom:10px;letter-spacing:1px;line-height:1.5">
+      Configure season name, start date, duration, XP rates, costs, and tier rewards.
+    </div>
+    <button class="admin-action-btn" onclick="openBPEditor()">📝 OPEN BP EDITOR</button>
+    <button class="admin-action-btn" onclick="startBPSeasonNow()" style="margin-top:6px">▶ START SEASON NOW</button>
+    <button class="admin-action-btn" onclick="resetBPToDefault()" style="margin-top:6px">🔄 RESET BP TO DEFAULT</button>
+    <button class="admin-action-btn danger" onclick="resetMyBPProgress()" style="margin-top:6px">⚠ RESET MY BP PROGRESS</button>
   </div>
 
   <!-- CAMPAIGN EDITOR -->
@@ -7360,6 +8182,155 @@ window.addEventListener('load',async()=>{
 
   <div id="campaign-editor-content">
     <div style="text-align:center;padding:30px;color:#6b7280">Loading...</div>
+  </div>
+</div>
+
+<!-- BATTLE PASS SCREEN -->
+<div id="battle-pass-screen" class="screen" style="padding:20px;max-width:920px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+    <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
+    <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:var(--blue);text-shadow:0 0 10px var(--blue)">⚔ BATTLE PASS</div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+      <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" style="width:18px;height:18px;border-radius:50%"/>
+      <span id="bp-cel-amount" style="font-size:13px;font-weight:700;color:#fbbf24">—</span>
+    </div>
+  </div>
+
+  <!-- HEADER + PROGRESS -->
+  <div class="bp-header">
+    <div class="bp-season-name" id="bp-season-name">VOID PRISM</div>
+    <div class="bp-season-sub" id="bp-season-sub">SEASON 1 — TIER PROGRESSION</div>
+
+    <div class="bp-progress-section">
+      <div class="bp-tier-badge">
+        <div class="bp-tier-num" id="bp-current-tier">1</div>
+        <div class="bp-tier-lbl">TIER</div>
+      </div>
+      <div class="bp-progress-info">
+        <div class="bp-progress-label">PROGRESS TO NEXT TIER</div>
+        <div class="bp-progress-bar"><div class="bp-progress-fill" id="bp-progress-fill" style="width:0%"></div></div>
+        <div class="bp-xp-text" id="bp-xp-text">0 / 1000 XP</div>
+      </div>
+      <div class="bp-timer">
+        <div class="bp-timer-val" id="bp-time-left">—</div>
+        <div class="bp-timer-lbl">REMAINING</div>
+      </div>
+    </div>
+
+    <div class="bp-pass-status" id="bp-pass-status">
+      <div class="bp-pass-badge free">⚡ FREE TRACK</div>
+    </div>
+
+    <div class="bp-buy-row" id="bp-buy-row">
+      <button class="bp-buy-btn" id="bp-buy-standard" onclick="buyStandardPass()">
+        <span>💎</span><span>STANDARD PASS — 3,000 Cel</span>
+      </button>
+      <button class="bp-buy-btn premium" id="bp-buy-premium" onclick="buyPremiumPass()">
+        <span>👑</span><span>+ PREMIUM — 1,500 Cel</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MISSIONS SECTION -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+    <!-- Daily -->
+    <div style="background:rgba(8,8,28,.6);border:1px solid var(--border-v);border-radius:12px;padding:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:11px;color:#a5b4fc;letter-spacing:2px;font-family:Orbitron,sans-serif">🌅 DAILY MISSIONS</div>
+        <div style="font-size:9px;color:#6b7280" id="bp-daily-reset">Resets in —</div>
+      </div>
+      <div id="bp-daily-missions"></div>
+    </div>
+    <!-- Weekly -->
+    <div style="background:rgba(8,8,28,.6);border:1px solid var(--border-v);border-radius:12px;padding:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:11px;color:#fbbf24;letter-spacing:2px;font-family:Orbitron,sans-serif">📅 WEEKLY MISSIONS</div>
+        <div style="font-size:9px;color:#6b7280" id="bp-weekly-reset">Resets in —</div>
+      </div>
+      <div id="bp-weekly-missions"></div>
+    </div>
+  </div>
+
+  <!-- TIERS GRID -->
+  <div class="bp-tier-grid">
+    <div class="bp-tier-rows-header">
+      <div style="text-align:center">TIER</div>
+      <div class="bp-track-header bp-track-free">⚡ FREE</div>
+      <div class="bp-track-header bp-track-standard">💎 STANDARD</div>
+      <div class="bp-track-header bp-track-premium">👑 PREMIUM</div>
+    </div>
+    <div id="bp-tier-rows" style="max-height:520px;overflow-y:auto"></div>
+  </div>
+</div>
+
+<!-- PASS PURCHASE CONFIRM MODAL -->
+<div class="modal-overlay" id="bp-buy-modal">
+  <div class="bp-buy-modal-content">
+    <div id="bp-buy-icon" style="font-size:54px;margin-bottom:10px">💎</div>
+    <div id="bp-buy-title" style="font-family:'Orbitron',sans-serif;font-size:16px;letter-spacing:3px;color:var(--blue);margin-bottom:6px">STANDARD PASS</div>
+    <div id="bp-buy-desc" style="font-size:11px;color:#9ca3af;margin-bottom:14px;line-height:1.5">Unlock exclusive rewards across all 50 tiers.</div>
+    <div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.25);border-radius:8px;padding:10px 14px;margin-bottom:16px">
+      <div style="font-size:9px;color:#fbbf24;letter-spacing:2px;margin-bottom:4px">COST</div>
+      <div style="font-size:20px;font-weight:700;color:#fbbf24;font-family:'Orbitron',sans-serif" id="bp-buy-cost">3,000 Celestium</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-gray btn-sm" style="flex:1;padding:10px" onclick="document.getElementById('bp-buy-modal').classList.remove('open')">Cancel</button>
+      <button class="btn-primary" id="bp-buy-confirm-btn" style="flex:2;padding:10px;font-family:'Orbitron',sans-serif;letter-spacing:2px" onclick="confirmPassPurchase()">▸ CONFIRM</button>
+    </div>
+  </div>
+</div>
+
+<!-- BATTLE PASS EDITOR SCREEN (admin only) -->
+<div id="bp-editor-screen" class="screen" style="padding:20px;max-width:840px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+    <button class="btn-gray btn-sm" onclick="showScreen('admin-screen');openAdminPanel()">← Back</button>
+    <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:#fca5a5;text-shadow:0 0 10px rgba(239,68,68,.5)">⚔ BATTLE PASS EDITOR</div>
+    <button class="admin-action-btn" style="margin-left:auto;width:auto;padding:8px 16px" onclick="saveBPFromEditor()">💾 SAVE</button>
+  </div>
+
+  <div style="font-size:10px;color:#fcd34d;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:6px;padding:8px 10px;margin-bottom:14px;letter-spacing:1px">⚠ Changes are GLOBAL and apply to all players when saved.</div>
+
+  <!-- Season Settings -->
+  <div class="admin-section">
+    <div class="admin-section-title">📅 SEASON SETTINGS</div>
+    <div class="bp-edit-row"><div class="bp-edit-label">Season ID:</div>
+      <input id="bp-edit-seasonId" class="admin-input" type="text"/></div>
+    <div class="bp-edit-row"><div class="bp-edit-label">Season Name:</div>
+      <input id="bp-edit-seasonName" class="admin-input" type="text"/></div>
+    <div class="bp-edit-row"><div class="bp-edit-label">Season #:</div>
+      <input id="bp-edit-seasonNumber" class="admin-input" type="number" style="width:100px"/></div>
+    <div class="bp-edit-row"><div class="bp-edit-label">Start Date:</div>
+      <input id="bp-edit-startDate" class="admin-input" type="datetime-local"/></div>
+    <div class="bp-edit-row"><div class="bp-edit-label">Duration (days):</div>
+      <input id="bp-edit-durationDays" class="admin-input" type="number" style="width:100px"/></div>
+    <div class="bp-edit-row"><div class="bp-edit-label">Max Tier:</div>
+      <input id="bp-edit-maxTier" class="admin-input" type="number" style="width:100px"/></div>
+  </div>
+
+  <!-- XP & Costs -->
+  <div class="admin-section">
+    <div class="admin-section-title">⚙ XP & COSTS</div>
+    <div class="bp-edit-row"><div class="bp-edit-label">XP per Tier:</div>
+      <input id="bp-edit-xpPerTier" class="admin-input" type="number" style="width:120px"/></div>
+    <div class="bp-edit-row"><div class="bp-edit-label">XP per Win:</div>
+      <input id="bp-edit-xpPerWin" class="admin-input" type="number" style="width:120px"/></div>
+    <div class="bp-edit-row"><div class="bp-edit-label">XP per Match:</div>
+      <input id="bp-edit-xpPerMatch" class="admin-input" type="number" style="width:120px"/></div>
+    <div class="bp-edit-row"><div class="bp-edit-label">XP per Quest:</div>
+      <input id="bp-edit-xpPerDailyQuest" class="admin-input" type="number" style="width:120px"/></div>
+    <div class="bp-edit-row"><div class="bp-edit-label">XP per Login:</div>
+      <input id="bp-edit-xpPerLoginStreak" class="admin-input" type="number" style="width:120px"/></div>
+    <div class="bp-edit-row"><div class="bp-edit-label">Standard Cost:</div>
+      <input id="bp-edit-standardCost" class="admin-input" type="number" style="width:120px"/> <span style="font-size:9px;color:#6b7280">Cel</span></div>
+    <div class="bp-edit-row"><div class="bp-edit-label">Premium Cost:</div>
+      <input id="bp-edit-premiumCost" class="admin-input" type="number" style="width:120px"/> <span style="font-size:9px;color:#6b7280">Cel (on top of Standard)</span></div>
+  </div>
+
+  <!-- Rewards Editor -->
+  <div class="admin-section">
+    <div class="admin-section-title">🎁 TIER REWARDS</div>
+    <div style="font-size:9px;color:#9ca3af;margin-bottom:10px;line-height:1.5">For each tier you can set a Free/Standard/Premium reward. Type can be: celestium, pack, card, or cosmetic. Leave a track blank to skip it.</div>
+    <div id="bp-rewards-editor" style="max-height:500px;overflow-y:auto;padding-right:4px"></div>
   </div>
 </div>
 </body>
