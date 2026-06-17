@@ -2463,6 +2463,340 @@ textarea{
 .cutscene-field-label{
   color:#c8a44a !important;
 }
+
+/* ════════════════════════════════════════════════ */
+/* HOLOGRAPHIC CARD SYSTEM                           */
+/* Multiple foil styles — applied via .holo-* class  */
+/* ════════════════════════════════════════════════ */
+
+/* Base holo container — all variants share */
+.holo-card{
+  position:relative;
+  overflow:hidden;
+  transform-style:preserve-3d;
+  transition:transform .25s ease;
+  cursor:pointer;
+  border-radius:12px;
+  isolation:isolate;
+}
+.holo-card.tilt-on-hover:hover{
+  transform:perspective(900px) rotateY(var(--rx,0deg)) rotateX(var(--ry,0deg)) scale(1.02);
+}
+.holo-card img{
+  display:block;
+  width:100%;
+  height:auto;
+  position:relative;
+  z-index:1;
+}
+
+/* All holos add a shine layer pinned over the image */
+.holo-card::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  mix-blend-mode:color-dodge;
+  opacity:0;
+  transition:opacity .3s ease;
+}
+.holo-card:hover::before,
+.holo-card.always-on::before{
+  opacity:1;
+}
+
+/* All holos add a sparkle/grain layer */
+.holo-card::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  z-index:3;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .3s ease;
+}
+.holo-card:hover::after,
+.holo-card.always-on::after{
+  opacity:.65;
+}
+
+/* ──────────────────────────────────────────── */
+/* STYLE 1: CLASSIC POKEMON-STYLE RAINBOW HOLO  */
+/* ──────────────────────────────────────────── */
+.holo-classic::before{
+  background:linear-gradient(115deg,
+    transparent 30%,
+    rgba(255,100,150,.6) 38%,
+    rgba(150,200,255,.6) 45%,
+    rgba(150,255,150,.6) 52%,
+    rgba(255,255,150,.6) 59%,
+    rgba(255,150,255,.6) 66%,
+    transparent 74%);
+  background-size:300% 300%;
+  background-position:var(--bg-x,0%) var(--bg-y,0%);
+  animation:holo-classic-shimmer 4s ease-in-out infinite;
+}
+.holo-classic::after{
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,.4) 0.5px, transparent 1px),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,.3) 0.5px, transparent 1px),
+    radial-gradient(circle at 40% 80%, rgba(255,255,255,.35) 0.5px, transparent 1px),
+    radial-gradient(circle at 85% 20%, rgba(255,255,255,.4) 0.5px, transparent 1px);
+  background-size:80px 80px,120px 120px,100px 100px,90px 90px;
+  mix-blend-mode:screen;
+  animation:holo-sparkle 3s linear infinite;
+}
+@keyframes holo-classic-shimmer{
+  0%,100%{background-position:0% 0%;}
+  50%{background-position:100% 100%;}
+}
+@keyframes holo-sparkle{
+  0%,100%{transform:translate(0,0);}
+  50%{transform:translate(4px,-4px);}
+}
+
+/* ──────────────────────────────────────────── */
+/* STYLE 2: COSMIC HOLO — Stars + Nebula        */
+/* ──────────────────────────────────────────── */
+.holo-cosmic::before{
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(124,58,237,.5) 0%, transparent 40%),
+    radial-gradient(ellipse at 70% 60%, rgba(74,144,226,.5) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 20%, rgba(200,164,74,.3) 0%, transparent 35%);
+  background-size:200% 200%;
+  background-position:var(--bg-x,0%) var(--bg-y,0%);
+  animation:holo-cosmic-drift 8s ease-in-out infinite alternate;
+  mix-blend-mode:screen;
+}
+.holo-cosmic::after{
+  background:
+    radial-gradient(circle at 15% 25%, #fff 0.7px, transparent 1.5px),
+    radial-gradient(circle at 35% 65%, rgba(180,200,255,.9) 0.6px, transparent 1.2px),
+    radial-gradient(circle at 75% 35%, #fff 0.8px, transparent 1.6px),
+    radial-gradient(circle at 60% 85%, rgba(255,215,180,.9) 0.6px, transparent 1.2px),
+    radial-gradient(circle at 85% 75%, #fff 0.5px, transparent 1.2px),
+    radial-gradient(circle at 25% 90%, rgba(200,180,255,.9) 0.7px, transparent 1.4px);
+  background-size:60px 60px,80px 80px,90px 90px,70px 70px,100px 100px,75px 75px;
+  mix-blend-mode:screen;
+  animation:holo-cosmic-twinkle 4s ease-in-out infinite;
+}
+@keyframes holo-cosmic-drift{
+  from{background-position:0% 0%;}
+  to{background-position:60% 40%;}
+}
+@keyframes holo-cosmic-twinkle{
+  0%,100%{opacity:.55;transform:translate(0,0);}
+  50%{opacity:.85;transform:translate(2px,-3px);}
+}
+
+/* ──────────────────────────────────────────── */
+/* STYLE 3: GOLD FOIL — Premium metallic        */
+/* ──────────────────────────────────────────── */
+.holo-gold::before{
+  background:linear-gradient(110deg,
+    transparent 25%,
+    rgba(255,215,120,.7) 35%,
+    rgba(255,250,200,.85) 45%,
+    rgba(255,215,120,.7) 55%,
+    rgba(200,160,74,.5) 65%,
+    transparent 75%);
+  background-size:300% 300%;
+  background-position:var(--bg-x,0%) var(--bg-y,0%);
+  animation:holo-gold-sheen 3.5s ease-in-out infinite;
+  mix-blend-mode:overlay;
+}
+.holo-gold::after{
+  background:
+    radial-gradient(circle at 25% 35%, rgba(255,230,170,.7) 0.5px, transparent 1.2px),
+    radial-gradient(circle at 65% 55%, rgba(255,240,200,.6) 0.7px, transparent 1.5px),
+    radial-gradient(circle at 80% 25%, rgba(255,220,150,.8) 0.6px, transparent 1.4px),
+    radial-gradient(circle at 45% 75%, rgba(255,230,180,.5) 0.5px, transparent 1.1px);
+  background-size:70px 70px,90px 90px,80px 80px,100px 100px;
+  mix-blend-mode:screen;
+  filter:drop-shadow(0 0 2px rgba(255,215,120,.4));
+}
+@keyframes holo-gold-sheen{
+  0%,100%{background-position:-50% 0%;}
+  50%{background-position:150% 100%;}
+}
+/* Gold variant also gets a warm border glow */
+.holo-gold{
+  box-shadow:0 0 24px rgba(200,164,74,.4),0 0 8px rgba(255,215,120,.25) inset;
+}
+
+/* ──────────────────────────────────────────── */
+/* STYLE 4: REVERSE HOLO — subtle border-only   */
+/* ──────────────────────────────────────────── */
+.holo-reverse{
+  box-shadow:0 0 16px rgba(124,200,255,.3),0 0 0 2px rgba(124,200,255,.4) inset;
+}
+.holo-reverse::before{
+  background:linear-gradient(125deg,
+    transparent 0%,
+    rgba(140,200,255,.4) 30%,
+    rgba(200,160,255,.4) 50%,
+    rgba(140,200,255,.4) 70%,
+    transparent 100%);
+  background-size:200% 200%;
+  background-position:var(--bg-x,0%) var(--bg-y,0%);
+  animation:holo-reverse-flow 5s ease-in-out infinite;
+  mix-blend-mode:screen;
+  /* Only show on edges — masked to border */
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;
+  mask-composite:exclude;
+  padding:8px;
+}
+.holo-reverse::after{
+  /* No sparkles on reverse */
+  display:none;
+}
+@keyframes holo-reverse-flow{
+  0%,100%{background-position:0% 0%;}
+  50%{background-position:100% 100%;}
+}
+
+/* ──────────────────────────────────────────── */
+/* HOLO STYLE PICKER in card preview modal      */
+/* ──────────────────────────────────────────── */
+.holo-picker{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-top:8px;
+  padding:8px 0;
+  border-top:1px solid rgba(200,164,74,.15);
+}
+.holo-picker-btn{
+  padding:6px 12px;
+  background:rgba(15,12,30,.7);
+  border:1px solid rgba(200,164,74,.25);
+  border-radius:5px;
+  color:#9ca3af;
+  font-family:'Cinzel',serif;
+  font-size:10px;
+  letter-spacing:1.5px;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+.holo-picker-btn:hover{
+  border-color:#c8a44a;
+  color:#f0e6c8;
+}
+.holo-picker-btn.active{
+  background:linear-gradient(135deg,rgba(40,25,75,.85),rgba(60,35,100,.85));
+  border-color:#c8a44a;
+  color:#e8c570;
+  box-shadow:0 0 10px rgba(200,164,74,.25);
+}
+
+/* ════════════════════════════════════════════════ */
+/* ADMIN CARD MANAGER                                */
+/* ════════════════════════════════════════════════ */
+.admin-card-row{
+  display:grid;
+  grid-template-columns:50px 1fr auto;
+  gap:14px;
+  align-items:center;
+  padding:10px 14px;
+  background:rgba(15,12,30,.6);
+  border:1px solid rgba(200,164,74,.15);
+  border-radius:8px;
+  margin-bottom:6px;
+  transition:all .15s ease;
+}
+.admin-card-row:hover{
+  border-color:rgba(200,164,74,.4);
+  background:rgba(25,18,45,.7);
+}
+.admin-card-row.disabled{
+  opacity:.55;
+  border-color:rgba(220,80,80,.3);
+  background:rgba(40,15,15,.4);
+}
+.admin-card-row.disabled:hover{
+  opacity:.75;
+}
+.admin-card-thumb{
+  width:50px;
+  height:70px;
+  background:#1e1e3a;
+  border:1px solid rgba(200,164,74,.2);
+  border-radius:5px;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  color:#6b7280;
+}
+.admin-card-thumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.admin-card-info{
+  min-width:0;
+}
+.admin-card-name{
+  font-family:'Cinzel',serif;
+  font-size:14px;
+  font-weight:700;
+  color:#e8c570;
+  letter-spacing:1px;
+  margin-bottom:3px;
+}
+.admin-card-meta{
+  font-size:11px;
+  color:#9ca3af;
+  letter-spacing:.5px;
+  margin-bottom:2px;
+}
+.admin-card-id{
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;
+  color:#4b5563;
+  letter-spacing:1px;
+}
+.admin-card-toggle-btn{
+  padding:8px 16px;
+  background:linear-gradient(135deg, rgba(15,12,30,.85), rgba(22,16,42,.85));
+  border:1px solid rgba(200,164,74,.3);
+  border-radius:5px;
+  color:#f0e6c8;
+  font-family:'Cinzel',serif;
+  font-size:11px;
+  letter-spacing:2px;
+  cursor:pointer;
+  transition:all .2s ease;
+  white-space:nowrap;
+}
+.admin-card-toggle-btn.disable:hover{
+  border-color:#ef4444;
+  color:#fca5a5;
+  background:linear-gradient(135deg, rgba(60,15,15,.85), rgba(85,18,25,.85));
+  box-shadow:0 0 10px rgba(239,68,68,.3);
+}
+.admin-card-toggle-btn.enable{
+  border-color:rgba(34,197,94,.5);
+  color:#86efac;
+  background:linear-gradient(135deg, rgba(10,55,30,.7), rgba(15,75,40,.7));
+}
+.admin-card-toggle-btn.enable:hover{
+  border-color:#22c55e;
+  color:#fff;
+  box-shadow:0 0 12px rgba(34,197,94,.4);
+}
+.admin-card-manager-controls{
+  display:grid;
+  grid-template-columns:1fr auto auto;
+  gap:10px;
+  margin-bottom:14px;
+  padding-bottom:12px;
+  border-bottom:1px solid rgba(200,164,74,.15);
+}
 </style>
 </head>
 <body>
@@ -2972,6 +3306,7 @@ const DEFAULTS={
   senzu_bean:  GH+'Senzu_Bean.png',
   crystal_73:  GH+"73's%20Crystal%20(Moro).png",
   move_out:    GH+'MOVE%20OUT%20THE%20WAY%20(damage%20taker).png',
+  volaris_prism: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Special%20Events/Void%20Prism/volaris_prism__card%201-12.png',
 
   energy_1_black:  'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Energy%20Cards/1%20Black%20Energy%20Card.png',
   energy_1_blue:   'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Energy%20Cards/1%20Blue%20Energy%20Card.png',
@@ -3073,6 +3408,9 @@ const DB={
     abilities:[{label:'Field Lockdown',type:'triggered',cost:0,text:'On play: disable opp Equipment & Locations 5 turns.'},{label:"Sorcery's Flash Break",type:'activated',cost:0,text:'Flip×3 — Heads: draw 1. +6 dmg.'},{label:'Surfacer Ignition',type:'activated',cost:0,limit:'once_per_game',text:'Un-transform 1 opp transformation.'}],transforms:[],path:null},
   lazarus:{id:'lazarus',color:'green',name:'Lazarus',charName:'Lazarus',subtypes:['Saiyan','Fighter'],type:'base_char',race:'Saiyan',cost:2,atk:2,hp:4,sym:'LZ',
     abilities:[{label:'Saiyan Blood Synergy',type:'passive',cost:0,text:'If Saiyan Blood is attached to Lazarus: his Transformation cost is free.'},{label:'Location Seeker',type:'activated',cost:1,limit:'once_per_turn',text:'Roll d6 — on 5: search your deck for a Location card and place it on the field free of cost.'}],transforms:[],path:null},
+  // ── EVENT CARDS — VOID PRISM SET (VPS) ──
+  volaris_prism:{id:'volaris_prism',color:'purple',name:'Volaris (Prism)',charName:'Volaris',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:3,atk:3,hp:9,sym:'VPR',rarity:'mythic',eventSet:'vps',cardNumber:'01/12',
+    abilities:[{label:'Prism Shift',type:'activated',cost:0,limit:'once_per_game',text:'Once per game, transform one of your characters into its next form free of cost. That Transformation gains +2/+2 once it enters your field.'},{label:'Energy Fracture',type:'activated',cost:0,limit:'every_2_turns',text:'Flip a coin, if heads gain 2 purple energy for each character you control on your field. (Once every 2 turns)'}],transforms:[],path:null},
   // ── LOCATIONS ──
   aetherak:{id:'aetherak',name:'Aetherak Tree',color:'white',charName:'Aetherak Tree',subtypes:['Ancient','Artifact'],type:'location',race:'Ancient Artifact',cost:0,atk:0,hp:5,sym:'🌳',canBeAttackedBy:[],
     abilities:[{label:'Virora Boost',type:'passive',cost:0,text:'Virora/Awakening chars: +5 HP/+3 ATK.'},{label:'Mana Drain',type:'triggered',cost:0,text:'Opp Mana < 3: take their turn.'}],transforms:[]},
@@ -3351,14 +3689,14 @@ async function loadDecksFromStorage(){
 
 function generateRandomDeck(){
   // Separate card pools
-  const heraldIds=Object.keys(DB).filter(id=>DB[id].type==='herald');
+  const heraldIds=Object.keys(DB).filter(id=>DB[id].type==='herald'&&isCardPlayable(id));
   const charIds=Object.keys(DB).filter(id=>
     ['base_char','char','team'].includes(DB[id].type)&&
-    !DB[id].transformOnly&&!DB[id].isToken
+    !DB[id].transformOnly&&!DB[id].isToken&&isCardPlayable(id)
   );
   const otherIds=Object.keys(DB).filter(id=>
     !['base_char','char','team','herald','token'].includes(DB[id].type)&&
-    !DB[id].isToken
+    !DB[id].isToken&&isCardPlayable(id)
   );
 
   console.log('[DECK] generateRandomDeck: heralds='+heraldIds.length+' chars='+charIds.length+' other='+otherIds.length);
@@ -4710,6 +5048,129 @@ function openTransformModal(){
   showModalEl('Transform',body);
 }
 
+
+// ═══════════════════════════════════════════════════
+// VOLARIS PRISM — Ability Handlers
+// ═══════════════════════════════════════════════════
+// Prism Shift — once per game, transform a friendly char into its next form free.
+// That transformation gets +2/+2 immediately.
+function volarisPrismShift(volarisUid){
+  if(!G||!G.players)return;
+  const pl=G.players[1];
+  const volaris=pl.field.find(f=>f.uid===volarisUid);
+  if(!volaris||DB[volaris.cid]?.id!=='volaris_prism'){log('Volaris (Prism) not on field.','dmg');return;}
+  // Check ability used
+  volaris.abilityUsed=volaris.abilityUsed||{};
+  if(volaris.abilityUsed.prism_shift){log("Prism Shift already used this game.",'dmg');return;}
+  // Find friendly chars that have at least one transformation target
+  const candidates=pl.field.filter(f=>{
+    const c=DB[f.cid];
+    return c && (c.type==='base_char'||c.type==='char') && Array.isArray(c.transforms) && c.transforms.length>0;
+  });
+  if(candidates.length===0){log('No transformable characters on your field.','dmg');return;}
+  // Show picker modal
+  showPrismShiftPicker(candidates,volaris);
+}
+
+function showPrismShiftPicker(candidates,volarisFc){
+  // Build modal
+  let modal=document.getElementById('prism-shift-modal');
+  if(!modal){
+    modal=document.createElement('div');
+    modal.id='prism-shift-modal';
+    modal.className='modal-overlay';
+    modal.innerHTML='<div class="modal" style="max-width:520px;padding:22px"><h2 style="font-family:Cinzel,serif;color:#e8c570;letter-spacing:3px;margin-bottom:6px">💎 PRISM SHIFT</h2><div style="font-size:11px;color:#9ca3af;margin-bottom:14px;letter-spacing:1px">Choose a character to transform free of cost. Gains +2/+2.</div><div id="prism-shift-options" style="display:flex;flex-direction:column;gap:8px"></div><button class="btn-gray" onclick="document.getElementById(\'prism-shift-modal\').classList.remove(\'open\')" style="margin-top:14px;width:100%;padding:10px">Cancel</button></div>';
+    document.body.appendChild(modal);
+  }
+  const opts=document.getElementById('prism-shift-options');
+  opts.innerHTML='';
+  candidates.forEach(fc=>{
+    const c=DB[fc.cid];
+    const nextCid=c.transforms[0];
+    const nc=DB[nextCid];
+    if(!nc)return;
+    const url=getImg(fc.cid);
+    const btn=document.createElement('button');
+    btn.className='btn-primary';
+    btn.style.cssText='display:flex;align-items:center;gap:12px;padding:12px;text-align:left;width:100%';
+    btn.innerHTML=
+      '<div style="width:40px;height:56px;border-radius:5px;overflow:hidden;background:#1e1e3a;flex-shrink:0">'
+      +(url?'<img src="'+url+'" style="width:100%;height:100%;object-fit:cover"/>':'<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:18px">'+(c.sym||'?')+'</div>')
+      +'</div>'
+      +'<div style="flex:1"><div style="font-size:13px;font-weight:700;color:#e8c570">'+c.name+'</div>'
+      +'<div style="font-size:10px;color:#a5b4fc;margin-top:2px">→ '+nc.name+' <span style="color:#22c55e">(+2/+2)</span></div></div>';
+    btn.onclick=()=>{
+      modal.classList.remove('open');
+      executePrismShift(fc,volarisFc,nextCid);
+    };
+    opts.appendChild(btn);
+  });
+  modal.classList.add('open');
+}
+
+function executePrismShift(targetFc,volarisFc,newCid){
+  const pl=G.players[1];
+  const nc=DB[newCid];
+  if(!nc)return;
+  // Transform free of cost
+  const prevName=DB[targetFc.cid].name;
+  log(`💎 Prism Shift: ${prevName} → ${nc.name} (free, +2/+2)!`,'gain');
+  // Keep attachments
+  const prevAttachments=targetFc.attachments||[];
+  targetFc.cid=newCid;
+  targetFc.baseHP=nc.hp;
+  targetFc.baseATK=nc.atk;
+  // Apply +2/+2 bonus
+  targetFc.hpBonus=2;
+  targetFc.atkBonus=2;
+  targetFc.currentHP=nc.hp+2;
+  targetFc.currentATK=nc.atk+2;
+  targetFc.abilityUsed={};
+  targetFc.damagedThisTurn=false;
+  targetFc.markedDamage=0;
+  targetFc.attachments=prevAttachments.filter(eqId=>{const eq=DB[eqId];return eq&&eq.persistent!==false;});
+  // Mark Volaris Prism's once-per-game flag
+  volarisFc.abilityUsed=volarisFc.abilityUsed||{};
+  volarisFc.abilityUsed.prism_shift=true;
+  // Trigger achievement
+  if(!_achData.has_transformed){
+    _achData.has_transformed=true;
+    setTimeout(()=>checkAchievements(),600);
+  }
+  renderAll();
+}
+
+// Energy Fracture — once every 2 turns, flip a coin. Heads: gain 2 purple energy per char on your field.
+function volarisEnergyFracture(volarisUid){
+  if(!G||!G.players)return;
+  const pl=G.players[1];
+  const volaris=pl.field.find(f=>f.uid===volarisUid);
+  if(!volaris||DB[volaris.cid]?.id!=='volaris_prism'){log('Volaris (Prism) not on field.','dmg');return;}
+  volaris.abilityUsed=volaris.abilityUsed||{};
+  const lastUsed=volaris.abilityUsed.energy_fracture_turn;
+  if(lastUsed!=null && (G.turn-lastUsed)<2){
+    log(`Energy Fracture: must wait ${2-(G.turn-lastUsed)} more turn(s).`,'dmg');
+    return;
+  }
+  // Coin flip via existing helper
+  const heads=(typeof coin==='function')?coin():(Math.random()<0.5);
+  if(heads){
+    const charCount=pl.field.filter(f=>{
+      const c=DB[f.cid];
+      return c && (c.type==='base_char'||c.type==='char'||c.type==='team');
+    }).length;
+    const gain=charCount*2;
+    pl.purpleEnergy=(pl.purpleEnergy||0)+gain;
+    pl.energy=(pl.energy||0)+gain;
+    log(`⚡ Energy Fracture: HEADS! +${gain} purple energy (${charCount} char${charCount===1?'':'s'} × 2).`,'gain');
+  } else {
+    log('⚡ Energy Fracture: TAILS — no gain.','dmg');
+  }
+  volaris.abilityUsed.energy_fracture_turn=G.turn;
+  renderAll();
+}
+
+
 function doTransform(fieldUid,newCid,handUid,cost){
   const pl=G.players[1];const fc=pl.field.find(f=>f.uid===fieldUid);if(!fc)return;
   const nc=DB[newCid];if(!nc)return;
@@ -4812,6 +5273,29 @@ function openAbilityModal(){
 }
 
 function activateAbility(fc,abl){
+  // ── VOLARIS (PRISM) special routing — intercept before energy spend ──
+  if(fc.cid==='volaris_prism'){
+    if(abl.label==='Prism Shift'){
+      // Check once-per-game lock
+      if(fc.abilityUsed && fc.abilityUsed['Prism Shift']){log("Prism Shift already used this game.",'dmg');return;}
+      // Don't spend energy or mark used until target chosen — handled inside flow
+      // But we DO close the abilities modal so the picker can show
+      closeAllModals();
+      volarisPrismShift(fc.uid);
+      return;
+    }
+    if(abl.label==='Energy Fracture'){
+      // 2-turn cooldown check
+      const lastTurn=fc.abilityUsed && fc.abilityUsed.energy_fracture_turn;
+      if(lastTurn!=null && (G.turn-lastTurn)<2){
+        log(`Energy Fracture: wait ${2-(G.turn-lastTurn)} more turn(s).`,'dmg');
+        return;
+      }
+      closeAllModals();
+      volarisEnergyFracture(fc.uid);
+      return;
+    }
+  }
   const pl=G.players[G.activePlayer];if(pl.energy<(abl.cost||0)){log('Not enough energy!','dmg');return;}
   spendEnergy(G.activePlayer, abl.cost||0, DB[fc.cid]?.color||null);fc.abilityUsed[abl.label]=true;
   log(`${DB[fc.cid].name}: ${abl.label}!`,'gain');
@@ -5432,6 +5916,51 @@ function showDmgPopup(player,text){
 // ═══════════════════════════════════════════════════
 // FULL CARD VIEW (with attached cards panel)
 // ═══════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════
+// HOLO CARD INTERACTION
+// ═══════════════════════════════════════════════════
+function bindHoloMouseTilt(el){
+  if(!el || el._holoBound) return;
+  el._holoBound = true;
+  let raf = null;
+  el.addEventListener('mousemove', (e) => {
+    if(raf) cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      const rect = el.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+      const rotY = (x - 0.5) * 16;
+      const rotX = (0.5 - y) * 16;
+      el.style.setProperty('--rx', rotY + 'deg');
+      el.style.setProperty('--ry', rotX + 'deg');
+      el.style.setProperty('--bg-x', (x * 100) + '%');
+      el.style.setProperty('--bg-y', (y * 100) + '%');
+    });
+  });
+  el.addEventListener('mouseleave', () => {
+    el.style.setProperty('--rx', '0deg');
+    el.style.setProperty('--ry', '0deg');
+  });
+}
+
+// Set the holo style on a card preview
+function setHoloStyle(style){
+  const wrap = document.querySelector('#fullcard-content .fullcard-img-wrap');
+  if(!wrap) return;
+  // Remove all holo style classes
+  wrap.classList.remove('holo-card','holo-classic','holo-cosmic','holo-gold','holo-reverse','tilt-on-hover','always-on');
+  if(style && style !== 'none'){
+    wrap.classList.add('holo-card','tilt-on-hover','always-on','holo-' + style);
+    bindHoloMouseTilt(wrap);
+  }
+  // Update picker button active state
+  document.querySelectorAll('.holo-picker-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.holo === (style || 'none'));
+  });
+}
+
+
 function showFullCard(cid,fc){
   const c=DB[cid];if(!c)return;
   const wrap=document.getElementById('fullcard-content');wrap.innerHTML='';
@@ -5451,6 +5980,17 @@ function showFullCard(cid,fc){
     <div style="font-size:10px;color:#6b7280;margin-bottom:4px">${c.race}·${c.type.replace('_',' ').toUpperCase()}·${(c.subtypes||[]).join(', ')}</div>
     ${fcColorBadge}`;
   wrap.appendChild(meta);
+  // ── HOLO STYLE PICKER (testing/preview) ──
+  const holoPicker = document.createElement('div');
+  holoPicker.className = 'holo-picker';
+  holoPicker.innerHTML =
+    '<div style="width:100%;text-align:center;font-size:9px;color:#6b7280;letter-spacing:2px;margin-bottom:4px;font-family:Cinzel,serif">✨ HOLO PREVIEW</div>'
+    + '<button class="holo-picker-btn active" data-holo="none" onclick="setHoloStyle(\'none\')">NORMAL</button>'
+    + '<button class="holo-picker-btn" data-holo="classic" onclick="setHoloStyle(\'classic\')">🌈 CLASSIC</button>'
+    + '<button class="holo-picker-btn" data-holo="cosmic" onclick="setHoloStyle(\'cosmic\')">✨ COSMIC</button>'
+    + '<button class="holo-picker-btn" data-holo="gold" onclick="setHoloStyle(\'gold\')">👑 GOLD</button>'
+    + '<button class="holo-picker-btn" data-holo="reverse" onclick="setHoloStyle(\'reverse\')">💎 REVERSE</button>';
+  wrap.appendChild(holoPicker);
   if(fc&&isChar(c)){
     const maxHP=fc.baseHP+fc.hpBonus;const pct=Math.max(0,Math.min(100,fc.currentHP/maxHP*100));const hpCol=pct>60?'#22c55e':pct>30?'#f59e0b':'#ef4444';
     const sd=document.createElement('div');
@@ -6368,7 +6908,150 @@ function addCardToCollection(cid){
 function getCardPool(){
   return Object.keys(DB).filter(id=>{
     const c=DB[id];
-    return c&&!c.isToken&&!c.transformOnly&&c.type!=='token'&&c.type!=='system';
+    if(!c||c.isToken||c.transformOnly||c.type==='token'||c.type==='system')return false;
+    // Disabled cards: hidden from non-admins (admin sees everything)
+    if(!isCardPlayable(id))return false;
+    return true;
+  });
+}
+
+
+// ═══════════════════════════════════════════════════
+// DISABLED CARDS SYSTEM (Admin gate)
+// _disabledCards = { cardId: true }
+// Stored in Supabase app_settings under key 'disabled_cards'
+// Effect: hidden from packs, deck builder, random decks for non-admins
+// Admin always sees and can use everything regardless
+// ═══════════════════════════════════════════════════
+let _disabledCards = {};
+
+async function loadDisabledCards(){
+  if(!_celSB){return;}
+  try{
+    const {data} = await _celSB.from('app_settings').select('value').eq('key','disabled_cards').maybeSingle();
+    if(data && data.value){
+      try{ _disabledCards = JSON.parse(data.value) || {}; }
+      catch(e){ _disabledCards = {}; }
+    }
+  }catch(e){ console.warn('[DisabledCards] load error:', e); }
+}
+
+async function saveDisabledCards(){
+  if(!isAdmin() || !_celSB) return;
+  try{
+    await _celSB.from('app_settings').upsert(
+      {key:'disabled_cards', value:JSON.stringify(_disabledCards), updated_at:new Date().toISOString()},
+      {onConflict:'key'}
+    );
+  }catch(e){ console.warn('[DisabledCards] save error:', e); alert('Failed to save: '+e.message); }
+}
+
+// Check if a card is playable for the CURRENT user
+// Admin: everything is playable
+// Non-admin: blocked if in _disabledCards
+function isCardPlayable(cardId){
+  if(isAdmin()) return true;
+  return !_disabledCards[cardId];
+}
+
+async function adminToggleCardDisabled(cardId){
+  if(!isAdmin()) return;
+  if(_disabledCards[cardId]){
+    delete _disabledCards[cardId];
+  } else {
+    _disabledCards[cardId] = true;
+  }
+  await saveDisabledCards();
+  renderCardManagerList(); // refresh UI
+}
+
+async function adminEnableAllCards(){
+  if(!isAdmin()) return;
+  if(!confirm('Re-enable ALL disabled cards? Players will see them again immediately.')) return;
+  _disabledCards = {};
+  await saveDisabledCards();
+  renderCardManagerList();
+  alert('✓ All cards re-enabled.');
+}
+
+async function adminDisableAllCards(){
+  if(!isAdmin()) return;
+  if(!confirm('⚠ Disable EVERY card except for admin? Players will have no cards available. Use this only to lock down the game temporarily.')) return;
+  getCardPool().forEach(cid => { _disabledCards[cid] = true; });
+  await saveDisabledCards();
+  renderCardManagerList();
+  alert('✓ All cards disabled for non-admins.');
+}
+
+function renderCardManagerList(){
+  const container = document.getElementById('admin-card-manager-list');
+  const stats = document.getElementById('admin-card-manager-stats');
+  if(!container) return;
+  const filter = (document.getElementById('admin-card-filter')?.value || '').toLowerCase().trim();
+  const typeFilter = document.getElementById('admin-card-type-filter')?.value || 'all';
+
+  const allCards = Object.keys(DB).filter(id => {
+    const c = DB[id];
+    return c && !c.isToken && c.type !== 'token' && c.type !== 'system';
+  });
+
+  let enabledCount = 0, disabledCount = 0;
+  allCards.forEach(id => {
+    if(_disabledCards[id]) disabledCount++; else enabledCount++;
+  });
+  if(stats){
+    stats.innerHTML = '<span style="color:#22c55e">✓ '+enabledCount+' enabled</span> · <span style="color:#fca5a5">✗ '+disabledCount+' disabled</span> · <span style="color:#9ca3af">'+allCards.length+' total</span>';
+  }
+
+  // Filter
+  const filtered = allCards.filter(id => {
+    const c = DB[id];
+    if(typeFilter !== 'all' && c.type !== typeFilter) return false;
+    if(filter){
+      const hay = (c.name + ' ' + (c.color || '') + ' ' + (c.race || '') + ' ' + (c.subtypes || []).join(' ')).toLowerCase();
+      if(!hay.includes(filter)) return false;
+    }
+    return true;
+  });
+
+  container.innerHTML = '';
+  if(filtered.length === 0){
+    container.innerHTML = '<div style="text-align:center;color:#6b7280;padding:30px;font-style:italic">No cards match filter.</div>';
+    return;
+  }
+
+  // Group by color for cleaner display
+  const sorted = filtered.sort((a,b) => {
+    const ca = DB[a], cb = DB[b];
+    if((ca.color||'') !== (cb.color||'')) return (ca.color||'').localeCompare(cb.color||'');
+    return ca.name.localeCompare(cb.name);
+  });
+
+  sorted.forEach(id => {
+    const c = DB[id];
+    const disabled = !!_disabledCards[id];
+    const colDef = c.color && COLOR_DEFS && COLOR_DEFS[c.color] ? COLOR_DEFS[c.color] : null;
+    const url = (typeof getImg === 'function') ? getImg(id) : null;
+    const row = document.createElement('div');
+    row.className = 'admin-card-row' + (disabled ? ' disabled' : '');
+    row.innerHTML =
+      '<div class="admin-card-thumb">'
+        + (url ? '<img src="'+url+'" alt=""/>' : '<span>'+(c.sym || '?')+'</span>')
+      + '</div>'
+      + '<div class="admin-card-info">'
+        + '<div class="admin-card-name">'+c.name+'</div>'
+        + '<div class="admin-card-meta">'
+          + (colDef ? '<span style="color:'+colDef.hex+'">●</span> ' : '')
+          + (c.type || '').toUpperCase()
+          + ' · cost '+(c.cost ?? '-')
+          + (c.atk!=null ? ' · '+c.atk+'/'+c.hp : '')
+        + '</div>'
+        + '<div class="admin-card-id">'+id+'</div>'
+      + '</div>'
+      + '<button class="admin-card-toggle-btn '+(disabled ? 'enable' : 'disable')+'" onclick="adminToggleCardDisabled(\''+id+'\')">'
+        + (disabled ? '✓ ENABLE' : '✗ DISABLE')
+      + '</button>';
+    container.appendChild(row);
   });
 }
 
@@ -6715,6 +7398,14 @@ async function adminResetCampaignIntroWatched(){
   }
   alert('✓ Campaign intro will play again on your next Campaign visit.');
 }
+
+async 
+function openCardManager(){
+  if(!isAdmin()){ alert('Admin only'); return; }
+  showScreen('admin-card-manager-screen');
+  setTimeout(() => renderCardManagerList(), 60);
+}
+
 
 async function adminTestCutscene(){
   if(!isAdmin())return;
@@ -9674,6 +10365,7 @@ window.addEventListener('load',async()=>{
       await loadAchievements();
       await loadCollection();
       await loadAdminToggles();
+  await loadDisabledCards();
       updateAdminBadge();
       applyAdminToggleEffects();
       await loadFriends();
@@ -10096,6 +10788,7 @@ window.addEventListener('load',async()=>{
     <button class="admin-action-btn" onclick="adminGrantCelestium()">+ GRANT YOURSELF 1000 CELESTIUM</button>
     <button class="admin-action-btn" onclick="adminUnlockAllAchievements()">+ UNLOCK ALL ACHIEVEMENTS</button>
     <button class="admin-action-btn" onclick="adminGrantAllCards()">+ GRANT ALL CARDS (4 OF EACH)</button>
+    <button class="admin-action-btn" onclick="openCardManager()" style="border-color:rgba(232,197,112,.5);color:#fbbf24">🎴 OPEN CARD MANAGER</button>
     <button class="admin-action-btn danger" onclick="adminResetProfile()">⚠ RESET MY PROFILE</button>
   </div>
 
@@ -10708,6 +11401,43 @@ window.addEventListener('load',async()=>{
     <div id="bp-rewards-editor" style="max-height:500px;overflow-y:auto;padding-right:4px"></div>
   </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════
+     ADMIN CARD MANAGER SCREEN
+     ═══════════════════════════════════════════════════ -->
+<div id="admin-card-manager-screen" class="screen" style="padding:62px 32px 24px;max-width:1280px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px">
+    <button class="btn-gray btn-sm" onclick="showScreen('admin-screen')">← Back</button>
+    <div>
+      <div style="font-family:'Cinzel',serif;font-size:22px;letter-spacing:4px;color:#fbbf24">🎴 CARD MANAGER</div>
+      <div style="font-size:12px;color:#9ca3af;letter-spacing:2px;margin-top:3px">Disable cards to remove them from packs, deck builder, and random decks for all non-admin players.</div>
+    </div>
+    <div style="margin-left:auto" id="admin-card-manager-stats">—</div>
+  </div>
+
+  <div class="admin-section">
+    <div class="admin-card-manager-controls">
+      <input id="admin-card-filter" class="admin-input" type="text" placeholder="🔍 Search cards by name, color, race…" oninput="renderCardManagerList()"/>
+      <select id="admin-card-type-filter" class="admin-input" onchange="renderCardManagerList()" style="width:auto;min-width:160px">
+        <option value="all">All Types</option>
+        <option value="base_char">Base Characters</option>
+        <option value="char">Characters</option>
+        <option value="team">Teams</option>
+        <option value="herald">Heralds</option>
+        <option value="location">Locations</option>
+        <option value="equipment">Equipment</option>
+        <option value="instant">Instants</option>
+        <option value="energy_card">Energy Cards</option>
+      </select>
+      <div style="display:flex;gap:6px">
+        <button class="admin-action-btn" onclick="adminEnableAllCards()" style="width:auto;padding:10px 16px;font-size:11px">✓ ENABLE ALL</button>
+        <button class="admin-action-btn danger" onclick="adminDisableAllCards()" style="width:auto;padding:10px 16px;font-size:11px">✗ DISABLE ALL</button>
+      </div>
+    </div>
+    <div id="admin-card-manager-list" style="max-height:70vh;overflow-y:auto;padding-right:6px"></div>
+  </div>
+</div>
+
 <!-- ═══════════════════════════════════════════════════
      CUTSCENE PLAYER OVERLAY
      ═══════════════════════════════════════════════════ -->
