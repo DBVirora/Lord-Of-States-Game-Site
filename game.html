@@ -549,6 +549,69 @@ body{padding-top:46px;}
 .match-room-badge{font-size:9px;letter-spacing:1px;padding:2px 8px;border-radius:8px;font-weight:700;}
 .match-room-badge.open{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.4);}
 .match-room-badge.full{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);}
+
+/* CAMPAIGN */
+.campaign-world-card{position:relative;background:rgba(8,8,28,.7);border:1px solid var(--border-v);border-radius:14px;padding:24px;cursor:pointer;transition:all .25s;overflow:hidden;}
+.campaign-world-card:hover{border-color:var(--violet2);transform:translateY(-3px);box-shadow:0 8px 30px rgba(124,58,237,.25);}
+.campaign-world-card.locked{opacity:.4;cursor:not-allowed;filter:grayscale(.8);}
+.campaign-world-card.locked:hover{transform:none;box-shadow:none;}
+.campaign-world-icon{font-size:64px;margin-bottom:12px;filter:drop-shadow(0 0 18px rgba(124,58,237,.5));}
+.campaign-world-name{font-family:'Orbitron',sans-serif;font-size:16px;letter-spacing:4px;color:var(--blue);text-shadow:0 0 10px var(--blue);margin-bottom:6px;}
+.campaign-world-desc{font-size:11px;color:#6b7280;letter-spacing:1px;margin-bottom:10px;}
+.campaign-world-progress{font-size:10px;color:#fbbf24;font-family:'Share Tech Mono',monospace;}
+
+/* Chapter map */
+.chapter-bg{position:fixed;inset:0;background:linear-gradient(180deg,#040414 0%,#0a0a28 30%,#1a0a3a 70%,#04040f 100%);z-index:-1;}
+.chapter-row{display:flex;align-items:center;gap:14px;padding:18px;background:rgba(8,8,28,.55);border:1px solid var(--border-v);border-radius:12px;margin-bottom:12px;cursor:pointer;transition:all .2s;backdrop-filter:blur(4px);}
+.chapter-row:hover{border-color:var(--violet2);background:rgba(124,58,237,.08);transform:translateX(4px);}
+.chapter-row.locked{opacity:.4;cursor:not-allowed;filter:grayscale(.7);}
+.chapter-row.locked:hover{transform:none;}
+.chapter-row.completed{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.05);}
+.chapter-icon{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,#2a1a5a,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;box-shadow:0 0 18px rgba(124,58,237,.3);}
+.chapter-row.locked .chapter-icon{background:linear-gradient(135deg,#1a1a2a,#2a2a3a);box-shadow:none;}
+.chapter-row.completed .chapter-icon{background:linear-gradient(135deg,#15803d,#22c55e);}
+.chapter-info{flex:1;}
+.chapter-title{font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:3px;color:#e2e8f0;margin-bottom:4px;}
+.chapter-row.locked .chapter-title{color:#6b7280;}
+.chapter-desc{font-size:11px;color:#9ca3af;margin-bottom:6px;}
+.chapter-row.locked .chapter-desc{color:#4b5563;}
+.chapter-progress-bar{height:5px;background:rgba(75,85,99,.3);border-radius:3px;overflow:hidden;width:100%;}
+.chapter-progress-fill{height:100%;background:linear-gradient(90deg,var(--violet2),#fbbf24);transition:width .4s;}
+.chapter-status{font-size:9px;letter-spacing:2px;padding:4px 10px;border-radius:8px;flex-shrink:0;}
+.chapter-status.locked{background:rgba(75,85,99,.2);color:#6b7280;border:1px solid rgba(75,85,99,.3);}
+.chapter-status.available{background:rgba(0,180,255,.1);color:var(--blue);border:1px solid rgba(0,180,255,.3);}
+.chapter-status.completed{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.4);}
+
+/* Match nodes path */
+.match-path{position:relative;padding:30px 20px;margin:20px 0;}
+.match-node-row{display:grid;gap:12px;margin-bottom:12px;}
+.match-node{position:relative;background:rgba(8,8,28,.7);border:2px solid var(--border-v);border-radius:14px;padding:14px;cursor:pointer;transition:all .2s;text-align:center;backdrop-filter:blur(4px);}
+.match-node:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(124,58,237,.3);border-color:var(--violet2);}
+.match-node.locked{opacity:.4;filter:grayscale(.8);cursor:not-allowed;}
+.match-node.locked:hover{transform:none;box-shadow:none;}
+.match-node.completed{border-color:rgba(34,197,94,.5);background:rgba(34,197,94,.06);}
+.match-node.boss{border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.06);box-shadow:0 0 14px rgba(239,68,68,.2);}
+.match-node.boss:hover{box-shadow:0 6px 24px rgba(239,68,68,.4);}
+.match-node-portrait{width:80px;height:80px;border-radius:50%;margin:0 auto 10px;background:linear-gradient(135deg,#1a1a3a,#2a1a5a);border:3px solid var(--violet2);display:flex;align-items:center;justify-content:center;font-size:38px;overflow:hidden;box-shadow:0 0 12px rgba(124,58,237,.3);}
+.match-node.locked .match-node-portrait{border-color:#374151;filter:grayscale(1);box-shadow:none;}
+.match-node.boss .match-node-portrait{border-color:#ef4444;box-shadow:0 0 16px rgba(239,68,68,.5);}
+.match-node.completed .match-node-portrait{border-color:#22c55e;box-shadow:0 0 12px rgba(34,197,94,.4);}
+.match-node-type{font-size:8px;letter-spacing:2px;color:rgba(255,255,255,.4);margin-bottom:3px;text-transform:uppercase;font-weight:700;}
+.match-node-name{font-size:12px;font-weight:700;color:#e2e8f0;letter-spacing:1px;margin-bottom:3px;font-family:'Orbitron',sans-serif;}
+.match-node.locked .match-node-name{color:#6b7280;}
+.match-node-rewards{font-size:9px;color:#fbbf24;}
+.match-node-check{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:#22c55e;color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;border:2px solid #04040f;}
+.match-node-lock{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:36px;color:rgba(75,85,99,.6);text-shadow:0 0 10px rgba(0,0,0,.8);}
+
+/* Match details modal */
+.match-detail-modal-content{background:rgba(8,8,28,.97);border:1px solid var(--border-v);border-radius:14px;padding:24px;max-width:480px;width:90vw;position:relative;}
+.match-detail-portrait{width:100px;height:100px;border-radius:50%;margin:0 auto 14px;background:linear-gradient(135deg,#1a1a3a,#2a1a5a);border:3px solid var(--violet2);display:flex;align-items:center;justify-content:center;font-size:48px;overflow:hidden;}
+.match-detail-portrait img{width:100%;height:100%;object-fit:cover;}
+
+/* Admin campaign editor */
+.campaign-edit-card{background:rgba(8,8,28,.7);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:12px;margin-bottom:8px;}
+.campaign-edit-row{display:flex;gap:8px;margin-bottom:6px;align-items:center;}
+.campaign-edit-label{font-size:9px;color:#9ca3af;letter-spacing:1px;width:80px;flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -578,6 +641,7 @@ body{padding-top:46px;}
   <h1>LORD OF <span>COURTS</span></h1>
   <div class="menu-tagline">V C U &nbsp;·&nbsp; T R A D I N G &nbsp; C A R D &nbsp; G A M E</div>
   <div class="menu-section-label">— BATTLE —</div>
+  <button class="menu-btn" onclick="showScreen('campaign-worlds-screen');openCampaign()">🗺️ Campaign</button>
   <button class="menu-btn" onclick="showScreen('matchmaking-screen');openMatchmaking()">🔍 Find Match</button>
   <button class="menu-btn" onclick="showScreen('online-lobby-screen');openOnlineLobby()">🌐 Private Room</button>
   <button class="menu-btn" onclick="goToDeckSelect('pvp')">⚔️ Local PvP</button>
@@ -4133,6 +4197,8 @@ async function checkDailyLogin(){
 }
 
 async function onMatchEnd(won){
+  // Campaign match win
+  if(won&&G_campaignActiveMatch)setTimeout(()=>onCampaignMatchWin(),200);
   // Forfeit win in online mode = only 50 Celestium
   if(G&&G.onlineMode&&G.forfeited&&won){
     _celData.matches++;
@@ -5964,6 +6030,450 @@ async function requestRematch(){
   }
 }
 
+
+// ═══════════════════════════════════════════════════
+// CAMPAIGN / STORY MODE SYSTEM
+// ═══════════════════════════════════════════════════
+
+// CAMPAIGN DATA STRUCTURE
+// This is the hardcoded fallback structure. Admin panel writes overrides
+// to Supabase app_settings key 'campaign_data' which is loaded on top.
+const CAMPAIGN_DEFAULT={
+  worlds:[
+    {
+      id:'world_1',
+      name:'WORLD 1',
+      tagline:'The First Realm',
+      icon:'🌍',
+      description:'Where the journey begins',
+      unlocked:true,
+      chapters:[
+        {
+          id:'w1_c1',
+          name:'CHAPTER 1',
+          subtitle:'???',
+          narrative:'The opening chapter. Details to be revealed.',
+          unlocked:true,
+          matches:[
+            {id:'w1_c1_m1',name:'???',type:'regular',portrait:'❔',description:'Opponent to be revealed.',rewards:{celestium:75}},
+            {id:'w1_c1_m2',name:'???',type:'regular',portrait:'❔',description:'Opponent to be revealed.',rewards:{celestium:100}},
+            {id:'w1_c1_m3',name:'???',type:'key',portrait:'❔',description:'A key opponent stands in your way.',rewards:{celestium:150}},
+            {id:'w1_c1_m4',name:'???',type:'boss',portrait:'👑',description:'The Chapter 1 Boss. Defeat to unlock Chapter 2.',rewards:{celestium:300,note:'Card unlock TBD'}}
+          ]
+        },
+        {
+          id:'w1_c2',
+          name:'CHAPTER 2',
+          subtitle:'???',
+          narrative:'Chapter 2 — complete Chapter 1 to unlock.',
+          unlocked:false,
+          matches:[
+            {id:'w1_c2_m1',name:'???',type:'regular',portrait:'❔',description:'TBD',rewards:{celestium:100}},
+            {id:'w1_c2_m2',name:'???',type:'regular',portrait:'❔',description:'TBD',rewards:{celestium:125}},
+            {id:'w1_c2_m3',name:'???',type:'regular',portrait:'❔',description:'TBD',rewards:{celestium:150}},
+            {id:'w1_c2_m4',name:'???',type:'key',portrait:'❔',description:'TBD',rewards:{celestium:175}},
+            {id:'w1_c2_m5',name:'???',type:'boss',portrait:'👑',description:'Chapter 2 Boss.',rewards:{celestium:400,note:'Card unlock TBD'}}
+          ]
+        },
+        {
+          id:'w1_c3',
+          name:'CHAPTER 3',
+          subtitle:'???',
+          narrative:'Chapter 3 — complete Chapter 2 to unlock.',
+          unlocked:false,
+          matches:[
+            {id:'w1_c3_m1',name:'???',type:'regular',portrait:'❔',description:'TBD',rewards:{celestium:125}},
+            {id:'w1_c3_m2',name:'???',type:'regular',portrait:'❔',description:'TBD',rewards:{celestium:150}},
+            {id:'w1_c3_m3',name:'???',type:'regular',portrait:'❔',description:'TBD',rewards:{celestium:175}},
+            {id:'w1_c3_m4',name:'???',type:'key',portrait:'❔',description:'TBD',rewards:{celestium:200}},
+            {id:'w1_c3_m5',name:'???',type:'boss',portrait:'👑',description:'World 1 Final Boss.',rewards:{celestium:500,note:'Card unlock TBD'}}
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+let CAMPAIGN_DATA=null;       // Resolved campaign data (defaults + admin overrides)
+let _campaignProgress={};     // {matchId: completionTimestamp}
+let _currentWorld=null;
+let _currentChapter=null;
+let _pendingCampaignMatch=null;
+
+async function loadCampaign(){
+  if(!_celSB){CAMPAIGN_DATA=CAMPAIGN_DEFAULT;return;}
+  try{
+    const {data}=await _celSB.from('app_settings').select('value').eq('key','campaign_data').maybeSingle();
+    if(data&&data.value){
+      try{CAMPAIGN_DATA=JSON.parse(data.value);}catch(e){CAMPAIGN_DATA=CAMPAIGN_DEFAULT;}
+    } else {
+      CAMPAIGN_DATA=CAMPAIGN_DEFAULT;
+    }
+  }catch(e){CAMPAIGN_DATA=CAMPAIGN_DEFAULT;}
+  await loadCampaignProgress();
+}
+
+async function loadCampaignProgress(){
+  if(!_celSB||!_celUserId)return;
+  try{
+    const {data}=await _celSB.from('profiles').select('campaign_progress').eq('id',_celUserId).maybeSingle();
+    _campaignProgress=data&&data.campaign_progress?JSON.parse(data.campaign_progress):{};
+  }catch(e){_campaignProgress={};}
+}
+
+async function saveCampaignProgress(){
+  if(!_celSB||!_celUserId)return;
+  try{
+    await _celSB.from('profiles').update({campaign_progress:JSON.stringify(_campaignProgress)}).eq('id',_celUserId);
+  }catch(e){console.warn('[CAMPAIGN] save error:',e);}
+}
+
+function isMatchCompleted(matchId){return !!_campaignProgress[matchId];}
+
+function isChapterUnlocked(world,chapter,chapterIdx){
+  if(!world.unlocked)return false;
+  if(chapter.unlocked)return true; // explicitly unlocked
+  if(chapterIdx===0)return true; // first chapter always unlocked
+  const prev=world.chapters[chapterIdx-1];
+  if(!prev)return false;
+  // Previous chapter's boss must be completed
+  const prevBoss=prev.matches.find(m=>m.type==='boss');
+  if(!prevBoss)return false;
+  return isMatchCompleted(prevBoss.id);
+}
+
+function isChapterCompleted(chapter){
+  const boss=chapter.matches.find(m=>m.type==='boss');
+  if(!boss)return false;
+  return isMatchCompleted(boss.id);
+}
+
+function isMatchUnlocked(chapter,matchIdx){
+  if(matchIdx===0)return true; // first match always unlocked
+  const prev=chapter.matches[matchIdx-1];
+  if(!prev)return false;
+  return isMatchCompleted(prev.id);
+}
+
+function getWorldProgress(world){
+  let total=0,done=0;
+  world.chapters.forEach(c=>{
+    c.matches.forEach(m=>{
+      total++;
+      if(isMatchCompleted(m.id))done++;
+    });
+  });
+  return {done,total};
+}
+
+function getChapterProgress(chapter){
+  let total=chapter.matches.length;
+  let done=chapter.matches.filter(m=>isMatchCompleted(m.id)).length;
+  return {done,total};
+}
+
+// ─── WORLDS SCREEN ───────────────────────────────
+async function openCampaign(){
+  if(!CAMPAIGN_DATA)await loadCampaign();
+  renderWorldsGrid();
+}
+
+function renderWorldsGrid(){
+  const grid=document.getElementById('campaign-worlds-grid');
+  if(!grid||!CAMPAIGN_DATA)return;
+  grid.innerHTML='';
+  CAMPAIGN_DATA.worlds.forEach(world=>{
+    const prog=getWorldProgress(world);
+    const card=document.createElement('div');
+    card.className='campaign-world-card'+(world.unlocked?'':' locked');
+    card.onclick=()=>{if(world.unlocked)openWorld(world);};
+    card.innerHTML=
+      '<div class="campaign-world-icon">'+world.icon+'</div>'
+      +'<div class="campaign-world-name">'+world.name+'</div>'
+      +'<div class="campaign-world-desc">'+(world.tagline||'')+'</div>'
+      +'<div class="campaign-world-progress">'+(world.unlocked?prog.done+' / '+prog.total+' matches completed':'🔒 LOCKED')+'</div>';
+    grid.appendChild(card);
+  });
+}
+
+// ─── CHAPTERS SCREEN ─────────────────────────────
+function openWorld(world){
+  _currentWorld=world;
+  document.getElementById('chapters-world-name').textContent=world.name;
+  showScreen('campaign-chapters-screen');
+  renderChaptersList();
+}
+
+function renderChaptersList(){
+  const listEl=document.getElementById('campaign-chapters-list');
+  const progEl=document.getElementById('chapters-progress');
+  if(!listEl||!_currentWorld)return;
+  const completedChapters=_currentWorld.chapters.filter(c=>isChapterCompleted(c)).length;
+  if(progEl)progEl.textContent=completedChapters+' / '+_currentWorld.chapters.length+' chapters';
+  listEl.innerHTML='';
+  _currentWorld.chapters.forEach((chapter,idx)=>{
+    const unlocked=isChapterUnlocked(_currentWorld,chapter,idx);
+    const completed=isChapterCompleted(chapter);
+    const prog=getChapterProgress(chapter);
+    const row=document.createElement('div');
+    row.className='chapter-row'+(unlocked?'':' locked')+(completed?' completed':'');
+    if(unlocked)row.onclick=()=>openChapter(chapter);
+    const statusLabel=completed?'COMPLETED':(unlocked?'AVAILABLE':'LOCKED');
+    const statusClass=completed?'completed':(unlocked?'available':'locked');
+    const iconChar=completed?'✓':(unlocked?(idx+1):'🔒');
+    row.innerHTML=
+      '<div class="chapter-icon">'+iconChar+'</div>'
+      +'<div class="chapter-info">'
+        +'<div class="chapter-title">'+chapter.name+(chapter.subtitle?' — '+chapter.subtitle:'')+'</div>'
+        +'<div class="chapter-desc">'+(unlocked?(chapter.narrative||'Begin the chapter.'):'Complete the previous chapter to unlock.')+'</div>'
+        +'<div style="display:flex;align-items:center;gap:8px;margin-top:6px">'
+          +'<div class="chapter-progress-bar" style="flex:1"><div class="chapter-progress-fill" style="width:'+(prog.total?(prog.done/prog.total*100):0)+'%"></div></div>'
+          +'<div style="font-size:9px;color:#6b7280;letter-spacing:1px;white-space:nowrap">'+prog.done+'/'+prog.total+'</div>'
+        +'</div>'
+      +'</div>'
+      +'<div class="chapter-status '+statusClass+'">'+statusLabel+'</div>';
+    listEl.appendChild(row);
+  });
+}
+
+// ─── CHAPTER MAP (MATCH NODES) ───────────────────
+function openChapter(chapter){
+  _currentChapter=chapter;
+  if(document.getElementById('chapter-map-world'))document.getElementById('chapter-map-world').textContent=_currentWorld.name;
+  if(document.getElementById('chapter-map-name'))document.getElementById('chapter-map-name').textContent=chapter.name+(chapter.subtitle?' — '+chapter.subtitle:'');
+  if(document.getElementById('chapter-map-narrative'))document.getElementById('chapter-map-narrative').textContent=chapter.narrative||'';
+  const prog=getChapterProgress(chapter);
+  if(document.getElementById('chapter-map-progress'))document.getElementById('chapter-map-progress').textContent=prog.done+' / '+prog.total+' matches';
+  showScreen('campaign-chapter-map-screen');
+  renderMatchPath();
+}
+
+function renderMatchPath(){
+  const container=document.getElementById('match-path-container');
+  if(!container||!_currentChapter)return;
+  container.innerHTML='';
+  // Match grid layout — auto-wraps based on count
+  const grid=document.createElement('div');
+  grid.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;justify-items:center';
+  _currentChapter.matches.forEach((match,idx)=>{
+    const unlocked=isMatchUnlocked(_currentChapter,idx);
+    const completed=isMatchCompleted(match.id);
+    const node=document.createElement('div');
+    node.className='match-node'+(unlocked?'':' locked')+(completed?' completed':'')+(match.type==='boss'?' boss':'');
+    node.style.width='100%';
+    if(unlocked)node.onclick=()=>showMatchDetail(match);
+    const typeLabel={regular:'REGULAR',key:'KEY MATCH',boss:'CHAPTER BOSS',side:'SIDE'}[match.type]||'MATCH';
+    node.innerHTML=
+      (completed?'<div class="match-node-check">✓</div>':'')
+      +'<div class="match-node-portrait">'+(unlocked?(match.portrait||'❔'):'')+'</div>'
+      +(!unlocked?'<div class="match-node-lock">🔒</div>':'')
+      +'<div class="match-node-type">'+typeLabel+'</div>'
+      +'<div class="match-node-name">'+match.name+'</div>'
+      +'<div class="match-node-rewards">+'+(match.rewards?.celestium||0)+' Cel</div>';
+    grid.appendChild(node);
+  });
+  container.appendChild(grid);
+}
+
+function backToChapters(){
+  if(_currentWorld)openWorld(_currentWorld);
+  else showScreen('campaign-worlds-screen');
+}
+
+// ─── MATCH DETAIL MODAL ──────────────────────────
+function showMatchDetail(match){
+  _pendingCampaignMatch=match;
+  const portraitEl=document.getElementById('match-detail-portrait');
+  const nameEl=document.getElementById('match-detail-name');
+  const typeEl=document.getElementById('match-detail-type');
+  const descEl=document.getElementById('match-detail-desc');
+  const rewardsEl=document.getElementById('match-detail-rewards');
+  if(portraitEl)portraitEl.textContent=match.portrait||'⚔️';
+  if(nameEl)nameEl.textContent=match.name;
+  if(typeEl){
+    const label={regular:'⚔️ REGULAR MATCH',key:'⭐ KEY MATCH',boss:'👑 CHAPTER BOSS',side:'🎲 OPTIONAL SIDE MATCH'}[match.type]||'MATCH';
+    typeEl.textContent=label;
+    typeEl.style.color=match.type==='boss'?'#ef4444':(match.type==='key'?'#fbbf24':'#a5b4fc');
+  }
+  if(descEl)descEl.textContent=match.description||'No details yet.';
+  if(rewardsEl){
+    const parts=[];
+    if(match.rewards?.celestium)parts.push('+'+match.rewards.celestium+' Celestium');
+    if(match.rewards?.cards)parts.push('Card unlocks: '+match.rewards.cards.join(', '));
+    if(match.rewards?.packs)parts.push(match.rewards.packs+' Booster pack(s)');
+    if(match.rewards?.note)parts.push(match.rewards.note);
+    rewardsEl.innerHTML=parts.length?parts.join('<br>'):'<span style="color:#6b7280">No special rewards yet</span>';
+  }
+  // Populate own-deck select
+  const ownSel=document.getElementById('campaign-my-deck-select');
+  if(ownSel){
+    const decks=Object.entries(SAVED_DECKS).filter(([id,d])=>d.cards&&d.cards.length>=60);
+    ownSel.innerHTML=decks.length
+      ?decks.map(([id,d])=>'<option value="'+id+'">'+d.name+' ('+d.cards.length+' cards)</option>').join('')
+      :'<option value="">No valid 60-card decks</option>';
+  }
+  // Wire radio change to show/hide own-deck select
+  document.querySelectorAll('input[name="campaign-deck-choice"]').forEach(r=>{
+    r.onchange=()=>{
+      const useOwn=document.querySelector('input[name="campaign-deck-choice"]:checked')?.value==='own';
+      if(ownSel)ownSel.style.display=useOwn?'block':'none';
+    };
+  });
+  // Reset to default
+  const defaultRadio=document.querySelector('input[name="campaign-deck-choice"][value="default"]');
+  if(defaultRadio)defaultRadio.checked=true;
+  if(ownSel)ownSel.style.display='none';
+  document.getElementById('match-detail-modal').classList.add('open');
+}
+
+function startCampaignMatch(){
+  if(!_pendingCampaignMatch)return;
+  const choice=document.querySelector('input[name="campaign-deck-choice"]:checked')?.value||'default';
+  let playerDeck;
+  if(choice==='own'){
+    const deckId=document.getElementById('campaign-my-deck-select')?.value;
+    if(!deckId||!SAVED_DECKS[deckId]||!SAVED_DECKS[deckId].cards||SAVED_DECKS[deckId].cards.length<60){
+      alert('Please select a valid 60-card deck or choose the starter deck.');
+      return;
+    }
+    playerDeck=[...SAVED_DECKS[deckId].cards];
+  } else {
+    // Default starter deck = random generation for now (will be replaced when starter decks defined)
+    playerDeck=generateRandomDeck();
+  }
+  // AI opponent deck — for now random until you provide each character's deck
+  const aiDeck=generateRandomDeck();
+  document.getElementById('match-detail-modal').classList.remove('open');
+  // Store the match ID so we can mark it complete on win
+  G_campaignActiveMatch=_pendingCampaignMatch;
+  // Start as medium AI
+  startGame('medium', playerDeck, aiDeck);
+}
+
+let G_campaignActiveMatch=null;
+
+// ─── CAMPAIGN MATCH COMPLETION HOOK ──────────────
+async function onCampaignMatchWin(){
+  if(!G_campaignActiveMatch)return;
+  const matchId=G_campaignActiveMatch.id;
+  if(_campaignProgress[matchId])return; // already completed once
+  _campaignProgress[matchId]=new Date().toISOString();
+  await saveCampaignProgress();
+  // Award rewards
+  if(G_campaignActiveMatch.rewards){
+    const cel=G_campaignActiveMatch.rewards.celestium||0;
+    if(cel>0)await awardCelestium(cel,'Campaign: '+G_campaignActiveMatch.name);
+  }
+  G_campaignActiveMatch=null;
+}
+
+
+// ═══════════════════════════════════════════════════
+// ADMIN CAMPAIGN EDITOR
+// ═══════════════════════════════════════════════════
+let _editorCampaignData=null;
+
+function openCampaignEditor(){
+  if(!isAdmin()){alert('Admin only');return;}
+  _editorCampaignData=JSON.parse(JSON.stringify(CAMPAIGN_DATA||CAMPAIGN_DEFAULT));
+  showScreen('campaign-editor-screen');
+  renderCampaignEditor();
+}
+
+function renderCampaignEditor(){
+  const c=document.getElementById('campaign-editor-content');
+  if(!c||!_editorCampaignData)return;
+  c.innerHTML='';
+  _editorCampaignData.worlds.forEach((world,wIdx)=>{
+    const worldEl=document.createElement('div');
+    worldEl.className='admin-section';
+    worldEl.innerHTML=
+      '<div class="admin-section-title">🌍 '+world.name+' (id: '+world.id+')</div>'
+      +'<div class="campaign-edit-row"><div class="campaign-edit-label">Name:</div>'
+      +'<input class="admin-input" type="text" value="'+escapeAttr(world.name)+'" onchange="_editorCampaignData.worlds['+wIdx+'].name=this.value"/></div>'
+      +'<div class="campaign-edit-row"><div class="campaign-edit-label">Tagline:</div>'
+      +'<input class="admin-input" type="text" value="'+escapeAttr(world.tagline||'')+'" onchange="_editorCampaignData.worlds['+wIdx+'].tagline=this.value"/></div>'
+      +'<div class="campaign-edit-row"><div class="campaign-edit-label">Icon:</div>'
+      +'<input class="admin-input" type="text" value="'+escapeAttr(world.icon||'')+'" onchange="_editorCampaignData.worlds['+wIdx+'].icon=this.value" style="width:80px"/></div>'
+      +'<div id="world-chapters-'+wIdx+'" style="margin-top:14px"></div>';
+    c.appendChild(worldEl);
+    const chaptersContainer=document.getElementById('world-chapters-'+wIdx);
+    world.chapters.forEach((chapter,chIdx)=>{
+      const chEl=document.createElement('div');
+      chEl.className='campaign-edit-card';
+      let matchesHtml='';
+      chapter.matches.forEach((m,mIdx)=>{
+        matchesHtml+=
+          '<div style="background:rgba(8,8,28,.5);border:1px solid var(--border);border-radius:7px;padding:10px;margin-bottom:6px">'
+          +'<div style="font-size:9px;color:#a5b4fc;letter-spacing:1px;margin-bottom:5px">⚔️ Match '+(mIdx+1)+' (id: '+m.id+')</div>'
+          +'<div class="campaign-edit-row"><div class="campaign-edit-label">Name:</div>'
+          +'<input class="admin-input" type="text" value="'+escapeAttr(m.name)+'" onchange="_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].matches['+mIdx+'].name=this.value"/></div>'
+          +'<div class="campaign-edit-row"><div class="campaign-edit-label">Type:</div>'
+          +'<select class="admin-input" onchange="_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].matches['+mIdx+'].type=this.value">'
+          +'<option value="regular"'+(m.type==='regular'?' selected':'')+'>Regular</option>'
+          +'<option value="key"'+(m.type==='key'?' selected':'')+'>Key Match</option>'
+          +'<option value="boss"'+(m.type==='boss'?' selected':'')+'>Chapter Boss</option>'
+          +'<option value="side"'+(m.type==='side'?' selected':'')+'>Optional Side</option>'
+          +'</select></div>'
+          +'<div class="campaign-edit-row"><div class="campaign-edit-label">Portrait:</div>'
+          +'<input class="admin-input" type="text" value="'+escapeAttr(m.portrait||'')+'" onchange="_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].matches['+mIdx+'].portrait=this.value" placeholder="emoji or image URL"/></div>'
+          +'<div class="campaign-edit-row"><div class="campaign-edit-label">Description:</div>'
+          +'<input class="admin-input" type="text" value="'+escapeAttr(m.description||'')+'" onchange="_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].matches['+mIdx+'].description=this.value"/></div>'
+          +'<div class="campaign-edit-row"><div class="campaign-edit-label">Celestium:</div>'
+          +'<input class="admin-input" type="number" value="'+(m.rewards?.celestium||0)+'" onchange="if(!_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].matches['+mIdx+'].rewards)_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].matches['+mIdx+'].rewards={};_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].matches['+mIdx+'].rewards.celestium=parseInt(this.value)||0" style="width:120px"/></div>'
+          +'<div class="campaign-edit-row"><div class="campaign-edit-label">Reward Note:</div>'
+          +'<input class="admin-input" type="text" value="'+escapeAttr(m.rewards?.note||'')+'" onchange="if(!_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].matches['+mIdx+'].rewards)_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].matches['+mIdx+'].rewards={};_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].matches['+mIdx+'].rewards.note=this.value" placeholder="e.g. Card unlock: Virora"/></div>'
+          +'</div>';
+      });
+      chEl.innerHTML=
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
+        +'<span style="font-size:14px">📖</span>'
+        +'<span style="font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:2px;color:var(--violet2)">'+chapter.name+' (id: '+chapter.id+')</span>'
+        +'</div>'
+        +'<div class="campaign-edit-row"><div class="campaign-edit-label">Name:</div>'
+        +'<input class="admin-input" type="text" value="'+escapeAttr(chapter.name)+'" onchange="_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].name=this.value"/></div>'
+        +'<div class="campaign-edit-row"><div class="campaign-edit-label">Subtitle:</div>'
+        +'<input class="admin-input" type="text" value="'+escapeAttr(chapter.subtitle||'')+'" onchange="_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].subtitle=this.value"/></div>'
+        +'<div class="campaign-edit-row"><div class="campaign-edit-label">Narrative:</div>'
+        +'<input class="admin-input" type="text" value="'+escapeAttr(chapter.narrative||'')+'" onchange="_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].narrative=this.value"/></div>'
+        +'<div style="margin-top:10px">'+matchesHtml+'</div>';
+      chaptersContainer.appendChild(chEl);
+    });
+  });
+}
+
+function escapeAttr(s){return (s||'').toString().replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+async function saveCampaignFromEditor(){
+  if(!isAdmin()||!_celSB||!_editorCampaignData)return;
+  try{
+    await _celSB.from('app_settings').upsert(
+      {key:'campaign_data',value:JSON.stringify(_editorCampaignData),updated_at:new Date().toISOString()},
+      {onConflict:'key'}
+    );
+    CAMPAIGN_DATA=_editorCampaignData;
+    alert('✓ Campaign saved! Changes are now live for all players.');
+  }catch(e){alert('Failed to save: '+e.message);}
+}
+
+async function resetCampaignToDefault(){
+  if(!isAdmin())return;
+  if(!confirm('Reset campaign to default structure? This affects all players.'))return;
+  try{
+    await _celSB.from('app_settings').delete().eq('key','campaign_data');
+    CAMPAIGN_DATA=JSON.parse(JSON.stringify(CAMPAIGN_DEFAULT));
+    alert('✓ Campaign reset to default.');
+  }catch(e){alert('Failed to reset: '+e.message);}
+}
+
+async function resetMyCampaignProgress(){
+  if(!isAdmin())return;
+  if(!confirm('Reset YOUR campaign progress? (Other players unaffected)'))return;
+  _campaignProgress={};
+  await saveCampaignProgress();
+  alert('✓ Your campaign progress reset.');
+}
+
 // ═══════════════════════════════════════════════════
 // STARTUP
 // ═══════════════════════════════════════════════════
@@ -6057,6 +6567,7 @@ window.addEventListener('load',async()=>{
       await loadFriends();
       startPresenceHeartbeat();
       startInviteListener();
+      await loadCampaign();
       // Sign out
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){
@@ -6123,6 +6634,7 @@ window.addEventListener('load',async()=>{
       await loadFriends();
       startPresenceHeartbeat();
       startInviteListener();
+      await loadCampaign();
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){console.error('[AUTH] error:',e);window.signOutUser=function(){window.location.replace(LOGIN);};}
   }
@@ -6465,6 +6977,17 @@ window.addEventListener('load',async()=>{
     <button class="admin-action-btn danger" onclick="adminResetProfile()">⚠ RESET MY PROFILE</button>
   </div>
 
+  <!-- CAMPAIGN EDITOR -->
+  <div class="admin-section">
+    <div class="admin-section-title">🗺️ CAMPAIGN EDITOR</div>
+    <div style="font-size:9px;color:#9ca3af;margin-bottom:10px;letter-spacing:1px;line-height:1.5">
+      Edit chapter names, match names, opponent portraits, and rewards. Changes save globally and apply to all players.
+    </div>
+    <button class="admin-action-btn" onclick="openCampaignEditor()">📝 OPEN CAMPAIGN EDITOR</button>
+    <button class="admin-action-btn" onclick="resetCampaignToDefault()" style="margin-top:6px">🔄 RESET CAMPAIGN TO DEFAULT</button>
+    <button class="admin-action-btn danger" onclick="resetMyCampaignProgress()" style="margin-top:6px">⚠ RESET MY CAMPAIGN PROGRESS</button>
+  </div>
+
   <!-- ADMIN INFO -->
   <div class="admin-section" style="border-color:rgba(0,180,255,.2);background:rgba(0,180,255,.04)">
     <div class="admin-section-title" style="color:#7dd3fc">ℹ INFO</div>
@@ -6724,6 +7247,119 @@ window.addEventListener('load',async()=>{
     <div id="mm-rooms-list">
       <div style="text-align:center;padding:20px;color:#6b7280;font-size:11px">Loading rooms...</div>
     </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     CAMPAIGN — WORLDS SELECT SCREEN
+     ═══════════════════════════════════════════════════ -->
+<div id="campaign-worlds-screen" class="screen" style="padding:24px;max-width:900px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:28px">
+    <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
+    <div style="font-family:'Orbitron',sans-serif;font-size:18px;letter-spacing:5px;color:var(--blue);text-shadow:0 0 14px var(--blue)">🗺️ CAMPAIGN</div>
+    <div style="margin-left:auto;font-size:9px;color:#6b7280;letter-spacing:2px">CHOOSE YOUR WORLD</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px" id="campaign-worlds-grid">
+    <!-- worlds rendered here -->
+  </div>
+
+  <div style="text-align:center;color:#4b5563;font-size:10px;margin-top:28px;letter-spacing:2px">MORE WORLDS COMING IN FUTURE UPDATES</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     CAMPAIGN — CHAPTERS SELECT SCREEN
+     ═══════════════════════════════════════════════════ -->
+<div id="campaign-chapters-screen" class="screen" style="padding:24px;max-width:780px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px">
+    <button class="btn-gray btn-sm" onclick="showScreen('campaign-worlds-screen');openCampaign()">← Back</button>
+    <div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:var(--blue);text-shadow:0 0 10px var(--blue)" id="chapters-world-name">WORLD</div>
+      <div style="font-size:9px;color:#6b7280;letter-spacing:2px;margin-top:2px">SELECT CHAPTER</div>
+    </div>
+    <div style="margin-left:auto;font-size:10px;color:#fbbf24;letter-spacing:1px" id="chapters-progress">0 / 0 chapters</div>
+  </div>
+
+  <div id="campaign-chapters-list">
+    <!-- chapters rendered here -->
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     CAMPAIGN — CHAPTER MAP (MATCH NODES) SCREEN
+     ═══════════════════════════════════════════════════ -->
+<div id="campaign-chapter-map-screen" class="screen" style="padding:24px;max-width:900px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px">
+    <button class="btn-gray btn-sm" onclick="backToChapters()">← Chapters</button>
+    <div>
+      <div style="font-size:9px;color:#6b7280;letter-spacing:2px" id="chapter-map-world">WORLD</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:16px;letter-spacing:4px;color:var(--blue);text-shadow:0 0 10px var(--blue);margin-top:2px" id="chapter-map-name">CHAPTER</div>
+    </div>
+    <div style="margin-left:auto;font-size:10px;color:#fbbf24;letter-spacing:1px" id="chapter-map-progress">0 / 0 matches</div>
+  </div>
+
+  <div id="chapter-map-narrative" style="font-size:11px;color:#9ca3af;text-align:center;margin-bottom:20px;font-style:italic;letter-spacing:1px;line-height:1.6"></div>
+
+  <div class="match-path" id="match-path-container">
+    <!-- match nodes rendered here -->
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     MATCH DETAIL MODAL
+     ═══════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="match-detail-modal">
+  <div class="match-detail-modal-content">
+    <button onclick="document.getElementById('match-detail-modal').classList.remove('open')" style="position:absolute;top:10px;right:10px;background:none;border:none;color:#6b7280;font-size:18px;cursor:pointer">✕</button>
+
+    <div class="match-detail-portrait" id="match-detail-portrait">⚔️</div>
+    <div style="text-align:center;font-family:'Orbitron',sans-serif;font-size:16px;letter-spacing:3px;color:#e2e8f0;margin-bottom:4px" id="match-detail-name">—</div>
+    <div style="text-align:center;font-size:9px;letter-spacing:2px;color:#fbbf24;margin-bottom:14px" id="match-detail-type">REGULAR MATCH</div>
+    <div style="font-size:11px;color:#9ca3af;text-align:center;margin-bottom:18px;line-height:1.5" id="match-detail-desc">—</div>
+
+    <div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.25);border-radius:8px;padding:10px 14px;margin-bottom:18px">
+      <div style="font-size:9px;color:#fbbf24;letter-spacing:2px;margin-bottom:6px">REWARDS</div>
+      <div style="font-size:11px;color:#e2e8f0" id="match-detail-rewards">—</div>
+    </div>
+
+    <!-- Deck choice -->
+    <div style="margin-bottom:14px">
+      <div style="font-size:9px;color:#a5b4fc;letter-spacing:2px;margin-bottom:6px">CHOOSE YOUR DECK</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <label style="display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(8,8,28,.5);border:1px solid var(--border);border-radius:7px;cursor:pointer">
+          <input type="radio" name="campaign-deck-choice" value="default" checked style="margin:0"/>
+          <div style="flex:1">
+            <div style="font-size:11px;color:#c4b5fd;font-weight:700">🎴 Use Default Starter Deck</div>
+            <div style="font-size:9px;color:#6b7280;margin-top:2px">Recommended for new players</div>
+          </div>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(8,8,28,.5);border:1px solid var(--border);border-radius:7px;cursor:pointer">
+          <input type="radio" name="campaign-deck-choice" value="own" style="margin:0"/>
+          <div style="flex:1">
+            <div style="font-size:11px;color:#86efac;font-weight:700">⚔️ Use My Own Deck</div>
+            <div style="font-size:9px;color:#6b7280;margin-top:2px">Pick from your saved decks (60 cards required)</div>
+          </div>
+        </label>
+      </div>
+      <select id="campaign-my-deck-select" class="admin-input" style="width:100%;margin-top:6px;display:none"></select>
+    </div>
+
+    <button class="btn-primary" style="width:100%;padding:12px;font-family:'Orbitron',sans-serif;letter-spacing:3px;font-size:13px" onclick="startCampaignMatch()" id="campaign-start-btn">▶ START MATCH</button>
+  </div>
+</div>
+
+<!-- CAMPAIGN EDITOR SCREEN (admin only) -->
+<div id="campaign-editor-screen" class="screen" style="padding:20px;max-width:840px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+    <button class="btn-gray btn-sm" onclick="showScreen('admin-screen');openAdminPanel()">← Back</button>
+    <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:#fca5a5;text-shadow:0 0 10px rgba(239,68,68,.5)">🗺️ CAMPAIGN EDITOR</div>
+    <button class="admin-action-btn" style="margin-left:auto;width:auto;padding:8px 16px" onclick="saveCampaignFromEditor()">💾 SAVE ALL CHANGES</button>
+  </div>
+
+  <div style="font-size:10px;color:#fcd34d;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:6px;padding:8px 10px;margin-bottom:14px;letter-spacing:1px">⚠ Changes are GLOBAL and apply to all players when saved.</div>
+
+  <div id="campaign-editor-content">
+    <div style="text-align:center;padding:30px;color:#6b7280">Loading...</div>
   </div>
 </div>
 </body>
