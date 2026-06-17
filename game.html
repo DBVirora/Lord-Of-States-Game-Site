@@ -2827,11 +2827,17 @@ textarea{
 }
 .admin-card-manager-controls{
   display:grid;
-  grid-template-columns:1fr auto auto;
+  grid-template-columns:1fr auto auto auto;
   gap:10px;
   margin-bottom:14px;
   padding-bottom:12px;
   border-bottom:1px solid rgba(200,164,74,.15);
+  align-items:center;
+}
+@media(max-width:1100px){
+  .admin-card-manager-controls{
+    grid-template-columns:1fr 1fr;
+  }
 }
 
 .admin-holo-mode-btn{
@@ -7153,6 +7159,7 @@ function renderCardManagerList(){
   if(!container) return;
   const filter = (document.getElementById('admin-card-filter')?.value || '').toLowerCase().trim();
   const typeFilter = document.getElementById('admin-card-type-filter')?.value || 'all';
+  const statusFilter = document.getElementById('admin-card-status-filter')?.value || 'all';
 
   const allCards = Object.keys(DB).filter(id => {
     const c = DB[id];
@@ -7171,6 +7178,9 @@ function renderCardManagerList(){
   const filtered = allCards.filter(id => {
     const c = DB[id];
     if(typeFilter !== 'all' && c.type !== typeFilter) return false;
+    // Status filter: enabled / disabled / all
+    if(statusFilter === 'enabled' && _disabledCards[id]) return false;
+    if(statusFilter === 'disabled' && !_disabledCards[id]) return false;
     if(filter){
       const hay = (c.name + ' ' + (c.color || '') + ' ' + (c.race || '') + ' ' + (c.subtypes || []).join(' ')).toLowerCase();
       if(!hay.includes(filter)) return false;
@@ -11530,6 +11540,11 @@ window.addEventListener('load',async()=>{
         <option value="equipment">Equipment</option>
         <option value="instant">Instants</option>
         <option value="energy_card">Energy Cards</option>
+      </select>
+      <select id="admin-card-status-filter" class="admin-input" onchange="renderCardManagerList()" style="width:auto;min-width:160px">
+        <option value="all">All Status</option>
+        <option value="enabled">✓ Enabled Only</option>
+        <option value="disabled">✗ Disabled Only</option>
       </select>
       <div style="display:flex;gap:6px">
         <button class="admin-action-btn" onclick="adminEnableAllCards()" style="width:auto;padding:10px 16px;font-size:11px">✓ ENABLE ALL</button>
