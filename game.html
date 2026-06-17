@@ -6124,9 +6124,11 @@ async function saveAchievements(){
 }
 
 async function checkAchievements(){
+  // Respect global achievements_enabled toggle (admin bypasses)
+  if(!isFeatureEnabled('achievements_enabled'))return;
   let anyNew=false;
   for(const [id,ach] of Object.entries(ACHIEVEMENTS)){
-    if(_achData['ach_'+id])continue; // already unlocked
+    if(_achData['ach_'+id])continue;
     if(ach.check()){
       _achData['ach_'+id]=new Date().toISOString();
       anyNew=true;
@@ -6520,22 +6522,33 @@ async function adminToggle(key){
 }
 
 function applyAdminToggleEffects(){
-  // Shop button: hidden for non-admins if shop_enabled is false
-  // Admin ALWAYS sees the shop button regardless of toggle state
-  const shopBtns=document.querySelectorAll('.menu-btn.util-btn');
-  shopBtns.forEach(b=>{
-    if(b.textContent.includes('Shop')){
+  // SHOP button — hide for non-admins if shop_enabled is false
+  document.querySelectorAll('.menu-btn').forEach(b=>{
+    const txt=(b.textContent||'').toUpperCase();
+    if(txt.includes('SHOP')&&!txt.includes('SHOPPING')){
       b.style.display=isFeatureEnabled('shop_enabled')?'':'none';
     }
   });
-  // Battle Pass button: hidden for non-admins if battle_pass_enabled is false
-  // Admin always sees it
-  const bpBtns=document.querySelectorAll('.menu-btn');
-  bpBtns.forEach(b=>{
-    if(b.textContent.includes('Battle Pass')){
+  // BATTLE PASS button
+  document.querySelectorAll('.menu-btn').forEach(b=>{
+    const txt=(b.textContent||'').toUpperCase();
+    if(txt.includes('BATTLE PASS')){
       b.style.display=isFeatureEnabled('battle_pass_enabled')?'':'none';
     }
   });
+  // EVENTS tab in shop
+  const eventsTab=document.getElementById('shop-tab-events');
+  if(eventsTab){
+    eventsTab.style.display=isFeatureEnabled('events_enabled')?'':'none';
+    if(eventsTab.style.display==='none'&&eventsTab.classList.contains('active')){
+      if(typeof switchShopTab==='function')switchShopTab('packs');
+    }
+  }
+  // ACHIEVEMENTS — hide collapsible section on profile + the popup will be suppressed via checkAchievements()
+  const achSection=document.getElementById('ach-collapsible');
+  if(achSection){
+    achSection.style.display=isFeatureEnabled('achievements_enabled')?'':'none';
+  }
 }
 
 async function adminGrantCelestium(){
@@ -9524,7 +9537,7 @@ window.addEventListener('load',async()=>{
   </div>
 
   <!-- Achievements — collapsible -->
-  <div style="margin-bottom:16px">
+  <div id="ach-collapsible" style="margin-bottom:16px">
     <button onclick="toggleAchievements()" id="ach-toggle-btn"
       style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(8,8,28,.7);border:1px solid rgba(251,191,36,.25);border-radius:12px;cursor:pointer;font-family:'Share Tech Mono',monospace;transition:all .2s;">
       <div style="display:flex;align-items:center;gap:8px">
