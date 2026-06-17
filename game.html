@@ -4025,6 +4025,7 @@ function renderBuilderCards(){
   pool.innerHTML='';
   Object.values(DB).filter(c=>{
     if(c.isToken)return false;
+    if(!isCardPlayable(c.id))return false; // gated for non-admins
     if(filter!=='all'&&c.type!==filter)return false;
     if(colorFilter!=='all'&&c.color!==colorFilter)return false;
     if(search&&!c.name.toLowerCase().includes(search)&&!(c.color||'').includes(search)&&!(c.keywords||[]).some(k=>k.includes(search)))return false;
@@ -6602,7 +6603,7 @@ function showRulesScreen(){
     </div>
   </div>
   <div id="rules-card-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
-  ${renderRulesCardGrid(Object.values(DB))}
+  ${renderRulesCardGrid(Object.values(DB).filter(c=>isCardPlayable(c.id)))}
   </div>`;
   showScreen('rules-screen');
 }
@@ -6657,7 +6658,7 @@ function setRulesFilter(type){
 function filterRulesCards(){
   rulesSearch=(document.getElementById('rules-search')?.value||'').toLowerCase();
   const grid=document.getElementById('rules-card-grid');if(!grid)return;
-  let cards=Object.values(DB);
+  let cards=Object.values(DB).filter(c=>isCardPlayable(c.id));
   if(rulesFilter!=='all') cards=cards.filter(c=>c.type===rulesFilter);
   if(rulesSearch) cards=cards.filter(c=>
     c.name.toLowerCase().includes(rulesSearch)||
@@ -7082,12 +7083,19 @@ function getCardPool(){
 let _disabledCards = {};
 
 async function loadDisabledCards(){
-  if(!_celSB){return;}
+  if(!_celSB){console.log('[DisabledCards] no supabase client');return;}
   try{
-    const {data} = await _celSB.from('app_settings').select('value').eq('key','disabled_cards').maybeSingle();
+    const {data, error} = await _celSB.from('app_settings').select('value').eq('key','disabled_cards').maybeSingle();
+    if(error){console.warn('[DisabledCards] query error:', error);return;}
     if(data && data.value){
-      try{ _disabledCards = JSON.parse(data.value) || {}; }
-      catch(e){ _disabledCards = {}; }
+      try{
+        _disabledCards = JSON.parse(data.value) || {};
+        console.log('[DisabledCards] loaded:', Object.keys(_disabledCards).length, 'disabled →', _disabledCards);
+      }
+      catch(e){ _disabledCards = {}; console.warn('[DisabledCards] parse error:', e); }
+    } else {
+      console.log('[DisabledCards] no row found in app_settings — defaulting to empty');
+      _disabledCards = {};
     }
   }catch(e){ console.warn('[DisabledCards] load error:', e); }
 }
