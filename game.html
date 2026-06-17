@@ -3323,6 +3323,187 @@ textarea{
 #instant-reveal-overlay.open .instant-reveal-card{
   animation:instant-card-flash 1.2s ease-in-out infinite;
 }
+
+/* ═══════════════════════════════════════════════════════
+   CARD PLAY ZOOM ANIMATION
+   Brief centered zoom when a card enters the field.
+   ═══════════════════════════════════════════════════════ */
+#card-play-zoom{
+  position:fixed;
+  inset:0;
+  z-index:8500;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  opacity:0;
+}
+#card-play-zoom.playing{
+  animation:card-play-flash .9s ease-out forwards;
+}
+.card-play-zoom-img{
+  width:200px;
+  max-width:60vw;
+  border-radius:12px;
+  box-shadow:
+    0 0 40px rgba(200,164,74,.6),
+    0 0 80px rgba(124,58,237,.4),
+    0 20px 50px rgba(0,0,0,.6);
+  transform:scale(.4);
+}
+#card-play-zoom.playing .card-play-zoom-img{
+  animation:card-play-zoom-anim .9s cubic-bezier(.22,1,.36,1) forwards;
+}
+@keyframes card-play-flash{
+  0%{opacity:0;}
+  15%{opacity:1;}
+  70%{opacity:1;}
+  100%{opacity:0;}
+}
+@keyframes card-play-zoom-anim{
+  0%{transform:scale(.4) translateY(40px);}
+  30%{transform:scale(1.15) translateY(0);}
+  60%{transform:scale(1.05) translateY(0);}
+  100%{transform:scale(.5) translateY(-30px);}
+}
+
+/* ═══════════════════════════════════════════════════════
+   COMBAT ANIMATIONS — hit flash, damage numbers, death
+   ═══════════════════════════════════════════════════════ */
+
+/* Hit flash — red pulse when a card takes damage */
+.card-hit{
+  animation:card-hit-flash .45s ease-out;
+}
+@keyframes card-hit-flash{
+  0%{filter:brightness(1);box-shadow:0 0 0 rgba(239,68,68,0);}
+  25%{filter:brightness(1.8) saturate(1.5);box-shadow:0 0 20px rgba(239,68,68,.9),0 0 0 2px rgba(239,68,68,.7) inset;transform:translateX(-2px);}
+  50%{filter:brightness(1.4);transform:translateX(2px);}
+  75%{transform:translateX(-1px);}
+  100%{filter:brightness(1);box-shadow:0 0 0 rgba(239,68,68,0);transform:translateX(0);}
+}
+
+/* Heal flash — green pulse */
+.card-heal{
+  animation:card-heal-flash .55s ease-out;
+}
+@keyframes card-heal-flash{
+  0%{filter:brightness(1);box-shadow:0 0 0 rgba(34,197,94,0);}
+  35%{filter:brightness(1.4) saturate(1.3);box-shadow:0 0 18px rgba(34,197,94,.8),0 0 0 2px rgba(34,197,94,.6) inset;}
+  100%{filter:brightness(1);box-shadow:0 0 0 rgba(34,197,94,0);}
+}
+
+/* Death animation — shatter/fade */
+.card-dying{
+  animation:card-death .5s ease-in forwards;
+  pointer-events:none;
+}
+@keyframes card-death{
+  0%{opacity:1;transform:scale(1) rotate(0deg);filter:brightness(1);}
+  30%{opacity:1;transform:scale(1.1) rotate(-2deg);filter:brightness(2) saturate(0);}
+  100%{opacity:0;transform:scale(.6) rotate(8deg) translateY(20px);filter:brightness(0);}
+}
+
+/* Enhanced damage popup */
+.dmg-popup{
+  position:fixed;
+  z-index:9500;
+  font-family:'Cinzel',serif;
+  font-size:32px;
+  font-weight:900;
+  color:#ef4444;
+  text-shadow:
+    0 0 8px rgba(239,68,68,.9),
+    0 2px 4px rgba(0,0,0,.9),
+    -1px -1px 0 #7f1d1d,
+    1px 1px 0 #7f1d1d;
+  pointer-events:none;
+  animation:dmg-float 1.1s ease-out forwards;
+}
+.heal-popup{
+  color:#22c55e;
+  text-shadow:
+    0 0 8px rgba(34,197,94,.9),
+    0 2px 4px rgba(0,0,0,.9),
+    -1px -1px 0 #14532d,
+    1px 1px 0 #14532d;
+}
+@keyframes dmg-float{
+  0%{opacity:0;transform:scale(.4) translateY(0);}
+  20%{opacity:1;transform:scale(1.3) translateY(-8px);}
+  40%{transform:scale(1) translateY(-16px);}
+  100%{opacity:0;transform:scale(.9) translateY(-50px);}
+}
+
+/* ═══════════════════════════════════════════════════════
+   TURN TRANSITION BANNER
+   ═══════════════════════════════════════════════════════ */
+#turn-banner{
+  position:fixed;
+  top:50%;
+  left:0;
+  right:0;
+  z-index:8800;
+  text-align:center;
+  pointer-events:none;
+  opacity:0;
+  transform:translateY(-50%);
+}
+#turn-banner.show{
+  animation:turn-banner-sweep 1.6s ease-in-out forwards;
+}
+.turn-banner-text{
+  display:inline-block;
+  font-family:'Cinzel',serif;
+  font-size:42px;
+  font-weight:900;
+  letter-spacing:8px;
+  padding:18px 60px;
+  color:#f0e6c8;
+  background:linear-gradient(90deg,transparent,rgba(8,8,28,.92),transparent);
+  text-shadow:0 0 20px rgba(200,164,74,.8),0 4px 8px rgba(0,0,0,.9);
+  border-top:1px solid rgba(200,164,74,.5);
+  border-bottom:1px solid rgba(200,164,74,.5);
+}
+.turn-banner-text.your-turn{color:#e8c570;}
+.turn-banner-text.opp-turn{color:#a5b4fc;}
+@keyframes turn-banner-sweep{
+  0%{opacity:0;transform:translateY(-50%) scale(.8);}
+  20%{opacity:1;transform:translateY(-50%) scale(1.05);}
+  35%{transform:translateY(-50%) scale(1);}
+  75%{opacity:1;transform:translateY(-50%) scale(1);}
+  100%{opacity:0;transform:translateY(-50%) scale(.95);}
+}
+
+/* ═══════════════════════════════════════════════════════
+   ENERGY GAIN PARTICLES
+   ═══════════════════════════════════════════════════════ */
+.energy-particle{
+  position:fixed;
+  z-index:9400;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:radial-gradient(circle,#fbbf24,#f59e0b);
+  box-shadow:0 0 8px rgba(251,191,36,.9);
+  pointer-events:none;
+}
+
+/* ═══════════════════════════════════════════════════════
+   FIELD CARD HOVER ZOOM
+   ═══════════════════════════════════════════════════════ */
+.card-slot{
+  transition:transform .15s ease, box-shadow .15s ease, z-index 0s;
+}
+.card-slot:hover{
+  transform:scale(1.25) translateY(-8px);
+  z-index:50;
+  box-shadow:0 8px 24px rgba(0,0,0,.7),0 0 16px rgba(200,164,74,.4);
+}
+/* Don't zoom while dying or being dragged */
+.card-slot.card-dying:hover{
+  transform:scale(.6) rotate(8deg) translateY(20px);
+}
 </style>
 </head>
 <body>
@@ -3579,6 +3760,9 @@ textarea{
 
 <!-- GAME SCREEN -->
 <div id="game-screen">
+<!-- SFX toggle button (in-game) -->
+<button id="sfx-toggle-btn" onclick="toggleSfx()" title="Toggle sound effects" style="position:absolute;top:8px;right:8px;z-index:200;background:rgba(8,8,28,.8);border:1px solid rgba(200,164,74,.4);border-radius:8px;width:36px;height:36px;font-size:16px;cursor:pointer;color:#e8c570">🔊</button>
+
   <!-- P2 area -->
   <div class="player-area">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;flex-wrap:wrap;gap:3px">
@@ -4714,6 +4898,134 @@ function drawCard(p,silent=false){
   checkHandLimit(p);
 }
 
+
+// ═══════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════
+// SOUND EFFECTS SYSTEM (Web Audio API — synthesized)
+// No external files. Generates tones/sweeps procedurally.
+// Toggle via _sfxEnabled.
+// ═══════════════════════════════════════════════════
+let _sfxEnabled = true;
+let _audioCtx = null;
+
+function _getAudioCtx(){
+  if(!_audioCtx){
+    try{ _audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch(e){ return null; }
+  }
+  // Resume if suspended (browsers require user gesture)
+  if(_audioCtx.state === 'suspended') _audioCtx.resume();
+  return _audioCtx;
+}
+
+// Core tone generator
+function _playTone(freq, duration, type, volume, slideTo){
+  if(!_sfxEnabled) return;
+  const ctx = _getAudioCtx();
+  if(!ctx) return;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type || 'sine';
+  osc.frequency.setValueAtTime(freq, ctx.currentTime);
+  if(slideTo){
+    osc.frequency.exponentialRampToValueAtTime(Math.max(1,slideTo), ctx.currentTime + duration);
+  }
+  gain.gain.setValueAtTime(volume || 0.15, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + duration);
+}
+
+// Noise burst (for impacts)
+function _playNoise(duration, volume, filterFreq){
+  if(!_sfxEnabled) return;
+  const ctx = _getAudioCtx();
+  if(!ctx) return;
+  const bufferSize = ctx.sampleRate * duration;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for(let i=0;i<bufferSize;i++){ data[i] = (Math.random()*2-1) * Math.pow(1 - i/bufferSize, 2); }
+  const noise = ctx.createBufferSource();
+  noise.buffer = buffer;
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = filterFreq || 1000;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(volume || 0.2, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+  noise.connect(filter);
+  filter.connect(gain);
+  gain.connect(ctx.destination);
+  noise.start();
+  noise.stop(ctx.currentTime + duration);
+}
+
+// ── Named SFX ──
+const SFX = {
+  cardPlay(){ _playTone(330, 0.15, 'triangle', 0.12, 520); },          // upward whoosh
+  attack(){ _playNoise(0.12, 0.18, 1400); _playTone(180, 0.1, 'sawtooth', 0.1, 90); }, // impact
+  damage(){ _playNoise(0.15, 0.22, 800); },                            // hit thud
+  heal(){ _playTone(523, 0.2, 'sine', 0.12, 784); },                   // pleasant rise
+  death(){ _playTone(220, 0.4, 'sawtooth', 0.15, 55); },               // descending doom
+  ability(){ _playTone(660, 0.18, 'sine', 0.12, 990); _playTone(880, 0.12, 'triangle', 0.08); }, // chime
+  instant(){ _playTone(440, 0.1, 'square', 0.1, 660); _playTone(660, 0.12, 'sine', 0.1); },        // zap
+  energy(){ _playTone(700, 0.12, 'sine', 0.1, 1100); },                // ding
+  turnStart(){ _playTone(392, 0.15, 'sine', 0.12); setTimeout(()=>_playTone(523, 0.25, 'sine', 0.12),120); }, // two-note fanfare
+  win(){ [523,659,784,1047].forEach((f,i)=>setTimeout(()=>_playTone(f,0.3,'triangle',0.15),i*140)); },
+  lose(){ [392,330,262].forEach((f,i)=>setTimeout(()=>_playTone(f,0.35,'sawtooth',0.12),i*180)); },
+  click(){ _playTone(800, 0.05, 'sine', 0.06); },
+  error(){ _playTone(150, 0.2, 'square', 0.1); }
+};
+
+function toggleSfx(){
+  _sfxEnabled = !_sfxEnabled;
+  if(_sfxEnabled) SFX.click();
+  const btn = document.getElementById('sfx-toggle-btn');
+  if(btn) btn.textContent = _sfxEnabled ? '🔊' : '🔇';
+  return _sfxEnabled;
+}
+
+
+// ATTACK LUNGE ANIMATION
+// Animates the attacker card lunging toward its target.
+// ═══════════════════════════════════════════════════
+function animateAttack(attackerUid, targetUid, callback){
+  const atkEl=document.querySelector(`[data-uid="${attackerUid}"]`);
+  const tgtEl=document.querySelector(`[data-uid="${targetUid}"]`);
+  if(!atkEl||!tgtEl){ if(callback)callback(); return; }
+
+  const aR=atkEl.getBoundingClientRect();
+  const tR=tgtEl.getBoundingClientRect();
+  // Direction vector from attacker to target
+  const dx=(tR.left+tR.width/2)-(aR.left+aR.width/2);
+  const dy=(tR.top+tR.height/2)-(aR.top+aR.height/2);
+  // Lunge ~60% of the way toward target
+  const lungeX=dx*0.5;
+  const lungeY=dy*0.5;
+
+  atkEl.style.transition='transform .18s cubic-bezier(.5,0,.7,1)';
+  atkEl.style.zIndex='100';
+  atkEl.style.transform=`translate(${lungeX}px,${lungeY}px) scale(1.08)`;
+
+  setTimeout(()=>{
+    // Impact moment — flash the target
+    tgtEl.classList.add('card-hit');
+    // Recoil back
+    atkEl.style.transition='transform .25s ease-out';
+    atkEl.style.transform='translate(0,0) scale(1)';
+    setTimeout(()=>{
+      atkEl.style.zIndex='';
+      atkEl.style.transition='';
+      tgtEl.classList.remove('card-hit');
+      if(callback)callback();
+    },250);
+  },180);
+}
+
+
 function dealDamage(tp,tuid,amt){
   if(amt<=0)return;
   const fc=G.players[tp].field.find(f=>f.uid===tuid);if(!fc)return;
@@ -4741,7 +5053,8 @@ function dealDamage(tp,tuid,amt){
   log(`${c.name} -${dmg}HP → ${fc.currentHP}/${fc.baseHP+fc.hpBonus}HP`,'dmg');
   const drainAtk=G.selectedAttacker?G.players[G.activePlayer]?.field.find(f=>f.uid===G.selectedAttacker):null;
   if(drainAtk&&hasKW(drainAtk,'drain')&&dmg>0){G.players[G.activePlayer].energy+=dmg;log('Drain: +'+dmg+'⚡!','gain');}
-  showDmgPopup(tp,`-${dmg}`);
+  showDmgPopup(tp,`-${dmg}`,tuid);
+  if(typeof SFX!=='undefined')SFX.damage();
   if(fc.currentHP<=0){
     if(isChar(DB[fc.cid])&&hasKW(fc,'resolve')&&!fc.resolveUsed){
       fc.currentHP=1;fc.resolveUsed=true;
@@ -4753,6 +5066,12 @@ function dealDamage(tp,tuid,amt){
 function killCard(p,fc){
   const c=DB[fc.cid];if(!c)return;
   log(`☠ ${c.name} destroyed!`,'death');
+  if(typeof SFX!=='undefined')SFX.death();
+  // Death animation on the card element before removing
+  const cardEl=document.querySelector(`[data-uid="${fc.uid}"]`);
+  if(cardEl){
+    cardEl.classList.add('card-dying');
+  }
   G.players[p].field=G.players[p].field.filter(f=>f.uid!==fc.uid);
   fc.attachments.forEach(eqId=>G.players[p].discard.push(eqId));
   if(!c.isToken)G.players[p].discard.push(fc.cid);
@@ -4820,6 +5139,7 @@ function triggerWin(p,r){
 
 function showWinScreen(p,r,forfeited){
   const iWon=(p===1); // I'm always P1 locally
+  if(typeof SFX!=='undefined'){ if(iWon)SFX.win(); else SFX.lose(); }
   const emoji=document.getElementById('win-emoji');
   const text=document.getElementById('win-text');
   const reason=document.getElementById('win-reason');
@@ -4916,6 +5236,118 @@ function doSacrifice(uid,energyGain){
 // DECK SEARCH
 // ═══════════════════════════════════════════════════
 let deckSearchFilter=null,deckSearchCallback=null;
+
+// ═══════════════════════════════════════════════════
+// MULTI-CARD DECK SEARCH
+// Like openDeckSearch but lets the player pick N cards before resolving.
+// ═══════════════════════════════════════════════════
+let _multiSearchState = null;
+
+function startMultiDeckSearch(title, desc, filterFn, count, callback){
+  _multiSearchState = {
+    filterFn: filterFn,
+    count: count,
+    picked: [],
+    callback: callback
+  };
+  document.getElementById('deck-search-title').textContent = title;
+  document.getElementById('deck-search-desc').textContent = desc + ' (0/' + count + ' selected)';
+  document.getElementById('deck-search-input').value = '';
+  renderMultiDeckSearch();
+  document.getElementById('deck-search-modal').classList.add('open');
+}
+
+function renderMultiDeckSearch(){
+  const list = document.getElementById('deck-search-list');
+  list.innerHTML = '';
+  const search = document.getElementById('deck-search-input').value.toLowerCase();
+  const pl = G.players[G.activePlayer];
+  const st = _multiSearchState;
+  if(!st) return;
+
+  // Build available deck (minus already-picked indices)
+  const pickedCounts = {};
+  st.picked.forEach(cid => { pickedCounts[cid] = (pickedCounts[cid]||0)+1; });
+
+  const available = {};
+  pl.deck.forEach(cid => {
+    const c = DB[cid];
+    if(!c) return;
+    if(st.filterFn && !st.filterFn(c)) return;
+    if(search && !c.name.toLowerCase().includes(search)) return;
+    available[cid] = (available[cid]||0) + 1;
+  });
+  // Subtract picked
+  Object.keys(pickedCounts).forEach(cid => {
+    if(available[cid]) available[cid] -= pickedCounts[cid];
+    if(available[cid] <= 0) delete available[cid];
+  });
+
+  // Show picked so far
+  if(st.picked.length){
+    const pickedRow = document.createElement('div');
+    pickedRow.style.cssText = 'background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);border-radius:6px;padding:6px 10px;margin-bottom:8px;font-size:11px;color:#86efac';
+    pickedRow.innerHTML = '✓ Selected: ' + st.picked.map(cid => DB[cid]?.name || cid).join(', ');
+    list.appendChild(pickedRow);
+  }
+
+  Object.entries(available).forEach(([cid, cnt]) => {
+    const c = DB[cid];
+    if(!c) return;
+    const row = document.createElement('div');
+    row.className = 'search-card-item';
+    const url = getImg(cid);
+    row.innerHTML = '<div style="width:30px;height:42px;background:#1e1e3a;border-radius:4px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px">' + (url ? '<img src="'+url+'" style="width:100%;height:100%;object-fit:cover"/>' : (c.sym||'?')) + '</div>'
+      + '<div style="flex:1"><div style="font-size:12px;font-weight:700;color:#c8a0ff">' + c.name + '</div><div style="font-size:10px;color:#6b7280">' + c.type.replace('_',' ') + '</div></div>'
+      + '<div style="color:#6b7280;font-size:10px">×' + cnt + '</div>';
+    row.onclick = () => {
+      st.picked.push(cid);
+      document.getElementById('deck-search-desc').textContent =
+        document.getElementById('deck-search-desc').textContent.replace(/\(\d+\/\d+ selected\)/, '('+st.picked.length+'/'+st.count+' selected)');
+      if(st.picked.length >= st.count){
+        // Done — remove picked cards from deck and resolve
+        st.picked.forEach(pcid => {
+          const idx = pl.deck.indexOf(pcid);
+          if(idx > -1) pl.deck.splice(idx, 1);
+        });
+        const cb = st.callback;
+        const picked = st.picked.slice();
+        _multiSearchState = null;
+        closeAllModals();
+        if(cb) cb(picked);
+      } else {
+        renderMultiDeckSearch();
+      }
+    };
+    list.appendChild(row);
+  });
+
+  if(!Object.keys(available).length){
+    // Not enough cards — resolve with what we have
+    if(st.picked.length > 0){
+      const doneBtn = document.createElement('button');
+      doneBtn.className = 'btn-primary';
+      doneBtn.style.cssText = 'width:100%;margin-top:8px;padding:8px';
+      doneBtn.textContent = 'Done (' + st.picked.length + ' selected)';
+      doneBtn.onclick = () => {
+        st.picked.forEach(pcid => {
+          const idx = pl.deck.indexOf(pcid);
+          if(idx > -1) pl.deck.splice(idx, 1);
+        });
+        const cb = st.callback;
+        const picked = st.picked.slice();
+        _multiSearchState = null;
+        closeAllModals();
+        if(cb) cb(picked);
+      };
+      list.appendChild(doneBtn);
+    } else {
+      list.innerHTML = '<div style="color:#6b7280;font-size:11px;padding:8px">No matching cards in deck.</div>';
+    }
+  }
+}
+
+
 function openDeckSearch(title,desc,filterFn,callback){
   deckSearchFilter=filterFn;deckSearchCallback=callback;
   document.getElementById('deck-search-title').textContent=title;
@@ -4925,6 +5357,8 @@ function openDeckSearch(title,desc,filterFn,callback){
   document.getElementById('deck-search-modal').classList.add('open');
 }
 function renderDeckSearch(){
+  // If a multi-search is active, route to that renderer instead
+  if(_multiSearchState){ renderMultiDeckSearch(); return; }
   const list=document.getElementById('deck-search-list');list.innerHTML='';
   const search=document.getElementById('deck-search-input').value.toLowerCase();
   const pl=G.players[G.activePlayer];
@@ -5160,6 +5594,7 @@ function closeInstantReveal(){
 function showAbilityReveal(cardId, playerNum, abilityLabel, abilityText){
   const c = DB[cardId];
   if(!c) return;
+  if(typeof SFX!=='undefined')SFX.ability();
   const overlay = document.getElementById('instant-reveal-overlay');
   if(!overlay) return;
 
@@ -5529,9 +5964,14 @@ function onFieldClick(p,uid,fc){
         resolveHeraldVsField(p,fc);return;
       }
       if(!G.selectedAttacker)return;
-      if(isLoc(DB[fc.cid]))resolveLocationAttack(G.activePlayer,G.selectedAttacker,p,uid);
-      else if(isChar(DB[fc.cid]))resolveAttack(G.activePlayer,G.selectedAttacker,p,uid);
-      G.selectedAttacker=null;renderAll();
+      const _atkUid=G.selectedAttacker;
+      if(typeof SFX!=='undefined')SFX.attack();
+      // Play lunge animation, then resolve
+      animateAttack(_atkUid, uid, ()=>{
+        if(isLoc(DB[fc.cid]))resolveLocationAttack(G.activePlayer,_atkUid,p,uid);
+        else if(isChar(DB[fc.cid]))resolveAttack(G.activePlayer,_atkUid,p,uid);
+        G.selectedAttacker=null;renderAll();
+      });
     }
   } else {showFullCard(fc.cid,fc);}
 }
@@ -5580,6 +6020,63 @@ function resolveLocationAttack(ap,auid,dp,duid){
 // ═══════════════════════════════════════════════════
 // PLAY CARDS FROM HAND
 // ═══════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════
+// INSTANT EFFECT EXECUTION
+// Routes each instant card to its actual gameplay effect.
+// Called after the reveal popup shows.
+// ═══════════════════════════════════════════════════
+function executeInstantEffect(p, cardId){
+  const pl = G.players[p];
+  const c = DB[cardId];
+  if(!c) return;
+
+  switch(cardId){
+    case 'nature_focus': {
+      // Energy Placement: search deck for any 2 energy cards, add to hand.
+      // Only the local human player gets the interactive picker; AI auto-picks.
+      if(p === 1){
+        startMultiDeckSearch(
+          'Nature Focus — Energy Placement',
+          'Choose 2 Energy cards to add to your hand.',
+          (card) => card.type === 'energy_card',
+          2,
+          (pickedIds) => {
+            pickedIds.forEach(cid => {
+              pl.hand.push(newFC(cid));
+              log(`${DB[cid].name} added to hand!`, 'gain');
+            });
+            shuffle(pl.deck);
+            renderAll();
+          }
+        );
+      } else {
+        // AI: auto-grab first 2 energy cards
+        let grabbed = 0;
+        for(let i = pl.deck.length - 1; i >= 0 && grabbed < 2; i--){
+          if(DB[pl.deck[i]]?.type === 'energy_card'){
+            const cid = pl.deck.splice(i,1)[0];
+            pl.hand.push(newFC(cid));
+            grabbed++;
+          }
+        }
+        log(`AI used Nature Focus: grabbed ${grabbed} energy.`, 'info');
+        shuffle(pl.deck);
+        renderAll();
+      }
+      break;
+    }
+    default: {
+      // Generic instant with no special coded effect — just log it
+      // (the ability text is shown in the reveal popup)
+      const ab = c.abilities && c.abilities[0];
+      if(ab) log(`${c.name}: ${ab.label}`, 'info');
+      break;
+    }
+  }
+}
+
+
 function onHandClick(p,uid,fc){
   if(G.activePlayer!==p||G.phase!=='main'){showFullCard(fc.cid,null);return;}
   const pl=G.players[p];
@@ -5602,7 +6099,7 @@ function onHandClick(p,uid,fc){
     const totalField=pl.field.filter(f=>!isLoc(DB[f.cid])).length;
     if(isChar(DB[fco.cid])&&!DB[fco.cid]?.isToken&&namedFighters>=MAX_FIELD){log('Fighter zone full! (max 5 named fighters).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     if(!isChar(DB[fco.cid])&&otherCards>=MAX_OTHER){log('Field full! (max 5 other cards on field).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
-    pl.field.push(fco);log(`P${p} plays ${c.name}.`,'info');onEntry(p,fco);
+    pl.field.push(fco);log(`P${p} plays ${c.name}.`,'info');playCardZoom(fco.cid);if(typeof SFX!=='undefined')SFX.cardPlay();if(p===1)sendGameAction('card_play',{cardId:fco.cid});onEntry(p,fco);
     // Mission tracking: unique characters (only for local player)
     if(p===1&&typeof trackUniqueCharacter==='function'&&['base_char','char','team'].includes(c.type)){
       trackUniqueCharacter(c.charName||c.id||fco.cid);
@@ -5610,7 +6107,7 @@ function onHandClick(p,uid,fc){
   } else if(isLoc(c)){
     const locCount=pl.field.filter(f=>isLoc(DB[f.cid])).length;
     if(locCount>=MAX_LOC){log(`Location zone full! (max ${MAX_LOC}).`,'dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
-    pl.field.push(fco);log(`P${p} places ${c.name}.`,'info');
+    pl.field.push(fco);log(`P${p} places ${c.name}.`,'info');playCardZoom(fco.cid);
     if(c.id==='time_chamber'){pl.energy+=5;log('Time Chamber: +5⚡!','gain');}
   } else if(isEquip(c)){
     const chars=pl.field.filter(f=>isChar(DB[f.cid]));
@@ -5623,7 +6120,14 @@ function onHandClick(p,uid,fc){
       if(!chars.length){log('No field chars for Saiyan Blood!','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
       openInstantTargetPicker(fco,chars);return;
     }
-    pl.discard.push(c.id);log(`P${p} plays ${c.name}!`,'info');
+    // Show dramatic reveal popup FIRST, then execute the instant's effect
+    showInstantReveal(c.id, p);
+    if(typeof SFX!=='undefined')SFX.instant();
+    if(p===1)sendGameAction('instant_reveal',{cardId:c.id});
+    log(`P${p} plays ${c.name}!`,'info');
+    // Execute the instant's ability effect (after a short delay so reveal shows)
+    pl.discard.push(c.id);
+    setTimeout(() => { executeInstantEffect(p, c.id); renderAll(); }, 700);
   } else {log(`P${p} activates ${c.name}!`,'info');pl.discard.push(c.id);}
   renderAll();
 }
@@ -5672,6 +6176,33 @@ function applyEquipToTarget(efc,tfc){
   else{if(!tfc.attachments)tfc.attachments=[];tfc.attachments.push(ec.id);log(`${ec.name} → ${DB[tfc.cid].name}.`,'info');}
   renderAll();
 }
+
+
+// ═══════════════════════════════════════════════════
+// CARD PLAY ZOOM ANIMATION
+// Briefly zooms a card in center-screen when it's played to field.
+// Non-blocking — purely visual flourish.
+// ═══════════════════════════════════════════════════
+function playCardZoom(cardId){
+  const c = DB[cardId];
+  if(!c) return;
+  const overlay = document.getElementById('card-play-zoom');
+  const img = document.getElementById('card-play-zoom-img');
+  if(!overlay || !img) return;
+  const url = getImg(cardId);
+  if(!url){
+    // No image — skip the zoom (would just show broken img)
+    return;
+  }
+  img.src = url;
+  // Restart animation
+  overlay.classList.remove('playing');
+  void overlay.offsetWidth; // force reflow
+  overlay.classList.add('playing');
+  // Clean up after animation
+  setTimeout(() => { overlay.classList.remove('playing'); }, 950);
+}
+
 
 function onEntry(p,fc){
   const c=DB[fc.cid];if(!c)return;
@@ -5988,6 +6519,7 @@ function activateAbility(fc,abl){
   log(`${DB[fc.cid].name}: ${abl.label}!`,'gain');
   // Show dramatic Ability reveal popup (visible to both players)
   showAbilityReveal(fc.cid, G.activePlayer, abl.label, abl.text);
+  if(G.activePlayer===1)sendGameAction('ability_reveal',{cardId:fc.cid,label:abl.label,text:abl.text});
   // Specific effects
   if(fc.cid==='goku_ue'&&abl.label==='Destroyer Kamehameha'){const r=Math.floor(Math.random()*8)+1;const b=(r===1||r===7)?8:3;log(`d8: ${r} → +${b} next attack.`,'gain');fc.nextAttackBonus=(fc.nextAttackBonus||0)+b;}
   if(fc.cid==='time_chamber'&&abl.label==='Casting Points'){pl.energy+=5;log('+5⚡!','gain');}
@@ -6053,6 +6585,24 @@ function doPhase(ph){
 }
 
 let _endingTurn=false;
+
+// ═══════════════════════════════════════════════════
+// TURN TRANSITION BANNER
+// ═══════════════════════════════════════════════════
+function showTurnBanner(isYourTurn){
+  const banner = document.getElementById('turn-banner');
+  const text = document.getElementById('turn-banner-text');
+  if(!banner || !text) return;
+  text.textContent = isYourTurn ? 'YOUR TURN' : "OPPONENT'S TURN";
+  text.className = 'turn-banner-text ' + (isYourTurn ? 'your-turn' : 'opp-turn');
+  banner.classList.remove('show');
+  void banner.offsetWidth;
+  banner.classList.add('show');
+  if(typeof SFX!=='undefined' && isYourTurn) SFX.turnStart();
+  setTimeout(()=>banner.classList.remove('show'), 1700);
+}
+
+
 function execEnd(){
   if(_endingTurn)return;
   _endingTurn=true;
@@ -6075,6 +6625,7 @@ function execEnd(){
     G.selectedAttacker=null;
     G.heraldAttacking=false;
     renderAll();
+    showTurnBanner(nx===1);
     // ONLINE: explicitly broadcast the turn handoff — renderAll's syncOnlineState
     // won't fire because activePlayer is now 2 (opponent's turn from my view)
     if(G.onlineMode){
@@ -6407,6 +6958,43 @@ function closeEnergyModal(){
 // ═══════════════════════════════════════════════════
 // ENERGY CARD SYSTEM
 // ═══════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════
+// ENERGY GAIN PARTICLES
+// Spawns particles that flow toward the energy HUD.
+// ═══════════════════════════════════════════════════
+function spawnEnergyParticles(count){
+  const target = document.getElementById('p1-energy') || document.getElementById('energy-hud') || document.querySelector('.energy-display');
+  if(!target) return;
+  const tR = target.getBoundingClientRect();
+  const tx = tR.left + tR.width/2;
+  const ty = tR.top + tR.height/2;
+  const n = Math.min(count || 1, 8);
+  for(let i=0;i<n;i++){
+    setTimeout(()=>{
+      const p = document.createElement('div');
+      p.className = 'energy-particle';
+      // Start from a random position near bottom-center
+      const sx = window.innerWidth/2 + (Math.random()-0.5)*200;
+      const sy = window.innerHeight*0.7 + (Math.random()-0.5)*60;
+      p.style.left = sx+'px';
+      p.style.top = sy+'px';
+      document.body.appendChild(p);
+      // Animate toward energy HUD
+      requestAnimationFrame(()=>{
+        p.style.transition = 'all .7s cubic-bezier(.5,0,.5,1)';
+        p.style.left = tx+'px';
+        p.style.top = ty+'px';
+        p.style.opacity = '0';
+        p.style.transform = 'scale(.3)';
+      });
+      setTimeout(()=>p.remove(), 750);
+    }, i*60);
+  }
+  if(typeof SFX!=='undefined') SFX.energy();
+}
+
+
 function playEnergyCard(p, cid){
   const pl=G.players[p];const c=DB[cid];
   // Allow playing energy cards during main OR if main phase has been entered
@@ -6446,6 +7034,7 @@ function playEnergyCard(p, cid){
   // Special downside effects
   if(c.downside) c.downside(pl,G);
   renderAll();
+  if(p===1)spawnEnergyParticles(2);
 }
 
 function resetEnergyCardFlag(p){
@@ -6595,11 +7184,52 @@ function coin(){return Math.random()<.5;}
 function flipCoin(){const h=coin();document.getElementById('coin-icon').textContent=h?'🌕':'🌑';document.getElementById('coin-result').textContent=h?'HEADS':'TAILS';document.getElementById('coin-modal').classList.add('open');log(`Coin: ${h?'HEADS':'TAILS'}`,h?'gain':'dmg');}
 function openDiceModal(){document.getElementById('dice-modal').classList.add('open');}
 function rollDie(s){const r=Math.floor(Math.random()*s)+1;const f=['','1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣'];document.getElementById('dice-icon').textContent=f[r]||r;document.getElementById('dice-result').textContent=`Rolled ${r} (d${s})`;log(`d${s}: ${r}`,'info');}
-function showDmgPopup(player,text){
+function showDmgPopup(player,text,targetUid){
+  // Try to find the specific target card for precise positioning
+  let r;
+  if(targetUid){
+    const cardEl=document.querySelector(`[data-uid="${targetUid}"]`);
+    if(cardEl){
+      r=cardEl.getBoundingClientRect();
+      // Hit flash on the card
+      cardEl.classList.remove('card-hit');
+      void cardEl.offsetWidth;
+      cardEl.classList.add('card-hit');
+      setTimeout(()=>cardEl.classList.remove('card-hit'),500);
+    }
+  }
+  if(!r){
+    const field=document.getElementById(`p${player}-field`);
+    if(!field)return;
+    r=field.getBoundingClientRect();
+  }
   const el=document.createElement('div');el.className='dmg-popup';el.textContent=text;
-  const field=document.getElementById(`p${player}-field`);const r=field.getBoundingClientRect();
-  el.style.left=(r.left+r.width/2-20)+'px';el.style.top=(r.top+10)+'px';
-  document.body.appendChild(el);setTimeout(()=>el.remove(),950);
+  el.style.left=(r.left+r.width/2-20)+'px';
+  el.style.top=(r.top+r.height/2-20)+'px';
+  document.body.appendChild(el);setTimeout(()=>el.remove(),1100);
+}
+
+function showHealPopup(player,text,targetUid){
+  let r;
+  if(targetUid){
+    const cardEl=document.querySelector(`[data-uid="${targetUid}"]`);
+    if(cardEl){
+      r=cardEl.getBoundingClientRect();
+      cardEl.classList.remove('card-heal');
+      void cardEl.offsetWidth;
+      cardEl.classList.add('card-heal');
+      setTimeout(()=>cardEl.classList.remove('card-heal'),600);
+    }
+  }
+  if(!r){
+    const field=document.getElementById(`p${player}-field`);
+    if(!field)return;
+    r=field.getBoundingClientRect();
+  }
+  const el=document.createElement('div');el.className='dmg-popup heal-popup';el.textContent=text;
+  el.style.left=(r.left+r.width/2-20)+'px';
+  el.style.top=(r.top+r.height/2-20)+'px';
+  document.body.appendChild(el);setTimeout(()=>el.remove(),1100);
 }
 
 // ═══════════════════════════════════════════════════
@@ -7099,6 +7729,7 @@ function renderField(p){
   G.players[p].field.filter(f=>isChar(DB[f.cid])).forEach(fc=>{
     const c=DB[fc.cid];if(!c)return;
     const div=document.createElement('div');div.className='card-slot';
+    div.setAttribute('data-uid',fc.uid);div.setAttribute('data-player',p);
     if(c.isToken)div.classList.add('token-card');
     if(fc.frozen>0)div.classList.add('frozen');else if(fc.paralyzed)div.classList.add('paralyzed');
     if(fc.uid===G.selectedAttacker)div.classList.add('attacker-sel');
@@ -7128,6 +7759,7 @@ function renderLocZone(p){
   G.players[p].field.filter(f=>isLoc(DB[f.cid])).forEach(fc=>{
     const c=DB[fc.cid];if(!c)return;
     const div=document.createElement('div');div.className='card-slot';
+    div.setAttribute('data-uid',fc.uid);div.setAttribute('data-player',p);
     if(G.selectedAttacker&&p!==G.activePlayer&&isLoc(c))div.classList.add('loc-targetable');
     const pct=Math.max(0,Math.min(100,fc.currentHP/(c.hp||6)*100));const hpCol=pct>60?'#22c55e':pct>30?'#f59e0b':'#ef4444';
     div.appendChild(makeArtEl(fc.cid,52));
@@ -8899,6 +9531,48 @@ function enterOnlineGame(room){
 }
 
 // ── BROADCAST / RECEIVE ───────────────────────────
+
+// ═══════════════════════════════════════════════════
+// ONLINE GAME ACTION BROADCASTS (lightweight events)
+// Used for visual sync that doesn't need full state:
+// instant reveals, ability reveals, attack animations.
+// ═══════════════════════════════════════════════════
+function sendGameAction(actionType, data){
+  if(!G.onlineMode || !_onlineChannel || !_channelReady) return;
+  try{
+    _onlineChannel.send({
+      type:'broadcast',
+      event:'game_action',
+      payload:{ action:actionType, data:data||{}, from:_onlineRole }
+    });
+  }catch(e){ console.warn('[ACTION] send error:', e); }
+}
+
+function onReceiveGameAction(payload){
+  if(!payload) return;
+  // Ignore our own broadcasts echoed back
+  if(payload.from === _onlineRole) return;
+  const d = payload.data || {};
+  switch(payload.action){
+    case 'instant_reveal':
+      // Opponent played an instant — show it on our screen.
+      // Their playerNum is 1 locally; from our view they're player 2.
+      if(d.cardId) showInstantReveal(d.cardId, 2);
+      if(typeof SFX!=='undefined') SFX.instant();
+      break;
+    case 'ability_reveal':
+      if(d.cardId) showAbilityReveal(d.cardId, 2, d.label, d.text);
+      break;
+    case 'card_play':
+      if(d.cardId) playCardZoom(d.cardId);
+      if(typeof SFX!=='undefined') SFX.cardPlay();
+      break;
+    default:
+      break;
+  }
+}
+
+
 function broadcastGameState(){
   if(!_onlineChannel||!G||!G.onlineMode){return;}
   if(!_channelReady){console.log('[BCAST] channel not ready, queuing');_broadcastPending=true;setTimeout(()=>{if(_broadcastPending){_broadcastPending=false;broadcastGameState();}},400);return;}
@@ -12238,6 +12912,14 @@ window.addEventListener('load',async()=>{
      Fires when any Instant is played or activated ability used.
      Visible to both players. Auto-dismisses after 2.5 seconds.
      ══════════════════════════════════════════════════════ -->
+
+<!-- Card play zoom animation overlay -->
+
+<!-- Turn transition banner -->
+<div id="turn-banner"><span class="turn-banner-text" id="turn-banner-text">YOUR TURN</span></div>
+
+<div id="card-play-zoom"><div class="card-play-zoom-img-wrap"><img class="card-play-zoom-img" id="card-play-zoom-img" src="" alt=""/></div></div>
+
 <div id="instant-reveal-overlay" onclick="closeInstantReveal()">
   <div class="instant-reveal-card" onclick="event.stopPropagation()">
     <div class="instant-reveal-player" id="instant-reveal-player">P1 PLAYS</div>
