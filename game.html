@@ -1174,10 +1174,12 @@ body{
 }
 
 #menu-screen h1 span{
-  background:linear-gradient(180deg, #b8d4ff 0%, #4a90e2 50%, #2a5da8 100%) !important;
-  -webkit-background-clip:text;
-  background-clip:text;
+  background:linear-gradient(180deg, #b8d4ff 0%, #4a90e2 50%, #2a5da8 100%);
+  -webkit-background-clip:text !important;
+  background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;
   color:transparent !important;
+  display:inline-block;
 }
 
 /* Title flourish — ornate medieval style */
@@ -1484,6 +1486,423 @@ body{
   right:10%;
   height:1px;
   background:linear-gradient(90deg, transparent, rgba(200,164,74,.4), transparent);
+}
+
+/* ════════════════════════════════════════════════ */
+/* UNIVERSAL ROYAL COSMOS POLISH — ALL SUB-SCREENS  */
+/* (excludes #game-screen so battle UI is untouched)*/
+/* ════════════════════════════════════════════════ */
+
+/* Apply atmospheric background to every menu sub-screen */
+.screen:not(#game-screen):not(#menu-screen){
+  position:relative;
+  z-index:5;
+}
+.screen:not(#game-screen):not(#menu-screen)::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background:
+    radial-gradient(ellipse at 25% 20%, rgba(91,53,150,.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 75% 80%, rgba(30,58,138,.20) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 50%, rgba(200,164,74,.03) 0%, transparent 70%),
+    linear-gradient(180deg, #050310 0%, #0a0820 40%, #14092a 70%, #050310 100%);
+  pointer-events:none;
+}
+
+/* HEADERS — back button + title bar */
+.screen:not(#game-screen):not(#menu-screen) > div:first-of-type{
+  /* don't auto-style first div since many screens use their own */
+}
+
+/* Standard "back row" pattern used everywhere */
+.btn-gray.btn-sm{
+  font-family:'Cinzel',serif !important;
+  font-size:10px !important;
+  letter-spacing:2px !important;
+  background:linear-gradient(135deg, rgba(15,12,30,.8), rgba(22,16,42,.8)) !important;
+  border:1px solid rgba(200,164,74,.25) !important;
+  border-radius:6px !important;
+  color:var(--ivory) !important;
+  padding:8px 14px !important;
+  transition:all .25s ease !important;
+  text-transform:uppercase;
+}
+.btn-gray.btn-sm:hover{
+  border-color:var(--gold) !important;
+  color:var(--gold-bright) !important;
+  box-shadow:0 0 10px rgba(200,164,74,.3) !important;
+  background:linear-gradient(135deg, rgba(30,20,55,.85), rgba(45,28,80,.85)) !important;
+}
+
+/* Generic title headings within sub-screens */
+.screen:not(#game-screen):not(#menu-screen) [style*="Orbitron"]{
+  font-family:'Cinzel',serif !important;
+}
+
+/* Override Orbitron with Cinzel for serif appearance */
+.fancy-heading,
+[style*="font-family:'Orbitron'"]{
+  font-family:'Cinzel',serif !important;
+}
+
+/* Primary action buttons (purple "go" buttons) */
+.btn-primary{
+  background:linear-gradient(135deg,
+    rgba(40,25,75,.85) 0%,
+    rgba(55,30,100,.85) 50%,
+    rgba(30,18,60,.9) 100%) !important;
+  border:1px solid rgba(200,164,74,.35) !important;
+  color:var(--ivory) !important;
+  font-family:'Cinzel',serif !important;
+  letter-spacing:2px !important;
+  border-radius:6px !important;
+  box-shadow:
+    0 2px 0 rgba(200,164,74,.12) inset,
+    0 -2px 0 rgba(0,0,0,.4) inset,
+    0 4px 12px rgba(0,0,0,.4) !important;
+  transition:all .25s ease !important;
+  text-shadow:0 0 8px rgba(200,164,74,.15);
+}
+.btn-primary:hover{
+  border-color:var(--gold) !important;
+  color:var(--gold-bright) !important;
+  background:linear-gradient(135deg,
+    rgba(60,35,105,.9) 0%,
+    rgba(80,40,135,.9) 50%,
+    rgba(45,25,80,.95) 100%) !important;
+  box-shadow:
+    0 2px 0 rgba(232,197,112,.3) inset,
+    0 -2px 0 rgba(0,0,0,.4) inset,
+    0 6px 18px rgba(124,58,237,.4),
+    0 0 16px rgba(200,164,74,.25) !important;
+  transform:translateY(-1px);
+  text-shadow:0 0 12px rgba(232,197,112,.5);
+}
+
+/* Red-danger buttons (forfeit, delete, etc.) */
+.btn-red,.btn-red.btn-sm{
+  background:linear-gradient(135deg, rgba(60,15,15,.85), rgba(85,18,25,.85)) !important;
+  border:1px solid rgba(220,80,80,.4) !important;
+  color:#fca5a5 !important;
+  font-family:'Cinzel',serif !important;
+  letter-spacing:2px !important;
+  border-radius:6px !important;
+}
+.btn-red:hover{
+  border-color:#ef4444 !important;
+  color:#fff !important;
+  box-shadow:0 0 12px rgba(239,68,68,.4) !important;
+}
+
+/* Green / accept buttons */
+.btn-green,.btn-green.btn-sm{
+  background:linear-gradient(135deg, rgba(10,55,30,.85), rgba(15,75,40,.85)) !important;
+  border:1px solid rgba(34,197,94,.4) !important;
+  color:#86efac !important;
+  font-family:'Cinzel',serif !important;
+  letter-spacing:2px !important;
+  border-radius:6px !important;
+}
+.btn-green:hover{
+  border-color:#22c55e !important;
+  box-shadow:0 0 12px rgba(34,197,94,.4) !important;
+}
+
+/* Orange (sacrifice etc) */
+.btn-orange,.btn-orange.btn-sm{
+  background:linear-gradient(135deg, rgba(80,40,5,.85), rgba(110,55,5,.85)) !important;
+  border:1px solid rgba(251,191,36,.4) !important;
+  color:#fcd34d !important;
+  font-family:'Cinzel',serif !important;
+  letter-spacing:2px !important;
+  border-radius:6px !important;
+}
+
+/* Friend buttons */
+.friend-btn{
+  background:linear-gradient(135deg, rgba(15,12,30,.8), rgba(22,16,42,.8)) !important;
+  border:1px solid rgba(200,164,74,.3) !important;
+  color:var(--ivory) !important;
+  font-family:'Cinzel',serif !important;
+  letter-spacing:1.5px !important;
+  border-radius:6px !important;
+  transition:all .2s ease;
+}
+.friend-btn:hover{
+  border-color:var(--gold) !important;
+  color:var(--gold-bright) !important;
+}
+.friend-btn.accept{
+  background:linear-gradient(135deg, rgba(10,55,30,.7), rgba(15,75,40,.7)) !important;
+  border-color:rgba(34,197,94,.4) !important;
+  color:#86efac !important;
+}
+
+/* PANELS / CARDS — apply gold-trimmed dark cards everywhere */
+.admin-section,
+.pvp-lobby-card,
+.bp-header,
+.bp-tier-grid,
+.match-detail-modal-content,
+.campaign-edit-card{
+  background:linear-gradient(180deg,
+    rgba(15,12,30,.75) 0%,
+    rgba(20,15,40,.75) 100%) !important;
+  border:1px solid rgba(200,164,74,.22) !important;
+  border-radius:10px !important;
+  box-shadow:
+    0 0 16px rgba(0,0,0,.5),
+    0 0 0 1px rgba(200,164,74,.05) inset !important;
+  backdrop-filter:blur(6px);
+}
+
+/* Section titles within panels */
+.admin-section-title,
+.bp-season-name,
+.menu-section-label,
+#deck-select-title,
+#chapters-world-name,
+#chapter-map-name,
+.chapter-title{
+  font-family:'Cinzel',serif !important;
+}
+
+/* INPUT FIELDS — refined */
+.admin-input,
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+input[type="datetime-local"],
+select,
+textarea{
+  background:rgba(8,8,28,.7) !important;
+  border:1px solid rgba(200,164,74,.25) !important;
+  border-radius:5px !important;
+  color:var(--ivory) !important;
+  font-family:'Share Tech Mono',monospace !important;
+  padding:7px 10px !important;
+  transition:all .2s ease;
+}
+input:focus,select:focus,textarea:focus,
+.admin-input:focus{
+  border-color:var(--gold) !important;
+  box-shadow:0 0 8px rgba(200,164,74,.3) !important;
+  outline:none !important;
+}
+
+/* DECK SELECT SCREEN — gold-trimmed cards */
+.deck-select-card{
+  background:linear-gradient(180deg, rgba(15,12,30,.75), rgba(20,15,40,.75)) !important;
+  border:1px solid rgba(200,164,74,.22) !important;
+  border-radius:10px !important;
+  backdrop-filter:blur(4px);
+  transition:all .25s ease;
+}
+.deck-select-card:hover{
+  border-color:var(--gold) !important;
+  box-shadow:0 0 20px rgba(200,164,74,.3),0 4px 16px rgba(0,0,0,.5) !important;
+  transform:translateY(-2px);
+}
+.ds-deck-row{
+  background:rgba(8,8,28,.6) !important;
+  border:1px solid rgba(200,164,74,.15) !important;
+}
+.ds-deck-row:hover{
+  border-color:var(--gold) !important;
+  background:rgba(40,25,75,.5) !important;
+}
+.ds-mode-btn{
+  background:rgba(8,8,28,.65) !important;
+  border:1px solid rgba(200,164,74,.18) !important;
+  color:var(--ivory) !important;
+  font-family:'Cinzel',serif !important;
+  letter-spacing:2px !important;
+}
+.ds-mode-btn.selected{
+  border-color:var(--gold) !important;
+  background:linear-gradient(135deg, rgba(40,25,75,.85), rgba(60,35,100,.85)) !important;
+  color:var(--gold-bright) !important;
+  box-shadow:0 0 12px rgba(200,164,74,.25) !important;
+}
+.ds-mode-btn:hover{
+  border-color:var(--gold) !important;
+}
+.ds-opt-btn{
+  background:rgba(8,8,28,.65) !important;
+  border:1px solid rgba(200,164,74,.18) !important;
+  color:var(--ivory) !important;
+  font-family:'Cinzel',serif !important;
+}
+.ds-opt-btn.selected,
+.ds-opt-btn:hover{
+  border-color:var(--gold) !important;
+  color:var(--gold-bright) !important;
+}
+
+/* SHOP — refined */
+.tab-btn{
+  background:linear-gradient(180deg, rgba(15,12,30,.7), rgba(22,16,42,.7)) !important;
+  border:1px solid rgba(200,164,74,.2) !important;
+  color:rgba(240,230,200,.7) !important;
+  font-family:'Cinzel',serif !important;
+  letter-spacing:2px !important;
+  border-radius:6px !important;
+  transition:all .2s ease;
+}
+.tab-btn:hover{
+  border-color:var(--gold) !important;
+  color:var(--gold-bright) !important;
+}
+.tab-btn.active{
+  background:linear-gradient(180deg, rgba(40,25,75,.85), rgba(60,35,105,.85)) !important;
+  border-color:var(--gold) !important;
+  color:var(--gold-bright) !important;
+  box-shadow:0 0 12px rgba(200,164,74,.25);
+}
+.shop-pack-card,
+.shop-single-card{
+  background:linear-gradient(180deg, rgba(15,12,30,.8), rgba(22,16,42,.8)) !important;
+  border:1px solid rgba(200,164,74,.25) !important;
+  border-radius:10px !important;
+  backdrop-filter:blur(4px);
+  transition:all .25s ease;
+}
+.shop-pack-card:hover,
+.shop-single-card:hover{
+  border-color:var(--gold) !important;
+  box-shadow:0 0 18px rgba(200,164,74,.3),0 6px 20px rgba(0,0,0,.6) !important;
+  transform:translateY(-3px);
+}
+
+/* CAMPAIGN — already had nice cards, just gold-trim them */
+.campaign-world-card{
+  background:linear-gradient(180deg, rgba(15,12,30,.8), rgba(22,16,42,.8)) !important;
+  border:1px solid rgba(200,164,74,.3) !important;
+  border-radius:14px !important;
+}
+.campaign-world-card:hover{
+  border-color:var(--gold) !important;
+  box-shadow:0 8px 30px rgba(200,164,74,.25),0 0 22px rgba(124,58,237,.25) !important;
+}
+.chapter-row{
+  background:linear-gradient(180deg, rgba(15,12,30,.7), rgba(22,16,42,.7)) !important;
+  border:1px solid rgba(200,164,74,.22) !important;
+}
+.chapter-row:hover{
+  border-color:var(--gold) !important;
+  background:linear-gradient(180deg, rgba(40,25,75,.75), rgba(60,35,100,.75)) !important;
+}
+.chapter-icon{
+  background:linear-gradient(135deg, #2a1a5a, #5b3596) !important;
+  box-shadow:0 0 18px rgba(124,58,237,.4),0 0 0 1px rgba(200,164,74,.3) inset !important;
+}
+.match-node{
+  background:linear-gradient(180deg, rgba(15,12,30,.75), rgba(22,16,42,.75)) !important;
+  border:2px solid rgba(200,164,74,.25) !important;
+}
+.match-node:hover{
+  border-color:var(--gold) !important;
+  box-shadow:0 6px 22px rgba(200,164,74,.3) !important;
+}
+.match-node-portrait{
+  background:linear-gradient(135deg, #2a1a5a, #5b3596) !important;
+  border:3px solid var(--gold) !important;
+  box-shadow:0 0 16px rgba(200,164,74,.35) !important;
+}
+.match-node.boss .match-node-portrait{
+  border-color:#ef4444 !important;
+  box-shadow:0 0 18px rgba(239,68,68,.5) !important;
+}
+
+/* PROFILE / FRIEND CARDS */
+.friend-card,
+.profile-section{
+  background:linear-gradient(180deg, rgba(15,12,30,.75), rgba(22,16,42,.75)) !important;
+  border:1px solid rgba(200,164,74,.22) !important;
+  border-radius:10px !important;
+  backdrop-filter:blur(4px);
+}
+
+/* HUD touchup */
+.welcome-hud{
+  background:linear-gradient(180deg,
+    rgba(8,8,20,.92) 0%,
+    rgba(15,10,30,.92) 100%) !important;
+  border-bottom:1px solid rgba(200,164,74,.25) !important;
+}
+
+/* MODALS */
+.modal-overlay{
+  background:rgba(3,1,8,.85) !important;
+  backdrop-filter:blur(8px);
+}
+.modal,
+.modal-content,
+.bp-buy-modal-content,
+.match-detail-modal-content{
+  background:linear-gradient(180deg,
+    rgba(18,12,35,.97) 0%,
+    rgba(28,18,55,.97) 100%) !important;
+  border:1px solid rgba(200,164,74,.4) !important;
+  border-radius:12px !important;
+  box-shadow:
+    0 0 30px rgba(200,164,74,.2),
+    0 0 0 1px rgba(200,164,74,.1) inset,
+    0 20px 40px rgba(0,0,0,.7) !important;
+}
+
+/* Various leftover Orbitron headings → Cinzel */
+.bp-season-name,
+.menu-section-label,
+.admin-section-title,
+.chapter-title,
+.campaign-world-name{
+  font-family:'Cinzel',serif !important;
+}
+
+/* RULES & CARDS screen — minor polish */
+.rules-card-row{
+  background:linear-gradient(180deg, rgba(15,12,30,.7), rgba(22,16,42,.7)) !important;
+  border:1px solid rgba(200,164,74,.2) !important;
+  border-radius:8px !important;
+}
+.rules-card-row:hover{
+  border-color:var(--gold) !important;
+  background:linear-gradient(180deg, rgba(25,18,50,.8), rgba(35,22,70,.8)) !important;
+}
+
+/* Color shifts on common text accents */
+[style*="color:var(--blue)"]:not(.welcome-hud *){
+  color:var(--gold-bright) !important;
+}
+[style*="text-shadow:0 0 10px var(--blue)"],
+[style*="text-shadow:0 0 12px var(--blue)"],
+[style*="text-shadow:0 0 14px var(--blue)"]{
+  text-shadow:0 0 12px rgba(200,164,74,.5) !important;
+}
+
+/* Deck builder + Card Images + Rules screen subtle polish */
+.db-card-row,
+.upload-card-row{
+  background:rgba(15,12,30,.7) !important;
+  border:1px solid rgba(200,164,74,.18) !important;
+  border-radius:7px !important;
+}
+.db-card-row:hover,
+.upload-card-row:hover{
+  border-color:var(--gold) !important;
+  background:rgba(35,22,65,.75) !important;
+}
+
+/* Game over / win modal touchup */
+#win-modal .modal{
+  background:linear-gradient(180deg,
+    rgba(20,12,40,.97) 0%,
+    rgba(40,22,80,.97) 100%) !important;
+  border:2px solid var(--gold) !important;
 }
 </style>
 </head>
