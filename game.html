@@ -32,7 +32,7 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 /* SCREENS */
 #menu-screen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:10px;text-align:center;padding:24px;position:relative;z-index:5}
 #menu-screen.active{display:flex}
-#game-screen{display:none;padding:4px;height:100vh;grid-template-rows:auto auto 52px auto auto;gap:3px}
+#game-screen{display:none;padding:8px 16px 0;height:calc(100vh - 46px);grid-template-rows:minmax(0,1fr) auto minmax(0,1fr) auto;gap:6px;max-width:1700px;margin:0 auto;box-sizing:border-box;overflow:hidden}
 #game-screen.active{display:grid}
 .screen{display:none;padding:62px 14px 24px;position:relative;z-index:5}.screen.active{display:block}
 #online-lobby-screen.active{display:block;}
@@ -45,16 +45,16 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .vcu-divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:12px 0}
 
 /* GAME LAYOUT */
-.player-area{background:rgba(10,10,26,.8);border:1px solid rgba(45,45,78,.7);border-radius:10px;padding:5px;backdrop-filter:blur(6px)}
+.player-area{background:linear-gradient(160deg,rgba(14,12,32,.85),rgba(8,8,22,.9));border:1px solid rgba(200,164,74,.18);border-radius:14px;padding:8px 14px;backdrop-filter:blur(8px);box-shadow:inset 0 1px 0 rgba(200,164,74,.08),0 4px 20px rgba(0,0,0,.3);display:flex;flex-direction:column;min-height:0;overflow:hidden}
 /* NEW: field wrapper with location zone on left */
-.field-wrapper{display:flex;gap:5px;align-items:flex-start}
-.location-zone{display:flex;flex-direction:column;gap:4px;min-width:76px;max-width:76px;background:#0a0a18;border:1px dashed #14532d;border-radius:8px;padding:4px;flex-shrink:0}
-.location-zone-label{font-size:8px;color:#4b5563;text-align:center;margin-bottom:2px;font-weight:700;letter-spacing:.5px}
-.char-field{display:flex;gap:4px;flex-wrap:wrap;min-height:78px;padding:4px;background:rgba(17,17,38,.5);border-radius:8px;border:1px dashed rgba(42,42,74,.7);align-items:flex-start;flex:1}
-.hand-area{display:flex;gap:4px;flex-wrap:nowrap;min-height:68px;padding:4px;background:rgba(10,10,24,.6);border-radius:8px;border:1px solid rgba(30,30,56,.8);overflow-x:auto}
+.field-wrapper{display:flex;gap:10px;align-items:stretch;flex:1;min-height:0}
+.location-zone{display:flex;flex-direction:column;gap:6px;min-width:104px;max-width:104px;background:rgba(10,18,12,.5);border:1px dashed rgba(34,197,94,.3);border-radius:10px;padding:6px;flex-shrink:0}
+.location-zone-label{font-size:10px;color:#4ade80;text-align:center;margin-bottom:3px;font-weight:700;letter-spacing:2px;font-family:'Cinzel',serif}
+.char-field{display:flex;gap:8px;flex-wrap:wrap;padding:8px;background:rgba(17,17,38,.35);border-radius:10px;border:1px dashed rgba(200,164,74,.15);align-items:center;flex:1;min-height:0}
+.hand-area{display:flex;gap:6px;flex-wrap:nowrap;padding:6px;background:rgba(10,10,24,.5);border-radius:10px;border:1px solid rgba(200,164,74,.12);overflow-x:auto;overflow-y:visible;align-items:flex-end;flex-shrink:0;margin-top:6px}
 
 /* CARD SLOTS */
-.card-slot{width:68px;height:96px;border-radius:6px;border:1.5px solid #3a3a5c;background:#16162a;display:flex;flex-direction:column;cursor:pointer;position:relative;overflow:hidden;transition:border-color .15s,transform .15s;flex-shrink:0}
+.card-slot{width:104px;height:146px;border-radius:9px;border:2px solid #3a3a5c;background:#16162a;display:flex;flex-direction:column;cursor:pointer;position:relative;overflow:hidden;transition:transform .15s ease,box-shadow .15s ease;flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,.4)}
 .card-slot:hover{border-color:#7c3aed;transform:translateY(-2px)}
 .card-slot.can-attack{border:2px solid #22c55e!important;animation:glow-g 1.2s infinite}
 .card-slot.attacker-sel{border:2px solid #f97316!important;box-shadow:0 0 10px #f9731666}
@@ -66,26 +66,26 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 @keyframes glow-g{0%,100%{box-shadow:0 0 4px #22c55e55}50%{box-shadow:0 0 14px #22c55eaa}}
 @keyframes glow-r{0%,100%{box-shadow:0 0 4px #ef444455}50%{box-shadow:0 0 14px #ef4444aa}}
 @keyframes glow-y{0%,100%{box-shadow:0 0 4px #f59e0b55}50%{box-shadow:0 0 14px #f59e0baa}}
-.card-art-area{width:100%;height:54px;background:#1e1e3a;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px}
+.card-art-area{width:100%;height:96px;background:#1e1e3a;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:30px}
 .card-art-area img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
-.card-info{padding:2px 3px;flex:1;display:flex;flex-direction:column;justify-content:space-between}
-.card-name-sm{font-size:7px;font-weight:700;color:#e2e8f0;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card-stats-row{display:flex;justify-content:space-between;font-size:9px}
+.card-info{padding:4px 6px;flex:1;display:flex;flex-direction:column;justify-content:space-between}
+.card-name-sm{font-size:10px;font-weight:700;color:#f0e6c8;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Cinzel',serif}
+.card-stats-row{display:flex;justify-content:space-between;font-size:13px;align-items:center}
 .stat-atk{color:#fbbf24;font-weight:700}
-.hp-bar-wrap{width:100%;height:3px;background:#374151;border-radius:2px;margin-top:1px}
+.hp-bar-wrap{width:100%;height:5px;background:#374151;border-radius:3px;margin-top:3px;overflow:hidden}
 .hp-bar-fill{height:100%;border-radius:2px;transition:width .35s,background .35s}
 .status-icons{font-size:7px;text-align:center;color:#94a3b8}
 
 /* HAND CARDS */
-.hand-card{width:58px;height:84px;border-radius:6px;border:1.5px solid #3a3a5c;background:#16162a;display:flex;flex-direction:column;cursor:pointer;overflow:hidden;transition:all .15s;flex-shrink:0}
-.hand-card:hover{border-color:#7c3aed;transform:translateY(-3px)}
+.hand-card{width:92px;height:130px;border-radius:9px;border:2px solid #3a3a5c;background:#16162a;display:flex;flex-direction:column;cursor:pointer;overflow:hidden;transition:transform .18s ease,box-shadow .18s ease;flex-shrink:0;box-shadow:0 3px 8px rgba(0,0,0,.4)}
+.hand-card:hover{border-color:#c8a44a;transform:translateY(-12px) scale(1.08);box-shadow:0 12px 28px rgba(0,0,0,.6),0 0 16px rgba(200,164,74,.3);z-index:20}
 .hand-card.playable{border-color:#22c55e}
 .hand-card.not-playable{opacity:.45}
 .hand-card.instant-card{border-color:#ef4444}
-.hand-art-area{width:100%;height:46px;background:#1e1e3a;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px}
+.hand-art-area{width:100%;height:84px;background:#1e1e3a;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:26px}
 .hand-art-area img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
-.hand-info{padding:2px 3px;flex:1;display:flex;flex-direction:column;justify-content:center}
-.hand-name{font-size:7px;font-weight:700;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hand-info{padding:3px 5px;flex:1;display:flex;flex-direction:column;justify-content:center}
+.hand-name{font-size:9px;font-weight:700;color:#f0e6c8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Cinzel',serif}
 
 /* HAND LIMIT DISPLAY */
 .hand-limit-bar{display:flex;align-items:center;gap:4px;font-size:10px;margin-bottom:2px}
@@ -103,7 +103,7 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .energy-badge{background:rgba(30,27,75,.6);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:700;color:#a5b4fc;border:1px solid rgba(55,48,163,.6);backdrop-filter:blur(4px)}
 .discard-badge{background:rgba(31,10,10,.6);border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700;color:#f87171;border:1px solid rgba(127,29,29,.6);cursor:pointer;transition:border-color .2s}
 .discard-badge:hover{border-color:#ef4444}
-.prize-pip{width:16px;height:22px;border-radius:3px;border:1px solid rgba(75,85,99,.5);background:rgba(31,41,55,.6);display:flex;align-items:center;justify-content:center;font-size:9px;transition:all .2s}
+.prize-pip{width:26px;height:36px;border-radius:5px;border:1.5px solid rgba(200,164,74,.4);background:rgba(31,41,55,.6);display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s}
 .prize-pip.claimed{background:rgba(6,78,59,.5);border-color:#059669;color:#34d399;box-shadow:0 0 6px rgba(5,150,105,.3)}
 .turn-banner{text-align:center;padding:3px 8px;border-radius:8px;font-size:10px;font-weight:700;flex:1;font-family:'Orbitron',sans-serif;letter-spacing:2px}
 .p1-banner{background:rgba(30,27,75,.5);color:#a5b4fc;border:1px solid rgba(55,48,163,.3)}
@@ -178,8 +178,8 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 @keyframes floatUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-55px) scale(1.3)}}
 
 /* HERALD ZONE */
-.herald-zone{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:76px;max-width:76px;flex-shrink:0;}
-.herald-zone-label{font-size:8px;color:#c8a0ff;text-align:center;font-weight:700;letter-spacing:.5px}
+.herald-zone{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:108px;max-width:108px;flex-shrink:0;justify-content:center;}
+.herald-zone-label{font-size:10px;color:#e8c570;text-align:center;font-weight:700;letter-spacing:2px;font-family:'Cinzel',serif}
 .herald-slot{width:68px;height:96px;border-radius:6px;border:2px solid #7c3aed;background:#16162a;display:flex;flex-direction:column;cursor:pointer;position:relative;overflow:hidden;transition:border-color .15s,transform .15s;box-shadow:0 0 10px #7c3aed44;}
 .herald-slot:hover{border-color:#c4b5fd;transform:translateY(-2px);box-shadow:0 0 18px #7c3aed88;}
 .herald-slot.can-flip{border-color:#fbbf24!important;animation:glow-y 1.2s infinite;}
@@ -231,8 +231,8 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 #p1-energy-wrap, #p2-energy-wrap{display:flex;flex-direction:column;align-items:flex-start;}
 
 /* VISUAL DECK PILE */
-.deck-pile-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:54px;flex-shrink:0;}
-.deck-pile-label{font-size:8px;color:#4b5563;letter-spacing:.5px;text-align:center;}
+.deck-pile-wrap{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:72px;flex-shrink:0;justify-content:center;}
+.deck-pile-label{font-size:10px;color:#94a3b8;letter-spacing:1px;text-align:center;font-family:'Share Tech Mono',monospace;}
 .deck-pile{position:relative;cursor:pointer;transition:transform .15s;}
 .deck-pile:hover .deck-card-back{transform:translateY(-4px);box-shadow:0 6px 18px rgba(124,58,237,.5);}
 .deck-pile.searchable .deck-card-back{animation:deck-glow 1.2s ease-in-out infinite;cursor:pointer;}
@@ -277,9 +277,9 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 /* RIFT ZONE */
 .rift-badge{background:#1a0a1a;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700;color:#a855f7;border:1px solid #581c87;cursor:pointer;display:flex;align-items:center;gap:3px;transition:all .2s;}
 .rift-badge:hover{border-color:#a855f7;box-shadow:0 0 8px #a855f744;}
-.rift-zone-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:54px;flex-shrink:0;}
-.rift-zone-label{font-size:8px;color:#581c87;letter-spacing:.5px;text-align:center;font-weight:700;}
-.rift-zone-pile{width:44px;border-radius:5px;background:linear-gradient(135deg,#1a0a2e 0%,#0d0018 50%,#1a0a2e 100%);border:2px solid #581c87;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.rift-zone-wrap{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:72px;flex-shrink:0;justify-content:center;}
+.rift-zone-label{font-size:10px;color:#a855f7;letter-spacing:2px;text-align:center;font-weight:700;font-family:'Cinzel',serif;}
+.rift-zone-pile{width:64px;height:90px;border-radius:7px;background:linear-gradient(135deg,#1a0a2e 0%,#0d0018 50%,#1a0a2e 100%);border:2px solid #581c87;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
 .rift-zone-pile:hover{border-color:#a855f7;box-shadow:0 0 12px #a855f755;}
 .rift-zone-pile::before{content:'';position:absolute;inset:3px;border:1px solid rgba(168,85,247,.2);border-radius:3px;}
 .rift-zone-empty{opacity:.3;cursor:default;}
@@ -3481,11 +3481,11 @@ textarea{
 .energy-particle{
   position:fixed;
   z-index:9400;
-  width:8px;
-  height:8px;
+  width:14px;
+  height:14px;
   border-radius:50%;
-  background:radial-gradient(circle,#fbbf24,#f59e0b);
-  box-shadow:0 0 8px rgba(251,191,36,.9);
+  background:radial-gradient(circle,#fff 10%,#fbbf24 45%,#f59e0b 100%);
+  box-shadow:0 0 14px rgba(251,191,36,1),0 0 24px rgba(245,158,11,.7);
   pointer-events:none;
 }
 
@@ -3503,6 +3503,345 @@ textarea{
 /* Don't zoom while dying or being dragged */
 .card-slot.card-dying:hover{
   transform:scale(.6) rotate(8deg) translateY(20px);
+}
+
+/* ═══════════════════════════════════════════════════════
+   NEW BATTLE UI — center strip, bottom action bar, settings
+   ═══════════════════════════════════════════════════════ */
+
+/* Slim center strip (turn indicator + log) */
+.center-strip{
+  display:flex;
+  gap:12px;
+  align-items:stretch;
+  height:54px;
+}
+.turn-banner-inline{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:170px;
+  padding:0 20px;
+  font-family:'Cinzel',serif;
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:2px;
+  border-radius:10px;
+  background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(74,144,226,.15));
+  border:1px solid rgba(200,164,74,.3);
+  color:#e8c570;
+  white-space:nowrap;
+  text-align:center;
+}
+.turn-banner-inline.p1-banner{
+  background:linear-gradient(135deg,rgba(74,144,226,.25),rgba(124,58,237,.15));
+  color:#a5b4fc;
+}
+.turn-banner-inline.p2-banner{
+  background:linear-gradient(135deg,rgba(34,197,94,.2),rgba(16,120,80,.12));
+  color:#86efac;
+}
+.log-box{
+  background:rgba(8,8,20,.6);
+  border:1px solid rgba(200,164,74,.12);
+  border-radius:10px;
+  padding:8px 14px;
+  overflow-y:auto;
+  font-size:12px;
+  color:#9ca3af;
+  flex:1;
+  backdrop-filter:blur(4px);
+  line-height:1.5;
+  height:auto;
+}
+
+/* ═══ BOTTOM ACTION BAR ═══ */
+#bottom-action-bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:8px 18px;
+  background:linear-gradient(180deg,rgba(14,12,32,.92),rgba(8,8,22,.96));
+  border:1px solid rgba(200,164,74,.25);
+  border-radius:14px 14px 0 0;
+  box-shadow:0 -4px 20px rgba(0,0,0,.4),inset 0 1px 0 rgba(200,164,74,.1);
+  backdrop-filter:blur(10px);
+  margin:0 -16px;
+}
+.action-bar-section{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.phase-section{ gap:6px; }
+
+/* Phase pills */
+.phase-pill{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:2px;
+  min-width:68px;
+  padding:8px 12px;
+  border-radius:10px;
+  border:1.5px solid rgba(58,58,92,.6);
+  background:rgba(22,22,42,.7);
+  color:#6b7280;
+  cursor:pointer;
+  transition:all .18s ease;
+  font-family:'Cinzel',serif;
+}
+.phase-pill:hover{
+  border-color:rgba(200,164,74,.5);
+  color:#c8a44a;
+  transform:translateY(-2px);
+}
+.phase-pill-icon{ font-size:18px; line-height:1; }
+.phase-pill-label{ font-size:10px; font-weight:700; letter-spacing:1px; }
+.phase-pill.active-phase{
+  background:linear-gradient(135deg,rgba(124,58,237,.35),rgba(74,144,226,.2));
+  color:#e8c570;
+  border-color:var(--gold,#c8a44a);
+  box-shadow:0 0 14px rgba(200,164,74,.35);
+}
+.phase-pill.done-phase{
+  background:rgba(17,17,17,.4);
+  color:#374151;
+  cursor:default;
+  border-color:rgba(34,34,34,.3);
+}
+.phase-pill.done-phase .phase-pill-icon{ opacity:.3; }
+
+/* Tool buttons (coin, dice, transform, etc) */
+.action-tool-btn{
+  width:46px;
+  height:46px;
+  border-radius:10px;
+  border:1.5px solid rgba(58,58,92,.6);
+  background:rgba(22,22,42,.7);
+  color:#cbd5e1;
+  font-size:20px;
+  cursor:pointer;
+  transition:all .18s ease;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.action-tool-btn:hover{
+  border-color:rgba(200,164,74,.6);
+  background:rgba(40,30,70,.7);
+  transform:translateY(-2px);
+  box-shadow:0 4px 12px rgba(0,0,0,.4);
+}
+.action-tool-btn.tf:hover{ border-color:#a855f7; box-shadow:0 0 12px rgba(168,85,247,.4); }
+.action-tool-btn.eq:hover{ border-color:#c8a44a; box-shadow:0 0 12px rgba(200,164,74,.4); }
+.action-tool-btn.ab:hover{ border-color:#22c55e; box-shadow:0 0 12px rgba(34,197,94,.4); }
+.action-tool-btn.sac:hover{ border-color:#f97316; box-shadow:0 0 12px rgba(249,115,22,.4); }
+.action-tool-btn.home:hover, .action-tool-btn.forfeit-tool:hover{ border-color:#ef4444; box-shadow:0 0 12px rgba(239,68,68,.4); }
+
+/* End turn button — the big prominent one */
+.end-turn-btn{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:12px 28px;
+  border-radius:12px;
+  border:2px solid var(--gold,#c8a44a);
+  background:linear-gradient(135deg,#c8a44a,#8a6e2e);
+  color:#1a1408;
+  font-family:'Cinzel',serif;
+  font-size:15px;
+  font-weight:900;
+  letter-spacing:2px;
+  cursor:pointer;
+  transition:all .18s ease;
+  box-shadow:0 4px 16px rgba(200,164,74,.3);
+}
+.end-turn-btn:hover{
+  background:linear-gradient(135deg,#e8c570,#c8a44a);
+  transform:translateY(-2px);
+  box-shadow:0 6px 22px rgba(200,164,74,.5);
+}
+.end-turn-btn:disabled{
+  opacity:.4;
+  cursor:not-allowed;
+  transform:none;
+}
+
+/* ═══ GAME SETTINGS MODAL ═══ */
+#game-settings-modal{
+  position:fixed;
+  inset:0;
+  z-index:9700;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(5,3,15,.8);
+  backdrop-filter:blur(6px);
+}
+#game-settings-modal.open{ display:flex; }
+.settings-panel{
+  width:460px;
+  max-width:92vw;
+  max-height:88vh;
+  overflow-y:auto;
+  background:linear-gradient(160deg,rgba(16,14,36,.98),rgba(10,8,24,.98));
+  border:2px solid rgba(200,164,74,.4);
+  border-radius:16px;
+  padding:28px;
+  box-shadow:0 0 50px rgba(200,164,74,.25),0 20px 60px rgba(0,0,0,.6);
+}
+.settings-title{
+  font-family:'Cinzel',serif;
+  font-size:24px;
+  letter-spacing:4px;
+  color:#e8c570;
+  text-align:center;
+  margin-bottom:6px;
+  text-shadow:0 0 12px rgba(200,164,74,.4);
+}
+.settings-subtitle{
+  font-size:11px;
+  color:#9ca3af;
+  text-align:center;
+  letter-spacing:2px;
+  margin-bottom:22px;
+}
+.settings-section{
+  margin-bottom:22px;
+}
+.settings-section-title{
+  font-family:'Cinzel',serif;
+  font-size:13px;
+  letter-spacing:2px;
+  color:#c8a44a;
+  margin-bottom:12px;
+  padding-bottom:6px;
+  border-bottom:1px solid rgba(200,164,74,.2);
+}
+.settings-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 0;
+  gap:12px;
+}
+.settings-label{
+  font-size:13px;
+  color:#f0e6c8;
+}
+.settings-label-desc{
+  font-size:10px;
+  color:#6b7280;
+  margin-top:2px;
+}
+/* Toggle switch */
+.settings-toggle{
+  position:relative;
+  width:52px;
+  height:28px;
+  border-radius:14px;
+  background:rgba(40,30,60,.8);
+  border:1px solid rgba(200,164,74,.3);
+  cursor:pointer;
+  transition:all .2s ease;
+  flex-shrink:0;
+}
+.settings-toggle.on{
+  background:linear-gradient(135deg,#c8a44a,#8a6e2e);
+}
+.settings-toggle-knob{
+  position:absolute;
+  top:2px;
+  left:2px;
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:#f0e6c8;
+  transition:all .2s ease;
+  box-shadow:0 2px 4px rgba(0,0,0,.4);
+}
+.settings-toggle.on .settings-toggle-knob{
+  left:26px;
+}
+/* Slider */
+.settings-slider{
+  -webkit-appearance:none;
+  width:160px;
+  height:6px;
+  border-radius:3px;
+  background:rgba(40,30,60,.8);
+  outline:none;
+  cursor:pointer;
+}
+.settings-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#e8c570,#c8a44a);
+  cursor:pointer;
+  box-shadow:0 2px 6px rgba(0,0,0,.5);
+}
+.settings-slider::-moz-range-thumb{
+  width:18px;height:18px;border-radius:50%;
+  background:linear-gradient(135deg,#e8c570,#c8a44a);
+  cursor:pointer;border:none;
+}
+/* Card size buttons */
+.settings-size-btns{ display:flex; gap:6px; }
+.settings-size-btn{
+  padding:6px 14px;
+  border-radius:8px;
+  border:1px solid rgba(200,164,74,.3);
+  background:rgba(22,22,42,.7);
+  color:#9ca3af;
+  font-family:'Cinzel',serif;
+  font-size:11px;
+  letter-spacing:1px;
+  cursor:pointer;
+  transition:all .15s;
+}
+.settings-size-btn:hover{ border-color:#c8a44a; color:#e8c570; }
+.settings-size-btn.active{
+  background:linear-gradient(135deg,rgba(200,164,74,.3),rgba(138,110,46,.2));
+  color:#e8c570;
+  border-color:#c8a44a;
+}
+.settings-close-btn{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border-radius:10px;
+  border:1px solid rgba(200,164,74,.4);
+  background:linear-gradient(135deg,rgba(40,30,70,.8),rgba(22,16,42,.8));
+  color:#e8c570;
+  font-family:'Cinzel',serif;
+  font-size:14px;
+  letter-spacing:3px;
+  cursor:pointer;
+  transition:all .18s;
+}
+.settings-close-btn:hover{
+  background:linear-gradient(135deg,rgba(60,45,100,.9),rgba(40,30,70,.9));
+  box-shadow:0 0 16px rgba(200,164,74,.3);
+}
+
+/* Card size scaling classes (applied to #game-screen) */
+#game-screen.cards-small .card-slot{ width:88px;height:124px; }
+#game-screen.cards-small .card-art-area{ height:80px; }
+#game-screen.cards-small .hand-card{ width:78px;height:110px; }
+#game-screen.cards-small .hand-art-area{ height:70px; }
+#game-screen.cards-large .card-slot{ width:124px;height:174px; }
+#game-screen.cards-large .card-art-area{ height:116px; }
+#game-screen.cards-large .hand-card{ width:110px;height:156px; }
+#game-screen.cards-large .hand-art-area{ height:102px; }
+
+/* Disable animations class */
+#game-screen.no-animations *{
+  animation:none !important;
+  transition:none !important;
 }
 </style>
 </head>
@@ -3760,8 +4099,6 @@ textarea{
 
 <!-- GAME SCREEN -->
 <div id="game-screen">
-<!-- SFX toggle button (in-game) -->
-<button id="sfx-toggle-btn" onclick="toggleSfx()" title="Toggle sound effects" style="position:absolute;top:8px;right:8px;z-index:200;background:rgba(8,8,28,.8);border:1px solid rgba(200,164,74,.4);border-radius:8px;width:36px;height:36px;font-size:16px;cursor:pointer;color:#e8c570">🔊</button>
 
   <!-- P2 area -->
   <div class="player-area">
@@ -3804,26 +4141,9 @@ textarea{
     <div class="hand-area" id="p2-hand-display"></div>
   </div>
 
-  <!-- Center controls -->
-  <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;padding:0 2px">
-    <div id="turn-banner" class="turn-banner p1-banner">P1 — DRAW</div>
-    <button class="phase-btn" id="ph-draw" onclick="doPhase('draw')">Draw</button>
-    <button class="phase-btn" id="ph-resource" onclick="doPhase('resource')">Resource</button>
-    <button class="phase-btn" id="ph-main" onclick="doPhase('main')">Main</button>
-    <button class="phase-btn" id="ph-attack" onclick="doPhase('attack')">Attack</button>
-    <button class="phase-btn" id="ph-end" onclick="endTurnNow()">End Turn</button>
-    <button class="btn-gray btn-sm" onclick="flipCoin()">🪙</button>
-    <button class="btn-gray btn-sm" onclick="openDiceModal()">🎲</button>
-    <button class="btn-primary btn-sm" onclick="openTransformModal()">⬆TF</button>
-    <button class="btn-gold btn-sm" onclick="openEquipModal()">🛡Eq</button>
-    <button class="btn-green btn-sm" onclick="openAbilityModal()">✨</button>
-    <button class="btn-orange btn-sm" onclick="openSacrificeModal()">💀Sac</button>
-    <button class="btn-red btn-sm" id="forfeit-btn" onclick="forfeitMatch()" style="display:none">🏳 Forfeit</button>
-    <button class="btn-red btn-sm" onclick="confirmReturnMenu()">🏠</button>
-  </div>
-
-  <!-- Log -->
-  <div style="display:flex;gap:5px;align-items:stretch;padding:0 2px">
+  <!-- Slim center bar: turn indicator + log -->
+  <div class="center-strip">
+    <div id="turn-indicator" class="turn-banner-inline p1-banner">P1 — DRAW</div>
     <div class="log-box" id="log-box"></div>
   </div>
 
@@ -3873,6 +4193,32 @@ textarea{
       <span style="font-size:10px;color:#4b5563;margin-left:4px">· <span style="color:#22c55e">green</span>=play · right-click=view · <span style="color:#ef4444">red border</span>=instant · <span style="color:#9ca3af">builder: right-click or 👁 to view</span></span>
     </div>
     <div class="hand-area" id="p1-hand"></div>
+  </div>
+
+  <!-- ══════════════ BOTTOM ACTION BAR ══════════════ -->
+  <div id="bottom-action-bar">
+    <div class="action-bar-section phase-section">
+      <button class="phase-pill" id="ph-draw" onclick="doPhase('draw')"><span class="phase-pill-icon">🎴</span><span class="phase-pill-label">Draw</span></button>
+      <button class="phase-pill" id="ph-resource" onclick="doPhase('resource')"><span class="phase-pill-icon">⚡</span><span class="phase-pill-label">Resource</span></button>
+      <button class="phase-pill" id="ph-main" onclick="doPhase('main')"><span class="phase-pill-icon">⚔️</span><span class="phase-pill-label">Main</span></button>
+      <button class="phase-pill" id="ph-attack" onclick="doPhase('attack')"><span class="phase-pill-icon">🗡️</span><span class="phase-pill-label">Attack</span></button>
+    </div>
+    <div class="action-bar-section tools-section">
+      <button class="action-tool-btn" onclick="flipCoin()" title="Flip a coin">🪙</button>
+      <button class="action-tool-btn" onclick="openDiceModal()" title="Roll dice">🎲</button>
+      <button class="action-tool-btn tf" onclick="openTransformModal()" title="Transform">⬆</button>
+      <button class="action-tool-btn eq" onclick="openEquipModal()" title="Equip">🛡</button>
+      <button class="action-tool-btn ab" onclick="openAbilityModal()" title="Abilities">✨</button>
+      <button class="action-tool-btn sac" onclick="openSacrificeModal()" title="Sacrifice">💀</button>
+    </div>
+    <div class="action-bar-section end-section">
+      <button class="end-turn-btn" id="ph-end" onclick="endTurnNow()"><span style="font-size:18px">⏭</span> END TURN</button>
+    </div>
+    <div class="action-bar-section menu-section">
+      <button class="action-tool-btn" onclick="openGameSettings()" title="Settings">⚙️</button>
+      <button class="action-tool-btn forfeit-tool" id="forfeit-btn" onclick="forfeitMatch()" title="Forfeit" style="display:none">🏳</button>
+      <button class="action-tool-btn home" onclick="confirmReturnMenu()" title="Return to menu">🏠</button>
+    </div>
   </div>
 </div>
 
@@ -4823,6 +5169,7 @@ function newFC(cid){
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a;}
 
 function startGame(mode,deck1,deck2){
+  if(typeof loadGameSettings==="function")loadGameSettings();
   gameMode=mode;us=0;
   const gMode=pendingGameMode||'prize';
   const startLF=pendingLFHP||100;
@@ -4931,7 +5278,8 @@ function _playTone(freq, duration, type, volume, slideTo){
   if(slideTo){
     osc.frequency.exponentialRampToValueAtTime(Math.max(1,slideTo), ctx.currentTime + duration);
   }
-  gain.gain.setValueAtTime(volume || 0.15, ctx.currentTime);
+  const _vol=(typeof _gameSettings!=='undefined'?_gameSettings.sfxVolume:1);
+  gain.gain.setValueAtTime((volume || 0.15)*_vol, ctx.currentTime);
   gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
   osc.connect(gain);
   gain.connect(ctx.destination);
@@ -4954,7 +5302,8 @@ function _playNoise(duration, volume, filterFreq){
   filter.type = 'lowpass';
   filter.frequency.value = filterFreq || 1000;
   const gain = ctx.createGain();
-  gain.gain.setValueAtTime(volume || 0.2, ctx.currentTime);
+  const _vol=(typeof _gameSettings!=='undefined'?_gameSettings.sfxVolume:1);
+  gain.gain.setValueAtTime((volume || 0.2)*_vol, ctx.currentTime);
   gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
   noise.connect(filter);
   filter.connect(gain);
@@ -4982,7 +5331,8 @@ const SFX = {
 
 function toggleSfx(){
   _sfxEnabled = !_sfxEnabled;
-  if(_sfxEnabled) SFX.click();
+  if(typeof _gameSettings!=='undefined')_gameSettings.sfx=_sfxEnabled;
+  if(_sfxEnabled && typeof SFX!=='undefined') SFX.click();
   const btn = document.getElementById('sfx-toggle-btn');
   if(btn) btn.textContent = _sfxEnabled ? '🔊' : '🔇';
   return _sfxEnabled;
@@ -5517,6 +5867,7 @@ let _instantRevealTimer = null;
 function showInstantReveal(cardId, playerNum, customLabel){
   const c = DB[cardId];
   if(!c) return;
+  if(typeof _gameSettings!=='undefined' && !_gameSettings.reveals) return;
   const overlay = document.getElementById('instant-reveal-overlay');
   if(!overlay) return;
 
@@ -6186,6 +6537,7 @@ function applyEquipToTarget(efc,tfc){
 function playCardZoom(cardId){
   const c = DB[cardId];
   if(!c) return;
+  if(typeof _gameSettings!=='undefined' && !_gameSettings.animations) return;
   const overlay = document.getElementById('card-play-zoom');
   const img = document.getElementById('card-play-zoom-img');
   if(!overlay || !img) return;
@@ -6590,6 +6942,7 @@ let _endingTurn=false;
 // TURN TRANSITION BANNER
 // ═══════════════════════════════════════════════════
 function showTurnBanner(isYourTurn){
+  if(typeof _gameSettings!=='undefined' && !_gameSettings.banners) return;
   const banner = document.getElementById('turn-banner');
   const text = document.getElementById('turn-banner-text');
   if(!banner || !text) return;
@@ -6703,6 +7056,111 @@ function endTurnFx(p){
 // ═══════════════════════════════════════════════════
 // AI (improved, follows all transform rules)
 // ═══════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════
+// GAME SETTINGS
+// ═══════════════════════════════════════════════════
+let _gameSettings = {
+  sfx: true,
+  sfxVolume: 0.6,
+  animations: true,
+  reveals: true,
+  cardSize: 'medium',
+  banners: true
+};
+
+function openGameSettings(){
+  // Sync UI to current state
+  syncSettingsUI();
+  document.getElementById('game-settings-modal').classList.add('open');
+  if(typeof SFX!=='undefined')SFX.click();
+}
+
+function closeGameSettings(){
+  document.getElementById('game-settings-modal').classList.remove('open');
+}
+
+function syncSettingsUI(){
+  const t = (id,on)=>{ const el=document.getElementById(id); if(el)el.classList.toggle('on',on); };
+  t('set-sfx', _gameSettings.sfx);
+  t('set-anim', _gameSettings.animations);
+  t('set-reveals', _gameSettings.reveals);
+  t('set-banners', _gameSettings.banners);
+  const vol=document.getElementById('set-sfx-vol');
+  if(vol)vol.value=Math.round(_gameSettings.sfxVolume*100);
+  document.querySelectorAll('.settings-size-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.size===_gameSettings.cardSize);
+  });
+}
+
+function toggleSetting(key){
+  if(typeof SFX!=='undefined')SFX.click();
+  switch(key){
+    case 'sfx':
+      _gameSettings.sfx = !_gameSettings.sfx;
+      _sfxEnabled = _gameSettings.sfx;
+      document.getElementById('set-sfx').classList.toggle('on', _gameSettings.sfx);
+      break;
+    case 'anim':
+      _gameSettings.animations = !_gameSettings.animations;
+      document.getElementById('set-anim').classList.toggle('on', _gameSettings.animations);
+      document.getElementById('game-screen')?.classList.toggle('no-animations', !_gameSettings.animations);
+      break;
+    case 'reveals':
+      _gameSettings.reveals = !_gameSettings.reveals;
+      document.getElementById('set-reveals').classList.toggle('on', _gameSettings.reveals);
+      break;
+    case 'banners':
+      _gameSettings.banners = !_gameSettings.banners;
+      document.getElementById('set-banners').classList.toggle('on', _gameSettings.banners);
+      break;
+  }
+  saveGameSettings();
+}
+
+function setSfxVolume(val){
+  _gameSettings.sfxVolume = val/100;
+  saveGameSettings();
+}
+
+function setCardSize(size){
+  _gameSettings.cardSize = size;
+  const screen = document.getElementById('game-screen');
+  if(screen){
+    screen.classList.remove('cards-small','cards-medium','cards-large');
+    if(size!=='medium') screen.classList.add('cards-'+size);
+  }
+  document.querySelectorAll('.settings-size-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.size===size);
+  });
+  if(typeof SFX!=='undefined')SFX.click();
+  saveGameSettings();
+}
+
+function saveGameSettings(){
+  // Settings persist in-memory for the session.
+  // (Could persist to Supabase profile later if desired.)
+  try{ window._gameSettingsCache = JSON.stringify(_gameSettings); }catch(e){}
+}
+
+function loadGameSettings(){
+  try{
+    if(window._gameSettingsCache){
+      const s = JSON.parse(window._gameSettingsCache);
+      Object.assign(_gameSettings, s);
+      _sfxEnabled = _gameSettings.sfx;
+      // Apply card size + animations
+      const screen = document.getElementById('game-screen');
+      if(screen){
+        screen.classList.remove('cards-small','cards-large','no-animations');
+        if(_gameSettings.cardSize!=='medium') screen.classList.add('cards-'+_gameSettings.cardSize);
+        if(!_gameSettings.animations) screen.classList.add('no-animations');
+      }
+    }
+  }catch(e){}
+}
+
+
 function runAI(){
   if(G.activePlayer!==2)return;
   G.players[2].energy+=1;resetEnergyCardFlag(2);drawCard(2);G.phasesDone.push('draw');G.phase='draw';renderAll();
@@ -6724,6 +7182,7 @@ function runAI(){
         fc.turnPlayed=G.turn;fc.currentHP=c.hp;fc.currentATK=c.atk;fc.baseHP=c.hp;fc.baseATK=c.atk;
         if(!fc.attachments)fc.attachments=[];fc.abilityUsed={};fc.damagedThisTurn=false;
         pl.field.push(fc);log(`AI plays ${c.name}.`,'info');
+        playCardZoom(fc.cid);if(typeof SFX!=='undefined')SFX.cardPlay();
         if(c.id==='archon'){drawCard(2);drawCard(2);}
         if(c.id==='volaris'){drawCard(2);drawCard(2);}
         played++;
@@ -6761,6 +7220,7 @@ function runAI(){
           pl.hand=pl.hand.filter(f=>f.uid!==fc.uid);pl.energy-=c.cost;
           fc.turnPlayed=G.turn;fc.currentHP=c.hp;fc.currentATK=c.atk;fc.baseHP=c.hp;fc.baseATK=c.atk;if(!fc.attachments)fc.attachments=[];
           pl.field.push(fc);log(`AI places ${c.name}.`,'info');
+          playCardZoom(fc.cid);if(typeof SFX!=='undefined')SFX.cardPlay();
           if(c.id==='time_chamber'){pl.energy+=5;log('+5⚡!','gain');}
         }
       }
@@ -6969,29 +7429,29 @@ function spawnEnergyParticles(count){
   const tR = target.getBoundingClientRect();
   const tx = tR.left + tR.width/2;
   const ty = tR.top + tR.height/2;
-  const n = Math.min(count || 1, 8);
+  const n = Math.min(count || 1, 10);
   for(let i=0;i<n;i++){
     setTimeout(()=>{
       const p = document.createElement('div');
       p.className = 'energy-particle';
-      // Start from a random position near bottom-center
-      const sx = window.innerWidth/2 + (Math.random()-0.5)*200;
-      const sy = window.innerHeight*0.7 + (Math.random()-0.5)*60;
+      // Start from a wider spread near center-bottom of the play area
+      const sx = window.innerWidth/2 + (Math.random()-0.5)*320;
+      const sy = window.innerHeight*0.62 + (Math.random()-0.5)*120;
       p.style.left = sx+'px';
       p.style.top = sy+'px';
+      p.style.opacity = '1';
       document.body.appendChild(p);
-      // Animate toward energy HUD
+      // Animate toward energy HUD with a slight arc feel
       requestAnimationFrame(()=>{
-        p.style.transition = 'all .7s cubic-bezier(.5,0,.5,1)';
+        p.style.transition = 'left 1s cubic-bezier(.45,.05,.35,1), top 1s cubic-bezier(.6,-.2,.4,1), opacity 1s ease-in, transform 1s ease-in';
         p.style.left = tx+'px';
         p.style.top = ty+'px';
         p.style.opacity = '0';
-        p.style.transform = 'scale(.3)';
+        p.style.transform = 'scale(.2)';
       });
-      setTimeout(()=>p.remove(), 750);
-    }, i*60);
+      setTimeout(()=>p.remove(), 1050);
+    }, i*70);
   }
-  if(typeof SFX!=='undefined') SFX.energy();
 }
 
 
@@ -7033,8 +7493,13 @@ function playEnergyCard(p, cid){
   if(c.color&&COLOR_DEFS[c.color])log(COLOR_DEFS[c.color].label+' energy added!','gain');
   // Special downside effects
   if(c.downside) c.downside(pl,G);
+  // Show card zoom animation + sound (energy cards now get the same treatment)
+  playCardZoom(cid);
+  if(typeof SFX!=='undefined')SFX.energy();
   renderAll();
-  if(p===1)spawnEnergyParticles(2);
+  if(p===1)spawnEnergyParticles(Math.max(3,gained+1));
+  // Online: broadcast the energy play so opponent sees the zoom
+  if(p===1)sendGameAction('card_play',{cardId:cid});
 }
 
 function resetEnergyCardFlag(p){
@@ -7816,25 +8281,26 @@ function renderHand(){
 }
 
 function renderPhaseBar(){
-  ['draw','resource','main','attack','end'].forEach(ph=>{
+  // Phase pills (draw/resource/main/attack)
+  ['draw','resource','main','attack'].forEach(ph=>{
     const btn=document.getElementById('ph-'+ph);if(!btn)return;
-    btn.className='phase-btn';
+    btn.className='phase-pill';
     if(G.phasesDone.includes(ph))btn.classList.add('done-phase');
     else if(ph===G.phase)btn.classList.add('active-phase');
-    if(ph==='end'){
-      btn.disabled=G.activePlayer!==1;
-      btn.classList.remove('done-phase');
-    } else {
-      btn.disabled=G.activePlayer!==1||G.phasesDone.includes(ph);
-    }
+    btn.disabled=G.activePlayer!==1||G.phasesDone.includes(ph);
   });
+  // End turn button (separate styling)
+  const endBtn=document.getElementById('ph-end');
+  if(endBtn){
+    endBtn.disabled=G.activePlayer!==1;
+  }
 }
 function renderBanner(){
-  const b=document.getElementById('turn-banner');
+  const b=document.getElementById('turn-indicator');
   const ph={draw:'DRAW',resource:'RESOURCE',main:'MAIN',attack:'ATTACK',end:'END'}[G.phase]||G.phase.toUpperCase();
-  if(G.activePlayer===1){b.className='turn-banner p1-banner';b.textContent=`P1 — ${ph} (T${G.turn})`;}
-  else if(gameMode==='pvp'){b.className='turn-banner p2-banner';b.textContent=`P2 — ${ph} (T${G.turn})`;}
-  else{b.className='turn-banner ai-banner';b.textContent=`AI — ${ph} (T${G.turn})`;}
+  if(G.activePlayer===1){b.className='turn-banner-inline p1-banner';b.textContent=`YOUR TURN — ${ph}`;}
+  else if(gameMode==='pvp'||gameMode==='online'){b.className='turn-banner-inline p2-banner';b.textContent=`OPPONENT — ${ph}`;}
+  else{b.className='turn-banner-inline p2-banner';b.textContent=`AI TURN — ${ph}`;}
 }
 function renderLog(){
   const el=document.getElementById('log-box');
@@ -12916,6 +13382,75 @@ window.addEventListener('load',async()=>{
 <!-- Card play zoom animation overlay -->
 
 <!-- Turn transition banner -->
+
+<!-- ══════════════ GAME SETTINGS MODAL ══════════════ -->
+<div id="game-settings-modal" onclick="if(event.target===this)closeGameSettings()">
+  <div class="settings-panel">
+    <div class="settings-title">⚙ SETTINGS</div>
+    <div class="settings-subtitle">AUDIO · VISUALS · GAMEPLAY</div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">🔊 Audio</div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Sound Effects</div>
+          <div class="settings-label-desc">Combat, cards, abilities</div>
+        </div>
+        <div class="settings-toggle on" id="set-sfx" onclick="toggleSetting('sfx')"><div class="settings-toggle-knob"></div></div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">SFX Volume</div>
+          <div class="settings-label-desc">Effect loudness</div>
+        </div>
+        <input type="range" class="settings-slider" id="set-sfx-vol" min="0" max="100" value="60" oninput="setSfxVolume(this.value)"/>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">✨ Visuals</div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Animations</div>
+          <div class="settings-label-desc">Card zooms, attacks, particles</div>
+        </div>
+        <div class="settings-toggle on" id="set-anim" onclick="toggleSetting('anim')"><div class="settings-toggle-knob"></div></div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Card Reveals</div>
+          <div class="settings-label-desc">Instant/ability popup displays</div>
+        </div>
+        <div class="settings-toggle on" id="set-reveals" onclick="toggleSetting('reveals')"><div class="settings-toggle-knob"></div></div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Card Size</div>
+          <div class="settings-label-desc">Field & hand card scale</div>
+        </div>
+        <div class="settings-size-btns">
+          <button class="settings-size-btn" data-size="small" onclick="setCardSize('small')">S</button>
+          <button class="settings-size-btn active" data-size="medium" onclick="setCardSize('medium')">M</button>
+          <button class="settings-size-btn" data-size="large" onclick="setCardSize('large')">L</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">🎮 Game</div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Turn Banners</div>
+          <div class="settings-label-desc">Big "Your Turn" announcements</div>
+        </div>
+        <div class="settings-toggle on" id="set-banners" onclick="toggleSetting('banners')"><div class="settings-toggle-knob"></div></div>
+      </div>
+    </div>
+
+    <button class="settings-close-btn" onclick="closeGameSettings()">CLOSE</button>
+  </div>
+</div>
+
 <div id="turn-banner"><span class="turn-banner-text" id="turn-banner-text">YOUR TURN</span></div>
 
 <div id="card-play-zoom"><div class="card-play-zoom-img-wrap"><img class="card-play-zoom-img" id="card-play-zoom-img" src="" alt=""/></div></div>
