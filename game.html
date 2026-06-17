@@ -3180,6 +3180,149 @@ textarea{
 .db-card-row.has-holo{
   position:relative;
 }
+
+/* ═══ RARITY LABELS ═══ */
+.rarity-text{
+  font-weight:700;
+  letter-spacing:1px;
+  font-family:'Cinzel',serif;
+  font-size:9px;
+}
+.rarity-common{color:#94a3b8;}
+.rarity-uncommon{color:#22c55e;}
+.rarity-rare{color:#3b82f6;}
+.rarity-legend{color:#a855f7;text-shadow:0 0 4px rgba(168,85,247,.5);}
+.rarity-mythic{color:#fbbf24;text-shadow:0 0 6px rgba(251,191,36,.6);}
+
+/* Rarity badge for card preview modal */
+.fullcard-rarity-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:3px 10px;
+  border-radius:12px;
+  font-family:'Cinzel',serif;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:2px;
+  border:1px solid currentColor;
+  background:rgba(0,0,0,.4);
+  margin-left:6px;
+  text-transform:uppercase;
+}
+
+/* ═══════════════════════════════════════════════════════
+   INSTANT/ABILITY REVEAL POPUP
+   Shows a dramatic centered card reveal when any player plays
+   an Instant or activates an ability — visible to both players.
+   ═══════════════════════════════════════════════════════ */
+#instant-reveal-overlay{
+  position:fixed;
+  inset:0;
+  z-index:9000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(5,3,15,.7);
+  backdrop-filter:blur(4px);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease;
+}
+#instant-reveal-overlay.open{
+  opacity:1;
+}
+.instant-reveal-card{
+  position:relative;
+  width:360px;
+  max-width:88vw;
+  border-radius:14px;
+  background:rgba(8,8,28,.95);
+  border:2px solid var(--gold,#c8a44a);
+  box-shadow:
+    0 0 40px rgba(200,164,74,.5),
+    0 0 80px rgba(124,58,237,.3),
+    0 20px 60px rgba(0,0,0,.6);
+  padding:18px;
+  transform:scale(.3) rotate(-8deg);
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+  text-align:center;
+}
+#instant-reveal-overlay.open .instant-reveal-card{
+  transform:scale(1) rotate(0deg);
+}
+.instant-reveal-header{
+  font-family:'Cinzel',serif;
+  font-size:11px;
+  letter-spacing:4px;
+  color:#fbbf24;
+  margin-bottom:12px;
+  text-transform:uppercase;
+  text-shadow:0 0 8px rgba(251,191,36,.6);
+}
+.instant-reveal-img{
+  width:100%;
+  max-width:280px;
+  margin:0 auto 12px;
+  border-radius:10px;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#1e1e3a;
+}
+.instant-reveal-img img{
+  width:100%;
+  height:auto;
+  display:block;
+}
+.instant-reveal-name{
+  font-family:'Cinzel',serif;
+  font-size:18px;
+  letter-spacing:3px;
+  color:#e8c570;
+  margin-bottom:4px;
+  text-transform:uppercase;
+}
+.instant-reveal-type{
+  font-size:10px;
+  letter-spacing:2px;
+  color:#a78bfa;
+  margin-bottom:10px;
+}
+.instant-reveal-effect{
+  font-size:11px;
+  color:#f0e6c8;
+  background:rgba(20,15,40,.7);
+  border:1px solid rgba(200,164,74,.25);
+  border-radius:6px;
+  padding:8px 10px;
+  line-height:1.4;
+  font-style:italic;
+}
+.instant-reveal-player{
+  position:absolute;
+  top:-12px;
+  left:50%;
+  transform:translateX(-50%);
+  background:linear-gradient(135deg,#c8a44a,#e8c570);
+  color:#1a1408;
+  font-family:'Cinzel',serif;
+  font-size:9px;
+  letter-spacing:2px;
+  font-weight:700;
+  padding:3px 14px;
+  border-radius:10px;
+  white-space:nowrap;
+  box-shadow:0 2px 8px rgba(0,0,0,.5);
+}
+@keyframes instant-card-flash{
+  0%,100%{box-shadow:0 0 40px rgba(200,164,74,.5),0 0 80px rgba(124,58,237,.3),0 20px 60px rgba(0,0,0,.6);}
+  50%{box-shadow:0 0 60px rgba(200,164,74,.8),0 0 100px rgba(124,58,237,.5),0 20px 60px rgba(0,0,0,.6);}
+}
+#instant-reveal-overlay.open .instant-reveal-card{
+  animation:instant-card-flash 1.2s ease-in-out infinite;
+}
 </style>
 </head>
 <body>
@@ -3401,6 +3544,14 @@ textarea{
         <option value="yellow">🟡 Yellow</option>
         <option value="green">🟢 Green</option>
         <option value="white">⚪ White</option>
+      </select>
+      <select id="builder-rarity-filter" onchange="renderBuilderCards()" style="background:#111126;color:#e2e8f0;border:1px solid #3a3a5c;border-radius:6px;padding:3px 7px;font-size:11px">
+        <option value="all">⭐ Rarity</option>
+        <option value="common">⚪ Common</option>
+        <option value="uncommon">🟢 Uncommon</option>
+        <option value="rare">🔵 Rare</option>
+        <option value="legend">🟣 Legend</option>
+        <option value="mythic">🟡 Mythic</option>
       </select>
       <select id="builder-holo-filter" onchange="renderBuilderCards()" style="background:#111126;color:#e2e8f0;border:1px solid #3a3a5c;border-radius:6px;padding:3px 7px;font-size:11px">
         <option value="all">✨ All Holos</option>
@@ -3700,6 +3851,7 @@ const DEFAULTS={
   crystal_73:  GH+"73's%20Crystal%20(Moro).png",
   move_out:    GH+'MOVE%20OUT%20THE%20WAY%20(damage%20taker).png',
   volaris_prism: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Special%20Events/Void%20Prism/volaris_prism__card%201-12.png',
+  nature_focus: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/70-150%20(Nature%20Focus%20Instant).png',
 
   energy_1_black:  'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Energy%20Cards/1%20Black%20Energy%20Card.png',
   energy_1_blue:   'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Energy%20Cards/1%20Blue%20Energy%20Card.png',
@@ -3765,66 +3917,69 @@ function importBackup(e){
 // ═══════════════════════════════════════════════════
 const DB={
   // ── VIRORA LINE ──
-  virora:{id:'virora',name:'Virora',color:'purple',charName:'Virora',subtypes:['Saiyan','Celestial'],type:'base_char',race:'Saiyan–Celestial',cost:4,atk:6,hp:6,sym:'V',keywords:['burst_speed'],
+  virora:{id:'virora',rarity:'uncommon',name:'Virora',color:'purple',charName:'Virora',subtypes:['Saiyan','Celestial'],type:'base_char',race:'Saiyan–Celestial',cost:4,atk:6,hp:6,sym:'V',keywords:['burst_speed'],
     abilities:[{label:'Freeze Over',type:'activated',cost:0,limit:'every_other_turn',text:'Opponent flips coin. Heads = skip their turn.'},{label:'Violet Bond',type:'triggered',cost:0,text:'If Violet in play: on destroy, shuffle into deck instead.'}],transforms:['virora_ssg'],path:'god'},
-  virora_ssg:{id:'virora_ssg',color:'purple',name:'Virora (SSG)',charName:'Virora',subtypes:['Saiyan','Celestial','God'],type:'char',race:'Celestial Saiyan God',cost:7,atk:10,hp:7,sym:'SSG',transformOnly:true,
+  virora_ssg:{id:'virora_ssg',rarity:'rare',color:'purple',name:'Virora (SSG)',charName:'Virora',subtypes:['Saiyan','Celestial','God'],type:'char',race:'Celestial Saiyan God',cost:7,atk:10,hp:7,sym:'SSG',transformOnly:true,
     abilities:[{label:'Entry Power',type:'triggered',cost:0,text:'On play: if HP > opp last attacker HP, gain +4 HP.'},{label:'Godly Reflexes',type:'triggered',cost:0,text:'When attacked: flip coin. Tails = 0 damage.'}],transforms:['virora_ssb'],path:'god'},
-  virora_ssb:{id:'virora_ssb',name:'Virora (SSB S3)',color:'purple',charName:'Virora',subtypes:['Saiyan','Celestial','God','SSB'],type:'char',race:'Celestial Saiyan God',cost:12,atk:13,hp:15,sym:'SSB',transformOnly:true,keywords:['pursuit'],
+  virora_ssb:{id:'virora_ssb',rarity:'legend',name:'Virora (SSB S3)',color:'purple',charName:'Virora',subtypes:['Saiyan','Celestial','God','SSB'],type:'char',race:'Celestial Saiyan God',cost:12,atk:13,hp:15,sym:'SSB',transformOnly:true,keywords:['pursuit'],
     abilities:[{label:'SSB Synergy',type:'passive',cost:0,text:'Any SSB char you control gives +4 ATK.'},{label:'Power Drain',type:'triggered',cost:0,text:'Opp char with higher ATK loses 2 HP/round.'},{label:'Form Swap',type:'activated',cost:0,limit:'every_2_turns',text:'Swap with any Virora form free.'}],transforms:['virora_ssbe'],path:'god'},
-  virora_ssbe:{id:'virora_ssbe',color:'purple',name:'Virora (SSBE)',charName:'Virora',subtypes:['Saiyan','Celestial','God','SSB'],type:'char',race:'Celestial Saiyan God',cost:10,atk:13,hp:13,sym:'SSBE',transformOnly:true,
+  virora_ssbe:{id:'virora_ssbe',rarity:'legend',color:'purple',name:'Virora (SSBE)',charName:'Virora',subtypes:['Saiyan','Celestial','God','SSB'],type:'char',race:'Celestial Saiyan God',cost:10,atk:13,hp:13,sym:'SSBE',transformOnly:true,
     abilities:[{label:'Evolved Armor',type:'passive',cost:0,text:"If cost > opp last Virora SSBE: +5 DEF."},{label:'Evolved State',type:'triggered',cost:0,text:'Flip coin when attacked — Heads: opp next attack -4 dmg.'},{label:'Mastery of Light Arts',type:'activated',cost:0,limit:'once_per_turn',text:'Roll d3 — on 2: swap free + draw 2.'}],transforms:['virora_ssbm'],path:'god'},
-  virora_ssbm:{id:'virora_ssbm',color:'purple',name:'Virora (SSBM)',charName:'Virora',subtypes:['Saiyan','Celestial','God','SSB'],type:'char',race:'Celestial Saiyan God',cost:10,atk:7,hp:17,sym:'SSBM',transformOnly:true,keywords:['resolve','regeneration'],regenAmount:4,
+  virora_ssbm:{id:'virora_ssbm',rarity:'mythic',color:'purple',name:'Virora (SSBM)',charName:'Virora',subtypes:['Saiyan','Celestial','God','SSB'],type:'char',race:'Celestial Saiyan God',cost:10,atk:7,hp:17,sym:'SSBM',transformOnly:true,keywords:['resolve','regeneration'],regenAmount:4,
     abilities:[{label:'Mastery Ramp',type:'triggered',cost:0,limit:'every_2_turns',text:'+2 ATK/+4 HP every 2 rounds.'},{label:'Pressure',type:'triggered',cost:0,text:'Opp draws 1 per field char.'},{label:'FROST BITE COLLISION',type:'activated',cost:0,limit:'once_per_game',text:'Freeze 1 opp char for 10 turns.'}],transforms:[],path:'god'},
-  virora_st:{id:'virora_st',name:'Virora (Surface)',color:'purple',charName:'Virora',subtypes:['Saiyan','Celestial'],type:'base_char',race:'Celestial Saiyan',cost:9,atk:7,hp:5,sym:'ST',
+  virora_st:{id:'virora_st',rarity:'mythic',name:'Virora (Surface)',color:'purple',charName:'Virora',subtypes:['Saiyan','Celestial'],type:'base_char',race:'Celestial Saiyan',cost:9,atk:7,hp:5,sym:'ST',
     abilities:[{label:'Surfacer Bonus',type:'passive',cost:0,text:'Surfacer card in hand: +3 ATK/+1 HP.'},{label:'Location Control',type:'activated',cost:0,limit:'once_per_turn',text:'Return any Location to owner hand.'},{label:'Surface Technique',type:'activated',cost:0,limit:'once_per_turn',text:'Flip coin — Heads: opp char -2 ATK. Tails: +3 Mana +2/+3.'}],transforms:['virora_ssb'],path:'god'},
   // ── VOLARIS LINE ──
-  volaris:{id:'volaris',name:'Volaris',color:'blue',charName:'Volaris',subtypes:['Royal Saiyan','Fighter'],type:'base_char',race:'Royal Saiyan',cost:2,atk:2,hp:3,sym:'VL',
+  volaris:{id:'volaris',rarity:'common',name:'Volaris',color:'blue',charName:'Volaris',subtypes:['Royal Saiyan','Fighter'],type:'base_char',race:'Royal Saiyan',cost:2,atk:2,hp:3,sym:'VL',
     abilities:[{label:'Entry Draw',type:'triggered',cost:0,text:'When Volaris enters the field: draw 2 cards.'},{label:'Mindful Insight',type:'activated',cost:0,limit:'once_per_turn',text:'Flip coin — Heads: place a Location card from hand free of cost.'}],transforms:['volaris_ssj','volaris_ssg'],path:null},
-  volaris_ssj:{id:'volaris_ssj',color:'blue',name:'Volaris (SSJ)',charName:'Volaris',subtypes:['Royal Saiyan','Fighter'],type:'char',race:'Royal Saiyan',cost:3,atk:4,hp:4,sym:'VSSJ',transformOnly:true,
+  volaris_ssj:{id:'volaris_ssj',rarity:'rare',color:'blue',name:'Volaris (SSJ)',charName:'Volaris',subtypes:['Royal Saiyan','Fighter'],type:'char',race:'Royal Saiyan',cost:3,atk:4,hp:4,sym:'VSSJ',transformOnly:true,
     abilities:[{label:'Shining Light',type:'activated',cost:2,limit:'once_per_turn',text:'Search deck for 1 Powerup or Equipment. If another Royal Saiyan on field: pick 2 instead or 1 of each.'},{label:'Equipment Nullifier',type:'passive',cost:0,text:"Opponent's Equipment card abilities are disabled while Volaris (SSJ) is on the field."}],transforms:[],path:'saiyan'},
-  volaris_ssg:{id:'volaris_ssg',name:'Volaris (SSG)',color:'blue',charName:'Volaris',subtypes:['Royal Saiyan','Fighter','God'],type:'char',race:'Royal Saiyan',cost:5,atk:6,hp:7,sym:'VSSG',transformOnly:true,
+  volaris_ssg:{id:'volaris_ssg',rarity:'rare',name:'Volaris (SSG)',color:'blue',charName:'Volaris',subtypes:['Royal Saiyan','Fighter','God'],type:'char',race:'Royal Saiyan',cost:5,atk:6,hp:7,sym:'VSSG',transformOnly:true,
     abilities:[{label:'God Synergy',type:'triggered',cost:0,text:'If any other Level 2 God Path transformed card is in play by you: draw 2 cards.'},{label:'Instant Search',type:'activated',cost:2,limit:'once_per_turn',text:'Flip coin — Heads: search deck for an Instant card, add to hand. Shuffle deck after.'}],transforms:['volaris_ssb'],path:'god'},
-  volaris_ssb:{id:'volaris_ssb',name:'Volaris (SSB)',color:'blue',charName:'Volaris',subtypes:['Royal Saiyan','Fighter','God','SSB'],type:'char',race:'Royal Saiyan',cost:7,atk:8,hp:10,sym:'VSSB',transformOnly:true,keywords:['breakthrough'],
+  volaris_ssb:{id:'volaris_ssb',rarity:'legend',name:'Volaris (SSB)',color:'blue',charName:'Volaris',subtypes:['Royal Saiyan','Fighter','God','SSB'],type:'char',race:'Royal Saiyan',cost:7,atk:8,hp:10,sym:'VSSB',transformOnly:true,keywords:['breakthrough'],
     abilities:[{label:'Support Boost',type:'passive',cost:0,text:'If any Support characters you placed are in play: +3 ATK/+4 HP to each char next to this card on field.'},{label:'Token Summon',type:'activated',cost:2,limit:'once_per_turn',text:'Summon 2 Tokens and place them on the field.'}],transforms:[],path:'god'},
   // ── OTHER CHARS ──
-  archon:{id:'archon',name:'Archon',color:'white',charName:'Archon',subtypes:['Omega','Celestial'],type:'char',race:'Omega Celestial',cost:13,atk:12,hp:18,sym:'Ω',canAttackLocations:true,keywords:['guardian'],
+  archon:{id:'archon',rarity:'legend',name:'Archon',color:'white',charName:'Archon',subtypes:['Omega','Celestial'],type:'char',race:'Omega Celestial',cost:13,atk:12,hp:18,sym:'Ω',canAttackLocations:true,keywords:['guardian'],
     abilities:[{label:'Counter Charge',type:'triggered',cost:0,text:'Each turn attacked: +2 ATK.'},{label:'Tank',type:'activated',cost:0,text:'Redirect an attack on an ally to this card.'},{label:'Entry Draw',type:'triggered',cost:0,text:'Draw 2 on play. Samara/Surana on field: +5/+5.'},{label:'Stardust Death Fall',type:'activated',cost:0,text:'Split attack across 2 opp chars.'}],transforms:[],path:null},
-  dynadrax:{id:'dynadrax',name:'Dynadrax',color:'black',charName:'Dynadrax',subtypes:['Omega','Celestial'],type:'char',race:'Omega Celestial',cost:11,atk:10,hp:15,sym:'DX',keywords:['drain'],
+  dynadrax:{id:'dynadrax',rarity:'legend',name:'Dynadrax',color:'black',charName:'Dynadrax',subtypes:['Omega','Celestial'],type:'char',race:'Omega Celestial',cost:11,atk:10,hp:15,sym:'DX',keywords:['drain'],
     abilities:[{label:'Omega Swap',type:'triggered',cost:0,text:'Omega in play: flip — Heads swap; Tails opp -4 HP.'},{label:'Dark Draw',type:'passive',cost:0,text:'Draw 1 if hand = 5.'},{label:'Obscure Darkness',type:'activated',cost:0,text:'Roll d5×3 — each 2: +2 dmg. KO removes opp Location.'}],transforms:[],path:null},
-  goku_ue:{id:'goku_ue',name:'Goku (Ultra Ego)',color:'red',charName:'Goku',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:8,atk:10,hp:15,sym:'UE',keywords:['onslaught'],
+  goku_ue:{id:'goku_ue',rarity:'legend',name:'Goku (Ultra Ego)',color:'red',charName:'Goku',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:8,atk:10,hp:15,sym:'UE',keywords:['onslaught'],
     abilities:[{label:'Ultra Ego Growth',type:'triggered',cost:0,text:'+1 ATK/+1 HP at end of your turn.'},{label:'Rival Synergy',type:'triggered',cost:0,text:'Vegeta/Goku on field: flip — Heads paralyze 1 opp.'},{label:'Destroyer Kamehameha',type:'activated',cost:0,limit:'once_per_turn',text:'Roll d8 — 1 or 7: +8 dmg. Other: +3.'}],transforms:[],path:null},
-  paradox:{id:'paradox',name:'Paradox',color:'purple',charName:'Paradox',subtypes:['Void','Celestial','Saiyan'],type:'char',race:'Void Celestial Saiyan',cost:9,atk:11,hp:17,sym:'PX',
+  paradox:{id:'paradox',rarity:'legend',name:'Paradox',color:'purple',charName:'Paradox',subtypes:['Void','Celestial','Saiyan'],type:'char',race:'Void Celestial Saiyan',cost:9,atk:11,hp:17,sym:'PX',
     abilities:[{label:'Combat Reflex',type:'triggered',cost:0,text:'Draw 1 after each attack taken.'},{label:'Void Synergy',type:'passive',cost:0,text:'Vildrex/Virora on field: special cost 0.'},{label:'Artificial Moon',type:'triggered',cost:0,limit:'once_per_turn',text:'If damaged this turn: transform to Great Ape free + draw 2.'}],transforms:['paradox_ape'],path:null},
-  paradox_ape:{id:'paradox_ape',color:'red',name:'Paradox (Great Ape)',charName:'Paradox',subtypes:['Void','Celestial','Saiyan'],type:'char',race:'Void Celestial Saiyan',cost:0,atk:16,hp:20,sym:'APE',transformOnly:true,
+  paradox_ape:{id:'paradox_ape',rarity:'mythic',color:'red',name:'Paradox (Great Ape)',charName:'Paradox',subtypes:['Void','Celestial','Saiyan'],type:'char',race:'Void Celestial Saiyan',cost:0,atk:16,hp:20,sym:'APE',transformOnly:true,
     abilities:[{label:'Great Ape Form',type:'passive',cost:0,text:'Draw 2 on transform.'}],transforms:[],path:null},
-  magnus_virora:{id:'magnus_virora',color:'white',name:'Magnus & Virora',charName:'Magnus & Virora',subtypes:['Royal Saiyan','Team'],type:'team',race:'Royal Saiyan',cost:10,atk:14,hp:15,sym:'MV',
+  magnus_virora:{id:'magnus_virora',rarity:'legend',color:'white',name:'Magnus & Virora',charName:'Magnus & Virora',subtypes:['Royal Saiyan','Team'],type:'team',race:'Royal Saiyan',cost:10,atk:14,hp:15,sym:'MV',
     abilities:[{label:'Field Lockdown',type:'triggered',cost:0,text:'On play: disable opp Equipment & Locations 5 turns.'},{label:"Sorcery's Flash Break",type:'activated',cost:0,text:'Flip×3 — Heads: draw 1. +6 dmg.'},{label:'Surfacer Ignition',type:'activated',cost:0,limit:'once_per_game',text:'Un-transform 1 opp transformation.'}],transforms:[],path:null},
-  lazarus:{id:'lazarus',color:'green',name:'Lazarus',charName:'Lazarus',subtypes:['Saiyan','Fighter'],type:'base_char',race:'Saiyan',cost:2,atk:2,hp:4,sym:'LZ',
+  lazarus:{id:'lazarus',rarity:'uncommon',color:'green',name:'Lazarus',charName:'Lazarus',subtypes:['Saiyan','Fighter'],type:'base_char',race:'Saiyan',cost:2,atk:2,hp:4,sym:'LZ',
     abilities:[{label:'Saiyan Blood Synergy',type:'passive',cost:0,text:'If Saiyan Blood is attached to Lazarus: his Transformation cost is free.'},{label:'Location Seeker',type:'activated',cost:1,limit:'once_per_turn',text:'Roll d6 — on 5: search your deck for a Location card and place it on the field free of cost.'}],transforms:[],path:null},
   // ── EVENT CARDS — VOID PRISM SET (VPS) ──
   volaris_prism:{id:'volaris_prism',color:'purple',name:'Volaris (Prism)',charName:'Volaris',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:3,atk:3,hp:9,sym:'VPR',rarity:'mythic',eventSet:'vps',cardNumber:'01/12',
     abilities:[{label:'Prism Shift',type:'activated',cost:0,limit:'once_per_game',text:'Once per game, transform one of your characters into its next form free of cost. That Transformation gains +2/+2 once it enters your field.'},{label:'Energy Fracture',type:'activated',cost:0,limit:'every_2_turns',text:'Flip a coin, if heads gain 2 purple energy for each character you control on your field. (Once every 2 turns)'}],transforms:[],path:null},
   // ── LOCATIONS ──
-  aetherak:{id:'aetherak',name:'Aetherak Tree',color:'white',charName:'Aetherak Tree',subtypes:['Ancient','Artifact'],type:'location',race:'Ancient Artifact',cost:0,atk:0,hp:5,sym:'🌳',canBeAttackedBy:[],
+  aetherak:{id:'aetherak',rarity:'uncommon',name:'Aetherak Tree',color:'white',charName:'Aetherak Tree',subtypes:['Ancient','Artifact'],type:'location',race:'Ancient Artifact',cost:0,atk:0,hp:5,sym:'🌳',canBeAttackedBy:[],
     abilities:[{label:'Virora Boost',type:'passive',cost:0,text:'Virora/Awakening chars: +5 HP/+3 ATK.'},{label:'Mana Drain',type:'triggered',cost:0,text:'Opp Mana < 3: take their turn.'}],transforms:[]},
-  crystal_void:{id:'crystal_void',color:'white',name:'The Crystal Void',charName:'The Crystal Void',subtypes:['Ancient','Void'],type:'location',race:'Ancient Location',cost:0,atk:0,hp:6,sym:'💜',canBeAttackedBy:[],
+  crystal_void:{id:'crystal_void',rarity:'uncommon',color:'white',name:'The Crystal Void',charName:'The Crystal Void',subtypes:['Ancient','Void'],type:'location',race:'Ancient Location',cost:0,atk:0,hp:6,sym:'💜',canBeAttackedBy:[],
     abilities:[{label:'Void Drain',type:'triggered',cost:0,text:'All chars -1 HP/round if no Derulian on field.'},{label:'Void Shield',type:'activated',cost:0,text:'Choose 1 of your chars: gains +4 HP/round.'}],transforms:[]},
-  time_chamber:{id:'time_chamber',color:'white',name:'Time Chamber',charName:'Time Chamber',subtypes:['Location'],type:'location',race:'Location',cost:0,atk:0,hp:7,sym:'⏱',canBeAttackedBy:[],
+  time_chamber:{id:'time_chamber',rarity:'uncommon',color:'white',name:'Time Chamber',charName:'Time Chamber',subtypes:['Location'],type:'location',race:'Location',cost:0,atk:0,hp:7,sym:'⏱',canBeAttackedBy:[],
     abilities:[{label:'Training Boost',type:'triggered',cost:0,limit:'every_2_turns',text:'Cards entering field: +1 ATK/+3 HP.'},{label:'Casting Points',type:'activated',cost:0,limit:'once_per_game',text:'Earn 5 Energy (ONCE).'}],transforms:[]},
-  zilli_well:{id:'zilli_well',color:'white',name:'Zilli Well',charName:'Zilli Well',subtypes:['Enchant','Land'],type:'location',race:'Enchant Land',cost:0,atk:0,hp:6,sym:'🌀',canBeAttackedBy:[],
+  zilli_well:{id:'zilli_well',rarity:'uncommon',color:'white',name:'Zilli Well',charName:'Zilli Well',subtypes:['Enchant','Land'],type:'location',race:'Enchant Land',cost:0,atk:0,hp:6,sym:'🌀',canBeAttackedBy:[],
     abilities:[{label:'Mana Well',type:'activated',cost:0,text:'1 hand char: +5 HP/+5 ATK (cap 20).'}],transforms:[]},
   // ── EQUIPMENT ──
-  destroyers_gift:{id:'destroyers_gift',color:'white',name:"Destroyer's Gift",charName:"Destroyer's Gift",subtypes:['Enchantment'],type:'equipment',persistent:true,race:'Enchantment',cost:8,atk:0,hp:0,sym:'🌌',
+  destroyers_gift:{id:'destroyers_gift',rarity:'rare',color:'white',name:"Destroyer's Gift",charName:"Destroyer's Gift",subtypes:['Enchantment'],type:'equipment',persistent:true,race:'Enchantment',cost:8,atk:0,hp:0,sym:'🌌',
     abilities:[{label:'Transform Unlock',type:'passive',cost:0,text:'Enables Hakaishan/Ultra Ego transform.'},{label:'Destroyer Boost',type:'passive',cost:0,text:'+5 ATK/+12 HP to attached char.'}],transforms:[]},
-  senzu_bean:{id:'senzu_bean',color:'green',name:'Senzu Bean',charName:'Senzu Bean',subtypes:['Consumable'],type:'equipment',persistent:false,race:'Equipment',cost:0,atk:0,hp:0,sym:'🫘',
+  senzu_bean:{id:'senzu_bean',rarity:'uncommon',color:'green',name:'Senzu Bean',charName:'Senzu Bean',subtypes:['Consumable'],type:'equipment',persistent:false,race:'Equipment',cost:0,atk:0,hp:0,sym:'🫘',
     abilities:[{label:'Full Restore',type:'activated',cost:0,text:'Restore full HP to one field character. Discard after.'}],transforms:[]},
-  crystal_73:{id:'crystal_73',color:'blue',name:"73's Crystal",charName:"73's Crystal",subtypes:['Magician','Ability'],type:'equipment',persistent:true,race:'Magician–Ability',cost:5,atk:0,hp:0,sym:'🔮',
+  crystal_73:{id:'crystal_73',rarity:'uncommon',color:'blue',name:"73's Crystal",charName:"73's Crystal",subtypes:['Magician','Ability'],type:'equipment',persistent:true,race:'Magician–Ability',cost:5,atk:0,hp:0,sym:'🔮',
     abilities:[{label:'Nullify',type:'passive',cost:0,text:'Nullify incoming attacks by -1 dmg.'},{label:'Enhanced Nullify',type:'activated',cost:2,text:'2 Mana: flip — Heads: nullify -3.'},{label:'Crystal Defense',type:'triggered',cost:0,text:'+5 HP for 3 rounds.'}],transforms:[]},
-  move_out:{id:'move_out',color:'yellow',name:'Move Out The Way',charName:'Move Out The Way',subtypes:['Ability','Equipment'],type:'equipment',persistent:'until_used',race:'Ability',cost:1,atk:0,hp:0,sym:'💨',
+  move_out:{id:'move_out',rarity:'uncommon',color:'yellow',name:'Move Out The Way',charName:'Move Out The Way',subtypes:['Ability','Equipment'],type:'equipment',persistent:'until_used',race:'Ability',cost:1,atk:0,hp:0,sym:'💨',
     abilities:[{label:'Redirect',type:'triggered',cost:0,text:'When attached char is targeted: redirect damage to another field char. Discard after.'}],transforms:[]},
   // ── INSTANT ──
-  saiyan_blood:{id:'saiyan_blood',color:'red',name:'Saiyan Blood',charName:'Saiyan Blood',subtypes:['Instant','Saiyan'],type:'instant',race:'Instant',cost:2,atk:0,hp:0,sym:'🩸',
+  saiyan_blood:{id:'saiyan_blood',rarity:'rare',color:'red',name:'Saiyan Blood',charName:'Saiyan Blood',subtypes:['Instant','Saiyan'],type:'instant',race:'Instant',cost:2,atk:0,hp:0,sym:'🩸',
     abilities:[{label:'Saiyan Fortify',type:'activated',cost:0,text:'Attach to a Fighter: +2 DEF. If Fighter is Saiyan (any subtype): +3 DEF instead. Can be used as attachment for Lazarus transform cost reduction.'}],transforms:[]},
+
+  nature_focus:{id:'nature_focus',rarity:'uncommon',setId:'base_set',cardNumber:'070/150',color:'yellow',name:'Nature Focus',charName:'Nature Focus',subtypes:['Ability'],type:'instant',race:'Ability',cost:0,atk:0,hp:0,sym:'🍃',
+    abilities:[{label:'Energy Placement',type:'activated',cost:0,text:'Search your deck for any 2 energy cards and add them to your hand.'}],transforms:[]},
 
   // ── ENERGY CARDS ──────────────────────────────────
   // 1-energy
@@ -3859,14 +4014,14 @@ const DB={
   // ── HERALD CARDS ──────────────────────────────────
 
 
-  darkseid_herald:{id:'darkseid_herald',name:'Darkseid',type:'herald',race:'New God',cost:0,atk:10,hp:16,sym:'👑',subtypes:['New God'],color:'red',keywords:['guardian'],
+  darkseid_herald:{id:'darkseid_herald',rarity:'legend',name:'Darkseid',type:'herald',race:'New God',cost:0,atk:10,hp:16,sym:'👑',subtypes:['New God'],color:'red',keywords:['guardian'],
     heraldFlip:null,autoFlip:false,
     abilities:[
       {type:'passive',label:"Tyrant's Dominion",cost:0,text:"Opponent's characters lose -1 ATK and -1 HP while Darkseid is on the field."},
       {type:'triggered',label:'Omega Judgment',cost:0,text:'When Darkseid is attacked, the attacking character loses -3 ATK until end of turn.'},
       {type:'activated',label:'Anti-Life Equation',cost:4,limit:'once_per_turn',text:'Choose up to two opponent characters. They cannot attack or activate abilities until your next turn.'}
     ],transforms:[]},
-  hulk_gs_herald:{id:'hulk_gs_herald',name:'Hulk (Green Scar)',type:'herald',race:'Gamma Monster',cost:0,atk:11,hp:14,sym:'👑',subtypes:['Gamma Monster'],color:'green',keywords:['resolve','drain'],
+  hulk_gs_herald:{id:'hulk_gs_herald',rarity:'legend',name:'Hulk (Green Scar)',type:'herald',race:'Gamma Monster',cost:0,atk:11,hp:14,sym:'👑',subtypes:['Gamma Monster'],color:'green',keywords:['resolve','drain'],
     heraldFlip:null,autoFlip:false,
     abilities:[
       {type:'triggered',label:'Rage Eternal',cost:0,text:'Hulk gains +1 ATK for each point of damage he takes on the next turn.'},
@@ -4361,6 +4516,7 @@ function renderBuilderCards(){
   const pool=document.getElementById('builder-card-pool');if(!pool)return;
   const filter=document.getElementById('builder-filter')?.value||'all';
   const colorFilter=document.getElementById('builder-color-filter')?.value||'all';
+  const rarityFilter=document.getElementById('builder-rarity-filter')?.value||'all';
   const holoFilter=document.getElementById('builder-holo-filter')?.value||'all';
   const search=(document.getElementById('builder-search')?.value||'').toLowerCase();
   pool.innerHTML='';
@@ -4369,6 +4525,8 @@ function renderBuilderCards(){
     if(!isCardPlayable(c.id))return false; // gated for non-admins
     if(filter!=='all'&&c.type!==filter)return false;
     if(colorFilter!=='all'&&c.color!==colorFilter)return false;
+    // Rarity filter
+    if(rarityFilter!=='all' && getRarity(c.id)!==rarityFilter)return false;
     // Holo filter — admin sees everything (no ownership check), regular players check _holoOwned
     if(holoFilter!=='all'){
       const ownedStyle = getOwnedHoloStyle(c.id); // null if not owned as holo
@@ -4398,7 +4556,7 @@ function renderBuilderCards(){
     row.innerHTML=`<div class="db-thumb" style="${colDef?'border:1px solid '+colDef.hex+';':''};cursor:zoom-in;position:relative" onclick="event.stopPropagation();showFullCard('${c.id}',null)" title="Click to view">${url?`<img src="${url}"/>`:(c.sym||'?')}${ownedHolo?`<div class="holo-thumb-glow holo-thumb-${ownedHolo}"></div>`:''}</div>
       <div style="flex:1;min-width:0;cursor:pointer" onclick="event.stopPropagation();addCardToBuilder('${c.id}')">
         <div style="font-size:11px;font-weight:700;color:#c8a0ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:3px">${colDef?`<span style="width:6px;height:6px;border-radius:50%;background:${colDef.hex};flex-shrink:0"></span>`:''} ${c.name} ${holoBadge}</div>
-        <div style="font-size:10px;color:#6b7280">${c.type.replace('_',' ')}·⚡${c.cost}${colDef?` · <span style="color:${colDef.hex}">${colDef.label}</span>`:''}</div>
+        <div style="font-size:10px;color:#6b7280">${c.type.replace('_',' ')}·⚡${c.cost}${colDef?` · <span style="color:${colDef.hex}">${colDef.label}</span>`:''}${getRarity(c.id)?` · <span class="rarity-text rarity-${getRarity(c.id)}">${RARITY_DEFS[getRarity(c.id)]?.label||''}</span>`:''}</div>
         ${c.atk>0?`<div style="font-size:10px;color:#fbbf24">⚔${c.atk}♥${c.hp}</div>`:''}
         ${c.transformOnly?'<div style="font-size:9px;color:#f59e0b">🔒 TF Only</div>':''}
         ${c.keywords?.length?`<div>${c.keywords.map(kw=>KEYWORDS[kw]?`<span class="kw-badge ${KEYWORDS[kw].cls}">${KEYWORDS[kw].label}</span>`:'').join('')}</div>`:''}
@@ -4913,6 +5071,109 @@ function burstPass(role){
   checkBurstClose();
 }
 
+
+// ═══════════════════════════════════════════════════
+// INSTANT REVEAL POPUP
+// Shows a dramatic centered card reveal when an Instant is played
+// or an ability is activated. Auto-dismisses after timeout.
+// Visible to both players (in online PvP this should be broadcast).
+// ═══════════════════════════════════════════════════
+let _instantRevealTimer = null;
+
+function showInstantReveal(cardId, playerNum, customLabel){
+  const c = DB[cardId];
+  if(!c) return;
+  const overlay = document.getElementById('instant-reveal-overlay');
+  if(!overlay) return;
+
+  // Player label (P1 / P2 / opponent name)
+  const playerLabel = document.getElementById('instant-reveal-player');
+  if(playerLabel){
+    let label = 'P' + (playerNum || 1) + ' PLAYS';
+    // In online mode show the actual name if possible
+    if(typeof _onlineRoom !== 'undefined' && _onlineRoom){
+      const isHost = (typeof _isHost !== 'undefined') ? _isHost : true;
+      if(playerNum === 1){
+        label = (isHost ? (window._username || 'You') : _onlineRoom.host_name || 'Opponent') + ' PLAYS';
+      } else {
+        label = (isHost ? (_onlineRoom.guest_name || 'Opponent') : (window._username || 'You')) + ' PLAYS';
+      }
+    }
+    playerLabel.textContent = label;
+  }
+
+  // Header label (Instant vs Ability)
+  const header = overlay.querySelector('.instant-reveal-header');
+  if(header){
+    if(customLabel){
+      header.textContent = customLabel;
+    } else {
+      header.textContent = c.type === 'instant' ? '⚡ INSTANT PLAYED' : '✦ ABILITY USED';
+    }
+  }
+
+  // Card image
+  const imgWrap = document.getElementById('instant-reveal-img');
+  if(imgWrap){
+    const url = getImg(cardId);
+    if(url){
+      imgWrap.innerHTML = '<img src="' + url + '" alt=""/>';
+    } else {
+      imgWrap.innerHTML = '<div style="font-size:60px;padding:30px">' + (c.sym || '?') + '</div>';
+    }
+  }
+
+  // Name
+  const nameEl = document.getElementById('instant-reveal-name');
+  if(nameEl) nameEl.textContent = c.name;
+
+  // Type line
+  const typeEl = document.getElementById('instant-reveal-type');
+  if(typeEl){
+    const typeName = c.type === 'instant' ? 'INSTANT' : c.type.replace('_',' ').toUpperCase();
+    const subs = (c.subtypes || []).join(' · ');
+    typeEl.textContent = subs ? typeName + ' · ' + subs : typeName;
+  }
+
+  // Effect text (use first ability text, or a generic message)
+  const effectEl = document.getElementById('instant-reveal-effect');
+  if(effectEl){
+    const ab = c.abilities && c.abilities[0];
+    effectEl.textContent = ab && ab.text ? ab.text : '—';
+  }
+
+  // Show the overlay
+  overlay.classList.add('open');
+
+  // Auto-dismiss after 2.5 seconds
+  if(_instantRevealTimer) clearTimeout(_instantRevealTimer);
+  _instantRevealTimer = setTimeout(() => closeInstantReveal(), 2500);
+}
+
+function closeInstantReveal(){
+  const overlay = document.getElementById('instant-reveal-overlay');
+  if(overlay) overlay.classList.remove('open');
+  if(_instantRevealTimer){ clearTimeout(_instantRevealTimer); _instantRevealTimer = null; }
+}
+
+// Show an ability reveal (similar to instant but uses the source card + ability label)
+function showAbilityReveal(cardId, playerNum, abilityLabel, abilityText){
+  const c = DB[cardId];
+  if(!c) return;
+  const overlay = document.getElementById('instant-reveal-overlay');
+  if(!overlay) return;
+
+  // Use same UI but route differently
+  showInstantReveal(cardId, playerNum, '✦ ' + (abilityLabel || 'ABILITY USED').toUpperCase());
+
+  // Override effect text with the specific ability text
+  const effectEl = document.getElementById('instant-reveal-effect');
+  if(effectEl && abilityText){
+    effectEl.textContent = abilityText;
+  }
+}
+
+
 function burstPlayInstant(p,fc,role){
   // Play instant during burst
   const c=DB[fc.cid];const pl=G.players[p];
@@ -4921,6 +5182,8 @@ function burstPlayInstant(p,fc,role){
   pl.hand=pl.hand.filter(f=>f.uid!==fc.uid);
   pl.discard.push(fc.cid);
   log(`[BURST] P${p} plays ${c.name}!`,'gain');
+  // Show dramatic Instant reveal popup (visible to both players)
+  showInstantReveal(fc.cid, p);
   // Mark acted — reset both passed so opponent can respond
   if(role==='defender'){burstState.defActed=true;burstState.atkPassed=false;}
   else{burstState.atkActed=true;burstState.defPassed=false;}
@@ -4936,6 +5199,8 @@ function burstActivateAbility(p,fieldFc,abl,role){
   spendEnergy(p,abl.cost||0,DB[fieldFc.cid]?.color||null);
   fieldFc.abilityUsed[abl.label]=true;
   log(`[BURST] P${p} activates ${DB[fieldFc.cid].name}: ${abl.label}!`,'gain');
+  // Show dramatic Ability reveal popup (visible to both players)
+  showAbilityReveal(fieldFc.cid, p, abl.label, abl.text);
   if(role==='defender'){burstState.defActed=true;burstState.atkPassed=false;}
   else{burstState.atkActed=true;burstState.defPassed=false;}
   document.getElementById('burst-status').textContent='Ability used — opponent may respond.';
@@ -5721,6 +5986,8 @@ function activateAbility(fc,abl){
   const pl=G.players[G.activePlayer];if(pl.energy<(abl.cost||0)){log('Not enough energy!','dmg');return;}
   spendEnergy(G.activePlayer, abl.cost||0, DB[fc.cid]?.color||null);fc.abilityUsed[abl.label]=true;
   log(`${DB[fc.cid].name}: ${abl.label}!`,'gain');
+  // Show dramatic Ability reveal popup (visible to both players)
+  showAbilityReveal(fc.cid, G.activePlayer, abl.label, abl.text);
   // Specific effects
   if(fc.cid==='goku_ue'&&abl.label==='Destroyer Kamehameha'){const r=Math.floor(Math.random()*8)+1;const b=(r===1||r===7)?8:3;log(`d8: ${r} → +${b} next attack.`,'gain');fc.nextAttackBonus=(fc.nextAttackBonus||0)+b;}
   if(fc.cid==='time_chamber'&&abl.label==='Casting Points'){pl.energy+=5;log('+5⚡!','gain');}
@@ -7455,6 +7722,27 @@ function addCardToCollection(cid){
   _collection[cid]=current+1;
   return true;
 }
+
+
+// ═══════════════════════════════════════════════════
+// RARITY HELPER
+// Returns card's rarity tier or 'common' as default fallback.
+// Used by pack rolling, shop pricing, holo eligibility, dust conversion.
+// ═══════════════════════════════════════════════════
+function getRarity(cardId){
+  const c = DB[cardId];
+  if(!c) return 'common';
+  return c.rarity || 'common';
+}
+
+// Rarity display helper — returns label + color hex for UI badges
+const RARITY_DEFS = {
+  common:    { label: 'COMMON',    hex: '#94a3b8', glow: 'rgba(148,163,184,.4)' },
+  uncommon:  { label: 'UNCOMMON',  hex: '#22c55e', glow: 'rgba(34,197,94,.4)' },
+  rare:      { label: 'RARE',      hex: '#3b82f6', glow: 'rgba(59,130,246,.5)' },
+  legend:    { label: 'LEGEND',    hex: '#a855f7', glow: 'rgba(168,85,247,.5)' },
+  mythic:    { label: 'MYTHIC',    hex: '#fbbf24', glow: 'rgba(251,191,36,.6)' }
+};
 
 // Get pool of obtainable cards (excludes heralds — those are unlockable separately later)
 function getCardPool(){
@@ -11941,6 +12229,23 @@ window.addEventListener('load',async()=>{
       </div>
     </div>
     <div id="admin-card-manager-list" style="max-height:70vh;overflow-y:auto;padding-right:6px"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     INSTANT REVEAL POPUP
+     Fires when any Instant is played or activated ability used.
+     Visible to both players. Auto-dismisses after 2.5 seconds.
+     ══════════════════════════════════════════════════════ -->
+<div id="instant-reveal-overlay" onclick="closeInstantReveal()">
+  <div class="instant-reveal-card" onclick="event.stopPropagation()">
+    <div class="instant-reveal-player" id="instant-reveal-player">P1 PLAYS</div>
+    <div class="instant-reveal-header">⚡ INSTANT PLAYED</div>
+    <div class="instant-reveal-img" id="instant-reveal-img"></div>
+    <div class="instant-reveal-name" id="instant-reveal-name">—</div>
+    <div class="instant-reveal-type" id="instant-reveal-type">—</div>
+    <div class="instant-reveal-effect" id="instant-reveal-effect">—</div>
   </div>
 </div>
 
