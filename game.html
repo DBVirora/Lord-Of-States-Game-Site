@@ -4342,7 +4342,13 @@ function addCardToBuilder(cid){
   const total=builderDeck.reduce((s,e)=>s+e.count,0);
   if(total>=60){return;}
   const ex=builderDeck.find(e=>e.cid===cid);
-  if((ex?ex.count:0)>=4)return;
+  // Herald cap: 1 per deck. Other cards: 4 per deck.
+  const isHerald = c.type === 'herald';
+  const maxCopies = isHerald ? 1 : 4;
+  if((ex?ex.count:0) >= maxCopies){
+    if(isHerald) alert('Only 1 copy of each Herald allowed per deck.');
+    return;
+  }
   if(ex)ex.count++;else builderDeck.push({cid,count:1});
   renderBuilderDeck();renderBuilderCards();
 }
@@ -7443,9 +7449,9 @@ function getOwnedCount(cid){
 }
 
 function addCardToCollection(cid){
-  // Max 4 copies per card
+  // No collection cap — players can collect unlimited copies for future trading.
+  // The 4-copy limit only applies when building decks (enforced in deck builder).
   const current=_collection[cid]||0;
-  if(current>=4)return false;
   _collection[cid]=current+1;
   return true;
 }
@@ -7722,16 +7728,16 @@ function renderSingleCardsShop(){
     div.innerHTML=
       (url?'<img src="'+url+'" style="width:80px;height:112px;border-radius:6px;object-fit:cover;margin-bottom:8px;border:1px solid '+(COLOR_DEFS[c.color]?.hex||'#444')+'"/>':'<div style="width:80px;height:112px;background:#0a0a1a;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:8px">'+(c.sym||'?')+'</div>')
       +'<div style="font-size:11px;font-weight:700;color:#e2e8f0;margin-bottom:2px">'+c.name+'</div>'
-      +'<div style="font-size:9px;color:#6b7280;margin-bottom:6px">Owned: '+owned+'/4</div>'
+      +'<div style="font-size:9px;color:#6b7280;margin-bottom:6px">Owned: '+owned+'</div>'
       +'<div class="shop-pack-price" style="margin-bottom:8px;padding:5px 8px"><img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" style="width:14px;height:14px;border-radius:50%"/><span style="font-size:13px;font-weight:700;color:#fbbf24">'+price+'</span></div>'
-      +'<button class="shop-buy-btn" '+(_celData.celestium<price||owned>=4?'disabled':'')+' onclick="buySingleCard(\''+cid+'\','+price+')">'+(owned>=4?'MAX':(_celData.celestium<price?'Not enough':'▸ BUY'))+'</button>';
+      +'<button class="shop-buy-btn" '+(_celData.celestium<price?'disabled':'')+' onclick="buySingleCard(\''+cid+'\','+price+')">'+(_celData.celestium<price?'Not enough':'▸ BUY')+'</button>';
     list.appendChild(div);
   });
 }
 
 async function buySingleCard(cid,price){
   if(_celData.celestium<price)return;
-  if(!addCardToCollection(cid)){alert('You already own 4 copies of this card!');return;}
+  addCardToCollection(cid);
   _celData.celestium-=price;
   await Promise.all([saveCelestium(),saveCollection()]);
   updateCelDisplay();
