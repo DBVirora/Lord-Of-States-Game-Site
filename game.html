@@ -10314,86 +10314,6 @@ window.addEventListener('load',async()=>{
 })();
 
 
-// ═══════════════════════════════════════════════════
-(function(){
-  var SURL='https://alvldkihwuhgjbgdpbkg.supabase.co';
-  var SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsdmxka2lod3VoZ2piZ2RwYmtnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyMTYxNjQsImV4cCI6MjA5Njc5MjE2NH0.jnW_h8wZlcf02poGB_cjOl3gipM8PqeEepsXf7MUA0U';
-  var LOGIN='https://dbvirora.github.io/Lord-Of-States-Game-Site/';
-  var sb=window.supabase.createClient(SURL,SKEY);
-  var handled=false;
-
-  async function go(session){
-    if(handled)return; handled=true;
-    console.log('[AUTH]',session?'session uid='+session.user.id:'null');
-    if(!session){window.location.replace(LOGIN);return;}
-    try{
-      var pr=await sb.from('profiles').select('username').eq('id',session.user.id).maybeSingle();
-      var name=(pr.data&&pr.data.username)||session.user.email||'Player';
-      var ids=session.user.identities||[];
-      var prov=session.user.is_anonymous?'anonymous':ids.length?ids[0].provider||(session.user.app_metadata&&session.user.app_metadata.provider)||'email':'email';
-      var meta=session.user.user_metadata||{};
-      var avu=meta.avatar_url||meta.picture||null;
-      console.log('[AUTH] name='+name+' provider='+prov+' avatar='+avu);
-      // HUD username
-      var uel=document.getElementById('hud-username');
-      if(uel)uel.textContent=name;
-      // HUD avatar
-      var ael=document.getElementById('hud-avatar');
-      if(ael){
-        if(avu){
-          var img=document.createElement('img');
-          img.src=avu;img.alt='av';
-          img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%';
-          img.onerror=function(){ael.textContent='?';};
-          ael.innerHTML='';ael.appendChild(img);
-        }else{ael.textContent='?';}
-      }
-      // HUD provider
-      var pel=document.getElementById('hud-provider');
-      if(pel){
-        var labels={'discord':'Discord','google':'Google','email':'Email','anonymous':'Guest'};
-        var cls={'discord':'discord','google':'google','email':'email','anonymous':'guest'};
-        pel.textContent=(labels[prov]||prov);
-        pel.className='hud-provider '+(cls[prov]||'email');
-      }
-      // Decks
-      initDeckStorage(sb,session.user.id);
-      await loadDecksFromStorage();
-      renderDeckSelectOptions();
-      initCelestium(sb,session.user.id);
-      await loadCelestium();
-      await loadAchievements();
-      await loadCollection();
-      await loadAdminToggles();
-  await loadDisabledCards();
-      updateAdminBadge();
-      applyAdminToggleEffects();
-      await loadFriends();
-      startPresenceHeartbeat();
-      startInviteListener();
-      await loadCampaign();
-      await loadBattlePass();
-      // Sign out
-      window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
-    }catch(e){
-      console.error('[AUTH] error',e);
-      window.signOutUser=function(){window.location.replace(LOGIN);};
-    }
-  }
-
-  sb.auth.onAuthStateChange(function(evt,sess){
-    console.log('[AUTH] event:',evt);
-    if(evt==='SIGNED_IN'||evt==='INITIAL_SESSION')go(sess);
-    else if(evt==='SIGNED_OUT')window.location.replace(LOGIN);
-  });
-
-  setTimeout(async function(){
-    if(handled)return;
-    console.log('[AUTH] fallback getSession');
-    var r=await sb.auth.getSession();
-    go(r.data&&r.data.session);
-  },2000);
-})();
 
 
 
@@ -10434,6 +10354,7 @@ window.addEventListener('load',async()=>{
       await loadAchievements();
       await loadCollection();
       await loadAdminToggles();
+      await loadDisabledCards();
       updateAdminBadge();
       applyAdminToggleEffects();
       await loadFriends();
