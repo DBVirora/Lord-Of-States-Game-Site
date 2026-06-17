@@ -2349,6 +2349,120 @@ textarea{
 .modal h2,.modal h3{
   font-size:20px !important;
 }
+
+/* ════════════════════════════════════════════════ */
+/* CUTSCENE PLAYER                                   */
+/* ════════════════════════════════════════════════ */
+#cutscene-overlay{
+  position:fixed;
+  inset:0;
+  background:#000;
+  z-index:99999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  animation:cutscene-fade-in .5s ease;
+}
+@keyframes cutscene-fade-in{from{opacity:0}to{opacity:1}}
+@keyframes cutscene-fade-out{from{opacity:1}to{opacity:0}}
+#cutscene-overlay.closing{animation:cutscene-fade-out .4s ease forwards;}
+
+.cutscene-bg{
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse at center, #0a0815 0%, #000 70%);
+}
+
+#cutscene-video{
+  position:relative;
+  max-width:100%;
+  max-height:100vh;
+  width:auto;
+  height:auto;
+  z-index:2;
+  box-shadow:0 0 80px rgba(0,0,0,.8);
+}
+
+.cutscene-loading{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  z-index:3;
+  text-align:center;
+  color:#c8a44a;
+  font-family:'Cinzel',serif;
+  letter-spacing:3px;
+}
+.cutscene-spinner{
+  width:48px;
+  height:48px;
+  border:3px solid rgba(200,164,74,.2);
+  border-top-color:#c8a44a;
+  border-radius:50%;
+  margin:0 auto 14px;
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.cutscene-loading-text{
+  font-size:11px;
+  letter-spacing:4px;
+}
+
+.cutscene-skip-btn{
+  position:absolute;
+  top:24px;
+  right:32px;
+  z-index:10;
+  padding:11px 22px;
+  background:linear-gradient(135deg,rgba(15,12,30,.85),rgba(22,16,42,.85));
+  border:1px solid rgba(200,164,74,.5);
+  border-radius:6px;
+  color:#f0e6c8;
+  font-family:'Cinzel',serif;
+  font-size:11px;
+  letter-spacing:3px;
+  cursor:pointer;
+  backdrop-filter:blur(8px);
+  transition:all .25s ease;
+  opacity:0;
+  animation:cutscene-skip-appear .5s ease forwards;
+  box-shadow:0 4px 16px rgba(0,0,0,.6);
+}
+@keyframes cutscene-skip-appear{
+  from{opacity:0;transform:translateY(-10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.cutscene-skip-btn:hover{
+  border-color:#c8a44a;
+  color:#e8c570;
+  background:linear-gradient(135deg,rgba(40,25,75,.9),rgba(60,35,100,.9));
+  box-shadow:0 0 16px rgba(200,164,74,.4),0 4px 16px rgba(0,0,0,.6);
+  transform:translateY(-2px);
+}
+
+.cutscene-hint{
+  position:absolute;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  color:rgba(240,230,200,.55);
+  font-family:'Cinzel',serif;
+  font-size:10px;
+  letter-spacing:3px;
+  z-index:5;
+  pointer-events:none;
+  animation:cutscene-fade-in 1s ease;
+}
+
+/* Cutscene URL field highlight in editor */
+.cutscene-field{
+  background:rgba(80,60,15,.15) !important;
+  border-color:rgba(200,164,74,.35) !important;
+}
+.cutscene-field-label{
+  color:#c8a44a !important;
+}
 </style>
 </head>
 <body>
@@ -6580,6 +6694,48 @@ async function adminGrantAllCards(){
   alert('✓ All cards granted (4 copies each).');
 }
 
+
+
+function adminPreviewCampaignIntro(){
+  if(!isAdmin())return;
+  const url = _editorCampaignData && _editorCampaignData.campaign_intro_url;
+  if(!url || !url.trim()){
+    alert('No intro URL set. Paste a video URL into the field first.');
+    return;
+  }
+  playCutscene(url, () => {});
+}
+
+async function adminResetCampaignIntroWatched(){
+  if(!isAdmin())return;
+  if(!confirm('Reset your "watched" status for the campaign intro? You will see it again next time you open Campaign.'))return;
+  if(_campaignProgress.watched_cutscenes && _campaignProgress.watched_cutscenes.campaign_intro){
+    delete _campaignProgress.watched_cutscenes.campaign_intro;
+    await saveCampaignProgress();
+  }
+  alert('✓ Campaign intro will play again on your next Campaign visit.');
+}
+
+async function adminTestCutscene(){
+  if(!isAdmin())return;
+  const url=prompt('Enter video URL to test (must be a publicly accessible MP4):',
+    'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/cutscenes/test.mp4');
+  if(!url)return;
+  playCutscene(url, () => {
+    alert('✓ Cutscene finished playing.');
+  });
+}
+
+async function adminResetWatchedCutscenes(){
+  if(!isAdmin())return;
+  if(!confirm('Reset all your watched cutscenes? You will see them again on next encounter.'))return;
+  if(_campaignProgress.watched_cutscenes){
+    delete _campaignProgress.watched_cutscenes;
+    await saveCampaignProgress();
+  }
+  alert('✓ Watched cutscenes reset.');
+}
+
 async function adminResetProfile(){
   if(!isAdmin())return;
   if(!confirm('⚠ This will RESET your Celestium, achievements, and collection. Continue?'))return;
@@ -7840,6 +7996,7 @@ async function requestRematch(){
 // This is the hardcoded fallback structure. Admin panel writes overrides
 // to Supabase app_settings key 'campaign_data' which is loaded on top.
 const CAMPAIGN_DEFAULT={
+  campaign_intro_url:'',  // optional: plays once on first campaign visit
   worlds:[
     {
       id:'world_1',
@@ -7894,6 +8051,133 @@ const CAMPAIGN_DEFAULT={
     }
   ]
 };
+
+
+// ═══════════════════════════════════════════════════
+// CUTSCENE PLAYER SYSTEM
+// ═══════════════════════════════════════════════════
+let _cutsceneOnEnd = null;       // callback to run when cutscene finishes/skips
+let _cutsceneSkipTimer = null;   // timer for showing skip button
+let _cutsceneCanSkip = false;    // whether SPACE/click currently skips
+const CUTSCENE_SKIP_DELAY_MS = 7000; // 7 seconds before skippable
+
+function playCutscene(videoUrl, onComplete){
+  if(!videoUrl || typeof videoUrl !== 'string' || !videoUrl.trim()){
+    // No URL provided — just run the callback
+    if(typeof onComplete === 'function') onComplete();
+    return;
+  }
+  _cutsceneOnEnd = onComplete;
+  _cutsceneCanSkip = false;
+
+  const overlay = document.getElementById('cutscene-overlay');
+  const video = document.getElementById('cutscene-video');
+  const source = document.getElementById('cutscene-video-source');
+  const skipBtn = document.getElementById('cutscene-skip-btn');
+  const hint = document.getElementById('cutscene-hint');
+  const loading = document.getElementById('cutscene-loading');
+
+  if(!overlay || !video || !source){
+    console.warn('[Cutscene] Player elements not found');
+    if(typeof onComplete === 'function') onComplete();
+    return;
+  }
+
+  // Reset state
+  overlay.classList.remove('closing');
+  skipBtn.style.display = 'none';
+  hint.style.display = 'none';
+  loading.style.display = 'block';
+
+  // Set source and show
+  source.src = videoUrl;
+  video.load();
+  overlay.style.display = 'flex';
+
+  // When video can play, hide loading
+  video.oncanplay = () => {
+    loading.style.display = 'none';
+    video.play().catch(err => {
+      console.warn('[Cutscene] Autoplay failed:', err);
+      // Show a click-to-play prompt if autoplay was blocked
+      loading.style.display = 'block';
+      loading.innerHTML = '<div style="font-family:Cinzel,serif;color:#c8a44a;text-align:center;cursor:pointer" onclick="document.getElementById(\'cutscene-video\').play();this.style.display=\'none\'"><div style="font-size:36px;margin-bottom:10px">▶</div><div style="font-size:11px;letter-spacing:3px">CLICK TO PLAY</div></div>';
+    });
+  };
+
+  // Video failed to load
+  video.onerror = (e) => {
+    console.error('[Cutscene] Video load error:', e);
+    loading.innerHTML = '<div style="color:#fca5a5;font-family:Cinzel,serif;text-align:center"><div style="font-size:11px;letter-spacing:2px;margin-bottom:8px">⚠ COULD NOT LOAD VIDEO</div><button class="btn-primary" onclick="skipCutscene()">Continue</button></div>';
+    loading.style.display = 'block';
+  };
+
+  // When video ends naturally
+  video.onended = () => {
+    finishCutscene();
+  };
+
+  // Schedule skip button to appear after delay
+  if(_cutsceneSkipTimer) clearTimeout(_cutsceneSkipTimer);
+  _cutsceneSkipTimer = setTimeout(() => {
+    _cutsceneCanSkip = true;
+    skipBtn.style.display = 'block';
+    hint.style.display = 'block';
+  }, CUTSCENE_SKIP_DELAY_MS);
+}
+
+function skipCutscene(){
+  if(!_cutsceneCanSkip) return;
+  finishCutscene();
+}
+
+function finishCutscene(){
+  const overlay = document.getElementById('cutscene-overlay');
+  const video = document.getElementById('cutscene-video');
+  if(!overlay) return;
+
+  if(_cutsceneSkipTimer){ clearTimeout(_cutsceneSkipTimer); _cutsceneSkipTimer = null; }
+
+  // Fade out
+  overlay.classList.add('closing');
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    overlay.classList.remove('closing');
+    if(video){
+      video.pause();
+      video.currentTime = 0;
+      video.removeAttribute('src');
+      video.load();
+    }
+    const cb = _cutsceneOnEnd;
+    _cutsceneOnEnd = null;
+    _cutsceneCanSkip = false;
+    if(typeof cb === 'function') cb();
+  }, 400);
+}
+
+// Keyboard listener — SPACE to skip
+document.addEventListener('keydown', (e) => {
+  if(e.code === 'Space' || e.key === ' '){
+    const overlay = document.getElementById('cutscene-overlay');
+    if(overlay && overlay.style.display === 'flex' && _cutsceneCanSkip){
+      e.preventDefault();
+      skipCutscene();
+    }
+  }
+});
+
+// Mark cutscene as watched (stored in campaign progress)
+function markCutsceneWatched(cutsceneId){
+  if(!_campaignProgress.watched_cutscenes) _campaignProgress.watched_cutscenes = {};
+  _campaignProgress.watched_cutscenes[cutsceneId] = new Date().toISOString();
+  saveCampaignProgress();
+}
+
+function hasCutsceneBeenWatched(cutsceneId){
+  return !!(_campaignProgress.watched_cutscenes && _campaignProgress.watched_cutscenes[cutsceneId]);
+}
+
 
 let CAMPAIGN_DATA=null;       // Resolved campaign data (defaults + admin overrides)
 let _campaignProgress={};     // {matchId: completionTimestamp}
@@ -7977,6 +8261,13 @@ function getChapterProgress(chapter){
 async function openCampaign(){
   if(!CAMPAIGN_DATA)await loadCampaign();
   renderWorldsGrid();
+  // Play intro cutscene on first ever campaign visit
+  const introUrl = CAMPAIGN_DATA && CAMPAIGN_DATA.campaign_intro_url;
+  if(introUrl && !hasCutsceneBeenWatched('campaign_intro')){
+    playCutscene(introUrl, () => {
+      markCutsceneWatched('campaign_intro');
+    });
+  }
 }
 
 function renderWorldsGrid(){
@@ -8139,16 +8430,32 @@ function startCampaignMatch(){
     }
     playerDeck=[...SAVED_DECKS[deckId].cards];
   } else {
-    // Default starter deck = random generation for now (will be replaced when starter decks defined)
     playerDeck=generateRandomDeck();
   }
-  // AI opponent deck — for now random until you provide each character's deck
   const aiDeck=generateRandomDeck();
   document.getElementById('match-detail-modal').classList.remove('open');
-  // Store the match ID so we can mark it complete on win
   G_campaignActiveMatch=_pendingCampaignMatch;
-  // Start as medium AI
-  startGame('medium', playerDeck, aiDeck);
+
+  // Check for pre-match cutscene
+  const preCutsceneUrl = _pendingCampaignMatch.cutscene_pre || '';
+  const cutsceneId = 'pre_' + _pendingCampaignMatch.id;
+  const launchMatch = () => startGame('medium', playerDeck, aiDeck);
+
+  if(preCutsceneUrl && !hasCutsceneBeenWatched(cutsceneId)){
+    playCutscene(preCutsceneUrl, () => {
+      markCutsceneWatched(cutsceneId);
+      launchMatch();
+    });
+  } else if(preCutsceneUrl){
+    // Already watched — give option to replay or skip
+    if(confirm('Play cutscene again? (Cancel to skip directly to match)')){
+      playCutscene(preCutsceneUrl, launchMatch);
+    } else {
+      launchMatch();
+    }
+  } else {
+    launchMatch();
+  }
 }
 
 let G_campaignActiveMatch=null;
@@ -8157,15 +8464,29 @@ let G_campaignActiveMatch=null;
 async function onCampaignMatchWin(){
   if(!G_campaignActiveMatch)return;
   const matchId=G_campaignActiveMatch.id;
-  if(_campaignProgress[matchId])return; // already completed once
-  _campaignProgress[matchId]=new Date().toISOString();
-  await saveCampaignProgress();
-  // Award rewards
-  if(G_campaignActiveMatch.rewards){
-    const cel=G_campaignActiveMatch.rewards.celestium||0;
-    if(cel>0)await awardCelestium(cel,'Campaign: '+G_campaignActiveMatch.name);
+  const isFirstWin = !_campaignProgress[matchId];
+  if(isFirstWin){
+    _campaignProgress[matchId]=new Date().toISOString();
+    await saveCampaignProgress();
+    // Award rewards (only on first completion)
+    if(G_campaignActiveMatch.rewards){
+      const cel=G_campaignActiveMatch.rewards.celestium||0;
+      if(cel>0)await awardCelestium(cel,'Campaign: '+G_campaignActiveMatch.name);
+    }
   }
-  G_campaignActiveMatch=null;
+  // Play post-match cutscene if defined and not yet watched
+  const postCutsceneUrl = G_campaignActiveMatch.cutscene_post || '';
+  const cutsceneId = 'post_' + G_campaignActiveMatch.id;
+  const matchRef = G_campaignActiveMatch;
+  G_campaignActiveMatch = null;
+  if(postCutsceneUrl && isFirstWin && !hasCutsceneBeenWatched(cutsceneId)){
+    // Wait a moment for win screen to settle, then play
+    setTimeout(() => {
+      playCutscene(postCutsceneUrl, () => {
+        markCutsceneWatched(cutsceneId);
+      });
+    }, 1200);
+  }
 }
 
 
@@ -8185,6 +8506,19 @@ function renderCampaignEditor(){
   const c=document.getElementById('campaign-editor-content');
   if(!c||!_editorCampaignData)return;
   c.innerHTML='';
+
+  // ── CAMPAIGN INTRO SECTION (plays once on first visit) ──
+  const introEl=document.createElement('div');
+  introEl.className='admin-section';
+  introEl.innerHTML=
+    '<div class="admin-section-title">🎬 CAMPAIGN INTRO CUTSCENE</div>'
+    +'<div style="font-size:11px;color:#9ca3af;margin-bottom:10px;letter-spacing:.5px">Plays once for each player on their first ever visit to the Campaign screen. Leave blank for no intro.</div>'
+    +'<div class="campaign-edit-row"><div class="campaign-edit-label cutscene-field-label">🎬 Intro Video URL:</div>'
+    +'<input class="admin-input cutscene-field" type="text" value="'+escapeAttr(_editorCampaignData.campaign_intro_url||'')+'" onchange="_editorCampaignData.campaign_intro_url=this.value" placeholder="https://raw.githubusercontent.com/.../cutscenes/campaign_intro.mp4" style="width:100%"/></div>'
+    +'<div style="display:flex;gap:6px;margin-top:8px"><button class="admin-action-btn" onclick="adminPreviewCampaignIntro()" style="width:auto;padding:7px 14px;font-size:11px">▶ PREVIEW</button>'
+    +'<button class="admin-action-btn danger" onclick="adminResetCampaignIntroWatched()" style="width:auto;padding:7px 14px;font-size:11px">🔁 RESET MY WATCHED STATUS</button></div>';
+  c.appendChild(introEl);
+
   _editorCampaignData.worlds.forEach((world,wIdx)=>{
     const worldEl=document.createElement('div');
     worldEl.className='admin-section';
@@ -8224,6 +8558,11 @@ function renderCampaignEditor(){
           +'<input class="admin-input" type="number" value="'+(m.rewards?.celestium||0)+'" onchange="if(!_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].matches['+mIdx+'].rewards)_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].matches['+mIdx+'].rewards={};_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].matches['+mIdx+'].rewards.celestium=parseInt(this.value)||0" style="width:120px"/></div>'
           +'<div class="campaign-edit-row"><div class="campaign-edit-label">Reward Note:</div>'
           +'<input class="admin-input" type="text" value="'+escapeAttr(m.rewards?.note||'')+'" onchange="if(!_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].matches['+mIdx+'].rewards)_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].matches['+mIdx+'].rewards={};_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].matches['+mIdx+'].rewards.note=this.value" placeholder="e.g. Card unlock: Virora"/></div>'
+          +'<div class="campaign-edit-row"><div class="campaign-edit-label cutscene-field-label">🎬 Pre-Match Video URL:</div>'
+          +'<input class="admin-input cutscene-field" type="text" value="'+escapeAttr(m.cutscene_pre||'')+'" onchange="_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].matches['+mIdx+'].cutscene_pre=this.value" placeholder="https://raw.githubusercontent.com/.../cutscenes/intro.mp4"/></div>'
+          +'<div class="campaign-edit-row"><div class="campaign-edit-label cutscene-field-label">🎬 Post-Win Video URL:</div>'
+          +'<input class="admin-input cutscene-field" type="text" value="'+escapeAttr(m.cutscene_post||'')+'" onchange="_editorCampaignData.worlds['+wIdx+'].chapters['+chIdx+'].matches['+mIdx+'].cutscene_post=this.value" placeholder="https://raw.githubusercontent.com/.../cutscenes/ending.mp4"/></div>'
+          +'<div style="font-size:9px;color:#6b7280;padding:4px 8px;margin-top:4px;letter-spacing:1px">💡 Leave blank for no cutscene. MP4 format. Skip becomes available after 7 seconds.</div>'
           +'</div>';
       });
       chEl.innerHTML=
@@ -9757,7 +10096,9 @@ window.addEventListener('load',async()=>{
       Edit chapter names, match names, opponent portraits, and rewards. Changes save globally and apply to all players.
     </div>
     <button class="admin-action-btn" onclick="openCampaignEditor()">📝 OPEN CAMPAIGN EDITOR</button>
+    <button class="admin-action-btn" onclick="adminTestCutscene()" style="margin-top:6px">🎬 TEST CUTSCENE PLAYER</button>
     <button class="admin-action-btn" onclick="resetCampaignToDefault()" style="margin-top:6px">🔄 RESET CAMPAIGN TO DEFAULT</button>
+    <button class="admin-action-btn danger" onclick="adminResetWatchedCutscenes()" style="margin-top:6px">🔁 RESET MY WATCHED CUTSCENES</button>
     <button class="admin-action-btn danger" onclick="resetMyCampaignProgress()" style="margin-top:6px">⚠ RESET MY CAMPAIGN PROGRESS</button>
   </div>
 
@@ -10344,5 +10685,24 @@ window.addEventListener('load',async()=>{
     <div id="bp-rewards-editor" style="max-height:500px;overflow-y:auto;padding-right:4px"></div>
   </div>
 </div>
+<!-- ═══════════════════════════════════════════════════
+     CUTSCENE PLAYER OVERLAY
+     ═══════════════════════════════════════════════════ -->
+<div id="cutscene-overlay" style="display:none">
+  <div class="cutscene-bg"></div>
+  <video id="cutscene-video" playsinline preload="auto">
+    <source id="cutscene-video-source" src="" type="video/mp4">
+    Your browser does not support video playback.
+  </video>
+  <div class="cutscene-loading" id="cutscene-loading">
+    <div class="cutscene-spinner"></div>
+    <div class="cutscene-loading-text">Loading cutscene...</div>
+  </div>
+  <button id="cutscene-skip-btn" class="cutscene-skip-btn" onclick="skipCutscene()" style="display:none">
+    SKIP <span style="opacity:.6;font-size:9px;margin-left:6px">[SPACE]</span> ▸
+  </button>
+  <div class="cutscene-hint" id="cutscene-hint" style="display:none">Press SPACE or click SKIP to continue</div>
+</div>
+
 </body>
 </html>
