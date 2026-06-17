@@ -125,12 +125,12 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .modal::after{bottom:6px;right:6px;border-width:0 1px 1px 0}
 .modal h2{color:#c4b5fd;margin-bottom:10px;font-size:13px;font-family:'Orbitron',sans-serif;letter-spacing:3px}
 #fullcard-modal{z-index:200}
-.fullcard-img-wrap{width:100%;border-radius:10px;overflow:hidden;background:#1e1e3a;display:flex;align-items:center;justify-content:center;font-size:60px;margin-bottom:8px}
+.fullcard-img-wrap{width:100%;max-width:420px;margin:0 auto 12px;border-radius:12px;overflow:hidden;background:#1e1e3a;display:flex;align-items:center;justify-content:center;font-size:90px;}
 .fullcard-img-wrap img{width:100%;height:auto;display:block;object-fit:contain}
-.fullcard-stat-row{display:flex;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+.fullcard-stat-row{display:flex;gap:22px;margin-bottom:12px;flex-wrap:wrap;justify-content:center}
 .fullcard-stat{display:flex;flex-direction:column;align-items:center}
-.fullcard-stat-val{font-size:20px;font-weight:900}
-.fullcard-stat-lbl{font-size:9px;color:#6b7280;margin-top:1px}
+.fullcard-stat-val{font-size:26px;font-weight:900}
+.fullcard-stat-lbl{font-size:10px;color:#6b7280;margin-top:2px;letter-spacing:1px}
 .ability-block{border-radius:6px;padding:6px 9px;margin-bottom:5px;font-size:11px;line-height:1.5}
 .ability-passive{background:#0f1f0f;border-left:3px solid #22c55e;color:#86efac}
 .ability-triggered{background:#1a1200;border-left:3px solid #f59e0b;color:#fde68a}
@@ -2336,9 +2336,9 @@ input:focus,select:focus,textarea:focus,
   </div>
 </div>
 <div class="modal-overlay" id="fullcard-modal" onclick="if(event.target===this)closeFullCard()">
-  <div class="modal" style="max-width:320px;padding:12px;background:#0a0a12;border:2px solid #7c3aed">
+  <div class="modal" style="max-width:520px;width:90vw;padding:18px;background:#0a0a12;border:2px solid #7c3aed;max-height:92vh;overflow-y:auto">
     <div id="fullcard-content"></div>
-    <button class="btn-primary" style="width:100%;margin-top:10px" onclick="closeFullCard()">↩ Return</button>
+    <button class="btn-primary" style="width:100%;margin-top:14px;padding:12px;font-size:13px" onclick="closeFullCard()">↩ Return</button>
   </div>
 </div>
 <div class="modal-overlay" id="coin-modal">
