@@ -34,8 +34,8 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 #menu-screen.active{display:flex}
 #game-screen{display:none;padding:4px;height:100vh;grid-template-rows:auto auto 52px auto auto;gap:3px}
 #game-screen.active{display:grid}
-.screen{display:none;padding:14px;position:relative;z-index:5;min-height:100vh}.screen.active{display:block}
-#online-lobby-screen.active{display:flex !important;flex-direction:column;align-items:center;justify-content:center;}
+.screen{display:none;padding:62px 14px 24px;position:relative;z-index:5}.screen.active{display:block}
+#online-lobby-screen.active{display:block;}
 /* VCU PANEL */
 .vcu-panel{background:rgba(8,8,28,.85);border:1px solid var(--border);border-radius:10px;padding:16px;position:relative;backdrop-filter:blur(12px);box-shadow:0 0 30px rgba(0,100,200,.1)}
 .vcu-panel::before,.vcu-panel::after{content:'';position:absolute;width:14px;height:14px;border-color:var(--blue);border-style:solid;opacity:.5}
@@ -1953,11 +1953,7 @@ input:focus,select:focus,textarea:focus,
 
 /* Online lobby header section */
 #online-lobby-screen{
-  display:flex;
-  flex-direction:column;
-  align-items:stretch;
-  justify-content:flex-start;
-  padding-top:32px !important;
+  padding-top:24px !important;
 }
 
 /* Admin screen - allow grid for sections */
@@ -2067,7 +2063,7 @@ input:focus,select:focus,textarea:focus,
 </div>
 
 <!-- DECK SELECT -->
-<div id="deck-select-screen" class="screen" style="padding:24px 32px;max-width:1280px;margin:0 auto">
+<div id="deck-select-screen" class="screen" style="padding:62px 32px 24px;max-width:1280px;margin:0 auto">
 
   <!-- HEADER -->
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
@@ -9107,7 +9103,7 @@ window.addEventListener('load',async()=>{
 </div>
 
 <!-- PROFILE SCREEN -->
-<div id="profile-screen" class="screen" style="padding:24px 32px;max-width:1280px;margin:0 auto">
+<div id="profile-screen" class="screen" style="padding:62px 32px 24px;max-width:1280px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
     <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
     <div style="font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:4px;color:var(--blue)">PROFILE</div>
@@ -9223,7 +9219,7 @@ window.addEventListener('load',async()=>{
 </div>
 
 <!-- SHOP SCREEN -->
-<div id="shop-screen" class="screen" style="padding:24px 32px;max-width:1400px;margin:0 auto">
+<div id="shop-screen" class="screen" style="padding:62px 32px 24px;max-width:1400px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
     <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
     <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:var(--blue);text-shadow:0 0 10px var(--blue)">🏪 SHOP</div>
@@ -9300,7 +9296,7 @@ window.addEventListener('load',async()=>{
 </div>
 
 <!-- ADMIN PANEL SCREEN (only accessible to admin users) -->
-<div id="admin-screen" class="screen" style="padding:24px 32px;max-width:1280px;margin:0 auto">
+<div id="admin-screen" class="screen" style="padding:62px 32px 24px;max-width:1280px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
     <button class="btn-gray btn-sm" onclick="showScreen('profile-screen');refreshProfileScreen()">← Back</button>
     <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:#fca5a5;text-shadow:0 0 10px rgba(239,68,68,.5)">⚡ ADMIN PANEL</div>
@@ -9402,7 +9398,7 @@ window.addEventListener('load',async()=>{
 </div>
 
 <!-- FRIENDS SCREEN -->
-<div id="friends-screen" class="screen" style="padding:24px 32px;max-width:1200px;margin:0 auto">
+<div id="friends-screen" class="screen" style="padding:62px 32px 24px;max-width:1200px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
     <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
     <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:var(--blue);text-shadow:0 0 10px var(--blue)">👥 FRIENDS</div>
@@ -9479,7 +9475,7 @@ window.addEventListener('load',async()=>{
 </div>
 
 <!-- ONLINE LOBBY SCREEN -->
-<div id="online-lobby-screen" class="screen" style="padding:24px 32px;min-height:100vh;max-width:1200px;margin:0 auto">
+<div id="online-lobby-screen" class="screen" style="padding:62px 32px 24px;max-width:1200px;margin:0 auto">
   <div id="lobby-create-join" style="width:100%;max-width:480px">
     <div style="font-family:'Orbitron',sans-serif;font-size:16px;letter-spacing:4px;color:var(--blue);text-align:center;margin-bottom:6px;text-shadow:0 0 12px var(--blue)">⚔️ ONLINE PVP</div>
     <div style="font-size:10px;color:#6b7280;text-align:center;letter-spacing:2px;margin-bottom:20px">PRIVATE ROOM</div>
@@ -9574,7 +9570,7 @@ window.addEventListener('load',async()=>{
 </div>
 
 <!-- MATCHMAKING SCREEN — PHASE 3 -->
-<div id="matchmaking-screen" class="screen" style="padding:24px 32px;max-width:1200px;margin:0 auto">
+<div id="matchmaking-screen" class="screen" style="padding:62px 32px 24px;max-width:1200px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
     <button class="btn-gray btn-sm" onclick="cancelMatchmaking();showScreen('menu-screen')">← Back</button>
     <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:var(--blue)">🔍 FIND MATCH</div>
@@ -9653,7 +9649,7 @@ window.addEventListener('load',async()=>{
 <!-- ═══════════════════════════════════════════════════
      CAMPAIGN — WORLDS SELECT SCREEN
      ═══════════════════════════════════════════════════ -->
-<div id="campaign-worlds-screen" class="screen" style="padding:24px 32px;max-width:1400px;margin:0 auto">
+<div id="campaign-worlds-screen" class="screen" style="padding:62px 32px 24px;max-width:1400px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:28px">
     <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
     <div style="font-family:'Orbitron',sans-serif;font-size:18px;letter-spacing:5px;color:var(--blue);text-shadow:0 0 14px var(--blue)">🗺️ CAMPAIGN</div>
@@ -9670,7 +9666,7 @@ window.addEventListener('load',async()=>{
 <!-- ═══════════════════════════════════════════════════
      CAMPAIGN — CHAPTERS SELECT SCREEN
      ═══════════════════════════════════════════════════ -->
-<div id="campaign-chapters-screen" class="screen" style="padding:24px 32px;max-width:1280px;margin:0 auto">
+<div id="campaign-chapters-screen" class="screen" style="padding:62px 32px 24px;max-width:1280px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px">
     <button class="btn-gray btn-sm" onclick="showScreen('campaign-worlds-screen');openCampaign()">← Back</button>
     <div>
@@ -9688,7 +9684,7 @@ window.addEventListener('load',async()=>{
 <!-- ═══════════════════════════════════════════════════
      CAMPAIGN — CHAPTER MAP (MATCH NODES) SCREEN
      ═══════════════════════════════════════════════════ -->
-<div id="campaign-chapter-map-screen" class="screen" style="padding:24px 32px;max-width:1400px;margin:0 auto">
+<div id="campaign-chapter-map-screen" class="screen" style="padding:62px 32px 24px;max-width:1400px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px">
     <button class="btn-gray btn-sm" onclick="backToChapters()">← Chapters</button>
     <div>
@@ -9749,7 +9745,7 @@ window.addEventListener('load',async()=>{
 </div>
 
 <!-- CAMPAIGN EDITOR SCREEN (admin only) -->
-<div id="campaign-editor-screen" class="screen" style="padding:24px 32px;max-width:1280px;margin:0 auto">
+<div id="campaign-editor-screen" class="screen" style="padding:62px 32px 24px;max-width:1280px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
     <button class="btn-gray btn-sm" onclick="showScreen('admin-screen');openAdminPanel()">← Back</button>
     <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:#fca5a5;text-shadow:0 0 10px rgba(239,68,68,.5)">🗺️ CAMPAIGN EDITOR</div>
@@ -9764,7 +9760,7 @@ window.addEventListener('load',async()=>{
 </div>
 
 <!-- BATTLE PASS SCREEN -->
-<div id="battle-pass-screen" class="screen" style="padding:20px 32px;max-width:1500px;margin:0 auto">
+<div id="battle-pass-screen" class="screen" style="padding:62px 32px 24px;max-width:1500px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
     <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
     <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:var(--blue);text-shadow:0 0 10px var(--blue)">⚔ BATTLE PASS</div>
@@ -9919,7 +9915,7 @@ window.addEventListener('load',async()=>{
 </div>
 
 <!-- BATTLE PASS EDITOR SCREEN (admin only) -->
-<div id="bp-editor-screen" class="screen" style="padding:24px 32px;max-width:1280px;margin:0 auto">
+<div id="bp-editor-screen" class="screen" style="padding:62px 32px 24px;max-width:1280px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
     <button class="btn-gray btn-sm" onclick="showScreen('admin-screen');openAdminPanel()">← Back</button>
     <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:#fca5a5;text-shadow:0 0 10px rgba(239,68,68,.5)">⚔ BATTLE PASS EDITOR</div>
