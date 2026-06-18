@@ -42,7 +42,7 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
   gap:10px;
   flex:1;
   min-height:0;
-  overflow:hidden;
+  overflow:visible;
 }
 .board-column{
   display:flex;
@@ -50,7 +50,7 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
   gap:8px;
   min-height:0;
   min-width:0;
-  overflow:hidden;
+  overflow:visible;
 }
 
 /* ═══ LEFT PRIZE SIDEBAR ═══ */
@@ -256,7 +256,7 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .vcu-divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:12px 0}
 
 /* GAME LAYOUT */
-.player-area{background:linear-gradient(160deg,rgba(14,12,32,.85),rgba(8,8,22,.9));border:1px solid rgba(200,164,74,.18);border-radius:14px;padding:8px 14px;backdrop-filter:blur(8px);box-shadow:inset 0 1px 0 rgba(200,164,74,.08),0 4px 20px rgba(0,0,0,.3);display:flex;flex-direction:column;min-height:0;overflow:visible;position:relative;flex:1}
+.player-area{background:linear-gradient(160deg,rgba(14,12,32,.85),rgba(8,8,22,.9));border:1px solid rgba(200,164,74,.18);border-radius:14px;padding:8px 14px;box-shadow:inset 0 1px 0 rgba(200,164,74,.08),0 4px 20px rgba(0,0,0,.3);display:flex;flex-direction:column;min-height:0;overflow:visible;flex:1}
 /* NEW: field wrapper with location zone on left */
 .field-wrapper{display:flex;gap:10px;align-items:stretch;flex:1;min-height:0;overflow:visible}
 .location-zone{display:flex;flex-direction:column;gap:6px;min-width:120px;max-width:120px;background:rgba(10,18,12,.5);border:1px dashed rgba(34,197,94,.3);border-radius:10px;padding:8px;flex-shrink:0;align-items:center;overflow:hidden}
@@ -266,7 +266,7 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 
 /* CARD SLOTS */
 .card-slot{width:116px;height:162px;border-radius:10px;border:2px solid #3a3a5c;background:#16162a;display:flex;flex-direction:column;cursor:pointer;position:relative;overflow:hidden;transition:transform .15s ease,box-shadow .15s ease;flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,.4)}
-.card-slot:hover{border-color:#7c3aed;transform:translateY(-2px)}
+/* old hover removed — see enhanced hover below */
 .card-slot.can-attack{border:2px solid #22c55e!important;animation:glow-g 1.2s infinite}
 .card-slot.attacker-sel{border:2px solid #f97316!important;box-shadow:0 0 10px #f9731666}
 .card-slot.targetable{border:2px solid #ef4444!important;animation:glow-r 1.2s infinite}
@@ -3707,9 +3707,12 @@ textarea{
   transition:transform .15s ease, box-shadow .15s ease, z-index 0s;
 }
 .card-slot:hover{
-  transform:scale(1.18) translateY(-6px);
-  z-index:500;
-  box-shadow:0 12px 30px rgba(0,0,0,.8),0 0 20px rgba(200,164,74,.5);
+  transform:scale(1.28) translateY(-14px);
+  z-index:9999 !important;
+  position:relative;
+  box-shadow:0 16px 40px rgba(0,0,0,.95),0 0 28px rgba(200,164,74,.7);
+  border-color:#c8a44a;
+  overflow:visible;
 }
 /* Don't zoom while dying or being dragged */
 .card-slot.card-dying:hover{
@@ -4322,6 +4325,22 @@ textarea{
   z-index:100;
 }
 
+
+/* When a card inside a player-area is hovered, raise that whole area
+   so the zoomed card paints above the adjacent player area */
+.player-area:has(.card-slot:hover){
+  z-index:9000;
+  position:relative;
+}
+.player-area:has(.hand-card:hover){
+  z-index:9000;
+  position:relative;
+}
+/* Hand dock too */
+.hand-dock:has(.hand-card:hover){
+  z-index:9000;
+  position:relative;
+}
 </style>
 </head>
 <body>
@@ -8392,6 +8411,7 @@ let _hoverPreviewActive=false;
 // When a player pulls a holo from a pack, the style is locked in here forever.
 // ═══════════════════════════════════════════════════
 let _playerAvatarUrl = null;
+let _onlineOpponentAvatar = null;
 let _playerName = null;
 let _holoOwned = {};
 let _adminHoloMode = 'show'; // 'show' | 'owned' | 'hide'
@@ -9032,15 +9052,39 @@ function renderBanner(){
   const p2name=document.getElementById('p2-panel-name');
   if(p1name&&G.players[1]?.name)p1name.textContent=G.players[1].name;
   if(p2name&&G.players[2]?.name)p2name.textContent=G.players[2].name;
-  // Update avatars (use stored profile pic if available)
+  // Update YOUR avatar — mirror the HUD avatar (reliably set at login)
   const p1av=document.getElementById('p1-avatar');
-  if(p1av && typeof _playerAvatarUrl!=='undefined' && _playerAvatarUrl && p1av.dataset.set!=='1'){
-    p1av.innerHTML='<img src="'+_playerAvatarUrl+'" alt=""/>';
-    p1av.dataset.set='1';
+  if(p1av && p1av.dataset.set!=='1'){
+    const hudAv=document.getElementById('hud-avatar');
+    const hudImg=hudAv?hudAv.querySelector('img'):null;
+    if(hudImg && hudImg.src){
+      // Copy the actual profile image from the HUD
+      p1av.innerHTML='<img src="'+hudImg.src+'" alt=""/>';
+      p1av.dataset.set='1';
+    } else {
+      // Try stored URL as backup
+      let avurl = (typeof _playerAvatarUrl!=='undefined' && _playerAvatarUrl) || window._playerAvatarUrl || null;
+      if(avurl){
+        p1av.innerHTML='<img src="'+avurl+'" alt=""/>';
+        p1av.dataset.set='1';
+      }
+      // else: leave the default 👤 emoji, will retry next render
+    }
   }
+  // Update OPPONENT avatar
   const p2av=document.getElementById('p2-avatar');
-  if(p2av){
-    if(gameMode==='pvp'||gameMode==='online'){ if(p2av.textContent==='🤖')p2av.textContent='👤'; }
+  if(p2av && p2av.dataset.set!=='1'){
+    if(gameMode==='online' && typeof _onlineOpponentAvatar!=='undefined' && _onlineOpponentAvatar){
+      // Real human opponent — show their actual profile picture
+      p2av.innerHTML='<img src="'+_onlineOpponentAvatar+'" alt=""/>';
+      p2av.dataset.set='1';
+    } else if(gameMode==='pvp'){
+      // Local PvP — generic human icon
+      p2av.textContent='👤';
+    } else {
+      // AI — keep robot
+      p2av.textContent='🤖';
+    }
   }
 }
 function renderLog(){
@@ -10606,7 +10650,8 @@ function subscribeToRoom(code){
     .on('broadcast',{event:'player_joined'},(payload)=>{
       console.log('[ROOM] player_joined received:',payload.payload);
       if(_onlineRole==='host'){
-        const {guest_name,guest_id,guest_deck}=payload.payload;
+        const {guest_name,guest_id,guest_deck,guest_avatar}=payload.payload;
+        if(guest_avatar)_onlineOpponentAvatar=guest_avatar;
         _onlineRoom={..._onlineRoom,guest_id,guest_name,guest_deck,status:'ready'};
         const p2slot=document.getElementById('lobby-player-2-slot');
         if(p2slot){
@@ -10622,6 +10667,7 @@ function subscribeToRoom(code){
     // Host started match
     .on('broadcast',{event:'match_started'},(payload)=>{
       console.log('[ROOM] match_started received');
+      if(payload.payload&&payload.payload.host_avatar)_onlineOpponentAvatar=payload.payload.host_avatar;
       if(_onlineRole==='guest'){
         const room=payload.payload;
         _onlineRoom={..._onlineRoom,...room};
@@ -10646,7 +10692,8 @@ function subscribeToRoom(code){
           const myName=document.getElementById('hud-username')?.textContent||'Player';
           setTimeout(()=>{
             _onlineChannel.send({type:'broadcast',event:'player_joined',payload:{
-              guest_id:_celUserId,guest_name:myName,guest_deck:_onlineDeckId
+              guest_id:_celUserId,guest_name:myName,guest_deck:_onlineDeckId,
+              guest_avatar:(window._playerAvatarUrl||null)
             }});
           },500);
         }
@@ -10666,7 +10713,7 @@ async function startOnlineMatch(){
   const gameMode=document.getElementById('lobby-game-mode')?.value||'prize';
   const prizeCount=parseInt(document.getElementById('lobby-prize-count')?.value||'6');
   const lfHp=parseInt(document.getElementById('lobby-lf-hp')?.value||'100');
-  const roomData={..._onlineRoom,status:'playing',game_mode:gameMode,prize_count:prizeCount,lf_hp:lfHp};
+  const roomData={..._onlineRoom,status:'playing',game_mode:gameMode,prize_count:prizeCount,lf_hp:lfHp,host_avatar:(window._playerAvatarUrl||null)};
   // Update DB
   await sb.from('online_rooms').update({status:'playing',game_mode:gameMode,prize_count:prizeCount,lf_hp:lfHp}).eq('code',_onlineRoom.code);
   // Broadcast to guest via channel
@@ -13073,6 +13120,8 @@ window.addEventListener('load',async()=>{
       var prov=session.user.is_anonymous?'anonymous':ids.length>0?(ids[0].provider||'email'):((session.user.app_metadata&&session.user.app_metadata.provider)||'email');
       var meta=session.user.user_metadata||{};
       var avu=meta.avatar_url||meta.picture||null;
+      _playerAvatarUrl=avu;
+      _playerName=name;
       window._playerAvatarUrl=avu;
       window._playerName=name;
       console.log('[AUTH] name='+name+' prov='+prov);
