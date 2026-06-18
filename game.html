@@ -4415,6 +4415,87 @@ textarea{
   display:flex;
   gap:3px;
 }
+
+/* ═══ TOP HUD XP BAR + LEVEL ═══ */
+.xp-badge{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:linear-gradient(135deg,rgba(74,144,226,.15),rgba(124,58,237,.12));
+  border:1px solid rgba(124,144,226,.35);
+  border-radius:20px;
+  padding:4px 12px 4px 4px;
+  cursor:pointer;
+  transition:all .15s;
+}
+.xp-badge:hover{
+  border-color:rgba(124,144,226,.6);
+  box-shadow:0 0 12px rgba(74,144,226,.25);
+}
+.xp-level-ring{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#4a90e2,#7c3aed);
+  border:2px solid #a5b4fc;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Cinzel',serif;
+  font-size:13px;
+  font-weight:900;
+  color:#fff;
+  flex-shrink:0;
+  box-shadow:0 0 8px rgba(124,144,226,.5);
+}
+.xp-bar-wrap{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  min-width:110px;
+}
+.xp-bar-label{
+  font-size:9px;
+  color:#a5b4fc;
+  font-family:'Share Tech Mono',monospace;
+  letter-spacing:.5px;
+  line-height:1;
+}
+.xp-bar-track{
+  width:100%;
+  height:6px;
+  background:rgba(20,20,40,.8);
+  border-radius:3px;
+  overflow:hidden;
+}
+.xp-bar-fill{
+  height:100%;
+  background:linear-gradient(90deg,#4a90e2,#a5b4fc,#7c3aed);
+  border-radius:3px;
+  transition:width .5s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 0 8px rgba(124,144,226,.6);
+}
+/* Floating XP gain indicator */
+.xp-gain-float{
+  position:fixed;
+  z-index:9550;
+  font-family:'Cinzel',serif;
+  font-size:14px;
+  font-weight:700;
+  color:#a5b4fc;
+  text-shadow:0 0 8px rgba(124,144,226,.8),0 2px 4px rgba(0,0,0,.8);
+  pointer-events:none;
+  animation:xp-float 1.4s ease-out forwards;
+}
+@keyframes xp-float{
+  0%{opacity:0;transform:translateY(0) scale(.7);}
+  20%{opacity:1;transform:translateY(-6px) scale(1.1);}
+  100%{opacity:0;transform:translateY(-34px) scale(1);}
+}
+@media (max-width:640px){
+  .xp-bar-wrap{min-width:64px;}
+  .xp-bar-label{display:none;}
+}
 </style>
 </head>
 <body>
@@ -4431,6 +4512,13 @@ textarea{
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:8px">
+    <div class="xp-badge" id="hud-xp" onclick="openBattlePassIfEnabled()" title="Level & XP — click for Battle Pass">
+      <div class="xp-level-ring" id="hud-xp-level">1</div>
+      <div class="xp-bar-wrap">
+        <div class="xp-bar-label"><span id="hud-xp-text">0 / 400 XP</span></div>
+        <div class="xp-bar-track"><div class="xp-bar-fill" id="hud-xp-fill" style="width:0%"></div></div>
+      </div>
+    </div>
     <div class="cel-badge" id="hud-celestium" onclick="showScreen('profile-screen');refreshProfileScreen()" title="Celestium — click to view profile" style="cursor:pointer">
       <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" class="cel-icon" alt="C"/>
       <span class="cel-amount" id="hud-cel-amount">—</span>
@@ -6066,10 +6154,12 @@ function killCard(p,fc){
     // Prize Mode: when a character dies, the KILLER takes a prize FROM the victim's pile.
     // p = victim (lost the character), k = killer (claims the prize from victim's side)
     if(G.gameMode==='prize')claimPrizeFrom(p, k);
-    // Achievement tracking: count enemy characters YOU (player 1) destroy
+    // Achievement tracking + XP: count enemy characters YOU (player 1) destroy
     if(k===1){
       _achData.chars_destroyed = (_achData.chars_destroyed||0) + 1;
       if(typeof checkAchievements==='function') checkAchievements();
+      // +25 XP per character kill (any game mode)
+      if(typeof awardBPXp==='function') awardBPXp(25,'Character Destroyed');
     }
   }
   renderAll();checkWin();
@@ -9542,6 +9632,7 @@ const ACHIEVEMENTS={
     icon:'⚔️',
     img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Achivements%20emblems/Step%20Into%20the%20Courts%20%231%20ACH.png',
     reward:50,
+    xpReward:100,
     check:()=>_achData.has_entered_match===true
   },
   new_beginnings:{
@@ -9551,6 +9642,7 @@ const ACHIEVEMENTS={
     icon:'🃏',
     img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Achivements%20emblems/Architect%20of%20Fate%20%232%20ACH.png',
     reward:75,
+    xpReward:150,
     check:()=>Object.values(SAVED_DECKS).some(d=>d.cards&&d.cards.length>=60)
   },
   first_light:{
@@ -9560,6 +9652,7 @@ const ACHIEVEMENTS={
     icon:'⭐',
     img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Achivements%20emblems/First%20Light%20of%20the%20Cosmos%20%233%20ACH.png',
     reward:175,
+    xpReward:250,
     check:()=>_celData.wins>=1
   },
   first_transform:{
@@ -9569,6 +9662,7 @@ const ACHIEVEMENTS={
     icon:'⚡',
     img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Achivements%20emblems/The%20First%20Transformation%20%234%20ACH.png',
     reward:100,
+    xpReward:150,
     check:()=>_achData.has_transformed===true
   },
   the_hunted:{
@@ -12340,23 +12434,27 @@ async function loadBPPlayerData(){
     if(data&&data.battle_pass_data){
       try{
         const parsed=JSON.parse(data.battle_pass_data);
-        // Check if it's the current season
-        if(parsed.seasonId===BP_CONFIG.seasonId){
+        const curSeason=BP_CONFIG?BP_CONFIG.seasonId:null;
+        // If BP not loaded yet, OR same season → keep progress.
+        // Only reset on a confirmed NEW season.
+        if(!curSeason || parsed.seasonId===curSeason || !parsed.seasonId){
           _bpPlayerData={..._bpPlayerData,...parsed};
         } else {
-          // New season — reset
-          _bpPlayerData={xp:0,tier:1,hasStandard:false,hasPremium:false,claimedFree:{},claimedStandard:{},claimedPremium:{},seasonId:BP_CONFIG.seasonId};
+          _bpPlayerData={xp:0,tier:1,hasStandard:false,hasPremium:false,claimedFree:{},claimedStandard:{},claimedPremium:{},seasonId:curSeason};
           await saveBPPlayerData();
         }
       }catch(e){}
     }
   }catch(e){console.warn('[BP] load error:',e);}
+  // Refresh the top HUD XP bar after loading
+  if(typeof updateXpHud==='function')updateXpHud();
 }
 
 async function saveBPPlayerData(){
   if(!_celSB||!_celUserId)return;
   try{
-    const toSave={..._bpPlayerData,seasonId:BP_CONFIG.seasonId};
+    const toSave={..._bpPlayerData};
+    if(BP_CONFIG&&BP_CONFIG.seasonId)toSave.seasonId=BP_CONFIG.seasonId;
     await _celSB.from('profiles').update({battle_pass_data:JSON.stringify(toSave)}).eq('id',_celUserId);
   }catch(e){console.warn('[BP] save error:',e);}
 }
@@ -12394,20 +12492,68 @@ function bpXpIntoCurrentTier(totalXp){
 }
 
 async function awardBPXp(amount,reason){
-  if(!BP_CONFIG)return;
-  if(!_bpPlayerData)return;
-  const oldTier=_bpPlayerData.tier;
+  // Ensure player data exists even if Battle Pass screen never opened
+  if(!_bpPlayerData)_bpPlayerData={xp:0,tier:1,hasStandard:false,hasPremium:false,claimedFree:{},claimedStandard:{},claimedPremium:{}};
+  const oldTier=_bpPlayerData.tier||1;
   _bpPlayerData.xp=(_bpPlayerData.xp||0)+amount;
   const newTier=bpCurrentTierFromXP(_bpPlayerData.xp);
   _bpPlayerData.tier=newTier;
   if(newTier>oldTier){
-    showBPLevelUp(newTier,reason);
-    // Track weekly mission: levels gained
+    if(typeof showBPLevelUp==='function')showBPLevelUp(newTier,reason);
     const gained=newTier-oldTier;
     if(typeof incrementMissionProgress==='function')await incrementMissionProgress('levels_gained',gained);
   }
-  await saveBPPlayerData();
+  if(typeof saveBPPlayerData==='function')await saveBPPlayerData();
   updateBPHudIfVisible();
+  // Always refresh the top HUD XP bar
+  if(typeof updateXpHud==='function')updateXpHud();
+  // Optional floating XP gain indicator
+  if(typeof showXpGain==='function'&&amount>0)showXpGain(amount,reason);
+}
+
+// ═══════════════════════════════════════════════════
+// TOP HUD XP BAR + LEVEL
+// ═══════════════════════════════════════════════════
+function updateXpHud(){
+  const lvlEl=document.getElementById('hud-xp-level');
+  const fillEl=document.getElementById('hud-xp-fill');
+  const textEl=document.getElementById('hud-xp-text');
+  if(!lvlEl||!fillEl||!textEl)return;
+  // Ensure player data exists
+  if(!_bpPlayerData)_bpPlayerData={xp:0,tier:1};
+  const totalXp=_bpPlayerData.xp||0;
+  const tier=(typeof bpCurrentTierFromXP==='function')?bpCurrentTierFromXP(totalXp):1;
+  const into=(typeof bpXpIntoCurrentTier==='function')?bpXpIntoCurrentTier(totalXp):0;
+  const need=(typeof bpXpRequiredForTier==='function')?bpXpRequiredForTier(tier):400;
+  const pct=Math.max(0,Math.min(100,(into/need)*100));
+  lvlEl.textContent=tier;
+  fillEl.style.width=pct+'%';
+  textEl.textContent=Math.floor(into)+' / '+need+' XP';
+}
+
+// Floating "+XP" indicator near the HUD XP badge
+function showXpGain(amount,reason){
+  const badge=document.getElementById('hud-xp');
+  if(!badge)return;
+  const r=badge.getBoundingClientRect();
+  const el=document.createElement('div');
+  el.className='xp-gain-float';
+  el.textContent='+'+amount+' XP';
+  el.style.left=(r.left+r.width/2-20)+'px';
+  el.style.top=(r.bottom+4)+'px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),1400);
+}
+
+// Click the XP badge — open Battle Pass if enabled, else go to profile
+function openBattlePassIfEnabled(){
+  if(typeof isFeatureEnabled==='function' && isFeatureEnabled('battle_pass_enabled')){
+    showScreen('battle-pass-screen');
+    if(typeof openBattlePass==='function')openBattlePass();
+  } else {
+    showScreen('profile-screen');
+    if(typeof refreshProfileScreen==='function')refreshProfileScreen();
+  }
 }
 
 function updateBPHudIfVisible(){
@@ -12434,15 +12580,13 @@ function showBPLevelUp(newTier,reason){
 
 // ─── HOOKS INTO GAME EVENTS ──────────────────────
 async function bpOnMatchWin(){
-  if(!BP_CONFIG)return;
-  await awardBPXp(BP_CONFIG.xpPerWin||50,'Match Win');
-  await incrementMissionProgress('wins',1);
+  await awardBPXp((BP_CONFIG&&BP_CONFIG.xpPerWin)||75,'Match Win');
+  if(typeof incrementMissionProgress==='function')await incrementMissionProgress('wins',1);
 }
 
 async function bpOnMatchEnd(){
-  if(!BP_CONFIG)return;
-  await awardBPXp(BP_CONFIG.xpPerMatch||20,'Match Played');
-  await incrementMissionProgress('matches',1);
+  await awardBPXp((BP_CONFIG&&BP_CONFIG.xpPerMatch)||30,'Match Played');
+  if(typeof incrementMissionProgress==='function')await incrementMissionProgress('matches',1);
 }
 
 async function bpOnDailyLogin(){
@@ -13285,6 +13429,7 @@ window.addEventListener('load',async()=>{
       startInviteListener();
       await loadCampaign();
       await loadBattlePass();
+      if(typeof updateXpHud==='function')updateXpHud();
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){console.error('[AUTH] error:',e);window.signOutUser=function(){window.location.replace(LOGIN);};}
   }
