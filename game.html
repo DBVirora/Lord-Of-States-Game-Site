@@ -6066,6 +6066,11 @@ function killCard(p,fc){
     // Prize Mode: when a character dies, the KILLER takes a prize FROM the victim's pile.
     // p = victim (lost the character), k = killer (claims the prize from victim's side)
     if(G.gameMode==='prize')claimPrizeFrom(p, k);
+    // Achievement tracking: count enemy characters YOU (player 1) destroy
+    if(k===1){
+      _achData.chars_destroyed = (_achData.chars_destroyed||0) + 1;
+      if(typeof checkAchievements==='function') checkAchievements();
+    }
   }
   renderAll();checkWin();
 }
@@ -9566,6 +9571,15 @@ const ACHIEVEMENTS={
     reward:100,
     check:()=>_achData.has_transformed===true
   },
+  the_hunted:{
+    id:'the_hunted',
+    title:"The Hunted",
+    desc:"Destroy 20 character cards.",
+    icon:'🩸',
+    reward:500,
+    xpReward:500,
+    check:()=>(_achData.chars_destroyed||0)>=20
+  },
 };
 
 let _achData={};  // stores which achievements are unlocked + extra flags
@@ -9596,6 +9610,10 @@ async function checkAchievements(){
       anyNew=true;
       showAchievementPopup(ach);
       await awardCelestium(ach.reward,'Achievement: '+ach.title);
+      // Bonus XP reward (Battle Pass) if the achievement grants it
+      if(ach.xpReward && typeof awardBPXp==='function'){
+        await awardBPXp(ach.xpReward,'Achievement: '+ach.title);
+      }
     }
   }
   if(anyNew)await saveAchievements();
@@ -9614,7 +9632,7 @@ function showAchievementPopup(ach){
     +'<div class="ach-label">🏅 Achievement Unlocked!</div>'
     +'<div class="ach-title">'+ach.title+'</div>'
     +'<div class="ach-desc">'+ach.desc+'</div>'
-    +'<div class="ach-reward">+'+ach.reward+' Celestium</div>'
+    +'<div class="ach-reward">+'+ach.reward+' Celestium'+(ach.xpReward?' · +'+ach.xpReward+' XP':'')+'</div>'
     +'</div>';
   document.body.appendChild(popup);
   setTimeout(()=>{if(popup.parentNode)popup.remove();},5200);
@@ -9644,12 +9662,20 @@ function renderAchievementsSection(){
     const achIconHtml=ach.img
       ?'<img src="'+ach.img+'" style="width:44px;height:44px;border-radius:50%;object-fit:cover;'+(unlocked?'border:2px solid rgba(251,191,36,.5);':'border:2px solid rgba(75,85,99,.3);filter:grayscale(1);opacity:.5;')+'"/>'
       :'<div class="ach-card-icon">'+(unlocked?ach.icon:'🔒')+'</div>';
+    // Progress for counting achievements (e.g. The Hunted: destroy 20)
+    let progressHtml='';
+    if(!unlocked && ach.id==='the_hunted'){
+      const cur=Math.min(_achData.chars_destroyed||0,20);
+      progressHtml='<div style="font-size:9px;color:#9ca3af;margin-top:2px">Progress: '+cur+' / 20</div>';
+    }
+    const rewardHtml='+'+ach.reward+' Celestium'+(ach.xpReward?' · +'+ach.xpReward+' XP':'');
     card.innerHTML=
       achIconHtml
       +'<div class="ach-card-info">'
       +'<div class="ach-card-title">'+ach.title+'</div>'
       +'<div class="ach-card-desc">'+ach.desc+'</div>'
-      +'<div class="ach-card-reward">+'+ach.reward+' Celestium</div>'
+      +'<div class="ach-card-reward">'+rewardHtml+'</div>'
+      +progressHtml
       +'</div>'
       +'<div class="ach-card-status">'
       +(unlocked
