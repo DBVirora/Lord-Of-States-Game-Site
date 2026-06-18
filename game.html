@@ -262,7 +262,7 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .location-zone{display:flex;flex-direction:column;gap:6px;min-width:120px;max-width:120px;background:rgba(10,18,12,.5);border:1px dashed rgba(34,197,94,.3);border-radius:10px;padding:8px;flex-shrink:0;align-items:center;overflow:hidden}
 .location-zone-label{font-size:10px;color:#4ade80;text-align:center;margin-bottom:3px;font-weight:700;letter-spacing:2px;font-family:'Cinzel',serif}
 .char-field{display:flex;gap:10px;flex-wrap:wrap;padding:10px;background:rgba(17,17,38,.35);border-radius:10px;border:1px dashed rgba(200,164,74,.15);align-items:center;flex:1;min-height:0;overflow:visible}
-.hand-area{display:flex;gap:8px;flex-wrap:nowrap;padding:8px 8px 4px;background:rgba(10,10,24,.5);border-radius:10px;border:1px solid rgba(200,164,74,.12);overflow-x:auto;overflow-y:visible;align-items:flex-end;flex-shrink:0}
+.hand-area{display:flex;gap:8px;flex-wrap:nowrap;padding:26px 8px 6px;background:rgba(10,10,24,.5);border-radius:10px;border:1px solid rgba(200,164,74,.12);overflow-x:auto;overflow-y:visible;align-items:flex-end;flex-shrink:0}
 
 /* CARD SLOTS */
 .card-slot{width:116px;height:162px;border-radius:10px;border:2px solid #3a3a5c;background:#16162a;display:flex;flex-direction:column;cursor:pointer;position:relative;overflow:hidden;transition:transform .15s ease,box-shadow .15s ease;flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,.4)}
@@ -289,7 +289,7 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 
 /* HAND CARDS */
 .hand-card{width:104px;height:146px;border-radius:10px;border:2px solid #3a3a5c;background:#16162a;display:flex;flex-direction:column;cursor:pointer;overflow:hidden;transition:transform .18s ease,box-shadow .18s ease;flex-shrink:0;box-shadow:0 3px 8px rgba(0,0,0,.4)}
-.hand-card:hover{border-color:#c8a44a;transform:translateY(-10px) scale(1.1);box-shadow:0 14px 32px rgba(0,0,0,.7),0 0 18px rgba(200,164,74,.4);z-index:500}
+.hand-card:hover{border-color:#c8a44a;transform:translateY(-18px) scale(1.12);box-shadow:0 16px 36px rgba(0,0,0,.8),0 0 20px rgba(200,164,74,.5);z-index:9999}
 .hand-card.playable{border-color:#22c55e}
 .hand-card.not-playable{opacity:.45}
 .hand-card.instant-card{border-color:#ef4444}
@@ -389,9 +389,9 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 @keyframes floatUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-55px) scale(1.3)}}
 
 /* HERALD ZONE */
-.herald-zone{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:108px;max-width:108px;flex-shrink:0;justify-content:center;}
+.herald-zone{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:108px;max-width:108px;flex-shrink:0;justify-content:center;overflow:visible;}
 .herald-zone-label{font-size:10px;color:#e8c570;text-align:center;font-weight:700;letter-spacing:2px;font-family:'Cinzel',serif}
-.herald-slot{width:68px;height:96px;border-radius:6px;border:2px solid #7c3aed;background:#16162a;display:flex;flex-direction:column;cursor:pointer;position:relative;overflow:hidden;transition:border-color .15s,transform .15s;box-shadow:0 0 10px #7c3aed44;}
+.herald-slot{width:92px;height:130px;border-radius:8px;border:2px solid #7c3aed;background:#16162a;display:flex;flex-direction:column;cursor:pointer;position:relative;overflow:hidden;transition:border-color .15s,transform .15s;box-shadow:0 0 10px #7c3aed44;}
 .herald-slot:hover{border-color:#c4b5fd;transform:translateY(-2px);box-shadow:0 0 18px #7c3aed88;}
 .herald-slot.can-flip{border-color:#fbbf24!important;animation:glow-y 1.2s infinite;}
 .herald-slot.final-form{border-color:#f97316!important;box-shadow:0 0 14px #f9731666;}
@@ -442,7 +442,7 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 #p1-energy-wrap, #p2-energy-wrap{display:flex;flex-direction:column;align-items:flex-start;}
 
 /* VISUAL DECK PILE */
-.deck-pile-wrap{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:72px;flex-shrink:0;justify-content:center;}
+.deck-pile-wrap{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:84px;flex-shrink:0;justify-content:center;}
 .deck-pile-label{font-size:10px;color:#94a3b8;letter-spacing:1px;text-align:center;font-family:'Share Tech Mono',monospace;}
 .deck-pile{position:relative;cursor:pointer;transition:transform .15s;}
 .deck-pile:hover .deck-card-back{transform:translateY(-4px);box-shadow:0 6px 18px rgba(124,58,237,.5);}
@@ -488,9 +488,9 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 /* RIFT ZONE */
 .rift-badge{background:#1a0a1a;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700;color:#a855f7;border:1px solid #581c87;cursor:pointer;display:flex;align-items:center;gap:3px;transition:all .2s;}
 .rift-badge:hover{border-color:#a855f7;box-shadow:0 0 8px #a855f744;}
-.rift-zone-wrap{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:72px;flex-shrink:0;justify-content:center;}
+.rift-zone-wrap{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:90px;flex-shrink:0;justify-content:center;}
 .rift-zone-label{font-size:10px;color:#a855f7;letter-spacing:2px;text-align:center;font-weight:700;font-family:'Cinzel',serif;}
-.rift-zone-pile{width:64px;height:90px;border-radius:7px;background:linear-gradient(135deg,#1a0a2e 0%,#0d0018 50%,#1a0a2e 100%);border:2px solid #581c87;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.rift-zone-pile{width:80px;height:112px;border-radius:8px;background:linear-gradient(135deg,#1a0a2e 0%,#0d0018 50%,#1a0a2e 100%);border:2px solid #581c87;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
 .rift-zone-pile:hover{border-color:#a855f7;box-shadow:0 0 12px #a855f755;}
 .rift-zone-pile::before{content:'';position:absolute;inset:3px;border:1px solid rgba(168,85,247,.2);border-radius:3px;}
 .rift-zone-empty{opacity:.3;cursor:default;}
@@ -4341,6 +4341,80 @@ textarea{
   z-index:9000;
   position:relative;
 }
+
+/* ═══ DISCARD PILE (mini, in player panel) ═══ */
+.discard-pile-mini{
+  flex:1;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:5px 7px;
+  background:rgba(10,10,24,.6);
+  border:1px solid rgba(58,58,92,.5);
+  border-radius:8px;
+  cursor:pointer;
+  transition:all .15s;
+}
+.discard-pile-mini:hover{
+  border-color:rgba(200,164,74,.5);
+  background:rgba(30,22,55,.7);
+}
+.discard-pile-card{
+  width:34px;
+  height:48px;
+  border-radius:5px;
+  background:#1e1e3a;
+  border:1px solid rgba(120,100,160,.4);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  flex-shrink:0;
+  position:relative;
+}
+.discard-pile-card img{ width:100%;height:100%;object-fit:cover; }
+.discard-empty-icon{ font-size:16px;opacity:.4; }
+.discard-pile-info{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+}
+.discard-pile-info .panel-zone-count{ font-size:16px; }
+.discard-pile-info .panel-zone-label{ font-size:7px; }
+/* Stacked-cards look behind the top card */
+.discard-pile-card.has-cards::before,
+.discard-pile-card.has-cards::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:5px;
+  border:1px solid rgba(120,100,160,.3);
+  background:#16162a;
+  z-index:-1;
+}
+.discard-pile-card.has-cards::before{ transform:translate(2px,2px); }
+.discard-pile-card.has-cards::after{ transform:translate(4px,4px); }
+
+/* Field card info box — matches hand card styling */
+.field-card-info{
+  padding:4px 6px;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:2px;
+}
+.field-card-info .card-name-sm{
+  font-size:10px;
+}
+.field-card-info .card-stats-row{
+  font-size:12px;
+}
+.field-card-info .status-icons{
+  font-size:9px;
+  display:flex;
+  gap:3px;
+}
 </style>
 </head>
 <body>
@@ -4618,10 +4692,9 @@ textarea{
         </div>
         <div class="energy-breakdown" id="p2-color-energy"></div>
         <div class="player-panel-zones">
-          <div class="panel-zone-btn" onclick="showDiscard(2)" title="Discard pile">
-            <span class="panel-zone-icon">🗑</span>
-            <span class="panel-zone-count" id="p2-discard-count">0</span>
-            <span class="panel-zone-label">DISCARD</span>
+          <div class="discard-pile-mini" onclick="showDiscard(2)" title="Discard pile (Otherworld)" id="p2-discard-pile">
+            <div class="discard-pile-card" id="p2-discard-top"><span class="discard-empty-icon">🗑</span></div>
+            <div class="discard-pile-info"><span class="panel-zone-count" id="p2-discard-count">0</span><span class="panel-zone-label">DISCARD</span></div>
           </div>
           <div class="panel-zone-btn" onclick="showRiftZone(2)" title="Rift Zone — banished">
             <span class="panel-zone-icon">🌀</span>
@@ -4632,12 +4705,12 @@ textarea{
       </div>
 
       <div class="prize-section">
-        <div class="prize-section-label">OPPONENT PRIZES</div>
+        <div class="prize-section-label">OPPONENT PRIZES <span style="font-size:8px;color:#6b7280">(take these)</span></div>
         <div class="prize-grid" id="p2-prizes"></div>
       </div>
 
       <div class="prize-section">
-        <div class="prize-section-label">YOUR PRIZES</div>
+        <div class="prize-section-label">YOUR PRIZES <span style="font-size:8px;color:#6b7280">(defend these)</span></div>
         <div class="prize-grid" id="p1-prizes"></div>
       </div>
 
@@ -4657,10 +4730,9 @@ textarea{
         </div>
         <div class="energy-breakdown" id="p1-color-energy"></div>
         <div class="player-panel-zones">
-          <div class="panel-zone-btn" onclick="showDiscard(1)" title="Discard pile">
-            <span class="panel-zone-icon">🗑</span>
-            <span class="panel-zone-count" id="p1-discard-count">0</span>
-            <span class="panel-zone-label">DISCARD</span>
+          <div class="discard-pile-mini" onclick="showDiscard(1)" title="Discard pile (Otherworld)" id="p1-discard-pile">
+            <div class="discard-pile-card" id="p1-discard-top"><span class="discard-empty-icon">🗑</span></div>
+            <div class="discard-pile-info"><span class="panel-zone-count" id="p1-discard-count">0</span><span class="panel-zone-label">DISCARD</span></div>
           </div>
           <div class="panel-zone-btn" onclick="showRiftZone(1)" title="Rift Zone — banished">
             <span class="panel-zone-icon">🌀</span>
@@ -5763,12 +5835,12 @@ function startGame(mode,deck1,deck2){
   G={turn:1,activePlayer:1,phase:'draw',phasesDone:[],selectedAttacker:null,gameOver:false,
     deckSearchCallback:null,heraldAttacking:false,gameMode:gMode,startingLF:startLF,prizeCount:prizeCount,
     players:{
-      1:{name:'Player 1',energy:5,colorEnergy:{},hand:[],field:[],deck:d1,discard:[],rift:[],prizes:p1,prizesClaimed:0,herald:h1,lifeForce:startLF},
-      2:{name:mode==='pvp'?'Player 2':'AI',energy:5,colorEnergy:{},hand:[],field:[],deck:d2,discard:[],rift:[],prizes:p2,prizesClaimed:0,herald:h2,lifeForce:startLF},
+      1:{name:(window._playerName||document.getElementById('hud-username')?.textContent||'Player 1'),energy:5,colorEnergy:{},hand:[],field:[],deck:d1,discard:[],rift:[],prizes:p1,prizesClaimed:0,herald:h1,lifeForce:startLF},
+      2:{name:((mode==='pvp'||mode==='online')?(G&&G.onlineOpponentName)||window._onlineOpponentName||'Opponent':'AI'),energy:5,colorEnergy:{},hand:[],field:[],deck:d2,discard:[],rift:[],prizes:p2,prizesClaimed:0,herald:h2,lifeForce:startLF},
     },log:[]};
   for(let i=0;i<7;i++){drawCard(1,true);drawCard(2,true);}
-  if(h1)log(`P1 Herald: ${DB[h1.cid].name} enters play!`,'gain');
-  if(h2)log(`P2 Herald: ${DB[h2.cid].name} enters play!`,'gain');
+  if(h1)log(`${pname(1)} Herald: ${DB[h1.cid].name} enters play!`,'gain');
+  if(h2)log(`${pname(2)} Herald: ${DB[h2.cid].name} enters play!`,'gain');
   log('Game started! P1 goes first.','info');
   // Step Into the Courts — award immediately on first ever match
   if(!_achData.has_entered_match){
@@ -5989,69 +6061,78 @@ function killCard(p,fc){
   fc.attachments.forEach(eqId=>G.players[p].discard.push(eqId));
   if(!c.isToken)G.players[p].discard.push(fc.cid);
   if(isChar(c)&&!c.isToken){
-    const k=p===1?2:1;
+    const k=p===1?2:1; // k = the killer (opponent of the victim p)
     G.players[k].energy+=1;
-    // Prize Mode: field kills give prizes. Combined/LF: only Herald hits give prizes
-    if(G.gameMode==='prize')claimPrize(k);
+    // Prize Mode: when a character dies, the KILLER takes a prize FROM the victim's pile.
+    // p = victim (lost the character), k = killer (claims the prize from victim's side)
+    if(G.gameMode==='prize')claimPrizeFrom(p, k);
   }
   renderAll();checkWin();
 }
 
-let _pendingPrizePick = null; // {player, onDone} when a player must choose a prize
+let _pendingPrizePick = null; // {victim, claimer} when the claimer must choose a prize from victim's pile
 
-function claimPrize(p){
-  const pl=G.players[p];
+// New prize model: when CLAIMER kills VICTIM's character, claimer takes a prize
+// card FROM the victim's pile. The victim's prizes shrink; claimer gains the card.
+function claimPrizeFrom(victim, claimer){
+  const vpl=G.players[victim];
   const maxPrizes=G.prizeCount||6;
-  if(pl.prizesClaimed>=maxPrizes)return;
-  if(p===1){
-    // Local player CHOOSES which prize to take — flag claimable prizes
-    _pendingPrizePick = {player:1};
-    log('🎖 Choose a Prize Card to claim! (click a glowing prize)','gain');
-    renderPrizes(1);
+  // If victim has no prizes left, nothing to take (win check handles the loss)
+  if(vpl.prizesClaimed>=maxPrizes)return;
+  if(claimer===1){
+    // Local player chooses which of the VICTIM's prizes to take — flag them glowing
+    _pendingPrizePick = {victim:victim, claimer:1};
+    log('🎖 You knocked out an enemy! Choose a Prize Card to take from the opponent.','gain');
+    renderPrizes(victim);
   } else {
-    // AI picks a random remaining prize automatically
-    const remainingIndices=[];
-    for(let i=pl.prizesClaimed;i<maxPrizes;i++)remainingIndices.push(i);
-    // (prizes are claimed in order for AI; just take the next)
-    resolvePrizeClaim(2, pl.prizesClaimed);
+    // AI claimer auto-takes the next available prize from the victim
+    resolvePrizeClaim(victim, claimer, vpl.prizesClaimed);
   }
 }
 
-// Called when local player clicks a glowing prize card
-function pickPrizeCard(p, index){
-  if(!_pendingPrizePick || _pendingPrizePick.player!==p)return;
+// Backwards-compat shim (herald hit etc. still call claimPrize with the claimer)
+function claimPrize(claimer){
+  const victim = claimer===1?2:1;
+  claimPrizeFrom(victim, claimer);
+}
+
+// Called when local player clicks a glowing prize card on the VICTIM's side
+function pickPrizeCard(victim, index){
+  if(!_pendingPrizePick || _pendingPrizePick.victim!==victim)return;
+  const claimer=_pendingPrizePick.claimer;
   _pendingPrizePick = null;
-  resolvePrizeClaim(p, index);
+  resolvePrizeClaim(victim, claimer, index);
 }
 
-// Actually resolve a prize claim — handles the swap, animation, hand add
-function resolvePrizeClaim(p, index){
-  const pl=G.players[p];
+// Resolve: remove prize from VICTIM's pile, give card to CLAIMER's hand
+function resolvePrizeClaim(victim, claimer, index){
+  const vpl=G.players[victim];
+  const cpl=G.players[claimer];
   const maxPrizes=G.prizeCount||6;
-  // The card at the chosen index. We swap it to the "claimed" front so claimedCount logic stays simple.
-  let cid = pl.prizes[index];
-  // If player picked a later index, swap it into the next-claimed slot
-  if(index !== pl.prizesClaimed){
-    const tmp = pl.prizes[pl.prizesClaimed];
-    pl.prizes[pl.prizesClaimed] = pl.prizes[index];
-    pl.prizes[index] = tmp;
-    cid = pl.prizes[pl.prizesClaimed];
+  let cid = vpl.prizes[index];
+  // Swap chosen prize into the next-claimed slot so claimedCount logic stays simple
+  if(index !== vpl.prizesClaimed){
+    const tmp = vpl.prizes[vpl.prizesClaimed];
+    vpl.prizes[vpl.prizesClaimed] = vpl.prizes[index];
+    vpl.prizes[index] = tmp;
+    cid = vpl.prizes[vpl.prizesClaimed];
   }
-  pl.prizesClaimed++;
+  vpl.prizesClaimed++;
   // Safety: heralds should never be in prizes
   if(isHerald(DB[cid])){
-    log(`🎖 P${p} claims Prize ${pl.prizesClaimed} (Herald removed).`,'gain');
-    renderPrizes(p);
-    claimPrize(p);
+    log(`🎖 ${pname(claimer)} takes a Prize (Herald removed).`,'gain');
+    renderPrizes(victim);
+    claimPrizeFrom(victim, claimer);
     return;
   }
-  // Show the prize reveal animation, THEN add to hand
-  showPrizeReveal(cid, p, ()=>{
-    const fc=newFC(cid);if(fc)pl.hand.push(fc);
-    log(`🎖 P${p} claims Prize ${pl.prizesClaimed}/${maxPrizes}: ${DB[cid]?.name||cid}!`,'gain');
-    checkHandLimit(p);
+  // Reveal animation, then the CLAIMER gains the card
+  showPrizeReveal(cid, claimer, ()=>{
+    const fc=newFC(cid);if(fc)cpl.hand.push(fc);
+    log(`🎖 ${pname(claimer)} takes a Prize from ${pname(victim)}: ${DB[cid]?.name||cid}! (${pname(victim)}: ${maxPrizes-vpl.prizesClaimed} prizes left)`,'gain');
+    checkHandLimit(claimer);
     renderAll();
-    if(pl.prizesClaimed>=maxPrizes)setTimeout(()=>triggerWin(p,'all '+maxPrizes+' Prizes claimed!'),400);
+    // VICTIM loses when all their prizes are gone → CLAIMER wins
+    if(vpl.prizesClaimed>=maxPrizes)setTimeout(()=>triggerWin(claimer,pname(victim)+' lost all prizes!'),400);
   });
 }
 
@@ -6098,9 +6179,9 @@ function checkWin(){
     if((G.gameMode==='lifeforce'||G.gameMode==='combined')&&(G.players[o].lifeForce||0)<=0){
       triggerWin(p,'Life Force depleted!');return;
     }
-    // Prize win condition (prize + combined modes)
+    // Prize loss condition: if player p's OWN prizes are all taken, p LOSES (opponent o wins)
     if(G.gameMode!=='lifeforce'&&G.players[p].prizesClaimed>=(G.prizeCount||6)){
-      triggerWin(p,'all 6 Prizes claimed!');return;
+      triggerWin(o,pname(p)+' lost all prizes!');return;
     }
     // Out of characters (all modes)
     const oppHasChars=G.players[o].field.some(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken)||G.players[o].hand.some(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken)||G.players[o].deck.length>0;
@@ -7085,7 +7166,7 @@ function onHandClick(p,uid,fc){
     const totalField=pl.field.filter(f=>!isLoc(DB[f.cid])).length;
     if(isChar(DB[fco.cid])&&!DB[fco.cid]?.isToken&&namedFighters>=MAX_FIELD){log('Fighter zone full! (max 5 named fighters).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     if(!isChar(DB[fco.cid])&&otherCards>=MAX_OTHER){log('Field full! (max 5 other cards on field).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
-    pl.field.push(fco);log(`P${p} plays ${c.name}.`,'info');playCardZoom(fco.cid);if(typeof SFX!=='undefined')SFX.cardPlay();if(p===1)sendGameAction('card_play',{cardId:fco.cid});onEntry(p,fco);
+    pl.field.push(fco);log(`${pname(p)} plays ${c.name}.`,'info');playCardZoom(fco.cid);if(typeof SFX!=='undefined')SFX.cardPlay();if(p===1)sendGameAction('card_play',{cardId:fco.cid});onEntry(p,fco);
     // Mission tracking: unique characters (only for local player)
     if(p===1&&typeof trackUniqueCharacter==='function'&&['base_char','char','team'].includes(c.type)){
       trackUniqueCharacter(c.charName||c.id||fco.cid);
@@ -7093,7 +7174,7 @@ function onHandClick(p,uid,fc){
   } else if(isLoc(c)){
     const locCount=pl.field.filter(f=>isLoc(DB[f.cid])).length;
     if(locCount>=MAX_LOC){log(`Location zone full! (max ${MAX_LOC}).`,'dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
-    pl.field.push(fco);log(`P${p} places ${c.name}.`,'info');playCardZoom(fco.cid);
+    pl.field.push(fco);log(`${pname(p)} places ${c.name}.`,'info');playCardZoom(fco.cid);
     if(c.id==='time_chamber'){pl.energy+=5;log('Time Chamber: +5⚡!','gain');}
   } else if(isEquip(c)){
     const chars=pl.field.filter(f=>isChar(DB[f.cid]));
@@ -7110,7 +7191,7 @@ function onHandClick(p,uid,fc){
     showInstantReveal(c.id, p);
     if(typeof SFX!=='undefined')SFX.instant();
     if(p===1)sendGameAction('instant_reveal',{cardId:c.id});
-    log(`P${p} plays ${c.name}!`,'info');
+    log(`${pname(p)} plays ${c.name}!`,'info');
     // Execute the instant's ability effect (after a short delay so reveal shows)
     pl.discard.push(c.id);
     setTimeout(() => { executeInstantEffect(p, c.id); renderAll(); }, 700);
@@ -7603,7 +7684,7 @@ function execEnd(){
     }
     endTurnFx(p);
     // Use real player label for online so opponent sees correct name
-    const turnLabel=(G.onlineMode)?(G.onlineMyName||'Player'):('P'+p);
+    const turnLabel=pname(p);
     log(turnLabel+' ends turn.','info');
     const nx=p===1?2:1;
     G.activePlayer=nx;
@@ -8196,7 +8277,7 @@ function renderHeraldSlot(p){
   div.className='herald-slot'+(hfc.isFlipped?' final-form':'')+(canFlip?' can-flip':'');
 
   // Art
-  const artWrap=document.createElement('div');artWrap.className='card-art-area';artWrap.style.height='54px';
+  const artWrap=document.createElement('div');artWrap.className='card-art-area';artWrap.style.height='84px';
   const url=getImg(hfc.cid);
   if(url){const img=document.createElement('img');img.src=url;artWrap.appendChild(img);}
   else artWrap.innerHTML='<span style="font-size:18px">👑</span>';
@@ -8234,6 +8315,8 @@ function renderHeraldSlot(p){
   }
 
   div.onclick=()=>showFullCard(hfc.cid,hfc);
+  div.onmouseenter=()=>showHoverPreview(hfc.cid);
+  div.onmouseleave=()=>clearHoverPreview();
   el.appendChild(div);
 
   // Auto-flip check for triggered conditions (e.g. HP threshold)
@@ -8859,6 +8942,20 @@ function renderAll(){
     document.getElementById(`p${p}-energy`).textContent=pl.energy;
     document.getElementById(`p${p}-deck-count`).textContent=pl.deck.length;
     document.getElementById(`p${p}-discard-count`).textContent=pl.discard.length;
+    // Render discard pile top card
+    const discTop=document.getElementById(`p${p}-discard-top`);
+    if(discTop){
+      if(pl.discard.length>0){
+        const topCid=pl.discard[pl.discard.length-1];
+        const dUrl=(typeof getImg==='function')?getImg(topCid):null;
+        discTop.classList.add('has-cards');
+        if(dUrl){ discTop.innerHTML='<img src="'+dUrl+'" alt=""/>'; }
+        else { discTop.innerHTML='<span style="font-size:14px">'+(DB[topCid]?.sym||'?')+'</span>'; }
+      } else {
+        discTop.classList.remove('has-cards');
+        discTop.innerHTML='<span class="discard-empty-icon">🗑</span>';
+      }
+    }
     const riftEl=document.getElementById(`p${p}-rift-count`);if(riftEl)riftEl.textContent=(pl.rift||[]).length;
     if(p===2)document.getElementById('p2-hand-count').textContent=pl.hand.length;
     updateHandLimitDisplay(p);
@@ -8896,8 +8993,8 @@ function renderPrizes(p){
   el.innerHTML='';
   const _maxP=G?.prizeCount||6;
   const backUrl=(typeof getImg==='function')?getImg('cardback'):null;
-  // Is THIS player currently allowed to pick a prize? (only the local player picks, only when flagged)
-  const canPick = (p===1) && _pendingPrizePick && _pendingPrizePick.player===1;
+  // Claimable when the local player (claimer=1) is taking a prize FROM this pile (p===victim)
+  const canPick = _pendingPrizePick && _pendingPrizePick.claimer===1 && _pendingPrizePick.victim===p;
   for(let i=0;i<_maxP;i++){
     const claimed = i<pl.prizesClaimed;
     const d=document.createElement('div');
@@ -8939,12 +9036,12 @@ function renderField(p){
       else div.classList.add('targetable');
     }
     const maxHP=fc.baseHP+fc.hpBonus;const pct=Math.max(0,Math.min(100,fc.currentHP/maxHP*100));const hpCol=pct>60?'#22c55e':pct>30?'#f59e0b':'#ef4444';
-    div.appendChild(makeArtEl(fc.cid,52));
-    const info=document.createElement('div');info.className='card-info';
+    div.appendChild(makeArtEl(fc.cid,108));
+    const info=document.createElement('div');info.className='card-info field-card-info';
     info.innerHTML=`<div class="card-name-sm">${c.name}</div>
-      <div class="card-stats-row"><span class="stat-atk">⚔${fc.currentATK}</span><span style="color:${hpCol};font-weight:700;font-size:9px">♥${fc.currentHP}</span></div>
+      <div class="card-stats-row"><span class="stat-atk">⚔${fc.currentATK}</span><span style="color:${hpCol};font-weight:700">♥${fc.currentHP}</span></div>
       <div class="hp-bar-wrap"><div class="hp-bar-fill" style="width:${pct}%;background:${hpCol}"></div></div>
-      <div class="status-icons">${fc.frozen>0?`❄${fc.frozen}`:''}${fc.paralyzed?'⚡':''}${fc.attachments&&fc.attachments.length?'🛡':''}${c.isToken?'⭐':''}</div>`;
+      ${(fc.frozen>0||fc.paralyzed||(fc.attachments&&fc.attachments.length)||c.isToken)?`<div class="status-icons">${fc.frozen>0?`❄${fc.frozen}`:''}${fc.paralyzed?'⚡':''}${fc.attachments&&fc.attachments.length?'🛡':''}${c.isToken?'⭐':''}</div>`:''}`;
     div.appendChild(info);
     div.onclick=()=>onFieldClick(p,fc.uid,fc);
     div.onmouseenter=()=>showHoverPreview(fc.cid);
@@ -8962,9 +9059,11 @@ function renderLocZone(p){
     div.setAttribute('data-uid',fc.uid);div.setAttribute('data-player',p);
     if(G.selectedAttacker&&p!==G.activePlayer&&isLoc(c))div.classList.add('loc-targetable');
     const pct=Math.max(0,Math.min(100,fc.currentHP/(c.hp||6)*100));const hpCol=pct>60?'#22c55e':pct>30?'#f59e0b':'#ef4444';
-    div.appendChild(makeArtEl(fc.cid,52));
-    const info=document.createElement('div');info.className='card-info';
-    info.innerHTML=`<div class="card-name-sm">${c.name}</div><div style="font-size:7px;color:#86efac">LOC</div><div style="font-size:8px;color:${hpCol}">🛡${fc.currentHP}</div><div class="hp-bar-wrap"><div class="hp-bar-fill" style="width:${pct}%;background:${hpCol}"></div></div>`;
+    div.appendChild(makeArtEl(fc.cid,108));
+    const info=document.createElement('div');info.className='card-info field-card-info';
+    info.innerHTML=`<div class="card-name-sm">${c.name}</div>
+      <div class="card-stats-row"><span style="font-size:9px;color:#86efac;font-weight:700">LOC</span><span style="color:${hpCol};font-weight:700">🛡${fc.currentHP}</span></div>
+      <div class="hp-bar-wrap"><div class="hp-bar-fill" style="width:${pct}%;background:${hpCol}"></div></div>`;
     div.appendChild(info);
     div.onclick=()=>onFieldClick(p,fc.uid,fc);
     div.onmouseenter=()=>showHoverPreview(fc.cid);
@@ -9092,6 +9191,13 @@ function renderLog(){
   el.innerHTML=G.log.slice(-30).map(e=>`<div class="log-entry log-${e.t}">${e.m}</div>`).join('');
   el.scrollTop=el.scrollHeight;
 }
+
+// Get a player's display name for logs/UI (real name for humans, 'AI' for AI)
+function pname(p){
+  if(G && G.players && G.players[p] && G.players[p].name) return G.players[p].name;
+  return 'Player '+p;
+}
+
 function log(m,t=''){G.log.push({m,t});renderLog();}
 
 // ═══════════════════════════════════════════════════
@@ -10652,6 +10758,7 @@ function subscribeToRoom(code){
       if(_onlineRole==='host'){
         const {guest_name,guest_id,guest_deck,guest_avatar}=payload.payload;
         if(guest_avatar)_onlineOpponentAvatar=guest_avatar;
+        if(guest_name)window._onlineOpponentName=guest_name;
         _onlineRoom={..._onlineRoom,guest_id,guest_name,guest_deck,status:'ready'};
         const p2slot=document.getElementById('lobby-player-2-slot');
         if(p2slot){
@@ -10668,6 +10775,7 @@ function subscribeToRoom(code){
     .on('broadcast',{event:'match_started'},(payload)=>{
       console.log('[ROOM] match_started received');
       if(payload.payload&&payload.payload.host_avatar)_onlineOpponentAvatar=payload.payload.host_avatar;
+      if(payload.payload&&payload.payload.host_name)window._onlineOpponentName=payload.payload.host_name;
       if(_onlineRole==='guest'){
         const room=payload.payload;
         _onlineRoom={..._onlineRoom,...room};
