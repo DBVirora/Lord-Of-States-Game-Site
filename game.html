@@ -5921,7 +5921,7 @@ function startGame(mode,deck1,deck2){
   const p1=[],p2=[];for(let i=0;i<prizeCount;i++){p1.push(d1.pop());p2.push(d2.pop());}
 
   G={turn:1,activePlayer:1,phase:'draw',phasesDone:[],selectedAttacker:null,gameOver:false,
-    deckSearchCallback:null,heraldAttacking:false,gameMode:gMode,startingLF:startLF,prizeCount:prizeCount,
+    deckSearchCallback:null,heraldAttacking:false,gameMode:gMode,startingLF:startLF,prizeCount:prizeCount,bonusAttackers:0,
     players:{
       1:{name:(window._playerName||document.getElementById('hud-username')?.textContent||'Player 1'),energy:5,colorEnergy:{},hand:[],field:[],deck:d1,discard:[],rift:[],prizes:p1,prizesClaimed:0,herald:h1,lifeForce:startLF},
       2:{name:((mode==='pvp'||mode==='online')?(G&&G.onlineOpponentName)||window._onlineOpponentName||'Opponent':'AI'),energy:5,colorEnergy:{},hand:[],field:[],deck:d2,discard:[],rift:[],prizes:p2,prizesClaimed:0,herald:h2,lifeForce:startLF},
@@ -7109,6 +7109,33 @@ function resolveHeraldVsField(targetP, targetFc){
 }
 
 // ═══════════════════════════════════════════════════
+// ATTACK PHASE LIMIT: only ONE character may attack per phase
+// (each character attacks once; onslaught = same char twice;
+//  abilities may grant extra attackers via G.bonusAttackers)
+// ═══════════════════════════════════════════════════
+function distinctAttackersUsed(p){
+  // How many different characters have already attacked this turn
+  return G.players[p].field.filter(f=>isChar(DB[f.cid]) && (f.attacksThisTurn||0)>0).length;
+}
+function maxAttackersAllowed(){
+  // Default 1 character per attack phase; abilities can raise this
+  return 1 + (G.bonusAttackers||0);
+}
+// Can this specific character be selected/attack right now?
+function canCharacterAttack(p, fc){
+  if(!fc || !isChar(DB[fc.cid])) return false;
+  const usedAttacks = fc.attacksThisTurn||0;
+  // Per-character attack cap: onslaught = 2, otherwise 1
+  const perCharCap = hasKW(fc,'onslaught') ? 2 : 1;
+  if(usedAttacks >= perCharCap) return false; // this char is tapped out
+  // If this character has ALREADY attacked this phase, it may continue
+  // (e.g. onslaught second hit) without counting as a new attacker.
+  if(usedAttacks > 0) return true;
+  // This would be a NEW attacker — only allowed if under the distinct-attacker cap
+  return distinctAttackersUsed(p) < maxAttackersAllowed();
+}
+
+// ═══════════════════════════════════════════════════
 // COMBAT
 // ═══════════════════════════════════════════════════
 function onFieldClick(p,uid,fc){
@@ -7119,6 +7146,12 @@ function onFieldClick(p,uid,fc){
       if(fc.paralyzed){log('Paralyzed!','dmg');return;}
       if(fc.antiLife&&fc.antiLife>G.turn){log(`${DB[fc.cid].name} is locked by Anti-Life Equation!`,'dmg');return;}
       if(fc.turnPlayed>=G.turn&&!hasKW(fc,'burst_speed')){log('Just played — wait 1 turn.','dmg');return;}
+      // ENFORCE: only one character may attack per phase (unless ability grants more)
+      if(!canCharacterAttack(p, fc)){
+        if((fc.attacksThisTurn||0)>0){log(`${DB[fc.cid].name} already attacked this turn.`,'dmg');}
+        else {log('Only one character may attack per turn.','dmg');}
+        return;
+      }
       G.selectedAttacker=uid;log(`${DB[fc.cid].name} ready — click target.`,'info');renderAll();
     } else {
       // Herald attacking a field character
@@ -7840,6 +7873,7 @@ function endTurnFx(p){
     fc.damagedThisTurn=false;fc.attacksThisTurn=0;
     Object.keys(fc.abilityUsed||{}).forEach(k=>{const c=DB[fc.cid];const a=c?.abilities?.find(ab=>ab.label===k);if(a&&a.limit==='once_per_turn')delete fc.abilityUsed[k];});
   }));
+  G.bonusAttackers=0; // reset ability-granted extra attackers each turn
   // Passive triggers
   G.players[p].field.filter(f=>f.cid==='goku_ue').forEach(fc=>{fc.currentATK++;fc.atkBonus++;fc.currentHP=Math.min(fc.currentHP+1,fc.baseHP+fc.hpBonus+10);log('Goku UE +1/+1.','gain');});
   // Tyrant's Dominion: apply -1/-1 debuff to opponent chars while Darkseid herald is on field
@@ -8039,13 +8073,22 @@ function runAI(){
       setTimeout(()=>{
         G.phase='attack';G.phasesDone.push('attack');
         const opp=G.players[1];
-        const attackers=G.players[2].field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken&&(f.turnPlayed<G.turn||hasKW(f,'burst_speed'))&&!f.paralyzed&&!f.frozen&&(f.attacksThisTurn||0)<(hasKW(f,'onslaught')?2:1));
+        const eligible=G.players[2].field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken&&(f.turnPlayed<G.turn||hasKW(f,'burst_speed'))&&!f.paralyzed&&!f.frozen);
         const oppChars=opp.field.filter(f=>isChar(DB[f.cid]));
-        if(attackers.length>0&&oppChars.length>0){
-          attackers.forEach(atk=>{
-            const alive=opp.field.filter(f=>isChar(DB[f.cid]));if(!alive.length)return;
-            const tgt=alive.reduce((a,b)=>b.currentHP<a.currentHP?b:a);
-            resolveAttack(2,atk.uid,1,tgt.uid);
+        // One-attacker rule: AI picks how many distinct attackers it's allowed
+        const aiMaxAttackers=1+(G.bonusAttackers||0);
+        if(eligible.length>0&&oppChars.length>0){
+          // Pick the strongest eligible attackers, up to the allowed count
+          const chosen=eligible.sort((a,b)=>b.currentATK-a.currentATK).slice(0,aiMaxAttackers);
+          chosen.forEach(atk=>{
+            // Each chosen attacker attacks once, or twice if onslaught
+            const swings=hasKW(atk,'onslaught')?2:1;
+            for(let s=0;s<swings;s++){
+              const alive=opp.field.filter(f=>isChar(DB[f.cid]));if(!alive.length)break;
+              if((atk.attacksThisTurn||0)>=swings)break;
+              const tgt=alive.reduce((a,b)=>b.currentHP<a.currentHP?b:a);
+              resolveAttack(2,atk.uid,1,tgt.uid);
+            }
           });
         } else log('AI skips attack.','info');
         renderAll();
@@ -9123,7 +9166,7 @@ function renderField(p){
     if(c.isToken)div.classList.add('token-card');
     if(fc.frozen>0)div.classList.add('frozen');else if(fc.paralyzed)div.classList.add('paralyzed');
     if(fc.uid===G.selectedAttacker)div.classList.add('attacker-sel');
-    else if(p===G.activePlayer&&G.phase==='attack'&&isChar(c)&&fc.turnPlayed<G.turn&&!fc.frozen&&!fc.paralyzed&&!c.isToken)div.classList.add('can-attack');
+    else if(p===G.activePlayer&&G.phase==='attack'&&isChar(c)&&(fc.turnPlayed<G.turn||hasKW(fc,'burst_speed'))&&!fc.frozen&&!fc.paralyzed&&typeof canCharacterAttack==='function'&&canCharacterAttack(p,fc))div.classList.add('can-attack');
     const _selAtk=G.selectedAttacker?G.players[G.activePlayer]?.field.find(f=>f.uid===G.selectedAttacker):null;
     const _oppGuardian=G.players[p]?.field.some(f=>isChar(DB[f.cid])&&hasKW(f,'guardian')&&f.uid!==fc.uid);
     if(G.selectedAttacker&&p!==G.activePlayer&&isChar(c)){
