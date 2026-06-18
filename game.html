@@ -32,8 +32,214 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 /* SCREENS */
 #menu-screen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:10px;text-align:center;padding:24px;position:relative;z-index:5}
 #menu-screen.active{display:flex}
-#game-screen{display:none;padding:8px 16px 0;height:calc(100vh - 46px);grid-template-rows:minmax(0,1fr) auto minmax(0,1fr) auto;gap:6px;max-width:1700px;margin:0 auto;box-sizing:border-box;overflow:hidden}
-#game-screen.active{display:grid}
+#game-screen{display:none;padding:6px 12px 0;height:calc(100vh - 46px);flex-direction:column;gap:6px;margin:0 auto;box-sizing:border-box;overflow:hidden}
+#game-screen.active{display:flex}
+
+/* Battle layout: left prizes | center board | right preview */
+.battle-layout{
+  display:grid;
+  grid-template-columns:180px minmax(0,1fr) 280px;
+  gap:10px;
+  flex:1;
+  min-height:0;
+  overflow:hidden;
+}
+.board-column{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  min-height:0;
+  min-width:0;
+  overflow:hidden;
+}
+
+/* ═══ LEFT PRIZE SIDEBAR ═══ */
+.prize-sidebar{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  padding:10px;
+  background:linear-gradient(160deg,rgba(14,12,32,.6),rgba(8,8,22,.7));
+  border:1px solid rgba(200,164,74,.15);
+  border-radius:14px;
+  overflow-y:auto;
+}
+.prize-section-label{
+  font-family:'Cinzel',serif;
+  font-size:10px;
+  letter-spacing:2px;
+  color:#c8a44a;
+  text-align:center;
+  margin-bottom:8px;
+  padding-bottom:5px;
+  border-bottom:1px solid rgba(200,164,74,.2);
+}
+.prize-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  justify-items:center;
+}
+.prize-card{
+  width:68px;
+  height:95px;
+  border-radius:7px;
+  border:2px solid rgba(200,164,74,.3);
+  background:linear-gradient(135deg,#1a1430,#0d0a1e);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+  transition:all .2s ease;
+}
+.prize-card .prize-back-img{
+  width:100%;height:100%;object-fit:cover;
+}
+.prize-card.claimed{
+  opacity:.25;
+  border-color:rgba(75,85,99,.3);
+}
+.prize-card.claimed::after{
+  content:'✓';
+  position:absolute;
+  font-size:24px;
+  color:#22c55e;
+  text-shadow:0 0 8px rgba(34,197,94,.6);
+}
+/* Claimable prize — gold sparkle FX */
+.prize-card.claimable{
+  border-color:#fbbf24;
+  cursor:pointer;
+  animation:prize-sparkle 1.3s ease-in-out infinite;
+}
+.prize-card.claimable:hover{
+  transform:scale(1.08);
+}
+@keyframes prize-sparkle{
+  0%,100%{box-shadow:0 0 8px rgba(251,191,36,.5),0 0 0 1px rgba(251,191,36,.4) inset;}
+  50%{box-shadow:0 0 22px rgba(251,191,36,.9),0 0 0 2px rgba(251,191,36,.8) inset,0 0 40px rgba(251,191,36,.4);}
+}
+.prize-card-placeholder{
+  font-size:22px;
+  color:rgba(200,164,74,.4);
+}
+
+/* ═══ RIGHT HOVER PREVIEW SIDEBAR ═══ */
+.hover-preview-sidebar{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  padding:14px;
+  background:linear-gradient(160deg,rgba(14,12,32,.6),rgba(8,8,22,.7));
+  border:1px solid rgba(200,164,74,.15);
+  border-radius:14px;
+  overflow-y:auto;
+}
+.hover-preview-placeholder{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:100%;
+}
+.hover-preview-content{
+  width:100%;
+}
+.hover-preview-img{
+  width:100%;
+  border-radius:12px;
+  border:2px solid rgba(200,164,74,.4);
+  box-shadow:0 8px 30px rgba(0,0,0,.5),0 0 20px rgba(200,164,74,.15);
+  margin-bottom:12px;
+}
+.hover-preview-name{
+  font-family:'Cinzel',serif;
+  font-size:16px;
+  color:#e8c570;
+  letter-spacing:1px;
+  margin-bottom:4px;
+  text-align:center;
+}
+.hover-preview-meta{
+  font-size:11px;
+  color:#a5b4fc;
+  text-align:center;
+  margin-bottom:10px;
+}
+.hover-preview-stats{
+  display:flex;
+  justify-content:center;
+  gap:16px;
+  margin-bottom:10px;
+  font-size:15px;
+  font-weight:700;
+}
+.hover-preview-ability{
+  background:rgba(20,15,40,.7);
+  border:1px solid rgba(200,164,74,.2);
+  border-radius:8px;
+  padding:8px 10px;
+  margin-bottom:8px;
+}
+.hover-preview-ability-name{
+  font-family:'Cinzel',serif;
+  font-size:12px;
+  color:#c8a44a;
+  margin-bottom:3px;
+}
+.hover-preview-ability-text{
+  font-size:11px;
+  color:#cbd5e1;
+  line-height:1.4;
+}
+
+/* ═══ PLAYER AREA HEADER ═══ */
+.player-area-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:6px;
+  flex-shrink:0;
+}
+
+/* ═══ CENTER STRIP with phase bar ═══ */
+.center-strip{
+  display:flex;
+  gap:10px;
+  align-items:stretch;
+  height:62px;
+  flex-shrink:0;
+}
+.phase-bar-center{
+  display:flex;
+  gap:6px;
+  align-items:center;
+  padding:0 10px;
+  background:rgba(8,8,20,.5);
+  border:1px solid rgba(200,164,74,.15);
+  border-radius:10px;
+}
+
+/* ═══ HAND DOCK (bottom) ═══ */
+.hand-dock{
+  flex-shrink:0;
+  margin-top:auto;
+}
+.hand-dock-label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:11px;
+  font-family:'Cinzel',serif;
+  letter-spacing:1px;
+  margin-bottom:4px;
+  padding-left:4px;
+}
+.opp-hand{
+  min-height:auto;
+}
 .screen{display:none;padding:62px 14px 24px;position:relative;z-index:5}.screen.active{display:block}
 #online-lobby-screen.active{display:block;}
 /* VCU PANEL */
@@ -45,16 +251,16 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .vcu-divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:12px 0}
 
 /* GAME LAYOUT */
-.player-area{background:linear-gradient(160deg,rgba(14,12,32,.85),rgba(8,8,22,.9));border:1px solid rgba(200,164,74,.18);border-radius:14px;padding:8px 14px;backdrop-filter:blur(8px);box-shadow:inset 0 1px 0 rgba(200,164,74,.08),0 4px 20px rgba(0,0,0,.3);display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.player-area{background:linear-gradient(160deg,rgba(14,12,32,.85),rgba(8,8,22,.9));border:1px solid rgba(200,164,74,.18);border-radius:14px;padding:8px 14px;backdrop-filter:blur(8px);box-shadow:inset 0 1px 0 rgba(200,164,74,.08),0 4px 20px rgba(0,0,0,.3);display:flex;flex-direction:column;min-height:0;overflow:visible;position:relative}
 /* NEW: field wrapper with location zone on left */
-.field-wrapper{display:flex;gap:10px;align-items:stretch;flex:1;min-height:0}
-.location-zone{display:flex;flex-direction:column;gap:6px;min-width:104px;max-width:104px;background:rgba(10,18,12,.5);border:1px dashed rgba(34,197,94,.3);border-radius:10px;padding:6px;flex-shrink:0}
+.field-wrapper{display:flex;gap:10px;align-items:stretch;flex:1;min-height:0;overflow:visible}
+.location-zone{display:flex;flex-direction:column;gap:6px;min-width:120px;max-width:120px;background:rgba(10,18,12,.5);border:1px dashed rgba(34,197,94,.3);border-radius:10px;padding:8px;flex-shrink:0;align-items:center;overflow:hidden}
 .location-zone-label{font-size:10px;color:#4ade80;text-align:center;margin-bottom:3px;font-weight:700;letter-spacing:2px;font-family:'Cinzel',serif}
-.char-field{display:flex;gap:8px;flex-wrap:wrap;padding:8px;background:rgba(17,17,38,.35);border-radius:10px;border:1px dashed rgba(200,164,74,.15);align-items:center;flex:1;min-height:0}
-.hand-area{display:flex;gap:6px;flex-wrap:nowrap;padding:6px;background:rgba(10,10,24,.5);border-radius:10px;border:1px solid rgba(200,164,74,.12);overflow-x:auto;overflow-y:visible;align-items:flex-end;flex-shrink:0;margin-top:6px}
+.char-field{display:flex;gap:10px;flex-wrap:wrap;padding:10px;background:rgba(17,17,38,.35);border-radius:10px;border:1px dashed rgba(200,164,74,.15);align-items:center;flex:1;min-height:0;overflow:visible}
+.hand-area{display:flex;gap:8px;flex-wrap:nowrap;padding:8px 8px 4px;background:rgba(10,10,24,.5);border-radius:10px;border:1px solid rgba(200,164,74,.12);overflow-x:auto;overflow-y:visible;align-items:flex-end;flex-shrink:0}
 
 /* CARD SLOTS */
-.card-slot{width:104px;height:146px;border-radius:9px;border:2px solid #3a3a5c;background:#16162a;display:flex;flex-direction:column;cursor:pointer;position:relative;overflow:hidden;transition:transform .15s ease,box-shadow .15s ease;flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,.4)}
+.card-slot{width:116px;height:162px;border-radius:10px;border:2px solid #3a3a5c;background:#16162a;display:flex;flex-direction:column;cursor:pointer;position:relative;overflow:hidden;transition:transform .15s ease,box-shadow .15s ease;flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,.4)}
 .card-slot:hover{border-color:#7c3aed;transform:translateY(-2px)}
 .card-slot.can-attack{border:2px solid #22c55e!important;animation:glow-g 1.2s infinite}
 .card-slot.attacker-sel{border:2px solid #f97316!important;box-shadow:0 0 10px #f9731666}
@@ -66,10 +272,10 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 @keyframes glow-g{0%,100%{box-shadow:0 0 4px #22c55e55}50%{box-shadow:0 0 14px #22c55eaa}}
 @keyframes glow-r{0%,100%{box-shadow:0 0 4px #ef444455}50%{box-shadow:0 0 14px #ef4444aa}}
 @keyframes glow-y{0%,100%{box-shadow:0 0 4px #f59e0b55}50%{box-shadow:0 0 14px #f59e0baa}}
-.card-art-area{width:100%;height:96px;background:#1e1e3a;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:30px}
+.card-art-area{width:100%;height:108px;background:#1e1e3a;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:34px}
 .card-art-area img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
 .card-info{padding:4px 6px;flex:1;display:flex;flex-direction:column;justify-content:space-between}
-.card-name-sm{font-size:10px;font-weight:700;color:#f0e6c8;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Cinzel',serif}
+.card-name-sm{font-size:11px;font-weight:700;color:#f0e6c8;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Cinzel',serif}
 .card-stats-row{display:flex;justify-content:space-between;font-size:13px;align-items:center}
 .stat-atk{color:#fbbf24;font-weight:700}
 .hp-bar-wrap{width:100%;height:5px;background:#374151;border-radius:3px;margin-top:3px;overflow:hidden}
@@ -77,12 +283,12 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .status-icons{font-size:7px;text-align:center;color:#94a3b8}
 
 /* HAND CARDS */
-.hand-card{width:92px;height:130px;border-radius:9px;border:2px solid #3a3a5c;background:#16162a;display:flex;flex-direction:column;cursor:pointer;overflow:hidden;transition:transform .18s ease,box-shadow .18s ease;flex-shrink:0;box-shadow:0 3px 8px rgba(0,0,0,.4)}
-.hand-card:hover{border-color:#c8a44a;transform:translateY(-12px) scale(1.08);box-shadow:0 12px 28px rgba(0,0,0,.6),0 0 16px rgba(200,164,74,.3);z-index:20}
+.hand-card{width:104px;height:146px;border-radius:10px;border:2px solid #3a3a5c;background:#16162a;display:flex;flex-direction:column;cursor:pointer;overflow:hidden;transition:transform .18s ease,box-shadow .18s ease;flex-shrink:0;box-shadow:0 3px 8px rgba(0,0,0,.4)}
+.hand-card:hover{border-color:#c8a44a;transform:translateY(-10px) scale(1.1);box-shadow:0 14px 32px rgba(0,0,0,.7),0 0 18px rgba(200,164,74,.4);z-index:500}
 .hand-card.playable{border-color:#22c55e}
 .hand-card.not-playable{opacity:.45}
 .hand-card.instant-card{border-color:#ef4444}
-.hand-art-area{width:100%;height:84px;background:#1e1e3a;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:26px}
+.hand-art-area{width:100%;height:96px;background:#1e1e3a;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:30px}
 .hand-art-area img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
 .hand-info{padding:3px 5px;flex:1;display:flex;flex-direction:column;justify-content:center}
 .hand-name{font-size:9px;font-weight:700;color:#f0e6c8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Cinzel',serif}
@@ -3496,9 +3702,9 @@ textarea{
   transition:transform .15s ease, box-shadow .15s ease, z-index 0s;
 }
 .card-slot:hover{
-  transform:scale(1.25) translateY(-8px);
-  z-index:50;
-  box-shadow:0 8px 24px rgba(0,0,0,.7),0 0 16px rgba(200,164,74,.4);
+  transform:scale(1.18) translateY(-6px);
+  z-index:500;
+  box-shadow:0 12px 30px rgba(0,0,0,.8),0 0 20px rgba(200,164,74,.5);
 }
 /* Don't zoom while dying or being dragged */
 .card-slot.card-dying:hover{
@@ -3559,9 +3765,10 @@ textarea{
 #bottom-action-bar{
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  gap:16px;
+  justify-content:center;
+  gap:40px;
   padding:8px 18px;
+  position:relative;
   background:linear-gradient(180deg,rgba(14,12,32,.92),rgba(8,8,22,.96));
   border:1px solid rgba(200,164,74,.25);
   border-radius:14px 14px 0 0;
@@ -3843,6 +4050,72 @@ textarea{
   animation:none !important;
   transition:none !important;
 }
+
+/* ═══════════════════════════════════════════════════════
+   PRIZE REVEAL ANIMATION
+   ═══════════════════════════════════════════════════════ */
+#prize-reveal-overlay{
+  position:fixed;
+  inset:0;
+  z-index:9600;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  background:rgba(5,3,15,.75);
+  backdrop-filter:blur(5px);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease;
+}
+#prize-reveal-overlay.open{ opacity:1; }
+#prize-reveal-card{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.prize-reveal-flip{
+  width:200px;
+  height:280px;
+  position:relative;
+  transform-style:preserve-3d;
+  transition:transform .7s cubic-bezier(.34,1.3,.5,1);
+}
+.prize-reveal-flip.flipped{
+  transform:rotateY(180deg) scale(1.05);
+}
+.prize-reveal-back, .prize-reveal-front{
+  position:absolute;
+  inset:0;
+  backface-visibility:hidden;
+  border-radius:14px;
+  overflow:hidden;
+  border:2px solid var(--gold,#c8a44a);
+  box-shadow:0 0 40px rgba(200,164,74,.5),0 20px 50px rgba(0,0,0,.6);
+  display:flex;align-items:center;justify-content:center;
+  background:#1a1430;
+  font-size:50px;
+}
+.prize-reveal-back img, .prize-reveal-front img{
+  width:100%;height:100%;object-fit:cover;
+}
+.prize-reveal-front{
+  transform:rotateY(180deg);
+}
+.prize-reveal-name{
+  margin-top:20px;
+  font-family:'Cinzel',serif;
+  font-size:22px;
+  letter-spacing:3px;
+  color:#e8c570;
+  text-shadow:0 0 16px rgba(200,164,74,.7);
+  opacity:0;
+  animation:prize-name-appear .5s ease-out .6s forwards;
+}
+@keyframes prize-name-appear{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
 </style>
 </head>
 <body>
@@ -4099,110 +4372,137 @@ textarea{
 
 <!-- GAME SCREEN -->
 <div id="game-screen">
+  <!-- LEFT: Prize columns + Right: hover preview, with board in middle -->
+  <div class="battle-layout">
 
-  <!-- P2 area -->
-  <div class="player-area">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;flex-wrap:wrap;gap:3px">
-      <span id="p2-name" style="font-weight:700;color:#86efac;font-size:12px">Opponent</span>
-      <div style="display:flex;gap:3px" id="p2-prizes"></div>
-      <div style="display:flex;gap:4px;align-items:center">
-        <div id="p2-energy-wrap">
-          <div class="energy-hud" id="p2-energy-hud" onclick="openEnergyModal(2)" title="Click to view full energy breakdown"><div class="energy-hud-total"><span class="energy-hud-icon">⚡</span><span class="energy-hud-amount" id="p2-energy">5</span></div><div class="energy-hud-pips" id="p2-energy-pips"></div><span class="energy-hud-expand">▸</span></div>
-          <div class="energy-breakdown" id="p2-color-energy"></div>
-        </div>
-        <div class="discard-badge" onclick="showDiscard(2)" title="Otherworld — recoverable discard pile">🗑<span id="p2-discard-count">0</span></div>
-        <div class="rift-badge" onclick="showRiftZone(2)" title="Rift Zone — permanently banished cards">🌀<span id="p2-rift-count">0</span></div>
-        <span id="p2-hand-limit" class="hand-limit-bar hand-limit-ok">Hnd:<span id="p2-hand-count">5</span>/12</span>
-        <span style="font-size:10px;color:#4b5563;display:none">Dk:<span id="p2-deck-count">49</span></span>
+    <!-- LEFT SIDEBAR: Prize cards (both players) -->
+    <div class="prize-sidebar">
+      <div class="prize-section">
+        <div class="prize-section-label">OPPONENT PRIZES</div>
+        <div class="prize-grid" id="p2-prizes"></div>
+      </div>
+      <div class="prize-section">
+        <div class="prize-section-label">YOUR PRIZES</div>
+        <div class="prize-grid" id="p1-prizes"></div>
       </div>
     </div>
-    <div class="field-wrapper">
-      <div class="herald-zone" id="p2-herald-zone">
-        <div class="herald-zone-label">HERALD</div>
-        <div id="p2-herald-slot"></div>
-      </div>
-      <div class="deck-pile-wrap" id="p2-deck-pile-wrap">
-        <div class="deck-pile" id="p2-deck-pile" onclick="onDeckClick(2)"></div>
-        <div class="deck-pile-label">Dk:<span id="p2-deck-count-pile">49</span></div>
-      </div>
-      <div class="rift-zone-wrap" id="p2-rift-wrap">
-        <div class="rift-zone-label">RIFT</div>
-        <div class="rift-zone-pile rift-zone-empty" id="p2-rift-pile" onclick="showRiftZone(2)">
-          <span style="font-size:16px;color:rgba(168,85,247,.3)">🌀</span>
+
+    <!-- CENTER: The game board -->
+    <div class="board-column">
+
+      <!-- P2 area -->
+      <div class="player-area">
+        <div class="player-area-header">
+          <span id="p2-name" style="font-weight:700;color:#86efac;font-size:14px;font-family:'Cinzel',serif">Opponent</span>
+          <div style="display:flex;gap:6px;align-items:center">
+            <div id="p2-energy-wrap">
+              <div class="energy-hud" id="p2-energy-hud" onclick="openEnergyModal(2)" title="Click to view full energy breakdown"><div class="energy-hud-total"><span class="energy-hud-icon">⚡</span><span class="energy-hud-amount" id="p2-energy">5</span></div><div class="energy-hud-pips" id="p2-energy-pips"></div><span class="energy-hud-expand">▸</span></div>
+              <div class="energy-breakdown" id="p2-color-energy"></div>
+            </div>
+            <div class="discard-badge" onclick="showDiscard(2)" title="Otherworld — recoverable discard pile">🗑<span id="p2-discard-count">0</span></div>
+            <div class="rift-badge" onclick="showRiftZone(2)" title="Rift Zone — permanently banished cards">🌀<span id="p2-rift-count">0</span></div>
+            <span id="p2-hand-limit" class="hand-limit-bar hand-limit-ok">Hnd:<span id="p2-hand-count">5</span>/12</span>
+            <span style="font-size:10px;color:#4b5563;display:none">Dk:<span id="p2-deck-count">49</span></span>
+          </div>
         </div>
-        <div style="font-size:8px;color:#581c87;text-align:center">Rz:<span id="p2-rift-pile-count">0</span></div>
+        <div class="field-wrapper">
+          <div class="herald-zone" id="p2-herald-zone">
+            <div class="herald-zone-label">HERALD</div>
+            <div id="p2-herald-slot"></div>
+          </div>
+          <div class="deck-pile-wrap" id="p2-deck-pile-wrap">
+            <div class="deck-pile" id="p2-deck-pile" onclick="onDeckClick(2)"></div>
+            <div class="deck-pile-label">Dk:<span id="p2-deck-count-pile">49</span></div>
+          </div>
+          <div class="rift-zone-wrap" id="p2-rift-wrap">
+            <div class="rift-zone-label">RIFT</div>
+            <div class="rift-zone-pile rift-zone-empty" id="p2-rift-pile" onclick="showRiftZone(2)">
+              <span style="font-size:16px;color:rgba(168,85,247,.3)">🌀</span>
+            </div>
+            <div style="font-size:8px;color:#581c87;text-align:center">Rz:<span id="p2-rift-pile-count">0</span></div>
+          </div>
+          <div class="location-zone" id="p2-loc-zone">
+            <div class="location-zone-label">LOCATIONS</div>
+          </div>
+          <div class="char-field" id="p2-field"></div>
+        </div>
+        <div style="margin-top:4px;font-size:10px;color:#4b5563">Opponent hand</div>
+        <div class="hand-area opp-hand" id="p2-hand-display"></div>
       </div>
-      <div class="location-zone" id="p2-loc-zone">
-        <div class="location-zone-label">LOCATIONS</div>
+
+      <!-- CENTER STRIP: turn indicator + PHASE BAR + log -->
+      <div class="center-strip">
+        <div id="turn-indicator" class="turn-banner-inline p1-banner">P1 — DRAW</div>
+        <div class="phase-bar-center">
+          <button class="phase-pill" id="ph-draw" onclick="doPhase('draw')"><span class="phase-pill-icon">🎴</span><span class="phase-pill-label">Draw</span></button>
+          <button class="phase-pill" id="ph-resource" onclick="doPhase('resource')"><span class="phase-pill-icon">⚡</span><span class="phase-pill-label">Resource</span></button>
+          <button class="phase-pill" id="ph-main" onclick="doPhase('main')"><span class="phase-pill-icon">⚔️</span><span class="phase-pill-label">Main</span></button>
+          <button class="phase-pill" id="ph-attack" onclick="doPhase('attack')"><span class="phase-pill-icon">🗡️</span><span class="phase-pill-label">Attack</span></button>
+        </div>
+        <div class="log-box" id="log-box"></div>
       </div>
-      <div class="char-field" id="p2-field"></div>
+
+      <!-- P1 field -->
+      <div class="player-area">
+        <div class="player-area-header">
+          <span style="font-weight:700;color:#a5b4fc;font-size:14px;font-family:'Cinzel',serif">Player 1</span>
+          <div style="display:flex;gap:6px;align-items:center">
+            <div id="p1-energy-wrap">
+              <div class="energy-hud" id="p1-energy-hud" onclick="openEnergyModal(1)" title="Click to view full energy breakdown"><div class="energy-hud-total"><span class="energy-hud-icon">⚡</span><span class="energy-hud-amount" id="p1-energy">5</span></div><div class="energy-hud-pips" id="p1-energy-pips"></div><span class="energy-hud-expand">▸</span></div>
+              <div class="energy-breakdown" id="p1-color-energy"></div>
+            </div>
+            <div class="discard-badge" onclick="showDiscard(1)">🗑<span id="p1-discard-count">0</span></div>
+            <div class="rift-badge" onclick="showRiftZone(1)" title="Rift Zone — permanently banished cards">🌀<span id="p1-rift-count">0</span></div>
+            <span style="font-size:10px;color:#4b5563;display:none">Dk:<span id="p1-deck-count">49</span></span>
+          </div>
+        </div>
+        <div class="field-wrapper">
+          <div class="herald-zone" id="p1-herald-zone">
+            <div class="herald-zone-label">HERALD</div>
+            <div id="p1-herald-slot"></div>
+          </div>
+          <div class="deck-pile-wrap" id="p1-deck-pile-wrap">
+            <div class="deck-pile" id="p1-deck-pile" onclick="onDeckClick(1)"></div>
+            <div class="deck-pile-label">Dk:<span id="p1-deck-count-pile">49</span></div>
+          </div>
+          <div class="rift-zone-wrap" id="p1-rift-wrap">
+            <div class="rift-zone-label">RIFT</div>
+            <div class="rift-zone-pile rift-zone-empty" id="p1-rift-pile" onclick="showRiftZone(1)">
+              <span style="font-size:16px;color:rgba(168,85,247,.3)">🌀</span>
+            </div>
+            <div style="font-size:8px;color:#581c87;text-align:center">Rz:<span id="p1-rift-pile-count">0</span></div>
+          </div>
+          <div class="location-zone" id="p1-loc-zone">
+            <div class="location-zone-label">LOCATIONS</div>
+          </div>
+          <div class="char-field" id="p1-field"></div>
+        </div>
+      </div>
+
+      <!-- P1 HAND (moved to bottom) -->
+      <div class="hand-dock">
+        <div class="hand-dock-label">
+          <span style="color:#9ca3af">YOUR HAND</span>
+          <span id="p1-hand-limit-display" class="hand-limit-ok">0/12</span>
+          <span style="font-size:9px;color:#4b5563;margin-left:4px"><span style="color:#22c55e">green</span>=play · right-click=view · <span style="color:#ef4444">red</span>=instant</span>
+        </div>
+        <div class="hand-area" id="p1-hand"></div>
+      </div>
     </div>
-    <div style="margin-top:3px;font-size:10px;color:#4b5563;margin-bottom:2px">Opponent hand</div>
-    <div class="hand-area" id="p2-hand-display"></div>
+
+    <!-- RIGHT SIDEBAR: hover card preview -->
+    <div class="hover-preview-sidebar" id="hover-preview-sidebar">
+      <div class="hover-preview-placeholder" id="hover-preview-placeholder">
+        <div style="font-size:40px;opacity:.2">🃏</div>
+        <div style="font-size:11px;color:#4b5563;letter-spacing:1px;margin-top:8px;text-align:center">Hover a card<br>to preview</div>
+      </div>
+      <div class="hover-preview-content" id="hover-preview-content" style="display:none"></div>
+    </div>
+
   </div>
 
-  <!-- Slim center bar: turn indicator + log -->
-  <div class="center-strip">
-    <div id="turn-indicator" class="turn-banner-inline p1-banner">P1 — DRAW</div>
-    <div class="log-box" id="log-box"></div>
-  </div>
-
-  <!-- P1 field -->
-  <div class="player-area">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;flex-wrap:wrap;gap:3px">
-      <span style="font-weight:700;color:#a5b4fc;font-size:12px">Player 1</span>
-      <div style="display:flex;gap:3px" id="p1-prizes"></div>
-      <div style="display:flex;gap:4px;align-items:center">
-        <div id="p1-energy-wrap">
-          <div class="energy-hud" id="p1-energy-hud" onclick="openEnergyModal(1)" title="Click to view full energy breakdown"><div class="energy-hud-total"><span class="energy-hud-icon">⚡</span><span class="energy-hud-amount" id="p1-energy">5</span></div><div class="energy-hud-pips" id="p1-energy-pips"></div><span class="energy-hud-expand">▸</span></div>
-          <div class="energy-breakdown" id="p1-color-energy"></div>
-        </div>
-        <div class="discard-badge" onclick="showDiscard(1)">🗑<span id="p1-discard-count">0</span></div>
-        <div class="rift-badge" onclick="showRiftZone(1)" title="Rift Zone — permanently banished cards">🌀<span id="p1-rift-count">0</span></div>
-        <span style="font-size:10px;color:#4b5563;display:none">Dk:<span id="p1-deck-count">49</span></span>
-      </div>
-    </div>
-    <div class="field-wrapper">
-      <div class="herald-zone" id="p1-herald-zone">
-        <div class="herald-zone-label">HERALD</div>
-        <div id="p1-herald-slot"></div>
-      </div>
-      <div class="deck-pile-wrap" id="p1-deck-pile-wrap">
-        <div class="deck-pile" id="p1-deck-pile" onclick="onDeckClick(1)"></div>
-        <div class="deck-pile-label">Dk:<span id="p1-deck-count-pile">49</span></div>
-      </div>
-      <div class="rift-zone-wrap" id="p1-rift-wrap">
-        <div class="rift-zone-label">RIFT</div>
-        <div class="rift-zone-pile rift-zone-empty" id="p1-rift-pile" onclick="showRiftZone(1)">
-          <span style="font-size:16px;color:rgba(168,85,247,.3)">🌀</span>
-        </div>
-        <div style="font-size:8px;color:#581c87;text-align:center">Rz:<span id="p1-rift-pile-count">0</span></div>
-      </div>
-      <div class="location-zone" id="p1-loc-zone">
-        <div class="location-zone-label">LOCATIONS</div>
-      </div>
-      <div class="char-field" id="p1-field"></div>
-    </div>
-  </div>
-
-  <!-- P1 hand -->
-  <div style="padding:0 2px">
-    <div class="hand-limit-bar" id="p1-hand-limit-bar">
-      <span style="font-size:10px;color:#4b5563">Hand:</span>
-      <span id="p1-hand-limit-display" class="hand-limit-ok">0/12</span>
-      <span style="font-size:10px;color:#4b5563;margin-left:4px">· <span style="color:#22c55e">green</span>=play · right-click=view · <span style="color:#ef4444">red border</span>=instant · <span style="color:#9ca3af">builder: right-click or 👁 to view</span></span>
-    </div>
-    <div class="hand-area" id="p1-hand"></div>
-  </div>
-
-  <!-- ══════════════ BOTTOM ACTION BAR ══════════════ -->
+  <!-- ══════════════ BOTTOM ACTION BAR (tools + end turn) ══════════════ -->
   <div id="bottom-action-bar">
-    <div class="action-bar-section phase-section">
-      <button class="phase-pill" id="ph-draw" onclick="doPhase('draw')"><span class="phase-pill-icon">🎴</span><span class="phase-pill-label">Draw</span></button>
-      <button class="phase-pill" id="ph-resource" onclick="doPhase('resource')"><span class="phase-pill-icon">⚡</span><span class="phase-pill-label">Resource</span></button>
-      <button class="phase-pill" id="ph-main" onclick="doPhase('main')"><span class="phase-pill-icon">⚔️</span><span class="phase-pill-label">Main</span></button>
-      <button class="phase-pill" id="ph-attack" onclick="doPhase('attack')"><span class="phase-pill-icon">🗡️</span><span class="phase-pill-label">Attack</span></button>
-    </div>
     <div class="action-bar-section tools-section">
       <button class="action-tool-btn" onclick="flipCoin()" title="Flip a coin">🪙</button>
       <button class="action-tool-btn" onclick="openDiceModal()" title="Roll dice">🎲</button>
@@ -4214,7 +4514,7 @@ textarea{
     <div class="action-bar-section end-section">
       <button class="end-turn-btn" id="ph-end" onclick="endTurnNow()"><span style="font-size:18px">⏭</span> END TURN</button>
     </div>
-    <div class="action-bar-section menu-section">
+    <div class="action-bar-section menu-section" style="position:absolute;right:18px">
       <button class="action-tool-btn" onclick="openGameSettings()" title="Settings">⚙️</button>
       <button class="action-tool-btn forfeit-tool" id="forfeit-btn" onclick="forfeitMatch()" title="Forfeit" style="display:none">🏳</button>
       <button class="action-tool-btn home" onclick="confirmReturnMenu()" title="Return to menu">🏠</button>
@@ -5434,20 +5734,92 @@ function killCard(p,fc){
   renderAll();checkWin();
 }
 
+let _pendingPrizePick = null; // {player, onDone} when a player must choose a prize
+
 function claimPrize(p){
   const pl=G.players[p];
   const maxPrizes=G.prizeCount||6;
   if(pl.prizesClaimed>=maxPrizes)return;
-  const cid=pl.prizes[pl.prizesClaimed];pl.prizesClaimed++;
+  if(p===1){
+    // Local player CHOOSES which prize to take — flag claimable prizes
+    _pendingPrizePick = {player:1};
+    log('🎖 Choose a Prize Card to claim! (click a glowing prize)','gain');
+    renderPrizes(1);
+  } else {
+    // AI picks a random remaining prize automatically
+    const remainingIndices=[];
+    for(let i=pl.prizesClaimed;i<maxPrizes;i++)remainingIndices.push(i);
+    // (prizes are claimed in order for AI; just take the next)
+    resolvePrizeClaim(2, pl.prizesClaimed);
+  }
+}
+
+// Called when local player clicks a glowing prize card
+function pickPrizeCard(p, index){
+  if(!_pendingPrizePick || _pendingPrizePick.player!==p)return;
+  _pendingPrizePick = null;
+  resolvePrizeClaim(p, index);
+}
+
+// Actually resolve a prize claim — handles the swap, animation, hand add
+function resolvePrizeClaim(p, index){
+  const pl=G.players[p];
+  const maxPrizes=G.prizeCount||6;
+  // The card at the chosen index. We swap it to the "claimed" front so claimedCount logic stays simple.
+  let cid = pl.prizes[index];
+  // If player picked a later index, swap it into the next-claimed slot
+  if(index !== pl.prizesClaimed){
+    const tmp = pl.prizes[pl.prizesClaimed];
+    pl.prizes[pl.prizesClaimed] = pl.prizes[index];
+    pl.prizes[index] = tmp;
+    cid = pl.prizes[pl.prizesClaimed];
+  }
+  pl.prizesClaimed++;
   // Safety: heralds should never be in prizes
   if(isHerald(DB[cid])){
-    log(`🎖 P${p} claims Prize ${pl.prizesClaimed} (Herald removed from prizes).`,'gain');
-    claimPrize(p);return;
+    log(`🎖 P${p} claims Prize ${pl.prizesClaimed} (Herald removed).`,'gain');
+    renderPrizes(p);
+    claimPrize(p);
+    return;
   }
-  const fc=newFC(cid);if(fc)pl.hand.push(fc);
-  log(`🎖 P${p} claims Prize ${pl.prizesClaimed}/${maxPrizes}: ${DB[cid]?.name||cid}!`,'gain');
-  checkHandLimit(p);
-  if(pl.prizesClaimed>=maxPrizes)setTimeout(()=>triggerWin(p,'all '+maxPrizes+' Prizes claimed!'),300);
+  // Show the prize reveal animation, THEN add to hand
+  showPrizeReveal(cid, p, ()=>{
+    const fc=newFC(cid);if(fc)pl.hand.push(fc);
+    log(`🎖 P${p} claims Prize ${pl.prizesClaimed}/${maxPrizes}: ${DB[cid]?.name||cid}!`,'gain');
+    checkHandLimit(p);
+    renderAll();
+    if(pl.prizesClaimed>=maxPrizes)setTimeout(()=>triggerWin(p,'all '+maxPrizes+' Prizes claimed!'),400);
+  });
+}
+
+// Prize reveal animation — flip card face-up center screen, then fly to hand
+function showPrizeReveal(cardId, p, onDone){
+  const c=DB[cardId];
+  if(!c){ if(onDone)onDone(); return; }
+  // Respect animation setting
+  if(typeof _gameSettings!=='undefined' && !_gameSettings.animations){
+    if(onDone)onDone();
+    return;
+  }
+  const overlay=document.getElementById('prize-reveal-overlay');
+  const inner=document.getElementById('prize-reveal-card');
+  if(!overlay||!inner){ if(onDone)onDone(); return; }
+  const url=getImg(cardId);
+  inner.innerHTML = '<div class="prize-reveal-flip">'
+    + '<div class="prize-reveal-back">'+(getImg('cardback')?'<img src="'+getImg('cardback')+'"/>':'✦')+'</div>'
+    + '<div class="prize-reveal-front">'+(url?'<img src="'+url+'"/>':'<div style="padding:30px;font-size:40px">'+(c.sym||'?')+'</div>')+'</div>'
+    + '</div>'
+    + '<div class="prize-reveal-name">'+c.name+'</div>';
+  overlay.classList.add('open');
+  if(typeof SFX!=='undefined')SFX.energy();
+  // Trigger flip
+  setTimeout(()=>{ inner.querySelector('.prize-reveal-flip')?.classList.add('flipped'); }, 100);
+  // Hold, then close + callback
+  setTimeout(()=>{
+    overlay.classList.remove('open');
+    if(typeof SFX!=='undefined')SFX.cardPlay();
+    if(onDone)onDone();
+  }, 1800);
 }
 
 // Combined Mode: claim 1 prize when opponent's Herald is hit
@@ -7702,6 +8074,72 @@ function showHealPopup(player,text,targetUid){
 // ═══════════════════════════════════════════════════
 
 
+
+// ═══════════════════════════════════════════════════
+// HOVER CARD PREVIEW (right sidebar)
+// ═══════════════════════════════════════════════════
+function showHoverPreview(cardId){
+  const c=DB[cardId];
+  if(!c)return;
+  const placeholder=document.getElementById('hover-preview-placeholder');
+  const contentEl=document.getElementById('hover-preview-content');
+  if(!contentEl)return;
+  if(placeholder)placeholder.style.display='none';
+  contentEl.style.display='block';
+
+  const url=getImg(cardId);
+  const colDef=c.color&&typeof COLOR_DEFS!=='undefined'&&COLOR_DEFS[c.color]?COLOR_DEFS[c.color]:null;
+  const rarity=(typeof getRarity==='function')?getRarity(cardId):null;
+  const rDef=rarity&&typeof RARITY_DEFS!=='undefined'?RARITY_DEFS[rarity]:null;
+
+  let html='';
+  if(url){
+    html+='<img src="'+url+'" class="hover-preview-img" alt=""/>';
+  }
+  html+='<div class="hover-preview-name">'+c.name+'</div>';
+  html+='<div class="hover-preview-meta">';
+  if(colDef)html+='<span style="color:'+colDef.hex+'">●</span> '+colDef.label+' · ';
+  html+=(c.type||'').replace('_',' ').toUpperCase();
+  if(rDef)html+=' · <span style="color:'+rDef.hex+'">'+rDef.label+'</span>';
+  html+='</div>';
+  if(c.subtypes&&c.subtypes.length){
+    html+='<div style="text-align:center;font-size:10px;color:#9ca3af;margin-bottom:8px">'+c.subtypes.join(' · ')+'</div>';
+  }
+  // Stats
+  if(c.atk!=null && (c.atk>0||c.hp>0)){
+    html+='<div class="hover-preview-stats">';
+    html+='<span style="color:#fbbf24">⚔ '+c.atk+'</span>';
+    html+='<span style="color:#22c55e">♥ '+c.hp+'</span>';
+    if(c.cost!=null)html+='<span style="color:#a5b4fc">⚡ '+c.cost+'</span>';
+    html+='</div>';
+  } else if(c.cost!=null){
+    html+='<div class="hover-preview-stats"><span style="color:#a5b4fc">⚡ Cost '+c.cost+'</span></div>';
+  }
+  // Abilities
+  if(c.abilities&&c.abilities.length){
+    c.abilities.forEach(ab=>{
+      html+='<div class="hover-preview-ability">';
+      html+='<div class="hover-preview-ability-name">'+(ab.label||'Ability')+(ab.cost?' ('+ab.cost+'⚡)':'')+'</div>';
+      html+='<div class="hover-preview-ability-text">'+(ab.text||'')+'</div>';
+      html+='</div>';
+    });
+  }
+  if(c.keywords&&c.keywords.length&&typeof KEYWORDS!=='undefined'){
+    html+='<div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:6px">';
+    c.keywords.forEach(kw=>{ if(KEYWORDS[kw])html+='<span class="kw-badge '+KEYWORDS[kw].cls+'">'+KEYWORDS[kw].label+'</span>'; });
+    html+='</div>';
+  }
+  contentEl.innerHTML=html;
+}
+
+function clearHoverPreview(){
+  const placeholder=document.getElementById('hover-preview-placeholder');
+  const contentEl=document.getElementById('hover-preview-content');
+  if(contentEl){ contentEl.style.display='none'; contentEl.innerHTML=''; }
+  if(placeholder)placeholder.style.display='flex';
+}
+
+
 // ═══════════════════════════════════════════════════
 // HOLO OWNERSHIP & ADMIN PREVIEW MODE
 // _holoOwned = { cardId: 'cosmic' | 'gold' | 'classic' | 'reverse' }
@@ -8185,8 +8623,35 @@ function updateHandLimitDisplay(p){
 }
 
 function renderPrizes(p){
-  const el=document.getElementById(`p${p}-prizes`),pl=G.players[p];el.innerHTML='';
-  const _maxP=G?.prizeCount||6;for(let i=0;i<_maxP;i++){const d=document.createElement('div');d.className='prize-pip'+(i<pl.prizesClaimed?' claimed':'');d.textContent=i<pl.prizesClaimed?'✓':'?';el.appendChild(d);}
+  const el=document.getElementById(`p${p}-prizes`),pl=G.players[p];
+  if(!el)return;
+  el.innerHTML='';
+  const _maxP=G?.prizeCount||6;
+  const backUrl=(typeof getImg==='function')?getImg('cardback'):null;
+  // Is THIS player currently allowed to pick a prize? (only the local player picks, only when flagged)
+  const canPick = (p===1) && _pendingPrizePick && _pendingPrizePick.player===1;
+  for(let i=0;i<_maxP;i++){
+    const claimed = i<pl.prizesClaimed;
+    const d=document.createElement('div');
+    d.className='prize-card'+(claimed?' claimed':'');
+    if(!claimed && canPick){
+      d.classList.add('claimable');
+      d.onclick=()=>pickPrizeCard(p, i);
+    }
+    if(!claimed){
+      if(backUrl){
+        const img=document.createElement('img');
+        img.src=backUrl;img.className='prize-back-img';
+        d.appendChild(img);
+      } else {
+        const ph=document.createElement('div');
+        ph.className='prize-card-placeholder';
+        ph.textContent='✦';
+        d.appendChild(ph);
+      }
+    }
+    el.appendChild(d);
+  }
 }
 
 function renderField(p){
@@ -8214,6 +8679,7 @@ function renderField(p){
       <div class="status-icons">${fc.frozen>0?`❄${fc.frozen}`:''}${fc.paralyzed?'⚡':''}${fc.attachments&&fc.attachments.length?'🛡':''}${c.isToken?'⭐':''}</div>`;
     div.appendChild(info);
     div.onclick=()=>onFieldClick(p,fc.uid,fc);
+    div.onmouseenter=()=>showHoverPreview(fc.cid);
     el.appendChild(div);
   });
 }
@@ -8232,6 +8698,7 @@ function renderLocZone(p){
     info.innerHTML=`<div class="card-name-sm">${c.name}</div><div style="font-size:7px;color:#86efac">LOC</div><div style="font-size:8px;color:${hpCol}">🛡${fc.currentHP}</div><div class="hp-bar-wrap"><div class="hp-bar-fill" style="width:${pct}%;background:${hpCol}"></div></div>`;
     div.appendChild(info);
     div.onclick=()=>onFieldClick(p,fc.uid,fc);
+    div.onmouseenter=()=>showHoverPreview(fc.cid);
     el.appendChild(div);
   });
 }
@@ -8276,6 +8743,7 @@ function renderHand(){
     div.appendChild(info);
     div.onclick=()=>onHandClick(1,fc.uid,fc);
     div.oncontextmenu=e=>{e.preventDefault();showFullCard(fc.cid,null);};
+    div.onmouseenter=()=>showHoverPreview(fc.cid);
     el.appendChild(div);
   });
 }
@@ -13378,6 +13846,12 @@ window.addEventListener('load',async()=>{
      Fires when any Instant is played or activated ability used.
      Visible to both players. Auto-dismisses after 2.5 seconds.
      ══════════════════════════════════════════════════════ -->
+
+
+<!-- Prize reveal overlay (flip animation) -->
+<div id="prize-reveal-overlay">
+  <div id="prize-reveal-card"></div>
+</div>
 
 <!-- Card play zoom animation overlay -->
 
