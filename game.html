@@ -4496,6 +4496,250 @@ textarea{
   .xp-bar-wrap{min-width:64px;}
   .xp-bar-label{display:none;}
 }
+
+/* ═══════════════════════════════════════════════════════
+   MOBILE OPTIMIZATION — only active on phones (<=768px)
+   Desktop layout is completely untouched.
+   Smart hybrid: board stays focused, side panels become drawers.
+   ═══════════════════════════════════════════════════════ */
+
+/* Drawer tab + backdrop are hidden on desktop */
+.mobile-drawer-tab{ display:none; }
+.mobile-drawer-backdrop{ display:none; }
+
+@media (max-width:768px){
+  /* ─── Game screen container ─── */
+  #game-screen{
+    padding:4px 6px 0;
+    height:calc(100vh - 46px);
+    height:calc(100dvh - 46px);
+  }
+
+  /* ─── Battle layout: collapse 3 columns → single board column ─── */
+  .battle-layout{
+    grid-template-columns:1fr !important;
+    gap:6px;
+  }
+
+  /* Board column is the full-width focus */
+  .board-column{
+    gap:5px;
+  }
+
+  /* ─── LEFT SIDEBAR (prizes + player panels) → slide-in drawer ─── */
+  .prize-sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    bottom:0;
+    width:82vw;
+    max-width:340px;
+    z-index:9300;
+    transform:translateX(-105%);
+    transition:transform .28s cubic-bezier(.4,0,.2,1);
+    box-shadow:6px 0 30px rgba(0,0,0,.6);
+    border-radius:0 16px 16px 0;
+    padding-top:50px;
+  }
+  #game-screen.drawer-prizes-open .prize-sidebar{
+    transform:translateX(0);
+  }
+
+  /* ─── RIGHT SIDEBAR (hover preview) hidden on mobile ─── */
+  /* On touch there's no hover; card preview uses a bottom sheet instead */
+  .hover-preview-sidebar{
+    display:none !important;
+  }
+
+  /* ─── Drawer tab button (left edge) ─── */
+  .mobile-drawer-tab{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:fixed;
+    top:50%;
+    transform:translateY(-50%);
+    left:0;
+    width:34px;
+    height:64px;
+    background:linear-gradient(135deg,rgba(30,22,55,.95),rgba(18,14,38,.95));
+    border:1px solid rgba(200,164,74,.4);
+    border-left:none;
+    border-radius:0 12px 12px 0;
+    font-size:20px;
+    z-index:9200;
+    cursor:pointer;
+    box-shadow:2px 2px 12px rgba(0,0,0,.5);
+  }
+  #game-screen.drawer-prizes-open #mobile-prizes-tab{
+    left:82vw;
+    max-width:none;
+  }
+
+  /* ─── Drawer backdrop ─── */
+  .mobile-drawer-backdrop{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.5);
+    z-index:9250;
+  }
+  #game-screen.drawer-prizes-open .mobile-drawer-backdrop{
+    display:block;
+  }
+
+  /* ─── Player area: tighter on mobile ─── */
+  .player-area{
+    padding:6px 8px;
+    border-radius:10px;
+  }
+  .player-area-header{
+    margin-bottom:4px;
+  }
+  .player-area-header span{
+    font-size:12px !important;
+  }
+
+  /* ─── Field wrapper: allow horizontal scroll for zones ─── */
+  .field-wrapper{
+    gap:5px;
+    overflow-x:auto;
+    overflow-y:visible;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  /* Shrink the herald / deck / rift / location zones on mobile */
+  .herald-zone{ min-width:74px; max-width:74px; }
+  .herald-slot{ width:64px; height:90px; }
+  .deck-pile-wrap{ min-width:54px; }
+  .deck-pile{ width:54px; height:76px; }
+  .rift-zone-wrap{ min-width:60px; }
+  .rift-zone-pile{ width:52px; height:74px; }
+  .location-zone{ min-width:80px; max-width:80px; padding:5px; }
+
+  /* ─── Cards smaller on mobile ─── */
+  .card-slot{ width:78px; height:110px; }
+  .card-art-area{ height:70px; font-size:22px; }
+  .card-name-sm{ font-size:8px; }
+  .hand-card{ width:72px; height:102px; }
+  .hand-art-area{ height:64px; font-size:20px; }
+
+  /* Hover-zoom is smaller on mobile (and tap-based) */
+  .card-slot:hover{
+    transform:scale(1.15) translateY(-8px);
+  }
+  .hand-card:hover{
+    transform:translateY(-8px) scale(1.08);
+  }
+
+  /* ─── Center command bar: horizontal scroll, stays one row ─── */
+  .center-strip{
+    height:auto;
+    flex-wrap:wrap;
+    gap:5px;
+    padding:2px 0;
+  }
+  .phase-bar-center{
+    padding:0 5px;
+    gap:3px;
+    height:42px;
+    overflow-x:auto;
+  }
+  .phase-pill{ padding:3px 6px; }
+  .phase-pill-label{ font-size:8px; }
+  .phase-pill-icon{ font-size:13px; }
+  .center-tools{
+    padding:0 5px;
+    gap:3px;
+    height:42px;
+  }
+  .center-tools .action-tool-btn{
+    width:32px; height:32px; font-size:15px;
+  }
+  .center-strip .end-turn-btn{
+    height:40px;
+    font-size:12px;
+    padding:0 12px;
+  }
+  .center-strip .log-box{
+    flex:1 1 100%;
+    height:48px;
+    min-height:48px;
+    margin-left:0;
+    font-size:9px;
+  }
+
+  /* ─── Hand dock at bottom ─── */
+  .hand-dock-label{
+    font-size:9px;
+    gap:5px;
+  }
+  .hand-area{
+    padding:20px 6px 4px;
+    gap:5px;
+  }
+
+  /* ─── Floating menu cluster (settings/home) ─── */
+  #game-menu-cluster{
+    bottom:8px;
+    right:8px;
+    gap:6px;
+  }
+  #game-menu-cluster .action-tool-btn{
+    width:38px; height:38px; font-size:17px;
+  }
+
+  /* ─── Prize cards in drawer: 2-col grid, properly sized ─── */
+  .prize-card{ width:60px; height:84px; }
+
+  /* ─── Top HUD: compact on mobile ─── */
+  .hud-bar{ padding:4px 8px; gap:6px; }
+  .hud-logo{ font-size:13px; }
+  .hud-identity{ display:none; } /* hide welcome/avatar block to save space in-game */
+  .xp-badge{ padding:3px 8px 3px 3px; }
+  .xp-bar-wrap{ min-width:70px; }
+  .xp-level-ring{ width:26px; height:26px; font-size:11px; }
+}
+
+/* Extra-small phones */
+@media (max-width:420px){
+  .card-slot{ width:68px; height:96px; }
+  .card-art-area{ height:60px; }
+  .hand-card{ width:64px; height:90px; }
+  .hand-art-area{ height:56px; }
+  .prize-card{ width:54px; height:76px; }
+}
+
+/* ─── MOBILE CARD PREVIEW BOTTOM SHEET (replaces hover on touch) ─── */
+.mobile-card-sheet{
+  display:none;
+  position:fixed;
+  left:0; right:0; bottom:0;
+  z-index:9400;
+  background:linear-gradient(160deg,rgba(20,16,42,.98),rgba(10,8,24,.99));
+  border-top:2px solid rgba(200,164,74,.4);
+  border-radius:18px 18px 0 0;
+  padding:14px 16px 20px;
+  box-shadow:0 -8px 30px rgba(0,0,0,.6);
+  transform:translateY(105%);
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+  max-height:70vh;
+  overflow-y:auto;
+}
+.mobile-card-sheet.open{ transform:translateY(0); }
+.mobile-card-sheet-handle{
+  width:40px; height:4px; border-radius:2px;
+  background:rgba(200,164,74,.4);
+  margin:0 auto 12px;
+}
+.mobile-card-sheet-close{
+  position:absolute; top:10px; right:14px;
+  background:none; border:none; color:#9ca3af;
+  font-size:22px; cursor:pointer;
+}
+@media (min-width:769px){
+  .mobile-card-sheet{ display:none !important; }
+}
 </style>
 </head>
 <body>
@@ -4759,6 +5003,10 @@ textarea{
 
 <!-- GAME SCREEN -->
 <div id="game-screen">
+  <!-- MOBILE-ONLY: drawer toggle buttons (hidden on desktop via CSS) -->
+  <button class="mobile-drawer-tab" id="mobile-prizes-tab" onclick="toggleMobileDrawer('prizes')" title="Prizes & Players">🏆</button>
+  <div class="mobile-drawer-backdrop" id="mobile-drawer-backdrop" onclick="closeMobileDrawers()"></div>
+
   <!-- LEFT: Prize columns + Right: hover preview, with board in middle -->
   <div class="battle-layout">
 
@@ -4935,6 +5183,13 @@ textarea{
       <div class="hover-preview-content" id="hover-preview-content" style="display:none"></div>
     </div>
 
+  </div>
+
+  <!-- MOBILE-ONLY: card preview bottom sheet (replaces hover on touch) -->
+  <div class="mobile-card-sheet" id="mobile-card-sheet">
+    <div class="mobile-card-sheet-handle"></div>
+    <button class="mobile-card-sheet-close" onclick="closeMobileCardSheet()">✕</button>
+    <div id="mobile-card-sheet-content"></div>
   </div>
 
   <!-- Floating menu cluster (settings / forfeit / home) -->
@@ -8560,11 +8815,81 @@ function showHealPopup(player,text,targetUid){
 
 
 // ═══════════════════════════════════════════════════
+// MOBILE: drawer toggles + card preview bottom sheet
+// ═══════════════════════════════════════════════════
+function isMobileView(){
+  return window.matchMedia('(max-width:768px)').matches;
+}
+function toggleMobileDrawer(which){
+  const gs=document.getElementById('game-screen');
+  if(!gs)return;
+  if(which==='prizes'){
+    gs.classList.toggle('drawer-prizes-open');
+  }
+}
+function closeMobileDrawers(){
+  const gs=document.getElementById('game-screen');
+  if(gs)gs.classList.remove('drawer-prizes-open');
+}
+// Show card preview in the bottom sheet (mobile tap-to-preview)
+function showMobileCardSheet(cardId){
+  const c=DB[cardId];
+  if(!c)return;
+  const sheet=document.getElementById('mobile-card-sheet');
+  const contentEl=document.getElementById('mobile-card-sheet-content');
+  if(!sheet||!contentEl)return;
+  const url=getImg(cardId);
+  const colDef=c.color&&typeof COLOR_DEFS!=='undefined'&&COLOR_DEFS[c.color]?COLOR_DEFS[c.color]:null;
+  const rarity=(typeof getRarity==='function')?getRarity(cardId):null;
+  const rDef=rarity&&typeof RARITY_DEFS!=='undefined'?RARITY_DEFS[rarity]:null;
+  let html='<div style="display:flex;gap:14px;align-items:flex-start">';
+  if(url){
+    html+='<img src="'+url+'" style="width:120px;border-radius:10px;border:2px solid rgba(200,164,74,.4);flex-shrink:0"/>';
+  }
+  html+='<div style="flex:1;min-width:0">';
+  html+='<div style="font-family:\'Cinzel\',serif;font-size:16px;color:#e8c570;margin-bottom:4px">'+c.name+'</div>';
+  html+='<div style="font-size:11px;color:#a5b4fc;margin-bottom:6px">';
+  if(colDef)html+='<span style="color:'+colDef.hex+'">●</span> '+colDef.label+' · ';
+  html+=(c.type||'').replace('_',' ').toUpperCase();
+  if(rDef)html+=' · <span style="color:'+rDef.hex+'">'+rDef.label+'</span>';
+  html+='</div>';
+  if(c.atk!=null&&(c.atk>0||c.hp>0)){
+    html+='<div style="display:flex;gap:14px;margin-bottom:8px;font-size:15px;font-weight:700">';
+    html+='<span style="color:#fbbf24">⚔ '+c.atk+'</span><span style="color:#22c55e">♥ '+c.hp+'</span>';
+    if(c.cost!=null)html+='<span style="color:#a5b4fc">⚡ '+c.cost+'</span>';
+    html+='</div>';
+  }
+  html+='</div></div>';
+  // Abilities below
+  if(c.abilities&&c.abilities.length){
+    html+='<div style="margin-top:12px">';
+    c.abilities.forEach(ab=>{
+      html+='<div style="background:rgba(20,15,40,.7);border:1px solid rgba(200,164,74,.2);border-radius:8px;padding:8px 10px;margin-bottom:6px">';
+      html+='<div style="font-family:\'Cinzel\',serif;font-size:12px;color:#c8a44a;margin-bottom:3px">'+(ab.label||'Ability')+(ab.cost?' ('+ab.cost+'⚡)':'')+'</div>';
+      html+='<div style="font-size:11px;color:#cbd5e1;line-height:1.4">'+(ab.text||'')+'</div>';
+      html+='</div>';
+    });
+    html+='</div>';
+  }
+  contentEl.innerHTML=html;
+  sheet.classList.add('open');
+}
+function closeMobileCardSheet(){
+  const sheet=document.getElementById('mobile-card-sheet');
+  if(sheet)sheet.classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════
 // HOVER CARD PREVIEW (right sidebar)
 // ═══════════════════════════════════════════════════
 function showHoverPreview(cardId){
   const c=DB[cardId];
   if(!c)return;
+  // On mobile, route to the bottom sheet instead of the (hidden) right sidebar
+  if(typeof isMobileView==='function' && isMobileView()){
+    showMobileCardSheet(cardId);
+    return;
+  }
   const placeholder=document.getElementById('hover-preview-placeholder');
   const contentEl=document.getElementById('hover-preview-content');
   if(!contentEl)return;
