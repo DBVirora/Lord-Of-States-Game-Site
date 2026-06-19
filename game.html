@@ -10703,10 +10703,12 @@ async function loadDisabledCards(){
 async function saveDisabledCards(){
   if(!isAdmin() || !_celSB) return;
   try{
-    await _celSB.from('app_settings').upsert(
+    const { error } = await _celSB.from('app_settings').upsert(
       {key:'disabled_cards', value:JSON.stringify(_disabledCards), updated_at:new Date().toISOString()},
       {onConflict:'key'}
     );
+    if(error){ console.error('[DisabledCards] SAVE BLOCKED:', error); alert('Save failed (disabled_cards): '+error.message+'\n\nThis is almost certainly a Row-Level Security policy on app_settings. See ADMIN-WRITE-FIX.txt.'); }
+    else { console.log('[DisabledCards] saved OK'); }
   }catch(e){ console.warn('[DisabledCards] save error:', e); alert('Failed to save: '+e.message); }
 }
 
@@ -10758,10 +10760,12 @@ async function loadNewsSlides(){
 async function saveNewsSlides(){
   if(!isAdmin() || !_celSB) return;
   try{
-    await _celSB.from('app_settings').upsert(
+    const { error } = await _celSB.from('app_settings').upsert(
       {key:'news_slides', value:JSON.stringify(_newsSlides), updated_at:new Date().toISOString()},
       {onConflict:'key'}
     );
+    if(error){ console.error('[News] SAVE BLOCKED:', error); alert('Save failed (news_slides): '+error.message+'\n\nThis is almost certainly a Row-Level Security policy on app_settings. See ADMIN-WRITE-FIX.txt.'); }
+    else { console.log('[News] saved OK'); }
   }catch(e){ alert('Failed to save news: '+e.message); }
 }
 
