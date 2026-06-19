@@ -4746,14 +4746,15 @@ textarea{
    ═══════════════════════════════════════════════════════ */
 .news-carousel{
   position:absolute;
-  left:3vw;
-  top:50%;
-  transform:translateY(-50%);
-  /* Right edge must stay clear of the centered menu column.
-     Menu is ~360px wide centered on 50vw, so its left edge ≈ calc(50vw - 230px).
-     Cap the carousel width so right edge = (that) - 24px gap. */
-  width:min(34vw, calc(50vw - 230px - 3vw - 24px), 560px);
-  height:min(58vh,520px);
+  left:3.5vw;
+  top:70px;
+  bottom:30px;
+  /* Fill the left column: right edge stays clear of the centered menu.
+     Menu column is ~360px wide centered on 50vw → its left edge ≈ 50vw - 200px.
+     Width = from left:3.5vw to (menu left edge - 28px gap). */
+  width:calc(50vw - 200px - 3.5vw - 28px);
+  max-width:900px;
+  height:auto;
   border-radius:18px;
   overflow:hidden;
   border:1px solid rgba(200,164,74,.3);
@@ -4786,7 +4787,7 @@ textarea{
 .news-slide-content{
   position:relative;
   z-index:2;
-  padding:26px 30px 32px;
+  padding:34px 40px 40px;
   text-align:left;
 }
 .news-slide-tag{
@@ -4806,7 +4807,7 @@ textarea{
 .news-tag-soon{ background:rgba(74,144,226,.22); color:#7cb0f0; border:1px solid rgba(74,144,226,.5); }
 .news-slide-headline{
   font-family:'Cinzel',serif;
-  font-size:30px;
+  font-size:38px;
   font-weight:900;
   color:#f4e9c8;
   line-height:1.1;
@@ -4814,10 +4815,10 @@ textarea{
   text-shadow:0 2px 16px rgba(0,0,0,.8);
 }
 .news-slide-blurb{
-  font-size:14px;
+  font-size:16px;
   color:#cbd5e1;
-  line-height:1.5;
-  max-width:90%;
+  line-height:1.55;
+  max-width:80%;
   text-shadow:0 1px 8px rgba(0,0,0,.8);
 }
 .news-slide-cta{
@@ -4843,8 +4844,8 @@ textarea{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:120px;
-  opacity:.18;
+  font-size:200px;
+  opacity:.15;
 }
 /* Dots */
 .news-carousel-dots{
@@ -10473,6 +10474,7 @@ const ACHIEVEMENTS={
     title:"The Hunted",
     desc:"Destroy 20 character cards.",
     icon:'🩸',
+    img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Achivements%20emblems/The%20Hunted%235%20ACH.png',
     reward:500,
     xpReward:500,
     check:()=>(_achData.chars_destroyed||0)>=20
