@@ -335,7 +335,7 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .modal::before{top:6px;left:6px;border-width:1px 0 0 1px}
 .modal::after{bottom:6px;right:6px;border-width:0 1px 1px 0}
 .modal h2{color:#c4b5fd;margin-bottom:10px;font-size:13px;font-family:'Orbitron',sans-serif;letter-spacing:3px}
-#fullcard-modal{z-index:200}
+#fullcard-modal{z-index:10500}
 .fullcard-img-wrap{width:100%;max-width:420px;margin:0 auto 12px;border-radius:12px;overflow:hidden;background:#1e1e3a;display:flex;align-items:center;justify-content:center;font-size:90px;}
 .fullcard-img-wrap img{width:100%;height:auto;display:block;object-fit:contain}
 .fullcard-stat-row{display:flex;gap:22px;margin-bottom:12px;flex-wrap:wrap;justify-content:center}
@@ -4740,6 +4740,182 @@ textarea{
 @media (min-width:769px){
   .mobile-card-sheet{ display:none !important; }
 }
+
+/* ═══════════════════════════════════════════════════════
+   NEWS CAROUSEL (main menu left area)
+   ═══════════════════════════════════════════════════════ */
+.news-carousel{
+  position:absolute;
+  left:3vw;
+  top:50%;
+  transform:translateY(-50%);
+  /* Right edge must stay clear of the centered menu column.
+     Menu is ~360px wide centered on 50vw, so its left edge ≈ calc(50vw - 230px).
+     Cap the carousel width so right edge = (that) - 24px gap. */
+  width:min(34vw, calc(50vw - 230px - 3vw - 24px), 560px);
+  height:min(58vh,520px);
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid rgba(200,164,74,.3);
+  box-shadow:0 12px 50px rgba(0,0,0,.5),inset 0 1px 0 rgba(200,164,74,.12);
+  background:linear-gradient(160deg,rgba(18,14,38,.7),rgba(10,8,24,.85));
+  z-index:6;
+}
+.news-carousel-track{
+  display:flex;
+  height:100%;
+  transition:transform .55s cubic-bezier(.4,0,.2,1);
+}
+.news-slide{
+  min-width:100%;
+  height:100%;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+}
+.news-slide::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to top,rgba(5,3,12,.92) 0%,rgba(5,3,12,.55) 38%,rgba(5,3,12,.12) 70%,transparent 100%);
+}
+.news-slide-content{
+  position:relative;
+  z-index:2;
+  padding:26px 30px 32px;
+  text-align:left;
+}
+.news-slide-tag{
+  display:inline-block;
+  font-family:'Share Tech Mono',monospace;
+  font-size:11px;
+  letter-spacing:2px;
+  font-weight:700;
+  padding:4px 12px;
+  border-radius:20px;
+  margin-bottom:12px;
+  text-transform:uppercase;
+}
+.news-tag-new{ background:rgba(34,197,94,.25); color:#4ade80; border:1px solid rgba(34,197,94,.5); }
+.news-tag-event{ background:rgba(168,85,247,.25); color:#c084fc; border:1px solid rgba(168,85,247,.5); }
+.news-tag-season{ background:rgba(251,191,36,.22); color:#fbbf24; border:1px solid rgba(251,191,36,.5); }
+.news-tag-soon{ background:rgba(74,144,226,.22); color:#7cb0f0; border:1px solid rgba(74,144,226,.5); }
+.news-slide-headline{
+  font-family:'Cinzel',serif;
+  font-size:30px;
+  font-weight:900;
+  color:#f4e9c8;
+  line-height:1.1;
+  margin-bottom:8px;
+  text-shadow:0 2px 16px rgba(0,0,0,.8);
+}
+.news-slide-blurb{
+  font-size:14px;
+  color:#cbd5e1;
+  line-height:1.5;
+  max-width:90%;
+  text-shadow:0 1px 8px rgba(0,0,0,.8);
+}
+.news-slide-cta{
+  display:inline-block;
+  margin-top:14px;
+  font-family:'Cinzel',serif;
+  font-size:12px;
+  letter-spacing:1px;
+  color:#e8c570;
+  border:1px solid rgba(200,164,74,.5);
+  border-radius:8px;
+  padding:7px 16px;
+  background:rgba(200,164,74,.1);
+  transition:all .15s;
+}
+.news-slide:hover .news-slide-cta{
+  background:rgba(200,164,74,.25);
+  box-shadow:0 0 14px rgba(200,164,74,.3);
+}
+.news-slide-fallback-art{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:120px;
+  opacity:.18;
+}
+/* Dots */
+.news-carousel-dots{
+  position:absolute;
+  bottom:14px;
+  right:18px;
+  z-index:4;
+  display:flex;
+  gap:7px;
+}
+.news-dot{
+  width:9px;height:9px;border-radius:50%;
+  background:rgba(255,255,255,.3);
+  cursor:pointer;
+  transition:all .2s;
+}
+.news-dot.active{
+  background:#e8c570;
+  box-shadow:0 0 8px rgba(232,197,112,.7);
+  width:22px;border-radius:5px;
+}
+/* Arrows */
+.news-carousel-arrow{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:4;
+  width:38px;height:38px;
+  border-radius:50%;
+  background:rgba(10,8,24,.6);
+  border:1px solid rgba(200,164,74,.3);
+  color:#e8c570;
+  font-size:22px;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;
+  transition:opacity .2s,background .15s;
+}
+.news-carousel:hover .news-carousel-arrow{ opacity:1; }
+.news-carousel-arrow:hover{ background:rgba(40,28,70,.85); }
+.news-arrow-prev{ left:12px; }
+.news-arrow-next{ right:12px; }
+.news-carousel-admin-edit{
+  position:absolute;
+  top:12px;
+  right:14px;
+  z-index:5;
+  width:34px;height:34px;
+  border-radius:9px;
+  background:rgba(10,8,24,.75);
+  border:1px solid rgba(251,191,36,.5);
+  color:#fbbf24;
+  font-size:15px;
+  cursor:pointer;
+}
+.news-carousel-admin-edit:hover{ background:rgba(40,28,70,.9); }
+
+/* Hide carousel when the screen is too narrow to fit it beside the menu */
+@media (max-width:1400px){
+  .news-carousel{ display:none; }
+}
+
+/* News editor inputs */
+.news-ed-lbl{ display:block;font-size:10px;color:#9ca3af;letter-spacing:.5px;margin:6px 0 2px; }
+.news-ed-input{
+  width:100%;box-sizing:border-box;
+  background:#0a0a18;color:#e2e8f0;
+  border:1px solid #3a3a5c;border-radius:6px;
+  padding:6px 9px;font-size:12px;font-family:inherit;
+}
+.news-ed-input:focus{ outline:none;border-color:#c8a44a; }
 </style>
 </head>
 <body>
@@ -4797,6 +4973,15 @@ textarea{
       <div class="featured-card-label">FEATURED EVENT</div>
       <div class="featured-card-name">VOID PRISM — Coming Soon</div>
     </div>
+  </div>
+
+  <!-- NEWS CAROUSEL (fills left area, Fortnite-style) -->
+  <div class="news-carousel" id="news-carousel">
+    <div class="news-carousel-track" id="news-carousel-track"></div>
+    <div class="news-carousel-dots" id="news-carousel-dots"></div>
+    <button class="news-carousel-arrow news-arrow-prev" onclick="newsCarouselPrev(event)">‹</button>
+    <button class="news-carousel-arrow news-arrow-next" onclick="newsCarouselNext(event)">›</button>
+    <button class="news-carousel-admin-edit" id="news-carousel-admin-edit" onclick="openNewsEditor(event)" style="display:none" title="Edit news slides">✎</button>
   </div>
 
   <!-- BATTLE section -->
@@ -5278,6 +5463,19 @@ textarea{
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeAllModals()">
   <div class="modal"><h2 id="modal-title"></h2><div id="modal-body"></div>
     <div style="margin-top:10px;text-align:right"><button class="btn-gray btn-sm" onclick="closeAllModals()">Close</button></div>
+  </div>
+</div>
+<!-- ADMIN: News slide editor modal -->
+<div class="modal-overlay" id="news-editor-modal" onclick="if(event.target===this)closeAllModals()">
+  <div class="modal" style="max-width:540px;width:92vw;max-height:90vh;overflow-y:auto;padding:20px">
+    <h2 style="color:#e8c570;font-family:'Cinzel',serif;font-size:18px;margin-bottom:4px">📰 News Carousel Editor</h2>
+    <div style="font-size:11px;color:#9ca3af;margin-bottom:14px">Add, edit, reorder, or remove the slides shown on the main menu. Changes save to all players.</div>
+    <div id="news-editor-list"></div>
+    <button class="btn-gray" style="width:100%;margin-bottom:8px;padding:9px" onclick="addNewsSlide()">+ Add Slide</button>
+    <div style="display:flex;gap:8px">
+      <button class="btn-gray" style="flex:1;padding:11px" onclick="closeAllModals()">Cancel</button>
+      <button class="btn-primary" style="flex:1;padding:11px" onclick="saveNewsEditor()">Save & Publish</button>
+    </div>
   </div>
 </div>
 <div class="modal-overlay" id="fullcard-modal" onclick="if(event.target===this)closeFullCard()">
@@ -7978,15 +8176,21 @@ function activateAbility(fc,abl){
   const pl=G.players[G.activePlayer];if(pl.energy<(abl.cost||0)){log('Not enough energy!','dmg');return;}
   spendEnergy(G.activePlayer, abl.cost||0, DB[fc.cid]?.color||null);fc.abilityUsed[abl.label]=true;
   log(`${DB[fc.cid].name}: ${abl.label}!`,'gain');
+  // IMPORTANT: close the ABILITIES MENU first so it's not stacked under the reveal.
+  closeAllModals();
   // Show dramatic Ability reveal popup (visible to both players)
   showAbilityReveal(fc.cid, G.activePlayer, abl.label, abl.text);
   if(G.activePlayer===1)sendGameAction('ability_reveal',{cardId:fc.cid,label:abl.label,text:abl.text});
-  // IMPORTANT: close the ABILITIES MENU now (before effects), so that any
-  // deck-search or dice-roll popup an effect opens is NOT immediately closed.
-  closeAllModals();
-  // Route to the specific effect handler
-  runAbilityEffect(fc, abl, pl);
   renderAll();
+  // SEQUENCE: let the ability reveal show on its own first, THEN run the
+  // effect (which may open a dice/coin roll or deck search). This prevents
+  // the reveal and the roll popup from appearing at the same instant.
+  const _revealHold = (typeof _gameSettings!=='undefined' && !_gameSettings.reveals) ? 0 : 1500;
+  setTimeout(()=>{
+    if(typeof closeInstantReveal==='function')closeInstantReveal(); // clear the reveal before the roll
+    runAbilityEffect(fc, abl, pl);
+    renderAll();
+  }, _revealHold);
 }
 
 // ═══════════════════════════════════════════════════
@@ -9336,6 +9540,10 @@ function setHoloStyle(style){
 
 
 function showFullCard(cid,fc){
+  // Clear any active hover state so the field card un-zooms behind the modal
+  if(typeof clearHoverPreview==='function')clearHoverPreview();
+  // Blur/remove focus so :hover doesn't keep the underlying card zoomed
+  if(document.activeElement && document.activeElement.blur)document.activeElement.blur();
   const c=DB[cid];if(!c)return;
   const wrap=document.getElementById('fullcard-content');wrap.innerHTML='';
   const imgWrap=document.createElement('div');imgWrap.className='fullcard-img-wrap';
@@ -10496,6 +10704,206 @@ async function saveDisabledCards(){
     );
   }catch(e){ console.warn('[DisabledCards] save error:', e); alert('Failed to save: '+e.message); }
 }
+
+// ═══════════════════════════════════════════════════════
+// NEWS CAROUSEL (main menu) — admin-editable via Supabase
+// ═══════════════════════════════════════════════════════
+let _newsSlides = null;
+let _newsIndex = 0;
+let _newsTimer = null;
+
+// Default slides shown if nothing set in Supabase yet
+const NEWS_DEFAULT_SLIDES = [
+  {
+    tag:'season', tagLabel:'Season 1',
+    headline:'Void Prism',
+    blurb:'The inaugural season has arrived. Climb the Battle Pass and unlock the 12-card Void Prism event set.',
+    img:'', cta:'View Battle Pass', link:'battle-pass-screen'
+  },
+  {
+    tag:'new', tagLabel:'New Card',
+    headline:'Volaris, Prism',
+    blurb:'A mythic new event card joins the Courts. Shift the battlefield with Prism Shift and Energy Fracture.',
+    img:'', cta:'Open Shop', link:'shop-screen'
+  },
+  {
+    tag:'event', tagLabel:'Campaign',
+    headline:'The Realm Awaits',
+    blurb:'Begin your journey through World 1. Face new opponents and earn rewards in Story Mode.',
+    img:'', cta:'Play Campaign', link:'campaign-worlds-screen'
+  }
+];
+
+async function loadNewsSlides(){
+  if(!_celSB){ _newsSlides = NEWS_DEFAULT_SLIDES.slice(); renderNewsCarousel(); return; }
+  try{
+    const {data} = await _celSB.from('app_settings').select('value').eq('key','news_slides').maybeSingle();
+    if(data && data.value){
+      try{
+        const parsed = JSON.parse(data.value);
+        _newsSlides = (Array.isArray(parsed) && parsed.length) ? parsed : NEWS_DEFAULT_SLIDES.slice();
+      }catch(e){ _newsSlides = NEWS_DEFAULT_SLIDES.slice(); }
+    } else {
+      _newsSlides = NEWS_DEFAULT_SLIDES.slice();
+    }
+  }catch(e){ _newsSlides = NEWS_DEFAULT_SLIDES.slice(); }
+  renderNewsCarousel();
+}
+
+async function saveNewsSlides(){
+  if(!isAdmin() || !_celSB) return;
+  try{
+    await _celSB.from('app_settings').upsert(
+      {key:'news_slides', value:JSON.stringify(_newsSlides), updated_at:new Date().toISOString()},
+      {onConflict:'key'}
+    );
+  }catch(e){ alert('Failed to save news: '+e.message); }
+}
+
+function renderNewsCarousel(){
+  const track = document.getElementById('news-carousel-track');
+  const dots = document.getElementById('news-carousel-dots');
+  if(!track || !dots) return;
+  const slides = _newsSlides && _newsSlides.length ? _newsSlides : NEWS_DEFAULT_SLIDES;
+  track.innerHTML = '';
+  dots.innerHTML = '';
+
+  slides.forEach((s, i) => {
+    const slide = document.createElement('div');
+    slide.className = 'news-slide';
+    if(s.img) slide.style.backgroundImage = 'url("'+s.img+'")';
+    if(s.link){ slide.style.cursor='pointer'; slide.onclick = ()=>{ closeNewsAuto(); showScreen(s.link); _runScreenOpener(s.link); }; }
+    const tagCls = 'news-tag-' + (s.tag||'new');
+    slide.innerHTML =
+      (!s.img ? '<div class="news-slide-fallback-art">✦</div>' : '') +
+      '<div class="news-slide-content">' +
+        (s.tagLabel ? '<span class="news-slide-tag '+tagCls+'">'+s.tagLabel+'</span>' : '') +
+        '<div class="news-slide-headline">'+(s.headline||'')+'</div>' +
+        '<div class="news-slide-blurb">'+(s.blurb||'')+'</div>' +
+        (s.cta ? '<div class="news-slide-cta">'+s.cta+' →</div>' : '') +
+      '</div>';
+    track.appendChild(slide);
+
+    const dot = document.createElement('div');
+    dot.className = 'news-dot' + (i===_newsIndex ? ' active' : '');
+    dot.onclick = (e)=>{ e.stopPropagation(); newsCarouselGoTo(i); };
+    dots.appendChild(dot);
+  });
+
+  // Show admin edit button if admin
+  const editBtn = document.getElementById('news-carousel-admin-edit');
+  if(editBtn) editBtn.style.display = (typeof isAdmin==='function' && isAdmin()) ? '' : 'none';
+
+  if(_newsIndex >= slides.length) _newsIndex = 0;
+  _updateNewsTrack();
+  _startNewsAuto();
+}
+
+function _updateNewsTrack(){
+  const track = document.getElementById('news-carousel-track');
+  if(track) track.style.transform = 'translateX(-'+(_newsIndex*100)+'%)';
+  document.querySelectorAll('#news-carousel-dots .news-dot').forEach((d,i)=>{
+    d.classList.toggle('active', i===_newsIndex);
+  });
+}
+function newsCarouselGoTo(i){
+  const slides = _newsSlides && _newsSlides.length ? _newsSlides : NEWS_DEFAULT_SLIDES;
+  _newsIndex = (i + slides.length) % slides.length;
+  _updateNewsTrack();
+  _startNewsAuto();
+}
+function newsCarouselNext(e){ if(e)e.stopPropagation(); newsCarouselGoTo(_newsIndex+1); }
+function newsCarouselPrev(e){ if(e)e.stopPropagation(); newsCarouselGoTo(_newsIndex-1); }
+function _startNewsAuto(){
+  if(_newsTimer) clearInterval(_newsTimer);
+  _newsTimer = setInterval(()=>{ newsCarouselNext(); }, 6000);
+}
+function closeNewsAuto(){ if(_newsTimer){ clearInterval(_newsTimer); _newsTimer=null; } }
+
+// Helper: run the opener function for a screen (mirrors menu button behavior)
+function _runScreenOpener(screenId){
+  const openers = {
+    'battle-pass-screen':'openBattlePass',
+    'shop-screen':'openShop',
+    'campaign-worlds-screen':'openCampaign',
+    'matchmaking-screen':'openMatchmaking',
+    'online-lobby-screen':'openOnlineLobby',
+    'profile-screen':'refreshProfileScreen'
+  };
+  const fn = openers[screenId];
+  if(fn && typeof window[fn]==='function') window[fn]();
+}
+
+// ─── ADMIN: News slide editor ───
+function openNewsEditor(e){
+  if(e)e.stopPropagation();
+  if(!isAdmin()){ alert('Admin only.'); return; }
+  renderNewsEditor();
+  document.getElementById('news-editor-modal').classList.add('open');
+}
+function renderNewsEditor(){
+  const list = document.getElementById('news-editor-list');
+  if(!list) return;
+  const slides = _newsSlides || [];
+  list.innerHTML = '';
+  slides.forEach((s, i)=>{
+    const row = document.createElement('div');
+    row.style.cssText = 'background:rgba(20,15,40,.7);border:1px solid rgba(200,164,74,.2);border-radius:10px;padding:12px;margin-bottom:10px';
+    row.innerHTML =
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">'+
+        '<span style="font-family:Cinzel,serif;color:#e8c570;font-size:13px">Slide '+(i+1)+'</span>'+
+        '<div style="display:flex;gap:4px">'+
+          (i>0?'<button class="btn-gray btn-sm" onclick="moveNewsSlide('+i+',-1)">↑</button>':'')+
+          (i<slides.length-1?'<button class="btn-gray btn-sm" onclick="moveNewsSlide('+i+',1)">↓</button>':'')+
+          '<button class="btn-gray btn-sm" style="color:#ef4444" onclick="deleteNewsSlide('+i+')">✕</button>'+
+        '</div>'+
+      '</div>'+
+      '<label class="news-ed-lbl">Tag</label>'+
+      '<select class="news-ed-input" onchange="updateNewsSlide('+i+',\'tag\',this.value)">'+
+        ['new','event','season','soon'].map(t=>'<option value="'+t+'"'+(s.tag===t?' selected':'')+'>'+t+'</option>').join('')+
+      '</select>'+
+      '<label class="news-ed-lbl">Tag Label (e.g. "New Card")</label>'+
+      '<input class="news-ed-input" value="'+(s.tagLabel||'').replace(/"/g,'&quot;')+'" onchange="updateNewsSlide('+i+',\'tagLabel\',this.value)"/>'+
+      '<label class="news-ed-lbl">Headline</label>'+
+      '<input class="news-ed-input" value="'+(s.headline||'').replace(/"/g,'&quot;')+'" onchange="updateNewsSlide('+i+',\'headline\',this.value)"/>'+
+      '<label class="news-ed-lbl">Blurb</label>'+
+      '<textarea class="news-ed-input" rows="2" onchange="updateNewsSlide('+i+',\'blurb\',this.value)">'+(s.blurb||'')+'</textarea>'+
+      '<label class="news-ed-lbl">Image URL (optional)</label>'+
+      '<input class="news-ed-input" value="'+(s.img||'').replace(/"/g,'&quot;')+'" onchange="updateNewsSlide('+i+',\'img\',this.value)" placeholder="https://..."/>'+
+      '<label class="news-ed-lbl">Button Text (optional)</label>'+
+      '<input class="news-ed-input" value="'+(s.cta||'').replace(/"/g,'&quot;')+'" onchange="updateNewsSlide('+i+',\'cta\',this.value)" placeholder="e.g. View Battle Pass"/>'+
+      '<label class="news-ed-lbl">Links to screen (optional)</label>'+
+      '<select class="news-ed-input" onchange="updateNewsSlide('+i+',\'link\',this.value)">'+
+        ['','battle-pass-screen','shop-screen','campaign-worlds-screen','matchmaking-screen','online-lobby-screen','profile-screen'].map(l=>'<option value="'+l+'"'+(s.link===l?' selected':'')+'>'+(l||'(none)')+'</option>').join('')+
+      '</select>';
+    list.appendChild(row);
+  });
+}
+function updateNewsSlide(i, field, val){ if(_newsSlides && _newsSlides[i]){ _newsSlides[i][field] = val; } }
+function moveNewsSlide(i, dir){
+  const j = i+dir;
+  if(j<0 || j>=_newsSlides.length) return;
+  const tmp = _newsSlides[i]; _newsSlides[i] = _newsSlides[j]; _newsSlides[j] = tmp;
+  renderNewsEditor();
+}
+function deleteNewsSlide(i){
+  if(!confirm('Delete this slide?')) return;
+  _newsSlides.splice(i,1);
+  renderNewsEditor();
+}
+function addNewsSlide(){
+  if(!_newsSlides) _newsSlides = [];
+  _newsSlides.push({ tag:'new', tagLabel:'New', headline:'New Headline', blurb:'Describe what\'s new here.', img:'', cta:'', link:'' });
+  renderNewsEditor();
+}
+async function saveNewsEditor(){
+  await saveNewsSlides();
+  _newsIndex = 0;
+  renderNewsCarousel();
+  closeAllModals();
+}
+
+
 
 // Check if a card is playable for the CURRENT user
 // Admin: everything is playable
@@ -14015,6 +14423,7 @@ window.addEventListener('load',async()=>{
       await loadCollection();
       await loadAdminToggles();
       await loadDisabledCards();
+      await loadNewsSlides();
       await loadHoloOwned();
       await loadAdminHoloMode();
       updateAdminBadge();
