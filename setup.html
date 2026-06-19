@@ -145,8 +145,14 @@ async function saveUsername(){
   if(!ok) return;
   btn.disabled = true;
   btn.textContent = 'SAVING...';
-  const { error } = await sb.from('profiles')
-    .upsert({ id: currentUser.id, username: name }, { onConflict: 'id' });
+  let { error } = await sb.from('profiles')
+    .upsert({ id: currentUser.id, username: name, username_set: true }, { onConflict: 'id' });
+  // If the username_set column doesn't exist yet, retry without it so saving never breaks.
+  if(error && /username_set/.test(error.message||'')){
+    console.warn('[SETUP] username_set column missing, saving username only');
+    ({ error } = await sb.from('profiles')
+      .upsert({ id: currentUser.id, username: name }, { onConflict: 'id' }));
+  }
   if(error){
     showError('Error saving username. Try again.');
     btn.disabled = false;
