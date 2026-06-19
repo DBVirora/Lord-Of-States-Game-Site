@@ -78,8 +78,30 @@ async function routeUser(session){
   routed=true;
   setStatus('Checking profile...');
   try{
-    var pr=await sb.from('profiles').select('username').eq('id',session.user.id).maybeSingle();
-    var hasUser=pr.data&&typeof pr.data.username==='string'&&pr.data.username.trim().length>=3;
+    var pr=await sb.from('profiles').select('username,username_set').eq('id',session.user.id).maybeSingle();
+    // If the username_set column doesn't exist yet, the query errors.
+    // Fall back to selecting username only so login never breaks.
+    if(pr.error){
+      console.warn('[CALLBACK] username_set select failed, falling back:', pr.error.message);
+      pr = await sb.from('profiles').select('username').eq('id',session.user.id).maybeSingle();
+      // Without the flag column, use legacy behavior: username present = set up.
+      var legacyHas = pr.data && typeof pr.data.username==='string' && pr.data.username.trim().length>=3;
+      var dest0 = legacyHas ? GAME_URL : SETUP_URL;
+      var url0 = dest0+'#access_token='+encodeURIComponent(session.access_token)+'&refresh_token='+encodeURIComponent(session.refresh_token)+'&type=recovery';
+      setStatus(legacyHas?'Welcome back! Entering game...':'Setting up your profile...');
+      window.location.replace(url0);
+      return;
+    }
+    // A user is "set up" ONLY if they deliberately chose a username, tracked by
+    // the username_set flag. We do NOT treat a mere username presence as "set up",
+    // because a Supabase signup trigger may auto-create a profile row and fill the
+    // username from the provider name — which would wrongly skip the setup screen.
+    //
+    // Existing/legacy users who chose a name before this flag existed are handled
+    // by a ONE-TIME SQL backfill (see SETUP-USERNAME-FIX.txt Step 4) that sets
+    // username_set=true for everyone who already has a real username.
+    var deliberatelySet = pr.data && pr.data.username_set===true;
+    var hasUser = deliberatelySet;
     setStatus(hasUser?'Welcome back! Entering game...':'Setting up your profile...');
 
     // Pass tokens in URL hash — works reliably across page navigations
