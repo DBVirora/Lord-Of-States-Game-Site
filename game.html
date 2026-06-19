@@ -5286,6 +5286,16 @@ textarea{
     <button class="btn-primary" style="width:100%;margin-top:14px;padding:12px;font-size:13px" onclick="closeFullCard()">↩ Return</button>
   </div>
 </div>
+<!-- Animated ability roll overlay (dice/coin) -->
+<div class="modal-overlay" id="ability-roll-overlay">
+  <div class="modal" style="text-align:center;max-width:300px">
+    <h2 id="ability-roll-title" style="font-size:16px;color:#e8c570">Rolling...</h2>
+    <div id="ability-roll-desc" style="font-size:11px;color:#9ca3af;margin-bottom:10px"></div>
+    <div id="ability-roll-dice" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0;min-height:64px;align-items:center"></div>
+    <div id="ability-roll-result" style="font-size:15px;font-weight:700;color:#c8a0ff;min-height:24px"></div>
+    <button class="btn-primary" id="ability-roll-done" style="width:100%;margin-top:14px;display:none" onclick="closeAbilityRoll()">Continue</button>
+  </div>
+</div>
 <div class="modal-overlay" id="coin-modal">
   <div class="modal" style="text-align:center;max-width:200px">
     <h2>Coin Flip</h2>
@@ -7971,29 +7981,129 @@ function activateAbility(fc,abl){
   // Show dramatic Ability reveal popup (visible to both players)
   showAbilityReveal(fc.cid, G.activePlayer, abl.label, abl.text);
   if(G.activePlayer===1)sendGameAction('ability_reveal',{cardId:fc.cid,label:abl.label,text:abl.text});
-  // Specific effects
-  if(fc.cid==='goku_ue'&&abl.label==='Destroyer Kamehameha'){const r=Math.floor(Math.random()*8)+1;const b=(r===1||r===7)?8:3;log(`d8: ${r} → +${b} next attack.`,'gain');fc.nextAttackBonus=(fc.nextAttackBonus||0)+b;}
-  if(fc.cid==='time_chamber'&&abl.label==='Casting Points'){pl.energy+=5;log('+5⚡!','gain');}
-  if(fc.cid==='lazarus'&&abl.label==='Location Seeker'){
-    const r=Math.floor(Math.random()*6)+1;log(`Lazarus d6: ${r}`,r===5?'gain':'dmg');
-    if(r===5){openDeckSearch('Search: Location','Pick a Location from your deck to place on field free.',c=>c.type==='location',cid=>{const locCount=pl.field.filter(f=>isLoc(DB[f.cid])).length;if(locCount>=MAX_LOC){log('Location zone full!','dmg');pl.deck.push(cid);shuffle(pl.deck);return;}const nfc=newFC(cid);if(nfc){nfc.turnPlayed=G.turn;pl.field.push(nfc);log(`Lazarus: ${DB[cid].name} placed free!`,'gain');}renderAll();});}
+  // IMPORTANT: close the ABILITIES MENU now (before effects), so that any
+  // deck-search or dice-roll popup an effect opens is NOT immediately closed.
+  closeAllModals();
+  // Route to the specific effect handler
+  runAbilityEffect(fc, abl, pl);
+  renderAll();
+}
+
+// ═══════════════════════════════════════════════════
+// ABILITY EFFECT ROUTER — each card's coded effect lives here.
+// Effects may open animated rolls or deck searches; those resolve
+// asynchronously via callbacks (do NOT closeAllModals after this).
+// ═══════════════════════════════════════════════════
+function runAbilityEffect(fc, abl, pl){
+  const cid = fc.cid, label = abl.label;
+
+  // ── GOKU (Ultra Ego): Destroyer Kamehameha — d8, 1 or 7 = +8 else +3 ──
+  if(cid==='goku_ue' && label==='Destroyer Kamehameha'){
+    rollDiceFor({title:'Destroyer Kamehameha', desc:'Roll d8 — 1 or 7 grants +8, else +3 to next attack.', sides:8, count:1}, (res)=>{
+      const r=res[0]; const b=(r===1||r===7)?8:3;
+      fc.nextAttackBonus=(fc.nextAttackBonus||0)+b;
+      log(`Destroyer Kamehameha: d8=${r} → +${b} next attack.`,'gain');
+      renderAll();
+    });
+    return;
   }
-  if(fc.cid==='volaris_ssj'&&abl.label==='Shining Light'){
+
+  // ── TIME CHAMBER: Casting Points — +5 energy ──
+  if(cid==='time_chamber' && label==='Casting Points'){
+    pl.energy+=5; log('Time Chamber: +5⚡!','gain'); renderAll(); return;
+  }
+
+  // ── LAZARUS: Location Seeker — d6, on 5 search a Location ──
+  if(cid==='lazarus' && label==='Location Seeker'){
+    rollDiceFor({title:'Location Seeker', desc:'Roll d6 — on a 5, search your deck for a Location.', sides:6, count:1}, (res)=>{
+      const r=res[0];
+      if(r===5){
+        log('Location Seeker: rolled 5 — search for a Location!','gain');
+        openDeckSearch('Search: Location','Pick a Location to place on the field free.',c=>isLoc(c),cid2=>{
+          const locCount=pl.field.filter(f=>isLoc(DB[f.cid])).length;
+          if(locCount>=MAX_LOC){log('Location zone full! Card shuffled back.','dmg');pl.deck.push(cid2);shuffle(pl.deck);renderAll();return;}
+          const nfc=newFC(cid2);
+          if(nfc){nfc.turnPlayed=G.turn;pl.field.push(nfc);log(`Location Seeker: ${DB[cid2].name} placed free!`,'gain');}
+          renderAll();
+        });
+      } else {
+        log(`Location Seeker: rolled ${r} — no Location found.`,'dmg');
+        renderAll();
+      }
+    });
+    return;
+  }
+
+  // ── DYNADRAX: Obscure Darkness — roll d5 three times, each 2 = +2 dmg ──
+  if(cid==='dynadrax' && label==='Obscure Darkness'){
+    rollDiceFor({title:'Obscure Darkness', desc:'Roll d5 three times — each 2 grants +2 damage to your next attack.', sides:5, count:3}, (res)=>{
+      const twos = res.filter(r=>r===2).length;
+      const bonus = twos*2;
+      if(bonus>0){
+        fc.nextAttackBonus=(fc.nextAttackBonus||0)+bonus;
+        log(`Obscure Darkness: ${twos}×2 rolled → +${bonus} damage next attack.`,'gain');
+      } else {
+        log('Obscure Darkness: no 2s rolled — no bonus.','dmg');
+      }
+      renderAll();
+    });
+    return;
+  }
+
+  // ── DYNADRAX: Omega Swap — flip; heads swap positions, tails opp -4 HP ──
+  if(cid==='dynadrax' && label==='Omega Swap'){
+    flipCoinFor({title:'Omega Swap', desc:'Heads = swap; Tails = opponent character -4 HP.'}, (heads)=>{
+      const opp=G.players[G.activePlayer===1?2:1];
+      if(heads){
+        log('Omega Swap: HEADS — (swap effect placeholder).','gain');
+      } else {
+        const tgt=opp.field.find(f=>isChar(DB[f.cid]));
+        if(tgt){ tgt.currentHP=Math.max(0,tgt.currentHP-4); log(`Omega Swap: TAILS — ${DB[tgt.cid].name} takes 4 damage.`,'gain'); if(tgt.currentHP<=0)killCard(G.activePlayer===1?2:1,tgt); }
+        else log('Omega Swap: TAILS — no enemy character to damage.','dmg');
+      }
+      renderAll();
+    });
+    return;
+  }
+
+  // ── NATURE FOCUS ability form: Energy Placement — search 2 energy ──
+  if(label==='Energy Placement'){
+    startMultiDeckSearch('Energy Placement','Choose 2 Energy cards to add to your hand.',(card)=>card.type==='energy_card',2,(picked)=>{
+      picked.forEach(cid2=>{ pl.hand.push(newFC(cid2)); log(`${DB[cid2].name} added to hand!`,'gain'); });
+      shuffle(pl.deck); checkHandLimit(G.activePlayer); renderAll();
+    });
+    return;
+  }
+
+  // ── VOLARIS SSJ: Shining Light — search Powerup/Equipment (2 if Royal Saiyan) ──
+  if(cid==='volaris_ssj' && label==='Shining Light'){
     const hasRoyalSaiyan=pl.field.filter(f=>DB[f.cid]?.subtypes?.includes('Royal Saiyan')).length>1;
     const picks=hasRoyalSaiyan?2:1;
-    openDeckSearch('Shining Light','Pick a Powerup or Equipment from your deck.',c=>c.type==='equipment'||c.subtypes?.includes('Powerup'),cid=>{pl.hand.push(newFC(cid));log(`Shining Light: ${DB[cid].name} added to hand!`,'gain');shuffle(pl.deck);
-      if(picks===2){openDeckSearch('Shining Light (2nd pick)','Pick another.',c=>c.type==='equipment'||c.subtypes?.includes('Powerup'),cid2=>{pl.hand.push(newFC(cid2));log(`Shining Light: ${DB[cid2].name} added!`,'gain');shuffle(pl.deck);renderAll();});}
-      else renderAll();
+    startMultiDeckSearch('Shining Light','Pick '+picks+' Powerup or Equipment card(s).',c=>c.type==='equipment'||c.subtypes?.includes('Powerup'),picks,(picked)=>{
+      picked.forEach(cid2=>{ pl.hand.push(newFC(cid2)); log(`Shining Light: ${DB[cid2].name} added!`,'gain'); });
+      shuffle(pl.deck); checkHandLimit(G.activePlayer); renderAll();
     });
+    return;
   }
-  if(fc.cid==='volaris_ssg'&&abl.label==='Instant Search'){
-    const h=coin();log(`Instant Search: ${h?'HEADS — search!':'TAILS — miss.'}`,h?'gain':'dmg');
-    if(h){openDeckSearch('Instant Search','Pick an Instant card from deck.',c=>c.type==='instant',cid=>{pl.hand.push(newFC(cid));log(`${DB[cid].name} added to hand!`,'gain');shuffle(pl.deck);renderAll();});}
+
+  // ── VOLARIS SSG: Instant Search — coin; heads search an Instant ──
+  if(cid==='volaris_ssg' && label==='Instant Search'){
+    flipCoinFor({title:'Instant Search', desc:'Heads = search your deck for an Instant.'}, (heads)=>{
+      if(heads){
+        openDeckSearch('Instant Search','Pick an Instant card from your deck.',c=>c.type==='instant',cid2=>{
+          pl.hand.push(newFC(cid2)); log(`Instant Search: ${DB[cid2].name} added to hand!`,'gain'); shuffle(pl.deck); checkHandLimit(G.activePlayer); renderAll();
+        });
+      } else { log('Instant Search: TAILS — no card found.','dmg'); renderAll(); }
+    });
+    return;
   }
-  if(fc.cid==='volaris_ssb'&&abl.label==='Token Summon'){
-    log('Volaris SSB: Token Summon — place your Token cards on the field (Token cards not yet added to database).','info');
+
+  // ── VOLARIS SSB: Token Summon (placeholder — tokens not in DB yet) ──
+  if(cid==='volaris_ssb' && label==='Token Summon'){
+    log('Token Summon — Token cards not yet added to the database.','info'); return;
   }
-  closeAllModals();renderAll();
+
+  // Generic: no special coded effect
 }
 
 // ═══════════════════════════════════════════════════
@@ -8756,10 +8866,127 @@ function aiCheckHeraldFlip(){
 // ═══════════════════════════════════════════════════
 // COIN / DICE / POPUPS
 // ═══════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════
+// UNIFIED ANIMATED ROLL ENGINE (for ability-triggered dice & coins)
+// rollDiceFor(opts, callback) — shows animated roll, then runs callback(results)
+//   opts: {title, desc, sides, count}  → callback receives array of results
+// flipCoinFor(opts, callback) — animated coin, callback(isHeads)
+// ═══════════════════════════════════════════════════
+let _abilityRollPending = null;
+
+function _diceFace(n){
+  const f={1:'⚀',2:'⚁',3:'⚂',4:'⚃',5:'⚄',6:'⚅'};
+  return f[n] || String(n);
+}
+
+function rollDiceFor(opts, callback){
+  const sides = opts.sides || 6;
+  const count = opts.count || 1;
+  const overlay = document.getElementById('ability-roll-overlay');
+  const diceWrap = document.getElementById('ability-roll-dice');
+  const resultEl = document.getElementById('ability-roll-result');
+  const doneBtn = document.getElementById('ability-roll-done');
+  document.getElementById('ability-roll-title').textContent = opts.title || 'Rolling Dice';
+  document.getElementById('ability-roll-desc').textContent = opts.desc || '';
+  resultEl.textContent = '';
+  doneBtn.style.display = 'none';
+  diceWrap.innerHTML = '';
+  if(typeof SFX!=='undefined' && SFX.click)SFX.click();
+
+  // Create die elements
+  const dieEls = [];
+  for(let i=0;i<count;i++){
+    const d = document.createElement('div');
+    d.style.cssText = 'font-size:46px;width:56px;height:56px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#2a2050,#16162a);border:2px solid #c8a44a;border-radius:12px;box-shadow:0 0 14px rgba(200,164,74,.4)';
+    d.textContent = '🎲';
+    diceWrap.appendChild(d);
+    dieEls.push(d);
+  }
+  overlay.classList.add('open');
+
+  // Roll the actual results now
+  const results = [];
+  for(let i=0;i<count;i++) results.push(Math.floor(Math.random()*sides)+1);
+
+  // Animate: cycle faces, then settle
+  let ticks = 0;
+  const maxTicks = 12;
+  const interval = setInterval(()=>{
+    ticks++;
+    dieEls.forEach((d,i)=>{
+      if(ticks < maxTicks){
+        d.textContent = (sides<=6) ? _diceFace(Math.floor(Math.random()*sides)+1) : String(Math.floor(Math.random()*sides)+1);
+      } else {
+        d.textContent = (sides<=6) ? _diceFace(results[i]) : String(results[i]);
+        d.style.borderColor = '#fbbf24';
+        d.style.color = '#fbbf24';
+      }
+    });
+    if(typeof SFX!=='undefined' && SFX.click)SFX.click();
+    if(ticks >= maxTicks){
+      clearInterval(interval);
+      const total = results.reduce((a,b)=>a+b,0);
+      resultEl.innerHTML = count>1
+        ? 'Rolled: ' + results.map(r=>'<b style="color:#fbbf24">'+r+'</b>').join(', ') + ' (total ' + total + ')'
+        : 'Rolled a <b style="color:#fbbf24;font-size:20px">' + results[0] + '</b> (d' + sides + ')';
+      log('d'+sides+(count>1?'×'+count:'')+': '+results.join(', '), 'info');
+      doneBtn.style.display = '';
+      _abilityRollPending = { callback, results };
+    }
+  }, 70);
+}
+
+function flipCoinFor(opts, callback){
+  const overlay = document.getElementById('ability-roll-overlay');
+  const diceWrap = document.getElementById('ability-roll-dice');
+  const resultEl = document.getElementById('ability-roll-result');
+  const doneBtn = document.getElementById('ability-roll-done');
+  document.getElementById('ability-roll-title').textContent = opts.title || 'Coin Flip';
+  document.getElementById('ability-roll-desc').textContent = opts.desc || '';
+  resultEl.textContent = '';
+  doneBtn.style.display = 'none';
+  diceWrap.innerHTML = '<div id="ability-coin" style="font-size:54px;width:64px;height:64px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#2a2050,#16162a);border:2px solid #c8a44a;border-radius:50%;box-shadow:0 0 14px rgba(200,164,74,.4)">🪙</div>';
+  overlay.classList.add('open');
+  const coinEl = document.getElementById('ability-coin');
+
+  const isHeads = Math.random() < 0.5;
+  let ticks = 0;
+  const maxTicks = 12;
+  const interval = setInterval(()=>{
+    ticks++;
+    if(ticks < maxTicks){
+      coinEl.textContent = (ticks % 2 === 0) ? '🌕' : '🌑';
+    } else {
+      coinEl.textContent = isHeads ? '🌕' : '🌑';
+      coinEl.style.borderColor = isHeads ? '#22c55e' : '#ef4444';
+    }
+    if(typeof SFX!=='undefined' && SFX.click)SFX.click();
+    if(ticks >= maxTicks){
+      clearInterval(interval);
+      resultEl.innerHTML = isHeads ? '<b style="color:#22c55e;font-size:20px">HEADS</b>' : '<b style="color:#ef4444;font-size:20px">TAILS</b>';
+      log('Coin: '+(isHeads?'HEADS':'TAILS'), isHeads?'gain':'dmg');
+      doneBtn.style.display = '';
+      _abilityRollPending = { callback, isHeads };
+    }
+  }, 80);
+}
+
+function closeAbilityRoll(){
+  const overlay = document.getElementById('ability-roll-overlay');
+  if(overlay)overlay.classList.remove('open');
+  const p = _abilityRollPending;
+  _abilityRollPending = null;
+  if(p && p.callback){
+    if('isHeads' in p) p.callback(p.isHeads);
+    else p.callback(p.results);
+  }
+}
+
 function coin(){return Math.random()<.5;}
-function flipCoin(){const h=coin();document.getElementById('coin-icon').textContent=h?'🌕':'🌑';document.getElementById('coin-result').textContent=h?'HEADS':'TAILS';document.getElementById('coin-modal').classList.add('open');log(`Coin: ${h?'HEADS':'TAILS'}`,h?'gain':'dmg');}
+function flipCoin(){ flipCoinFor({title:'Coin Flip', desc:'A simple coin flip.'}, function(){}); }
 function openDiceModal(){document.getElementById('dice-modal').classList.add('open');}
-function rollDie(s){const r=Math.floor(Math.random()*s)+1;const f=['','1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣'];document.getElementById('dice-icon').textContent=f[r]||r;document.getElementById('dice-result').textContent=`Rolled ${r} (d${s})`;log(`d${s}: ${r}`,'info');}
+function rollDie(s){ document.getElementById('dice-modal').classList.remove('open'); rollDiceFor({title:'Roll d'+s, desc:'Manual dice roll.', sides:s, count:1}, function(){}); }
 function showDmgPopup(player,text,targetUid){
   // Try to find the specific target card for precise positioning
   let r;
