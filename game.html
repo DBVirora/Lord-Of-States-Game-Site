@@ -8498,8 +8498,11 @@ function onEntry(p,fc){
   if(p===1 && !c.isToken && typeof bumpStat==='function'){
     bumpStat('cards_played',1);
     if(c.color)bumpCount('color_counts',c.color,1);
-    bumpCount('card_counts',c.id,1);           // Favorite Card = any card type
-    if(isChar(c))bumpCount('char_counts',c.id,1); // Favorite Character = characters only
+    if(isChar(c)){
+      bumpCount('char_counts',c.id,1);            // Favorite Character = character cards only
+    } else if(c.type!=='energy_card'){
+      bumpCount('card_counts',c.id,1);            // Favorite Card = non-character, non-energy cards
+    }
   }
   if(c.id==='archon'){drawCard(p);drawCard(p);log('Archon: draw 2!','gain');
     const syn=G.players[p].field.some(f=>{const d=DB[f.cid];return d&&(d.charName==='Samara'||d.charName==='Surana');});
@@ -11654,6 +11657,13 @@ function refreshProfileScreen(){
   if(_panel)_panel.style.display='none';
   if(_chev)_chev.style.transform='rotate(0deg)';
   if(_btn){_btn.style.borderRadius='12px';_btn.style.borderBottomColor='rgba(251,191,36,.25)';}
+  // Reset statistics panel to closed too
+  const _sp=document.getElementById('stats-panel');
+  const _sc=document.getElementById('stats-chevron');
+  const _sb=document.getElementById('stats-toggle-btn');
+  if(_sp)_sp.style.display='none';
+  if(_sc)_sc.style.transform='rotate(0deg)';
+  if(_sb)_sb.style.borderRadius='12px';
   // Log
   const logEl=document.getElementById('cel-log');
   if(logEl){
@@ -11718,21 +11728,29 @@ function renderProfileStats(){
     if(colSw)colSw.style.background='#1a1a3a';
   }
 
-  // Favorite card (any type) + favorite character card
-  const renderFav=(cid,nameId,thumbId)=>{
+  // Favorite card (non-character, non-energy) + favorite character card.
+  // Clicking either opens the full zoomed card viewer.
+  const renderFav=(cid,nameId,thumbId,wrapId)=>{
     const nameEl=document.getElementById(nameId);
     const thumbEl=document.getElementById(thumbId);
+    const wrapEl=document.getElementById(wrapId);
     if(cid && DB[cid]){
       if(nameEl)nameEl.textContent=DB[cid].name||cid;
       const img=getImg(cid);
       if(thumbEl)thumbEl.innerHTML=img?'<img src="'+img+'" alt=""/>':'?';
+      if(wrapEl){
+        wrapEl.style.cursor='zoom-in';
+        wrapEl.title='Click to view card';
+        wrapEl.onclick=()=>{ if(typeof showFullCard==='function')showFullCard(cid,null); };
+      }
     } else {
       if(nameEl)nameEl.textContent='—';
       if(thumbEl)thumbEl.textContent='—';
+      if(wrapEl){ wrapEl.style.cursor='default'; wrapEl.title=''; wrapEl.onclick=null; }
     }
   };
-  renderFav(_maxKey(s.card_counts),'profile-favcard','profile-favcard-thumb');
-  renderFav(_maxKey(s.char_counts),'profile-favchar','profile-favchar-thumb');
+  renderFav(_maxKey(s.card_counts),'profile-favcard','profile-favcard-thumb','profile-favcard-wrap');
+  renderFav(_maxKey(s.char_counts),'profile-favchar','profile-favchar-thumb','profile-favchar-wrap');
 }
 
 
@@ -11857,6 +11875,18 @@ function showAchievementPopup(ach){
     +'</div>';
   document.body.appendChild(popup);
   setTimeout(()=>{if(popup.parentNode)popup.remove();},5200);
+}
+
+function toggleStats(){
+  const panel=document.getElementById('stats-panel');
+  const chevron=document.getElementById('stats-chevron');
+  const btn=document.getElementById('stats-toggle-btn');
+  if(!panel)return;
+  const open=panel.style.display==='none'||panel.style.display==='';
+  panel.style.display=open?'block':'none';
+  if(chevron)chevron.style.transform=open?'rotate(180deg)':'rotate(0deg)';
+  if(btn){btn.style.borderRadius=open?'12px 12px 0 0':'12px';}
+  if(open)renderProfileStats();
 }
 
 function toggleAchievements(){
@@ -15882,10 +15912,8 @@ window.addEventListener('load',async()=>{
     </div>
   </div>
 
-  <!-- Stats grid -->
-  <!-- RECORD -->
-  <div class="profile-stat-group-lbl">⚔ Record</div>
-  <div class="profile-stat-grid">
+  <!-- Stats grid: base record (always visible) -->
+  <div class="profile-stat-grid" style="margin-bottom:14px">
     <div class="profile-stat-card">
       <div class="profile-stat-val" id="profile-wins">—</div>
       <div class="profile-stat-lbl">Wins</div>
@@ -15898,94 +15926,114 @@ window.addEventListener('load',async()=>{
       <div class="profile-stat-val" id="profile-matches">—</div>
       <div class="profile-stat-lbl">Matches</div>
     </div>
-    <div class="profile-stat-card">
-      <div class="profile-stat-val" id="profile-winrate">—</div>
-      <div class="profile-stat-lbl">Win Rate</div>
-    </div>
-    <div class="profile-stat-card">
-      <div class="profile-stat-val" id="profile-wlratio">—</div>
-      <div class="profile-stat-lbl">W / L Ratio</div>
-    </div>
-    <div class="profile-stat-card">
-      <div class="profile-stat-val" id="profile-streak">—</div>
-      <div class="profile-stat-lbl">Win Streak</div>
-    </div>
-    <div class="profile-stat-card">
-      <div class="profile-stat-val" id="profile-beststreak">—</div>
-      <div class="profile-stat-lbl">Best Streak</div>
-    </div>
   </div>
 
-  <!-- COMBAT -->
-  <div class="profile-stat-group-lbl">🗡 Combat</div>
-  <div class="profile-stat-grid">
-    <div class="profile-stat-card">
-      <div class="profile-stat-val" id="profile-kills">—</div>
-      <div class="profile-stat-lbl">Characters Killed</div>
-    </div>
-    <div class="profile-stat-card">
-      <div class="profile-stat-val" id="profile-dmgdealt">—</div>
-      <div class="profile-stat-lbl">Damage Dealt</div>
-    </div>
-    <div class="profile-stat-card">
-      <div class="profile-stat-val" id="profile-dmgtaken">—</div>
-      <div class="profile-stat-lbl">Damage Taken</div>
-    </div>
-  </div>
-
-  <!-- GAMEPLAY -->
-  <div class="profile-stat-group-lbl">✦ Gameplay</div>
-  <div class="profile-stat-grid">
-    <div class="profile-stat-card">
-      <div class="profile-stat-val" id="profile-transforms">—</div>
-      <div class="profile-stat-lbl">Transformations</div>
-    </div>
-    <div class="profile-stat-card">
-      <div class="profile-stat-val" id="profile-abilities">—</div>
-      <div class="profile-stat-lbl">Abilities Used</div>
-    </div>
-    <div class="profile-stat-card">
-      <div class="profile-stat-val" id="profile-cardsplayed">—</div>
-      <div class="profile-stat-lbl">Cards Played</div>
-    </div>
-  </div>
-
-  <!-- PROGRESSION -->
-  <div class="profile-stat-group-lbl">★ Progression</div>
-  <div class="profile-stat-grid">
-    <div class="profile-stat-card">
-      <div class="profile-stat-val" id="profile-celearned" style="color:#fbbf24">—</div>
-      <div class="profile-stat-lbl">Total Celestium Earned</div>
-    </div>
-    <div class="profile-stat-card">
-      <div class="profile-stat-val" id="profile-achunlocked">—</div>
-      <div class="profile-stat-lbl">Achievements</div>
-    </div>
-  </div>
-
-  <!-- FAVORITES -->
-  <div class="profile-stat-group-lbl">♥ Favorites</div>
-  <div class="profile-fav-grid">
-    <div class="profile-fav-card">
-      <div class="profile-fav-swatch" id="profile-favcolor-swatch"></div>
-      <div class="profile-fav-info">
-        <div class="profile-fav-name" id="profile-favcolor">—</div>
-        <div class="profile-stat-lbl">Favorite Color</div>
+  <!-- Full statistics — collapsible -->
+  <div style="margin-bottom:16px">
+    <button onclick="toggleStats()" id="stats-toggle-btn"
+      style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(8,8,28,.7);border:1px solid var(--border-v);border-radius:12px;cursor:pointer;font-family:'Share Tech Mono',monospace;transition:all .2s">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:16px">📊</span>
+        <span style="font-size:10px;font-weight:700;color:var(--violet2);letter-spacing:2px">STATISTICS</span>
       </div>
-    </div>
-    <div class="profile-fav-card">
-      <div class="profile-fav-thumb" id="profile-favcard-thumb">—</div>
-      <div class="profile-fav-info">
-        <div class="profile-fav-name" id="profile-favcard">—</div>
-        <div class="profile-stat-lbl">Favorite Card</div>
+      <span id="stats-chevron" style="color:var(--violet2);font-size:14px;transition:transform .2s">▼</span>
+    </button>
+    <div id="stats-panel" style="display:none;background:rgba(8,8,28,.5);border:1px solid var(--border-v);border-top:none;border-radius:0 0 12px 12px;padding:14px">
+
+      <!-- RECORD (extended) -->
+      <div class="profile-stat-group-lbl" style="margin-top:0">⚔ Record</div>
+      <div class="profile-stat-grid">
+        <div class="profile-stat-card">
+          <div class="profile-stat-val" id="profile-winrate">—</div>
+          <div class="profile-stat-lbl">Win Rate</div>
+        </div>
+        <div class="profile-stat-card">
+          <div class="profile-stat-val" id="profile-wlratio">—</div>
+          <div class="profile-stat-lbl">W / L Ratio</div>
+        </div>
+        <div class="profile-stat-card">
+          <div class="profile-stat-val" id="profile-streak">—</div>
+          <div class="profile-stat-lbl">Win Streak</div>
+        </div>
+        <div class="profile-stat-card">
+          <div class="profile-stat-val" id="profile-beststreak">—</div>
+          <div class="profile-stat-lbl">Best Streak</div>
+        </div>
       </div>
-    </div>
-    <div class="profile-fav-card">
-      <div class="profile-fav-thumb" id="profile-favchar-thumb">—</div>
-      <div class="profile-fav-info">
-        <div class="profile-fav-name" id="profile-favchar">—</div>
-        <div class="profile-stat-lbl">Favorite Character</div>
+
+      <!-- COMBAT -->
+      <div class="profile-stat-group-lbl">🗡 Combat</div>
+      <div class="profile-stat-grid">
+        <div class="profile-stat-card">
+          <div class="profile-stat-val" id="profile-kills">—</div>
+          <div class="profile-stat-lbl">Characters Killed</div>
+        </div>
+        <div class="profile-stat-card">
+          <div class="profile-stat-val" id="profile-dmgdealt">—</div>
+          <div class="profile-stat-lbl">Damage Dealt</div>
+        </div>
+        <div class="profile-stat-card">
+          <div class="profile-stat-val" id="profile-dmgtaken">—</div>
+          <div class="profile-stat-lbl">Damage Taken</div>
+        </div>
       </div>
+
+      <!-- GAMEPLAY -->
+      <div class="profile-stat-group-lbl">✦ Gameplay</div>
+      <div class="profile-stat-grid">
+        <div class="profile-stat-card">
+          <div class="profile-stat-val" id="profile-transforms">—</div>
+          <div class="profile-stat-lbl">Transformations</div>
+        </div>
+        <div class="profile-stat-card">
+          <div class="profile-stat-val" id="profile-abilities">—</div>
+          <div class="profile-stat-lbl">Abilities Used</div>
+        </div>
+        <div class="profile-stat-card">
+          <div class="profile-stat-val" id="profile-cardsplayed">—</div>
+          <div class="profile-stat-lbl">Cards Played</div>
+        </div>
+      </div>
+
+      <!-- PROGRESSION -->
+      <div class="profile-stat-group-lbl">★ Progression</div>
+      <div class="profile-stat-grid">
+        <div class="profile-stat-card">
+          <div class="profile-stat-val" id="profile-celearned" style="color:#fbbf24">—</div>
+          <div class="profile-stat-lbl">Total Celestium Earned</div>
+        </div>
+        <div class="profile-stat-card">
+          <div class="profile-stat-val" id="profile-achunlocked">—</div>
+          <div class="profile-stat-lbl">Achievements</div>
+        </div>
+      </div>
+
+      <!-- FAVORITES -->
+      <div class="profile-stat-group-lbl">♥ Favorites</div>
+      <div class="profile-fav-grid">
+        <div class="profile-fav-card">
+          <div class="profile-fav-swatch" id="profile-favcolor-swatch"></div>
+          <div class="profile-fav-info">
+            <div class="profile-fav-name" id="profile-favcolor">—</div>
+            <div class="profile-stat-lbl">Favorite Color</div>
+          </div>
+        </div>
+        <div class="profile-fav-card" id="profile-favcard-wrap">
+          <div class="profile-fav-thumb" id="profile-favcard-thumb">—</div>
+          <div class="profile-fav-info">
+            <div class="profile-fav-name" id="profile-favcard">—</div>
+            <div class="profile-stat-lbl">Favorite Card</div>
+          </div>
+        </div>
+        <div class="profile-fav-card" id="profile-favchar-wrap">
+          <div class="profile-fav-thumb" id="profile-favchar-thumb">—</div>
+          <div class="profile-fav-info">
+            <div class="profile-fav-name" id="profile-favchar">—</div>
+            <div class="profile-stat-lbl">Favorite Character</div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
