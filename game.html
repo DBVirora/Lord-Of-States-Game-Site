@@ -4915,10 +4915,11 @@ textarea{
 .news-carousel-admin-edit:hover{ background:rgba(40,28,70,.9); }
 
 /* ─── NEWS CAROUSEL VISIBILITY ───
-   Shown on standard 16:9 monitors and up (sized to fit, clearing the title).
-   Only hidden on smaller screens where there's genuinely no room beside the
-   menu. The size rules above scale it: compact on 16:9, large on ultrawide. */
-@media (max-width:1500px){
+   Shown on laptops and up. Many 1920×1080 laptops run Windows display scaling
+   (125%/150%), which makes the browser report ~1536px or ~1280px wide — so the
+   threshold is low enough to catch those. Only hidden on very small/mobile
+   widths where there's genuinely no room beside the centered menu. */
+@media (max-width:1240px){
   .news-carousel{ display:none; }
 }
 
