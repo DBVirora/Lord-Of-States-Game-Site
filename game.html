@@ -11847,9 +11847,10 @@ function renderSingleCardsShop(){
     const div=document.createElement('div');
     div.style.cssText='background:rgba(8,8,28,.7);border:1px solid var(--border-v);border-radius:9px;padding:10px;display:flex;flex-direction:column;align-items:center;text-align:center';
     div.innerHTML=
-      (url?'<img src="'+url+'" style="width:80px;height:112px;border-radius:6px;object-fit:cover;margin-bottom:8px;border:1px solid '+(COLOR_DEFS[c.color]?.hex||'#444')+'"/>':'<div style="width:80px;height:112px;background:#0a0a1a;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:8px">'+(c.sym||'?')+'</div>')
+      (url?'<img src="'+url+'" onclick="showFullCard(\''+cid+'\')" title="Click to view card" style="width:80px;height:112px;border-radius:6px;object-fit:cover;margin-bottom:8px;border:1px solid '+(COLOR_DEFS[c.color]?.hex||'#444')+';cursor:pointer"/>':'<div onclick="showFullCard(\''+cid+'\')" style="width:80px;height:112px;background:#0a0a1a;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:8px;cursor:pointer">'+(c.sym||'?')+'</div>')
       +'<div style="font-size:11px;font-weight:700;color:#e2e8f0;margin-bottom:2px">'+c.name+'</div>'
       +'<div style="font-size:9px;color:#6b7280;margin-bottom:6px">Owned: '+owned+'</div>'
+      +'<button class="shop-view-btn" onclick="showFullCard(\''+cid+'\')" style="font-size:10px;letter-spacing:1px;color:#c8a0ff;background:rgba(40,28,70,.6);border:1px solid var(--border-v);border-radius:6px;padding:4px 10px;margin-bottom:8px;cursor:pointer;font-family:\'Share Tech Mono\',monospace">🔍 VIEW</button>'
       +'<div class="shop-pack-price" style="margin-bottom:8px;padding:5px 8px"><img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" style="width:14px;height:14px;border-radius:50%"/><span style="font-size:13px;font-weight:700;color:#fbbf24">'+price+'</span></div>'
       +'<button class="shop-buy-btn" '+(_celData.celestium<price?'disabled':'')+' onclick="buySingleCard(\''+cid+'\','+price+')">'+(_celData.celestium<price?'Not enough':'▸ BUY')+'</button>';
     list.appendChild(div);
