@@ -4761,6 +4761,9 @@ textarea{
   box-shadow:0 12px 50px rgba(0,0,0,.5),inset 0 1px 0 rgba(200,164,74,.12);
   background:linear-gradient(160deg,rgba(18,14,38,.7),rgba(10,8,24,.85));
   z-index:6;
+  /* Container query context: inner content scales to the carousel's width */
+  container-type:inline-size;
+  container-name:newscarousel;
 }
 /* ULTRAWIDE (21:9+): the owner's screen — bigger panel, original size. */
 @media (min-width:2300px) and (min-aspect-ratio:2/1){
@@ -4798,18 +4801,20 @@ textarea{
 .news-slide-content{
   position:relative;
   z-index:2;
-  padding:34px 40px 40px;
+  /* Padding scales with carousel width (min 16px, ~8% of width, max 40px) */
+  padding:clamp(16px, 8cqw, 40px);
+  padding-top:0;
   text-align:left;
 }
 .news-slide-tag{
   display:inline-block;
   font-family:'Share Tech Mono',monospace;
-  font-size:11px;
+  font-size:clamp(8px, 2.4cqw, 11px);
   letter-spacing:2px;
   font-weight:700;
-  padding:4px 12px;
+  padding:clamp(2px,0.9cqw,4px) clamp(7px,2.6cqw,12px);
   border-radius:20px;
-  margin-bottom:12px;
+  margin-bottom:clamp(7px,2.6cqw,12px);
   text-transform:uppercase;
 }
 .news-tag-new{ background:rgba(34,197,94,.25); color:#4ade80; border:1px solid rgba(34,197,94,.5); }
@@ -4818,30 +4823,31 @@ textarea{
 .news-tag-soon{ background:rgba(74,144,226,.22); color:#7cb0f0; border:1px solid rgba(74,144,226,.5); }
 .news-slide-headline{
   font-family:'Cinzel',serif;
-  font-size:38px;
+  /* Headline scales: min 20px, ~8.2% of carousel width, max 38px */
+  font-size:clamp(20px, 8.2cqw, 38px);
   font-weight:900;
   color:#f4e9c8;
   line-height:1.1;
-  margin-bottom:8px;
+  margin-bottom:clamp(5px,1.7cqw,8px);
   text-shadow:0 2px 16px rgba(0,0,0,.8);
 }
 .news-slide-blurb{
-  font-size:16px;
+  font-size:clamp(11px, 3.4cqw, 16px);
   color:#cbd5e1;
-  line-height:1.55;
-  max-width:80%;
+  line-height:1.5;
+  max-width:88%;
   text-shadow:0 1px 8px rgba(0,0,0,.8);
 }
 .news-slide-cta{
   display:inline-block;
-  margin-top:14px;
+  margin-top:clamp(9px,3cqw,14px);
   font-family:'Cinzel',serif;
-  font-size:12px;
+  font-size:clamp(10px,2.6cqw,12px);
   letter-spacing:1px;
   color:#e8c570;
   border:1px solid rgba(200,164,74,.5);
   border-radius:8px;
-  padding:7px 16px;
+  padding:clamp(5px,1.5cqw,7px) clamp(11px,3.4cqw,16px);
   background:rgba(200,164,74,.1);
   transition:all .15s;
 }
@@ -4855,7 +4861,8 @@ textarea{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:200px;
+  /* Fallback ✦ scales with the carousel */
+  font-size:clamp(80px, 42cqw, 200px);
   opacity:.15;
 }
 /* Dots */
