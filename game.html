@@ -627,6 +627,15 @@ body{padding-top:46px;}
 .profile-stat-card{background:rgba(8,8,28,.7);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
 .profile-stat-val{font-size:22px;font-weight:700;color:#e2e8f0;font-family:'Orbitron',sans-serif;}
 .profile-stat-lbl{font-size:9px;color:#4b5563;letter-spacing:2px;margin-top:3px;text-transform:uppercase;}
+.profile-stat-group-lbl{font-size:10px;font-weight:700;color:var(--violet2);letter-spacing:2px;text-transform:uppercase;margin:14px 0 8px;}
+.profile-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:6px;}
+.profile-fav-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:16px;}
+.profile-fav-card{display:flex;align-items:center;gap:12px;background:rgba(8,8,28,.7);border:1px solid var(--border);border-radius:10px;padding:12px;}
+.profile-fav-thumb{width:48px;height:67px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:#4b5563;background:rgba(0,0,0,.35);border:1px solid var(--border);overflow:hidden;}
+.profile-fav-thumb img{width:100%;height:100%;object-fit:cover;border-radius:5px;}
+.profile-fav-swatch{width:48px;height:48px;border-radius:50%;flex-shrink:0;border:2px solid rgba(255,255,255,.18);background:#1a1a3a;}
+.profile-fav-info{min-width:0;}
+.profile-fav-name{font-size:14px;font-weight:700;color:#e2e8f0;font-family:'Orbitron',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
 /* ACHIEVEMENTS */
 .ach-popup{position:fixed;bottom:20px;right:20px;z-index:9999;background:rgba(8,8,28,.97);border:1px solid rgba(251,191,36,.5);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 0 30px rgba(251,191,36,.25);animation:ach-slide .4s ease,ach-out .5s ease 4.5s forwards;pointer-events:none;max-width:320px;min-width:260px;}
@@ -7106,6 +7115,11 @@ function dealDamage(tp,tuid,amt){
   }
   fc.currentHP-=dmg;
   if(isChar(c))fc.damagedThisTurn=true;
+  // Profile stats (local human = player 1): damage to opponent = dealt; damage to us = taken.
+  if(dmg>0 && typeof bumpStat==='function'){
+    if(tp===2)bumpStat('damage_dealt',dmg);
+    else if(tp===1)bumpStat('damage_taken',dmg);
+  }
   log(`${c.name} -${dmg}HP → ${fc.currentHP}/${fc.baseHP+fc.hpBonus}HP`,'dmg');
   const drainAtk=G.selectedAttacker?G.players[G.activePlayer]?.field.find(f=>f.uid===G.selectedAttacker):null;
   if(drainAtk&&hasKW(drainAtk,'drain')&&dmg>0){G.players[G.activePlayer].energy+=dmg;log('Drain: +'+dmg+'⚡!','gain');}
@@ -7153,6 +7167,11 @@ function killCard(p,fc){
     if(k===1){
       _achData.chars_destroyed = (_achData.chars_destroyed||0) + 1;
       if(typeof checkAchievements==='function') checkAchievements();
+      // Persist kill progress mid-match (debounced) so leaving before match end
+      // doesn't lose "The Hunted" progress.
+      if(typeof saveAchievementsDebounced==='function') saveAchievementsDebounced();
+      // Profile stat: lifetime characters killed.
+      if(typeof bumpStat==='function') bumpStat('chars_killed',1);
       // +25 XP per character kill (any game mode)
       if(typeof awardBPXp==='function') awardBPXp(25,'Character Destroyed');
     }
@@ -8474,6 +8493,14 @@ function playCardZoom(cardId){
 
 function onEntry(p,fc){
   const c=DB[fc.cid];if(!c)return;
+  // Profile stats: count cards the LOCAL player (player 1) deploys to the field.
+  // Tokens are excluded (not real owned cards). Favorites tally by play count.
+  if(p===1 && !c.isToken && typeof bumpStat==='function'){
+    bumpStat('cards_played',1);
+    if(c.color)bumpCount('color_counts',c.color,1);
+    bumpCount('card_counts',c.id,1);           // Favorite Card = any card type
+    if(isChar(c))bumpCount('char_counts',c.id,1); // Favorite Character = characters only
+  }
   if(c.id==='archon'){drawCard(p);drawCard(p);log('Archon: draw 2!','gain');
     const syn=G.players[p].field.some(f=>{const d=DB[f.cid];return d&&(d.charName==='Samara'||d.charName==='Surana');});
     if(syn){fc.currentATK+=5;fc.atkBonus+=5;fc.currentHP+=5;fc.hpBonus+=5;log('+5/+5 synergy!','gain');}
@@ -8890,6 +8917,8 @@ function doTransform(fieldUid,newCid,handUid,cost){
       _achData.has_transformed=true;
       setTimeout(()=>checkAchievements(),600);
     }
+    // Profile stat: lifetime transformations.
+    if(typeof bumpStat==='function') bumpStat('transformations',1);
     renderAll();
     // Online: broadcast the new form
     if(G.onlineMode && typeof broadcastGameState==='function')broadcastGameState();
@@ -8985,6 +9014,7 @@ function activateAbility(fc,abl){
       // Don't spend energy or mark used until target chosen — handled inside flow
       // But we DO close the abilities modal so the picker can show
       G.players[G.activePlayer].usedAbilityThisTurn=true;
+      if(G.activePlayer===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
       if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; }
       closeAllModals();
       volarisPrismShift(fc.uid);
@@ -8998,6 +9028,7 @@ function activateAbility(fc,abl){
         return;
       }
       G.players[G.activePlayer].usedAbilityThisTurn=true;
+      if(G.activePlayer===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
       if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; }
       closeAllModals();
       volarisEnergyFracture(fc.uid);
@@ -9016,6 +9047,8 @@ function activateAbility(fc,abl){
   // TAPPED SYSTEM:
   // - Using ANY activated ability forfeits the +2 "skip attack" energy bonus this turn.
   pl.usedAbilityThisTurn = true;
+  // Profile stat: lifetime activated abilities used (local player only).
+  if(G.activePlayer===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
   // - A FREE (0-energy) ability TAPS the card (turns it sideways → can't attack or
   //   use more abilities this turn). A PAID (1+ energy) ability does NOT tap it.
   //   A per-card override (DB[cid].noTapOnAbility) keeps it untapped even when free.
@@ -11378,8 +11411,90 @@ function renderRulesCardGrid(cards){
 const CEL_IMG='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png';
 let _celSB=null;
 let _celUserId=null;
-let _celData={celestium:0,wins:0,losses:0,matches:0,last_login:null,first_win_date:null};
+let _celData={celestium:0,wins:0,losses:0,matches:0,last_login:null,first_win_date:null,stats:_defaultStats()};
 let _celLog=[];
+
+// ── PROFILE STATS SYSTEM ───────────────────────────────────────────────────
+// Lifetime stat counters stored on _celData.stats and persisted to the
+// profiles.stats TEXT column (separate from celestium/wins so a missing column
+// can't break the rest of the profile save). Requires migration:
+//   ALTER TABLE profiles ADD COLUMN IF NOT EXISTS stats TEXT;
+function _defaultStats(){
+  return {
+    chars_killed:0, damage_dealt:0, damage_taken:0,
+    transformations:0, abilities_used:0, cards_played:0,
+    celestium_earned:0, win_streak_current:0, win_streak_best:0,
+    color_counts:{}, card_counts:{}, char_counts:{}
+  };
+}
+function ensureStats(){
+  if(!_celData.stats)_celData.stats=_defaultStats();
+  const d=_defaultStats();
+  for(const k in d){ if(_celData.stats[k]===undefined)_celData.stats[k]=d[k]; }
+  return _celData.stats;
+}
+function bumpStat(key,n){
+  ensureStats();
+  _celData.stats[key]=(_celData.stats[key]||0)+(n||1);
+  saveStatsDebounced();
+}
+function bumpCount(mapKey,id,n){
+  if(!id)return;
+  ensureStats();
+  const m=_celData.stats[mapKey]||(_celData.stats[mapKey]={});
+  m[id]=(m[id]||0)+(n||1);
+  saveStatsDebounced();
+}
+function _bumpWinStreak(won){
+  ensureStats();
+  if(won){
+    _celData.stats.win_streak_current=(_celData.stats.win_streak_current||0)+1;
+    if(_celData.stats.win_streak_current>(_celData.stats.win_streak_best||0))
+      _celData.stats.win_streak_best=_celData.stats.win_streak_current;
+  } else {
+    _celData.stats.win_streak_current=0;
+  }
+  saveStatsDebounced();
+}
+function _maxKey(map){
+  if(!map)return null;
+  let best=null,bv=-1;
+  for(const k in map){ if(map[k]>bv){bv=map[k];best=k;} }
+  return bv>0?best:null;
+}
+async function loadStats(){
+  if(!_celSB||!_celUserId)return;
+  try{
+    const {data,error}=await _celSB.from('profiles').select('stats').eq('id',_celUserId).maybeSingle();
+    if(!error&&data&&data.stats){
+      const parsed=typeof data.stats==='string'?JSON.parse(data.stats):data.stats;
+      _celData.stats=Object.assign(_defaultStats(),parsed||{});
+    } else { ensureStats(); }
+  }catch(e){ console.warn('[STATS] load error (column may be missing):',e); ensureStats(); }
+}
+let _statsSaveTimer=null;
+async function saveStats(){
+  if(!_celSB||!_celUserId)return;
+  ensureStats();
+  try{
+    await _celSB.from('profiles').update({stats:JSON.stringify(_celData.stats)}).eq('id',_celUserId);
+  }catch(e){ console.warn('[STATS] save error (run: ALTER TABLE profiles ADD COLUMN IF NOT EXISTS stats TEXT;):',e); }
+}
+function saveStatsDebounced(){
+  if(!_celSB||!_celUserId)return;
+  if(_statsSaveTimer)clearTimeout(_statsSaveTimer);
+  _statsSaveTimer=setTimeout(()=>{ _statsSaveTimer=null; saveStats(); },1500);
+}
+// Flush any pending debounced stat/achievement writes immediately. Called when
+// the tab is hidden/closed so mid-match progress isn't lost if the user leaves
+// before the 1.5s debounce fires.
+function flushPendingSaves(){
+  if(!_celSB||!_celUserId)return;
+  if(_statsSaveTimer){ clearTimeout(_statsSaveTimer); _statsSaveTimer=null; saveStats(); }
+  if(typeof _achSaveTimer!=='undefined' && _achSaveTimer){ clearTimeout(_achSaveTimer); _achSaveTimer=null; saveAchievements(); }
+}
+window.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden')flushPendingSaves(); });
+window.addEventListener('pagehide',flushPendingSaves);
 
 function initCelestium(sb,userId){
   _celSB=sb;_celUserId=userId;
@@ -11401,6 +11516,7 @@ async function loadCelestium(){
       _celLog=data.cel_log?JSON.parse(data.cel_log):[];
     }
     updateCelDisplay();
+    await loadStats();
     await checkDailyLogin();
   }catch(e){console.warn('[CEL] load error:',e);}
 }
@@ -11422,6 +11538,8 @@ async function saveCelestium(){
 
 async function awardCelestium(amount,reason){
   _celData.celestium+=amount;
+  // Profile stat: lifetime total Celestium earned (only positive awards).
+  if(amount>0 && typeof bumpStat==='function') bumpStat('celestium_earned',amount);
   const entry={amount,reason,ts:new Date().toISOString()};
   _celLog.unshift(entry);
   updateCelDisplay();
@@ -11470,6 +11588,7 @@ async function onMatchEnd(won){
   if(G&&G.onlineMode&&G.forfeited&&won){
     _celData.matches++;
     _celData.wins++;
+    if(typeof _bumpWinStreak==='function')_bumpWinStreak(true);
     await awardCelestium(50,'Forfeit Win');
     setTimeout(()=>checkAchievements(),800);
     return;
@@ -11479,6 +11598,7 @@ async function onMatchEnd(won){
   _celData.matches++;
   if(won){
     _celData.wins++;
+    if(typeof _bumpWinStreak==='function')_bumpWinStreak(true);
     await awardCelestium(75,'Match Win');
     // First win of the day bonus
     const today=new Date().toDateString();
@@ -11490,6 +11610,7 @@ async function onMatchEnd(won){
     setTimeout(()=>checkAchievements(),800);
   } else {
     _celData.losses++;
+    if(typeof _bumpWinStreak==='function')_bumpWinStreak(false);
     await saveCelestium();
   }
 }
@@ -11509,6 +11630,7 @@ function refreshProfileScreen(){
   const w=document.getElementById('profile-wins');if(w)w.textContent=_celData.wins;
   const l=document.getElementById('profile-losses');if(l)l.textContent=_celData.losses;
   const m=document.getElementById('profile-matches');if(m)m.textContent=_celData.matches;
+  renderProfileStats();
   updateCelDisplay();
   // Daily status
   const today=new Date().toDateString();
@@ -11550,6 +11672,67 @@ function refreshProfileScreen(){
       }).join('');
     }
   }
+}
+
+// Render the expanded lifetime stat panel (combat / record / gameplay /
+// progression / favorites). Computed stats (win rate, ratio, achievements)
+// derive from existing fields; the rest read _celData.stats.
+function renderProfileStats(){
+  ensureStats();
+  const s=_celData.stats;
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  const fmt=n=>Number(n||0).toLocaleString();
+
+  // Record (computed)
+  const wins=_celData.wins||0, losses=_celData.losses||0, matches=_celData.matches||0;
+  set('profile-winrate', matches>0 ? Math.round(wins/matches*100)+'%' : '—');
+  set('profile-wlratio', losses>0 ? (wins/losses).toFixed(2) : (wins>0?wins.toFixed(2):'—'));
+  set('profile-streak', s.win_streak_current||0);
+  set('profile-beststreak', s.win_streak_best||0);
+
+  // Combat
+  set('profile-kills', fmt(s.chars_killed));
+  set('profile-dmgdealt', fmt(s.damage_dealt));
+  set('profile-dmgtaken', fmt(s.damage_taken));
+
+  // Gameplay
+  set('profile-transforms', fmt(s.transformations));
+  set('profile-abilities', fmt(s.abilities_used));
+  set('profile-cardsplayed', fmt(s.cards_played));
+
+  // Progression
+  set('profile-celearned', fmt(s.celestium_earned));
+  const achTotal=Object.keys(ACHIEVEMENTS).length;
+  const achUnlocked=Object.keys(ACHIEVEMENTS).filter(id=>!!_achData['ach_'+id]).length;
+  set('profile-achunlocked', achUnlocked+' / '+achTotal);
+
+  // Favorite color
+  const favColor=_maxKey(s.color_counts);
+  const colName=document.getElementById('profile-favcolor');
+  const colSw=document.getElementById('profile-favcolor-swatch');
+  if(favColor && COLOR_DEFS[favColor]){
+    if(colName)colName.textContent=COLOR_DEFS[favColor].label;
+    if(colSw)colSw.style.background=COLOR_DEFS[favColor].hex;
+  } else {
+    if(colName)colName.textContent='—';
+    if(colSw)colSw.style.background='#1a1a3a';
+  }
+
+  // Favorite card (any type) + favorite character card
+  const renderFav=(cid,nameId,thumbId)=>{
+    const nameEl=document.getElementById(nameId);
+    const thumbEl=document.getElementById(thumbId);
+    if(cid && DB[cid]){
+      if(nameEl)nameEl.textContent=DB[cid].name||cid;
+      const img=getImg(cid);
+      if(thumbEl)thumbEl.innerHTML=img?'<img src="'+img+'" alt=""/>':'?';
+    } else {
+      if(nameEl)nameEl.textContent='—';
+      if(thumbEl)thumbEl.textContent='—';
+    }
+  };
+  renderFav(_maxKey(s.card_counts),'profile-favcard','profile-favcard-thumb');
+  renderFav(_maxKey(s.char_counts),'profile-favchar','profile-favchar-thumb');
 }
 
 
@@ -11624,6 +11807,17 @@ async function saveAchievements(){
   try{
     await _celSB.from('profiles').update({achievements:JSON.stringify(_achData)}).eq('id',_celUserId);
   }catch(e){console.warn('[ACH] save error:',e);}
+}
+
+// Debounced saver: batches rapid achievement-progress updates (e.g. many kills in
+// quick succession) into a single DB write ~1.5s after the last change, so progress
+// like "The Hunted" (chars_destroyed) persists even when leaving mid-match, without
+// hammering Supabase on every kill.
+let _achSaveTimer=null;
+function saveAchievementsDebounced(){
+  if(!_celSB||!_celUserId)return;
+  if(_achSaveTimer)clearTimeout(_achSaveTimer);
+  _achSaveTimer=setTimeout(()=>{ _achSaveTimer=null; saveAchievements(); },1500);
 }
 
 async function checkAchievements(){
@@ -12536,11 +12730,11 @@ async function adminResetProfile(){
   if(!isAdmin())return;
   if(!confirm('⚠ This will RESET your Celestium, achievements, and collection. Continue?'))return;
   if(!confirm('Are you absolutely sure? This cannot be undone.'))return;
-  _celData={celestium:0,wins:0,losses:0,matches:0,last_login:null,first_win_date:null};
+  _celData={celestium:0,wins:0,losses:0,matches:0,last_login:null,first_win_date:null,stats:_defaultStats()};
   _celLog=[];
   _achData={};
   _collection={};
-  await Promise.all([saveCelestium(),saveAchievements(),saveCollection()]);
+  await Promise.all([saveCelestium(),saveAchievements(),saveCollection(),saveStats()]);
   updateCelDisplay();
   alert('✓ Profile reset.');
   showScreen('menu-screen');
@@ -15689,7 +15883,9 @@ window.addEventListener('load',async()=>{
   </div>
 
   <!-- Stats grid -->
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+  <!-- RECORD -->
+  <div class="profile-stat-group-lbl">⚔ Record</div>
+  <div class="profile-stat-grid">
     <div class="profile-stat-card">
       <div class="profile-stat-val" id="profile-wins">—</div>
       <div class="profile-stat-lbl">Wins</div>
@@ -15701,6 +15897,95 @@ window.addEventListener('load',async()=>{
     <div class="profile-stat-card">
       <div class="profile-stat-val" id="profile-matches">—</div>
       <div class="profile-stat-lbl">Matches</div>
+    </div>
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="profile-winrate">—</div>
+      <div class="profile-stat-lbl">Win Rate</div>
+    </div>
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="profile-wlratio">—</div>
+      <div class="profile-stat-lbl">W / L Ratio</div>
+    </div>
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="profile-streak">—</div>
+      <div class="profile-stat-lbl">Win Streak</div>
+    </div>
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="profile-beststreak">—</div>
+      <div class="profile-stat-lbl">Best Streak</div>
+    </div>
+  </div>
+
+  <!-- COMBAT -->
+  <div class="profile-stat-group-lbl">🗡 Combat</div>
+  <div class="profile-stat-grid">
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="profile-kills">—</div>
+      <div class="profile-stat-lbl">Characters Killed</div>
+    </div>
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="profile-dmgdealt">—</div>
+      <div class="profile-stat-lbl">Damage Dealt</div>
+    </div>
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="profile-dmgtaken">—</div>
+      <div class="profile-stat-lbl">Damage Taken</div>
+    </div>
+  </div>
+
+  <!-- GAMEPLAY -->
+  <div class="profile-stat-group-lbl">✦ Gameplay</div>
+  <div class="profile-stat-grid">
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="profile-transforms">—</div>
+      <div class="profile-stat-lbl">Transformations</div>
+    </div>
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="profile-abilities">—</div>
+      <div class="profile-stat-lbl">Abilities Used</div>
+    </div>
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="profile-cardsplayed">—</div>
+      <div class="profile-stat-lbl">Cards Played</div>
+    </div>
+  </div>
+
+  <!-- PROGRESSION -->
+  <div class="profile-stat-group-lbl">★ Progression</div>
+  <div class="profile-stat-grid">
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="profile-celearned" style="color:#fbbf24">—</div>
+      <div class="profile-stat-lbl">Total Celestium Earned</div>
+    </div>
+    <div class="profile-stat-card">
+      <div class="profile-stat-val" id="profile-achunlocked">—</div>
+      <div class="profile-stat-lbl">Achievements</div>
+    </div>
+  </div>
+
+  <!-- FAVORITES -->
+  <div class="profile-stat-group-lbl">♥ Favorites</div>
+  <div class="profile-fav-grid">
+    <div class="profile-fav-card">
+      <div class="profile-fav-swatch" id="profile-favcolor-swatch"></div>
+      <div class="profile-fav-info">
+        <div class="profile-fav-name" id="profile-favcolor">—</div>
+        <div class="profile-stat-lbl">Favorite Color</div>
+      </div>
+    </div>
+    <div class="profile-fav-card">
+      <div class="profile-fav-thumb" id="profile-favcard-thumb">—</div>
+      <div class="profile-fav-info">
+        <div class="profile-fav-name" id="profile-favcard">—</div>
+        <div class="profile-stat-lbl">Favorite Card</div>
+      </div>
+    </div>
+    <div class="profile-fav-card">
+      <div class="profile-fav-thumb" id="profile-favchar-thumb">—</div>
+      <div class="profile-fav-info">
+        <div class="profile-fav-name" id="profile-favchar">—</div>
+        <div class="profile-stat-lbl">Favorite Character</div>
+      </div>
     </div>
   </div>
 
