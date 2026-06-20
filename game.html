@@ -5101,6 +5101,70 @@ textarea{
   margin-top:4px;
   text-shadow:0 0 10px var(--tf-color,#a855f7);
 }
+
+/* ═══════════════════════════════════════════════════════
+   MENU VERTICAL FIT — compress the menu so it fits without
+   scrolling on traditional monitors & laptops. Height-based
+   so it only kicks in when the screen is short. Ultrawide and
+   tall screens are unaffected. Uses a 2-column button grid on
+   short screens to roughly halve the button column height.
+   ═══════════════════════════════════════════════════════ */
+
+@media (max-height:1100px) and (min-width:769px){
+  #menu-screen{ padding:16px 24px 20px; justify-content:flex-start; }
+  .menu-title-wrap{ padding:8px 50px 4px; margin-bottom:2px; }
+  #menu-screen h1{ font-size:clamp(28px,4.2vw,48px); letter-spacing:6px; }
+  .menu-title-flourish{ font-size:10px; margin:2px 0 1px; }
+  .menu-tagline{ margin-bottom:10px; font-size:10px; }
+  .featured-card-panel{ width:auto; min-width:420px; margin-bottom:10px !important; padding:9px 16px !important; }
+  .menu-section-label{ margin:6px 0 6px; font-size:9px; }
+
+  /* 2-column button grid — halves the vertical height */
+  .menu-section{ margin-bottom:6px; }
+  .menu-section:has(.menu-btn){
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:6px 12px;
+    width:auto;
+    max-width:640px;
+    align-items:stretch;
+  }
+  .menu-section .menu-section-label{
+    grid-column:1 / -1;
+    justify-self:center;
+  }
+  .menu-btn{
+    width:100%;
+    min-width:300px;
+    margin-bottom:0;
+    padding:9px 18px;
+    font-size:12px;
+  }
+}
+
+/* Shorter screens: compress title/spacing further (grid stays from above) */
+@media (max-height:820px) and (min-width:769px){
+  #menu-screen{ padding:10px 24px 14px; }
+  .menu-title-wrap{ padding:4px 50px 2px; }
+  #menu-screen h1{ font-size:clamp(24px,3.6vw,40px); letter-spacing:5px; }
+  .menu-tagline{ margin-bottom:8px; font-size:9px; }
+  .featured-card-panel{ margin-bottom:7px !important; padding:7px 14px !important; }
+  .menu-section-label{ margin:4px 0 4px; }
+  .menu-btn{ padding:7px 16px; font-size:11px; letter-spacing:2px; }
+  .menu-section:has(.menu-btn){ gap:5px 12px; }
+}
+
+/* Very short screens: tightest */
+@media (max-height:700px) and (min-width:769px){
+  #menu-screen{ padding:8px 24px 12px; }
+  .menu-title-wrap{ padding:2px 40px 0; }
+  #menu-screen h1{ font-size:clamp(20px,3vw,34px); letter-spacing:4px; }
+  .menu-tagline{ margin-bottom:5px; }
+  .featured-card-panel{ margin-bottom:5px !important; padding:5px 12px !important; }
+  .menu-section-label{ margin:3px 0 3px; }
+  .menu-btn{ padding:5px 14px; font-size:10px; }
+  .menu-btn::before,.menu-btn::after{ width:7px;height:7px; }
+}
 </style>
 </head>
 <body>
