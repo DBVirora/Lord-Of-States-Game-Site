@@ -4551,29 +4551,50 @@ textarea{
     display:none !important;
   }
 
-  /* ─── Drawer tab button (left edge) ─── */
+  /* ─── Drawer tab button (left edge) — prominent pull-tab ─── */
   .mobile-drawer-tab{
     display:flex;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
+    gap:2px;
     position:fixed;
-    top:50%;
+    top:42%;
     transform:translateY(-50%);
     left:0;
-    width:34px;
-    height:64px;
-    background:linear-gradient(135deg,rgba(30,22,55,.95),rgba(18,14,38,.95));
-    border:1px solid rgba(200,164,74,.4);
+    width:44px;
+    height:96px;
+    background:linear-gradient(135deg,rgba(200,164,74,.9),rgba(150,110,40,.92));
+    border:2px solid rgba(255,220,140,.7);
     border-left:none;
-    border-radius:0 12px 12px 0;
-    font-size:20px;
+    border-radius:0 16px 16px 0;
+    font-size:24px;
     z-index:9200;
     cursor:pointer;
-    box-shadow:2px 2px 12px rgba(0,0,0,.5);
+    box-shadow:3px 2px 18px rgba(200,164,74,.5),0 0 0 1px rgba(0,0,0,.3);
+    animation:mobile-tab-pulse 2.2s ease-in-out infinite;
+  }
+  .mobile-drawer-tab::after{
+    content:'PRIZES';
+    font-family:'Cinzel',serif;
+    font-size:7px;
+    font-weight:700;
+    letter-spacing:1px;
+    color:#1a1206;
+    writing-mode:initial;
+  }
+  @keyframes mobile-tab-pulse{
+    0%,100%{ box-shadow:3px 2px 18px rgba(200,164,74,.5),0 0 0 1px rgba(0,0,0,.3); }
+    50%{ box-shadow:3px 2px 26px rgba(255,210,120,.85),0 0 0 1px rgba(0,0,0,.3); transform:translateY(-50%) translateX(3px); }
   }
   #game-screen.drawer-prizes-open #mobile-prizes-tab{
     left:82vw;
     max-width:none;
+    animation:none;
+  }
+  /* When open, the tab becomes a clear "close" affordance */
+  #game-screen.drawer-prizes-open #mobile-prizes-tab::after{
+    content:'CLOSE';
   }
 
   /* ─── Drawer backdrop ─── */
