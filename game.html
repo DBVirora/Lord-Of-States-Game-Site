@@ -4903,9 +4903,17 @@ textarea{
 }
 .news-carousel-admin-edit:hover{ background:rgba(40,28,70,.9); }
 
-/* Hide carousel when the screen is too narrow to fit it beside the menu */
-@media (max-width:1400px){
-  .news-carousel{ display:none; }
+/* ─── NEWS CAROUSEL VISIBILITY ───
+   The carousel only fits cleanly on true ULTRAWIDE screens. On any standard
+   16:9 monitor (1920×1080, 2560×1440, etc.) it overlaps the centered title,
+   so it's hidden by default and only shown on ultrawide aspect ratios (21:9+)
+   that are also physically wide enough. This keeps it perfect on the owner's
+   ultrawide while hiding it for the majority on standard monitors. */
+.news-carousel{ display:none; }
+
+/* Show only on genuine ultrawides: aspect ratio ~21:9 or wider AND ≥2300px wide. */
+@media (min-width:2300px) and (min-aspect-ratio:2/1){
+  .news-carousel{ display:block; }
 }
 
 /* News editor inputs */
@@ -4917,6 +4925,168 @@ textarea{
   padding:6px 9px;font-size:12px;font-family:inherit;
 }
 .news-ed-input:focus{ outline:none;border-color:#c8a44a; }
+
+/* ═══════════════════════════════════════════════════════
+   TRANSFORMATION ANIMATION (cinematic full-screen)
+   ═══════════════════════════════════════════════════════ */
+#transform-overlay{
+  position:fixed;
+  inset:0;
+  z-index:11000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:radial-gradient(circle at center, rgba(0,0,0,.55) 0%, rgba(0,0,0,.92) 100%);
+  overflow:hidden;
+  pointer-events:none;
+}
+#transform-overlay.active{ display:flex; }
+
+/* Charged speed-lines that rush inward */
+.tf-speedlines{
+  position:absolute;
+  inset:-20%;
+  background:repeating-conic-gradient(from 0deg at 50% 50%,
+    transparent 0deg,
+    var(--tf-color,#a855f7) 1deg,
+    transparent 2deg,
+    transparent 6deg);
+  opacity:0;
+  animation:tf-speedlines-spin 1.6s ease-out forwards;
+  mix-blend-mode:screen;
+}
+@keyframes tf-speedlines-spin{
+  0%{ opacity:0; transform:scale(1.6) rotate(0deg); }
+  30%{ opacity:.5; }
+  70%{ opacity:.7; transform:scale(.7) rotate(70deg); }
+  100%{ opacity:0; transform:scale(.3) rotate(120deg); }
+}
+
+/* The aura ring that pulses around the card */
+.tf-aura{
+  position:absolute;
+  width:340px;
+  height:340px;
+  border-radius:50%;
+  background:radial-gradient(circle,
+    var(--tf-color,#a855f7) 0%,
+    rgba(255,255,255,.4) 30%,
+    transparent 68%);
+  filter:blur(14px);
+  opacity:0;
+  animation:tf-aura-pulse 1.8s ease-out forwards;
+  mix-blend-mode:screen;
+}
+@keyframes tf-aura-pulse{
+  0%{ opacity:0; transform:scale(.4); }
+  25%{ opacity:.85; transform:scale(.9); }
+  55%{ opacity:1; transform:scale(1.15); }
+  80%{ opacity:.9; transform:scale(1.05); }
+  100%{ opacity:0; transform:scale(2.2); }
+}
+
+/* Card stage that holds old + new images */
+.tf-card-stage{
+  position:relative;
+  width:230px;
+  height:322px;
+  z-index:3;
+}
+.tf-card-img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  border-radius:14px;
+  object-fit:cover;
+  box-shadow:0 0 40px var(--tf-glow,rgba(168,85,247,.7)), 0 8px 30px rgba(0,0,0,.7);
+  border:2px solid rgba(255,255,255,.25);
+}
+.tf-card-old{
+  animation:tf-old-card 1.8s ease-in forwards;
+}
+@keyframes tf-old-card{
+  0%{ opacity:1; transform:scale(1); filter:brightness(1); }
+  35%{ opacity:1; transform:scale(1.04); filter:brightness(1.5); }
+  48%{ opacity:0; transform:scale(1.1); filter:brightness(4); }
+  100%{ opacity:0; }
+}
+.tf-card-new{
+  opacity:0;
+  animation:tf-new-card 1.8s ease-out forwards;
+}
+@keyframes tf-new-card{
+  0%,46%{ opacity:0; transform:scale(1.25); filter:brightness(4); }
+  54%{ opacity:1; transform:scale(1.08); filter:brightness(2.2); }
+  72%{ opacity:1; transform:scale(.98); filter:brightness(1.1); }
+  100%{ opacity:1; transform:scale(1); filter:brightness(1); }
+}
+
+/* The white flash at the peak */
+.tf-flash{
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at center, #fff 0%, var(--tf-color,#a855f7) 35%, transparent 72%);
+  opacity:0;
+  z-index:4;
+  animation:tf-flash 1.8s ease-out forwards;
+  mix-blend-mode:screen;
+}
+@keyframes tf-flash{
+  0%,40%{ opacity:0; }
+  49%{ opacity:0; transform:scale(.3); }
+  52%{ opacity:1; transform:scale(1.3); }
+  62%{ opacity:0; transform:scale(2); }
+  100%{ opacity:0; }
+}
+
+/* Energy particles bursting out */
+.tf-particle{
+  position:absolute;
+  width:8px;height:8px;
+  border-radius:50%;
+  background:var(--tf-color,#a855f7);
+  box-shadow:0 0 10px var(--tf-color,#a855f7);
+  z-index:2;
+  opacity:0;
+  animation:tf-particle-burst 1.8s ease-out forwards;
+}
+@keyframes tf-particle-burst{
+  0%,42%{ opacity:0; transform:translate(0,0) scale(0); }
+  52%{ opacity:1; transform:translate(var(--px,0),var(--py,0)) scale(1.2); }
+  100%{ opacity:0; transform:translate(calc(var(--px,0)*1.7),calc(var(--py,0)*1.7)) scale(0); }
+}
+
+/* The form name that slams in */
+.tf-name{
+  position:absolute;
+  bottom:18%;
+  z-index:5;
+  font-family:'Cinzel',serif;
+  font-size:34px;
+  font-weight:900;
+  color:#fff;
+  text-shadow:0 0 20px var(--tf-color,#a855f7), 0 2px 8px rgba(0,0,0,.9);
+  letter-spacing:2px;
+  opacity:0;
+  text-align:center;
+  animation:tf-name-slam 1.8s ease-out forwards;
+}
+@keyframes tf-name-slam{
+  0%,55%{ opacity:0; transform:scale(1.8); letter-spacing:14px; }
+  65%{ opacity:1; transform:scale(1); letter-spacing:2px; }
+  88%{ opacity:1; }
+  100%{ opacity:0; transform:scale(1.05); }
+}
+.tf-name-sub{
+  display:block;
+  font-size:13px;
+  font-family:'Share Tech Mono',monospace;
+  letter-spacing:4px;
+  color:var(--tf-color,#c8a0ff);
+  margin-top:4px;
+  text-shadow:0 0 10px var(--tf-color,#a855f7);
+}
 </style>
 </head>
 <body>
@@ -5478,6 +5648,17 @@ textarea{
       <button class="btn-primary" style="flex:1;padding:11px" onclick="saveNewsEditor()">Save & Publish</button>
     </div>
   </div>
+</div>
+<!-- Transformation animation overlay -->
+<div id="transform-overlay">
+  <div class="tf-speedlines" id="tf-speedlines"></div>
+  <div class="tf-aura" id="tf-aura"></div>
+  <div class="tf-card-stage" id="tf-card-stage">
+    <img class="tf-card-img tf-card-old" id="tf-card-old" alt=""/>
+    <img class="tf-card-img tf-card-new" id="tf-card-new" alt=""/>
+    <div class="tf-flash" id="tf-flash"></div>
+  </div>
+  <div class="tf-name" id="tf-name"></div>
 </div>
 <div class="modal-overlay" id="fullcard-modal" onclick="if(event.target===this)closeFullCard()">
   <div class="modal" style="max-width:520px;width:90vw;padding:18px;background:#0a0a12;border:2px solid #7c3aed;max-height:92vh;overflow-y:auto">
@@ -8193,6 +8374,78 @@ function volarisEnergyFracture(volarisUid){
 }
 
 
+// ═══════════════════════════════════════════════════
+// TRANSFORMATION ANIMATION — cinematic full-screen sequence
+// playTransformAnimation(oldCid, newCid, onComplete)
+// ═══════════════════════════════════════════════════
+let _tfAnimating = false;
+function playTransformAnimation(oldCid, newCid, onComplete){
+  const settingsOn = (typeof _gameSettings==='undefined') || _gameSettings.animations!==false;
+  // If animations are disabled, skip straight to the result
+  if(!settingsOn || _tfAnimating){ if(onComplete)onComplete(); return; }
+  const overlay=document.getElementById('transform-overlay');
+  if(!overlay){ if(onComplete)onComplete(); return; }
+  _tfAnimating=true;
+
+  const newCard=DB[newCid]||{};
+  const color=newCard.color||'purple';
+  const hex=(typeof COLOR_DEFS!=='undefined'&&COLOR_DEFS[color])?COLOR_DEFS[color].hex:'#a855f7';
+  const glow=hex.replace(')',',.7)').replace('rgb','rgba');
+
+  // Set the theme color
+  overlay.style.setProperty('--tf-color', hex);
+  overlay.style.setProperty('--tf-glow', hex);
+
+  // Card images
+  const oldImg=document.getElementById('tf-card-old');
+  const newImg=document.getElementById('tf-card-new');
+  const oldUrl=getImg(oldCid), newUrl=getImg(newCid);
+  if(oldUrl){ oldImg.src=oldUrl; oldImg.style.display=''; } else { oldImg.style.display='none'; }
+  if(newUrl){ newImg.src=newUrl; newImg.style.display=''; } else { newImg.style.display='none'; }
+
+  // Name banner
+  const nameEl=document.getElementById('tf-name');
+  nameEl.innerHTML = (newCard.name||'') + '<span class="tf-name-sub">TRANSFORMATION</span>';
+
+  // Build particle burst
+  const stage=document.getElementById('tf-card-stage');
+  // Clear old particles
+  stage.querySelectorAll('.tf-particle').forEach(p=>p.remove());
+  const particleCount=18;
+  for(let i=0;i<particleCount;i++){
+    const angle=(i/particleCount)*Math.PI*2;
+    const dist=120+Math.random()*90;
+    const px=Math.cos(angle)*dist;
+    const py=Math.sin(angle)*dist;
+    const pt=document.createElement('div');
+    pt.className='tf-particle';
+    pt.style.left='50%'; pt.style.top='50%';
+    pt.style.setProperty('--px', px+'px');
+    pt.style.setProperty('--py', py+'px');
+    pt.style.animationDelay=(Math.random()*0.1)+'s';
+    pt.style.background=hex;
+    stage.appendChild(pt);
+  }
+
+  // Restart animations by toggling active
+  overlay.classList.remove('active');
+  void overlay.offsetWidth; // force reflow
+  overlay.classList.add('active');
+
+  // Sound effect if available
+  if(typeof SFX!=='undefined'){ if(SFX.transform)SFX.transform(); else if(SFX.powerup)SFX.powerup(); else if(SFX.instant)SFX.instant(); }
+
+  // The actual card swap happens at the peak flash (~52% of 1.8s ≈ 940ms)
+  // so the new form is "behind" the flash when it clears.
+  setTimeout(()=>{ if(onComplete)onComplete(); }, 950);
+
+  // End the overlay after the full sequence
+  setTimeout(()=>{
+    overlay.classList.remove('active');
+    _tfAnimating=false;
+  }, 1850);
+}
+
 function doTransform(fieldUid,newCid,handUid,cost){
   const pl=G.players[1];const fc=pl.field.find(f=>f.uid===fieldUid);if(!fc)return;
   const nc=DB[newCid];if(!nc)return;
@@ -8202,18 +8455,25 @@ function doTransform(fieldUid,newCid,handUid,cost){
   pl.hand=pl.hand.filter(f=>f.uid!==handUid);
   spendEnergy(1, actualCost, DB[newCid]?.color||null);
   log(`${DB[fc.cid].name} → ${nc.name}!`,'gain');
-  // Replace in place — keep uid and attachments
-  const prevAttachments=fc.attachments||[];
-  fc.cid=newCid;fc.currentHP=nc.hp;fc.currentATK=nc.atk;fc.baseHP=nc.hp;fc.baseATK=nc.atk;
-  fc.hpBonus=0;fc.atkBonus=0;fc.abilityUsed={};fc.damagedThisTurn=false;fc.markedDamage=0;
-  // Keep persistent attachments
-  fc.attachments=prevAttachments.filter(eqId=>{const eq=DB[eqId];return eq&&eq.persistent!==false;});
-  // Flag for First Transformation achievement
-  if(!_achData.has_transformed){
-    _achData.has_transformed=true;
-    setTimeout(()=>checkAchievements(),600);
-  }
-  closeAllModals();renderAll();
+  const oldCid=fc.cid;
+  closeAllModals();
+  // Play the cinematic transformation animation, then apply the form change
+  playTransformAnimation(oldCid, newCid, ()=>{
+    // Replace in place — keep uid and attachments
+    const prevAttachments=fc.attachments||[];
+    fc.cid=newCid;fc.currentHP=nc.hp;fc.currentATK=nc.atk;fc.baseHP=nc.hp;fc.baseATK=nc.atk;
+    fc.hpBonus=0;fc.atkBonus=0;fc.abilityUsed={};fc.damagedThisTurn=false;fc.markedDamage=0;
+    // Keep persistent attachments
+    fc.attachments=prevAttachments.filter(eqId=>{const eq=DB[eqId];return eq&&eq.persistent!==false;});
+    // Flag for First Transformation achievement
+    if(!_achData.has_transformed){
+      _achData.has_transformed=true;
+      setTimeout(()=>checkAchievements(),600);
+    }
+    renderAll();
+    // Online: broadcast the new form
+    if(G.onlineMode && typeof broadcastGameState==='function')broadcastGameState();
+  });
 }
 
 // ═══════════════════════════════════════════════════
