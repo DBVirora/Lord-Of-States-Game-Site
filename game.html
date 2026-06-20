@@ -4746,21 +4746,32 @@ textarea{
    ═══════════════════════════════════════════════════════ */
 .news-carousel{
   position:absolute;
-  left:3.5vw;
-  top:45px;
-  bottom:105px;
-  /* Fill the left column: right edge stays clear of the centered menu.
-     Menu column is ~360px wide centered on 50vw → its left edge ≈ 50vw - 200px.
-     Width = from left:3.5vw to (menu left edge - 28px gap). */
-  width:calc(50vw - 200px - 3.5vw - 28px);
-  max-width:900px;
+  left:2.5vw;
+  top:120px;
+  bottom:70px;
+  /* DEFAULT (standard 16:9 monitors): narrower so the right edge clears the
+     CENTERED TITLE (which is wider than the menu buttons). The title is ~600px
+     wide centered on 50vw → its left edge ≈ 50vw - 320px. Leave a 30px gap. */
+  width:calc(50vw - 320px - 2.5vw - 30px);
+  max-width:480px;
   height:auto;
-  border-radius:18px;
+  border-radius:16px;
   overflow:hidden;
   border:1px solid rgba(200,164,74,.3);
   box-shadow:0 12px 50px rgba(0,0,0,.5),inset 0 1px 0 rgba(200,164,74,.12);
   background:linear-gradient(160deg,rgba(18,14,38,.7),rgba(10,8,24,.85));
   z-index:6;
+}
+/* ULTRAWIDE (21:9+): the owner's screen — bigger panel, original size. */
+@media (min-width:2300px) and (min-aspect-ratio:2/1){
+  .news-carousel{
+    left:3.5vw;
+    top:45px;
+    bottom:105px;
+    width:calc(50vw - 200px - 3.5vw - 28px);
+    max-width:900px;
+    border-radius:18px;
+  }
 }
 .news-carousel-track{
   display:flex;
@@ -4904,16 +4915,11 @@ textarea{
 .news-carousel-admin-edit:hover{ background:rgba(40,28,70,.9); }
 
 /* ─── NEWS CAROUSEL VISIBILITY ───
-   The carousel only fits cleanly on true ULTRAWIDE screens. On any standard
-   16:9 monitor (1920×1080, 2560×1440, etc.) it overlaps the centered title,
-   so it's hidden by default and only shown on ultrawide aspect ratios (21:9+)
-   that are also physically wide enough. This keeps it perfect on the owner's
-   ultrawide while hiding it for the majority on standard monitors. */
-.news-carousel{ display:none; }
-
-/* Show only on genuine ultrawides: aspect ratio ~21:9 or wider AND ≥2300px wide. */
-@media (min-width:2300px) and (min-aspect-ratio:2/1){
-  .news-carousel{ display:block; }
+   Shown on standard 16:9 monitors and up (sized to fit, clearing the title).
+   Only hidden on smaller screens where there's genuinely no room beside the
+   menu. The size rules above scale it: compact on 16:9, large on ultrawide. */
+@media (max-width:1500px){
+  .news-carousel{ display:none; }
 }
 
 /* News editor inputs */
