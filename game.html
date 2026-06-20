@@ -4699,6 +4699,75 @@ textarea{
   .xp-badge{ padding:3px 8px 3px 3px; }
   .xp-bar-wrap{ min-width:70px; }
   .xp-level-ring{ width:26px; height:26px; font-size:11px; }
+
+  /* ═══════════════════════════════════════════════════
+     MOBILE BOARD FIT — make the whole battle board fit the
+     phone screen instead of stacking into one long scroll.
+     ═══════════════════════════════════════════════════ */
+
+  /* The board column scrolls internally only if truly needed, but each section
+     is height-capped so the layout reads top→bottom: opp field, center, your
+     field, your hand — all visible without a giant page scroll. */
+  .board-column{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  /* Player areas: don't let them grow unbounded; size to content */
+  .player-area{
+    flex:0 0 auto;
+    padding:5px 7px;
+  }
+  .field-wrapper{
+    flex:0 0 auto;
+    min-height:0;
+  }
+  .char-field{
+    flex:1;
+    min-height:96px;
+    padding:5px;
+    gap:5px;
+  }
+
+  /* OPPONENT HAND: show as small face-down stack, not full cards.
+     This is the big fix — the opponent's hand was rendering full-size. */
+  .opp-hand{
+    padding:6px 6px 4px;
+    gap:3px;
+    max-height:54px;
+    overflow:hidden;
+  }
+  .opp-hand .hand-card,
+  .opp-hand .card-slot{
+    width:36px !important;
+    height:50px !important;
+    flex-shrink:0;
+  }
+  .opp-hand .hand-art-area,
+  .opp-hand .card-art-area{
+    height:32px !important;
+    font-size:11px !important;
+  }
+  .opp-hand .card-name-sm,
+  .opp-hand .hand-info-area{
+    display:none !important;
+  }
+
+  /* Opponent's "Opponent hand" label smaller */
+  .player-area > div[style*="Opponent hand"]{
+    font-size:8px !important;
+    margin-top:2px !important;
+  }
+
+  /* Your hand dock pinned, scrolls sideways, doesn't eat the whole screen */
+  .hand-dock{
+    flex:0 0 auto;
+  }
+  .hand-dock .hand-area{
+    max-height:128px;
+  }
 }
 
 /* Extra-small phones */
@@ -5111,16 +5180,16 @@ textarea{
    ═══════════════════════════════════════════════════════ */
 
 @media (max-height:1100px) and (min-width:769px){
-  #menu-screen{ padding:16px 24px 20px; justify-content:flex-start; }
-  .menu-title-wrap{ padding:8px 50px 4px; margin-bottom:2px; }
-  #menu-screen h1{ font-size:clamp(28px,4.2vw,48px); letter-spacing:6px; }
-  .menu-title-flourish{ font-size:10px; margin:2px 0 1px; }
-  .menu-tagline{ margin-bottom:10px; font-size:10px; }
-  .featured-card-panel{ width:auto; min-width:420px; margin-bottom:10px !important; padding:9px 16px !important; }
-  .menu-section-label{ margin:6px 0 6px; font-size:9px; }
+  #menu-screen{ padding:12px 24px 16px; justify-content:flex-start; min-height:auto; }
+  .menu-title-wrap{ padding:6px 50px 2px; margin-bottom:0; }
+  #menu-screen h1{ font-size:clamp(26px,3.6vw,42px); letter-spacing:5px; }
+  .menu-title-flourish{ font-size:9px; margin:1px 0 0; }
+  .menu-tagline{ margin-bottom:8px; font-size:9px; }
+  .featured-card-panel{ width:auto; min-width:420px; margin-bottom:8px !important; padding:8px 16px !important; }
+  .menu-section-label{ margin:4px 0 5px; font-size:9px; }
 
   /* 2-column button grid — halves the vertical height */
-  .menu-section{ margin-bottom:6px; }
+  .menu-section{ margin-bottom:4px; }
   .menu-section:has(.menu-btn){
     display:grid;
     grid-template-columns:repeat(2, 1fr);
@@ -5137,33 +5206,36 @@ textarea{
     width:100%;
     min-width:300px;
     margin-bottom:0;
-    padding:9px 18px;
+    padding:8px 18px;
     font-size:12px;
   }
 }
 
-/* Shorter screens: compress title/spacing further (grid stays from above) */
-@media (max-height:820px) and (min-width:769px){
-  #menu-screen{ padding:10px 24px 14px; }
-  .menu-title-wrap{ padding:4px 50px 2px; }
-  #menu-screen h1{ font-size:clamp(24px,3.6vw,40px); letter-spacing:5px; }
-  .menu-tagline{ margin-bottom:8px; font-size:9px; }
-  .featured-card-panel{ margin-bottom:7px !important; padding:7px 14px !important; }
-  .menu-section-label{ margin:4px 0 4px; }
-  .menu-btn{ padding:7px 16px; font-size:11px; letter-spacing:2px; }
+/* Shorter screens (most laptops after browser chrome): compress harder */
+@media (max-height:900px) and (min-width:769px){
+  #menu-screen{ padding:8px 24px 12px; }
+  .menu-title-wrap{ padding:3px 50px 1px; }
+  #menu-screen h1{ font-size:clamp(22px,3vw,36px); letter-spacing:4px; }
+  .menu-title-flourish{ display:none; }
+  .menu-tagline{ margin-bottom:6px; font-size:9px; }
+  .featured-card-panel{ margin-bottom:6px !important; padding:6px 14px !important; }
+  .menu-section-label{ margin:3px 0 4px; }
+  .menu-btn{ padding:6px 16px; font-size:11px; letter-spacing:2px; }
   .menu-section:has(.menu-btn){ gap:5px 12px; }
 }
 
-/* Very short screens: tightest */
-@media (max-height:700px) and (min-width:769px){
-  #menu-screen{ padding:8px 24px 12px; }
-  .menu-title-wrap{ padding:2px 40px 0; }
-  #menu-screen h1{ font-size:clamp(20px,3vw,34px); letter-spacing:4px; }
-  .menu-tagline{ margin-bottom:5px; }
+/* Very short / heavily-scaled screens: tightest */
+@media (max-height:780px) and (min-width:769px){
+  #menu-screen{ padding:6px 24px 10px; }
+  .menu-title-wrap{ padding:1px 40px 0; }
+  #menu-screen h1{ font-size:clamp(20px,2.6vw,30px); letter-spacing:3px; }
+  .menu-tagline{ margin-bottom:4px; font-size:8px; letter-spacing:4px; }
   .featured-card-panel{ margin-bottom:5px !important; padding:5px 12px !important; }
-  .menu-section-label{ margin:3px 0 3px; }
+  .menu-section{ margin-bottom:3px; }
+  .menu-section-label{ margin:2px 0 3px; font-size:8px; }
   .menu-btn{ padding:5px 14px; font-size:10px; }
-  .menu-btn::before,.menu-btn::after{ width:7px;height:7px; }
+  .menu-btn::before,.menu-btn::after{ width:6px;height:6px; }
+  .menu-section:has(.menu-btn){ gap:4px 10px; }
 }
 </style>
 </head>
