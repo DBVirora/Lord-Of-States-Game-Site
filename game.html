@@ -5568,6 +5568,8 @@ const DEFAULTS={
   crystal_73:  GH+"73's%20Crystal%20(Moro).png",
   move_out:    GH+'MOVE%20OUT%20THE%20WAY%20(damage%20taker).png',
   volaris_prism: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Special%20Events/Void%20Prism/volaris_prism__card%201-12.png',
+  virora_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/001-150%20(Virora%20Base).png',
+  virora_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/002-150%20(Virora%20SSJ1).png',
   nature_focus: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/70-150%20(Nature%20Focus%20Instant).png',
 
   energy_1_black:  'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Energy%20Cards/1%20Black%20Energy%20Card.png',
@@ -5634,15 +5636,28 @@ function importBackup(e){
 // ═══════════════════════════════════════════════════
 const DB={
   // ── VIRORA LINE ──
-  virora:{id:'virora',rarity:'uncommon',name:'Virora',color:'purple',charName:'Virora',subtypes:['Saiyan','Celestial'],type:'base_char',race:'Saiyan–Celestial',cost:4,atk:6,hp:6,sym:'V',
+  // NEW official Base Set printings (BSE). Name-based two-path transform system:
+  //   Saiyan path: base → ssj1 → ssj2 → ssj3 → ssj4 → ssj5
+  //   God path:    base → ssg → ssb → ssbe → ssbm
+  // Any "Virora base" printing can take EITHER path; any printing of a given
+  // form tier is a valid transform target (charLine + formTier matching).
+  virora_base_bse:{id:'virora_base_bse',rarity:'common',name:'Virora',color:'purple',charName:'Virora',charLine:'virora',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:3,atk:4,hp:4,sym:'V',setId:'base_set',cardNumber:'001/150',
+    nextForms:['ssj1','ssg'],path:'base',
+    abilities:[{label:'Calm Clarity',type:'passive',cost:0,text:'Transformation cost is 3 regardless of cost for your characters when this card is on the field.'}]},
+  virora_ssj1_bse:{id:'virora_ssj1_bse',rarity:'rare',name:'Virora (SSJ)',color:'purple',charName:'Virora',charLine:'virora',formTier:'ssj1',subtypes:['Royal','Saiyan'],type:'char',race:'Royal Saiyan',cost:6,atk:5,hp:6,sym:'SSJ',transformOnly:true,setId:'base_set',cardNumber:'002/150',
+    nextForms:['ssj2'],path:'saiyan',
+    abilities:[{label:'Light Sphere',type:'activated',cost:0,text:"Flip a coin, if heads you may choose a character on the opponent's field to deal 4 damage."},{label:'Blinding Power',type:'passive',cost:0,text:'If Virora (SSJ) has taken damage during your last turn you may search your deck for an energy card. (Continuous)'}]},
+
+  // Legacy/prototype Virora line (kept — both base printings can take either path)
+  virora:{id:'virora',rarity:'uncommon',name:'Virora',color:'purple',charName:'Virora',charLine:'virora',formTier:'base',subtypes:['Saiyan','Celestial'],type:'base_char',race:'Saiyan–Celestial',cost:4,atk:6,hp:6,sym:'V',nextForms:['ssj1','ssg'],path:'base',
     abilities:[{label:'Freeze Over',type:'activated',cost:0,limit:'every_other_turn',text:'Opponent flips coin. Heads = skip their turn.'},{label:'Violet Bond',type:'triggered',cost:0,text:'If Violet in play: on destroy, shuffle into deck instead.'}],transforms:['virora_ssg'],path:'god'},
-  virora_ssg:{id:'virora_ssg',rarity:'rare',color:'purple',name:'Virora (SSG)',charName:'Virora',subtypes:['Saiyan','Celestial','God'],type:'char',race:'Celestial Saiyan God',cost:7,atk:10,hp:7,sym:'SSG',transformOnly:true,
+  virora_ssg:{id:'virora_ssg',rarity:'rare',color:'purple',name:'Virora (SSG)',charName:'Virora',charLine:'virora',formTier:'ssg',subtypes:['Saiyan','Celestial','God'],type:'char',race:'Celestial Saiyan God',cost:7,atk:10,hp:7,sym:'SSG',transformOnly:true,nextForms:['ssb'],
     abilities:[{label:'Entry Power',type:'triggered',cost:0,text:'On play: if HP > opp last attacker HP, gain +4 HP.'},{label:'Godly Reflexes',type:'triggered',cost:0,text:'When attacked: flip coin. Tails = 0 damage.'}],transforms:['virora_ssb'],path:'god'},
-  virora_ssb:{id:'virora_ssb',rarity:'legend',name:'Virora (SSB S3)',color:'purple',charName:'Virora',subtypes:['Saiyan','Celestial','God','SSB'],type:'char',race:'Celestial Saiyan God',cost:12,atk:13,hp:15,sym:'SSB',transformOnly:true,keywords:['pursuit'],
+  virora_ssb:{id:'virora_ssb',rarity:'legend',name:'Virora (SSB S3)',color:'purple',charName:'Virora',charLine:'virora',formTier:'ssb',subtypes:['Saiyan','Celestial','God','SSB'],type:'char',race:'Celestial Saiyan God',cost:12,atk:13,hp:15,sym:'SSB',transformOnly:true,keywords:['pursuit'],nextForms:['ssbe'],
     abilities:[{label:'SSB Synergy',type:'passive',cost:0,text:'Any SSB char you control gives +4 ATK.'},{label:'Power Drain',type:'triggered',cost:0,text:'Opp char with higher ATK loses 2 HP/round.'},{label:'Form Swap',type:'activated',cost:0,limit:'every_2_turns',text:'Swap with any Virora form free.'}],transforms:['virora_ssbe'],path:'god'},
-  virora_ssbe:{id:'virora_ssbe',rarity:'legend',color:'purple',name:'Virora (SSBE)',charName:'Virora',subtypes:['Saiyan','Celestial','God','SSB'],type:'char',race:'Celestial Saiyan God',cost:10,atk:13,hp:13,sym:'SSBE',transformOnly:true,
+  virora_ssbe:{id:'virora_ssbe',rarity:'legend',color:'purple',name:'Virora (SSBE)',charName:'Virora',charLine:'virora',formTier:'ssbe',subtypes:['Saiyan','Celestial','God','SSB'],type:'char',race:'Celestial Saiyan God',cost:10,atk:13,hp:13,sym:'SSBE',transformOnly:true,nextForms:['ssbm'],
     abilities:[{label:'Evolved Armor',type:'passive',cost:0,text:"If cost > opp last Virora SSBE: +5 DEF."},{label:'Evolved State',type:'triggered',cost:0,text:'Flip coin when attacked — Heads: opp next attack -4 dmg.'},{label:'Mastery of Light Arts',type:'activated',cost:0,limit:'once_per_turn',text:'Roll d3 — on 2: swap free + draw 2.'}],transforms:['virora_ssbm'],path:'god'},
-  virora_ssbm:{id:'virora_ssbm',rarity:'mythic',color:'purple',name:'Virora (SSBM)',charName:'Virora',subtypes:['Saiyan','Celestial','God','SSB'],type:'char',race:'Celestial Saiyan God',cost:10,atk:7,hp:17,sym:'SSBM',transformOnly:true,keywords:['resolve','regeneration'],regenAmount:4,
+  virora_ssbm:{id:'virora_ssbm',rarity:'mythic',color:'purple',name:'Virora (SSBM)',charName:'Virora',charLine:'virora',formTier:'ssbm',subtypes:['Saiyan','Celestial','God','SSB'],type:'char',race:'Celestial Saiyan God',cost:10,atk:7,hp:17,sym:'SSBM',transformOnly:true,keywords:['resolve','regeneration'],regenAmount:4,nextForms:[],
     abilities:[{label:'Mastery Ramp',type:'triggered',cost:0,limit:'every_2_turns',text:'+2 ATK/+4 HP every 2 rounds.'},{label:'Pressure',type:'triggered',cost:0,text:'Opp draws 1 per field char.'},{label:'FROST BITE COLLISION',type:'activated',cost:0,limit:'once_per_game',text:'Freeze 1 opp char for 10 turns.'}],transforms:[],path:'god'},
   virora_st:{id:'virora_st',rarity:'mythic',name:'Virora (Surface)',color:'purple',charName:'Virora',subtypes:['Saiyan','Celestial'],type:'base_char',race:'Celestial Saiyan',cost:9,atk:7,hp:5,sym:'ST',
     abilities:[{label:'Surfacer Bonus',type:'passive',cost:0,text:'Surfacer card in hand: +3 ATK/+1 HP.'},{label:'Location Control',type:'activated',cost:0,limit:'once_per_turn',text:'Return any Location to owner hand.'},{label:'Surface Technique',type:'activated',cost:0,limit:'once_per_turn',text:'Flip coin — Heads: opp char -2 ATK. Tails: +3 Mana +2/+3.'}],transforms:['virora_ssb'],path:'god'},
@@ -7894,26 +7909,81 @@ function applyEquip(fc,eq){
 // ═══════════════════════════════════════════════════
 // TRANSFORM (strict: base on field + next form in hand)
 // ═══════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+// NAME-BASED TRANSFORM RESOLVER (Pokemon-style)
+// A card can transform into ANY printing whose charLine matches and whose
+// formTier is one of this card's nextForms. So any "Virora base" can become
+// any "Virora SSJ1" or "Virora SSG", regardless of set/printing.
+// Falls back to the legacy `transforms:[ids]` array for older cards.
+// ═══════════════════════════════════════════════════
+function getTransformTargets(cid){
+  const c = DB[cid];
+  if(!c) return [];
+  const targets = [];
+  const seen = {};
+  // 1) Name-based: match charLine + nextForms tiers
+  if(c.charLine && Array.isArray(c.nextForms) && c.nextForms.length){
+    for(const tier of c.nextForms){
+      for(const id in DB){
+        const t = DB[id];
+        if(t && t.charLine===c.charLine && t.formTier===tier && !seen[id]){
+          targets.push(id); seen[id]=true;
+        }
+      }
+    }
+  }
+  // 2) Legacy fallback: explicit transforms array (for cards not yet migrated)
+  if(Array.isArray(c.transforms)){
+    for(const id of c.transforms){
+      if(DB[id] && !seen[id]){ targets.push(id); seen[id]=true; }
+    }
+  }
+  return targets;
+}
+
+// Does this card have any transform target at all?
+function hasTransformTargets(cid){
+  return getTransformTargets(cid).length > 0;
+}
+
+// Calm Clarity & similar: returns the effective transform cost for a player's
+// transformation, applying any field effects that override it.
+function effectiveTransformCost(player, baseCost){
+  const pl = G.players[player];
+  if(!pl) return baseCost;
+  let flat = null;
+  for(const f of pl.field){
+    const c = DB[f.cid];
+    if(!c || !c.abilities) continue;
+    for(const ab of c.abilities){
+      if(ab.label==='Calm Clarity'){ flat = (flat===null) ? 3 : Math.min(flat, 3); }
+    }
+  }
+  return (flat!==null) ? flat : baseCost;
+}
+
 function openTransformModal(){
   if(G.activePlayer!==1||G.phase!=='main'){log('Main Phase only.','dmg');return;}
   const pl=G.players[1];
-  const eligible=pl.field.filter(f=>DB[f.cid]?.transforms?.length>0);
+  const eligible=pl.field.filter(f=>hasTransformTargets(f.cid));
   if(!eligible.length){showModal('Transform','No transformable characters on field.');return;}
   const body=document.createElement('div');let found=false;
   eligible.forEach(fc=>{
-    DB[fc.cid].transforms.forEach(tid=>{
+    getTransformTargets(fc.cid).forEach(tid=>{
       const tc=DB[tid];if(!tc)return;
-      // Lazarus: Saiyan Blood attached = free transform
+      // Base cost = target's cost; apply Lazarus Saiyan Blood + Calm Clarity overrides
       let cost=tc.cost;
       if(fc.cid==='lazarus'&&fc.attachments?.includes('saiyan_blood'))cost=0;
+      else cost=effectiveTransformCost(1, cost);
       const inHand=pl.hand.find(f=>f.cid===tid);
       const can=!!inHand&&pl.energy>=cost;
       found=true;
+      const pathLabel = tc.path==='saiyan' ? '<span style="color:#fbbf24">Saiyan Path</span>' : tc.path==='god' ? '<span style="color:#7cb0f0">God Path</span>' : '';
       const row=document.createElement('div');row.style.cssText='border:1px solid #3a3a5c;border-radius:8px;padding:9px;margin-bottom:7px;display:flex;align-items:center;gap:9px';
       const prev=document.createElement('div');prev.style.cssText='width:42px;height:58px;background:#1e1e3a;border-radius:5px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px';
       const pu=getImg(tid);if(pu){const img=document.createElement('img');img.src=pu;img.style.cssText='width:100%;height:100%;object-fit:cover';prev.appendChild(img);}else prev.textContent=tc.sym||'?';
       const info=document.createElement('div');info.style.flex='1';
-      info.innerHTML=`<div style="font-weight:700;color:#c8a0ff;font-size:12px">${DB[fc.cid].name} → ${tc.name}</div>
+      info.innerHTML=`<div style="font-weight:700;color:#c8a0ff;font-size:12px">${DB[fc.cid].name} → ${tc.name} ${pathLabel}</div>
         <div style="color:#9ca3af;font-size:11px">${cost}⚡ · ${tc.atk}ATK/${tc.hp}HP</div>
         <div style="font-size:10px;color:${inHand?'#22c55e':'#ef4444'};margin-top:2px">${inHand?'✓ In hand':'✗ Need in hand'}</div>`;
       const btn=document.createElement('button');btn.className='btn-primary btn-sm';btn.style.marginTop='5px';
