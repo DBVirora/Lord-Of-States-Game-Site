@@ -6025,7 +6025,66 @@ function generateRandomDeck(){
   }
 
   console.log('[DECK] generated deck size:',deck.length);
+  // Include transformation forms for any base character in the deck, so the
+  // player can actually transform during play (transformOnly cards are normally
+  // excluded, but they need to be in the deck to be drawn + used as transform fuel).
+  addTransformFormsToDeck(deck);
+  console.log('[DECK] after adding transform forms:',deck.length);
   return shuffle([...deck]);
+}
+
+// For each base character in the deck that has transform targets, add its
+// transformation line (all reachable forms) into the deck — so the player can
+// actually transform during play (transformOnly cards are normally excluded,
+// but they need to be in the deck to be drawn + used as transform fuel).
+function addTransformFormsToDeck(deck){
+  if(typeof getTransformTargets!=='function')return;
+  const baseCardsInDeck = [...new Set(deck)].filter(id=>{
+    const c=DB[id];
+    return c && (c.type==='base_char') && getTransformTargets(id).length>0;
+  });
+  if(!baseCardsInDeck.length)return;
+  // Walk the full transform tree for each base card
+  const formsToAdd = new Set();
+  baseCardsInDeck.forEach(baseId=>{
+    const queue=[baseId];
+    const visited={};
+    while(queue.length){
+      const cur=queue.shift();
+      if(visited[cur])continue;
+      visited[cur]=true;
+      getTransformTargets(cur).forEach(tid=>{
+        if(isCardPlayable(tid)){ formsToAdd.add(tid); queue.push(tid); }
+      });
+    }
+  });
+  if(!formsToAdd.size)return;
+  // We want ~2 copies of each form. Make room by trimming over-represented
+  // non-transform cards (keep at least 1 of each base char + herald).
+  const targetCopies = 2;
+  formsToAdd.forEach(fid=>{
+    let copies = deck.filter(c=>c===fid).length;
+    while(copies<targetCopies){
+      if(deck.length>=60){
+        // Trim one non-essential card to make room: prefer a card with 3+ copies
+        const counts={};
+        deck.forEach(c=>counts[c]=(counts[c]||0)+1);
+        // Find a trimmable card: not a herald, not a transform form we're adding,
+        // and has the most copies (so we don't remove singletons)
+        let trimId=null,trimCount=0;
+        for(const c in counts){
+          if(DB[c]?.type==='herald')continue;
+          if(formsToAdd.has(c))continue;
+          if(counts[c]>trimCount && counts[c]>1){ trimId=c; trimCount=counts[c]; }
+        }
+        if(!trimId)break; // nothing safe to trim
+        const idx=deck.indexOf(trimId);
+        if(idx>=0)deck.splice(idx,1);
+      }
+      deck.push(fid);
+      copies++;
+    }
+  });
 }
 
 function getDeckList(deckId){
@@ -7806,6 +7865,21 @@ function onHandClick(p,uid,fc){
   renderAll();
 }
 
+// GENERIC ENEMY TARGET PICKER — pick one enemy character, run callback(uid)
+function openEnemyTargetPicker(targets, callback, opts){
+  opts = opts || {};
+  const body=document.createElement('div');
+  body.innerHTML=`<div style="font-size:11px;color:#9ca3af;margin-bottom:10px">${opts.desc||'Choose an opponent character.'}</div>`;
+  targets.forEach(cf=>{
+    const c=DB[cf.cid];
+    const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:8px 10px;display:flex;justify-content:space-between';
+    btn.innerHTML=`<span>${c.name}</span><span style="color:#22c55e">♥${cf.currentHP}</span>`;
+    btn.onclick=()=>{ closeAllModals(); callback(cf.uid); };
+    body.appendChild(btn);
+  });
+  showModalEl(opts.title||'Choose Target',body);
+}
+
 function openInstantTargetPicker(ifc,chars){
   const ic=DB[ifc.cid];
   const body=document.createElement('div');
@@ -8272,6 +8346,40 @@ function activateAbility(fc,abl){
 function runAbilityEffect(fc, abl, pl){
   const cid = fc.cid, label = abl.label;
 
+  // ── VIRORA: Freeze Over — opponent flips coin; heads = they skip their turn ──
+  if(label==='Freeze Over'){
+    flipCoinFor({title:'Freeze Over', desc:'Opponent flips a coin. Heads = they skip their next turn.'}, (heads)=>{
+      const oppNum = G.activePlayer===1?2:1;
+      if(heads){
+        G.players[oppNum].skipNextTurn = true;
+        log('Freeze Over: HEADS — opponent will skip their next turn!','gain');
+      } else {
+        log('Freeze Over: TAILS — no effect.','dmg');
+      }
+      renderAll();
+    });
+    return;
+  }
+
+  // ── VIRORA (SSJ1): Light Sphere — coin flip; heads choose opp char, deal 4 ──
+  if(cid==='virora_ssj1_bse' && label==='Light Sphere'){
+    flipCoinFor({title:'Light Sphere', desc:"Heads = choose an opponent's character to deal 4 damage."}, (heads)=>{
+      if(!heads){ log('Light Sphere: TAILS — no effect.','dmg'); renderAll(); return; }
+      const oppNum = G.activePlayer===1?2:1;
+      const targets = G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
+      if(!targets.length){ log('Light Sphere: HEADS — but no enemy character to hit.','dmg'); renderAll(); return; }
+      log('Light Sphere: HEADS — choose a target.','gain');
+      // Reuse the generic target picker if available; else hit the lowest-HP enemy
+      if(typeof openEnemyTargetPicker==='function'){
+        openEnemyTargetPicker(targets, (chosenUid)=>{ dealDamage(oppNum, chosenUid, 4); log('Light Sphere: 4 damage!','dmg'); renderAll(); });
+      } else {
+        const tgt = targets.reduce((a,b)=>b.currentHP<a.currentHP?b:a);
+        dealDamage(oppNum, tgt.uid, 4); log(`Light Sphere: 4 damage to ${DB[tgt.cid].name}!`,'dmg'); renderAll();
+      }
+    });
+    return;
+  }
+
   // ── GOKU (Ultra Ego): Destroyer Kamehameha — d8, 1 or 7 = +8 else +3 ──
   if(cid==='goku_ue' && label==='Destroyer Kamehameha'){
     rollDiceFor({title:'Destroyer Kamehameha', desc:'Roll d8 — 1 or 7 grants +8, else +3 to next attack.', sides:8, count:1}, (res)=>{
@@ -8455,6 +8563,26 @@ function execEnd(){
     const turnLabel=pname(p);
     log(turnLabel+' ends turn.','info');
     const nx=p===1?2:1;
+    // FREEZE OVER: if the next player was frozen, skip their turn entirely
+    if(G.players[nx] && G.players[nx].skipNextTurn){
+      G.players[nx].skipNextTurn = false;
+      log(`${pname(nx)}'s turn is SKIPPED (Freeze Over)!`,'dmg');
+      // Hand straight back to the player who just ended — they get another turn
+      G.activePlayer = p;
+      G.turn++;
+      G.phase='draw';
+      G.phasesDone=[];
+      G.selectedAttacker=null;
+      G.heraldAttacking=false;
+      renderAll();
+      showTurnBanner(p===1);
+      if(G.onlineMode){ broadcastGameState(); }
+      // If the skipped player was the AI, the human (p===1) just regained the turn — no AI call.
+      // If the human was skipped, hand back to AI:
+      if(gameMode!=='pvp'&&gameMode!=='online'&&p===2)setTimeout(runAI,700);
+      _endingTurn=false;
+      return;
+    }
     G.activePlayer=nx;
     G.turn++;
     G.phase='draw';
