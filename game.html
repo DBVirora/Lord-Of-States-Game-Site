@@ -8343,6 +8343,7 @@ function onHandClick(p,uid,fc){
     if(isChar(DB[fco.cid])&&!DB[fco.cid]?.isToken&&namedFighters>=MAX_FIELD){log('Fighter zone full! (max 5 named fighters).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     if(!isChar(DB[fco.cid])&&otherCards>=MAX_OTHER){log('Field full! (max 5 other cards on field).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     pl.field.push(fco);log(`${pname(p)} plays ${c.name}.`,'info');playCardZoom(fco.cid);if(typeof SFX!=='undefined')SFX.cardPlay();if(p===1)sendGameAction('card_play',{cardId:fco.cid});onEntry(p,fco);
+    if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
     // Mission tracking: unique characters (only for local player)
     if(p===1&&typeof trackUniqueCharacter==='function'&&['base_char','char','team'].includes(c.type)){
       trackUniqueCharacter(c.charName||c.id||fco.cid);
@@ -8351,20 +8352,24 @@ function onHandClick(p,uid,fc){
     const locCount=pl.field.filter(f=>isLoc(DB[f.cid])).length;
     if(locCount>=MAX_LOC){log(`Location zone full! (max ${MAX_LOC}).`,'dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     pl.field.push(fco);log(`${pname(p)} places ${c.name}.`,'info');playCardZoom(fco.cid);
+    if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
     if(c.id==='time_chamber'){pl.energy+=5;log('Time Chamber: +5⚡!','gain');}
   } else if(isEquip(c)){
     const chars=pl.field.filter(f=>isChar(DB[f.cid]));
     if(!chars.length){log('No field chars to equip!','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
+    if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
     openEquipTargetPicker(fco,chars);return;
   } else if(isInst(c)){
     // Instant: attach to a char or apply immediately
     const chars=pl.field.filter(f=>isChar(DB[f.cid]));
     if(c.id==='saiyan_blood'){
       if(!chars.length){log('No field chars for Saiyan Blood!','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
+      if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
       openInstantTargetPicker(fco,chars);return;
     }
     // Show dramatic reveal popup FIRST, then execute the instant's effect
     showInstantReveal(c.id, p);
+    if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
     if(typeof SFX!=='undefined')SFX.instant();
     if(p===1)sendGameAction('instant_reveal',{cardId:c.id});
     log(`${pname(p)} plays ${c.name}!`,'info');
@@ -8493,17 +8498,8 @@ function playCardZoom(cardId){
 
 function onEntry(p,fc){
   const c=DB[fc.cid];if(!c)return;
-  // Profile stats: count cards the LOCAL player (player 1) deploys to the field.
-  // Tokens are excluded (not real owned cards). Favorites tally by play count.
-  if(p===1 && !c.isToken && typeof bumpStat==='function'){
-    bumpStat('cards_played',1);
-    if(c.color)bumpCount('color_counts',c.color,1);
-    if(isChar(c)){
-      bumpCount('char_counts',c.id,1);            // Favorite Character = character cards only
-    } else if(c.type!=='energy_card'){
-      bumpCount('card_counts',c.id,1);            // Favorite Card = non-character, non-energy cards
-    }
-  }
+  // (Card-played / favorites tracking lives in trackCardPlayed, called at each
+  // play site, since locations/equipment/instants never reach onEntry.)
   if(c.id==='archon'){drawCard(p);drawCard(p);log('Archon: draw 2!','gain');
     const syn=G.players[p].field.some(f=>{const d=DB[f.cid];return d&&(d.charName==='Samara'||d.charName==='Surana');});
     if(syn){fc.currentATK+=5;fc.atkBonus+=5;fc.currentHP+=5;fc.hpBonus+=5;log('+5/+5 synergy!','gain');}
@@ -11447,6 +11443,18 @@ function bumpCount(mapKey,id,n){
   const m=_celData.stats[mapKey]||(_celData.stats[mapKey]={});
   m[id]=(m[id]||0)+(n||1);
   saveStatsDebounced();
+}
+// Count a card the LOCAL player (player 1) plays. Called at each card-type play
+// site (character / location / equipment / instant) because non-character cards
+// never reach onEntry. Tokens and energy are excluded. Favorite Card =
+// non-character & non-energy; Favorite Character = character cards.
+function trackCardPlayed(p,c){
+  if(p!==1 || !c || c.isToken)return;
+  if(typeof bumpStat!=='function')return;
+  bumpStat('cards_played',1);
+  if(c.color)bumpCount('color_counts',c.color,1);
+  if(isChar(c)) bumpCount('char_counts',c.id,1);
+  else if(c.type!=='energy_card') bumpCount('card_counts',c.id,1);
 }
 function _bumpWinStreak(won){
   ensureStats();
