@@ -8,6 +8,13 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Lord of Courts VCU</title>
+<link rel="manifest" href="./manifest.json"/>
+<meta name="theme-color" content="#0a0a1e"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Lord of Courts"/>
+<link rel="apple-touch-icon" href="./icons/icon-192.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
 <style>
@@ -5922,6 +5929,7 @@ const DEFAULTS={
   volaris_prism: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Special%20Events/Void%20Prism/volaris_prism__card%201-12.png',
   virora_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/001-150%20(Virora%20Base).png',
   virora_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/002-150%20(Virora%20SSJ1).png',
+  virora_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/003-150%20(Virora%20SSG).png',
   nature_focus: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/70-150%20(Nature%20Focus%20Instant).png',
 
   energy_1_black:  'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Energy%20Cards/1%20Black%20Energy%20Card.png',
@@ -6005,6 +6013,10 @@ const DB={
     abilities:[{label:'Freeze Over',type:'activated',cost:0,limit:'every_other_turn',text:'Opponent flips coin. Heads = skip their turn.'},{label:'Violet Bond',type:'triggered',cost:0,text:'If Violet in play: on destroy, shuffle into deck instead.'}],transforms:['virora_ssg'],path:'god'},
   virora_ssg:{id:'virora_ssg',rarity:'rare',color:'purple',name:'Virora (SSG)',charName:'Virora',charLine:'virora',formTier:'ssg',subtypes:['Saiyan','Celestial','God'],type:'char',race:'Celestial Saiyan God',cost:7,atk:10,hp:7,sym:'SSG',transformOnly:true,nextForms:['ssb'],
     abilities:[{label:'Entry Power',type:'triggered',cost:0,text:'On play: if HP > opp last attacker HP, gain +4 HP.'},{label:'Godly Reflexes',type:'triggered',cost:0,text:'When attacked: flip coin. Tails = 0 damage.'}],transforms:['virora_ssb'],path:'god'},
+  // Official BSE printing of Virora (SSG) — 003/150. God path (base → ssg → ssb).
+  virora_ssg_bse:{id:'virora_ssg_bse',rarity:'rare',color:'purple',name:'Virora (SSG)',charName:'Virora',charLine:'virora',formTier:'ssg',subtypes:['Royal','Saiyan'],type:'char',race:'Royal Saiyan',cost:6,atk:3,hp:9,sym:'SSG',transformOnly:true,setId:'base_set',cardNumber:'003/150',nextForms:['ssb'],path:'god',
+    keywords:['onslaught'],
+    abilities:[{label:'Godly Blitz',type:'passive',cost:0,text:"This card can attack twice each turn. Whenever Virora (SSG) deals combat damage to an opponent's character, you may draw 1 card."},{label:'Godly Evasion',type:'passive',cost:0,text:'Virora (SSG) cannot be targeted by opponent abilities or attacks unless they pay 2 Energy.'}]},
   virora_ssb:{id:'virora_ssb',rarity:'legend',name:'Virora (SSB S3)',color:'purple',charName:'Virora',charLine:'virora',formTier:'ssb',subtypes:['Saiyan','Celestial','God','SSB'],type:'char',race:'Celestial Saiyan God',cost:12,atk:13,hp:15,sym:'SSB',transformOnly:true,keywords:['pursuit'],nextForms:['ssbe'],
     abilities:[{label:'SSB Synergy',type:'passive',cost:0,text:'Any SSB char you control gives +4 ATK.'},{label:'Power Drain',type:'triggered',cost:0,text:'Opp char with higher ATK loses 2 HP/round.'},{label:'Form Swap',type:'activated',cost:0,limit:'every_2_turns',text:'Swap with any Virora form free.'}],transforms:['virora_ssbe'],path:'god'},
   virora_ssbe:{id:'virora_ssbe',rarity:'legend',color:'purple',name:'Virora (SSBE)',charName:'Virora',charLine:'virora',formTier:'ssbe',subtypes:['Saiyan','Celestial','God','SSB'],type:'char',race:'Celestial Saiyan God',cost:10,atk:13,hp:13,sym:'SSBE',transformOnly:true,nextForms:['ssbm'],
@@ -7275,10 +7287,24 @@ function doSacrifice(uid,energyGain){
   }
   // ── HULK GREEN SCAR HERALD ──
   if(fc.cid==='hulk_gs_herald'&&abl.label==='Gamma Detonation'){
-    const opp=G.players[G.activePlayer===1?2:1];
-    const targets=[...opp.field.filter(f=>isChar(DB[f.cid]))];
+    const oppNum=G.activePlayer===1?2:1;
+    const opp=G.players[oppNum];
+    const srcNum=G.activePlayer;
+    let targets=[...opp.field.filter(f=>isChar(DB[f.cid]))];
     if(!targets.length){log('No targets for Gamma Detonation.','dmg');}
-    else{targets.forEach(tfc=>dealDamage(G.activePlayer===1?2:1,tfc.uid,4));log('Gamma Detonation: 4 damage to all opponent characters!','dmg');}
+    else{
+      // Godly Evasion: skip protected characters unless the caster pays 2⚡ each.
+      targets.forEach(tfc=>{
+        if(hasGodlyEvasion(tfc)){
+          if(!canPayEvasionToll(srcNum, tfc)){
+            log(`${DB[tfc.cid].name} evades Gamma Detonation (Godly Evasion — no 2⚡).`,'info');
+            return;
+          }
+        }
+        dealDamage(oppNum,tfc.uid,4);
+      });
+      log('Gamma Detonation: 4 damage to opponent characters!','dmg');
+    }
   }
   closeAllModals();renderAll();
 }
@@ -7831,6 +7857,13 @@ function executeCombatDamage(ap,auid,dp,duid){
   const defenderATK=dfc.currentATK;
   dealDamage(dp,dfc.uid,atkDmg);
 
+  // GODLY BLITZ (Virora SSG / BSE): on dealing combat damage to an enemy
+  // character, the attacker's controller may draw 1 card.
+  if(ac.abilities&&ac.abilities.some(a=>a.label==='Godly Blitz')&&atkDmg>0){
+    drawCard(ap);
+    log(`Godly Blitz: ${ac.name} dealt combat damage — draw 1 card!`,'gain');
+  }
+
   // Breakthrough
   if(hasKW(afc,'breakthrough')){
     const stillAlive=G.players[dp].field.some(f=>f.uid===dfc.uid);
@@ -8061,6 +8094,24 @@ function onFieldClick(p,uid,fc){
   } else {showFullCard(fc.cid,fc);}
 }
 
+// ═══════════════════════════════════════════════════
+// GODLY EVASION (Virora SSG / BSE)
+// The card cannot be targeted by opponent abilities or attacks unless the
+// opponent pays 2 Energy. Helpers below detect it and charge the toll.
+// ═══════════════════════════════════════════════════
+function hasGodlyEvasion(fc){
+  const c=DB[fc.cid];
+  return !!(c&&c.abilities&&c.abilities.some(a=>a.label==='Godly Evasion'));
+}
+// Returns true if attackerPlayer may target targetFc, paying the 2⚡ toll if
+// Godly Evasion applies. Charges + logs when paid; returns false if unaffordable.
+function canPayEvasionToll(attackerPlayer, targetFc){
+  if(!hasGodlyEvasion(targetFc)) return true;
+  const pl=G.players[attackerPlayer];
+  if(pl.energy>=2){ pl.energy-=2; log(`Paid 2⚡ to bypass Godly Evasion on ${DB[targetFc.cid].name}.`,'info'); return true; }
+  return false;
+}
+
 function resolveAttack(ap,auid,dp,duid){
   const afc=G.players[ap].field.find(f=>f.uid===auid);
   const dfc=G.players[dp].field.find(f=>f.uid===duid);
@@ -8069,6 +8120,13 @@ function resolveAttack(ap,auid,dp,duid){
   const guardians=G.players[dp].field.filter(f=>isChar(DB[f.cid])&&hasKW(f,'guardian'));
   if(guardians.length>0&&!guardians.find(f=>f.uid===duid)){
     log(`${DB[dfc.cid].name} is protected — attack the Guardian first!`,'dmg');return;
+  }
+  // GODLY EVASION check: must pay 2⚡ to attack a protected character
+  if(hasGodlyEvasion(dfc)){
+    if(!canPayEvasionToll(ap, dfc)){
+      log(`${DB[dfc.cid].name} has Godly Evasion — need 2⚡ to attack it.`,'dmg');
+      return;
+    }
   }
   const ac=DB[afc.cid],dc=DB[dfc.cid];
   afc.attacksThisTurn=(afc.attacksThisTurn||0)+1;
@@ -8220,13 +8278,29 @@ function onHandClick(p,uid,fc){
 // GENERIC ENEMY TARGET PICKER — pick one enemy character, run callback(uid)
 function openEnemyTargetPicker(targets, callback, opts){
   opts = opts || {};
+  // Which player is doing the targeting (whose energy pays the evasion toll).
+  // Defaults to the active player.
+  const sourcePlayer = opts.sourcePlayer || G.activePlayer || 1;
   const body=document.createElement('div');
   body.innerHTML=`<div style="font-size:11px;color:#9ca3af;margin-bottom:10px">${opts.desc||'Choose an opponent character.'}</div>`;
   targets.forEach(cf=>{
     const c=DB[cf.cid];
-    const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:8px 10px;display:flex;justify-content:space-between';
-    btn.innerHTML=`<span>${c.name}</span><span style="color:#22c55e">♥${cf.currentHP}</span>`;
-    btn.onclick=()=>{ closeAllModals(); callback(cf.uid); };
+    const evasion=hasGodlyEvasion(cf);
+    const canAfford=!evasion || G.players[sourcePlayer].energy>=2;
+    const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:8px 10px;display:flex;justify-content:space-between;align-items:center';
+    if(!canAfford){ btn.disabled=true; btn.style.opacity='.5'; }
+    const evasionTag = evasion ? `<span style="font-size:9px;color:#fbbf24;margin-left:6px">🛡 2⚡ toll</span>` : '';
+    btn.innerHTML=`<span>${c.name}${evasionTag}</span><span style="color:#22c55e">♥${cf.currentHP}</span>`;
+    btn.onclick=()=>{
+      // Enforce Godly Evasion: pay 2⚡ to target, or block if unaffordable.
+      if(evasion){
+        if(!canPayEvasionToll(sourcePlayer, cf)){
+          log(`${c.name} has Godly Evasion — need 2⚡ to target it.`,'dmg');
+          return;
+        }
+      }
+      closeAllModals(); renderAll(); callback(cf.uid);
+    };
     body.appendChild(btn);
   });
   showModalEl(opts.title||'Choose Target',body);
@@ -8800,11 +8874,15 @@ function runAbilityEffect(fc, abl, pl){
       const targets = G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
       if(!targets.length){ log('Light Sphere: HEADS — but no enemy character to hit.','dmg'); renderAll(); return; }
       log('Light Sphere: HEADS — choose a target.','gain');
-      // Reuse the generic target picker if available; else hit the lowest-HP enemy
+      // Reuse the generic target picker (enforces Godly Evasion toll automatically)
       if(typeof openEnemyTargetPicker==='function'){
-        openEnemyTargetPicker(targets, (chosenUid)=>{ dealDamage(oppNum, chosenUid, 4); log('Light Sphere: 4 damage!','dmg'); renderAll(); });
+        openEnemyTargetPicker(targets, (chosenUid)=>{ dealDamage(oppNum, chosenUid, 4); log('Light Sphere: 4 damage!','dmg'); renderAll(); }, {sourcePlayer:G.activePlayer});
       } else {
-        const tgt = targets.reduce((a,b)=>b.currentHP<a.currentHP?b:a);
+        // Fallback: hit lowest-HP enemy that isn't evasion-protected (or pay toll)
+        const reachable=targets.filter(f=>!hasGodlyEvasion(f)||G.players[G.activePlayer].energy>=2);
+        if(!reachable.length){ log('Light Sphere: target is protected by Godly Evasion (need 2⚡).','dmg'); renderAll(); return; }
+        const tgt = reachable.reduce((a,b)=>b.currentHP<a.currentHP?b:a);
+        if(hasGodlyEvasion(tgt)) canPayEvasionToll(G.activePlayer,tgt);
         dealDamage(oppNum, tgt.uid, 4); log(`Light Sphere: 4 damage to ${DB[tgt.cid].name}!`,'dmg'); renderAll();
       }
     });
@@ -9285,7 +9363,12 @@ function runAI(){
             for(let s=0;s<swings;s++){
               const alive=opp.field.filter(f=>isChar(DB[f.cid]));if(!alive.length)break;
               if((atk.attacksThisTurn||0)>=swings)break;
-              const tgt=alive.reduce((a,b)=>b.currentHP<a.currentHP?b:a);
+              // GODLY EVASION: AI avoids evasion-protected targets unless it has
+              // 2+ energy to pay the toll. Prefer unprotected targets first.
+              const reachable=alive.filter(f=>!hasGodlyEvasion(f) || G.players[2].energy>=2);
+              const pool=reachable.length?reachable:[];
+              if(!pool.length)break; // only protected targets and can't afford → skip
+              const tgt=pool.reduce((a,b)=>b.currentHP<a.currentHP?b:a);
               resolveAttack(2,atk.uid,1,tgt.uid);
             }
           });
