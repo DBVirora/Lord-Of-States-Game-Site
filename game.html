@@ -4265,6 +4265,7 @@ textarea{
 .lf-bar-track{flex:1;height:10px;background:rgba(0,0,0,.45);border-radius:6px;overflow:hidden;border:1px solid rgba(239,68,68,.25);}
 .lf-bar-fill{height:100%;width:100%;border-radius:6px;transition:width .35s ease, background .35s ease;background:linear-gradient(90deg,#ef4444,#f97316);}
 .lf-val{font-family:'Orbitron',sans-serif;font-weight:900;font-size:16px;color:#fca5a5;min-width:30px;text-align:right;text-shadow:0 0 6px rgba(239,68,68,.5);}
+.player-panel-life.lf-targetable{border-color:#ef4444;box-shadow:0 0 14px rgba(239,68,68,.6);animation:glow-r 1.2s infinite;}
 .energy-big-icon{
   font-size:26px;
   filter:drop-shadow(0 0 6px rgba(251,191,36,.7));
@@ -5604,7 +5605,7 @@ textarea{
           <div class="energy-big-pips" id="p2-energy-pips"></div>
         </div>
         <div class="energy-breakdown" id="p2-color-energy"></div>
-        <div class="player-panel-life" id="p2-lf-wrap" style="display:none">
+        <div class="player-panel-life" id="p2-lf-wrap" style="display:none;cursor:pointer" onclick="onLifeBarClick(2)" title="Select an attacker, then click here to attack Life">
           <span class="lf-heart">❤️</span>
           <div class="lf-bar-track"><div class="lf-bar-fill" id="p2-lf-bar"></div></div>
           <span class="lf-val" id="p2-lf-val">75</span>
@@ -8259,6 +8260,91 @@ function canPayEvasionToll(attackerPlayer, targetFc){
   const pl=G.players[attackerPlayer];
   if(pl.energy>=2){ pl.energy-=2; log(`Paid 2⚡ to bypass Godly Evasion on ${DB[targetFc.cid].name}.`,'info'); return true; }
   return false;
+}
+
+// ── HEALTH MODE: combat-to-Life + Blocking (Phase 2a) ──────────────────────
+function effPower(fc){ return (fc.currentATK||0)+(fc.nextAttackBonus||0); }
+function isUnblockable(fc){
+  const c=DB[fc.cid];
+  if(typeof hasKW==='function' && hasKW(fc,'unblockable'))return true;
+  return !!(c&&c.abilities&&c.abilities.some(a=>/unblockable|cannot be blocked/i.test(a.text||'')));
+}
+// AI picks whether/what to block with when its Life is attacked.
+function aiChooseBlocker(defenderPlayer, afc){
+  const pl=G.players[defenderPlayer];
+  const power=effPower(afc);
+  const blockers=pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
+  if(!blockers.length)return null;
+  const life=pl.lifeForce||0;
+  let best=blockers.find(b=> b.currentHP>power && effPower(b)>power && (effPower(b)-power)>=(afc.currentHP||0) );
+  if(!best) best=blockers.filter(b=>b.currentHP>power).sort((a,b)=>effPower(b)-effPower(a))[0];
+  if(!best && (power>=life || power>=Math.max(8, life*0.25))){
+    best=blockers.slice().sort((a,b)=>(a.currentHP-b.currentHP))[0];
+  }
+  return best?best.uid:null;
+}
+function declareLifeAttack(attackerPlayer, attackerUid){
+  if(!(G.gameMode==='lifeforce'||G.gameMode==='combined')){ log('Direct Life attacks are only in Health Mode.','dmg'); return; }
+  const afc=G.players[attackerPlayer].field.find(f=>f.uid===attackerUid);
+  if(!afc){ return; }
+  if(!canCharacterAttack(attackerPlayer, afc)){
+    if((afc.attacksThisTurn||0)>0)log(`${DB[afc.cid].name} already attacked this turn.`,'dmg');
+    else log('Only one character may attack per turn.','dmg');
+    return;
+  }
+  const defenderPlayer = attackerPlayer===1?2:1;
+  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1;
+  const power=effPower(afc);
+  if(isUnblockable(afc)){
+    log(`${DB[afc.cid].name} attacks Life — UNBLOCKABLE for ${power}!`,'gain');
+    resolveLifeAttack(attackerPlayer, afc, null);
+    return;
+  }
+  if(defenderPlayer===1){
+    // AI attacking the HUMAN's Life → interactive block prompt comes in Phase 2b.
+    resolveLifeAttack(attackerPlayer, afc, null);
+    return;
+  }
+  const blockerUid=aiChooseBlocker(defenderPlayer, afc);
+  const blocker=blockerUid?G.players[defenderPlayer].field.find(f=>f.uid===blockerUid):null;
+  if(blocker)log(`🛡 ${DB[blocker.cid].name} blocks the attack on Life!`,'info');
+  else log(`No block — ${power} damage heading to Life!`,'dmg');
+  resolveLifeAttack(attackerPlayer, afc, blocker);
+}
+// Resolve a Life attack with the spec order (damage → death → counter → trample).
+function resolveLifeAttack(attackerPlayer, afc, blocker){
+  const defenderPlayer = attackerPlayer===1?2:1;
+  const power=effPower(afc);
+  if(!blocker){
+    if(typeof damageLifeForce==='function') damageLifeForce(defenderPlayer, power, 'direct attack');
+    renderAll(); return;
+  }
+  const bHPbefore=blocker.currentHP||0;
+  const bPow=effPower(blocker);          // captured BEFORE damage so a dying blocker still counters
+  const excess=Math.max(0, power-bHPbefore);
+  log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHPbefore}HP).`,'info');
+  dealDamage(defenderPlayer, blocker.uid, power);               // Step 1-2: blocker damage + death
+  if(bPow>power){                                              // Step 3: counter (difference only)
+    const counter=bPow-power;
+    log(`Counter! ${DB[blocker.cid].name} deals ${counter} back.`,'dmg');
+    dealDamage(attackerPlayer, afc.uid, counter);
+  }
+  if(excess>0){                                                // Step 4: trample to Life
+    log(`Trample! ${excess} excess damage to Life.`,'dmg');
+    if(typeof damageLifeForce==='function') damageLifeForce(defenderPlayer, excess, 'trample');
+  }
+  renderAll();
+}
+// Clicking the opponent's Life bar with an attacker selected = attack their Life.
+function onLifeBarClick(targetPlayer){
+  if(!(G.gameMode==='lifeforce'||G.gameMode==='combined'))return;
+  if(G.phase!=='attack'||G.activePlayer!==1)return;
+  if(targetPlayer!==2)return;
+  if(!G.selectedAttacker){ log('Select an attacker first, then click the enemy Life bar.','info'); return; }
+  const auid=G.selectedAttacker;
+  G.selectedAttacker=null;
+  declareLifeAttack(1, auid);
+  renderAll();
 }
 
 function resolveAttack(ap,auid,dp,duid){
@@ -11138,6 +11224,11 @@ function renderLifeForce(){
     if(bar){
       bar.style.width=pct+'%';
       bar.style.background=pct>50?'linear-gradient(90deg,#ef4444,#f97316)':pct>25?'linear-gradient(90deg,#dc2626,#ea580c)':'linear-gradient(90deg,#991b1b,#c2410c)';
+    }
+    // Highlight the opponent's Life bar as a target when you have an attacker ready.
+    if(p===2){
+      const canTargetLife = G.phase==='attack' && G.activePlayer===1 && !!G.selectedAttacker;
+      wrap.classList.toggle('lf-targetable', canTargetLife);
     }
   });
 }
