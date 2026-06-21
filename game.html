@@ -5962,6 +5962,8 @@ const DEFAULTS={
   virora_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/001-150%20(Virora%20Base).png',
   virora_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/002-150%20(Virora%20SSJ1).png',
   virora_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/003-150%20(Virora%20SSG).png',
+  billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
+  billy_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/005-150%20(Billy%20SSJ1).png',
   nature_focus: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/70-150%20(Nature%20Focus%20Instant).png',
 
   energy_1_black:  'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Energy%20Cards/1%20Black%20Energy%20Card.png',
@@ -6039,6 +6041,14 @@ const DB={
   virora_ssj1_bse:{id:'virora_ssj1_bse',rarity:'rare',name:'Virora (SSJ)',color:'purple',charName:'Virora',charLine:'virora',formTier:'ssj1',subtypes:['Royal','Saiyan'],type:'char',race:'Royal Saiyan',cost:6,atk:5,hp:6,sym:'SSJ',transformOnly:true,setId:'base_set',cardNumber:'002/150',
     nextForms:['ssj2'],path:'saiyan',
     abilities:[{label:'Light Sphere',type:'activated',cost:0,text:"Flip a coin, if heads you may choose a character on the opponent's field to deal 4 damage."},{label:'Blinding Power',type:'passive',cost:0,text:'If Virora (SSJ) has taken damage during your last turn you may search your deck for an energy card. (Continuous)'}]},
+
+  // ── Billy (Base Set 004–005) — green; Base transforms into SSJ (Saiyan path) ──
+  billy_base_bse:{id:'billy_base_bse',rarity:'common',name:'Billy',color:'yellow',charName:'Billy',charLine:'billy',formTier:'base',subtypes:['Saiyan'],type:'base_char',race:'Saiyan',cost:2,atk:3,hp:2,sym:'B',setId:'base_set',cardNumber:'004/150',
+    nextForms:['ssj1'],path:'base',
+    abilities:[{label:'Drunken Stance',type:'passive',cost:0,text:"This character cannot be targeted by opponent abilities. Opponent's location effects don't work on Billy."},{label:'Prowess Cancel',type:'activated',cost:5,text:'Any Location or Equipment card your opponent has in play currently, you may pay 5 Energy. If you do, send those cards to the Rift Zone.'}]},
+  billy_ssj1_bse:{id:'billy_ssj1_bse',rarity:'rare',name:'Billy (SSJ)',color:'yellow',charName:'Billy',charLine:'billy',formTier:'ssj1',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:7,atk:5,hp:5,sym:'SSJ',transformOnly:true,setId:'base_set',cardNumber:'005/150',
+    nextForms:[],path:'saiyan',
+    abilities:[{label:'Saiyan Spirit',type:'triggered',cost:0,text:'At the start of your turn, if this character attacked last turn, it gets +2 Attack and you may draw 1 card.'},{label:'Combat Control',type:'activated',cost:0,limit:'every_other_turn',text:"Once every other turn, you may choose target opponent's character on field. Until end of turn, that character must attack if able."}]},
 
   // Legacy/prototype Virora line (kept — both base printings can take either path)
   virora:{id:'virora',rarity:'uncommon',name:'Virora',color:'purple',charName:'Virora',charLine:'virora',formTier:'base',subtypes:['Saiyan','Celestial'],type:'base_char',race:'Saiyan–Celestial',cost:4,atk:6,hp:6,sym:'V',nextForms:['ssj1','ssg'],path:'base',
@@ -8182,6 +8192,12 @@ function hasGodlyEvasion(fc){
   const c=DB[fc.cid];
   return !!(c&&c.abilities&&c.abilities.some(a=>a.label==='Godly Evasion'));
 }
+// DRUNKEN STANCE (Billy): cannot be targeted by opponent abilities at all
+// (no toll, absolute). Attacks are NOT restricted by it.
+function hasDrunkenStance(fc){
+  const c=DB[fc.cid];
+  return !!(c&&c.abilities&&c.abilities.some(a=>a.label==='Drunken Stance'));
+}
 // Returns true if attackerPlayer may target targetFc, paying the 2⚡ toll if
 // Godly Evasion applies. Charges + logs when paid; returns false if unaffordable.
 function canPayEvasionToll(attackerPlayer, targetFc){
@@ -8384,6 +8400,11 @@ function onHandClick(p,uid,fc){
 // GENERIC ENEMY TARGET PICKER — pick one enemy character, run callback(uid)
 function openEnemyTargetPicker(targets, callback, opts){
   opts = opts || {};
+  // DRUNKEN STANCE: absolutely untargetable by opponent abilities — remove from list.
+  const _before = targets.length;
+  targets = (targets||[]).filter(cf=>!hasDrunkenStance(cf));
+  if(targets.length<_before){ log("Drunken Stance: Billy can't be targeted by your abilities.",'info'); }
+  if(!targets.length){ showModal('No Target','No valid targets — protected characters cannot be targeted.'); return; }
   // Which player is doing the targeting (whose energy pays the evasion toll).
   // Defaults to the active player.
   const sourcePlayer = opts.sourcePlayer || G.activePlayer || 1;
@@ -9047,6 +9068,55 @@ function activateAbility(fc,abl){
       return;
     }
   }
+  // ── BILLY (Base): Prowess Cancel — pay 5⚡ to banish ALL opponent Locations &
+  // Equipment (field + attached) to the Rift Zone. Intercept BEFORE charging so
+  // energy is only spent when there's actually something to remove ("you may pay").
+  if(abl.label==='Prowess Cancel'){
+    const oppNum=G.activePlayer===1?2:1; const opp=G.players[oppNum];
+    const fieldTargets=opp.field.filter(f=>{const d=DB[f.cid];return isLoc(d)||isEquip(d);});
+    const attachTargets=opp.field.some(f=>Array.isArray(f.attachments)&&f.attachments.some(a=>isEquip(DB[a])));
+    if(!fieldTargets.length && !attachTargets){ log('Prowess Cancel: opponent has no Locations or Equipment.','dmg'); return; }
+    if(G.players[G.activePlayer].energy<5){ log('Prowess Cancel: need 5⚡.','dmg'); return; }
+    spendEnergy(G.activePlayer,5,DB[fc.cid]?.color||null);
+    fc.abilityUsed['Prowess Cancel']=true;
+    G.players[G.activePlayer].usedAbilityThisTurn=true;
+    if(G.activePlayer===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    let removed=0;
+    // 1) standalone Location / Equipment cards on the opponent's field
+    fieldTargets.forEach(f=>{ opp.field=opp.field.filter(x=>x.uid!==f.uid); sendToRift(oppNum,f.cid,'Prowess Cancel'); removed++; });
+    // 2) Equipment attached to the opponent's characters
+    opp.field.forEach(f=>{
+      if(Array.isArray(f.attachments)&&f.attachments.length){
+        f.attachments.slice().forEach(acid=>{ if(isEquip(DB[acid])){ sendToRift(oppNum,acid,'Prowess Cancel'); removed++; } });
+        f.attachments=f.attachments.filter(acid=>!isEquip(DB[acid]));
+      }
+    });
+    if(typeof recalcPassives==='function') recalcPassives();
+    log(`Prowess Cancel: ${removed} card(s) banished to the Rift Zone.`,'gain');
+    renderAll();
+    return;
+  }
+  // ── BILLY (SSJ): Combat Control — once every other turn, mark an opponent
+  // character "must attack if able" on its next turn. (Free ability → taps.)
+  if(abl.label==='Combat Control'){
+    const last=fc.abilityUsed && fc.abilityUsed.combat_control_turn;
+    if(last!=null && (G.turn-last)<2){ log(`Combat Control: wait ${2-(G.turn-last)} more turn(s).`,'dmg'); return; }
+    const oppNum=G.activePlayer===1?2:1;
+    const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
+    if(!enemies.length){ log('Combat Control: no opponent characters to target.','dmg'); return; }
+    if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; } // 0-cost free ability taps
+    fc.abilityUsed.combat_control_turn=G.turn;
+    G.players[G.activePlayer].usedAbilityThisTurn=true;
+    if(G.activePlayer===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    openEnemyTargetPicker(enemies,(uid)=>{
+      const tfc=G.players[oppNum].field.find(f=>f.uid===uid);
+      if(tfc){ tfc.mustAttack=true; log(`Combat Control: ${DB[tfc.cid].name} must attack on its next turn if able.`,'gain'); }
+      renderAll();
+    },{sourcePlayer:G.activePlayer,title:'Combat Control',desc:'Choose an opponent character — it must attack on its next turn if able.'});
+    return;
+  }
   const pl=G.players[G.activePlayer];
   // VOID SYNERGY (Paradox): Paradox's ability costs 0 if Vildrex or Virora is on your field.
   let _cost = abl.cost||0;
@@ -9557,6 +9627,7 @@ function execEnd(){
       G.phasesDone=[];
       G.selectedAttacker=null;
       G.heraldAttacking=false;
+      if(typeof startTurnFx==='function') startTurnFx(p);
       renderAll();
       showTurnBanner(p===1);
       if(G.onlineMode){ broadcastGameState(); }
@@ -9572,6 +9643,7 @@ function execEnd(){
     G.phasesDone=[];
     G.selectedAttacker=null;
     G.heraldAttacking=false;
+    if(typeof startTurnFx==='function') startTurnFx(nx);
     renderAll();
     showTurnBanner(nx===1);
     // ONLINE: explicitly broadcast the turn handoff — renderAll's syncOnlineState
@@ -9611,8 +9683,28 @@ function applyEndOfTurnHandPenalty(p){
   }
 }
 
+// START-OF-TURN triggers for the player whose turn is beginning.
+function startTurnFx(player){
+  const pl=G.players[player]; if(!pl) return;
+  const cards=[...pl.field]; if(pl.herald) cards.push(pl.herald);
+  cards.forEach(fc=>{
+    const c=DB[fc.cid]; if(!c||!c.abilities) return;
+    // ── BILLY (SSJ): Saiyan Spirit — if it attacked last turn, +2 ATK and draw 1.
+    if(c.abilities.some(a=>a.label==='Saiyan Spirit') && fc.attackedLastTurn){
+      fc.atkBonus=(fc.atkBonus||0)+2;
+      log(`Saiyan Spirit: ${c.name} gains +2 ATK for attacking last turn!`,'gain');
+      if(typeof drawCard==='function'){ drawCard(player); log(`Saiyan Spirit: ${pname(player)} draws 1.`,'gain'); }
+    }
+  });
+}
+
 function endTurnFx(p){
   const o=p===1?2:1;
+  // Snapshot "attacked last turn" for the player whose turn is ending (used by
+  // Saiyan Spirit etc.). Only the active player's cards can have attacked, so we
+  // set it only for p — the opponent's flag stays from THEIR last turn.
+  G.players[p].field.forEach(fc=>{ fc.attackedLastTurn = (fc.attacksThisTurn||0)>0; fc.mustAttack=false; });
+  if(G.players[p].herald){ G.players[p].herald.attackedLastTurn = (G.players[p].herald.attacksThisTurn||0)>0; }
   // BANKED ENERGY: energy carries over — no reset. +1 per turn added at start of next turn.
   // Remove tokens
   const tokens=G.players[p].field.filter(f=>DB[f.cid]?.isToken&&!f.inCombat);
