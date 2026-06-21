@@ -8347,6 +8347,54 @@ function onLifeBarClick(targetPlayer){
   renderAll();
 }
 
+// ── Phase 2b: AI swings at YOUR Life — you block each swing ─────────────────
+// Process the AI's life-attack swings one at a time so each opens a block
+// prompt; drain the queue, then run onDone (ends the AI's turn).
+function processAILifeAttacks(queue, onDone){
+  if(G.gameOver)return;
+  if(!queue || !queue.length){ if(onDone)onDone(); return; }
+  const auid=queue.shift();
+  const afc=G.players[2].field.find(f=>f.uid===auid);
+  if(!afc || !canCharacterAttack(2,afc)){ processAILifeAttacks(queue,onDone); return; }
+  aiAttackHumanLife(afc, ()=>{ setTimeout(()=>processAILifeAttacks(queue,onDone), 450); });
+}
+function aiAttackHumanLife(afc, done){
+  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1;
+  const power=effPower(afc);
+  if(isUnblockable(afc)){
+    log(`AI's ${DB[afc.cid].name} attacks your Life — UNBLOCKABLE for ${power}!`,'dmg');
+    resolveLifeAttack(2, afc, null);
+    if(done)done();
+    return;
+  }
+  openHumanBlockPrompt(afc, done);
+}
+// Modal: choose a blocker for the AI's incoming Life attack, or take it.
+function openHumanBlockPrompt(afc, done){
+  const power=effPower(afc);
+  const mine=G.players[1].field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
+  const body=document.createElement('div');
+  body.innerHTML=`<div style="font-size:12px;color:#fca5a5;margin-bottom:10px;line-height:1.5">AI's <b>${DB[afc.cid].name}</b> attacks your Life for <b style="color:#ef4444">${power}</b>. Block with a character, or take it.</div>`;
+  mine.forEach(b=>{
+    const c=DB[b.cid];
+    const willDie=(b.currentHP<=power);
+    const counter=(effPower(b)>power)?(effPower(b)-power):0;
+    const excess=Math.max(0,power-(b.currentHP||0));
+    const row=document.createElement('button');row.className='btn-gray btn-sm';
+    row.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px';
+    row.innerHTML=`<span>🛡 ${c.name} <span style="font-size:9px;color:#9ca3af">(${effPower(b)}⚔/${b.currentHP}♥)</span></span>`
+      +`<span style="font-size:9px;color:${willDie?'#ef4444':'#22c55e'};text-align:right">${willDie?'dies':'survives'}${counter?` · counter ${counter}`:''}${excess?` · ${excess}→Life`:''}</span>`;
+    row.onclick=()=>{ closeAllModals(); resolveLifeAttack(2, afc, b); if(done)done(); };
+    body.appendChild(row);
+  });
+  const take=document.createElement('button');take.className='btn-red btn-sm';
+  take.style.cssText='width:100%;margin-top:6px;padding:9px;letter-spacing:1px';
+  take.textContent=`✋ Take ${power} damage to Life`;
+  take.onclick=()=>{ closeAllModals(); resolveLifeAttack(2, afc, null); if(done)done(); };
+  body.appendChild(take);
+  showModalEl('🛡 Block?', body);
+}
+
 function resolveAttack(ap,auid,dp,duid){
   const afc=G.players[ap].field.find(f=>f.uid===auid);
   const dfc=G.players[dp].field.find(f=>f.uid===duid);
@@ -10139,33 +10187,43 @@ function runAI(){
         G.phase='attack';G.phasesDone.push('attack');
         const opp=G.players[1];
         const eligible=G.players[2].field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken&&(f.turnPlayed<G.turn||hasKW(f,'burst_speed'))&&!f.paralyzed&&!f.frozen&&!f.tapped);
-        const oppChars=opp.field.filter(f=>isChar(DB[f.cid]));
-        // One-attacker rule: AI picks how many distinct attackers it's allowed
         const aiMaxAttackers=1+(G.bonusAttackers||0);
+        // End the AI's turn and hand back to the human (also fires the human's
+        // start-of-turn effects, which this path previously skipped).
+        const _aiEndTurn=()=>{
+          if(G.gameOver)return;
+          endTurnFx(2);log('AI ends.','info');
+          G.activePlayer=1;G.turn++;G.phase='draw';G.phasesDone=[];G.selectedAttacker=null;G.heraldAttacking=false;
+          if(typeof startTurnFx==='function')startTurnFx(1);
+          renderAll();
+        };
+        // HEALTH MODE: AI swings at your Life — you choose to block each swing.
+        if(G.gameMode==='lifeforce'){
+          const chosen=eligible.sort((a,b)=>b.currentATK-a.currentATK).slice(0,aiMaxAttackers);
+          renderAll();
+          if(!chosen.length){ log('AI skips attack.','info'); setTimeout(_aiEndTurn,500); }
+          else processAILifeAttacks(chosen.map(a=>a.uid), _aiEndTurn);
+          return; // the queue drives the rest, including end-of-turn
+        }
+        // PRIZE / COMBINED: existing character-targeting combat
+        const oppChars=opp.field.filter(f=>isChar(DB[f.cid]));
         if(eligible.length>0&&oppChars.length>0){
-          // Pick the strongest eligible attackers, up to the allowed count
           const chosen=eligible.sort((a,b)=>b.currentATK-a.currentATK).slice(0,aiMaxAttackers);
           chosen.forEach(atk=>{
-            // Each chosen attacker attacks once, or twice if onslaught
             const swings=hasKW(atk,'onslaught')?2:1;
             for(let s=0;s<swings;s++){
               const alive=opp.field.filter(f=>isChar(DB[f.cid]));if(!alive.length)break;
               if((atk.attacksThisTurn||0)>=swings)break;
-              // GODLY EVASION: AI avoids evasion-protected targets unless it has
-              // 2+ energy to pay the toll. Prefer unprotected targets first.
               const reachable=alive.filter(f=>!hasGodlyEvasion(f) || G.players[2].energy>=2);
               const pool=reachable.length?reachable:[];
-              if(!pool.length)break; // only protected targets and can't afford → skip
+              if(!pool.length)break;
               const tgt=pool.reduce((a,b)=>b.currentHP<a.currentHP?b:a);
               resolveAttack(2,atk.uid,1,tgt.uid);
             }
           });
         } else log('AI skips attack.','info');
         renderAll();
-        setTimeout(()=>{
-          endTurnFx(2);log('AI ends.','info');
-          G.activePlayer=1;G.turn++;G.phase='draw';G.phasesDone=[];G.selectedAttacker=null;renderAll();
-        },600);
+        setTimeout(_aiEndTurn,600);
       },600);
     },400);
   },400);
