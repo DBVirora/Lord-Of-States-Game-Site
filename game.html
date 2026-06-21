@@ -4272,9 +4272,9 @@ textarea{
    boards. Libraries sit on the outer edges; the active board's hand
    docks at the bottom. Fully responsive (wide → laptop → mobile).
    ══════════════════════════════════════════════════════════════ */
-#game-screen-2v2{padding:46px 14px 8px;}
+#game-screen-2v2{padding:46px 2.2vw 8px;}
 .v2-wrap{
-  max-width:1500px;width:100%;margin:0 auto;
+  max-width:none;width:100%;margin:0 auto;
   display:flex;flex-direction:column;gap:6px;
   height:calc(100vh - 54px);
   background:
@@ -4328,12 +4328,30 @@ textarea{
 /* Inner play column (header → loc → field). Cards bias toward the centre line. */
 .v2-play{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0;min-height:0;}
 .v2-board.v2-you .v2-play{flex-direction:column-reverse;}      /* your fields hug the centre (top) */
-.v2-board-head{display:flex;align-items:center;gap:7px;flex-shrink:0;min-height:22px;}
+.v2-board-head{display:flex;align-items:center;flex-shrink:0;}
 .v2-id-chip{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;border:1px solid rgba(255,255,255,.15);}
 .v2-enemy .v2-id-chip{background:rgba(120,20,20,.5);border-color:rgba(239,68,68,.5);}
 .v2-you .v2-id-chip{background:rgba(20,90,45,.5);border-color:rgba(34,197,94,.5);}
-.v2-board-label{font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:#e2e8f0;letter-spacing:1px;display:flex;justify-content:space-between;align-items:center;flex:1;gap:8px;min-width:0;}
-.v2-board-label>span:first-child{white-space:nowrap;}
+
+/* ── PER-PLAYER HUD ── name · energy · phase tracker · zone counts ── */
+.v2-hud{display:flex;align-items:center;gap:10px;flex-wrap:wrap;width:100%;flex-shrink:0;
+  padding:4px 8px;border-radius:9px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.05);}
+.v2-enemy .v2-hud{border-color:rgba(239,68,68,.18);}
+.v2-you .v2-hud{border-color:rgba(34,197,94,.18);}
+.v2-hud-id{display:flex;align-items:center;gap:7px;min-width:0;}
+.v2-hud-name{font-family:'Cinzel',serif;font-size:13px;font-weight:700;color:#f1f5f9;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;}
+.v2-hud-cpu{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;color:#fca5a5;background:rgba(120,20,20,.5);padding:1px 4px;border-radius:4px;vertical-align:middle;}
+.v2-hud-energy{display:flex;align-items:center;gap:3px;font-size:12px;color:#fbbf24;font-weight:700;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:7px;padding:2px 8px;}
+.v2-hud-energy b{font-family:'Orbitron',sans-serif;font-size:15px;line-height:1;}
+.v2-hud-phase{display:flex;gap:3px;}
+.v2-ph-dot{width:20px;height:18px;display:flex;align-items:center;justify-content:center;font-family:'Share Tech Mono',monospace;font-size:10px;font-weight:700;border-radius:5px;color:#64748b;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);transition:all .15s;}
+.v2-ph-dot.done{color:#94a3b8;background:rgba(120,90,200,.18);border-color:rgba(120,90,200,.3);}
+.v2-ph-dot.on{color:#0a0a14;background:var(--gold-bright,#e8c570);border-color:var(--gold,#c8a44a);box-shadow:0 0 8px rgba(200,164,74,.6);transform:scale(1.08);}
+.v2-hud-zones{display:flex;gap:8px;margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:11px;color:#cbd5e1;}
+.v2-hud-zones span{display:flex;align-items:center;gap:2px;white-space:nowrap;}
+.v2-hud-zones .z-rift{color:#c4b5fd;}
+/* legacy (no longer rendered but kept for safety) */
+.v2-board-label{font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:#e2e8f0;display:flex;justify-content:space-between;align-items:center;flex:1;gap:8px;min-width:0;}
 .v2-handback{display:flex;gap:2px;flex-shrink:0;margin-left:auto;}
 .v2-back{width:11px;height:16px;border-radius:2px;background:linear-gradient(135deg,#3a1a4a,#160c28);border:1px solid rgba(168,85,247,.45);box-shadow:inset 0 0 3px rgba(168,85,247,.3);}
 .v2-loc{display:flex;gap:5px;flex-wrap:wrap;min-height:0;flex-shrink:0;}
@@ -5732,11 +5750,7 @@ textarea{
           <div class="v2-disc-mini" id="v2-disc-2" onclick="showDiscard(2)" title="B1 Discard"><span class="v2-disc-n">0</span><span class="v2-disc-l">DISC</span></div>
         </div>
         <div class="v2-play">
-          <div class="v2-board-head">
-            <div class="v2-id-chip">🤖</div>
-            <div class="v2-board-label" id="v2-label-2"><span>B1</span></div>
-            <div class="v2-handback" id="v2-handback-2"></div>
-          </div>
+          <div class="v2-board-head"><div class="v2-hud" id="v2-hud-2"></div></div>
           <div class="v2-loc" id="v2-loc-2"></div>
           <div class="v2-field" id="v2-field-2"></div>
         </div>
@@ -5747,11 +5761,7 @@ textarea{
           <div class="v2-disc-mini" id="v2-disc-4" onclick="showDiscard(4)" title="B2 Discard"><span class="v2-disc-n">0</span><span class="v2-disc-l">DISC</span></div>
         </div>
         <div class="v2-play">
-          <div class="v2-board-head">
-            <div class="v2-id-chip">🤖</div>
-            <div class="v2-board-label" id="v2-label-4"><span>B2</span></div>
-            <div class="v2-handback" id="v2-handback-4"></div>
-          </div>
+          <div class="v2-board-head"><div class="v2-hud" id="v2-hud-4"></div></div>
           <div class="v2-loc" id="v2-loc-4"></div>
           <div class="v2-field" id="v2-field-4"></div>
         </div>
@@ -5789,10 +5799,7 @@ textarea{
           <div class="v2-disc-mini" id="v2-disc-1" onclick="showDiscard(1)" title="A1 Discard"><span class="v2-disc-n">0</span><span class="v2-disc-l">DISC</span></div>
         </div>
         <div class="v2-play">
-          <div class="v2-board-head">
-            <div class="v2-id-chip">👤</div>
-            <div class="v2-board-label" id="v2-label-1"><span>A1 (You)</span></div>
-          </div>
+          <div class="v2-board-head"><div class="v2-hud" id="v2-hud-1"></div></div>
           <div class="v2-loc" id="v2-loc-1"></div>
           <div class="v2-field" id="v2-field-1"></div>
         </div>
@@ -5803,10 +5810,7 @@ textarea{
           <div class="v2-disc-mini" id="v2-disc-3" onclick="showDiscard(3)" title="A2 Discard"><span class="v2-disc-n">0</span><span class="v2-disc-l">DISC</span></div>
         </div>
         <div class="v2-play">
-          <div class="v2-board-head">
-            <div class="v2-id-chip">👤</div>
-            <div class="v2-board-label" id="v2-label-3"><span>A2 (You)</span></div>
-          </div>
+          <div class="v2-board-head"><div class="v2-hud" id="v2-hud-3"></div></div>
           <div class="v2-loc" id="v2-loc-3"></div>
           <div class="v2-field" id="v2-field-3"></div>
         </div>
@@ -7128,7 +7132,7 @@ function newFC(cid){
 // ═══════════════════════════════════════════════════
 function recalcPassives(){
   if(!G||!G.players)return;
-  [1,2].forEach(p=>{
+  (G.is2v2?[1,2,3,4]:[1,2]).forEach(p=>{
     const pl=G.players[p];if(!pl)return;
     const allFC=[...pl.field]; if(pl.herald)allFC.push(pl.herald);
     allFC.forEach(fc=>{
@@ -7260,7 +7264,7 @@ function triggerWin2v2(winningTeam, reason){
 }
 
 // Build a 4-player game. decks = [dA1, dB1, dA2, dB2] (turn-order order).
-function startGame2v2(mode, decks){
+function startGame2v2(mode, decks, seatNames){
   if(typeof loadGameSettings==="function")loadGameSettings();
   gameMode=mode; us=0;
   const startLife=TEAM_START_LIFE;
@@ -7272,6 +7276,8 @@ function startGame2v2(mode, decks){
     return herald;
   }
   const order=[1,2,3,4];
+  // Turn SEQUENCE: teammates act back-to-back — A1 → A2 → B1 → B2.
+  const turnSeq=[1,3,2,4];
   const players={};
   const heralds={};
   order.forEach((p,idx)=>{
@@ -7285,19 +7291,24 @@ function startGame2v2(mode, decks){
       prizes:[], prizesClaimed:0, herald:heralds[p], lifeForce:0
     };
   });
+  // Seat display names — human seats default to the logged-in account name (A1)
+  // and a teammate placeholder (A2). An online/local lobby can pass `seatNames`
+  // to override per seat. AI seats stay "AI".
+  const _me=(window._username||window._playerName||document.getElementById('hud-username')?.textContent||'Player 1');
+  const _seatNames=Object.assign({1:_me, 2:'AI', 3:'Teammate', 4:'AI'}, seatNames||{});
   G={
     turn:1, is2v2:true, gameMode:'lifeforce', // 2v2 uses Health/team-life rules
-    turnOrder:order, turnIndex:0, activePlayer:order[0],
+    turnOrder:turnSeq, turnIndex:0, activePlayer:turnSeq[0],
     teams:{A:[1,3], B:[2,4]}, teamLife:{A:startLife, B:startLife}, startingTeamLife:startLife,
-    humanPlayers:[1,3], aiPlayers:[2,4],
+    humanPlayers:[1,3], aiPlayers:[2,4], v2SeatNames:_seatNames,
     phase:'draw', phasesDone:[], selectedAttacker:null, gameOver:false,
     deckSearchCallback:null, heraldAttacking:false, bonusAttackers:0,
     players, log:[]
   };
   order.forEach(p=>{ for(let i=0;i<7;i++) drawCard(p,true); });
   order.forEach(p=>{ if(heralds[p]) log(`${players[p].name} Herald: ${DB[heralds[p].cid].name} enters!`,'gain'); });
-  log('2v2 Team Battle started! Turn order: A1 → B1 → A2 → B2.','info');
-  log('⚠ 2v2 beta — AI boards pass; team-combat is next.','info');
+  log('2v2 Team Battle started! Turn order: A1 → A2 → B1 → B2.','info');
+  log('⚠ 2v2 beta — team-combat live; per-board AI active.','info');
   showScreen('game-screen-2v2'); renderAll2v2();
 }
 
@@ -11991,6 +12002,46 @@ function renderBoard2v2(p){
 
 // Full render for the dedicated 2v2 screen.
 const _V2LBL={1:'A1',2:'B1',3:'A2',4:'B2'};
+// Seat label (A1/B1/...) used as a fallback tag.
+// Resolve the display name for a 2v2 seat. Human seats show the real
+// account/lobby name; AI seats show "AI". Names live on G.v2SeatNames so an
+// online/local-with-friends lobby can assign each seat later.
+function v2SeatName(p){
+  if(G.v2SeatNames && G.v2SeatNames[p]) return G.v2SeatNames[p];
+  if(isHumanPlayer(p)){
+    return window._username || window._playerName ||
+           document.getElementById('hud-username')?.textContent || ('Player '+(p===1?'1':'2'));
+  }
+  return 'AI';
+}
+const V2_PHASES=[['draw','D'],['resource','R'],['main','M'],['attack','A']];
+// Render one board's HUD: avatar+name, energy, phase tracker, and zone counts.
+function renderV2HUD(p){
+  const el=document.getElementById('v2-hud-'+p); if(!el)return;
+  const pl=G.players[p]; if(!pl)return;
+  const human=isHumanPlayer(p);
+  const isActive=(G.activePlayer===p);
+  const name=v2SeatName(p);
+  const phaseHtml=V2_PHASES.map(([ph,lbl])=>{
+    const on=isActive&&G.phase===ph;
+    const done=isActive&&(G.phasesDone||[]).includes(ph);
+    return `<span class="v2-ph-dot${on?' on':''}${done?' done':''}" title="${ph[0].toUpperCase()+ph.slice(1)} phase">${lbl}</span>`;
+  }).join('');
+  const rift=(pl.rift||[]).length;
+  el.innerHTML=
+    `<div class="v2-hud-id">`
+      +`<div class="v2-id-chip">${human?'👤':'🤖'}</div>`
+      +`<div class="v2-hud-name" title="${name} · ${_V2LBL[p]}">${name}${human?'':' <span class="v2-hud-cpu">CPU</span>'}</div>`
+    +`</div>`
+    +`<div class="v2-hud-energy" title="Energy">⚡<b>${pl.energy}</b></div>`
+    +`<div class="v2-hud-phase" title="Current phase">${phaseHtml}</div>`
+    +`<div class="v2-hud-zones">`
+      +`<span title="Cards in hand">✋${pl.hand.length}</span>`
+      +`<span title="Cards in deck">🂠${pl.deck.length}</span>`
+      +`<span title="Discard pile">🗑${(pl.discard||[]).length}</span>`
+      +`<span class="z-rift" title="Rift zone (banished)">🌀${rift}</span>`
+    +`</div>`;
+}
 function renderAll2v2(){
   if(!G||!G.is2v2)return;
   recalcPassives();
@@ -11998,14 +12049,8 @@ function renderAll2v2(){
     if(typeof renderField==='function') renderField(p,'v2-field-'+p);
     if(typeof renderLocZone==='function') renderLocZone(p,'v2-loc-'+p);
     const pl=G.players[p];
-    const lbl=document.getElementById('v2-label-'+p);
-    if(lbl){
-      const youTag=isHumanPlayer(p)?' (You)':'';
-      lbl.innerHTML=`<span>${_V2LBL[p]}${youTag}</span><span style="font-weight:400;font-size:9px;color:#9ca3af">⚡${pl.energy} · ✋${pl.hand.length} · 🂠${pl.deck.length} · ✝${pl.discard.length}</span>`;
-    }
-    // Enemy hand backs (face-down — you see the count, not the cards)
-    const hb=document.getElementById('v2-handback-'+p);
-    if(hb){ hb.innerHTML=''; for(let i=0;i<Math.min(pl.hand.length,12);i++){ const b=document.createElement('div'); b.className='v2-back'; hb.appendChild(b); } }
+    // Full per-player HUD (name · energy · phase · zone counts)
+    renderV2HUD(p);
     // Outer-edge library (card back + count) and discard mini
     const dk=document.getElementById('v2-deck-'+p);
     if(dk){
