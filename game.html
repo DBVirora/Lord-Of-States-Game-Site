@@ -4289,9 +4289,11 @@ textarea{
 .v2-turn{font-family:'Orbitron',sans-serif;font-size:12px;color:var(--gold-bright);font-weight:700;letter-spacing:1px;margin-right:4px;}
 .v2-phases{display:flex;gap:4px;}
 .v2-tools{display:flex;gap:4px;}
-.v2-hand-dock{flex-shrink:0;background:rgba(8,8,24,.5);border:1px solid var(--border-v);border-radius:10px;padding:5px 8px;}
+.v2-hand-dock{flex-shrink:0;display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.v2-hand-col{background:rgba(8,8,24,.5);border:1px solid var(--border-v);border-radius:10px;padding:5px 8px;min-width:0;}
+.v2-hand-col.v2-handcol-active{border-color:var(--gold);box-shadow:0 0 10px rgba(200,164,74,.25);}
 .v2-hand-label{font-size:9px;color:#9ca3af;letter-spacing:2px;margin-bottom:3px;}
-.v2-hand{display:flex;gap:6px;overflow-x:auto;min-height:96px;}
+.v2-hand{display:flex;gap:6px;overflow-x:auto;min-height:92px;}
 .v2-log{flex-shrink:0;height:48px;overflow-y:auto;font-size:10px;color:#9ca3af;background:rgba(0,0,0,.3);border-radius:8px;padding:5px 9px;line-height:1.5;}
 .v2-teamlife.lf-targetable{box-shadow:0 0 16px rgba(239,68,68,.7);border-color:#ef4444;animation:glow-r 1.1s infinite;}
 .energy-big-icon{
@@ -5656,8 +5658,14 @@ textarea{
     </div>
     <div class="v2-teamlife v2-teamlife-a">❤️<span class="v2-life-num" id="v2-team-a-life">130</span><span>TEAM A (You)</span></div>
     <div class="v2-hand-dock">
-      <div class="v2-hand-label">HAND — <span id="v2-hand-owner">A1</span></div>
-      <div class="v2-hand" id="v2-hand"></div>
+      <div class="v2-hand-col" id="v2-handcol-1">
+        <div class="v2-hand-label">A1 HAND</div>
+        <div class="v2-hand" id="v2-hand-1"></div>
+      </div>
+      <div class="v2-hand-col" id="v2-handcol-3">
+        <div class="v2-hand-label">A2 HAND</div>
+        <div class="v2-hand" id="v2-hand-3"></div>
+      </div>
     </div>
     <div class="v2-log" id="v2-log"></div>
   </div>
@@ -7067,6 +7075,10 @@ function enemyTeamOf(p){ return teamOf(p)==='A' ? 'B' : 'A'; }
 function otherTeam(t){ return t==='A' ? 'B' : 'A'; }
 function teamPlayers(t){ return G.teams ? G.teams[t] : (t==='A'?[1]:[2]); }
 function isHumanPlayer(p){ return G.is2v2 ? (G.humanPlayers||[]).includes(p) : (p===1); }
+// The board the human is currently acting on (active player in 2v2, else player 1),
+// and whether it's a human-controlled turn — used to generalize action functions.
+function actingPlayer(){ return G.is2v2 ? G.activePlayer : 1; }
+function isMyTurn(){ return G.is2v2 ? isHumanPlayer(G.activePlayer) : G.activePlayer===1; }
 
 // Reduce a team's shared Life; checks the team-loss win condition.
 function damageTeamLife(team, amount, source){
@@ -7142,10 +7154,9 @@ function execEnd2v2(p){
   if(typeof startTurnFx==='function')startTurnFx(nx);
   renderAll2v2();
   if(typeof showTurnBanner==='function')showTurnBanner(isHumanPlayer(nx));
-  // AI-controlled boards: per-board AI comes in the next slice; for now pass.
+  // AI-controlled boards play out their turn.
   if((G.aiPlayers||[]).includes(nx)){
-    log(`${G.players[nx].name}'s turn (AI board — passes for now).`,'info');
-    setTimeout(()=>{ if(!G.gameOver) execEnd(); }, 900);
+    setTimeout(()=>{ if(!G.gameOver) runAI2v2(nx); }, 800);
   }
 }
 
@@ -7613,8 +7624,8 @@ function confirmReturnMenu(){
 // SACRIFICE MECHANIC
 // ═══════════════════════════════════════════════════
 function openSacrificeModal(){
-  if(G.activePlayer!==1||G.phase!=='main'){log('Sacrifice during Main Phase only.','dmg');return;}
-  const pl=G.players[1];
+  if(!isMyTurn()||G.phase!=='main'){log('Sacrifice during Main Phase only.','dmg');return;}
+  const pl=G.players[actingPlayer()];
   const chars=pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
   if(!chars.length){showModal('Sacrifice','No characters on field to sacrifice.');return;}
   const body=document.createElement('div');
@@ -8294,7 +8305,7 @@ function animateDrawFromDeck(p){
 
 function onDeckClick(p){
   if(!G||!G.players||!G.players[p])return;
-  if(p===1&&G.activePlayer===1&&G.phase==='main'&&deckSearchActive){
+  if(isHumanPlayer(p)&&G.activePlayer===p&&G.phase==='main'&&deckSearchActive){
     // Trigger pending deck search
     if(G.deckSearchCallback){const cb=G.deckSearchCallback;G.deckSearchCallback=null;deckSearchActive=false;cb();}
     return;
@@ -8584,6 +8595,93 @@ function resolveTeamLifeAttack(attackerPlayer, afc, blocker, enemyTeam){
   if(owner)dealDamage(owner, blocker.uid, power);          // Step 1-2 (death → -2 team Life via killCard)
   if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(attackerPlayer, afc.uid, c); } // Step 3
   if(excess>0){ log(`Trample! ${excess} excess to Team ${enemyTeam} Life.`,'dmg'); damageTeamLife(enemyTeam, excess, 'trample'); } // Step 4
+  renderAll();
+}
+
+// ── 2v2 per-board AI ───────────────────────────────────────────────────────
+// Plays one AI board (B1=2 / B2=4): gain energy, draw, deploy affordable
+// characters, then swing at the human team's Life (you choose to block).
+function runAI2v2(p){
+  if(G.gameOver)return;
+  const pl=G.players[p];
+  pl.energy+=1; if(typeof resetEnergyCardFlag==='function')resetEnergyCardFlag(p);
+  if(typeof untapAll==='function')untapAll(p);
+  drawCard(p);
+  if(typeof isLockedDown==='function' && !isLockedDown(p)){ let g=0; pl.field.filter(f=>isLoc(DB[f.cid])).forEach(()=>g++); if(g>0)pl.energy+=g; }
+  G.phase='main'; renderAll();
+  setTimeout(()=>{
+    if(G.gameOver)return;
+    // Deploy affordable characters (strongest first), up to the field cap.
+    const MAXF=5;
+    pl.hand.filter(fc=>{const c=DB[fc.cid];return c&&isChar(c)&&!c.transformOnly;})
+      .sort((a,b)=>(DB[b.cid].cost||0)-(DB[a.cid].cost||0))
+      .forEach(fc=>{
+        const c=DB[fc.cid]; const cost=Math.max(0,c.cost+(fc.costMod||0));
+        if(pl.field.filter(f=>isChar(DB[f.cid])).length>=MAXF)return;
+        if(pl.energy<cost)return;
+        pl.hand=pl.hand.filter(f=>f.uid!==fc.uid); pl.energy-=cost;
+        fc.turnPlayed=G.turn; fc.attacksThisTurn=0;
+        pl.field.push(fc); log(`${pl.name} plays ${c.name}.`,'info');
+        if(typeof onEntry==='function')onEntry(p,fc);
+      });
+    renderAll();
+    setTimeout(()=>{
+      if(G.gameOver)return;
+      G.phase='attack';
+      const eligible=pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken&&(f.turnPlayed<G.turn||hasKW(f,'burst_speed'))&&!f.paralyzed&&!f.frozen&&!f.tapped);
+      const maxAtk=1+(G.bonusAttackers||0);
+      const chosen=eligible.sort((a,b)=>b.currentATK-a.currentATK).slice(0,maxAtk);
+      if(!chosen.length){ log(`${pl.name} skips attack.`,'info'); setTimeout(()=>{ if(!G.gameOver)execEnd(); },600); return; }
+      processAITeamAttacks(p, chosen.map(c=>c.uid), ()=>{ if(!G.gameOver)execEnd(); });
+    }, 650);
+  }, 650);
+}
+// Queue: AI swings at the human team's Life one attacker at a time; each opens
+// a human block prompt.
+function processAITeamAttacks(aiPlayer, queue, onDone){
+  if(G.gameOver)return;
+  if(!queue.length){ if(onDone)onDone(); return; }
+  const auid=queue.shift();
+  const afc=G.players[aiPlayer].field.find(f=>f.uid===auid);
+  if(!afc||!canCharacterAttack(aiPlayer,afc)){ processAITeamAttacks(aiPlayer,queue,onDone); return; }
+  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1;
+  const power=effPower(afc);
+  const humanTeam=enemyTeamOf(aiPlayer);
+  if(isUnblockable(afc)){
+    log(`AI's ${DB[afc.cid].name} attacks Team ${humanTeam} — UNBLOCKABLE for ${power}!`,'dmg');
+    damageTeamLife(humanTeam, power, 'direct attack'); renderAll();
+    setTimeout(()=>processAITeamAttacks(aiPlayer,queue,onDone),450); return;
+  }
+  openHumanTeamBlockPrompt(aiPlayer, afc, humanTeam, ()=>{ setTimeout(()=>processAITeamAttacks(aiPlayer,queue,onDone),400); });
+}
+function openHumanTeamBlockPrompt(aiPlayer, afc, humanTeam, done){
+  const power=effPower(afc);
+  const blockers=teamBlockerPool(humanTeam);
+  const body=document.createElement('div');
+  body.innerHTML=`<div style="font-size:12px;color:#fca5a5;margin-bottom:10px;line-height:1.5">AI's <b>${DB[afc.cid].name}</b> attacks Team ${humanTeam}'s Life for <b style="color:#ef4444">${power}</b>. Block with a character, or take it.</div>`;
+  blockers.forEach(b=>{
+    const c=DB[b.cid]; const willDie=(b.currentHP<=power); const counter=(effPower(b)>power)?(effPower(b)-power):0; const excess=Math.max(0,power-(b.currentHP||0)); const owner=ownerOfCard(b.uid);
+    const row=document.createElement('button');row.className='btn-gray btn-sm';
+    row.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:8px 10px;display:flex;justify-content:space-between;gap:8px';
+    row.innerHTML=`<span>🛡 ${c.name} <span style="font-size:9px;color:#9ca3af">(${_V2LBL[owner]} · ${effPower(b)}⚔/${b.currentHP}♥)</span></span><span style="font-size:9px;color:${willDie?'#ef4444':'#22c55e'};text-align:right">${willDie?'dies':'survives'}${counter?` · counter ${counter}`:''}${excess?` · ${excess}→Life`:''}</span>`;
+    row.onclick=()=>{ closeAllModals(); resolveAITeamAttack(aiPlayer, afc, b, humanTeam); if(done)done(); };
+    body.appendChild(row);
+  });
+  const take=document.createElement('button');take.className='btn-red btn-sm';take.style.cssText='width:100%;margin-top:6px;padding:9px';
+  take.textContent=`✋ Take ${power} to Team ${humanTeam} Life`;
+  take.onclick=()=>{ closeAllModals(); resolveAITeamAttack(aiPlayer, afc, null, humanTeam); if(done)done(); };
+  body.appendChild(take);
+  showModalEl('🛡 Block?', body);
+}
+function resolveAITeamAttack(aiPlayer, afc, blocker, humanTeam){
+  const power=effPower(afc);
+  if(!blocker){ damageTeamLife(humanTeam, power, 'direct attack'); renderAll(); return; }
+  const bHP=blocker.currentHP||0, bPow=effPower(blocker), excess=Math.max(0,power-bHP);
+  const owner=ownerOfCard(blocker.uid);
+  log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHP}HP).`,'info');
+  if(owner)dealDamage(owner, blocker.uid, power);
+  if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(aiPlayer, afc.uid, c); }
+  if(excess>0){ log(`Trample! ${excess} to Team ${humanTeam} Life.`,'dmg'); damageTeamLife(humanTeam, excess, 'trample'); }
   renderAll();
 }
 
@@ -9138,8 +9236,8 @@ function getPathLabel(path){
 }
 
 function openTransformModal(){
-  if(G.activePlayer!==1||G.phase!=='main'){log('Main Phase only.','dmg');return;}
-  const pl=G.players[1];
+  if(!isMyTurn()||G.phase!=='main'){log('Main Phase only.','dmg');return;}
+  const pl=G.players[actingPlayer()];
   const eligible=pl.field.filter(f=>hasTransformTargets(f.cid));
   if(!eligible.length){showModal('Transform','No transformable characters on field.');return;}
   const body=document.createElement('div');let found=false;
@@ -9402,8 +9500,8 @@ function doTransform(fieldUid,newCid,handUid,cost){
 // EQUIP MODAL (player)
 // ═══════════════════════════════════════════════════
 function openEquipModal(){
-  if(G.activePlayer!==1||G.phase!=='main'){log('Main Phase only.','dmg');return;}
-  const pl=G.players[1];
+  if(!isMyTurn()||G.phase!=='main'){log('Main Phase only.','dmg');return;}
+  const pl=G.players[actingPlayer()];
   const equips=pl.hand.filter(f=>isEquip(DB[f.cid]));
   if(!equips.length){showModal('Equip','No equipment in hand.');return;}
   const chars=pl.field.filter(f=>isChar(DB[f.cid]));
@@ -9436,8 +9534,8 @@ function openEquipModal(){
 // ABILITIES
 // ═══════════════════════════════════════════════════
 function openAbilityModal(){
-  if(G.activePlayer!==1||G.phase!=='main'){log('Main Phase only.','dmg');return;}
-  const pl=G.players[1];
+  if(!isMyTurn()||G.phase!=='main'){log('Main Phase only.','dmg');return;}
+  const pl=G.players[actingPlayer()];
   const body=document.createElement('div');let anyFound=false;
   // Herald activated abilities
   if(pl.herald){
@@ -9985,7 +10083,8 @@ function endTurnNow(){
 }
 
 function doPhase(ph){
-  if(G.activePlayer!==1)return;
+  if(G.is2v2 ? !isHumanPlayer(G.activePlayer) : G.activePlayer!==1)return;
+  const mp = G.is2v2 ? G.activePlayer : 1; // "my player" — the active human board
   // End turn is always allowed — skip directly regardless of phase order
   if(ph==='end'){
     if(!G.phasesDone.includes('end')){G.phasesDone.push('end');execEnd();}
@@ -9997,11 +10096,10 @@ function doPhase(ph){
   if(G.phasesDone.includes(ph))return;
   G.phasesDone.push(ph);G.phase=ph;
   if(ph==='draw'){
-    G.players[1].energy+=1;resetEnergyCardFlag(1);drawCard(1);log('+1⚡ (banked energy)','gain');
-    // UNTAP: all your cards untap at the start of your turn; reset ability-used flag.
-    untapAll(1);
-    G.players[1].usedAbilityThisTurn=false;
-    G.players[1].field.forEach(fc=>{
+    G.players[mp].energy+=1;resetEnergyCardFlag(mp);drawCard(mp);log('+1⚡ (banked energy)','gain');
+    untapAll(mp);
+    G.players[mp].usedAbilityThisTurn=false;
+    G.players[mp].field.forEach(fc=>{
       if(hasKW(fc,'regeneration')&&fc.markedDamage>0){
         const amt=DB[fc.cid]?.regenAmount||3;
         fc.markedDamage=Math.max(0,fc.markedDamage-amt);
@@ -10009,9 +10107,9 @@ function doPhase(ph){
         log('Regeneration: '+DB[fc.cid].name+' heals '+amt+' HP.','gain');
       }
     });
-    runPowerDrain(1);
+    runPowerDrain(mp);
   }
-  else if(ph==='resource'){if(isLockedDown(1)){log('Field Lockdown: your Locations are disabled — no energy.','dmg');}else{let g=0;G.players[1].field.filter(f=>isLoc(DB[f.cid])).forEach(()=>g++);if(g>0){G.players[1].energy+=g;log(`+${g}⚡ locations.`,'gain');}}}
+  else if(ph==='resource'){if(isLockedDown(mp)){log('Field Lockdown: your Locations are disabled — no energy.','dmg');}else{let g=0;G.players[mp].field.filter(f=>isLoc(DB[f.cid])).forEach(()=>g++);if(g>0){G.players[mp].energy+=g;log(`+${g}⚡ locations.`,'gain');}}}
   else if(ph==='main')log('Main Phase.','info');
   else if(ph==='attack'){log('Attack — green char → target.','info');G.selectedAttacker=null;}
   // end is handled above
@@ -11740,17 +11838,20 @@ function renderAll2v2(){
   renderV2Log();
 }
 function renderHand2v2(){
-  const el=document.getElementById('v2-hand'); if(!el)return; el.innerHTML='';
-  const owner=document.getElementById('v2-hand-owner'); if(owner)owner.textContent=_V2LBL[G.activePlayer]||'';
-  const handP=isHumanPlayer(G.activePlayer)?G.activePlayer:null;
-  if(handP===null){ el.innerHTML='<div style="font-size:11px;color:#6b7280;padding:30px 10px">AI is playing…</div>'; return; }
-  const pl=G.players[handP];
+  [1,3].forEach(hp=>renderV2HandFor(hp));
+}
+function renderV2HandFor(hp){
+  const el=document.getElementById('v2-hand-'+hp); if(!el)return; el.innerHTML='';
+  const col=document.getElementById('v2-handcol-'+hp); if(col)col.classList.toggle('v2-handcol-active',G.activePlayer===hp);
+  const pl=G.players[hp]; if(!pl)return;
+  const isActive=(G.activePlayer===hp);
   pl.hand.forEach(fc=>{
     const c=DB[fc.cid];if(!c)return;
     const div=document.createElement('div');
     const effectiveCost=Math.max(0,c.cost+(fc.costMod||0));
-    const playable=!c.transformOnly&&G.activePlayer===handP&&G.phase==='main'&&pl.energy>=effectiveCost;
+    const playable=isActive&&!c.transformOnly&&G.phase==='main'&&pl.energy>=effectiveCost;
     div.className='hand-card '+(isInst(c)?'instant-card '+(playable?'playable':'not-playable'):playable?'playable':'not-playable');
+    if(!isActive)div.style.opacity='0.5';
     const artWrap=document.createElement('div');artWrap.className='hand-art-area';
     const url=getImg(fc.cid);if(url){const img=document.createElement('img');img.src=url;artWrap.appendChild(img);}else artWrap.textContent=c.sym||'?';
     div.appendChild(artWrap);
@@ -11761,7 +11862,8 @@ function renderHand2v2(){
         ${c.atk>0?`<span style="font-size:8px;color:#94a3b8">${c.atk}/${c.hp}</span>`:''}
       </div>`;
     div.appendChild(info);
-    div.onclick=()=>onHandClick(handP,fc.uid,fc);
+    // Only the active board's cards are clickable to play; both right-click to zoom.
+    if(isActive) div.onclick=()=>onHandClick(hp,fc.uid,fc);
     div.oncontextmenu=e=>{e.preventDefault();showFullCard(fc.cid,null);};
     div.onmouseenter=()=>showHoverPreview(fc.cid);
     div.onmouseleave=()=>clearHoverPreview();
