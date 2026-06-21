@@ -5794,8 +5794,9 @@ textarea{
       <button class="v2-opt sel" data-mode="ai" onclick="set2v2Mode('ai')">🤖 vs AI<span>You + a teammate seat vs two AI</span></button>
       <button class="v2-opt" data-mode="online" onclick="set2v2Mode('online')">🌐 Online / Friend <em>Beta</em><span>Invite a friend to your team</span></button>
     </div>
-    <div id="v2-online-note" style="display:none;margin-top:8px;font-size:11px;color:#a5b4fc;background:rgba(120,90,200,.12);border:1px solid rgba(124,58,237,.3);border-radius:8px;padding:9px 12px;line-height:1.5">
-      Online 2v2 is in active development. Your team-health and deck choices here will carry into the online lobby once the match handshake is wired up. For now, pick <b>vs AI</b> to play locally.
+    <div id="v2-online-note" style="display:none;margin-top:8px;font-size:11px;color:#a5b4fc;background:rgba(120,90,200,.12);border:1px solid rgba(124,58,237,.3);border-radius:8px;padding:11px 13px;line-height:1.6">
+      <b>Online 2v2 (first build):</b> you host as <b>A1</b> and invite a friend to play <b>A2</b> on your team vs two AI. Set your team health and your own deck below, then hit <b>Invite a Friend</b> — they'll get a popup to accept. (Friends are managed in the Friends menu.)
+      <div style="margin-top:9px"><button class="btn-primary btn-sm" onclick="open2v2FriendPicker()">🌐 Invite a Friend</button></div>
     </div>
   </div>
 
@@ -5828,7 +5829,7 @@ textarea{
   </div>
 
   <div style="display:flex;justify-content:center;margin-top:8px">
-    <button class="btn-primary" style="padding:12px 40px;font-size:15px;letter-spacing:2px" onclick="launch2v2()">⚔ START BATTLE</button>
+    <button id="v2-start-btn" class="btn-primary" style="padding:12px 40px;font-size:15px;letter-spacing:2px" onclick="launch2v2()">⚔ START BATTLE</button>
   </div>
 </div>
 
@@ -7382,7 +7383,17 @@ function isHumanPlayer(p){ return G.is2v2 ? (G.humanPlayers||[]).includes(p) : (
 // The board the human is currently acting on (active player in 2v2, else player 1),
 // and whether it's a human-controlled turn — used to generalize action functions.
 function actingPlayer(){ return G.is2v2 ? G.activePlayer : 1; }
-function isMyTurn(){ return G.is2v2 ? isHumanPlayer(G.activePlayer) : G.activePlayer===1; }
+// Can the LOCAL human act on the currently-active board right now?
+//  • online 2v2: only when the active board is THIS client's own seat
+//  • local 2v2: whenever the active board is human-controlled (hotseat)
+//  • 1v1: only player 1
+function iControlActive(){
+  if(!G) return false;
+  if(G.is2v2 && G.onlineMode2v2) return G.activePlayer===G.mySeat;
+  if(G.is2v2) return isHumanPlayer(G.activePlayer);
+  return G.activePlayer===1;
+}
+function isMyTurn(){ return iControlActive(); }
 
 // Reduce a team's shared Life; checks the team-loss win condition.
 function damageTeamLife(team, amount, source){
@@ -7467,9 +7478,12 @@ function execEnd2v2(p){
   G.phase='draw';G.phasesDone=[];G.selectedAttacker=null;G.heraldAttacking=false;
   if(typeof startTurnFx==='function')startTurnFx(nx);
   renderAll2v2();
-  if(typeof showTurnBanner==='function')showTurnBanner(isHumanPlayer(nx));
-  // AI-controlled boards play out their turn.
-  if((G.aiPlayers||[]).includes(nx)){
+  if(typeof showTurnBanner==='function')showTurnBanner(iControlActive());
+  // Online 2v2: push the new turn state to the other client.
+  if(G.onlineMode2v2 && typeof broadcastGameState2v2==='function') broadcastGameState2v2();
+  // AI-controlled boards play out their turn. Online: only the HOST runs the AI
+  // (so the two enemies don't execute twice).
+  if((G.aiPlayers||[]).includes(nx) && (!G.onlineMode2v2 || G.mySeat===1)){
     setTimeout(()=>{ if(!G.gameOver) runAI2v2(nx); }, 800);
   }
 }
@@ -7516,6 +7530,8 @@ function render2v2Setup(){
   const tmSection=document.getElementById('v2-teammate-section');
   if(tmSection)tmSection.style.display=_v2Setup.mode==='online'?'none':'block';
   document.querySelectorAll('#v2-teammate-row .v2-opt').forEach(b=>b.classList.toggle('sel', b.dataset.tm===_v2Setup.teammate));
+  const startBtn=document.getElementById('v2-start-btn');
+  if(startBtn)startBtn.innerHTML=_v2Setup.mode==='online'?'🌐 INVITE A FRIEND':'⚔ START BATTLE';
   // Teammate label depends on mode/control
   const tm=V2_SEATS.find(s=>s.key==='A2');
   if(tm)tm.label=_v2Setup.mode==='online'?'Friend':(_v2Setup.teammate==='ai'?'AI Ally':'Teammate');
@@ -7590,8 +7606,9 @@ function launch2v2(){
     }
   }
   if(_v2Setup.mode==='online'){
-    // Online 2v2 lobby handshake is the next build — route to the friends/invite flow.
-    alert('Online 2v2 is in active development. For now, start a local battle with AI opponents — your settings here (team health & decks) will carry over once the online lobby is wired up.');
+    // Online 2v2 — open the friend picker to send an invite.
+    if(typeof open2v2FriendPicker==='function') open2v2FriendPicker();
+    else alert('Online is unavailable right now.');
     return;
   }
   const gl=(id)=>(typeof getDeckList==='function')?getDeckList(id):generateRandomDeck();
@@ -8852,7 +8869,10 @@ function canCharacterAttack(p, fc){
 // ═══════════════════════════════════════════════════
 function onFieldClick(p,uid,fc){
   if(G.phase==='attack'){
+    // Online 2v2: you may only act when it's your own seat's turn — otherwise inspect.
+    if(G.is2v2 && G.onlineMode2v2 && !iControlActive()){ showFullCard(fc.cid,fc); return; }
     if(p===G.activePlayer){
+      if(!iControlActive()){ showFullCard(fc.cid,fc); return; }
       if(!isChar(DB[fc.cid]))return;
       if(fc.frozen>0){log('Frozen!','dmg');return;}
       if(fc.paralyzed){log('Paralyzed!','dmg');return;}
@@ -9003,7 +9023,7 @@ function ownerOfCard(uid){
 }
 function onTeamLifeClick(team){
   if(!G.is2v2||G.gameOver)return;
-  if(G.phase!=='attack'||!isHumanPlayer(G.activePlayer))return;
+  if(G.phase!=='attack'||!iControlActive())return;
   if(team!==enemyTeamOf(G.activePlayer)){ log("You can only attack the ENEMY team's Life.",'info'); return; }
   // Herald swinging at the enemy team's Life
   if(G.heraldAttacking){
@@ -9343,6 +9363,7 @@ function executeInstantEffect(p, cardId){
 
 function onHandClick(p,uid,fc){
   if(G.activePlayer!==p||G.phase!=='main'){showFullCard(fc.cid,null);return;}
+  if(G.is2v2 && G.onlineMode2v2 && !iControlActive()){showFullCard(fc.cid,null);return;}
   const pl=G.players[p];
   const fco=pl.hand.find(f=>f.uid===uid);if(!fco)return;
   const c=DB[fco.cid];if(!c)return;
@@ -10553,14 +10574,14 @@ function getPrevForm(cid){
 function endTurnNow(){
   if(G.gameOver)return;
   // In 2v2 the human controls BOTH boards on Team A (players 1 & 3), so allow
-  // ending the turn on whichever human board is currently active.
-  const canEnd = G.is2v2 ? isHumanPlayer(G.activePlayer) : (G.activePlayer===1);
-  if(!canEnd)return;
+  // ending the turn on whichever human board is currently active. Online: only
+  // this client's own seat.
+  if(!iControlActive())return;
   execEnd();
 }
 
 function doPhase(ph){
-  if(G.is2v2 ? !isHumanPlayer(G.activePlayer) : G.activePlayer!==1)return;
+  if(!iControlActive())return;
   const mp = G.is2v2 ? G.activePlayer : 1; // "my player" — the active human board
   // End turn is always allowed — skip directly regardless of phase order
   if(ph==='end'){
@@ -11388,15 +11409,15 @@ function renderHeraldSlot(p, targetId){
     <div style="font-size:7px;color:${hfc.isFlipped?'#f97316':'#c4b5fd'};text-align:center">${hfc.isFlipped?'FINAL':'HERALD'}</div>`;
   div.appendChild(info);
 
-  // Flip button (active human board only, when eligible)
-  if(canFlip&&isHumanPlayer(p)&&p===G.activePlayer){
+  // Flip button (active board you control, when eligible)
+  if(canFlip&&p===G.activePlayer&&iControlActive()){
     const flipBtn=document.createElement('button');
     flipBtn.className='herald-flip-btn';flipBtn.textContent='FLIP';
     flipBtn.onclick=(e)=>{e.stopPropagation();doHeraldFlip(p);};
     div.appendChild(flipBtn);
   }
-  // Attack button for the active human board's herald during attack phase
-  if(isHumanPlayer(p)&&G.phase==='attack'&&G.activePlayer===p){
+  // Attack button for the active board you control during attack phase
+  if(p===G.activePlayer&&iControlActive()&&G.phase==='attack'){
     const atkBtn=document.createElement('button');
     atkBtn.style.cssText='position:absolute;top:2px;right:2px;background:#7c3aed;color:#fff;border:none;border-radius:3px;font-size:8px;padding:1px 3px;cursor:pointer;z-index:5;font-weight:700';
     atkBtn.textContent=G.heraldAttacking?'✓ATK':'⚔ATK';
@@ -12368,6 +12389,7 @@ function renderAll2v2(){
   renderV2EnemyHands();
   renderPhaseBar2v2();
   renderV2Log();
+  if(G.onlineMode2v2 && typeof syncOnlineState2v2==='function') syncOnlineState2v2();
 }
 // Enemy team hands shown face-down at the top (count visible, cards hidden).
 function renderV2EnemyHands(){
@@ -12391,9 +12413,11 @@ function renderV2HandFor(hp){
   const col=document.getElementById('v2-handcol-'+hp); if(col)col.classList.toggle('v2-handcol-active',G.activePlayer===hp);
   const pl=G.players[hp]; if(!pl)return;
   // AI-controlled ally seat (e.g. A2 set to AI): show its hand face-down, not playable.
-  if(!isHumanPlayer(hp)){
+  // Online 2v2: the OTHER human seat's hand is also hidden from this client.
+  const hideHand = !isHumanPlayer(hp) || (G.onlineMode2v2 && hp!==G.mySeat);
+  if(hideHand){
     const lblEl=document.querySelector('#v2-handcol-'+hp+' .v2-hand-label');
-    if(lblEl)lblEl.textContent=(_V2LBL[hp]||('P'+hp))+' HAND · AI';
+    if(lblEl)lblEl.textContent=(_V2LBL[hp]||('P'+hp))+' HAND'+(isHumanPlayer(hp)?'':' · AI');
     const backUrl=(typeof getImg==='function')?getImg('cardback'):null;
     for(let i=0;i<pl.hand.length;i++){
       const d=document.createElement('div'); d.className='v2-hand-back-card';
@@ -14662,10 +14686,11 @@ function subscribeToRoom(code){
     .on('broadcast',{event:'player_joined'},(payload)=>{
       console.log('[ROOM] player_joined received:',payload.payload);
       if(_onlineRole==='host'){
-        const {guest_name,guest_id,guest_deck,guest_avatar}=payload.payload;
+        const {guest_name,guest_id,guest_deck,guest_avatar,guest_deck_cards}=payload.payload;
         if(guest_avatar)_onlineOpponentAvatar=guest_avatar;
         if(guest_name)window._onlineOpponentName=guest_name;
         _onlineRoom={..._onlineRoom,guest_id,guest_name,guest_deck,status:'ready'};
+        if(Array.isArray(guest_deck_cards)&&guest_deck_cards.length){ _onlineRoom.guest_deck_cards=guest_deck_cards; }
         const p2slot=document.getElementById('lobby-player-2-slot');
         if(p2slot){
           p2slot.className='pvp-player-slot filled';
@@ -14685,13 +14710,18 @@ function subscribeToRoom(code){
       if(_onlineRole==='guest'){
         const room=payload.payload;
         _onlineRoom={..._onlineRoom,...room};
-        enterOnlineGame(_onlineRoom);
+        if(room.is_2v2||room.game_mode==='2v2'){ enterOnlineGame2v2(_onlineRoom); }
+        else { enterOnlineGame(_onlineRoom); }
       }
     })
-    // Game state sync
+    // Game state sync (1v1)
     .on('broadcast',{event:'game_state'},(payload)=>{
       console.log('[ROOM] ✓ game_state broadcast received');
       onReceiveGameState(payload.payload);
+    })
+    // Game state sync (2v2 absolute)
+    .on('broadcast',{event:'game_state_2v2'},(payload)=>{
+      onReceiveGameState2v2(payload.payload);
     })
     .on('broadcast',{event:'game_action'},(payload)=>{
       onReceiveGameAction(payload.payload);
@@ -14709,6 +14739,7 @@ function subscribeToRoom(code){
           setTimeout(()=>{
             _onlineChannel.send({type:'broadcast',event:'player_joined',payload:{
               guest_id:_celUserId,guest_name:myName,guest_deck:_onlineDeckId,
+              guest_deck_cards:(SAVED_DECKS[_onlineDeckId]?.cards||null),
               guest_avatar:(window._playerAvatarUrl||null)
             }});
           },500);
@@ -14726,6 +14757,15 @@ function onRoomUpdate(room){_onlineRoom=room;}
 async function startOnlineMatch(){
   if(!_onlineRoom||_onlineRole!=='host')return;
   const sb=getOnlineSB();
+  // 2v2 match: host runs all four boards authoritatively.
+  if(_onlineRoom.is_2v2||_onlineRoom.game_mode==='2v2'){
+    const teamLife=_onlineRoom.team_life||((typeof _v2Setup!=='undefined'&&_v2Setup.teamLife)?_v2Setup.teamLife:130);
+    const roomData={..._onlineRoom,status:'playing',game_mode:'2v2',is_2v2:true,team_life:teamLife,host_avatar:(window._playerAvatarUrl||null)};
+    try{ await sb.from('online_rooms').update({status:'playing',game_mode:'2v2'}).eq('code',_onlineRoom.code); }catch(e){}
+    if(_onlineChannel){ await _onlineChannel.send({type:'broadcast',event:'match_started',payload:roomData}); }
+    setTimeout(()=>enterOnlineGame2v2(roomData),300);
+    return;
+  }
   const gameMode=document.getElementById('lobby-game-mode')?.value||'prize';
   const prizeCount=parseInt(document.getElementById('lobby-prize-count')?.value||'6');
   const lfHp=parseInt(document.getElementById('lobby-lf-hp')?.value||'100');
@@ -15127,10 +15167,156 @@ function cleanupOnlineSession(){
 function syncOnlineState(){
   if(!G||!G.onlineMode||!_onlineRole)return;
   if(_applyingRemoteState)return; // don't echo back received state
+  if(G.onlineMode2v2){ syncOnlineState2v2(); return; }
   // Broadcast when I am the active player (local P1)
   if(G.activePlayer===1){
     broadcastGameState();
   }
+}
+
+// ═══════════════════════════════════════════════════
+// ONLINE 2v2 — absolute 4-player state model.
+// Host (you = A1) + guest (friend = A2) vs two AI (B1,B2). State is broadcast
+// in ABSOLUTE form (no mirroring) since both clients show the same fixed board.
+// The active board's owner is the authority; the HOST alone runs the AI boards.
+// All paths are gated by G.onlineMode2v2 so 1v1 online is untouched.
+// ═══════════════════════════════════════════════════
+let _last2v2Bcast=0, _bcast2v2Pending=false;
+
+function v2AmAuthority(){
+  if(!G||!G.onlineMode2v2)return false;
+  const ap=G.activePlayer;
+  if((G.aiPlayers||[]).includes(ap)) return G.mySeat===1; // host runs the AI boards
+  return ap===G.mySeat;                                    // human seat owner
+}
+function sanitize2v2Player(pl){
+  if(!pl)return null;
+  return JSON.parse(JSON.stringify({
+    energy:pl.energy, colorEnergy:pl.colorEnergy||{}, hand:pl.hand||[], field:pl.field||[],
+    discard:pl.discard||[], deck:pl.deck||[], rift:pl.rift||[], prizes:pl.prizes||[],
+    prizesClaimed:pl.prizesClaimed||0, lifeForce:pl.lifeForce||0, herald:pl.herald||null, name:pl.name
+  },(k,v)=>typeof v==='function'?undefined:v));
+}
+function broadcastGameState2v2(){
+  if(!_onlineChannel||!G||!G.onlineMode2v2)return;
+  if(!_channelReady){ setTimeout(broadcastGameState2v2,300); return; }
+  const now=Date.now();
+  if(now-_last2v2Bcast<140){ if(!_bcast2v2Pending){_bcast2v2Pending=true;setTimeout(()=>{_bcast2v2Pending=false;broadcastGameState2v2();},150);} return; }
+  _last2v2Bcast=now;
+  const players={}; [1,2,3,4].forEach(p=>{ players[p]=sanitize2v2Player(G.players[p]); });
+  const snap={
+    is2v2:true, turn:G.turn, turnIndex:G.turnIndex, turnOrder:G.turnOrder,
+    activePlayer:G.activePlayer, phase:G.phase, phasesDone:G.phasesDone,
+    teamLife:G.teamLife, startingTeamLife:G.startingTeamLife,
+    selectedAttacker:G.selectedAttacker, heraldAttacking:G.heraldAttacking,
+    gameOver:G.gameOver, winner:G.winner||null, winReason:G.winReason||null,
+    log:(G.log||[]).slice(-30), players
+  };
+  try{ _onlineChannel.send({type:'broadcast',event:'game_state_2v2',payload:{state:snap,from:_onlineRole}}); }catch(e){ console.warn('[2v2 BCAST]',e); }
+}
+function onReceiveGameState2v2(payload){
+  if(!G||!G.onlineMode2v2)return;
+  if(!payload||payload.from===_onlineRole)return;
+  const s=payload.state; if(!s||!s.is2v2)return;
+  _applyingRemoteState=true;
+  try{
+    G.turn=s.turn; G.turnIndex=s.turnIndex; G.turnOrder=s.turnOrder||G.turnOrder;
+    G.activePlayer=s.activePlayer; G.phase=s.phase; G.phasesDone=s.phasesDone||[];
+    G.teamLife=s.teamLife||G.teamLife; G.startingTeamLife=s.startingTeamLife||G.startingTeamLife;
+    G.selectedAttacker=s.selectedAttacker||null; G.heraldAttacking=!!s.heraldAttacking;
+    G.gameOver=s.gameOver||false; G.winner=s.winner||null; G.winReason=s.winReason||null;
+    if(s.log)G.log=s.log;
+    [1,2,3,4].forEach(p=>{ if(s.players&&s.players[p]){ Object.assign(G.players[p], s.players[p]); } });
+    if(G.waitingForHostState){ G.waitingForHostState=false; log('✓ Connected — match synced.','gain'); }
+  }finally{ _applyingRemoteState=false; }
+  if(typeof renderAll2v2==='function') renderAll2v2();
+  // Host kicks off an AI board's turn when the guest hands off to one.
+  if(G.mySeat===1 && (G.aiPlayers||[]).includes(G.activePlayer) && !G.gameOver && !G._v2AIRunning){
+    G._v2AIRunning=true;
+    setTimeout(()=>{ G._v2AIRunning=false; if(!G.gameOver) runAI2v2(G.activePlayer); }, 700);
+  }
+}
+function syncOnlineState2v2(){
+  if(!G||!G.onlineMode2v2)return;
+  if(_applyingRemoteState)return;
+  if(v2AmAuthority()) broadcastGameState2v2();
+}
+function enterOnlineGame2v2(room){
+  _onlineRoom=room;
+  const isHost=_onlineRole==='host';
+  _lastOpponentPing=Date.now();
+  if(typeof startHeartbeat==='function') startHeartbeat();
+  if(typeof _endingTurn!=='undefined')_endingTurn=false;
+  const teamLife=parseInt(room.team_life)||130;
+  const hostName=room.host_name||'Host';
+  const guestName=room.guest_name||'Friend';
+  if(isHost){
+    const hostDeck=SAVED_DECKS[room.host_deck]?.cards?[...SAVED_DECKS[room.host_deck].cards]:generateRandomDeck();
+    const guestDeck=(Array.isArray(room.guest_deck_cards)&&room.guest_deck_cards.length)
+      ? [...room.guest_deck_cards]
+      : (SAVED_DECKS[room.guest_deck]?.cards?[...SAVED_DECKS[room.guest_deck].cards]:generateRandomDeck());
+    const decks=[ hostDeck, generateRandomDeck(), guestDeck, generateRandomDeck() ]; // [A1,B1,A2,B2]
+    startGame2v2('lifeforce', decks, {1:hostName,2:'AI',3:guestName,4:'AI'}, teamLife, [1,3]);
+    G.onlineMode=true; G.onlineMode2v2=true; G.onlineRole='host'; G.mySeat=1;
+    showScreen('game-screen-2v2'); renderAll2v2();
+    let tries=0; const iv=setInterval(()=>{ tries++; broadcastGameState2v2(); if(tries>=6)clearInterval(iv); },500);
+  } else {
+    const decks=[ generateRandomDeck(), generateRandomDeck(), generateRandomDeck(), generateRandomDeck() ];
+    startGame2v2('lifeforce', decks, {1:hostName,2:'AI',3:guestName,4:'AI'}, teamLife, [1,3]);
+    G.onlineMode=true; G.onlineMode2v2=true; G.onlineRole='guest'; G.mySeat=3;
+    G.waitingForHostState=true;
+    showScreen('game-screen-2v2'); renderAll2v2();
+    log('Connecting to host… waiting for game state.','info');
+  }
+}
+async function inviteFriendTo2v2(friendId,friendName){
+  const deckIds=Object.keys(SAVED_DECKS||{});
+  const validDeck=deckIds.find(id=>SAVED_DECKS[id].cards&&SAVED_DECKS[id].cards.length>=60);
+  if(!validDeck){ alert('You need at least one 60-card deck to host a match. Build one in the Deck Builder.'); return; }
+  _onlineDeckId=validDeck;
+  const myName=document.getElementById('hud-username')?.textContent||'Player';
+  const sb=getOnlineSB(); const code=generateRoomCode();
+  const teamLife=(typeof _v2Setup!=='undefined'&&_v2Setup.teamLife)?_v2Setup.teamLife:130;
+  try{
+    const {data}=await sb.from('online_rooms').insert({
+      code,host_id:_celUserId,host_name:myName,host_deck:validDeck,
+      status:'waiting',game_mode:'2v2',prize_count:6,created_at:new Date().toISOString()
+    }).select().single();
+    _onlineRoom={...data,is_2v2:true,team_life:teamLife}; _onlineRole='host';
+    const friendNotifChannel=sb.channel('invites:'+friendId);
+    await friendNotifChannel.subscribe();
+    setTimeout(()=>{
+      friendNotifChannel.send({type:'broadcast',event:'friend_invite',payload:{
+        from_name:myName, from_id:_celUserId, room_code:code, host_deck_id:validDeck,
+        is_2v2:true, team_life:teamLife
+      }});
+    },600);
+    closeAllModals();
+    showScreen('online-lobby-screen');
+    showWaitingRoom(code,myName,true);
+    subscribeToRoom(code);
+  }catch(e){ alert('Failed to create 2v2 invite: '+(e.message||e)); }
+}
+function open2v2FriendPicker(){
+  if(typeof loadFriends==='function'){ try{ loadFriends(); }catch(e){} }
+  const body=document.createElement('div');
+  const friends=(typeof _friendsList!=='undefined')?_friendsList:[];
+  if(!friends.length){
+    body.innerHTML='<div style="color:#9ca3af;font-size:12px;text-align:center;padding:16px;line-height:1.6">No friends added yet.<br>Add friends from the <b>Friends</b> menu first, then invite them here.</div>';
+  } else {
+    const wrap=document.createElement('div'); wrap.style.cssText='display:flex;flex-direction:column;gap:7px;max-height:50vh;overflow-y:auto';
+    friends.forEach(f=>{
+      const online=(typeof isUserOnline==='function')?isUserOnline(f.last_active):false;
+      const row=document.createElement('button'); row.className='btn-gray'; row.style.cssText='display:flex;align-items:center;gap:10px;padding:10px 12px;text-align:left;width:100%';
+      row.innerHTML='<span style="width:26px;height:26px;border-radius:50%;background:rgba(124,58,237,.3);display:flex;align-items:center;justify-content:center;font-weight:700">'+((f.username||'?')[0].toUpperCase())+'</span>'
+        +'<span style="flex:1"><span style="font-weight:700;color:#e2e8f0">'+f.username+'</span> <span style="font-size:9px;color:'+(online?'#22c55e':'#6b7280')+'">'+(online?'● ONLINE':'OFFLINE')+'</span></span>'
+        +'<span style="font-size:11px;color:#86efac">⚔ INVITE</span>';
+      row.onclick=()=>inviteFriendTo2v2(f.user_id, f.username);
+      wrap.appendChild(row);
+    });
+    body.appendChild(wrap);
+  }
+  if(typeof showModalEl==='function') showModalEl('🌐 Invite a Friend to 2v2', body);
 }
 
 
@@ -15429,16 +15615,16 @@ function showInviteNotification(data){
   popup.id='invite-notif-popup';
   popup.style.cssText='position:fixed;top:56px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(8,8,28,.97);border:1px solid var(--violet2);border-radius:12px;padding:16px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;box-shadow:0 0 30px rgba(124,58,237,.3);min-width:280px;max-width:360px';
   // Build content
-  const title=document.createElement('div');title.style.cssText='font-size:9px;color:var(--violet2);letter-spacing:2px';title.textContent='MATCH INVITE';
+  const title=document.createElement('div');title.style.cssText='font-size:9px;color:var(--violet2);letter-spacing:2px';title.textContent=data.is_2v2?'2v2 TEAM INVITE':'MATCH INVITE';
   const msg=document.createElement('div');msg.style.cssText='font-size:13px;font-weight:700;color:#e2e8f0;text-align:center';
-  msg.innerHTML='<span style="color:#c4b5fd">'+data.from_name+'</span> wants you to join their match!';
+  msg.innerHTML='<span style="color:#c4b5fd">'+data.from_name+'</span> wants you to '+(data.is_2v2?'team up for 2v2':'join their match')+'!';
   const codeEl=document.createElement('div');codeEl.style.cssText='font-size:10px;color:#6b7280';
-  codeEl.textContent='Room Code: '+data.room_code;
+  codeEl.textContent='Room Code: '+data.room_code+(data.is_2v2?(' · Team HP '+(data.team_life||130)):'');
   const btnRow=document.createElement('div');btnRow.style.cssText='display:flex;gap:8px;width:100%';
   const acceptBtn=document.createElement('button');
   acceptBtn.style.cssText='flex:1;padding:9px;background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.5);border-radius:7px;color:#86efac;font-size:11px;letter-spacing:2px;cursor:pointer';
   acceptBtn.textContent='ACCEPT';
-  acceptBtn.onclick=()=>acceptInvite(data.room_code,data.host_deck_id);
+  acceptBtn.onclick=()=>acceptInvite(data.room_code,data.host_deck_id,data.is_2v2,data.team_life);
   const declineBtn=document.createElement('button');
   declineBtn.style.cssText='flex:1;padding:9px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);border-radius:7px;color:#fca5a5;font-size:11px;letter-spacing:2px;cursor:pointer';
   declineBtn.textContent='DECLINE';
@@ -15449,7 +15635,7 @@ function showInviteNotification(data){
   setTimeout(()=>{if(popup.parentNode)popup.remove();},30000);
 }
 
-async function acceptInvite(roomCode, hostDeckId){
+async function acceptInvite(roomCode, hostDeckId, is2v2, teamLife){
   const popup=document.getElementById('invite-notif-popup');if(popup)popup.remove();
   // Need a valid deck
   const decks=Object.entries(SAVED_DECKS);
@@ -15465,11 +15651,12 @@ async function acceptInvite(roomCode, hostDeckId){
     // Find and join the room
     const {data:room}=await sb.from('online_rooms').select('*').eq('code',roomCode).maybeSingle();
     if(!room){alert('Room not found — it may have been cancelled.');return;}
+    const is2 = is2v2 || room.game_mode==='2v2';
     // Update room with guest
     await sb.from('online_rooms').update({
       guest_id:_celUserId,guest_name:myName,guest_deck:_onlineDeckId,status:'ready'
     }).eq('code',roomCode);
-    _onlineRoom={...room,guest_id:_celUserId,guest_name:myName,guest_deck:_onlineDeckId,status:'ready'};
+    _onlineRoom={...room,guest_id:_celUserId,guest_name:myName,guest_deck:_onlineDeckId,status:'ready',is_2v2:is2,team_life:teamLife||room.team_life||130};
     _onlineRole='guest';
     // Switch to lobby waiting room
     showScreen('online-lobby-screen');
