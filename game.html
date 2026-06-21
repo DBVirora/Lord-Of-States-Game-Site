@@ -6373,6 +6373,9 @@ const DEFAULTS={
   virora_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/001-150%20(Virora%20Base).png',
   virora_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/002-150%20(Virora%20SSJ1).png',
   virora_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/003-150%20(Virora%20SSG).png',
+  billy_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/006-150%20(Billy%20SSG).png',
+  aoliath_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/007-150%20(Aoliath%20Base).png',
+  aoliath_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/008-150%20(Aoliath%20SSJ1).png',
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
   billy_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/005-150%20(Billy%20SSJ1).png',
   veelden_kingdom_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/065-150%20(Veelden%20Kingdom%20Location).png',
@@ -6456,11 +6459,24 @@ const DB={
 
   // ── Billy (Base Set 004–005) — green; Base transforms into SSJ (Saiyan path) ──
   billy_base_bse:{id:'billy_base_bse',rarity:'common',name:'Billy',color:'yellow',charName:'Billy',charLine:'billy',formTier:'base',subtypes:['Saiyan'],type:'base_char',race:'Saiyan',cost:2,atk:3,hp:2,sym:'B',setId:'base_set',cardNumber:'004/150',
-    nextForms:['ssj1'],path:'base',
+    nextForms:['ssj1','ssg'],path:'base',
     abilities:[{label:'Drunken Stance',type:'passive',cost:0,text:"This character cannot be targeted by opponent abilities. Opponent's location effects don't work on Billy."},{label:'Prowess Cancel',type:'activated',cost:5,text:'Any Location or Equipment card your opponent has in play currently, you may pay 5 Energy. If you do, send those cards to the Rift Zone.'}]},
   billy_ssj1_bse:{id:'billy_ssj1_bse',rarity:'rare',name:'Billy (SSJ)',color:'yellow',charName:'Billy',charLine:'billy',formTier:'ssj1',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:7,atk:5,hp:5,sym:'SSJ',transformOnly:true,setId:'base_set',cardNumber:'005/150',
     nextForms:[],path:'saiyan',
     abilities:[{label:'Saiyan Spirit',type:'triggered',cost:0,text:'At the start of your turn, if this character attacked last turn, it gets +2 Attack and you may draw 1 card.'},{label:'Combat Control',type:'activated',cost:0,limit:'every_other_turn',text:"Once every other turn, you may choose target opponent's character on field. Until end of turn, that character must attack if able."}]},
+
+  // ── Billy (SSG) — Base Set 006 — God path (Billy base → SSG). Green Saiyan. ──
+  billy_ssg_bse:{id:'billy_ssg_bse',rarity:'rare',name:'Billy (SSG)',color:'black',charName:'Billy',charLine:'billy',formTier:'ssg',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:7,atk:5,hp:6,sym:'SSG',transformOnly:true,setId:'base_set',cardNumber:'006/150',
+    nextForms:[],path:'god',
+    abilities:[{label:'Godly Kamui',type:'activated',cost:6,text:"You may choose 1 character on the opponent's field for 6 energy. You may exile them to the Rift. If so Billy (SSG) is destroyed."},{label:'Saiyan God Healing',type:'triggered',cost:0,text:'Every turn you may flip a coin. If heads you may choose any character on your field to regain +2 health.'}]},
+
+  // ── Aoliath (Base Set 007–008) — green Saiyan; Base → SSJ (Saiyan path) ──
+  aoliath_base_bse:{id:'aoliath_base_bse',rarity:'common',name:'Aoliath',color:'red',charName:'Aoliath',charLine:'aoliath',formTier:'base',subtypes:['Saiyan'],type:'base_char',race:'Saiyan',cost:1,atk:2,hp:2,sym:'A',setId:'base_set',cardNumber:'007/150',
+    nextForms:['ssj1'],path:'base',
+    abilities:[{label:'Demolition',type:'triggered',cost:0,text:'Upon entry you may flip a coin. If tails this card can target location cards until discarded.'}]},
+  aoliath_ssj1_bse:{id:'aoliath_ssj1_bse',rarity:'rare',name:'Aoliath (SSJ)',color:'red',charName:'Aoliath',charLine:'aoliath',formTier:'ssj1',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:5,atk:3,hp:7,sym:'SSJ',transformOnly:true,setId:'base_set',cardNumber:'008/150',
+    nextForms:[],path:'saiyan',
+    abilities:[{label:'Silent Killer',type:'triggered',cost:0,text:"Every round your enemy's field characters take 1 damage. For every Saiyan you have on field in play it's another +1 instead."},{label:'Aggravated Assault',type:'passive',cost:0,text:'This character cannot be blocked during Life Mode gameplay.'}]},
 
   // ── Veelden Kingdom (Base Set 065) — green Saiyan-tribal location (anthem + heal) ──
   veelden_kingdom_bse:{id:'veelden_kingdom_bse',rarity:'rare',name:'Veelden Kingdom',color:'green',charName:'Veelden Kingdom',subtypes:['Kingdom','Location'],type:'location',race:'Kingdom',cost:4,atk:0,hp:6,sym:'🏰',canBeAttackedBy:[],setId:'base_set',cardNumber:'065/150',
@@ -9315,7 +9331,7 @@ function resolveLocationAttack(ap,auid,dp,duid){
   const afc=G.players[ap].field.find(f=>f.uid===auid);
   const dfc=G.players[dp].field.find(f=>f.uid===duid);
   if(!afc||!dfc)return;
-  if(!DB[afc.cid]?.canAttackLocations){log(`${DB[afc.cid]?.name} cannot attack Locations.`,'dmg');return;}
+  if(!(DB[afc.cid]?.canAttackLocations || afc.canAttackLocations)){log(`${DB[afc.cid]?.name} cannot attack Locations.`,'dmg');return;}
   log(`⚔ ${DB[afc.cid].name}(${afc.currentATK}) → ${DB[dfc.cid].name}(Toughness:${dfc.currentHP})`,'info');
   dealDamage(dp,dfc.uid,afc.currentATK);
 }
@@ -9570,6 +9586,17 @@ function onEntry(p,fc){
     const syn=G.players[p].field.some(f=>{const d=DB[f.cid];return d&&(d.charName==='Samara'||d.charName==='Surana');});
     if(syn){fc.currentATK+=5;fc.atkBonus+=5;fc.currentHP+=5;fc.hpBonus+=5;log('+5/+5 synergy!','gain');}
   }
+  // ── AOLIATH (base): Demolition — on entry, flip a coin. Tails → this character
+  // can attack Location cards for the rest of its time in play.
+  if(c.id==='aoliath_base_bse'){
+    if(!coin()){
+      fc.canAttackLocations=true;
+      log('Demolition: TAILS — Aoliath can now attack Location cards until discarded!','gain');
+    } else {
+      log('Demolition: HEADS — no location targeting this time.','info');
+    }
+  }
+
   if(c.id==='volaris'){drawCard(p);drawCard(p);log('Volaris: draw 2!','gain');}
   if(c.id==='virora_ssg'){const om=Math.max(0,...G.players[p===1?2:1].field.map(f=>f.currentHP||0));if(fc.currentHP>om){fc.currentHP+=4;fc.hpBonus+=4;log('Virora SSG: +4 HP!','gain');}}
   if(c.id==='magnus_virora')log('Lockdown: opp Equip & Locations disabled 5 turns!','gain');
@@ -10169,6 +10196,42 @@ function activateAbility(fc,abl){
     },{sourcePlayer:G.activePlayer,title:'Combat Control',desc:'Choose an opponent character — it must attack on its next turn if able.'});
     return;
   }
+  // ── BILLY (SSG): Godly Kamui — pay 6⚡, exile an opponent character to the Rift,
+  // then Billy (SSG) destroys itself (self-sacrifice — no prize/energy to opponent).
+  if(abl.label==='Godly Kamui'){
+    const oppNum=G.activePlayer===1?2:1;
+    const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
+    if(!enemies.length){ log('Godly Kamui: no opponent characters to target.','dmg'); return; }
+    if(G.players[G.activePlayer].energy<6){ log('Godly Kamui: need 6⚡.','dmg'); return; }
+    spendEnergy(G.activePlayer,6,DB[fc.cid]?.color||null);
+    fc.abilityUsed['Godly Kamui']=true;
+    G.players[G.activePlayer].usedAbilityThisTurn=true;
+    if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; }
+    if(G.activePlayer===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    const ap=G.activePlayer;
+    closeAllModals();
+    openEnemyTargetPicker(enemies,(uid)=>{
+      const tfc=G.players[oppNum].field.find(f=>f.uid===uid);
+      if(tfc){
+        const tname=DB[tfc.cid].name;
+        G.players[oppNum].field=G.players[oppNum].field.filter(x=>x.uid!==tfc.uid);
+        (tfc.attachments||[]).forEach(eqId=>G.players[oppNum].discard.push(eqId));
+        sendToRift(oppNum,tfc.cid,'Godly Kamui');
+        log(`Godly Kamui: ${tname} exiled to the Rift Zone!`,'gain');
+        // Billy (SSG) sacrifices itself — manual removal (no prize for opponent).
+        const me=G.players[ap].field.find(f=>f.uid===fc.uid);
+        if(me){
+          G.players[ap].field=G.players[ap].field.filter(x=>x.uid!==fc.uid);
+          (me.attachments||[]).forEach(eqId=>G.players[ap].discard.push(eqId));
+          G.players[ap].discard.push(fc.cid);
+          log('Godly Kamui: Billy (SSG) is destroyed by the technique.','death');
+        }
+      }
+      if(typeof recalcPassives==='function') recalcPassives();
+      renderAll();
+    },{sourcePlayer:G.activePlayer,title:'Godly Kamui',desc:'Choose an opponent character to EXILE to the Rift. Billy (SSG) is then destroyed.'});
+    return;
+  }
   const pl=G.players[G.activePlayer];
   // VOID SYNERGY (Paradox): Paradox's ability costs 0 if Vildrex or Virora is on your field.
   let _cost = abl.cost||0;
@@ -10751,13 +10814,32 @@ function startTurnFx(player){
       log(`Saiyan Spirit: ${c.name} gains +2 ATK for attacking last turn!`,'gain');
       if(typeof drawCard==='function'){ drawCard(player); log(`Saiyan Spirit: ${pname(player)} draws 1.`,'gain'); }
     }
-    // ── VEELDEN KINGDOM (location): start-of-turn tribal draw + heal ──
-    if(fc.cid==='veelden_kingdom_bse'){
-      const n=pl.field.filter(f=>isSaiyanChar(DB[f.cid])).length;
-      if(n>=2 && typeof drawCard==='function'){ drawCard(player); log(`Veelden Kingdom: 2+ Saiyans — ${pname(player)} draws 1.`,'gain'); }
-      if(n>0){
-        pl.field.forEach(f=>{ const d=DB[f.cid]; if(isChar(d)){ const mx=(f.baseHP||0)+(f.hpBonus||0)+(f.passiveHp||0); f.currentHP=Math.min(mx,(f.currentHP||0)+n); } });
-        log(`Veelden Kingdom: healed your characters +${n} (one per Saiyan you control).`,'gain');
+    // ── BILLY (SSG): Saiyan God Healing — each of your turns, flip a coin; on
+    // heads heal your most-wounded character +2 (auto-targets the most damaged).
+    if(fc.cid==='billy_ssg_bse'){
+      if(coin()){
+        const wounded=pl.field.filter(f=>isChar(DB[f.cid]))
+          .map(f=>{const mx=(f.baseHP||0)+(f.hpBonus||0)+(f.passiveHp||0);return {f,mx,missing:mx-(f.currentHP||0)};})
+          .filter(x=>x.missing>0).sort((a,b)=>b.missing-a.missing)[0];
+        if(wounded){ wounded.f.currentHP=Math.min(wounded.mx,(wounded.f.currentHP||0)+2); log(`Saiyan God Healing: HEADS — ${DB[wounded.f.cid].name} regains +2 HP.`,'gain'); }
+        else log('Saiyan God Healing: HEADS — no wounded ally to heal.','info');
+      } else log('Saiyan God Healing: TAILS — no heal this turn.','dmg');
+    }
+    // ── AOLIATH (SSJ): Silent Killer — at the start of your turn, every enemy
+    // character takes (1 + the number of Saiyans you control) damage.
+    if(fc.cid==='aoliath_ssj1_bse'){
+      const saiyans=pl.field.filter(f=>isSaiyanChar(DB[f.cid])).length;
+      const dmg=1+saiyans;
+      let targets;
+      if(G.is2v2 && typeof enemyTeamOf==='function'){
+        targets=teamPlayers(enemyTeamOf(player)).flatMap(ep=>G.players[ep].field.filter(f=>isChar(DB[f.cid])).map(f=>({p:ep,uid:f.uid})));
+      } else {
+        const oppN=player===1?2:1;
+        targets=G.players[oppN].field.filter(f=>isChar(DB[f.cid])).map(f=>({p:oppN,uid:f.uid}));
+      }
+      if(targets.length){
+        log(`Silent Killer: each enemy character takes ${dmg} damage (1 +${saiyans} Saiyan).`,'dmg');
+        targets.forEach(t=>dealDamage(t.p,t.uid,dmg));
       }
     }
   });
