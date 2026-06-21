@@ -9628,11 +9628,71 @@ function endTurnFx(p){
 let _gameSettings = {
   sfx: true,
   sfxVolume: 0.6,
+  music: true,
+  musicVolume: 0.4,
   animations: true,
   reveals: true,
   cardSize: 'medium',
   banners: true
 };
+
+// ── MENU MUSIC ──────────────────────────────────────────────────────────────
+// Looping background track for the menus. It plays on every menu/non-battle
+// screen and automatically stops during battles (game-screen) and campaign
+// cutscenes. Browsers block audio autoplay until the first click/keypress, so
+// it starts on the first user interaction.
+//
+// HOST YOUR TRACK like the card images (in your GitHub repo) and put the raw
+// URL here. .mp3 is the safest format. To change the song later, just swap this
+// URL and push — no rebuild needed.
+const MENU_MUSIC_URL = 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/music/Black%20Candle%20Hall%20V1.mp3';
+
+let _menuAudio = null;
+let _cutsceneActive = false;   // true while a campaign cutscene video is playing
+let _musicUnlocked = false;    // becomes true after the first user interaction
+
+function _initMenuAudio(){
+  if(_menuAudio) return _menuAudio;
+  if(!MENU_MUSIC_URL || !MENU_MUSIC_URL.trim()) return null;
+  _menuAudio = new Audio(MENU_MUSIC_URL);
+  _menuAudio.loop = true;
+  _menuAudio.preload = 'auto';
+  _menuAudio.volume = (typeof _gameSettings!=='undefined' ? _gameSettings.musicVolume : 0.4);
+  return _menuAudio;
+}
+
+// Should menu music be playing right now? (off setting / cutscene / in-battle → no)
+function _menuMusicWanted(){
+  if(typeof _gameSettings!=='undefined' && _gameSettings.music===false) return false;
+  if(_cutsceneActive) return false;
+  const gs = document.getElementById('game-screen');
+  if(gs && gs.classList.contains('active')) return false; // in an actual battle
+  return true;
+}
+
+// Single source of truth — call this whenever screen/cutscene/settings change.
+function updateMenuMusic(){
+  const a = _initMenuAudio();
+  if(!a) return;
+  a.volume = (typeof _gameSettings!=='undefined' ? _gameSettings.musicVolume : 0.4);
+  if(_menuMusicWanted() && _musicUnlocked){
+    if(a.paused) a.play().catch(()=>{}); // ignore autoplay rejections
+  } else {
+    if(!a.paused) a.pause();
+  }
+}
+
+function stopMenuMusic(){ if(_menuAudio && !_menuAudio.paused) _menuAudio.pause(); }
+
+// Unlock + kick off music on the first user interaction (autoplay policy).
+function _unlockMenuMusic(){
+  if(_musicUnlocked) return;
+  _musicUnlocked = true;
+  updateMenuMusic();
+}
+['pointerdown','keydown','touchstart'].forEach(ev=>
+  window.addEventListener(ev, _unlockMenuMusic, {passive:true})
+);
 
 function openGameSettings(){
   // Sync UI to current state
@@ -9648,11 +9708,14 @@ function closeGameSettings(){
 function syncSettingsUI(){
   const t = (id,on)=>{ const el=document.getElementById(id); if(el)el.classList.toggle('on',on); };
   t('set-sfx', _gameSettings.sfx);
+  t('set-music', _gameSettings.music);
   t('set-anim', _gameSettings.animations);
   t('set-reveals', _gameSettings.reveals);
   t('set-banners', _gameSettings.banners);
   const vol=document.getElementById('set-sfx-vol');
   if(vol)vol.value=Math.round(_gameSettings.sfxVolume*100);
+  const mvol=document.getElementById('set-music-vol');
+  if(mvol)mvol.value=Math.round(_gameSettings.musicVolume*100);
   document.querySelectorAll('.settings-size-btn').forEach(b=>{
     b.classList.toggle('active', b.dataset.size===_gameSettings.cardSize);
   });
@@ -9665,6 +9728,11 @@ function toggleSetting(key){
       _gameSettings.sfx = !_gameSettings.sfx;
       _sfxEnabled = _gameSettings.sfx;
       document.getElementById('set-sfx').classList.toggle('on', _gameSettings.sfx);
+      break;
+    case 'music':
+      _gameSettings.music = !_gameSettings.music;
+      document.getElementById('set-music').classList.toggle('on', _gameSettings.music);
+      if(typeof updateMenuMusic==='function')updateMenuMusic();
       break;
     case 'anim':
       _gameSettings.animations = !_gameSettings.animations;
@@ -9685,6 +9753,13 @@ function toggleSetting(key){
 
 function setSfxVolume(val){
   _gameSettings.sfxVolume = val/100;
+  saveGameSettings();
+}
+
+function setMusicVolume(val){
+  _gameSettings.musicVolume = val/100;
+  if(_menuAudio) _menuAudio.volume = _gameSettings.musicVolume;
+  if(typeof updateMenuMusic==='function')updateMenuMusic();
   saveGameSettings();
 }
 
@@ -11274,6 +11349,7 @@ function showScreen(id){
   if(id==='upload-screen')buildUploadScreen();
   if(id==='builder-screen'){renderBuilderCards();renderBuilderDeck();}
   if(id==='deck-select-screen'){loadDecksFromStorage().then(()=>renderDeckSelectOptions());}
+  if(typeof updateMenuMusic==='function')updateMenuMusic(); // play on menus, stop in battle
 }
 
 function showRulesScreen(){
@@ -14144,6 +14220,9 @@ function playCutscene(videoUrl, onComplete){
   }
   _cutsceneOnEnd = onComplete;
   _cutsceneCanSkip = false;
+  // Silence menu music for the duration of the cutscene.
+  _cutsceneActive = true;
+  if(typeof updateMenuMusic==='function')updateMenuMusic();
 
   const overlay = document.getElementById('cutscene-overlay');
   const video = document.getElementById('cutscene-video');
@@ -14217,6 +14296,9 @@ function finishCutscene(){
   if(!overlay) return;
 
   if(_cutsceneSkipTimer){ clearTimeout(_cutsceneSkipTimer); _cutsceneSkipTimer = null; }
+  // Cutscene over — let the music system re-evaluate (resumes if back on a menu).
+  _cutsceneActive = false;
+  if(typeof updateMenuMusic==='function')updateMenuMusic();
 
   // STOP AUDIO IMMEDIATELY — don't wait for fade out
   if(video){
@@ -16964,6 +17046,20 @@ window.addEventListener('load',async()=>{
           <div class="settings-label-desc">Effect loudness</div>
         </div>
         <input type="range" class="settings-slider" id="set-sfx-vol" min="0" max="100" value="60" oninput="setSfxVolume(this.value)"/>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Music</div>
+          <div class="settings-label-desc">Menu background theme</div>
+        </div>
+        <div class="settings-toggle on" id="set-music" onclick="toggleSetting('music')"><div class="settings-toggle-knob"></div></div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Music Volume</div>
+          <div class="settings-label-desc">Theme loudness</div>
+        </div>
+        <input type="range" class="settings-slider" id="set-music-vol" min="0" max="100" value="40" oninput="setMusicVolume(this.value)"/>
       </div>
     </div>
 
