@@ -7888,6 +7888,7 @@ let _pendingPrizePick = null; // {victim, claimer} when the claimer must choose 
 // New prize model: when CLAIMER kills VICTIM's character, claimer takes a prize
 // card FROM the victim's pile. The victim's prizes shrink; claimer gains the card.
 function claimPrizeFrom(victim, claimer){
+  if(G&&G.is2v2)return; // 2v2 is life-only — no prize cards
   const vpl=G.players[victim];
   const maxPrizes=G.prizeCount||6;
   // If victim has no prizes left, nothing to take (win check handles the loss)
@@ -8013,13 +8014,13 @@ function triggerWin(p,r){
   G.gameOver=true;
   G.winner=p;        // local winner (1 or 2)
   G.winReason=r;
-  // In online mode, broadcast game over so opponent's screen updates too
+  // In online mode, broadcast game over so the other side(s) update too
   if(G.onlineMode){
-    // Broadcast the game over state (winner translated to canonical)
-    setTimeout(()=>broadcastGameState(),100);
+    if(G.onlineMode2v2){ setTimeout(()=>{ if(typeof broadcastGameState2v2==='function') broadcastGameState2v2(); },100); }
+    else { setTimeout(()=>broadcastGameState(),100); }
   }
   showWinScreen(p,r,false);
-  // Award Celestium (p===1 means local player won)
+  // Award Celestium (p===1 means local player won) — skipped for 2v2 inside onMatchEnd
   setTimeout(()=>onMatchEnd(p===1),600);
 }
 
@@ -8037,8 +8038,12 @@ function showWinScreen(p,r,forfeited){
     text.style.color=iWon?'#fbbf24':'#fca5a5';
   }
   if(reason)reason.textContent=r;
+  const is2v2 = G&&G.is2v2;
   if(celEl){
-    if(G.onlineMode){
+    if(is2v2){
+      celEl.textContent='Co-op match — no rewards';
+      celEl.style.color='#6b7280';
+    } else if(G.onlineMode){
       if(iWon){
         celEl.textContent=forfeited?'+50 Celestium (forfeit win)':'+75 Celestium for winning!';
       } else {
@@ -8048,8 +8053,8 @@ function showWinScreen(p,r,forfeited){
       celEl.textContent='';
     }
   }
-  // Show rematch button only in online mode
-  if(rematchBtn)rematchBtn.style.display=G.onlineMode?'block':'none';
+  // Show rematch button only in 1v1 online (2v2 rematch uses a different flow)
+  if(rematchBtn)rematchBtn.style.display=(G.onlineMode&&!is2v2)?'block':'none';
   document.getElementById('win-modal').classList.add('open');
 }
 function returnToMenuFromWin(){
@@ -8058,6 +8063,18 @@ function returnToMenuFromWin(){
   showScreen('menu-screen');
 }
 function confirmReturnMenu(){
+  // 2v2 is CO-OP — leaving never counts as a forfeit win/loss. It just ends the
+  // match for the team and returns everyone to the menu.
+  if(G && G.is2v2 && G.onlineMode2v2 && !G.gameOver){
+    if(!confirm('Leave the 2v2 match? This ends the game for your team (co-op — no win or loss).'))return;
+    broadcastTeamLeft();
+    setTimeout(()=>endOnline2v2('You left the 2v2 match.'),200);
+    return;
+  }
+  if(G && G.is2v2 && !G.onlineMode2v2 && !G.gameOver){
+    if(!confirm('Leave the 2v2 battle and return to the menu?'))return;
+    G.gameOver=true; showScreen('menu-screen'); return;
+  }
   // Leaving an ACTIVE online match counts as a forfeit — the opponent auto-wins
   // and gets the win popup (via the broadcast game-over state).
   if(G && G.onlineMode && !G.gameOver){
@@ -13030,6 +13047,8 @@ async function checkDailyLogin(){
 }
 
 async function onMatchEnd(won){
+  // 2v2 is CO-OP — no XP, no Celestium, no win/loss stats.
+  if(G&&G.is2v2)return;
   // Battle Pass XP — every match awards play XP, wins award bonus
   if(typeof bpOnMatchEnd==='function')setTimeout(()=>bpOnMatchEnd(),100);
   if(won&&typeof bpOnMatchWin==='function')setTimeout(()=>bpOnMatchWin(),200);
@@ -14664,20 +14683,33 @@ function showWaitingRoom(code,myName,isHost){
   document.getElementById('lobby-create-join').style.display='none';
   document.getElementById('lobby-waiting-room').style.display='block';
   document.getElementById('lobby-room-code-display').textContent=code;
-  document.getElementById('lobby-room-label').textContent=isHost?'ROOM CODE — SHARE WITH OPPONENT':'ROOM CODE';
+  const is2v2 = _onlineRoom && (_onlineRoom.is_2v2 || _onlineRoom.game_mode==='2v2');
+  // Prominent mode banner so it's clear you're entering 2v2 (co-op)
+  const wr=document.getElementById('lobby-waiting-room');
+  let banner=document.getElementById('lobby-mode-banner');
+  if(!banner&&wr){ banner=document.createElement('div'); banner.id='lobby-mode-banner'; wr.insertBefore(banner,wr.firstChild); }
+  if(banner){
+    if(is2v2){
+      banner.style.cssText='margin:0 0 12px;padding:9px 14px;border-radius:10px;text-align:center;font-family:Orbitron,sans-serif;font-size:12px;letter-spacing:2px;color:#bbf7d0;background:rgba(18,68,34,.4);border:1px solid rgba(34,197,94,.45)';
+      banner.innerHTML='👥 2v2 TEAM BATTLE — CO-OP <span style="font-weight:400;font-size:10px;color:#86efac;letter-spacing:1px">· Life only · no prizes · no win/loss rewards</span>';
+    } else { banner.style.display='none'; }
+  }
+  document.getElementById('lobby-room-label').textContent=is2v2
+    ? (isHost?'ROOM CODE — SHARE WITH YOUR TEAMMATE':'JOINING YOUR TEAMMATE')
+    : (isHost?'ROOM CODE — SHARE WITH OPPONENT':'ROOM CODE');
   // Fill my slot
   if(isHost){
-    document.getElementById('lobby-p1-name').textContent=myName+' (You)';
+    document.getElementById('lobby-p1-name').textContent=myName+(is2v2?' (You · A1)':' (You)');
   } else {
-    document.getElementById('lobby-p1-name').textContent=_onlineRoom.host_name;
+    document.getElementById('lobby-p1-name').textContent=_onlineRoom.host_name+(is2v2?' (A1)':'');
     const p2slot=document.getElementById('lobby-player-2-slot');
     p2slot.className='pvp-player-slot filled';
     p2slot.innerHTML=
-      '<div class="pvp-slot-avatar">⚔️</div>'
-      +'<div style="flex:1"><div class="pvp-slot-name">'+myName+' (You)</div>'
+      '<div class="pvp-slot-avatar">'+(is2v2?'🤝':'⚔️')+'</div>'
+      +'<div style="flex:1"><div class="pvp-slot-name">'+myName+(is2v2?' (You · A2)':' (You)')+'</div>'
       +'<div class="pvp-slot-status"><span class="pvp-conn-badge connected">CONNECTED</span></div></div>';
     const startBtn=document.getElementById('lobby-start-btn');
-    if(startBtn){startBtn.disabled=true;startBtn.textContent='WAITING FOR HOST...';}
+    if(startBtn){startBtn.disabled=true;startBtn.textContent=is2v2?'WAITING FOR HOST TO START...':'WAITING FOR HOST...';}
   }
 }
 
@@ -14694,15 +14726,16 @@ function subscribeToRoom(code){
         if(guest_name)window._onlineOpponentName=guest_name;
         _onlineRoom={..._onlineRoom,guest_id,guest_name,guest_deck,status:'ready'};
         if(Array.isArray(guest_deck_cards)&&guest_deck_cards.length){ _onlineRoom.guest_deck_cards=guest_deck_cards; }
+        const _is2v2 = _onlineRoom && (_onlineRoom.is_2v2 || _onlineRoom.game_mode==='2v2');
         const p2slot=document.getElementById('lobby-player-2-slot');
         if(p2slot){
           p2slot.className='pvp-player-slot filled';
-          p2slot.innerHTML='<div class="pvp-slot-avatar">⚔️</div>'
-            +'<div style="flex:1"><div class="pvp-slot-name">'+guest_name+'</div>'
+          p2slot.innerHTML='<div class="pvp-slot-avatar">'+(_is2v2?'🤝':'⚔️')+'</div>'
+            +'<div style="flex:1"><div class="pvp-slot-name">'+guest_name+(_is2v2?' (Teammate · A2)':'')+'</div>'
             +'<div class="pvp-slot-status"><span class="pvp-conn-badge connected">CONNECTED</span></div></div>';
         }
         const startBtn=document.getElementById('lobby-start-btn');
-        if(startBtn){startBtn.disabled=false;startBtn.textContent='▸ START MATCH';}
+        if(startBtn){startBtn.disabled=false;startBtn.textContent=_is2v2?'▸ START 2v2 BATTLE':'▸ START MATCH';}
       }
     })
     // Host started match
@@ -14725,6 +14758,11 @@ function subscribeToRoom(code){
     // Game state sync (2v2 absolute)
     .on('broadcast',{event:'game_state_2v2'},(payload)=>{
       onReceiveGameState2v2(payload.payload);
+    })
+    // 2v2 co-op: a teammate left → end the match for everyone (no win/loss)
+    .on('broadcast',{event:'team_left'},(payload)=>{
+      if(payload&&payload.payload&&payload.payload.from===_onlineRole)return;
+      if(G&&G.is2v2&&!G.gameOver){ endOnline2v2('Your teammate has left the match. Returning to the menu.'); }
     })
     .on('broadcast',{event:'game_action'},(payload)=>{
       onReceiveGameAction(payload.payload);
@@ -15041,6 +15079,14 @@ function applyPlayer(dst,src){
 function startDisconnectTimer(){
   if(_disconnectTimer)return;
   _disconnectSeconds=45;
+  // Co-op 2v2: no auto-win — a dropped teammate ends the match for the team.
+  const is2v2 = G && G.is2v2;
+  const tEl=document.getElementById('disconnect-title');
+  const sEl=document.getElementById('disconnect-sub');
+  const bEl=document.getElementById('disconnect-btn');
+  if(tEl)tEl.textContent=is2v2?'TEAMMATE DISCONNECTED':'OPPONENT DISCONNECTED';
+  if(sEl)sEl.textContent=is2v2?'Waiting for them to reconnect… the match ends and returns to the menu if they don\u2019t.':'Waiting for them to reconnect… you win automatically if they don\u2019t.';
+  if(bEl)bEl.textContent=is2v2?'END & RETURN TO MENU':'CLAIM WIN NOW';
   document.getElementById('disconnect-overlay').classList.add('open');
   _disconnectTimer=setInterval(()=>{
     _disconnectSeconds--;
@@ -15063,6 +15109,7 @@ function clearDisconnectTimer(){
 // still gets their win). Only on real unload — NOT on tab-switch/visibility.
 window.addEventListener('pagehide', ()=>{
   if(G && G.onlineMode && !G.gameOver){
+    if(G.is2v2){ try{ broadcastTeamLeft(); }catch(e){} return; } // co-op: just notify, no forfeit
     G.gameOver=true; G.winner=2; G.winReason='Opponent left the match'; G.forfeited=true;
     try{ broadcastGameState(); }catch(e){}
   }
@@ -15110,6 +15157,7 @@ function onHeartbeat(){
 
 function claimDisconnectWin(){
   clearDisconnectTimer();
+  if(G&&G.is2v2){ endOnline2v2('Your teammate disconnected. Returning to the menu.'); return; }
   if(G&&G.onlineMode)triggerWin(G.onlinePlayerNum||1,'Opponent disconnected!');
 }
 
@@ -15245,6 +15293,20 @@ function syncOnlineState2v2(){
   if(!G||!G.onlineMode2v2)return;
   if(_applyingRemoteState)return;
   if(v2AmAuthority()) broadcastGameState2v2();
+}
+// ── 2v2 co-op leave/disconnect — NO win/loss, NO rewards ──
+function broadcastTeamLeft(){
+  if(_onlineChannel){ try{ _onlineChannel.send({type:'broadcast',event:'team_left',payload:{from:_onlineRole}}); }catch(e){} }
+}
+function endOnline2v2(reason){
+  if(!G||!G.is2v2)return;
+  if(G._coopEnded)return; G._coopEnded=true;
+  G.gameOver=true;
+  if(typeof clearDisconnectTimer==='function') clearDisconnectTimer();
+  const winModal=document.getElementById('win-modal'); if(winModal)winModal.classList.remove('open');
+  try{ alert(reason||'The 2v2 match has ended — returning to the menu.'); }catch(e){}
+  try{ if(typeof cleanupOnlineSession==='function') cleanupOnlineSession(); }catch(e){}
+  showScreen('menu-screen');
 }
 function enterOnlineGame2v2(room){
   _onlineRoom=room;
@@ -15681,6 +15743,13 @@ function declineInvite(){
 function forfeitMatch(){
   if(!G||!G.onlineMode)return;
   if(G.gameOver)return;
+  // 2v2 is co-op — "forfeit" just leaves the match, no win/loss for anyone.
+  if(G.onlineMode2v2){
+    if(!confirm('Leave the 2v2 match? (Co-op — no win or loss for either side.)'))return;
+    broadcastTeamLeft();
+    setTimeout(()=>endOnline2v2('You left the 2v2 match.'),200);
+    return;
+  }
   if(!confirm('Forfeit this match? Your opponent will win and you gain 0 Celestium.'))return;
   G.gameOver=true;
   G.winner=2; // opponent wins (I'm P1 locally, so P2/opponent wins)
@@ -18147,10 +18216,10 @@ window.addEventListener('load',async()=>{
 
 <!-- DISCONNECT OVERLAY -->
 <div class="disconnect-overlay" id="disconnect-overlay">
-  <div style="font-size:14px;color:#fca5a5;letter-spacing:3px;font-family:'Orbitron',sans-serif">OPPONENT DISCONNECTED</div>
+  <div id="disconnect-title" style="font-size:14px;color:#fca5a5;letter-spacing:3px;font-family:'Orbitron',sans-serif">OPPONENT DISCONNECTED</div>
   <div class="disconnect-timer" id="disconnect-timer">45</div>
-  <div style="font-size:11px;color:#6b7280;letter-spacing:1px">Waiting for them to reconnect… you win automatically if they don't.</div>
-  <button class="btn-red btn-sm" style="margin-top:8px;padding:8px 20px;letter-spacing:2px" onclick="claimDisconnectWin()">CLAIM WIN NOW</button>
+  <div id="disconnect-sub" style="font-size:11px;color:#6b7280;letter-spacing:1px">Waiting for them to reconnect… you win automatically if they don't.</div>
+  <button class="btn-red btn-sm" id="disconnect-btn" style="margin-top:8px;padding:8px 20px;letter-spacing:2px" onclick="claimDisconnectWin()">CLAIM WIN NOW</button>
 </div>
 
 <!-- MATCHMAKING SCREEN — PHASE 3 -->
