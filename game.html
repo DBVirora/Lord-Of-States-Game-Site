@@ -5799,6 +5799,15 @@ textarea{
     </div>
   </div>
 
+  <!-- Teammate (A2) control -->
+  <div class="v2-setup-section" id="v2-teammate-section">
+    <div class="v2-setup-label">YOUR TEAMMATE (A2)</div>
+    <div id="v2-teammate-row" class="v2-opt-row">
+      <button class="v2-opt sel" data-tm="ai" onclick="set2v2Teammate('ai')">🤖 AI controls<span>A2 plays itself — you only run A1</span></button>
+      <button class="v2-opt" data-tm="human" onclick="set2v2Teammate('human')">🤝 You control<span>Hotseat — you play both A1 &amp; A2</span></button>
+    </div>
+  </div>
+
   <!-- Team health -->
   <div class="v2-setup-section">
     <div class="v2-setup-label">TEAM HEALTH <span style="color:#6b7280;font-weight:400;letter-spacing:1px">— Life per team before they lose</span></div>
@@ -7395,10 +7404,13 @@ function triggerWin2v2(winningTeam, reason){
 }
 
 // Build a 4-player game. decks = [dA1, dB1, dA2, dB2] (turn-order order).
-function startGame2v2(mode, decks, seatNames, teamLife){
+function startGame2v2(mode, decks, seatNames, teamLife, humanSeats){
   if(typeof loadGameSettings==="function")loadGameSettings();
   gameMode=mode; us=0;
   const startLife=(teamLife&&teamLife>0)?Math.round(teamLife):TEAM_START_LIFE;
+  // Which seats a human controls. Default A1+A2 (hotseat); pass [1] for an AI teammate.
+  const _humans=(Array.isArray(humanSeats)&&humanSeats.length)?humanSeats.slice():[1,3];
+  const _ais=[1,2,3,4].filter(p=>!_humans.includes(p));
   function extractHerald(rawDeck){
     let herald=null;
     for(let i=rawDeck.length-1;i>=0;i--){
@@ -7415,9 +7427,9 @@ function startGame2v2(mode, decks, seatNames, teamLife){
     const raw=[...(decks[idx]||decks[0]||[])];
     heralds[p]=extractHerald(raw);
     const deck=shuffle(raw);
-    const human=(p===1||p===3);
+    const human=_humans.includes(p);
     players[p]={
-      name: human ? ('You ('+(p===1?'A1':'A2')+')') : ('AI ('+(p===2?'B1':'B2')+')'),
+      name: human ? ('You ('+(p===1?'A1':'A2')+')') : ('AI ('+(p===2?'B1':p===4?'B2':'A2')+')'),
       energy:5, colorEnergy:{}, hand:[], field:[], deck, discard:[], rift:[],
       prizes:[], prizesClaimed:0, herald:heralds[p], lifeForce:0
     };
@@ -7426,12 +7438,12 @@ function startGame2v2(mode, decks, seatNames, teamLife){
   // and a teammate placeholder (A2). An online/local lobby can pass `seatNames`
   // to override per seat. AI seats stay "AI".
   const _me=(window._username||window._playerName||document.getElementById('hud-username')?.textContent||'Player 1');
-  const _seatNames=Object.assign({1:_me, 2:'AI', 3:'Teammate', 4:'AI'}, seatNames||{});
+  const _seatNames=Object.assign({1:_me, 2:'AI', 3:(_humans.includes(3)?'Teammate':'AI Ally'), 4:'AI'}, seatNames||{});
   G={
     turn:1, is2v2:true, gameMode:'lifeforce', // 2v2 uses Health/team-life rules
     turnOrder:turnSeq, turnIndex:0, activePlayer:turnSeq[0],
     teams:{A:[1,3], B:[2,4]}, teamLife:{A:startLife, B:startLife}, startingTeamLife:startLife,
-    humanPlayers:[1,3], aiPlayers:[2,4], v2SeatNames:_seatNames,
+    humanPlayers:_humans, aiPlayers:_ais, v2SeatNames:_seatNames,
     phase:'draw', phasesDone:[], selectedAttacker:null, gameOver:false,
     deckSearchCallback:null, heraldAttacking:false, bonusAttackers:0,
     players, log:[]
@@ -7480,17 +7492,18 @@ const V2_SEATS=[
   {key:'B1', label:'Enemy 1',   team:'B', side:'enemy', icon:'🤖'},
   {key:'B2', label:'Enemy 2',   team:'B', side:'enemy', icon:'🤖'}
 ];
-let _v2Setup={ mode:'ai', teamLife:130, decks:{A1:'__random__',A2:'__random__',B1:'__random__',B2:'__random__'} };
+let _v2Setup={ mode:'ai', teammate:'ai', teamLife:130, decks:{A1:'__random__',A2:'__random__',B1:'__random__',B2:'__random__'} };
 
 async function open2v2Setup(){
   showScreen('setup-2v2-screen');
   if(typeof loadDecksFromStorage==='function'){ try{ await loadDecksFromStorage(); }catch(e){} }
   // default everything to Random so a one-click start always works
-  _v2Setup={ mode:'ai', teamLife:130, decks:{A1:'__random__',A2:'__random__',B1:'__random__',B2:'__random__'} };
+  _v2Setup={ mode:'ai', teammate:'ai', teamLife:130, decks:{A1:'__random__',A2:'__random__',B1:'__random__',B2:'__random__'} };
   render2v2Setup();
 }
 
 function set2v2Mode(m){ _v2Setup.mode=m; render2v2Setup(); }
+function set2v2Teammate(t){ _v2Setup.teammate=t; render2v2Setup(); }
 function set2v2Life(v){ const n=parseInt(v); if(!isNaN(n)&&n>0)_v2Setup.teamLife=Math.min(999,Math.max(10,n)); render2v2Setup(); }
 
 function render2v2Setup(){
@@ -7499,9 +7512,13 @@ function render2v2Setup(){
   // Online note
   const note=document.getElementById('v2-online-note');
   if(note)note.style.display=_v2Setup.mode==='online'?'block':'none';
-  // Teammate label depends on mode
+  // Teammate section: only relevant vs AI (online → teammate is the friend)
+  const tmSection=document.getElementById('v2-teammate-section');
+  if(tmSection)tmSection.style.display=_v2Setup.mode==='online'?'none':'block';
+  document.querySelectorAll('#v2-teammate-row .v2-opt').forEach(b=>b.classList.toggle('sel', b.dataset.tm===_v2Setup.teammate));
+  // Teammate label depends on mode/control
   const tm=V2_SEATS.find(s=>s.key==='A2');
-  if(tm)tm.label=_v2Setup.mode==='online'?'Friend':'Teammate';
+  if(tm)tm.label=_v2Setup.mode==='online'?'Friend':(_v2Setup.teammate==='ai'?'AI Ally':'Teammate');
   // Health presets
   document.querySelectorAll('#v2-life-row .v2-opt').forEach(b=>b.classList.toggle('sel', parseInt(b.dataset.life)===_v2Setup.teamLife));
   const lifeInput=document.getElementById('v2-life-custom'); if(lifeInput&&document.activeElement!==lifeInput)lifeInput.value=_v2Setup.teamLife;
@@ -7581,8 +7598,10 @@ function launch2v2(){
   // decks array is in turn-order player order: [A1(1), B1(2), A2(3), B2(4)]
   const decks=[ gl(_v2Setup.decks.A1), gl(_v2Setup.decks.B1), gl(_v2Setup.decks.A2), gl(_v2Setup.decks.B2) ];
   const meName=(window._username||window._playerName||document.getElementById('hud-username')?.textContent||'Player 1');
-  const seatNames={1:meName, 2:'AI', 3:'Teammate', 4:'AI'};
-  startGame2v2('lifeforce', decks, seatNames, _v2Setup.teamLife);
+  const a2Human=(_v2Setup.teammate==='human');
+  const humanSeats=a2Human?[1,3]:[1];
+  const seatNames={1:meName, 2:'AI', 3:(a2Human?'Teammate':'AI Ally'), 4:'AI'};
+  startGame2v2('lifeforce', decks, seatNames, _v2Setup.teamLife, humanSeats);
 }
 
 
@@ -9082,13 +9101,24 @@ function processAITeamAttacks(aiPlayer, queue, onDone){
   if(!afc||!canCharacterAttack(aiPlayer,afc)){ processAITeamAttacks(aiPlayer,queue,onDone); return; }
   afc.attacksThisTurn=(afc.attacksThisTurn||0)+1;
   const power=effPower(afc);
-  const humanTeam=enemyTeamOf(aiPlayer);
+  const defTeam=enemyTeamOf(aiPlayer);
+  const defenderIsHuman=teamPlayers(defTeam).some(ep=>isHumanPlayer(ep));
   if(isUnblockable(afc)){
-    log(`AI's ${DB[afc.cid].name} attacks Team ${humanTeam} — UNBLOCKABLE for ${power}!`,'dmg');
-    damageTeamLife(humanTeam, power, 'direct attack'); renderAll();
+    log(`AI's ${DB[afc.cid].name} attacks Team ${defTeam} — UNBLOCKABLE for ${power}!`,'dmg');
+    damageTeamLife(defTeam, power, 'direct attack'); renderAll();
     setTimeout(()=>processAITeamAttacks(aiPlayer,queue,onDone),450); return;
   }
-  openHumanTeamBlockPrompt(aiPlayer, afc, humanTeam, ()=>{ setTimeout(()=>processAITeamAttacks(aiPlayer,queue,onDone),400); });
+  if(defenderIsHuman){
+    // Defending team has a human — let them choose a block.
+    openHumanTeamBlockPrompt(aiPlayer, afc, defTeam, ()=>{ setTimeout(()=>processAITeamAttacks(aiPlayer,queue,onDone),400); });
+  } else {
+    // AI-vs-AI (e.g. your AI teammate swinging at the AI enemy team) — auto-block.
+    const blk=aiChooseBlockerFromPool(teamBlockerPool(defTeam), afc);
+    if(blk)log(`🛡 ${DB[blk.cid].name} blocks the attack on Team ${defTeam}.`,'info');
+    else log(`No block — ${power} to Team ${defTeam} Life.`,'dmg');
+    resolveAITeamAttack(aiPlayer, afc, blk, defTeam);
+    setTimeout(()=>processAITeamAttacks(aiPlayer,queue,onDone),450);
+  }
 }
 function openHumanTeamBlockPrompt(aiPlayer, afc, humanTeam, done){
   const power=effPower(afc);
@@ -12360,6 +12390,18 @@ function renderV2HandFor(hp){
   const el=document.getElementById('v2-hand-'+hp); if(!el)return; el.innerHTML='';
   const col=document.getElementById('v2-handcol-'+hp); if(col)col.classList.toggle('v2-handcol-active',G.activePlayer===hp);
   const pl=G.players[hp]; if(!pl)return;
+  // AI-controlled ally seat (e.g. A2 set to AI): show its hand face-down, not playable.
+  if(!isHumanPlayer(hp)){
+    const lblEl=document.querySelector('#v2-handcol-'+hp+' .v2-hand-label');
+    if(lblEl)lblEl.textContent=(_V2LBL[hp]||('P'+hp))+' HAND · AI';
+    const backUrl=(typeof getImg==='function')?getImg('cardback'):null;
+    for(let i=0;i<pl.hand.length;i++){
+      const d=document.createElement('div'); d.className='v2-hand-back-card';
+      if(backUrl){ const img=document.createElement('img'); img.src=backUrl; d.appendChild(img); }
+      el.appendChild(d);
+    }
+    return;
+  }
   const isActive=(G.activePlayer===hp);
   pl.hand.forEach(fc=>{
     const c=DB[fc.cid];if(!c)return;
