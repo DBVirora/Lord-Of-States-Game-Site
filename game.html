@@ -7369,7 +7369,24 @@ function returnToMenuFromWin(){
   if(G&&G.onlineMode)cleanupOnlineSession();
   showScreen('menu-screen');
 }
-function confirmReturnMenu(){if(confirm('Return to main menu?'))showScreen('menu-screen');}
+function confirmReturnMenu(){
+  // Leaving an ACTIVE online match counts as a forfeit — the opponent auto-wins
+  // and gets the win popup (via the broadcast game-over state).
+  if(G && G.onlineMode && !G.gameOver){
+    if(!confirm('Leave the match? This counts as a forfeit — your opponent will win.'))return;
+    G.gameOver=true;
+    G.winner=2;                 // opponent wins (local view: I'm P1, opponent is P2)
+    G.winReason='Opponent left the match';
+    G.forfeited=true;
+    try{ broadcastGameState(); }catch(e){ console.warn('[FORFEIT] broadcast failed',e); }
+    // Forfeiter records a loss and gains 0 Celestium.
+    _celData.matches++; _celData.losses++; try{ saveCelestium(); }catch(e){}
+    // Let the broadcast reach the opponent before tearing down the channel.
+    setTimeout(()=>{ if(typeof cleanupOnlineSession==='function') cleanupOnlineSession(); showScreen('menu-screen'); }, 350);
+    return;
+  }
+  if(confirm('Return to main menu?'))showScreen('menu-screen');
+}
 
 // ═══════════════════════════════════════════════════
 // SACRIFICE MECHANIC
@@ -13498,11 +13515,13 @@ function subscribeToRoom(code){
     .on('broadcast',{event:'game_action'},(payload)=>{
       onReceiveGameAction(payload.payload);
     })
+    .on('broadcast',{event:'heartbeat'},()=>{ onHeartbeat(); })
     .subscribe((status)=>{
       console.log('[ROOM] channel status:',status,'code:',code);
       if(status==='SUBSCRIBED'){
         _channelReady=true;
         console.log('[ROOM] ✓ Channel ready for broadcasts');
+        if(typeof startHeartbeat==='function') startHeartbeat();
         // Guest announces joining
         if(_onlineRole==='guest'){
           const myName=document.getElementById('hud-username')?.textContent||'Player';
@@ -13543,6 +13562,9 @@ async function startOnlineMatch(){
 function enterOnlineGame(room){
   _onlineRoom=room;
   const isHost=_onlineRole==='host';
+  // Fresh disconnect clock for the new match; ensure heartbeat is running.
+  _lastOpponentPing=Date.now();
+  if(typeof startHeartbeat==='function') startHeartbeat();
 
   // Full reset
   G={};gameMode='';
@@ -13792,7 +13814,7 @@ function applyPlayer(dst,src){
 // ── DISCONNECT HANDLING ───────────────────────────
 function startDisconnectTimer(){
   if(_disconnectTimer)return;
-  _disconnectSeconds=120;
+  _disconnectSeconds=45;
   document.getElementById('disconnect-overlay').classList.add('open');
   _disconnectTimer=setInterval(()=>{
     _disconnectSeconds--;
@@ -13808,6 +13830,56 @@ function startDisconnectTimer(){
 function clearDisconnectTimer(){
   if(_disconnectTimer){clearInterval(_disconnectTimer);_disconnectTimer=null;}
   document.getElementById('disconnect-overlay').classList.remove('open');
+}
+
+// Closing the tab / refreshing during an active online match also forfeits
+// (best-effort: fires the broadcast before the page unloads so the opponent
+// still gets their win). Only on real unload — NOT on tab-switch/visibility.
+window.addEventListener('pagehide', ()=>{
+  if(G && G.onlineMode && !G.gameOver){
+    G.gameOver=true; G.winner=2; G.winReason='Opponent left the match'; G.forfeited=true;
+    try{ broadcastGameState(); }catch(e){}
+  }
+});
+
+// ── HEARTBEAT (detect random disconnects / wifi drops) ─────────────────────
+// Both clients silently ping every few seconds over the room channel. If the
+// opponent's pings go silent for DISCONNECT_SILENCE_MS we treat them as dropped
+// and show the disconnect overlay + grace countdown. An AFK-but-CONNECTED player
+// keeps pinging automatically, so stepping away never triggers it — only an
+// actual connection drop does. If pings resume, the overlay cancels and play
+// continues.
+const HEARTBEAT_SEND_MS = 3000;       // ping cadence
+const DISCONNECT_SILENCE_MS = 20000;  // silence before we flag a drop (~20s)
+let _lastOpponentPing = 0;
+let _heartbeatInterval = null;
+
+function startHeartbeat(){
+  stopHeartbeat();
+  _lastOpponentPing = Date.now(); // assume present when starting
+  _heartbeatInterval = setInterval(()=>{
+    // 1) send my own ping
+    if(_onlineChannel && _channelReady){
+      try{ _onlineChannel.send({type:'broadcast',event:'heartbeat',payload:{from:_onlineRole,t:Date.now()}}); }catch(e){}
+    }
+    // 2) check opponent silence — only during an active, unfinished match
+    if(G && G.onlineMode && !G.gameOver){
+      if((Date.now()-_lastOpponentPing) > DISCONNECT_SILENCE_MS){
+        if(!_disconnectTimer) startDisconnectTimer();
+      }
+    }
+  }, HEARTBEAT_SEND_MS);
+}
+function stopHeartbeat(){
+  if(_heartbeatInterval){ clearInterval(_heartbeatInterval); _heartbeatInterval=null; }
+}
+// Called whenever an opponent heartbeat arrives — they're alive.
+function onHeartbeat(){
+  _lastOpponentPing = Date.now();
+  if(_disconnectTimer){            // overlay was up → opponent recovered
+    clearDisconnectTimer();
+    if(typeof log==='function') log('Opponent reconnected — match continues.','gain');
+  }
 }
 
 function claimDisconnectWin(){
@@ -13843,6 +13915,7 @@ async function cancelOnlineRoom(){
 
 function cleanupOnlineSession(){
   const sb=getOnlineSB();
+  if(typeof stopHeartbeat==='function') stopHeartbeat();
   if(_onlineChannel){sb.removeChannel(_onlineChannel);_onlineChannel=null;}
   _onlineRoom=null;
   _onlineRole=null;
@@ -16702,9 +16775,9 @@ window.addEventListener('load',async()=>{
 <!-- DISCONNECT OVERLAY -->
 <div class="disconnect-overlay" id="disconnect-overlay">
   <div style="font-size:14px;color:#fca5a5;letter-spacing:3px;font-family:'Orbitron',sans-serif">OPPONENT DISCONNECTED</div>
-  <div class="disconnect-timer" id="disconnect-timer">120</div>
-  <div style="font-size:11px;color:#6b7280;letter-spacing:1px">Waiting for reconnect...</div>
-  <button class="btn-red btn-sm" style="margin-top:8px;padding:8px 20px;letter-spacing:2px" onclick="claimDisconnectWin()">CLAIM WIN</button>
+  <div class="disconnect-timer" id="disconnect-timer">45</div>
+  <div style="font-size:11px;color:#6b7280;letter-spacing:1px">Waiting for them to reconnect… you win automatically if they don't.</div>
+  <button class="btn-red btn-sm" style="margin-top:8px;padding:8px 20px;letter-spacing:2px" onclick="claimDisconnectWin()">CLAIM WIN NOW</button>
 </div>
 
 <!-- MATCHMAKING SCREEN — PHASE 3 -->
