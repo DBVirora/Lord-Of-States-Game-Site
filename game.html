@@ -5386,6 +5386,7 @@ textarea{
     <button class="menu-btn util-btn" onclick="showScreen('builder-screen');renderBuilderCards()"><span class="menu-btn-sweep"></span>🃏  DECK BUILDER</button>
     <button class="menu-btn util-btn" onclick="showScreen('upload-screen');buildUploadScreen()"><span class="menu-btn-sweep"></span>🖼  CARD IMAGES</button>
     <button class="menu-btn util-btn" onclick="showRulesScreen()"><span class="menu-btn-sweep"></span>📖  RULES &amp; CARDS</button>
+    <button class="menu-btn util-btn" onclick="openGameSettings()"><span class="menu-btn-sweep"></span>⚙  OPTIONS</button>
   </div>
 </div>
 
@@ -8663,6 +8664,18 @@ function effectiveTransformCost(player, baseCost){
   return (flat!==null) ? flat : baseCost;
 }
 
+// Transform-path label for the transform menu. Theme-agnostic: any path string
+// renders as "<Path> Path" (e.g. 'saiyan'→"Saiyan Path", 'corruption'→
+// "Corruption Path"). Add an entry to PATH_COLORS only if you want a custom
+// accent color for a new theme; unknown paths fall back to the default violet.
+const PATH_COLORS = { saiyan:'#fbbf24', god:'#7cb0f0' };
+function getPathLabel(path){
+  if(!path || path==='base') return '';
+  const color = PATH_COLORS[path] || '#c8a0ff';
+  const name = String(path).charAt(0).toUpperCase() + String(path).slice(1);
+  return `<span style="color:${color}">${name} Path</span>`;
+}
+
 function openTransformModal(){
   if(G.activePlayer!==1||G.phase!=='main'){log('Main Phase only.','dmg');return;}
   const pl=G.players[1];
@@ -8679,7 +8692,7 @@ function openTransformModal(){
       const inHand=pl.hand.find(f=>f.cid===tid);
       const can=!!inHand&&pl.energy>=cost;
       found=true;
-      const pathLabel = tc.path==='saiyan' ? '<span style="color:#fbbf24">Saiyan Path</span>' : tc.path==='god' ? '<span style="color:#7cb0f0">God Path</span>' : '';
+      const pathLabel = getPathLabel(tc.path);
       const row=document.createElement('div');row.style.cssText='border:1px solid #3a3a5c;border-radius:8px;padding:9px;margin-bottom:7px;display:flex;align-items:center;gap:9px';
       const prev=document.createElement('div');prev.style.cssText='width:42px;height:58px;background:#1e1e3a;border-radius:5px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px';
       const pu=getImg(tid);if(pu){const img=document.createElement('img');img.src=pu;img.style.cssText='width:100%;height:100%;object-fit:cover';prev.appendChild(img);}else prev.textContent=tc.sym||'?';
@@ -9400,7 +9413,9 @@ function runAbilityEffect(fc, abl, pl){
 
   // ── MAGNUS & VIRORA: Surfacer Ignition — revert 1 opp transformation one step down ──
   if(cid==='magnus_virora' && label==='Surfacer Ignition'){
-    const transformed=opp.field.filter(f=>{const d=DB[f.cid];return d&&d.transformOnly&&d.charLine;});
+    // A card is revertible if it has a resolvable previous form — covers both
+    // the name-based (Virora) and explicit-list (Volaris, older lines) systems.
+    const transformed=opp.field.filter(f=>{const d=DB[f.cid];return d && !!getPrevForm(f.cid);});
     if(!transformed.length){ log('Surfacer Ignition: no opponent transformations to revert.','dmg'); renderAll(); return; }
     const body=document.createElement('div');
     body.innerHTML='<div style="font-size:11px;color:#9ca3af;margin-bottom:8px">Revert an opponent transformation one step:</div>';
@@ -9426,13 +9441,24 @@ function runAbilityEffect(fc, abl, pl){
   log(`(${label} has no additional coded effect.)`,'info');
 }
 
-// Find the previous (one-step-down) form of a transformed card, by charLine.
+// Find the previous (one-step-down) form of a transformed card. Supports BOTH
+// transform systems: the newer name-based one (charLine + formTier + nextForms)
+// AND the older explicit one (a base card with transforms:['form_id',...]).
 function getPrevForm(cid){
-  const c=DB[cid]; if(!c||!c.charLine) return null;
-  // Find any card in the same line whose nextForms includes this card's formTier
+  const c=DB[cid]; if(!c) return null;
+  // NEW name-based system: same charLine, whose nextForms includes this formTier.
+  if(c.charLine && c.formTier){
+    for(const id in DB){
+      const d=DB[id];
+      if(d&&d.charLine===c.charLine&&Array.isArray(d.nextForms)&&d.nextForms.includes(c.formTier)){
+        return id;
+      }
+    }
+  }
+  // OLD explicit system: any card whose transforms[] array lists this exact id.
   for(const id in DB){
     const d=DB[id];
-    if(d&&d.charLine===c.charLine&&Array.isArray(d.nextForms)&&d.nextForms.includes(c.formTier)){
+    if(d&&Array.isArray(d.transforms)&&d.transforms.includes(cid)){
       return id;
     }
   }
