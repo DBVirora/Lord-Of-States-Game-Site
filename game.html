@@ -7340,8 +7340,8 @@ function startGame(mode,deck1,deck2){
   G={turn:1,activePlayer:1,phase:'draw',phasesDone:[],selectedAttacker:null,gameOver:false,
     deckSearchCallback:null,heraldAttacking:false,gameMode:gMode,startingLF:startLF,prizeCount:prizeCount,bonusAttackers:0,
     players:{
-      1:{name:(window._playerName||document.getElementById('hud-username')?.textContent||'Player 1'),energy:5,colorEnergy:{},hand:[],field:[],deck:d1,discard:[],rift:[],prizes:p1,prizesClaimed:0,herald:h1,lifeForce:startLF},
-      2:{name:((mode==='pvp'||mode==='online')?(G&&G.onlineOpponentName)||window._onlineOpponentName||'Opponent':'AI'),energy:5,colorEnergy:{},hand:[],field:[],deck:d2,discard:[],rift:[],prizes:p2,prizesClaimed:0,herald:h2,lifeForce:startLF},
+      1:{name:(window._playerName||document.getElementById('hud-username')?.textContent||'Player 1'),energy:5,colorEnergy:{},hand:[],field:[],deck:d1,discard:[],rift:[],prizes:p1,prizesClaimed:0,prizesTaken:[],herald:h1,lifeForce:startLF},
+      2:{name:((mode==='pvp'||mode==='online')?(G&&G.onlineOpponentName)||window._onlineOpponentName||'Opponent':'AI'),energy:5,colorEnergy:{},hand:[],field:[],deck:d2,discard:[],rift:[],prizes:p2,prizesClaimed:0,prizesTaken:[],herald:h2,lifeForce:startLF},
     },log:[]};
   for(let i=0;i<7;i++){drawCard(1,true);drawCard(2,true);}
   if(h1)log(`${pname(1)} Herald: ${DB[h1.cid].name} enters play!`,'gain');
@@ -7442,7 +7442,7 @@ function startGame2v2(mode, decks, seatNames, teamLife, humanSeats){
     players[p]={
       name: human ? ('You ('+(p===1?'A1':'A2')+')') : ('AI ('+(p===2?'B1':p===4?'B2':'A2')+')'),
       energy:5, colorEnergy:{}, hand:[], field:[], deck, discard:[], rift:[],
-      prizes:[], prizesClaimed:0, herald:heralds[p], lifeForce:0
+      prizes:[], prizesClaimed:0, prizesTaken:[], herald:heralds[p], lifeForce:0
     };
   });
   // Seat display names — human seats default to the logged-in account name (A1)
@@ -7898,8 +7898,9 @@ function claimPrizeFrom(victim, claimer){
     log('🎖 You knocked out an enemy! Choose a Prize Card to take from the opponent.','gain');
     renderPrizes(victim);
   } else {
-    // AI claimer auto-takes the next available prize from the victim
-    resolvePrizeClaim(victim, claimer, vpl.prizesClaimed);
+    // AI claimer auto-takes the first still-available prize slot from the victim
+    const firstFree = vpl.prizes.findIndex((c,i)=>!(Array.isArray(vpl.prizesTaken)&&vpl.prizesTaken[i]));
+    resolvePrizeClaim(victim, claimer, firstFree<0?vpl.prizesClaimed:firstFree);
   }
 }
 
@@ -7922,14 +7923,15 @@ function resolvePrizeClaim(victim, claimer, index){
   const vpl=G.players[victim];
   const cpl=G.players[claimer];
   const maxPrizes=G.prizeCount||6;
-  let cid = vpl.prizes[index];
-  // Swap chosen prize into the next-claimed slot so claimedCount logic stays simple
-  if(index !== vpl.prizesClaimed){
-    const tmp = vpl.prizes[vpl.prizesClaimed];
-    vpl.prizes[vpl.prizesClaimed] = vpl.prizes[index];
-    vpl.prizes[index] = tmp;
-    cid = vpl.prizes[vpl.prizesClaimed];
+  if(!Array.isArray(vpl.prizesTaken)) vpl.prizesTaken=[];
+  // Guard: if the chosen slot is already taken or invalid, fall back to the first free slot
+  if(index==null || index<0 || index>=vpl.prizes.length || vpl.prizesTaken[index]){
+    index = vpl.prizes.findIndex((c,i)=>!vpl.prizesTaken[i]);
+    if(index<0) return;
   }
+  // Mark THIS exact slot as taken — no swapping, so the clicked slot is the one consumed.
+  const cid = vpl.prizes[index];
+  vpl.prizesTaken[index]=true;
   vpl.prizesClaimed++;
   // Safety: heralds should never be in prizes
   if(isHerald(DB[cid])){
@@ -12485,7 +12487,8 @@ function renderPrizes(p){
   // Claimable when the local player (claimer=1) is taking a prize FROM this pile (p===victim)
   const canPick = _pendingPrizePick && _pendingPrizePick.claimer===1 && _pendingPrizePick.victim===p;
   for(let i=0;i<_maxP;i++){
-    const claimed = i<pl.prizesClaimed;
+    // A slot shows as taken only if THAT specific slot was claimed.
+    const claimed = Array.isArray(pl.prizesTaken) ? !!pl.prizesTaken[i] : (i<pl.prizesClaimed);
     const d=document.createElement('div');
     d.className='prize-card'+(claimed?' claimed':'');
     if(!claimed && canPick){
@@ -14942,6 +14945,7 @@ function sanitizePlayer(pl){
     rift:pl.rift||[],
     prizes:pl.prizes||[],
     prizesClaimed:pl.prizesClaimed||0,
+    prizesTaken:pl.prizesTaken||[],
     lifeForce:pl.lifeForce||0,
     herald:pl.herald||null
   },(k,v)=>typeof v==='function'?undefined:v));
@@ -15028,6 +15032,7 @@ function applyPlayer(dst,src){
   dst.rift=src.rift||[];
   dst.prizes=src.prizes||[];
   dst.prizesClaimed=src.prizesClaimed||0;
+  dst.prizesTaken=Array.isArray(src.prizesTaken)?src.prizesTaken:[];
   dst.lifeForce=src.lifeForce||0;
   dst.herald=src.herald||null;
 }
@@ -15194,7 +15199,7 @@ function sanitize2v2Player(pl){
   return JSON.parse(JSON.stringify({
     energy:pl.energy, colorEnergy:pl.colorEnergy||{}, hand:pl.hand||[], field:pl.field||[],
     discard:pl.discard||[], deck:pl.deck||[], rift:pl.rift||[], prizes:pl.prizes||[],
-    prizesClaimed:pl.prizesClaimed||0, lifeForce:pl.lifeForce||0, herald:pl.herald||null, name:pl.name
+    prizesClaimed:pl.prizesClaimed||0, prizesTaken:pl.prizesTaken||[], lifeForce:pl.lifeForce||0, herald:pl.herald||null, name:pl.name
   },(k,v)=>typeof v==='function'?undefined:v));
 }
 function broadcastGameState2v2(){
