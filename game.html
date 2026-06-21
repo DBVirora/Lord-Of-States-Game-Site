@@ -4267,8 +4267,8 @@ textarea{
 .lf-val{font-family:'Orbitron',sans-serif;font-weight:900;font-size:16px;color:#fca5a5;min-width:30px;text-align:right;text-shadow:0 0 6px rgba(239,68,68,.5);}
 .player-panel-life.lf-targetable{border-color:#ef4444;box-shadow:0 0 14px rgba(239,68,68,.6);animation:glow-r 1.2s infinite;}
 /* ── DEDICATED 2v2 SCREEN ── */
-#game-screen-2v2{padding:54px 14px 10px;}
-.v2-wrap{max-width:1500px;margin:0 auto;display:flex;flex-direction:column;gap:6px;height:calc(100vh - 64px);}
+#game-screen-2v2{padding:50px 18px 10px;}
+.v2-wrap{max-width:none;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:7px;height:calc(100vh - 60px);}
 .v2-teamlife{display:flex;align-items:center;gap:10px;justify-content:center;font-family:'Cinzel',serif;font-weight:700;font-size:13px;letter-spacing:2px;padding:5px 14px;border-radius:10px;}
 .v2-teamlife-b{background:rgba(40,15,15,.6);border:1.5px solid rgba(239,68,68,.45);color:#fca5a5;}
 .v2-teamlife-a{background:rgba(15,40,20,.6);border:1.5px solid rgba(34,197,94,.45);color:#86efac;}
@@ -4282,6 +4282,8 @@ textarea{
 .v2-loc{display:flex;gap:5px;flex-wrap:wrap;min-height:0;}
 .v2-loc .location-zone-label{font-size:8px;color:#6b7280;align-self:center;}
 .v2-field{display:flex;gap:6px;flex-wrap:wrap;align-content:flex-start;flex:1;min-height:0;overflow-y:auto;}
+.v2-handback{display:flex;gap:2px;flex-shrink:0;}
+.v2-back{width:13px;height:19px;border-radius:2px;background:linear-gradient(135deg,#3a1a4a,#160c28);border:1px solid rgba(168,85,247,.45);box-shadow:inset 0 0 3px rgba(168,85,247,.3);}
 /* compact cards inside 2v2 boards */
 .v2-board .card-slot{width:74px;}
 .v2-board .card-slot .card-art-el,.v2-board .card-slot img{height:74px!important;}
@@ -5617,11 +5619,13 @@ textarea{
     <div class="v2-board-row">
       <div class="v2-board v2-enemy" id="v2-board-2">
         <div class="v2-board-label" id="v2-label-2">B1 · ⚡<span id="v2-energy-2">5</span></div>
+        <div class="v2-handback" id="v2-handback-2"></div>
         <div class="v2-loc" id="v2-loc-2"></div>
         <div class="v2-field" id="v2-field-2"></div>
       </div>
       <div class="v2-board v2-enemy" id="v2-board-4">
         <div class="v2-board-label" id="v2-label-4">B2 · ⚡<span id="v2-energy-4">5</span></div>
+        <div class="v2-handback" id="v2-handback-4"></div>
         <div class="v2-loc" id="v2-loc-4"></div>
         <div class="v2-field" id="v2-field-4"></div>
       </div>
@@ -10333,6 +10337,8 @@ function _menuMusicWanted(){
   if(_cutsceneActive) return false;
   const gs = document.getElementById('game-screen');
   if(gs && gs.classList.contains('active')) return false; // in an actual battle
+  const gs2 = document.getElementById('game-screen-2v2');
+  if(gs2 && gs2.classList.contains('active')) return false; // 2v2 battle
   return true;
 }
 
@@ -11824,7 +11830,15 @@ function renderAll2v2(){
   [1,2,3,4].forEach(p=>{
     if(typeof renderField==='function') renderField(p,'v2-field-'+p);
     if(typeof renderLocZone==='function') renderLocZone(p,'v2-loc-'+p);
-    const e=document.getElementById('v2-energy-'+p); if(e)e.textContent=G.players[p].energy;
+    const pl=G.players[p];
+    const lbl=document.getElementById('v2-label-'+p);
+    if(lbl){
+      const youTag=isHumanPlayer(p)?' (You)':'';
+      lbl.innerHTML=`<span>${_V2LBL[p]}${youTag}</span><span style="font-weight:400;font-size:9px;color:#9ca3af">⚡${pl.energy} · ✋${pl.hand.length} · 🂠${pl.deck.length} · ✝${pl.discard.length}</span>`;
+    }
+    // Enemy hand backs (face-down — you see the count, not the cards)
+    const hb=document.getElementById('v2-handback-'+p);
+    if(hb){ hb.innerHTML=''; for(let i=0;i<Math.min(pl.hand.length,12);i++){ const b=document.createElement('div'); b.className='v2-back'; hb.appendChild(b); } }
     const b=document.getElementById('v2-board-'+p); if(b)b.classList.toggle('v2-active',p===G.activePlayer);
   });
   const ta=document.getElementById('v2-team-a-life'); if(ta)ta.textContent=G.teamLife.A;
