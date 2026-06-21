@@ -4293,6 +4293,7 @@ textarea{
 .v2-hand-label{font-size:9px;color:#9ca3af;letter-spacing:2px;margin-bottom:3px;}
 .v2-hand{display:flex;gap:6px;overflow-x:auto;min-height:96px;}
 .v2-log{flex-shrink:0;height:48px;overflow-y:auto;font-size:10px;color:#9ca3af;background:rgba(0,0,0,.3);border-radius:8px;padding:5px 9px;line-height:1.5;}
+.v2-teamlife.lf-targetable{box-shadow:0 0 16px rgba(239,68,68,.7);border-color:#ef4444;animation:glow-r 1.1s infinite;}
 .energy-big-icon{
   font-size:26px;
   filter:drop-shadow(0 0 6px rgba(251,191,36,.7));
@@ -5610,7 +5611,7 @@ textarea{
 <!-- DEDICATED 2v2 SCREEN -->
 <div id="game-screen-2v2" class="screen">
   <div class="v2-wrap">
-    <div class="v2-teamlife v2-teamlife-b"><span>TEAM B (AI)</span><span class="v2-life-num" id="v2-team-b-life">130</span>❤️</div>
+    <div class="v2-teamlife v2-teamlife-b" id="v2-teamlife-b" onclick="onTeamLifeClick('B')" title="Select an attacker, then click to attack Team B's Life"><span>TEAM B (AI)</span><span class="v2-life-num" id="v2-team-b-life">130</span>❤️</div>
     <div class="v2-board-row">
       <div class="v2-board v2-enemy" id="v2-board-2">
         <div class="v2-board-label" id="v2-label-2">B1 · ⚡<span id="v2-energy-2">5</span></div>
@@ -8529,6 +8530,63 @@ function resolveLifeAttack(attackerPlayer, afc, blocker){
   }
   renderAll();
 }
+// ── 2v2: team-routed Life attacks + blocking ──────────────────────────────
+function aiChooseBlockerFromPool(blockers, afc){
+  const power=effPower(afc);
+  if(!blockers||!blockers.length)return null;
+  let best=blockers.find(b=> b.currentHP>power && effPower(b)>power && (effPower(b)-power)>=(afc.currentHP||0));
+  if(!best) best=blockers.filter(b=>b.currentHP>power).sort((a,b)=>effPower(b)-effPower(a))[0];
+  if(!best && power>=8) best=blockers.slice().sort((a,b)=>a.currentHP-b.currentHP)[0];
+  return best||null;
+}
+function teamBlockerPool(team){
+  const pool=[];
+  teamPlayers(team).forEach(ep=>{ (G.players[ep].field||[]).forEach(f=>{ if(isChar(DB[f.cid])&&!DB[f.cid]?.isToken)pool.push(f); }); });
+  return pool;
+}
+function ownerOfCard(uid){
+  for(const p of [1,2,3,4]){ if(G.players[p]&&G.players[p].field.some(f=>f.uid===uid))return p; }
+  return null;
+}
+function onTeamLifeClick(team){
+  if(!G.is2v2||G.gameOver)return;
+  if(G.phase!=='attack'||!isHumanPlayer(G.activePlayer))return;
+  if(team!==enemyTeamOf(G.activePlayer)){ log("You can only attack the ENEMY team's Life.",'info'); return; }
+  if(!G.selectedAttacker){ log('Select an attacker first, then click the enemy team Life.','info'); return; }
+  const auid=G.selectedAttacker; G.selectedAttacker=null;
+  declareTeamLifeAttack(G.activePlayer, auid);
+  renderAll();
+}
+function declareTeamLifeAttack(attackerPlayer, attackerUid){
+  const afc=G.players[attackerPlayer].field.find(f=>f.uid===attackerUid);
+  if(!afc)return;
+  if(!canCharacterAttack(attackerPlayer, afc)){ log("That character can't attack right now.",'dmg'); return; }
+  const enemyTeam=enemyTeamOf(attackerPlayer);
+  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1;
+  const power=effPower(afc);
+  if(isUnblockable(afc)){ log(`${DB[afc.cid].name} attacks Team ${enemyTeam} — UNBLOCKABLE for ${power}!`,'gain'); resolveTeamLifeAttack(attackerPlayer, afc, null, enemyTeam); return; }
+  const defenderIsHuman=teamPlayers(enemyTeam).some(ep=>isHumanPlayer(ep));
+  if(defenderIsHuman){
+    // AI attacking the human team → block prompt comes with per-board AI (next slice).
+    resolveTeamLifeAttack(attackerPlayer, afc, null, enemyTeam); return;
+  }
+  const blk=aiChooseBlockerFromPool(teamBlockerPool(enemyTeam), afc);
+  if(blk)log(`🛡 ${DB[blk.cid].name} blocks the attack on Team ${enemyTeam}!`,'info');
+  else log(`No block — ${power} damage to Team ${enemyTeam} Life!`,'dmg');
+  resolveTeamLifeAttack(attackerPlayer, afc, blk, enemyTeam);
+}
+function resolveTeamLifeAttack(attackerPlayer, afc, blocker, enemyTeam){
+  const power=effPower(afc);
+  if(!blocker){ damageTeamLife(enemyTeam, power, 'direct attack'); renderAll(); return; }
+  const bHP=blocker.currentHP||0, bPow=effPower(blocker), excess=Math.max(0,power-bHP);
+  const owner=ownerOfCard(blocker.uid);
+  log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHP}HP).`,'info');
+  if(owner)dealDamage(owner, blocker.uid, power);          // Step 1-2 (death → -2 team Life via killCard)
+  if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(attackerPlayer, afc.uid, c); } // Step 3
+  if(excess>0){ log(`Trample! ${excess} excess to Team ${enemyTeam} Life.`,'dmg'); damageTeamLife(enemyTeam, excess, 'trample'); } // Step 4
+  renderAll();
+}
+
 // Clicking the opponent's Life bar with an attacker selected = attack their Life.
 function onLifeBarClick(targetPlayer){
   if(!(G.gameMode==='lifeforce'||G.gameMode==='combined'))return;
@@ -11673,6 +11731,8 @@ function renderAll2v2(){
   });
   const ta=document.getElementById('v2-team-a-life'); if(ta)ta.textContent=G.teamLife.A;
   const tb=document.getElementById('v2-team-b-life'); if(tb)tb.textContent=G.teamLife.B;
+  const tbBar=document.getElementById('v2-teamlife-b');
+  if(tbBar){ const canHit=G.phase==='attack'&&isHumanPlayer(G.activePlayer)&&!!G.selectedAttacker; tbBar.classList.toggle('lf-targetable',canHit); tbBar.style.cursor=canHit?'crosshair':'pointer'; }
   const ti=document.getElementById('v2-turn-indicator');
   if(ti)ti.textContent=_V2LBL[G.activePlayer]+(isHumanPlayer(G.activePlayer)?' — your turn':' — AI turn');
   renderHand2v2();
