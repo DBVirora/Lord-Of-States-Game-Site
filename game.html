@@ -7410,6 +7410,17 @@ function iControlActive(){
   return G.activePlayer===1;
 }
 function isMyTurn(){ return iControlActive(); }
+// In 2v2, classify the active board relative to the LOCAL player's view:
+//   'you'      — a board this client directly controls
+//   'teammate' — your ally's board (same team, different seat)
+//   'enemy'    — the opposing team
+function v2TurnRelation(p){
+  if(!G||!G.is2v2) return null;
+  const myTeam='A'; // the human side is always Team A in 2v2
+  if(teamOf(p)!==myTeam) return 'enemy';
+  const mySeat = G.onlineMode2v2 ? (G.mySeat||1) : 1; // local hotseat: seat 1 = "you", seat 3 = teammate
+  return p===mySeat ? 'you' : 'teammate';
+}
 
 // Reduce a team's shared Life; checks the team-loss win condition.
 function damageTeamLife(team, amount, source){
@@ -7466,11 +7477,15 @@ function startGame2v2(mode, decks, seatNames, teamLife, humanSeats){
   // to override per seat. AI seats stay "AI".
   const _me=(window._username||window._playerName||document.getElementById('hud-username')?.textContent||'Player 1');
   const _seatNames=Object.assign({1:_me, 2:'AI', 3:(_humans.includes(3)?'Teammate':'AI Ally'), 4:'AI'}, seatNames||{});
+  // Block Captain — a coin flip at match start decides which Team A seat (A1 or
+  // A2) makes all team block decisions. They may block with either teammate's
+  // characters. (Only meaningful online; local play has one human deciding anyway.)
+  const _blockCaptain = coin() ? 1 : 3;
   G={
     turn:1, is2v2:true, gameMode:'lifeforce', // 2v2 uses Health/team-life rules
     turnOrder:turnSeq, turnIndex:0, activePlayer:turnSeq[0],
     teams:{A:[1,3], B:[2,4]}, teamLife:{A:startLife, B:startLife}, startingTeamLife:startLife,
-    humanPlayers:_humans, aiPlayers:_ais, v2SeatNames:_seatNames,
+    humanPlayers:_humans, aiPlayers:_ais, v2SeatNames:_seatNames, blockCaptain:_blockCaptain,
     phase:'draw', phasesDone:[], selectedAttacker:null, gameOver:false,
     deckSearchCallback:null, heraldAttacking:false, bonusAttackers:0,
     players, log:[]
@@ -7478,6 +7493,7 @@ function startGame2v2(mode, decks, seatNames, teamLife, humanSeats){
   order.forEach(p=>{ for(let i=0;i<7;i++) drawCard(p,true); });
   order.forEach(p=>{ if(heralds[p]) log(`${players[p].name} Herald: ${DB[heralds[p].cid].name} enters!`,'gain'); });
   log('2v2 Team Battle started! Turn order: A1 → A2 → B1 → B2.','info');
+  log(`🪙 Block Captain: ${_V2LBL[_blockCaptain]} will make this team's block decisions.`,'info');
   log('⚠ 2v2 beta — team-combat live; per-board AI active.','info');
   showScreen('game-screen-2v2'); renderAll2v2();
 }
@@ -7494,7 +7510,12 @@ function execEnd2v2(p){
   G.phase='draw';G.phasesDone=[];G.selectedAttacker=null;G.heraldAttacking=false;
   if(typeof startTurnFx==='function')startTurnFx(nx);
   renderAll2v2();
-  if(typeof showTurnBanner==='function')showTurnBanner(iControlActive());
+  if(typeof showTurnBanner==='function'){
+    const rel=v2TurnRelation(nx);
+    if(rel==='you')        showTurnBanner(true,  'YOUR TURN',        'your-turn');
+    else if(rel==='teammate') showTurnBanner(false, "TEAMMATE'S TURN", 'your-turn');
+    else                   showTurnBanner(false, "OPPONENT'S TURN",  'opp-turn');
+  }
   // Online 2v2: push the new turn state to the other client.
   if(G.onlineMode2v2 && typeof broadcastGameState2v2==='function') broadcastGameState2v2();
   // AI-controlled boards play out their turn. Online: only the HOST runs the AI
@@ -9175,24 +9196,53 @@ function processAITeamAttacks(aiPlayer, queue, onDone){
     setTimeout(()=>processAITeamAttacks(aiPlayer,queue,onDone),450);
   }
 }
-function openHumanTeamBlockPrompt(aiPlayer, afc, humanTeam, done){
+function openHumanTeamBlockPrompt(aiPlayer, afc, humanTeam, done, onChoose){
   const power=effPower(afc);
+  // Online 2v2: only the BLOCK CAPTAIN (coin-flipped at match start) decides. If
+  // that's the OTHER client, relay the decision to them and wait for the answer.
+  if(!onChoose && G.onlineMode2v2 && G.blockCaptain && G.mySeat && G.mySeat!==G.blockCaptain){
+    _pendingTeamBlock={ aiPlayer, afcUid:afc.uid, humanTeam, done };
+    try{ _onlineChannel && _onlineChannel.send({type:'broadcast',event:'block_request',payload:{from:_onlineRole, aiPlayer, afcUid:afc.uid, humanTeam, power}}); }catch(e){}
+    log('🛡 Waiting for your Block Captain teammate to choose a block…','info');
+    if(_pendingBlockTimer)clearTimeout(_pendingBlockTimer);
+    _pendingBlockTimer=setTimeout(()=>{ // fallback so the game can't lock if they go silent
+      if(_pendingTeamBlock){ const pend=_pendingTeamBlock; _pendingTeamBlock=null;
+        const a=G.players[pend.aiPlayer]?.field.find(f=>f.uid===pend.afcUid);
+        if(a){ log('Block Captain timed out — you decide.','info'); openHumanTeamBlockPrompt(pend.aiPlayer,a,pend.humanTeam,pend.done,(b)=>{ resolveAITeamAttack(pend.aiPlayer,a,b,pend.humanTeam); if(pend.done)pend.done(); }); }
+        else if(pend.done)pend.done();
+      }
+    },30000);
+    return;
+  }
+  const choose = onChoose || ((b)=>{ resolveAITeamAttack(aiPlayer, afc, b, humanTeam); if(done)done(); });
   const blockers=teamBlockerPool(humanTeam);
   const body=document.createElement('div');
-  body.innerHTML=`<div style="font-size:12px;color:#fca5a5;margin-bottom:10px;line-height:1.5">AI's <b>${DB[afc.cid].name}</b> attacks Team ${humanTeam}'s Life for <b style="color:#ef4444">${power}</b>. Block with a character, or take it.</div>`;
+  const capNote = (G.is2v2 && G.blockCaptain) ? `<div style="font-size:9px;color:#a5b4fc;margin-bottom:6px;letter-spacing:.5px">🪙 Block Captain this match: <b>${_V2LBL[G.blockCaptain]}</b> — may block with either teammate's characters.</div>` : '';
+  body.innerHTML=`${capNote}<div style="font-size:12px;color:#fca5a5;margin-bottom:10px;line-height:1.5">AI's <b>${DB[afc.cid].name}</b> attacks Team ${humanTeam}'s Life for <b style="color:#ef4444">${power}</b>. Tap 👁 to inspect a card, then block or take it.</div>`;
   blockers.forEach(b=>{
     const c=DB[b.cid]; const willDie=(b.currentHP<=power); const counter=(effPower(b)>power)?(effPower(b)-power):0; const excess=Math.max(0,power-(b.currentHP||0)); const owner=ownerOfCard(b.uid);
-    const row=document.createElement('button');row.className='btn-gray btn-sm';
-    row.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:8px 10px;display:flex;justify-content:space-between;gap:8px';
-    row.innerHTML=`<span>🛡 ${c.name} <span style="font-size:9px;color:#9ca3af">(${_V2LBL[owner]} · ${effPower(b)}⚔/${b.currentHP}♥)</span></span><span style="font-size:9px;color:${willDie?'#ef4444':'#22c55e'};text-align:right">${willDie?'dies':'survives'}${counter?` · counter ${counter}`:''}${excess?` · ${excess}→Life`:''}</span>`;
-    row.onclick=()=>{ closeAllModals(); resolveAITeamAttack(aiPlayer, afc, b, humanTeam); if(done)done(); };
-    body.appendChild(row);
+    const rowWrap=document.createElement('div'); rowWrap.style.cssText='display:flex;gap:5px;margin-bottom:5px;align-items:stretch';
+    const sel=document.createElement('button');sel.className='btn-gray btn-sm';
+    sel.style.cssText='flex:1;text-align:left;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px';
+    sel.innerHTML=`<span>🛡 ${c.name} <span style="font-size:9px;color:#9ca3af">(${_V2LBL[owner]} · ${effPower(b)}⚔/${b.currentHP}♥)</span></span><span style="font-size:9px;color:${willDie?'#ef4444':'#22c55e'};text-align:right">${willDie?'dies':'survives'}${counter?` · counter ${counter}`:''}${excess?` · ${excess}→Life`:''}</span>`;
+    sel.onclick=()=>{ if(typeof closeFullCard==='function')closeFullCard(); closeAllModals(); choose(b); };
+    const view=document.createElement('button');view.className='btn-gray btn-sm';view.title='View card stats & abilities';
+    view.style.cssText='flex:0 0 auto;padding:8px 11px;font-size:14px';view.textContent='👁';
+    view.onclick=(e)=>{ e.stopPropagation(); showFullCard(b.cid,b); };
+    rowWrap.appendChild(sel); rowWrap.appendChild(view); body.appendChild(rowWrap);
   });
   const take=document.createElement('button');take.className='btn-red btn-sm';take.style.cssText='width:100%;margin-top:6px;padding:9px';
   take.textContent=`✋ Take ${power} to Team ${humanTeam} Life`;
-  take.onclick=()=>{ closeAllModals(); resolveAITeamAttack(aiPlayer, afc, null, humanTeam); if(done)done(); };
+  take.onclick=()=>{ if(typeof closeFullCard==='function')closeFullCard(); closeAllModals(); choose(null); };
   body.appendChild(take);
   showModalEl('🛡 Block?', body);
+}
+// Block Captain (guest) shows the prompt and sends the choice back to the host.
+function showCaptainBlockPrompt(aiPlayer, afc, humanTeam){
+  openHumanTeamBlockPrompt(aiPlayer, afc, humanTeam, null, (blocker)=>{
+    try{ _onlineChannel && _onlineChannel.send({type:'broadcast',event:'block_response',payload:{from:_onlineRole, blockerUid: blocker? blocker.uid : null}}); }catch(e){}
+    log('🛡 Block choice sent to your team.','info');
+  });
 }
 function resolveAITeamAttack(aiPlayer, afc, blocker, humanTeam){
   const power=effPower(afc);
@@ -9245,18 +9295,22 @@ function openHumanBlockPrompt(afc, done){
   const power=effPower(afc);
   const mine=G.players[1].field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
   const body=document.createElement('div');
-  body.innerHTML=`<div style="font-size:12px;color:#fca5a5;margin-bottom:10px;line-height:1.5">AI's <b>${DB[afc.cid].name}</b> attacks your Life for <b style="color:#ef4444">${power}</b>. Block with a character, or take it.</div>`;
+  body.innerHTML=`<div style="font-size:12px;color:#fca5a5;margin-bottom:10px;line-height:1.5">AI's <b>${DB[afc.cid].name}</b> attacks your Life for <b style="color:#ef4444">${power}</b>. Tap 👁 to inspect a card, then block or take it.</div>`;
   mine.forEach(b=>{
     const c=DB[b.cid];
     const willDie=(b.currentHP<=power);
     const counter=(effPower(b)>power)?(effPower(b)-power):0;
     const excess=Math.max(0,power-(b.currentHP||0));
-    const row=document.createElement('button');row.className='btn-gray btn-sm';
-    row.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px';
-    row.innerHTML=`<span>🛡 ${c.name} <span style="font-size:9px;color:#9ca3af">(${effPower(b)}⚔/${b.currentHP}♥)</span></span>`
+    const rowWrap=document.createElement('div');rowWrap.style.cssText='display:flex;gap:5px;margin-bottom:5px;align-items:stretch';
+    const sel=document.createElement('button');sel.className='btn-gray btn-sm';
+    sel.style.cssText='flex:1;text-align:left;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px';
+    sel.innerHTML=`<span>🛡 ${c.name} <span style="font-size:9px;color:#9ca3af">(${effPower(b)}⚔/${b.currentHP}♥)</span></span>`
       +`<span style="font-size:9px;color:${willDie?'#ef4444':'#22c55e'};text-align:right">${willDie?'dies':'survives'}${counter?` · counter ${counter}`:''}${excess?` · ${excess}→Life`:''}</span>`;
-    row.onclick=()=>{ closeAllModals(); resolveLifeAttack(2, afc, b); if(done)done(); };
-    body.appendChild(row);
+    sel.onclick=()=>{ if(typeof closeFullCard==='function')closeFullCard(); closeAllModals(); resolveLifeAttack(2, afc, b); if(done)done(); };
+    const view=document.createElement('button');view.className='btn-gray btn-sm';view.title='View card stats & abilities';
+    view.style.cssText='flex:0 0 auto;padding:8px 11px;font-size:14px';view.textContent='👁';
+    view.onclick=(e)=>{ e.stopPropagation(); showFullCard(b.cid,b); };
+    rowWrap.appendChild(sel); rowWrap.appendChild(view); body.appendChild(rowWrap);
   });
   const take=document.createElement('button');take.className='btn-red btn-sm';
   take.style.cssText='width:100%;margin-top:6px;padding:9px;letter-spacing:1px';
@@ -10701,13 +10755,13 @@ let _endingTurn=false;
 // ═══════════════════════════════════════════════════
 // TURN TRANSITION BANNER
 // ═══════════════════════════════════════════════════
-function showTurnBanner(isYourTurn){
+function showTurnBanner(isYourTurn, labelOverride, clsOverride){
   if(typeof _gameSettings!=='undefined' && !_gameSettings.banners) return;
   const banner = document.getElementById('turn-banner');
   const text = document.getElementById('turn-banner-text');
   if(!banner || !text) return;
-  text.textContent = isYourTurn ? 'YOUR TURN' : "OPPONENT'S TURN";
-  text.className = 'turn-banner-text ' + (isYourTurn ? 'your-turn' : 'opp-turn');
+  text.textContent = labelOverride || (isYourTurn ? 'YOUR TURN' : "OPPONENT'S TURN");
+  text.className = 'turn-banner-text ' + (clsOverride || (isYourTurn ? 'your-turn' : 'opp-turn'));
   banner.classList.remove('show');
   void banner.offsetWidth;
   banner.classList.add('show');
@@ -12485,7 +12539,11 @@ function renderAll2v2(){
   const tbBar=document.getElementById('v2-teamlife-b');
   if(tbBar){ const canHit=G.phase==='attack'&&isHumanPlayer(G.activePlayer)&&!!G.selectedAttacker; tbBar.classList.toggle('lf-targetable',canHit); tbBar.style.cursor=canHit?'crosshair':'pointer'; }
   const ti=document.getElementById('v2-turn-indicator');
-  if(ti)ti.textContent=_V2LBL[G.activePlayer]+(isHumanPlayer(G.activePlayer)?' — your turn':' — AI turn');
+  if(ti){
+    const rel=v2TurnRelation(G.activePlayer);
+    const suffix = rel==='you' ? ' — your turn' : rel==='teammate' ? " — teammate's turn" : ' — enemy turn';
+    ti.textContent=_V2LBL[G.activePlayer]+suffix;
+  }
   renderHand2v2();
   renderV2EnemyHands();
   renderPhaseBar2v2();
@@ -14659,6 +14717,8 @@ let _onlineRoom=null;        // current room data
 let _onlineChannel=null;     // Supabase realtime channel
 let _channelReady=false;     // is the channel subscribed?
 let _applyingRemoteState=false; // suppress broadcast while applying received state
+let _pendingTeamBlock=null;     // host: awaiting the guest Block Captain's choice
+let _pendingBlockTimer=null;    // fallback timer so a silent captain can't lock the game
 let _winScreenShown=false; // prevent double win screen
 let _lastBroadcastTime=0;    // throttle broadcasts
 let _broadcastPending=false; // is a broadcast queued?
@@ -14845,6 +14905,30 @@ function subscribeToRoom(code){
     .on('broadcast',{event:'team_left'},(payload)=>{
       if(payload&&payload.payload&&payload.payload.from===_onlineRole)return;
       if(G&&G.is2v2&&!G.gameOver){ endOnline2v2('Your teammate has left the match. Returning to the menu.'); }
+    })
+    // 2v2 Block Captain relay: host asks the captain (guest) to choose a block.
+    .on('broadcast',{event:'block_request'},(payload)=>{
+      if(!payload||!payload.payload||payload.payload.from===_onlineRole)return;
+      if(!G||!G.onlineMode2v2)return;
+      const {aiPlayer, afcUid, humanTeam}=payload.payload;
+      const afc=G.players[aiPlayer]?.field.find(f=>f.uid===afcUid);
+      if(!afc){ // attacker already gone — respond with no block so host can continue
+        try{ _onlineChannel && _onlineChannel.send({type:'broadcast',event:'block_response',payload:{from:_onlineRole, blockerUid:null}}); }catch(e){}
+        return;
+      }
+      if(typeof showCaptainBlockPrompt==='function') showCaptainBlockPrompt(aiPlayer, afc, humanTeam);
+    })
+    // Captain's choice comes back → host resolves it authoritatively.
+    .on('broadcast',{event:'block_response'},(payload)=>{
+      if(!payload||!payload.payload||payload.payload.from===_onlineRole)return;
+      if(!_pendingTeamBlock)return;
+      if(_pendingBlockTimer){ clearTimeout(_pendingBlockTimer); _pendingBlockTimer=null; }
+      const pend=_pendingTeamBlock; _pendingTeamBlock=null;
+      const afc=G.players[pend.aiPlayer]?.field.find(f=>f.uid===pend.afcUid);
+      const blockerUid=payload.payload.blockerUid;
+      const blocker = blockerUid ? teamBlockerPool(pend.humanTeam).find(b=>b.uid===blockerUid) : null;
+      if(afc) resolveAITeamAttack(pend.aiPlayer, afc, blocker, pend.humanTeam);
+      if(pend.done)pend.done();
     })
     .on('broadcast',{event:'game_action'},(payload)=>{
       onReceiveGameAction(payload.payload);
@@ -15343,6 +15427,7 @@ function broadcastGameState2v2(){
     is2v2:true, turn:G.turn, turnIndex:G.turnIndex, turnOrder:G.turnOrder,
     activePlayer:G.activePlayer, phase:G.phase, phasesDone:G.phasesDone,
     teamLife:G.teamLife, startingTeamLife:G.startingTeamLife,
+    blockCaptain:G.blockCaptain,
     selectedAttacker:G.selectedAttacker, heraldAttacking:G.heraldAttacking,
     gameOver:G.gameOver, winner:G.winner||null, winReason:G.winReason||null,
     log:(G.log||[]).slice(-30), players
@@ -15358,6 +15443,7 @@ function onReceiveGameState2v2(payload){
     G.turn=s.turn; G.turnIndex=s.turnIndex; G.turnOrder=s.turnOrder||G.turnOrder;
     G.activePlayer=s.activePlayer; G.phase=s.phase; G.phasesDone=s.phasesDone||[];
     G.teamLife=s.teamLife||G.teamLife; G.startingTeamLife=s.startingTeamLife||G.startingTeamLife;
+    if(s.blockCaptain)G.blockCaptain=s.blockCaptain;
     G.selectedAttacker=s.selectedAttacker||null; G.heraldAttacking=!!s.heraldAttacking;
     G.gameOver=s.gameOver||false; G.winner=s.winner||null; G.winReason=s.winReason||null;
     if(s.log)G.log=s.log;
