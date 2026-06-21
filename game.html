@@ -4273,6 +4273,37 @@ textarea{
    docks at the bottom. Fully responsive (wide → laptop → mobile).
    ══════════════════════════════════════════════════════════════ */
 #game-screen-2v2{padding:46px 2.2vw 8px;}
+/* ── 2v2 SETUP / LOBBY ── */
+.v2-setup-section{background:rgba(10,10,28,.5);border:1px solid var(--border-v);border-radius:12px;padding:14px 16px;margin-bottom:14px;}
+.v2-setup-label{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:3px;color:#cbd5e1;margin-bottom:10px;}
+.v2-opt-row{display:flex;gap:10px;flex-wrap:wrap;align-items:stretch;}
+.v2-opt{position:relative;flex:1;min-width:180px;display:flex;flex-direction:column;align-items:flex-start;gap:3px;background:rgba(8,8,28,.7);border:1.5px solid rgba(124,58,237,.25);border-radius:10px;padding:12px 14px;cursor:pointer;color:#e2e8f0;font-weight:700;font-size:14px;text-align:left;transition:all .15s;}
+.v2-opt span{font-size:10px;font-weight:400;color:#6b7280;letter-spacing:.5px;}
+.v2-opt em{font-style:normal;font-size:8px;letter-spacing:1px;color:#fbbf24;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle;}
+.v2-opt:hover{border-color:var(--violet2);background:rgba(124,58,237,.12);}
+.v2-opt.sel{border-color:#22c55e;background:rgba(34,197,94,.12);box-shadow:0 0 12px rgba(34,197,94,.2);}
+.v2-opt.mini{flex:0 0 auto;min-width:60px;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:16px;padding:10px 16px;}
+.v2-life-custom-wrap{display:flex;align-items:center;gap:7px;font-size:11px;color:#9ca3af;letter-spacing:1px;margin-left:auto;}
+.v2-life-custom-wrap input{width:74px;background:rgba(0,0,0,.4);border:1.5px solid rgba(124,58,237,.3);border-radius:8px;color:#fbbf24;font-family:'Orbitron',sans-serif;font-size:15px;font-weight:700;text-align:center;padding:7px 6px;}
+.v2-deck-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+@media(max-width:760px){.v2-deck-grid{grid-template-columns:1fr 1fr;}}
+.v2-deckslot{background:rgba(8,8,28,.7);border:1.5px solid var(--border-v);border-radius:11px;padding:12px 10px;cursor:pointer;text-align:center;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:5px;min-height:140px;}
+.v2-deckslot:hover{border-color:var(--gold);box-shadow:0 0 12px rgba(200,164,74,.2);transform:translateY(-2px);}
+.v2-deckslot.slot-you{border-color:rgba(34,197,94,.35);}
+.v2-deckslot.slot-enemy{border-color:rgba(239,68,68,.3);}
+.v2-ds-head{display:flex;align-items:center;gap:6px;width:100%;justify-content:center;margin-bottom:2px;}
+.v2-ds-icon{font-size:15px;}
+.v2-ds-seat{font-family:'Cinzel',serif;font-size:11px;font-weight:700;letter-spacing:1px;color:#e2e8f0;}
+.v2-ds-thumb{width:46px;height:64px;border-radius:6px;background:#16162a;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:24px;}
+.v2-ds-thumb img{width:100%;height:100%;object-fit:cover;}
+.v2-ds-name{font-size:12px;font-weight:700;color:#e2e8f0;line-height:1.2;}
+.v2-ds-meta{font-size:9px;color:#6b7280;letter-spacing:.5px;}
+.v2-dp-row{display:flex;align-items:center;gap:10px;padding:9px 11px;background:rgba(8,8,28,.6);border:1px solid rgba(124,58,237,.2);border-radius:8px;cursor:pointer;transition:all .15s;}
+.v2-dp-row:hover{border-color:var(--violet2);background:rgba(124,58,237,.12);}
+.v2-dp-thumb{width:34px;height:48px;border-radius:5px;background:#16162a;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:18px;flex-shrink:0;}
+.v2-dp-thumb img{width:100%;height:100%;object-fit:cover;}
+.v2-dp-name{font-size:13px;font-weight:700;color:#e2e8f0;}
+.v2-dp-meta{font-size:10px;color:#6b7280;}
 .v2-wrap{
   max-width:none;width:100%;margin:0 auto;
   display:flex;flex-direction:column;gap:6px;
@@ -4356,6 +4387,14 @@ textarea{
 .v2-back{width:11px;height:16px;border-radius:2px;background:linear-gradient(135deg,#3a1a4a,#160c28);border:1px solid rgba(168,85,247,.45);box-shadow:inset 0 0 3px rgba(168,85,247,.3);}
 .v2-loc{display:flex;gap:5px;flex-wrap:wrap;min-height:0;flex-shrink:0;}
 .v2-loc .location-zone-label{font-size:8px;color:#6b7280;align-self:center;}
+/* herald (left) sits beside the creature field */
+.v2-fieldwrap{display:flex;gap:7px;flex:1;min-height:0;}
+.v2-herald{flex-shrink:0;display:flex;align-items:flex-start;}
+.v2-enemy .v2-fieldwrap{align-items:flex-end;}
+.v2-herald .herald-slot{width:60px;height:84px;box-shadow:0 0 8px #7c3aed55;}
+.v2-herald .herald-slot .card-art-area{height:54px!important;}
+.v2-herald .herald-slot .card-info{padding:2px 3px;}
+.v2-herald .herald-slot .card-name-sm{font-size:8px;}
 .v2-field{display:flex;gap:6px;flex-wrap:wrap;flex:1;min-height:0;overflow-y:auto;
   padding:4px;border-radius:8px;background:rgba(0,0,0,.18);box-shadow:inset 0 0 0 1px rgba(255,255,255,.03);}
 .v2-enemy .v2-field{align-content:flex-end;}   /* enemy creatures sit toward the centre line */
@@ -4384,6 +4423,14 @@ textarea{
 .v2-hand-label{font-size:9px;color:#9ca3af;letter-spacing:2px;margin-bottom:3px;font-weight:700;}
 .v2-handcol-active .v2-hand-label{color:var(--gold-bright);}
 .v2-hand{display:flex;gap:6px;overflow-x:auto;min-height:96px;}
+/* enemy (top) hand dock — face-down backs */
+.v2-hand-top{margin-bottom:1px;}
+.v2-hand-top .v2-hand,.v2-hand-backs{min-height:62px;align-items:center;}
+.v2-hand-back-card{width:44px;height:60px;border-radius:5px;flex-shrink:0;background:linear-gradient(135deg,#3a1a4a,#160c28);border:1px solid rgba(168,85,247,.45);box-shadow:inset 0 0 6px rgba(168,85,247,.3);overflow:hidden;}
+.v2-hand-back-card img{width:100%;height:100%;object-fit:cover;opacity:.92;}
+.v2-hand-top .v2-hand-label{color:#fca5a5;}
+.v2-hand-top .v2-hand-col{border-color:rgba(239,68,68,.2);}
+.v2-hand-top .v2-hand-col.v2-handcol-active{border-color:var(--gold);box-shadow:0 0 14px rgba(200,164,74,.3);}
 
 .v2-log{flex-shrink:0;height:44px;overflow-y:auto;font-size:10px;color:#9ca3af;background:rgba(0,0,0,.32);border-radius:8px;padding:5px 12px;line-height:1.5;}
 
@@ -5540,7 +5587,7 @@ textarea{
     <button class="menu-btn ai-btn" onclick="goToDeckSelect('easy')"><span class="menu-btn-sweep"></span>🤖  AI · EASY</button>
     <button class="menu-btn ai-btn" onclick="goToDeckSelect('medium')"><span class="menu-btn-sweep"></span>🤖  AI · MEDIUM</button>
     <button class="menu-btn ai-btn" onclick="goToDeckSelect('hard')"><span class="menu-btn-sweep"></span>🤖  AI · HARD</button>
-    <button class="menu-btn ai-btn" onclick="startTestGame2v2()" title="2v2 Team Battle (in development)"><span class="menu-btn-sweep"></span>👥  2v2 TEAM (BETA)</button>
+    <button class="menu-btn ai-btn" onclick="open2v2Setup()" title="2v2 Team Battle"><span class="menu-btn-sweep"></span>👥  2v2 TEAM (BETA)</button>
   </div>
 
   <!-- TOOLS section -->
@@ -5733,9 +5780,73 @@ textarea{
   </div>
 </div>
 
+<!-- 2v2 SETUP / LOBBY SCREEN -->
+<div id="setup-2v2-screen" class="screen" style="padding:58px 28px 24px;max-width:1080px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
+    <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">‹ Back</button>
+    <div style="font-family:'Orbitron',sans-serif;font-size:16px;letter-spacing:4px;color:var(--gold-bright)">👥 2v2 TEAM BATTLE — SETUP</div>
+  </div>
+
+  <!-- Opponent mode -->
+  <div class="v2-setup-section">
+    <div class="v2-setup-label">OPPONENTS</div>
+    <div id="v2-mode-row" class="v2-opt-row">
+      <button class="v2-opt sel" data-mode="ai" onclick="set2v2Mode('ai')">🤖 vs AI<span>You + a teammate seat vs two AI</span></button>
+      <button class="v2-opt" data-mode="online" onclick="set2v2Mode('online')">🌐 Online / Friend <em>Beta</em><span>Invite a friend to your team</span></button>
+    </div>
+    <div id="v2-online-note" style="display:none;margin-top:8px;font-size:11px;color:#a5b4fc;background:rgba(120,90,200,.12);border:1px solid rgba(124,58,237,.3);border-radius:8px;padding:9px 12px;line-height:1.5">
+      Online 2v2 is in active development. Your team-health and deck choices here will carry into the online lobby once the match handshake is wired up. For now, pick <b>vs AI</b> to play locally.
+    </div>
+  </div>
+
+  <!-- Team health -->
+  <div class="v2-setup-section">
+    <div class="v2-setup-label">TEAM HEALTH <span style="color:#6b7280;font-weight:400;letter-spacing:1px">— Life per team before they lose</span></div>
+    <div id="v2-life-row" class="v2-opt-row">
+      <button class="v2-opt mini" data-life="80" onclick="set2v2Life(80)">80</button>
+      <button class="v2-opt mini" data-life="100" onclick="set2v2Life(100)">100</button>
+      <button class="v2-opt mini sel" data-life="130" onclick="set2v2Life(130)">130</button>
+      <button class="v2-opt mini" data-life="150" onclick="set2v2Life(150)">150</button>
+      <button class="v2-opt mini" data-life="200" onclick="set2v2Life(200)">200</button>
+      <div class="v2-life-custom-wrap">Custom <input type="number" id="v2-life-custom" min="10" max="999" value="130" oninput="set2v2Life(this.value)"/></div>
+    </div>
+  </div>
+
+  <!-- Decks -->
+  <div class="v2-setup-section">
+    <div class="v2-setup-label">DECKS <span style="color:#6b7280;font-weight:400;letter-spacing:1px">— tap a seat to choose; 🎲 Random pulls from the current card pool</span></div>
+    <div id="v2-deck-grid" class="v2-deck-grid"></div>
+  </div>
+
+  <div style="display:flex;justify-content:center;margin-top:8px">
+    <button class="btn-primary" style="padding:12px 40px;font-size:15px;letter-spacing:2px" onclick="launch2v2()">⚔ START BATTLE</button>
+  </div>
+</div>
+
+<!-- 2v2 deck picker modal -->
+<div id="v2-deckpicker-modal" class="modal-overlay">
+  <div class="modal" style="max-width:480px;padding:20px">
+    <h2 id="v2-deckpicker-title" style="font-family:'Cinzel',serif;color:#e8c570;letter-spacing:2px;font-size:14px;margin-bottom:12px">SELECT DECK</h2>
+    <div id="v2-deckpicker-list" style="display:flex;flex-direction:column;gap:7px;max-height:55vh;overflow-y:auto"></div>
+    <button class="btn-gray" onclick="closeAllModals()" style="margin-top:14px;width:100%;padding:9px">Cancel</button>
+  </div>
+</div>
+
 <!-- DEDICATED 2v2 SCREEN — Two-Front Arena -->
 <div id="game-screen-2v2" class="screen">
   <div class="v2-wrap">
+
+    <!-- ENEMY HAND DOCK (top): B1 + B2 (face-down) -->
+    <div class="v2-hand-dock v2-hand-top">
+      <div class="v2-hand-col" id="v2-handcol-2">
+        <div class="v2-hand-label">B1 HAND</div>
+        <div class="v2-hand v2-hand-backs" id="v2-hand-2"></div>
+      </div>
+      <div class="v2-hand-col" id="v2-handcol-4">
+        <div class="v2-hand-label">B2 HAND</div>
+        <div class="v2-hand v2-hand-backs" id="v2-hand-4"></div>
+      </div>
+    </div>
 
     <!-- TEAM B (enemy) shared life -->
     <div class="v2-teamlife v2-teamlife-b" id="v2-teamlife-b" onclick="onTeamLifeClick('B')" title="Select an attacker, then click to attack Team B's Life">
@@ -5752,7 +5863,10 @@ textarea{
         <div class="v2-play">
           <div class="v2-board-head"><div class="v2-hud" id="v2-hud-2"></div></div>
           <div class="v2-loc" id="v2-loc-2"></div>
-          <div class="v2-field" id="v2-field-2"></div>
+          <div class="v2-fieldwrap">
+            <div class="v2-herald" id="v2-herald-2"></div>
+            <div class="v2-field" id="v2-field-2"></div>
+          </div>
         </div>
       </div>
       <div class="v2-board v2-enemy v2-right" id="v2-board-4">
@@ -5763,7 +5877,10 @@ textarea{
         <div class="v2-play">
           <div class="v2-board-head"><div class="v2-hud" id="v2-hud-4"></div></div>
           <div class="v2-loc" id="v2-loc-4"></div>
-          <div class="v2-field" id="v2-field-4"></div>
+          <div class="v2-fieldwrap">
+            <div class="v2-herald" id="v2-herald-4"></div>
+            <div class="v2-field" id="v2-field-4"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -5801,7 +5918,10 @@ textarea{
         <div class="v2-play">
           <div class="v2-board-head"><div class="v2-hud" id="v2-hud-1"></div></div>
           <div class="v2-loc" id="v2-loc-1"></div>
-          <div class="v2-field" id="v2-field-1"></div>
+          <div class="v2-fieldwrap">
+            <div class="v2-herald" id="v2-herald-1"></div>
+            <div class="v2-field" id="v2-field-1"></div>
+          </div>
         </div>
       </div>
       <div class="v2-board v2-you v2-right" id="v2-board-3">
@@ -5812,7 +5932,10 @@ textarea{
         <div class="v2-play">
           <div class="v2-board-head"><div class="v2-hud" id="v2-hud-3"></div></div>
           <div class="v2-loc" id="v2-loc-3"></div>
-          <div class="v2-field" id="v2-field-3"></div>
+          <div class="v2-fieldwrap">
+            <div class="v2-herald" id="v2-herald-3"></div>
+            <div class="v2-field" id="v2-field-3"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -7235,6 +7358,14 @@ function startGame(mode,deck1,deck2){
 const TEAM_START_LIFE = 130;
 
 function teamOf(p){ return (p===1||p===3) ? 'A' : 'B'; }
+// True only when board `p` belongs to the OPPOSING team of whoever is acting.
+// In 1v1 the opponent is simply player 2. Used to prevent friendly fire — A1
+// can't attack A2, B1 can't attack B2 (special board-wipe cards use other paths).
+function isEnemyBoard(p){
+  if(!G) return false;
+  if(G.is2v2) return teamOf(p)!==teamOf(G.activePlayer);
+  return p!==G.activePlayer;
+}
 function enemyTeamOf(p){ return teamOf(p)==='A' ? 'B' : 'A'; }
 function otherTeam(t){ return t==='A' ? 'B' : 'A'; }
 function teamPlayers(t){ return G.teams ? G.teams[t] : (t==='A'?[1]:[2]); }
@@ -7264,10 +7395,10 @@ function triggerWin2v2(winningTeam, reason){
 }
 
 // Build a 4-player game. decks = [dA1, dB1, dA2, dB2] (turn-order order).
-function startGame2v2(mode, decks, seatNames){
+function startGame2v2(mode, decks, seatNames, teamLife){
   if(typeof loadGameSettings==="function")loadGameSettings();
   gameMode=mode; us=0;
-  const startLife=TEAM_START_LIFE;
+  const startLife=(teamLife&&teamLife>0)?Math.round(teamLife):TEAM_START_LIFE;
   function extractHerald(rawDeck){
     let herald=null;
     for(let i=rawDeck.length-1;i>=0;i--){
@@ -7336,6 +7467,122 @@ function startTestGame2v2(){
   if(typeof generateRandomDeck!=='function'){ alert('Deck generator unavailable.'); return; }
   const decks=[generateRandomDeck(),generateRandomDeck(),generateRandomDeck(),generateRandomDeck()];
   startGame2v2('lifeforce', decks);
+}
+
+// ═══════════════════════════════════════════════════
+// 2v2 SETUP / LOBBY
+// Opponent mode, team health, and a deck choice for all four seats
+// (You / Teammate / Enemy 1 / Enemy 2) with a Random option each.
+// ═══════════════════════════════════════════════════
+const V2_SEATS=[
+  {key:'A1', label:'You',       team:'A', side:'you',   icon:'👤'},
+  {key:'A2', label:'Teammate',  team:'A', side:'you',   icon:'🤝'},
+  {key:'B1', label:'Enemy 1',   team:'B', side:'enemy', icon:'🤖'},
+  {key:'B2', label:'Enemy 2',   team:'B', side:'enemy', icon:'🤖'}
+];
+let _v2Setup={ mode:'ai', teamLife:130, decks:{A1:'__random__',A2:'__random__',B1:'__random__',B2:'__random__'} };
+
+async function open2v2Setup(){
+  showScreen('setup-2v2-screen');
+  if(typeof loadDecksFromStorage==='function'){ try{ await loadDecksFromStorage(); }catch(e){} }
+  // default everything to Random so a one-click start always works
+  _v2Setup={ mode:'ai', teamLife:130, decks:{A1:'__random__',A2:'__random__',B1:'__random__',B2:'__random__'} };
+  render2v2Setup();
+}
+
+function set2v2Mode(m){ _v2Setup.mode=m; render2v2Setup(); }
+function set2v2Life(v){ const n=parseInt(v); if(!isNaN(n)&&n>0)_v2Setup.teamLife=Math.min(999,Math.max(10,n)); render2v2Setup(); }
+
+function render2v2Setup(){
+  // Mode toggle
+  document.querySelectorAll('#v2-mode-row .v2-opt').forEach(b=>b.classList.toggle('sel', b.dataset.mode===_v2Setup.mode));
+  // Online note
+  const note=document.getElementById('v2-online-note');
+  if(note)note.style.display=_v2Setup.mode==='online'?'block':'none';
+  // Teammate label depends on mode
+  const tm=V2_SEATS.find(s=>s.key==='A2');
+  if(tm)tm.label=_v2Setup.mode==='online'?'Friend':'Teammate';
+  // Health presets
+  document.querySelectorAll('#v2-life-row .v2-opt').forEach(b=>b.classList.toggle('sel', parseInt(b.dataset.life)===_v2Setup.teamLife));
+  const lifeInput=document.getElementById('v2-life-custom'); if(lifeInput&&document.activeElement!==lifeInput)lifeInput.value=_v2Setup.teamLife;
+  // Deck slots
+  const grid=document.getElementById('v2-deck-grid'); if(!grid)return; grid.innerHTML='';
+  V2_SEATS.forEach(seat=>{
+    const isOnlineFriend=(_v2Setup.mode==='online'&&seat.key==='A2');
+    const chosen=_v2Setup.decks[seat.key];
+    const card=document.createElement('div');
+    card.className='v2-deckslot '+(seat.side==='you'?'slot-you':'slot-enemy');
+    let body;
+    if(isOnlineFriend){
+      body=`<div class="v2-ds-name" style="color:#a5b4fc">Friend picks their own deck</div><div class="v2-ds-meta">Set in the online lobby</div>`;
+    } else if(chosen==='__random__'){
+      body=`<div class="v2-ds-thumb">🎲</div><div class="v2-ds-name">Random Deck</div><div class="v2-ds-meta">From current card pool</div>`;
+    } else {
+      const d=(typeof SAVED_DECKS!=='undefined')?SAVED_DECKS[chosen]:null;
+      if(d){
+        const url=(typeof getImg==='function'&&d.cards&&d.cards[0])?getImg(d.cards[0]):null;
+        body=`<div class="v2-ds-thumb">${url?`<img src="${url}"/>`:'🃏'}</div><div class="v2-ds-name">${d.name}</div><div class="v2-ds-meta" style="${d.cards.length<60?'color:#f59e0b':''}">${d.cards.length}/60${d.cards.length<60?' ⚠':' ✓'}</div>`;
+      } else body=`<div class="v2-ds-thumb">🎲</div><div class="v2-ds-name">Random Deck</div><div class="v2-ds-meta">From current card pool</div>`;
+    }
+    card.innerHTML=`<div class="v2-ds-head"><span class="v2-ds-icon">${seat.icon}</span><span class="v2-ds-seat">${seat.key} · ${seat.label}</span></div>${body}`;
+    if(!isOnlineFriend) card.onclick=()=>open2v2DeckPicker(seat.key);
+    else card.style.opacity='.6';
+    grid.appendChild(card);
+  });
+}
+
+function open2v2DeckPicker(seatKey){
+  const list=document.getElementById('v2-deckpicker-list');
+  const title=document.getElementById('v2-deckpicker-title');
+  const seat=V2_SEATS.find(s=>s.key===seatKey);
+  if(title)title.textContent=`SELECT DECK — ${seat.key} (${seat.label})`;
+  if(!list)return; list.innerHTML='';
+  // Random first
+  const rand=document.createElement('div');
+  rand.className='v2-dp-row';
+  rand.innerHTML='<span style="font-size:22px">🎲</span><div style="flex:1"><div class="v2-dp-name">Random Deck</div><div class="v2-dp-meta">Generate from the current usable card pool</div></div>';
+  rand.onclick=()=>{ _v2Setup.decks[seatKey]='__random__'; closeAllModals(); render2v2Setup(); };
+  list.appendChild(rand);
+  const decks=(typeof SAVED_DECKS!=='undefined')?Object.entries(SAVED_DECKS):[];
+  if(!decks.length){
+    const none=document.createElement('div'); none.style.cssText='color:#6b7280;font-size:11px;padding:12px;text-align:center';
+    none.textContent='No saved decks yet — build one in the Deck Builder, or use Random.';
+    list.appendChild(none);
+  }
+  decks.forEach(([id,deck])=>{
+    if(!deck||!deck.cards)return;
+    const url=(typeof getImg==='function'&&deck.cards[0])?getImg(deck.cards[0]):null;
+    const row=document.createElement('div'); row.className='v2-dp-row';
+    row.innerHTML=`<div class="v2-dp-thumb">${url?`<img src="${url}"/>`:(DB[deck.cards[0]]?.sym||'🃏')}</div>`
+      +`<div style="flex:1;min-width:0"><div class="v2-dp-name">${deck.name}</div>`
+      +`<div class="v2-dp-meta" style="${deck.cards.length<60?'color:#f59e0b':''}">${deck.cards.length}/60 cards${deck.cards.length<60?' ⚠ needs '+(60-deck.cards.length)+' more':' ✓'}</div></div>`;
+    row.onclick=()=>{ _v2Setup.decks[seatKey]=id; closeAllModals(); render2v2Setup(); };
+    list.appendChild(row);
+  });
+  document.getElementById('v2-deckpicker-modal').classList.add('open');
+}
+
+function launch2v2(){
+  // Validate non-random saved decks have 60 cards
+  for(const seat of V2_SEATS){
+    if(_v2Setup.mode==='online'&&seat.key==='A2')continue;
+    const id=_v2Setup.decks[seat.key];
+    if(id!=='__random__'){
+      const d=(typeof SAVED_DECKS!=='undefined')?SAVED_DECKS[id]:null;
+      if(d&&d.cards&&d.cards.length<60){ alert(`"${d.name}" for ${seat.key} has only ${d.cards.length}/60 cards. Finish it in the Deck Builder or choose Random.`); return; }
+    }
+  }
+  if(_v2Setup.mode==='online'){
+    // Online 2v2 lobby handshake is the next build — route to the friends/invite flow.
+    alert('Online 2v2 is in active development. For now, start a local battle with AI opponents — your settings here (team health & decks) will carry over once the online lobby is wired up.');
+    return;
+  }
+  const gl=(id)=>(typeof getDeckList==='function')?getDeckList(id):generateRandomDeck();
+  // decks array is in turn-order player order: [A1(1), B1(2), A2(3), B2(4)]
+  const decks=[ gl(_v2Setup.decks.A1), gl(_v2Setup.decks.B1), gl(_v2Setup.decks.A2), gl(_v2Setup.decks.B2) ];
+  const meName=(window._username||window._playerName||document.getElementById('hud-username')?.textContent||'Player 1');
+  const seatNames={1:meName, 2:'AI', 3:'Teammate', 4:'AI'};
+  startGame2v2('lifeforce', decks, seatNames, _v2Setup.teamLife);
 }
 
 
@@ -8490,7 +8737,9 @@ function onDeckClick(p){
 // HERALD COMBAT
 // ═══════════════════════════════════════════════════
 function selectHeraldAsAttacker(p){
-  if(G.activePlayer!==1||G.phase!=='attack'){log('Attack phase only.','dmg');return;}
+  const okTurn = G.is2v2 ? isHumanPlayer(G.activePlayer) : (G.activePlayer===1);
+  if(!okTurn||G.phase!=='attack'){log('Attack phase only.','dmg');return;}
+  if(p!==G.activePlayer){log('You can only attack with your own Herald.','dmg');return;}
   const hfc=G.players[p].herald;if(!hfc){log('No Herald to attack with.','dmg');return;}
   if(hfc.tapped){log(`${DB[hfc.cid]?.name} is tapped — it can't attack this turn.`,'dmg');return;}
   if(hfc.attacksThisTurn>0&&!hasKW(hfc,'onslaught')){log('Herald already attacked this turn.','dmg');return;}
@@ -8502,7 +8751,7 @@ function selectHeraldAsAttacker(p){
 
 function resolveHeraldAttackTarget(targetP, targetHfc){
   if(!G.heraldAttacking)return;
-  const afc=G.players[1].herald;if(!afc)return;
+  const afc=G.players[G.activePlayer].herald;if(!afc)return;
   const ac=DB[afc.cid];if(!ac)return;
   const atkDmg=afc.currentATK;
   afc.attacksThisTurn=(afc.attacksThisTurn||0)+1;
@@ -8518,8 +8767,8 @@ function resolveHeraldAttackTarget(targetP, targetHfc){
     log('⚔ '+ac.name+'('+atkDmg+') → '+DB[targetHfc.cid].name+' [Herald]','info');
     targetHfc.currentHP=Math.max(0,targetHfc.currentHP-atkDmg);
     log(DB[targetHfc.cid].name+' Herald: '+targetHfc.currentHP+' HP remaining','dmg');
-    // Combined Mode: every Herald hit = 1 prize (attacker = player 1 here)
-    claimPrizeOnHeraldHit(1);
+    // Combined Mode: every Herald hit = 1 prize (attacker = active board)
+    claimPrizeOnHeraldHit(G.activePlayer);
     // Retaliation from opponent Herald
     if(targetHfc.currentHP>0){
       log(DB[targetHfc.cid].name+' Herald retaliates '+defSnap,'info');
@@ -8533,7 +8782,7 @@ function resolveHeraldAttackTarget(targetP, targetHfc){
 function resolveHeraldVsField(targetP, targetFc){
   // Herald attacks a field character
   if(!G.heraldAttacking)return;
-  const afc=G.players[1].herald;if(!afc)return;
+  const afc=G.players[G.activePlayer].herald;if(!afc)return;
   const ac=DB[afc.cid];
   const dc=DB[targetFc.cid];
   const atkDmg=afc.currentATK;
@@ -8597,9 +8846,12 @@ function onFieldClick(p,uid,fc){
         return;
       }
       G.selectedAttacker=uid;log(`${DB[fc.cid].name} ready — click target.`,'info');renderAll();
+    } else if(!isEnemyBoard(p)){
+      // Friendly board (your 2v2 teammate) — never a melee target. Just inspect.
+      showFullCard(fc.cid,fc);
     } else {
       // Herald attacking a field character
-      if(G.heraldAttacking&&p!==G.activePlayer&&isChar(DB[fc.cid])){
+      if(G.heraldAttacking&&isEnemyBoard(p)&&isChar(DB[fc.cid])){
         resolveHeraldVsField(p,fc);return;
       }
       if(!G.selectedAttacker)return;
@@ -8734,6 +8986,19 @@ function onTeamLifeClick(team){
   if(!G.is2v2||G.gameOver)return;
   if(G.phase!=='attack'||!isHumanPlayer(G.activePlayer))return;
   if(team!==enemyTeamOf(G.activePlayer)){ log("You can only attack the ENEMY team's Life.",'info'); return; }
+  // Herald swinging at the enemy team's Life
+  if(G.heraldAttacking){
+    const hfc=G.players[G.activePlayer].herald;
+    if(!hfc){ G.heraldAttacking=false; return; }
+    // Enemy guardians must be cleared first
+    const guard=teamBlockerPool(team).some(f=>hasKW(f,'guardian'));
+    if(guard){ log('Enemy Guardian on the field — clear it before hitting Life with your Herald.','dmg'); G.heraldAttacking=false; renderAll(); return; }
+    const dmg=hfc.currentATK;
+    hfc.attacksThisTurn=(hfc.attacksThisTurn||0)+1;
+    log(`👑 Herald ${DB[hfc.cid].name} strikes Team ${team}'s Life for ${dmg}!`,'gain');
+    damageTeamLife(team, dmg, 'Herald strike');
+    G.heraldAttacking=false; renderAll(); return;
+  }
   if(!G.selectedAttacker){ log('Select an attacker first, then click the enemy team Life.','info'); return; }
   const auid=G.selectedAttacker; G.selectedAttacker=null;
   declareTeamLifeAttack(G.activePlayer, auid);
@@ -11054,8 +11319,8 @@ function doHeraldFlip(p){
   renderAll();
 }
 
-function renderHeraldSlot(p){
-  const el=document.getElementById(`p${p}-herald-slot`);
+function renderHeraldSlot(p, targetId){
+  const el=document.getElementById(targetId||`p${p}-herald-slot`);
   if(!el||!G||!G.players)return;
   el.innerHTML='';
   const hfc=G.players[p]?.herald;
@@ -11093,15 +11358,15 @@ function renderHeraldSlot(p){
     <div style="font-size:7px;color:${hfc.isFlipped?'#f97316':'#c4b5fd'};text-align:center">${hfc.isFlipped?'FINAL':'HERALD'}</div>`;
   div.appendChild(info);
 
-  // Flip button (player only, when eligible)
-  if(canFlip&&p===1){
+  // Flip button (active human board only, when eligible)
+  if(canFlip&&isHumanPlayer(p)&&p===G.activePlayer){
     const flipBtn=document.createElement('button');
     flipBtn.className='herald-flip-btn';flipBtn.textContent='FLIP';
     flipBtn.onclick=(e)=>{e.stopPropagation();doHeraldFlip(p);};
     div.appendChild(flipBtn);
   }
-  // Attack button for player's herald during attack phase
-  if(p===1&&G.phase==='attack'&&G.activePlayer===1){
+  // Attack button for the active human board's herald during attack phase
+  if(isHumanPlayer(p)&&G.phase==='attack'&&G.activePlayer===p){
     const atkBtn=document.createElement('button');
     atkBtn.style.cssText='position:absolute;top:2px;right:2px;background:#7c3aed;color:#fff;border:none;border-radius:3px;font-size:8px;padding:1px 3px;cursor:pointer;z-index:5;font-weight:700';
     atkBtn.textContent=G.heraldAttacking?'✓ATK':'⚔ATK';
@@ -11109,13 +11374,13 @@ function renderHeraldSlot(p){
     atkBtn.onclick=(e)=>{e.stopPropagation();selectHeraldAsAttacker(p);};
     div.appendChild(atkBtn);
   }
-  // Show "TARGET" overlay on opponent herald if player's herald or field char is attacking
-  if(p===2&&G.phase==='attack'&&(G.selectedAttacker||G.heraldAttacking)){
+  // Show "TARGET" overlay on an enemy-team herald when something is attacking
+  if(isEnemyBoard(p)&&G.phase==='attack'&&(G.selectedAttacker||G.heraldAttacking)){
     div.style.cursor='crosshair';
     div.onclick=(e)=>{e.stopPropagation();resolveHeraldAttackTarget(p,hfc);};
+  } else {
+    div.onclick=()=>showFullCard(hfc.cid,hfc);
   }
-
-  div.onclick=()=>showFullCard(hfc.cid,hfc);
   div.onmouseenter=()=>showHoverPreview(hfc.cid);
   div.onmouseleave=()=>clearHoverPreview();
   el.appendChild(div);
@@ -12048,6 +12313,7 @@ function renderAll2v2(){
   [1,2,3,4].forEach(p=>{
     if(typeof renderField==='function') renderField(p,'v2-field-'+p);
     if(typeof renderLocZone==='function') renderLocZone(p,'v2-loc-'+p);
+    if(typeof renderHeraldSlot==='function') renderHeraldSlot(p,'v2-herald-'+p);
     const pl=G.players[p];
     // Full per-player HUD (name · energy · phase · zone counts)
     renderV2HUD(p);
@@ -12069,8 +12335,23 @@ function renderAll2v2(){
   const ti=document.getElementById('v2-turn-indicator');
   if(ti)ti.textContent=_V2LBL[G.activePlayer]+(isHumanPlayer(G.activePlayer)?' — your turn':' — AI turn');
   renderHand2v2();
+  renderV2EnemyHands();
   renderPhaseBar2v2();
   renderV2Log();
+}
+// Enemy team hands shown face-down at the top (count visible, cards hidden).
+function renderV2EnemyHands(){
+  const backUrl=(typeof getImg==='function')?getImg('cardback'):null;
+  [2,4].forEach(p=>{
+    const el=document.getElementById('v2-hand-'+p); if(!el)return; el.innerHTML='';
+    const pl=G.players[p]; if(!pl)return;
+    for(let i=0;i<pl.hand.length;i++){
+      const d=document.createElement('div'); d.className='v2-hand-back-card';
+      if(backUrl){ const img=document.createElement('img'); img.src=backUrl; d.appendChild(img); }
+      el.appendChild(d);
+    }
+    const col=document.getElementById('v2-handcol-'+p); if(col)col.classList.toggle('v2-handcol-active',G.activePlayer===p);
+  });
 }
 function renderHand2v2(){
   [1,3].forEach(hp=>renderV2HandFor(hp));
@@ -12174,7 +12455,7 @@ function renderField(p, targetId){
     else if(p===G.activePlayer&&G.phase==='attack'&&isChar(c)&&(fc.turnPlayed<G.turn||hasKW(fc,'burst_speed'))&&!fc.frozen&&!fc.paralyzed&&typeof canCharacterAttack==='function'&&canCharacterAttack(p,fc))div.classList.add('can-attack');
     const _selAtk=G.selectedAttacker?G.players[G.activePlayer]?.field.find(f=>f.uid===G.selectedAttacker):null;
     const _oppGuardian=G.players[p]?.field.some(f=>isChar(DB[f.cid])&&hasKW(f,'guardian')&&f.uid!==fc.uid);
-    if(G.selectedAttacker&&p!==G.activePlayer&&isChar(c)){
+    if(G.selectedAttacker&&isEnemyBoard(p)&&isChar(c)){
       if(_oppGuardian&&!hasKW(fc,'guardian')){}
       else div.classList.add('targetable');
     }
@@ -12201,7 +12482,7 @@ function renderLocZone(p, targetId){
     const c=DB[fc.cid];if(!c)return;
     const div=document.createElement('div');div.className='card-slot';
     div.setAttribute('data-uid',fc.uid);div.setAttribute('data-player',p);
-    if(G.selectedAttacker&&p!==G.activePlayer&&isLoc(c))div.classList.add('loc-targetable');
+    if(G.selectedAttacker&&isEnemyBoard(p)&&isLoc(c))div.classList.add('loc-targetable');
     const pct=Math.max(0,Math.min(100,fc.currentHP/(c.hp||6)*100));const hpCol=pct>60?'#22c55e':pct>30?'#f59e0b':'#ef4444';
     div.appendChild(makeArtEl(fc.cid,108));
     const info=document.createElement('div');info.className='card-info field-card-info';
