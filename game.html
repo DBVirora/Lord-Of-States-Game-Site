@@ -4266,18 +4266,33 @@ textarea{
 .lf-bar-fill{height:100%;width:100%;border-radius:6px;transition:width .35s ease, background .35s ease;background:linear-gradient(90deg,#ef4444,#f97316);}
 .lf-val{font-family:'Orbitron',sans-serif;font-weight:900;font-size:16px;color:#fca5a5;min-width:30px;text-align:right;text-shadow:0 0 6px rgba(239,68,68,.5);}
 .player-panel-life.lf-targetable{border-color:#ef4444;box-shadow:0 0 14px rgba(239,68,68,.6);animation:glow-r 1.2s infinite;}
-/* 2v2 layout */
-.board-2v2{margin:6px auto;max-width:920px;background:rgba(8,8,28,.5);border:1px solid var(--border-v);border-radius:10px;padding:8px 10px;}
-.board-2v2-enemy{border-color:rgba(239,68,68,.3);}
-.board-2v2-ally{border-color:rgba(34,197,94,.3);}
-.board-2v2-header{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;color:#cbd5e1;font-family:'Cinzel',serif;margin-bottom:5px;letter-spacing:1px;}
-.board-2v2-meta{font-size:9px;color:#6b7280;font-weight:400;}
-.team-life-bar{display:flex;justify-content:space-between;gap:10px;padding:6px 12px;margin-bottom:6px;}
-.team-life-pill{font-family:'Orbitron',sans-serif;font-weight:900;font-size:14px;padding:6px 14px;border-radius:10px;letter-spacing:1px;}
-.team-a-pill{background:rgba(20,40,20,.6);border:1.5px solid rgba(34,197,94,.5);color:#86efac;}
-.team-b-pill{background:rgba(40,20,20,.6);border:1.5px solid rgba(239,68,68,.5);color:#fca5a5;}
-.mode-2v2 .board-2v2{display:block!important;}
-.mode-2v2 #team-life-2v2{display:flex!important;}
+/* ── DEDICATED 2v2 SCREEN ── */
+#game-screen-2v2{padding:54px 14px 10px;}
+.v2-wrap{max-width:1500px;margin:0 auto;display:flex;flex-direction:column;gap:6px;height:calc(100vh - 64px);}
+.v2-teamlife{display:flex;align-items:center;gap:10px;justify-content:center;font-family:'Cinzel',serif;font-weight:700;font-size:13px;letter-spacing:2px;padding:5px 14px;border-radius:10px;}
+.v2-teamlife-b{background:rgba(40,15,15,.6);border:1.5px solid rgba(239,68,68,.45);color:#fca5a5;}
+.v2-teamlife-a{background:rgba(15,40,20,.6);border:1.5px solid rgba(34,197,94,.45);color:#86efac;}
+.v2-life-num{font-family:'Orbitron',sans-serif;font-weight:900;font-size:20px;}
+.v2-board-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1;min-height:0;}
+.v2-board{background:rgba(8,8,28,.55);border:1px solid var(--border-v);border-radius:10px;padding:7px 9px;display:flex;flex-direction:column;gap:5px;min-height:0;overflow:hidden;}
+.v2-board.v2-enemy{border-color:rgba(239,68,68,.25);}
+.v2-board.v2-you{border-color:rgba(34,197,94,.25);}
+.v2-board.v2-active{box-shadow:0 0 0 2px var(--gold),0 0 16px rgba(200,164,74,.35);border-color:var(--gold);}
+.v2-board-label{font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:#cbd5e1;letter-spacing:1px;display:flex;justify-content:space-between;flex-shrink:0;}
+.v2-loc{display:flex;gap:5px;flex-wrap:wrap;min-height:0;}
+.v2-loc .location-zone-label{font-size:8px;color:#6b7280;align-self:center;}
+.v2-field{display:flex;gap:6px;flex-wrap:wrap;align-content:flex-start;flex:1;min-height:0;overflow-y:auto;}
+/* compact cards inside 2v2 boards */
+.v2-board .card-slot{width:74px;}
+.v2-board .card-slot .card-art-el,.v2-board .card-slot img{height:74px!important;}
+.v2-control{display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap;background:rgba(8,8,24,.6);border:1px solid var(--border-v);border-radius:10px;padding:5px 10px;flex-shrink:0;}
+.v2-turn{font-family:'Orbitron',sans-serif;font-size:12px;color:var(--gold-bright);font-weight:700;letter-spacing:1px;margin-right:4px;}
+.v2-phases{display:flex;gap:4px;}
+.v2-tools{display:flex;gap:4px;}
+.v2-hand-dock{flex-shrink:0;background:rgba(8,8,24,.5);border:1px solid var(--border-v);border-radius:10px;padding:5px 8px;}
+.v2-hand-label{font-size:9px;color:#9ca3af;letter-spacing:2px;margin-bottom:3px;}
+.v2-hand{display:flex;gap:6px;overflow-x:auto;min-height:96px;}
+.v2-log{flex-shrink:0;height:48px;overflow-y:auto;font-size:10px;color:#9ca3af;background:rgba(0,0,0,.3);border-radius:8px;padding:5px 9px;line-height:1.5;}
 .energy-big-icon{
   font-size:26px;
   filter:drop-shadow(0 0 6px rgba(251,191,36,.7));
@@ -5592,6 +5607,61 @@ textarea{
   </div>
 </div>
 
+<!-- DEDICATED 2v2 SCREEN -->
+<div id="game-screen-2v2" class="screen">
+  <div class="v2-wrap">
+    <div class="v2-teamlife v2-teamlife-b"><span>TEAM B (AI)</span><span class="v2-life-num" id="v2-team-b-life">130</span>❤️</div>
+    <div class="v2-board-row">
+      <div class="v2-board v2-enemy" id="v2-board-2">
+        <div class="v2-board-label" id="v2-label-2">B1 · ⚡<span id="v2-energy-2">5</span></div>
+        <div class="v2-loc" id="v2-loc-2"></div>
+        <div class="v2-field" id="v2-field-2"></div>
+      </div>
+      <div class="v2-board v2-enemy" id="v2-board-4">
+        <div class="v2-board-label" id="v2-label-4">B2 · ⚡<span id="v2-energy-4">5</span></div>
+        <div class="v2-loc" id="v2-loc-4"></div>
+        <div class="v2-field" id="v2-field-4"></div>
+      </div>
+    </div>
+    <div class="v2-control">
+      <div class="v2-turn" id="v2-turn-indicator">A1 — your turn</div>
+      <div class="v2-phases">
+        <button class="phase-pill" id="v2-ph-draw" onclick="doPhase('draw')">🎴</button>
+        <button class="phase-pill" id="v2-ph-resource" onclick="doPhase('resource')">⚡</button>
+        <button class="phase-pill" id="v2-ph-main" onclick="doPhase('main')">⚔️</button>
+        <button class="phase-pill" id="v2-ph-attack" onclick="doPhase('attack')">🗡️</button>
+      </div>
+      <div class="v2-tools">
+        <button class="action-tool-btn tf" onclick="openTransformModal()" title="Transform">⬆</button>
+        <button class="action-tool-btn ab" onclick="openAbilityModal()" title="Abilities">✨</button>
+        <button class="action-tool-btn eq" onclick="openEquipModal()" title="Equip">🛡</button>
+        <button class="action-tool-btn" onclick="flipCoin()" title="Coin">🪙</button>
+        <button class="action-tool-btn" onclick="openDiceModal()" title="Dice">🎲</button>
+      </div>
+      <button class="end-turn-btn" id="v2-end" onclick="endTurnNow()">⏭ END TURN</button>
+      <button class="action-tool-btn home" onclick="confirmReturnMenu()" title="Menu">🏠</button>
+    </div>
+    <div class="v2-board-row">
+      <div class="v2-board v2-you" id="v2-board-1">
+        <div class="v2-board-label" id="v2-label-1">A1 (You) · ⚡<span id="v2-energy-1">5</span></div>
+        <div class="v2-loc" id="v2-loc-1"></div>
+        <div class="v2-field" id="v2-field-1"></div>
+      </div>
+      <div class="v2-board v2-you" id="v2-board-3">
+        <div class="v2-board-label" id="v2-label-3">A2 (You) · ⚡<span id="v2-energy-3">5</span></div>
+        <div class="v2-loc" id="v2-loc-3"></div>
+        <div class="v2-field" id="v2-field-3"></div>
+      </div>
+    </div>
+    <div class="v2-teamlife v2-teamlife-a">❤️<span class="v2-life-num" id="v2-team-a-life">130</span><span>TEAM A (You)</span></div>
+    <div class="v2-hand-dock">
+      <div class="v2-hand-label">HAND — <span id="v2-hand-owner">A1</span></div>
+      <div class="v2-hand" id="v2-hand"></div>
+    </div>
+    <div class="v2-log" id="v2-log"></div>
+  </div>
+</div>
+
 <!-- GAME SCREEN -->
 <div id="game-screen">
   <!-- MOBILE-ONLY: drawer toggle buttons (hidden on desktop via CSS) -->
@@ -5600,12 +5670,6 @@ textarea{
 
   <!-- LEFT: Prize columns + Right: hover preview, with board in middle -->
   <div class="battle-layout">
-
-    <!-- 2v2 team life bar (shown only in 2v2) -->
-    <div class="team-life-bar" id="team-life-2v2" style="display:none">
-      <div class="team-life-pill team-b-pill">TEAM B (AI) · <span id="team-b-life">130</span> ❤️</div>
-      <div class="team-life-pill team-a-pill">❤️ <span id="team-a-life">130</span> · TEAM A (You)</div>
-    </div>
 
     <!-- LEFT SIDEBAR: Player panels + Prize cards -->
     <div class="prize-sidebar">
@@ -5721,15 +5785,6 @@ textarea{
         <div class="hand-area opp-hand" id="p2-hand-display"></div>
       </div>
 
-      <!-- 2v2: Team B second board (B2 = player 4) -->
-      <div class="board-2v2 board-2v2-enemy" id="p4-board2v2" style="display:none">
-        <div class="board-2v2-header"><span id="p4-name2v2">B2</span>
-          <span class="board-2v2-meta">⚡<span id="p4-energy">5</span> · Dk<span id="p4-deck-count">0</span> · Dc<span id="p4-discard-count">0</span> · Rz<span id="p4-rift-count">0</span></span>
-        </div>
-        <div class="location-zone" id="p4-loc-zone"><div class="location-zone-label">LOCATIONS</div></div>
-        <div class="char-field" id="p4-field"></div>
-      </div>
-
       <!-- CENTER COMMAND BAR: phase pills + tools + END TURN + log -->
       <div class="center-strip">
         <div class="phase-bar-center">
@@ -5777,15 +5832,6 @@ textarea{
           </div>
           <div class="char-field" id="p1-field"></div>
         </div>
-      </div>
-
-      <!-- 2v2: Team A second board (A2 = player 3) -->
-      <div class="board-2v2 board-2v2-ally" id="p3-board2v2" style="display:none">
-        <div class="board-2v2-header"><span id="p3-name2v2">A2</span>
-          <span class="board-2v2-meta">⚡<span id="p3-energy">5</span> · Dk<span id="p3-deck-count">0</span> · Dc<span id="p3-discard-count">0</span> · Rz<span id="p3-rift-count">0</span></span>
-        </div>
-        <div class="location-zone" id="p3-loc-zone"><div class="location-zone-label">LOCATIONS</div></div>
-        <div class="char-field" id="p3-field"></div>
       </div>
 
       <!-- P1 HAND (moved to bottom) -->
@@ -7078,11 +7124,8 @@ function startGame2v2(mode, decks){
   order.forEach(p=>{ for(let i=0;i<7;i++) drawCard(p,true); });
   order.forEach(p=>{ if(heralds[p]) log(`${players[p].name} Herald: ${DB[heralds[p].cid].name} enters!`,'gain'); });
   log('2v2 Team Battle started! Turn order: A1 → B1 → A2 → B2.','info');
-  log('⚠ 2v2 is in development — turn flow & combat are being built.','info');
-  const gs=document.getElementById('game-screen'); if(gs)gs.classList.add('mode-2v2');
-  const n3=document.getElementById('p3-name2v2'); if(n3)n3.textContent='A2 (You)';
-  const n4=document.getElementById('p4-name2v2'); if(n4)n4.textContent='B2 (AI)';
-  showScreen('game-screen'); renderAll();
+  log('⚠ 2v2 beta — AI boards pass; team-combat is next.','info');
+  showScreen('game-screen-2v2'); renderAll2v2();
 }
 
 // 2v2 turn advancement: step through [1,2,3,4]. (AI boards currently pass — the
@@ -7096,7 +7139,7 @@ function execEnd2v2(p){
   if(G.turnIndex===0)G.turn++;
   G.phase='draw';G.phasesDone=[];G.selectedAttacker=null;G.heraldAttacking=false;
   if(typeof startTurnFx==='function')startTurnFx(nx);
-  renderAll();
+  renderAll2v2();
   if(typeof showTurnBanner==='function')showTurnBanner(isHumanPlayer(nx));
   // AI-controlled boards: per-board AI comes in the next slice; for now pass.
   if((G.aiPlayers||[]).includes(nx)){
@@ -11567,6 +11610,7 @@ function showRiftZone(p){
 // ═══════════════════════════════════════════════════
 function renderAll(){
   if(!G||!G.players)return;
+  if(G.is2v2){ renderAll2v2(); return; }
   recalcPassives();
   [1,2].forEach(p=>{
     const pl=G.players[p];
@@ -11609,21 +11653,76 @@ function renderAll(){
   });
   // Online PvP — broadcast state after every render (when it's my turn)
   syncOnlineState();
-  // 2v2: render the two extra boards (A2=3, B2=4) and team life.
-  if(G.is2v2){ [3,4].forEach(p=>renderBoard2v2(p)); if(typeof renderTeamLife==='function')renderTeamLife(); }
 }
 
 // Render a 2v2 extra board (player 3 or 4): field, locations, and meta counts.
 function renderBoard2v2(p){
   if(!G.players[p])return;
-  const pl=G.players[p];
-  const setTxt=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
-  setTxt('p'+p+'-energy', pl.energy);
-  setTxt('p'+p+'-deck-count', pl.deck.length);
-  setTxt('p'+p+'-discard-count', pl.discard.length);
-  setTxt('p'+p+'-rift-count', (pl.rift||[]).length);
-  if(typeof renderField==='function') renderField(p);
-  if(typeof renderLocZone==='function') renderLocZone(p);
+}
+
+// Full render for the dedicated 2v2 screen.
+const _V2LBL={1:'A1',2:'B1',3:'A2',4:'B2'};
+function renderAll2v2(){
+  if(!G||!G.is2v2)return;
+  recalcPassives();
+  [1,2,3,4].forEach(p=>{
+    if(typeof renderField==='function') renderField(p,'v2-field-'+p);
+    if(typeof renderLocZone==='function') renderLocZone(p,'v2-loc-'+p);
+    const e=document.getElementById('v2-energy-'+p); if(e)e.textContent=G.players[p].energy;
+    const b=document.getElementById('v2-board-'+p); if(b)b.classList.toggle('v2-active',p===G.activePlayer);
+  });
+  const ta=document.getElementById('v2-team-a-life'); if(ta)ta.textContent=G.teamLife.A;
+  const tb=document.getElementById('v2-team-b-life'); if(tb)tb.textContent=G.teamLife.B;
+  const ti=document.getElementById('v2-turn-indicator');
+  if(ti)ti.textContent=_V2LBL[G.activePlayer]+(isHumanPlayer(G.activePlayer)?' — your turn':' — AI turn');
+  renderHand2v2();
+  renderPhaseBar2v2();
+  renderV2Log();
+}
+function renderHand2v2(){
+  const el=document.getElementById('v2-hand'); if(!el)return; el.innerHTML='';
+  const owner=document.getElementById('v2-hand-owner'); if(owner)owner.textContent=_V2LBL[G.activePlayer]||'';
+  const handP=isHumanPlayer(G.activePlayer)?G.activePlayer:null;
+  if(handP===null){ el.innerHTML='<div style="font-size:11px;color:#6b7280;padding:30px 10px">AI is playing…</div>'; return; }
+  const pl=G.players[handP];
+  pl.hand.forEach(fc=>{
+    const c=DB[fc.cid];if(!c)return;
+    const div=document.createElement('div');
+    const effectiveCost=Math.max(0,c.cost+(fc.costMod||0));
+    const playable=!c.transformOnly&&G.activePlayer===handP&&G.phase==='main'&&pl.energy>=effectiveCost;
+    div.className='hand-card '+(isInst(c)?'instant-card '+(playable?'playable':'not-playable'):playable?'playable':'not-playable');
+    const artWrap=document.createElement('div');artWrap.className='hand-art-area';
+    const url=getImg(fc.cid);if(url){const img=document.createElement('img');img.src=url;artWrap.appendChild(img);}else artWrap.textContent=c.sym||'?';
+    div.appendChild(artWrap);
+    const info=document.createElement('div');info.className='hand-info';
+    info.innerHTML=`<div class="hand-name">${c.name}</div>
+      <div style="display:flex;justify-content:space-between">
+        ${c.transformOnly?`<span style="font-size:8px;color:#f59e0b;font-weight:700">🔒TF</span>`:`<span style="font-size:9px;color:#fbbf24;font-weight:700">⚡${effectiveCost}</span>`}
+        ${c.atk>0?`<span style="font-size:8px;color:#94a3b8">${c.atk}/${c.hp}</span>`:''}
+      </div>`;
+    div.appendChild(info);
+    div.onclick=()=>onHandClick(handP,fc.uid,fc);
+    div.oncontextmenu=e=>{e.preventDefault();showFullCard(fc.cid,null);};
+    div.onmouseenter=()=>showHoverPreview(fc.cid);
+    div.onmouseleave=()=>clearHoverPreview();
+    el.appendChild(div);
+  });
+}
+function renderPhaseBar2v2(){
+  ['draw','resource','main','attack'].forEach(ph=>{
+    const btn=document.getElementById('v2-ph-'+ph);if(!btn)return;
+    btn.className='phase-pill';
+    if(G.phasesDone.includes(ph))btn.classList.add('done-phase');
+    else if(ph===G.phase)btn.classList.add('active-phase');
+    btn.disabled=!isHumanPlayer(G.activePlayer)||G.phasesDone.includes(ph);
+  });
+  const end=document.getElementById('v2-end'); if(end)end.disabled=!isHumanPlayer(G.activePlayer);
+}
+function renderV2Log(){
+  const el=document.getElementById('v2-log'); if(!el)return;
+  const lines=(G.log||[]).slice(-6);
+  el.innerHTML=lines.map(l=>`<div>${typeof l==='string'?l:(l.text||'')}</div>`).join('');
+  el.scrollTop=el.scrollHeight;
 }
 
 function updateHandLimitDisplay(p){
@@ -11665,8 +11764,8 @@ function renderPrizes(p){
   }
 }
 
-function renderField(p){
-  const el=document.getElementById(`p${p}-field`);el.innerHTML='';
+function renderField(p, targetId){
+  const el=document.getElementById(targetId||(`p${p}-field`));if(!el)return;el.innerHTML='';
   G.players[p].field.filter(f=>isChar(DB[f.cid])).forEach(fc=>{
     const c=DB[fc.cid];if(!c)return;
     const div=document.createElement('div');div.className='card-slot';
@@ -11697,8 +11796,9 @@ function renderField(p){
   });
 }
 
-function renderLocZone(p){
-  const el=document.getElementById(`p${p}-loc-zone`);
+function renderLocZone(p, targetId){
+  const el=document.getElementById(targetId||(`p${p}-loc-zone`));
+  if(!el)return;
   el.innerHTML='<div class="location-zone-label">LOCATIONS</div>';
   G.players[p].field.filter(f=>isLoc(DB[f.cid])).forEach(fc=>{
     const c=DB[fc.cid];if(!c)return;
