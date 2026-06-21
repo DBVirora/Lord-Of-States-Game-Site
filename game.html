@@ -4254,6 +4254,17 @@ textarea{
   border-color:rgba(200,164,74,.6);
   box-shadow:0 0 14px rgba(200,164,74,.3);
 }
+/* Health Mode life bar (shown only in lifeforce/combined modes) */
+.player-panel-life{
+  display:flex;align-items:center;gap:7px;
+  background:rgba(20,8,8,.55);
+  border:1.5px solid rgba(239,68,68,.4);
+  border-radius:10px;padding:6px 12px;margin-bottom:6px;
+}
+.lf-heart{font-size:16px;flex-shrink:0;filter:drop-shadow(0 0 4px rgba(239,68,68,.6));}
+.lf-bar-track{flex:1;height:10px;background:rgba(0,0,0,.45);border-radius:6px;overflow:hidden;border:1px solid rgba(239,68,68,.25);}
+.lf-bar-fill{height:100%;width:100%;border-radius:6px;transition:width .35s ease, background .35s ease;background:linear-gradient(90deg,#ef4444,#f97316);}
+.lf-val{font-family:'Orbitron',sans-serif;font-weight:900;font-size:16px;color:#fca5a5;min-width:30px;text-align:right;text-shadow:0 0 6px rgba(239,68,68,.5);}
 .energy-big-icon{
   font-size:26px;
   filter:drop-shadow(0 0 6px rgba(251,191,36,.7));
@@ -5593,6 +5604,11 @@ textarea{
           <div class="energy-big-pips" id="p2-energy-pips"></div>
         </div>
         <div class="energy-breakdown" id="p2-color-energy"></div>
+        <div class="player-panel-life" id="p2-lf-wrap" style="display:none">
+          <span class="lf-heart">❤️</span>
+          <div class="lf-bar-track"><div class="lf-bar-fill" id="p2-lf-bar"></div></div>
+          <span class="lf-val" id="p2-lf-val">75</span>
+        </div>
         <div class="player-panel-zones">
           <div class="discard-pile-mini" onclick="showDiscard(2)" title="Discard pile (Otherworld)" id="p2-discard-pile">
             <div class="discard-pile-card" id="p2-discard-top"><span class="discard-empty-icon">🗑</span></div>
@@ -5631,6 +5647,11 @@ textarea{
           <div class="energy-big-pips" id="p1-energy-pips"></div>
         </div>
         <div class="energy-breakdown" id="p1-color-energy"></div>
+        <div class="player-panel-life" id="p1-lf-wrap" style="display:none">
+          <span class="lf-heart">❤️</span>
+          <div class="lf-bar-track"><div class="lf-bar-fill" id="p1-lf-bar"></div></div>
+          <span class="lf-val" id="p1-lf-val">75</span>
+        </div>
         <div class="player-panel-zones">
           <div class="discard-pile-mini" onclick="showDiscard(1)" title="Discard pile (Otherworld)" id="p1-discard-pile">
             <div class="discard-pile-card" id="p1-discard-top"><span class="discard-empty-icon">🗑</span></div>
@@ -7186,6 +7207,10 @@ function killCard(p,fc){
     // Prize Mode: when a character dies, the KILLER takes a prize FROM the victim's pile.
     // p = victim (lost the character), k = killer (claims the prize from victim's side)
     if(G.gameMode==='prize')claimPrizeFrom(p, k);
+    // HEALTH MODE: destroying a character drains 2 Life from its owner's side.
+    if((G.gameMode==='lifeforce'||G.gameMode==='combined')&&typeof damageLifeForce==='function'){
+      damageLifeForce(p,2,'character destroyed');
+    }
     // Achievement tracking + XP: count enemy characters YOU (player 1) destroy
     if(k===1){
       _achData.chars_destroyed = (_achData.chars_destroyed||0) + 1;
