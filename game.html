@@ -4266,6 +4266,18 @@ textarea{
 .lf-bar-fill{height:100%;width:100%;border-radius:6px;transition:width .35s ease, background .35s ease;background:linear-gradient(90deg,#ef4444,#f97316);}
 .lf-val{font-family:'Orbitron',sans-serif;font-weight:900;font-size:16px;color:#fca5a5;min-width:30px;text-align:right;text-shadow:0 0 6px rgba(239,68,68,.5);}
 .player-panel-life.lf-targetable{border-color:#ef4444;box-shadow:0 0 14px rgba(239,68,68,.6);animation:glow-r 1.2s infinite;}
+/* 2v2 layout */
+.board-2v2{margin:6px auto;max-width:920px;background:rgba(8,8,28,.5);border:1px solid var(--border-v);border-radius:10px;padding:8px 10px;}
+.board-2v2-enemy{border-color:rgba(239,68,68,.3);}
+.board-2v2-ally{border-color:rgba(34,197,94,.3);}
+.board-2v2-header{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;color:#cbd5e1;font-family:'Cinzel',serif;margin-bottom:5px;letter-spacing:1px;}
+.board-2v2-meta{font-size:9px;color:#6b7280;font-weight:400;}
+.team-life-bar{display:flex;justify-content:space-between;gap:10px;padding:6px 12px;margin-bottom:6px;}
+.team-life-pill{font-family:'Orbitron',sans-serif;font-weight:900;font-size:14px;padding:6px 14px;border-radius:10px;letter-spacing:1px;}
+.team-a-pill{background:rgba(20,40,20,.6);border:1.5px solid rgba(34,197,94,.5);color:#86efac;}
+.team-b-pill{background:rgba(40,20,20,.6);border:1.5px solid rgba(239,68,68,.5);color:#fca5a5;}
+.mode-2v2 .board-2v2{display:block!important;}
+.mode-2v2 #team-life-2v2{display:flex!important;}
 .energy-big-icon{
   font-size:26px;
   filter:drop-shadow(0 0 6px rgba(251,191,36,.7));
@@ -5387,6 +5399,7 @@ textarea{
     <button class="menu-btn ai-btn" onclick="goToDeckSelect('easy')"><span class="menu-btn-sweep"></span>🤖  AI · EASY</button>
     <button class="menu-btn ai-btn" onclick="goToDeckSelect('medium')"><span class="menu-btn-sweep"></span>🤖  AI · MEDIUM</button>
     <button class="menu-btn ai-btn" onclick="goToDeckSelect('hard')"><span class="menu-btn-sweep"></span>🤖  AI · HARD</button>
+    <button class="menu-btn ai-btn" onclick="startTestGame2v2()" title="2v2 Team Battle (in development)"><span class="menu-btn-sweep"></span>👥  2v2 TEAM (BETA)</button>
   </div>
 
   <!-- TOOLS section -->
@@ -5588,6 +5601,12 @@ textarea{
   <!-- LEFT: Prize columns + Right: hover preview, with board in middle -->
   <div class="battle-layout">
 
+    <!-- 2v2 team life bar (shown only in 2v2) -->
+    <div class="team-life-bar" id="team-life-2v2" style="display:none">
+      <div class="team-life-pill team-b-pill">TEAM B (AI) · <span id="team-b-life">130</span> ❤️</div>
+      <div class="team-life-pill team-a-pill">❤️ <span id="team-a-life">130</span> · TEAM A (You)</div>
+    </div>
+
     <!-- LEFT SIDEBAR: Player panels + Prize cards -->
     <div class="prize-sidebar">
       <!-- Opponent panel -->
@@ -5702,6 +5721,15 @@ textarea{
         <div class="hand-area opp-hand" id="p2-hand-display"></div>
       </div>
 
+      <!-- 2v2: Team B second board (B2 = player 4) -->
+      <div class="board-2v2 board-2v2-enemy" id="p4-board2v2" style="display:none">
+        <div class="board-2v2-header"><span id="p4-name2v2">B2</span>
+          <span class="board-2v2-meta">⚡<span id="p4-energy">5</span> · Dk<span id="p4-deck-count">0</span> · Dc<span id="p4-discard-count">0</span> · Rz<span id="p4-rift-count">0</span></span>
+        </div>
+        <div class="location-zone" id="p4-loc-zone"><div class="location-zone-label">LOCATIONS</div></div>
+        <div class="char-field" id="p4-field"></div>
+      </div>
+
       <!-- CENTER COMMAND BAR: phase pills + tools + END TURN + log -->
       <div class="center-strip">
         <div class="phase-bar-center">
@@ -5749,6 +5777,15 @@ textarea{
           </div>
           <div class="char-field" id="p1-field"></div>
         </div>
+      </div>
+
+      <!-- 2v2: Team A second board (A2 = player 3) -->
+      <div class="board-2v2 board-2v2-ally" id="p3-board2v2" style="display:none">
+        <div class="board-2v2-header"><span id="p3-name2v2">A2</span>
+          <span class="board-2v2-meta">⚡<span id="p3-energy">5</span> · Dk<span id="p3-deck-count">0</span> · Dc<span id="p3-discard-count">0</span> · Rz<span id="p3-rift-count">0</span></span>
+        </div>
+        <div class="location-zone" id="p3-loc-zone"><div class="location-zone-label">LOCATIONS</div></div>
+        <div class="char-field" id="p3-field"></div>
       </div>
 
       <!-- P1 HAND (moved to bottom) -->
@@ -6963,12 +7000,119 @@ function startGame(mode,deck1,deck2){
     _achData.has_entered_match=true;
     setTimeout(()=>checkAchievements(),800);
   }
+  const _gs=document.getElementById('game-screen'); if(_gs)_gs.classList.remove('mode-2v2');
   showScreen('game-screen');renderAll();
 }
 
 // ═══════════════════════════════════════════════════
-// HAND LIMIT CHECK — warning only, penalty at end of turn
+// 2v2 TEAM BATTLE — FOUNDATION (Slice 1)
+//   Team A = players 1 & 3, Team B = players 2 & 4.
+//   Turn order [1,2,3,4] = A1 → B1 → A2 → B2.
+//   Single-player: human controls Team A (1 & 3); AI controls Team B (2 & 4).
+//   Shared team Life (130 default); destroying a character drains 2 from its team.
+// NOTE: turn flow, combat routing, and the 4-board UI come in later slices — this
+// slice only establishes the data model, setup, helpers, and win condition.
 // ═══════════════════════════════════════════════════
+const TEAM_START_LIFE = 130;
+
+function teamOf(p){ return (p===1||p===3) ? 'A' : 'B'; }
+function enemyTeamOf(p){ return teamOf(p)==='A' ? 'B' : 'A'; }
+function otherTeam(t){ return t==='A' ? 'B' : 'A'; }
+function teamPlayers(t){ return G.teams ? G.teams[t] : (t==='A'?[1]:[2]); }
+function isHumanPlayer(p){ return G.is2v2 ? (G.humanPlayers||[]).includes(p) : (p===1); }
+
+// Reduce a team's shared Life; checks the team-loss win condition.
+function damageTeamLife(team, amount, source){
+  if(!G||!G.teamLife)return;
+  const old=G.teamLife[team]||0;
+  G.teamLife[team]=Math.max(0, old-amount);
+  log(`💔 Team ${team} Life: ${old} → ${G.teamLife[team]} (-${amount} from ${source||'damage'})`, 'dmg');
+  if(typeof renderTeamLife==='function') renderTeamLife();
+  if(G.teamLife[team]<=0){
+    triggerWin2v2(otherTeam(team), `Team ${team}'s Life depleted!`);
+  }
+}
+
+// Win in 2v2 is by TEAM. Translates to triggerWin using a representative player.
+function triggerWin2v2(winningTeam, reason){
+  if(G.gameOver)return;
+  const rep = teamPlayers(winningTeam)[0] || 1;
+  triggerWin(rep, reason);
+}
+
+// Build a 4-player game. decks = [dA1, dB1, dA2, dB2] (turn-order order).
+function startGame2v2(mode, decks){
+  if(typeof loadGameSettings==="function")loadGameSettings();
+  gameMode=mode; us=0;
+  const startLife=TEAM_START_LIFE;
+  function extractHerald(rawDeck){
+    let herald=null;
+    for(let i=rawDeck.length-1;i>=0;i--){
+      if(isHerald(DB[rawDeck[i]])){ if(!herald)herald=newFC(rawDeck[i]); rawDeck.splice(i,1); }
+    }
+    return herald;
+  }
+  const order=[1,2,3,4];
+  const players={};
+  const heralds={};
+  order.forEach((p,idx)=>{
+    const raw=[...(decks[idx]||decks[0]||[])];
+    heralds[p]=extractHerald(raw);
+    const deck=shuffle(raw);
+    const human=(p===1||p===3);
+    players[p]={
+      name: human ? ('You ('+(p===1?'A1':'A2')+')') : ('AI ('+(p===2?'B1':'B2')+')'),
+      energy:5, colorEnergy:{}, hand:[], field:[], deck, discard:[], rift:[],
+      prizes:[], prizesClaimed:0, herald:heralds[p], lifeForce:0
+    };
+  });
+  G={
+    turn:1, is2v2:true, gameMode:'lifeforce', // 2v2 uses Health/team-life rules
+    turnOrder:order, turnIndex:0, activePlayer:order[0],
+    teams:{A:[1,3], B:[2,4]}, teamLife:{A:startLife, B:startLife}, startingTeamLife:startLife,
+    humanPlayers:[1,3], aiPlayers:[2,4],
+    phase:'draw', phasesDone:[], selectedAttacker:null, gameOver:false,
+    deckSearchCallback:null, heraldAttacking:false, bonusAttackers:0,
+    players, log:[]
+  };
+  order.forEach(p=>{ for(let i=0;i<7;i++) drawCard(p,true); });
+  order.forEach(p=>{ if(heralds[p]) log(`${players[p].name} Herald: ${DB[heralds[p].cid].name} enters!`,'gain'); });
+  log('2v2 Team Battle started! Turn order: A1 → B1 → A2 → B2.','info');
+  log('⚠ 2v2 is in development — turn flow & combat are being built.','info');
+  const gs=document.getElementById('game-screen'); if(gs)gs.classList.add('mode-2v2');
+  const n3=document.getElementById('p3-name2v2'); if(n3)n3.textContent='A2 (You)';
+  const n4=document.getElementById('p4-name2v2'); if(n4)n4.textContent='B2 (AI)';
+  showScreen('game-screen'); renderAll();
+}
+
+// 2v2 turn advancement: step through [1,2,3,4]. (AI boards currently pass — the
+// per-board AI and the 4-board interactive UI are the next slices.)
+function execEnd2v2(p){
+  endTurnFx(p);
+  log((G.players[p]?.name||('P'+p))+' ends turn.','info');
+  G.turnIndex=((G.turnIndex||0)+1)%G.turnOrder.length;
+  const nx=G.turnOrder[G.turnIndex];
+  G.activePlayer=nx;
+  if(G.turnIndex===0)G.turn++;
+  G.phase='draw';G.phasesDone=[];G.selectedAttacker=null;G.heraldAttacking=false;
+  if(typeof startTurnFx==='function')startTurnFx(nx);
+  renderAll();
+  if(typeof showTurnBanner==='function')showTurnBanner(isHumanPlayer(nx));
+  // AI-controlled boards: per-board AI comes in the next slice; for now pass.
+  if((G.aiPlayers||[]).includes(nx)){
+    log(`${G.players[nx].name}'s turn (AI board — passes for now).`,'info');
+    setTimeout(()=>{ if(!G.gameOver) execEnd(); }, 900);
+  }
+}
+
+// Dev launch for testing the 2v2 foundation (random decks for all 4 boards).
+function startTestGame2v2(){
+  if(typeof generateRandomDeck!=='function'){ alert('Deck generator unavailable.'); return; }
+  const decks=[generateRandomDeck(),generateRandomDeck(),generateRandomDeck(),generateRandomDeck()];
+  startGame2v2('lifeforce', decks);
+}
+
+
 function checkHandLimit(p){
   const pl=G.players[p];
   if(pl.hand.length>MAX_HAND){
@@ -7209,7 +7353,9 @@ function killCard(p,fc){
     // p = victim (lost the character), k = killer (claims the prize from victim's side)
     if(G.gameMode==='prize')claimPrizeFrom(p, k);
     // HEALTH MODE: destroying a character drains 2 Life from its owner's side.
-    if((G.gameMode==='lifeforce'||G.gameMode==='combined')&&typeof damageLifeForce==='function'){
+    if(G.is2v2){
+      if(typeof damageTeamLife==='function') damageTeamLife(teamOf(p), 2, 'character destroyed');
+    } else if((G.gameMode==='lifeforce'||G.gameMode==='combined')&&typeof damageLifeForce==='function'){
       damageLifeForce(p,2,'character destroyed');
     }
     // Achievement tracking + XP: count enemy characters YOU (player 1) destroy
@@ -7332,6 +7478,11 @@ function claimPrizeOnHeraldHit(attackerP){
 }
 
 function checkWin(){
+  if(G.is2v2){
+    if((G.teamLife.A||0)<=0){ triggerWin2v2('B','Team A Life depleted!'); return; }
+    if((G.teamLife.B||0)<=0){ triggerWin2v2('A','Team B Life depleted!'); return; }
+    return;
+  }
   [1,2].forEach(p=>{const o=p===1?2:1;
     // Life Force win condition
     if((G.gameMode==='lifeforce'||G.gameMode==='combined')&&(G.players[o].lifeForce||0)<=0){
@@ -9791,6 +9942,7 @@ function execEnd(){
   _endingTurn=true;
   const p=G.activePlayer;
   try {
+    if(G.is2v2){ execEnd2v2(p); _endingTurn=false; return; }
     const didAttack=G.players[1].field.some(f=>(f.attacksThisTurn||0)>0)||(G.players[1].herald?.attacksThisTurn||0)>0;
     const usedAbility=G.players[1].usedAbilityThisTurn;
     if(p===1&&!didAttack&&!usedAbility){
@@ -11267,6 +11419,12 @@ function selectPrizeCount(n){
 
 function renderLifeForce(){
   if(!G||!G.players)return;
+  if(G.is2v2){
+    // Individual life bars are not used in 2v2 (team life instead).
+    [1,2].forEach(p=>{ const w=document.getElementById('p'+p+'-lf-wrap'); if(w)w.style.display='none'; });
+    if(typeof renderTeamLife==='function') renderTeamLife();
+    return;
+  }
   [1,2].forEach(p=>{
     const wrap=document.getElementById('p'+p+'-lf-wrap');
     const val=document.getElementById('p'+p+'-lf-val');
@@ -11288,6 +11446,16 @@ function renderLifeForce(){
       const canTargetLife = G.phase==='attack' && G.activePlayer===1 && !!G.selectedAttacker;
       wrap.classList.toggle('lf-targetable', canTargetLife);
     }
+  });
+}
+
+// Minimal team-life renderer (2v2). Full 4-board HUD comes in a later slice;
+// for now this safely updates optional team-life elements if present.
+function renderTeamLife(){
+  if(!G||!G.is2v2||!G.teamLife)return;
+  ['A','B'].forEach(t=>{
+    const val=document.getElementById('team-'+t.toLowerCase()+'-life');
+    if(val)val.textContent=G.teamLife[t];
   });
 }
 
@@ -11441,6 +11609,21 @@ function renderAll(){
   });
   // Online PvP — broadcast state after every render (when it's my turn)
   syncOnlineState();
+  // 2v2: render the two extra boards (A2=3, B2=4) and team life.
+  if(G.is2v2){ [3,4].forEach(p=>renderBoard2v2(p)); if(typeof renderTeamLife==='function')renderTeamLife(); }
+}
+
+// Render a 2v2 extra board (player 3 or 4): field, locations, and meta counts.
+function renderBoard2v2(p){
+  if(!G.players[p])return;
+  const pl=G.players[p];
+  const setTxt=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  setTxt('p'+p+'-energy', pl.energy);
+  setTxt('p'+p+'-deck-count', pl.deck.length);
+  setTxt('p'+p+'-discard-count', pl.discard.length);
+  setTxt('p'+p+'-rift-count', (pl.rift||[]).length);
+  if(typeof renderField==='function') renderField(p);
+  if(typeof renderLocZone==='function') renderLocZone(p);
 }
 
 function updateHandLimitDisplay(p){
@@ -11555,12 +11738,16 @@ function renderP2Backs(){
 
 function renderHand(){
   const el=document.getElementById('p1-hand');el.innerHTML='';
-  const pl=G.players[1];
+  // 2v2: show the hand of whichever of YOUR players is currently active (1 or 3);
+  // during an AI turn there's no human hand to show.
+  const handP = G.is2v2 ? (isHumanPlayer(G.activePlayer)?G.activePlayer:null) : 1;
+  if(handP===null) return;
+  const pl=G.players[handP];
   pl.hand.forEach(fc=>{
     const c=DB[fc.cid];if(!c)return;
     const div=document.createElement('div');
     const effectiveCost=Math.max(0,c.cost+(fc.costMod||0));
-    const playable=!c.transformOnly&&G.activePlayer===1&&G.phase==='main'&&pl.energy>=effectiveCost;
+    const playable=!c.transformOnly&&G.activePlayer===handP&&G.phase==='main'&&pl.energy>=effectiveCost;
     div.className='hand-card '+(isInst(c)?'instant-card '+(playable?'playable':'not-playable'):playable?'playable':'not-playable');
     const artWrap=document.createElement('div');artWrap.className='hand-art-area';
     const url=getImg(fc.cid);if(url){const img=document.createElement('img');img.src=url;artWrap.appendChild(img);}else artWrap.textContent=c.sym||'?';
@@ -11574,7 +11761,7 @@ function renderHand(){
       </div>
       <div style="font-size:7px;color:${tc[c.type]||'#9ca3af'}">${c.transformOnly?'TF ONLY':c.type==='instant'?'INSTANT':c.type.replace('_',' ').toUpperCase().slice(0,6)}</div>`;
     div.appendChild(info);
-    div.onclick=()=>onHandClick(1,fc.uid,fc);
+    div.onclick=()=>onHandClick(handP,fc.uid,fc);
     div.oncontextmenu=e=>{e.preventDefault();showFullCard(fc.cid,null);};
     div.onmouseenter=()=>showHoverPreview(fc.cid);
     div.onmouseleave=()=>clearHoverPreview();
@@ -11589,7 +11776,7 @@ function renderPhaseBar(){
     btn.className='phase-pill';
     if(G.phasesDone.includes(ph))btn.classList.add('done-phase');
     else if(ph===G.phase)btn.classList.add('active-phase');
-    btn.disabled=G.activePlayer!==1||G.phasesDone.includes(ph);
+    btn.disabled=(G.is2v2?!isHumanPlayer(G.activePlayer):G.activePlayer!==1)||G.phasesDone.includes(ph);
   });
   // End turn button (separate styling)
   const endBtn=document.getElementById('ph-end');
