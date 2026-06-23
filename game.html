@@ -6377,6 +6377,7 @@ const DEFAULTS={
   aoliath_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/007-150%20(Aoliath%20Base).png',
   aoliath_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/008-150%20(Aoliath%20SSJ1).png',
   aoliath_ssj2_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/009-150%20(Aoliath%20SSJ2).png',
+  lumina_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/010-150%20(Lumina).png',
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
   billy_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/005-150%20(Billy%20SSJ1).png',
   veelden_kingdom_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/065-150%20(Veelden%20Kingdom%20Location).png',
@@ -6481,6 +6482,10 @@ const DB={
   aoliath_ssj2_bse:{id:'aoliath_ssj2_bse',rarity:'legend',name:'Aoliath (SSJ2)',color:'blue',charName:'Aoliath',charLine:'aoliath',formTier:'ssj2',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:8,atk:7,hp:10,sym:'SSJ2',transformOnly:true,setId:'base_set',cardNumber:'009/150',
     nextForms:[],path:'saiyan',
     abilities:[{label:'Furious Burst',type:'passive',cost:0,text:'Each time this character takes damage they gain +1 Attack.'},{label:'Exiled Hook',type:'activated',cost:0,text:"Choose 1 character on the opponent's field. This attack deals 2 damage. If it kills them send that character to the Rift Zone."}]},
+
+  // ── Lumina (Base Set 010) — Legend "Moon Queen". Green team-buff + recursion. ──
+  lumina_bse:{id:'lumina_bse',rarity:'legend',name:'Lumina',color:'green',subtypes:['Moon','Queen'],type:'base_char',race:'Moon Queen',cost:10,atk:11,hp:13,sym:'LUM',setId:'base_set',cardNumber:'010/150',
+    abilities:[{label:'Crescent Light',type:'passive',cost:0,text:'All characters on your field gain +2 Attack and +2 Health while Lumina is on the field.'},{label:'Full Moon Awakening',type:'activated',cost:7,text:'Flip a coin if heads you may choose any 1 card out of your Discard pile and bring it back into your hand. (Cost 7 Energy)'}]},
 
   // ── Veelden Kingdom (Base Set 065) — green Saiyan-tribal location (anthem + heal) ──
   veelden_kingdom_bse:{id:'veelden_kingdom_bse',rarity:'rare',name:'Veelden Kingdom',color:'green',charName:'Veelden Kingdom',subtypes:['Kingdom','Location'],type:'location',race:'Kingdom',cost:4,atk:0,hp:6,sym:'🏰',canBeAttackedBy:[],setId:'base_set',cardNumber:'065/150',
@@ -7317,6 +7322,11 @@ function recalcPassives(){
       // Support Boost (Volaris SSB): +3 ATK/+4 HP to each char next to this on field
       // (handled per-neighbor below, after this loop)
 
+      // LUMINA — Crescent Light: while a Lumina is on your field, ALL your
+      // characters (including her) gain +2 ATK / +2 HP. Removing her drops it.
+      if(pl.field.some(f=>f.cid==='lumina_bse')){
+        addA += 2; addH += 2;
+      }
       // Apply delta to current stats
       const deltaA=addA-prevA, deltaH=addH-prevH;
       fc.passiveAtk=addA; fc.passiveHp=addH;
@@ -10257,6 +10267,41 @@ function activateAbility(fc,abl){
       if(tfc){ tfc.mustAttack=true; log(`Combat Control: ${DB[tfc.cid].name} must attack on its next turn if able.`,'gain'); }
       renderAll();
     },{sourcePlayer:G.activePlayer,title:'Combat Control',desc:'Choose an opponent character — it must attack on its next turn if able.'});
+    return;
+  }
+  // ── LUMINA: Full Moon Awakening — pay 7⚡, flip a coin; on heads return any 1
+  // card from your Discard pile to your hand.
+  if(abl.label==='Full Moon Awakening'){
+    const ap=G.activePlayer; const pl=G.players[ap];
+    if(pl.energy<7){ log('Full Moon Awakening: need 7⚡.','dmg'); return; }
+    if(!pl.discard||!pl.discard.length){ log('Full Moon Awakening: your Discard pile is empty.','dmg'); return; }
+    spendEnergy(ap,7,DB[fc.cid]?.color||null);
+    fc.abilityUsed['Full Moon Awakening']=true;
+    pl.usedAbilityThisTurn=true;
+    if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; }
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    if(coin()){
+      const body=document.createElement('div');
+      body.innerHTML='<div style="font-size:11px;color:#86efac;margin-bottom:8px;line-height:1.5">🌕 HEADS! Choose a card from your Discard pile to return to your hand.</div>';
+      const list=document.createElement('div'); list.style.cssText='display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto';
+      pl.discard.forEach((cid,idx)=>{
+        const c=DB[cid]; if(!c)return;
+        const url=(typeof getImg==='function')?getImg(cid):null;
+        const row=document.createElement('button'); row.className='btn-gray btn-sm';
+        row.style.cssText='display:flex;align-items:center;gap:9px;padding:7px 10px;text-align:left;width:100%';
+        row.innerHTML=`<div style="width:30px;height:42px;border-radius:4px;background:#16162a;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px">${url?`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`:(c.sym||'🃏')}</div><span style="font-weight:700;color:#e2e8f0">${c.name} <span style="font-size:9px;color:#9ca3af">${(c.type||'').replace('_',' ')}</span></span>`;
+        row.onclick=()=>{ pl.discard.splice(idx,1); const nf=newFC(cid); if(nf)pl.hand.push(nf); log(`Full Moon Awakening: ${c.name} returns to ${pname(ap)}'s hand!`,'gain'); if(typeof checkHandLimit==='function')checkHandLimit(ap); closeAllModals(); renderAll(); };
+        list.appendChild(row);
+      });
+      body.appendChild(list);
+      const skip=document.createElement('button'); skip.className='btn-gray'; skip.style.cssText='margin-top:10px;width:100%;padding:8px'; skip.textContent='Skip (take nothing)'; skip.onclick=()=>{ closeAllModals(); renderAll(); };
+      body.appendChild(skip);
+      showModalEl('🌕 Full Moon Awakening', body);
+    } else {
+      log('Full Moon Awakening: TAILS — the moon stays dark. No recovery.','dmg');
+      renderAll();
+    }
     return;
   }
   // ── AOLIATH (SSJ2): Exiled Hook — strike an opponent character for 2; if it
