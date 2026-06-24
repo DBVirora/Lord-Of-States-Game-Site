@@ -6381,6 +6381,7 @@ const DEFAULTS={
   najeela_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/011-150%20(Najeela%20Base).png',
   gorim_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/145-150%20(Herald%20Gorim).png',
   peleus_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/146-150%20(Herald%20Peleus).png',
+  aquatic_hearth: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/071-150%20(Aquatic%20Hearth%20Equiptment).png',
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
   billy_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/005-150%20(Billy%20SSJ1).png',
   veelden_kingdom_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/065-150%20(Veelden%20Kingdom%20Location).png',
@@ -6564,6 +6565,8 @@ const DB={
     abilities:[{label:'Nullify',type:'passive',cost:0,text:'Nullify incoming attacks by -1 dmg.'},{label:'Enhanced Nullify',type:'activated',cost:2,text:'2 Mana: flip — Heads: nullify -3.'},{label:'Crystal Defense',type:'triggered',cost:0,text:'+5 HP for 3 rounds.'}],transforms:[]},
   move_out:{id:'move_out',rarity:'uncommon',color:'yellow',name:'Move Out The Way',charName:'Move Out The Way',subtypes:['Ability','Equipment'],type:'equipment',persistent:'until_used',race:'Ability',cost:1,atk:0,hp:0,sym:'💨',
     abilities:[{label:'Redirect',type:'triggered',cost:0,text:'When attached char is targeted: redirect damage to another field char. Discard after.'}],transforms:[]},
+  aquatic_hearth:{id:'aquatic_hearth',rarity:'rare',color:'blue',name:'Aquatic Hearth',charName:'Aquatic Hearth',subtypes:['Relic','Equipment'],type:'equipment',persistent:true,race:'Relic',cost:5,atk:0,hp:0,sym:'💎',setId:'base_set',cardNumber:'071/150',
+    abilities:[{label:'Tidal Bulwark',type:'passive',cost:0,text:'The character this equipment attaches to gains the ability to defensively block for a 50% increase. (Life Mode)'},{label:'Reinforced Defense',type:'passive',cost:0,text:'Character this becomes equipped to gains +5 Defense.'}],transforms:[]},
   // ── INSTANT ──
   saiyan_blood:{id:'saiyan_blood',rarity:'rare',color:'red',name:'Saiyan Blood',charName:'Saiyan Blood',subtypes:['Instant','Saiyan'],type:'instant',race:'Instant',cost:2,atk:0,hp:0,sym:'🩸',
     abilities:[{label:'Saiyan Fortify',type:'activated',cost:0,text:'Attach to a Fighter: +2 DEF. If Fighter is Saiyan (any subtype): +3 DEF instead. Can be used as attachment for Lazarus transform cost reduction.'}],transforms:[]},
@@ -9085,9 +9088,15 @@ function resolveLifeAttack(attackerPlayer, afc, blocker){
   }
   const bHPbefore=blocker.currentHP||0;
   const bPow=effPower(blocker);          // captured BEFORE damage so a dying blocker still counters
-  const excess=Math.max(0, power-bHPbefore);
+  // AQUATIC HEARTH: defensive block 50% increase — incoming damage to this blocker is reduced by half.
+  let incoming=power;
+  if(Array.isArray(blocker.attachments)&&blocker.attachments.includes('aquatic_hearth')){
+    incoming=Math.ceil(power*0.5);
+    log(`Aquatic Hearth: ${DB[blocker.cid].name} blocks defensively — incoming reduced ${power}→${incoming}.`,'gain');
+  }
+  const excess=Math.max(0, incoming-bHPbefore);
   log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHPbefore}HP).`,'info');
-  dealDamage(defenderPlayer, blocker.uid, power);               // Step 1-2: blocker damage + death
+  dealDamage(defenderPlayer, blocker.uid, incoming);            // Step 1-2: blocker damage + death
   if(bPow>power){                                              // Step 3: counter (difference only)
     const counter=bPow-power;
     log(`Counter! ${DB[blocker.cid].name} deals ${counter} back.`,'dmg');
@@ -9287,10 +9296,17 @@ function showCaptainBlockPrompt(aiPlayer, afc, humanTeam){
 function resolveAITeamAttack(aiPlayer, afc, blocker, humanTeam){
   const power=effPower(afc);
   if(!blocker){ damageTeamLife(humanTeam, power, 'direct attack'); renderAll(); return; }
-  const bHP=blocker.currentHP||0, bPow=effPower(blocker), excess=Math.max(0,power-bHP);
+  const bHP=blocker.currentHP||0, bPow=effPower(blocker);
+  // AQUATIC HEARTH: defensive block 50% increase — halve incoming damage to this blocker.
+  let incoming=power;
+  if(Array.isArray(blocker.attachments)&&blocker.attachments.includes('aquatic_hearth')){
+    incoming=Math.ceil(power*0.5);
+    log(`Aquatic Hearth: ${DB[blocker.cid].name} blocks defensively — incoming reduced ${power}→${incoming}.`,'gain');
+  }
+  const excess=Math.max(0,incoming-bHP);
   const owner=ownerOfCard(blocker.uid);
   log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHP}HP).`,'info');
-  if(owner)dealDamage(owner, blocker.uid, power);
+  if(owner)dealDamage(owner, blocker.uid, incoming);
   if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(aiPlayer, afc.uid, c); }
   if(excess>0){ log(`Trample! ${excess} to Team ${humanTeam} Life.`,'dmg'); damageTeamLife(humanTeam, excess, 'trample'); }
   renderAll();
@@ -9822,6 +9838,7 @@ function isLockedDown(p){
 }
 
 function applyEquip(fc,eq){
+  if(eq.id==='aquatic_hearth'){fc.currentHP+=5;fc.hpBonus+=5;log('Aquatic Hearth: +5 Defense (HP).','gain');}
   if(eq.id==='destroyers_gift'){fc.currentATK+=5;fc.atkBonus+=5;fc.currentHP+=12;fc.hpBonus+=12;log("+5ATK/+12HP!",'gain');}
   if(eq.id==='senzu_bean'){fc.currentHP=fc.baseHP+fc.hpBonus;fc.markedDamage=0;log('Senzu Bean: full HP!','gain');}
   if(eq.id==='crystal_73'){fc.nullify+=1;fc.currentHP+=5;fc.hpBonus+=5;log("73's Crystal: nullify+1, +5HP.",'gain');}
