@@ -6380,6 +6380,7 @@ const DEFAULTS={
   lumina_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/010-150%20(Lumina).png',
   najeela_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/011-150%20(Najeela%20Base).png',
   gorim_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/145-150%20(Herald%20Gorim).png',
+  peleus_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/146-150%20(Herald%20Peleus).png',
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
   billy_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/005-150%20(Billy%20SSJ1).png',
   veelden_kingdom_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/065-150%20(Veelden%20Kingdom%20Location).png',
@@ -6623,6 +6624,12 @@ const DB={
       {type:'passive',label:'Chaos Insurgence',cost:0,text:'Each Character who enters your field gains +3 ATK.'},
       {type:'activated',label:'Ravager Strike',cost:0,limit:'every_4_turns',text:"Flip A coin, if heads choose 1 character from your opponent's field to attack 6 damage. If tails send them to the Rift Zone. (Every 4 Turns)"},
       {type:'activated',label:'Darkness Overturn',cost:7,text:'You may retrieve any 1 character card from your discard pile and place it into your hand. (Cost 7 Energy)'}
+    ],transforms:[]},
+  peleus_herald:{id:'peleus_herald',rarity:'mythic',name:'Peleus',type:'herald',race:'One Above All',cost:0,atk:12,hp:14,sym:'👑',subtypes:['One Above All'],color:'red',keywords:[],
+    heraldFlip:null,autoFlip:false,setId:'base_set',cardNumber:'146/150',
+    abilities:[
+      {type:'passive',label:'All Father Judgement',cost:0,text:'For each Derulian or Chaos Lord on your field each character you play gains +1 ATK.'},
+      {type:'activated',label:'Imperfect Strike',cost:5,limit:'every_other_turn',text:"Roll a 5 dye twice. For every odd number you land on you may choose and attack any character on your opponent's field for that number."}
     ],transforms:[]},
 
 };
@@ -9767,6 +9774,20 @@ function onEntry(p,fc){
       }
     });
   }
+  // ALL FATHER JUDGEMENT (Peleus Herald): a character you play gains +1 ATK for
+  // each Derulian or Chaos Lord already on your field.
+  if(isChar(c) && !fc.judgementApplied){
+    const myHeraldP = G.players[p].herald;
+    if(myHeraldP && myHeraldP.cid==='peleus_herald'){
+      const isDerOrChaos=(cardId)=>{ const d=DB[cardId]; if(!d)return false; return /derulian|chaos lord/i.test(((d.subtypes||[]).join(' ')+' '+(d.race||''))); };
+      const n = G.players[p].field.filter(f=>f.uid!==fc.uid && isChar(DB[f.cid]) && isDerOrChaos(f.cid)).length;
+      if(n>0){
+        fc.judgementApplied=true;
+        fc.currentATK=(fc.currentATK||0)+n; fc.atkBonus=(fc.atkBonus||0)+n;
+        log(`All Father Judgement: ${c.name} gains +${n} ATK (Derulian/Chaos Lord count).`,'gain');
+      }
+    }
+  }
 }
 
 // POWER DRAIN (Virora SSB): on the SSB controller's turn start, each opponent
@@ -10300,6 +10321,51 @@ function activateAbility(fc,abl){
       if(tfc){ tfc.mustAttack=true; log(`Combat Control: ${DB[tfc.cid].name} must attack on its next turn if able.`,'gain'); }
       renderAll();
     },{sourcePlayer:G.activePlayer,title:'Combat Control',desc:'Choose an opponent character — it must attack on its next turn if able.'});
+    return;
+  }
+  // ── PELEUS (Herald): Imperfect Strike — 5⚡, every other turn. Roll a d5 twice;
+  // for each ODD result, deal that much damage to a chosen opponent character.
+  if(abl.label==='Imperfect Strike'){
+    const ap=G.activePlayer; const pl=G.players[ap];
+    if(pl.energy<5){ log('Imperfect Strike: need 5⚡.','dmg'); return; }
+    if(fc.imperfectStrikeTurn && (G.turn - fc.imperfectStrikeTurn) < 2){
+      log('Imperfect Strike: recharging — usable every other turn.','dmg'); return;
+    }
+    spendEnergy(ap,5,DB[fc.cid]?.color||null);
+    fc.imperfectStrikeTurn=G.turn;
+    pl.usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    const oppNum=ap===1?2:1;
+    const r1=1+Math.floor(Math.random()*5), r2=1+Math.floor(Math.random()*5);
+    const odds=[r1,r2].filter(n=>n%2===1);
+    log(`Imperfect Strike: rolled ${r1} and ${r2}.`,'info');
+    closeAllModals();
+    const doHit=(idx)=>{
+      if(idx>=odds.length){ if(typeof recalcPassives==='function')recalcPassives(); renderAll(); return; }
+      const dmg=odds[idx];
+      const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
+      if(!enemies.length){ log('Imperfect Strike: no opponent characters to hit.','dmg'); renderAll(); return; }
+      openEnemyTargetPicker(enemies,(uid)=>{
+        const tfc=G.players[oppNum].field.find(f=>f.uid===uid);
+        if(tfc){
+          const tname=DB[tfc.cid].name;
+          tfc.currentHP-=dmg;
+          if(typeof showDmgPopup==='function')showDmgPopup(oppNum,'-'+dmg,tfc.uid);
+          log(`Imperfect Strike: ${tname} takes ${dmg} damage (odd roll).`,'dmg');
+          if(tfc.currentHP<=0){ G.players[oppNum].field=G.players[oppNum].field.filter(x=>x.uid!==tfc.uid); (tfc.attachments||[]).forEach(eq=>G.players[oppNum].discard.push(eq)); G.players[oppNum].discard.push(tfc.cid); log(`${tname} is destroyed!`,'death'); }
+        }
+        doHit(idx+1);
+      },{sourcePlayer:ap,title:`Imperfect Strike — ${dmg} dmg`,desc:`Odd roll of ${dmg}: choose an opponent character to take ${dmg} damage. (Close to skip.)`});
+    };
+    const body=document.createElement('div');
+    body.innerHTML=`<div style="text-align:center;font-family:'Orbitron',sans-serif">
+      <div style="font-size:11px;color:#9ca3af;letter-spacing:2px;margin-bottom:12px">🎲 ROLLING A 5-DIE TWICE</div>
+      <div style="display:flex;gap:14px;justify-content:center;margin-bottom:14px">${[r1,r2].map(n=>`<div style="width:54px;height:54px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;border:3px solid ${n%2===1?'#ef4444':'#4b5563'};color:${n%2===1?'#fca5a5':'#6b7280'};background:rgba(20,20,35,.6)">${n}</div>`).join('')}</div>
+      <div style="font-size:11px;color:${odds.length?'#fca5a5':'#6b7280'}">${odds.length?`${odds.length} odd roll${odds.length>1?'s':''} — strike for ${odds.join(' and ')}!`:'No odd numbers — no strike this time.'}</div></div>`;
+    const cont=document.createElement('button'); cont.className=odds.length?'btn-red':'btn-gray'; cont.style.cssText='margin-top:14px;width:100%;padding:9px'; cont.textContent=odds.length?'⚔ Strike!':'Close';
+    cont.onclick=()=>{ closeAllModals(); if(odds.length)doHit(0); else renderAll(); };
+    body.appendChild(cont);
+    showModalEl('🎲 Imperfect Strike', body);
     return;
   }
   // ── GORIM (Herald): Ravager Strike — every 4 turns. Flip a coin; heads deals 6
