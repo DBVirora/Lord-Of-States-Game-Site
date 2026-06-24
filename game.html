@@ -10317,6 +10317,7 @@ function activateAbility(fc,abl){
     if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
     const heads=coin(); const oppN=oppNum;
     closeAllModals();
+    showCoinFlip(heads, ()=>{
     openEnemyTargetPicker(enemies,(uid)=>{
       const tfc=G.players[oppN].field.find(f=>f.uid===uid);
       if(tfc){
@@ -10336,6 +10337,7 @@ function activateAbility(fc,abl){
       if(typeof recalcPassives==='function')recalcPassives();
       renderAll();
     },{sourcePlayer:ap,title:'Ravager Strike',desc:(heads?'HEADS — deal 6 damage to':'TAILS — banish to the Rift Zone')+' an opponent character.'});
+    });
     return;
   }
   // ── GORIM (Herald): Darkness Overturn — pay 7⚡, return any 1 CHARACTER card
@@ -11968,6 +11970,39 @@ function closeAbilityRoll(){
 }
 
 function coin(){return Math.random()<.5;}
+// Visual coin flip — spins a 3D coin, lands on the given result, then runs onDone.
+function showCoinFlip(heads, onDone){
+  let ov=document.getElementById('coinflip-overlay');
+  if(!ov){
+    ov=document.createElement('div'); ov.id='coinflip-overlay';
+    ov.style.cssText='position:fixed;inset:0;z-index:11000;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(2,6,20,.80);backdrop-filter:blur(3px)';
+    ov.innerHTML=`<style>
+      #coinflip-overlay .cf-stage{perspective:900px}
+      #coinflip-overlay .cf-coin{position:relative;width:120px;height:120px;transform-style:preserve-3d}
+      #coinflip-overlay .cf-face{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:800;letter-spacing:2px;font-size:17px;backface-visibility:hidden;border:5px solid #fde68a;box-shadow:0 0 34px rgba(251,191,36,.55)}
+      #coinflip-overlay .cf-heads{background:radial-gradient(circle at 35% 30%,#fde68a,#d97706);color:#7c2d12}
+      #coinflip-overlay .cf-tails{background:radial-gradient(circle at 35% 30%,#c4b5fd,#6d28d9);color:#2e1065;transform:rotateY(180deg)}
+      @keyframes cfSpin{from{transform:rotateY(0)}to{transform:rotateY(var(--cf-end,1980deg))}}
+    </style>
+    <div class="cf-stage"><div class="cf-coin" id="cf-coin">
+      <div class="cf-face cf-heads">HEADS</div>
+      <div class="cf-face cf-tails">TAILS</div>
+    </div></div>
+    <div id="cf-label" style="margin-top:28px;font-family:'Orbitron',sans-serif;letter-spacing:3px;font-size:15px;color:#e2e8f0;opacity:0;transition:opacity .3s">FLIPPING…</div>`;
+    document.body.appendChild(ov);
+  }
+  ov.style.display='flex';
+  const coinEl=document.getElementById('cf-coin');
+  const label=document.getElementById('cf-label');
+  label.style.opacity='0'; label.textContent='FLIPPING…';
+  coinEl.style.animation='none'; void coinEl.offsetWidth;
+  const endDeg = heads ? 0 : 180; const spins=5;
+  coinEl.style.setProperty('--cf-end', (spins*360+endDeg)+'deg');
+  coinEl.style.animation='cfSpin 1.3s cubic-bezier(.25,.7,.25,1) forwards';
+  try{ if(typeof SFX!=='undefined' && SFX.turnStart)SFX.turnStart(); }catch(e){}
+  setTimeout(()=>{ label.textContent = heads ? '🪙 HEADS!' : '🪙 TAILS!'; label.style.color = heads?'#fbbf24':'#c4b5fd'; label.style.opacity='1'; },1300);
+  setTimeout(()=>{ ov.style.display='none'; if(onDone)onDone(); },2050);
+}
 function flipCoin(){ flipCoinFor({title:'Coin Flip', desc:'A simple coin flip.'}, function(){}); }
 function openDiceModal(){document.getElementById('dice-modal').classList.add('open');}
 function rollDie(s){ document.getElementById('dice-modal').classList.remove('open'); rollDiceFor({title:'Roll d'+s, desc:'Manual dice roll.', sides:s, count:1}, function(){}); }
