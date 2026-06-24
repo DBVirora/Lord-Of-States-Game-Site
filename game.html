@@ -6378,6 +6378,7 @@ const DEFAULTS={
   aoliath_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/008-150%20(Aoliath%20SSJ1).png',
   aoliath_ssj2_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/009-150%20(Aoliath%20SSJ2).png',
   lumina_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/010-150%20(Lumina).png',
+  najeela_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/011-150%20(Najeela%20Base).png',
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
   billy_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/005-150%20(Billy%20SSJ1).png',
   veelden_kingdom_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/065-150%20(Veelden%20Kingdom%20Location).png',
@@ -6482,6 +6483,11 @@ const DB={
   aoliath_ssj2_bse:{id:'aoliath_ssj2_bse',rarity:'legend',name:'Aoliath (SSJ2)',color:'blue',charName:'Aoliath',charLine:'aoliath',formTier:'ssj2',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:8,atk:7,hp:10,sym:'SSJ2',transformOnly:true,setId:'base_set',cardNumber:'009/150',
     nextForms:[],path:'saiyan',
     abilities:[{label:'Furious Burst',type:'passive',cost:0,text:'Each time this character takes damage they gain +1 Attack.'},{label:'Exiled Hook',type:'activated',cost:0,text:"Choose 1 character on the opponent's field. This attack deals 2 damage. If it kills them send that character to the Rift Zone."}]},
+
+  // ── Najeela (Base Set 011) — common green Saiyan healer (base form). ──
+  najeela_base_bse:{id:'najeela_base_bse',rarity:'common',name:'Najeela',color:'green',charName:'Najeela',charLine:'najeela',formTier:'base',subtypes:['Saiyan'],type:'base_char',race:'Saiyan',cost:1,atk:2,hp:2,sym:'N',setId:'base_set',cardNumber:'011/150',
+    nextForms:[],path:'base',
+    abilities:[{label:'Healing Hands',type:'activated',cost:0,text:'Flip a coin if tails you may choose 1 character on your field to heal for +2 Health. (Card Taps)'}]},
 
   // ── Lumina (Base Set 010) — Legend "Moon Queen". Green team-buff + recursion. ──
   lumina_bse:{id:'lumina_bse',rarity:'legend',name:'Lumina',color:'green',subtypes:['Moon','Queen'],type:'base_char',race:'Moon Queen',cost:10,atk:11,hp:13,sym:'LUM',setId:'base_set',cardNumber:'010/150',
@@ -10267,6 +10273,40 @@ function activateAbility(fc,abl){
       if(tfc){ tfc.mustAttack=true; log(`Combat Control: ${DB[tfc.cid].name} must attack on its next turn if able.`,'gain'); }
       renderAll();
     },{sourcePlayer:G.activePlayer,title:'Combat Control',desc:'Choose an opponent character — it must attack on its next turn if able.'});
+    return;
+  }
+  // ── NAJEELA: Healing Hands — taps; flip a coin, on TAILS heal a chosen friendly
+  // character +2 HP (capped at its max).
+  if(abl.label==='Healing Hands'){
+    const ap=G.activePlayer; const pl=G.players[ap];
+    fc.abilityUsed['Healing Hands']=true;
+    pl.usedAbilityThisTurn=true;
+    if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; } // "(Card Taps)"
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    if(!coin()){ // TAILS = success
+      const heal=(target)=>{ const mx=(target.baseHP||0)+(target.hpBonus||0)+(target.passiveHp||0); target.currentHP=Math.min(mx,(target.currentHP||0)+2); log(`Healing Hands: TAILS — ${DB[target.cid].name} heals +2 HP (now ${target.currentHP}).`,'gain'); renderAll(); };
+      const chars=pl.field.filter(f=>isChar(DB[f.cid]));
+      if(!chars.length){ log('Healing Hands: TAILS — no characters on your field to heal.','info'); renderAll(); return; }
+      if(chars.length===1){ heal(chars[0]); return; }
+      const body=document.createElement('div');
+      body.innerHTML='<div style="font-size:11px;color:#86efac;margin-bottom:8px">🪙 TAILS! Choose one of your characters to heal +2 HP.</div>';
+      const list=document.createElement('div'); list.style.cssText='display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto';
+      chars.forEach(t=>{
+        const c=DB[t.cid]; const mx=(t.baseHP||0)+(t.hpBonus||0)+(t.passiveHp||0);
+        const row=document.createElement('button'); row.className='btn-gray btn-sm'; row.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:8px 10px;text-align:left;width:100%';
+        row.innerHTML=`<span style="font-weight:700;color:#e2e8f0">${c.name}</span><span style="font-size:10px;color:#86efac">${t.currentHP}/${mx}♥ → +2</span>`;
+        row.onclick=()=>{ closeAllModals(); heal(t); };
+        list.appendChild(row);
+      });
+      body.appendChild(list);
+      const skip=document.createElement('button'); skip.className='btn-gray'; skip.style.cssText='margin-top:10px;width:100%;padding:8px'; skip.textContent='Skip'; skip.onclick=()=>{ closeAllModals(); renderAll(); };
+      body.appendChild(skip);
+      showModalEl('✋ Healing Hands', body);
+    } else {
+      log('Healing Hands: HEADS — no heal this time.','dmg');
+      renderAll();
+    }
     return;
   }
   // ── LUMINA: Full Moon Awakening — pay 7⚡, flip a coin; on heads return any 1
