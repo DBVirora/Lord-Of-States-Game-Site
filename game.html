@@ -6379,6 +6379,7 @@ const DEFAULTS={
   aoliath_ssj2_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/009-150%20(Aoliath%20SSJ2).png',
   lumina_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/010-150%20(Lumina).png',
   najeela_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/011-150%20(Najeela%20Base).png',
+  gorim_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/145-150%20(Herald%20Gorim).png',
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
   billy_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/005-150%20(Billy%20SSJ1).png',
   veelden_kingdom_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/065-150%20(Veelden%20Kingdom%20Location).png',
@@ -6615,6 +6616,13 @@ const DB={
       {type:'triggered',label:'Rage Eternal',cost:0,text:'Hulk gains +1 ATK for each point of damage he takes on the next turn.'},
       {type:'passive',label:'Unbreakable Fury',cost:0,text:"Opponent's characters with lower ATK than Hulk cannot block him."},
       {type:'activated',label:'Gamma Detonation',cost:3,limit:'once_per_turn',text:'Deal 4 damage to all opponent characters.'}
+    ],transforms:[]},
+  gorim_herald:{id:'gorim_herald',rarity:'mythic',name:'Gorim',type:'herald',race:'Derulian',cost:0,atk:14,hp:13,sym:'👑',subtypes:['Derulian'],color:'red',keywords:[],
+    heraldFlip:null,autoFlip:false,setId:'base_set',cardNumber:'145/150',
+    abilities:[
+      {type:'passive',label:'Chaos Insurgence',cost:0,text:'Each Character who enters your field gains +3 ATK.'},
+      {type:'activated',label:'Ravager Strike',cost:0,limit:'every_4_turns',text:"Flip A coin, if heads choose 1 character from your opponent's field to attack 6 damage. If tails send them to the Rift Zone. (Every 4 Turns)"},
+      {type:'activated',label:'Darkness Overturn',cost:7,text:'You may retrieve any 1 character card from your discard pile and place it into your hand. (Cost 7 Energy)'}
     ],transforms:[]},
 
 };
@@ -9740,6 +9748,25 @@ function onEntry(p,fc){
     });
     log("Tyrant's Dominion: opponent's characters are weakened (-1 ATK/-1 HP).",'gain');
   }
+  // CHAOS INSURGENCE (Gorim Herald): each character that enters YOUR field gains
+  // +3 ATK on entry (applied once per character).
+  if(isChar(c) && !fc.chaosApplied){
+    const myHerald = G.players[p].herald;
+    if(myHerald && myHerald.cid==='gorim_herald'){
+      fc.chaosApplied=true;
+      fc.currentATK=(fc.currentATK||0)+3; fc.atkBonus=(fc.atkBonus||0)+3;
+      log(`Chaos Insurgence: ${c.name} gains +3 ATK on entry.`,'gain');
+    }
+  }
+  // Case B: Gorim himself just arrived — buff your existing characters once
+  if(c.id==='gorim_herald'){
+    G.players[p].field.forEach(f=>{
+      if(isChar(DB[f.cid]) && !f.chaosApplied){
+        f.chaosApplied=true;
+        f.currentATK=(f.currentATK||0)+3; f.atkBonus=(f.atkBonus||0)+3;
+      }
+    });
+  }
 }
 
 // POWER DRAIN (Virora SSB): on the SSB controller's turn start, each opponent
@@ -10273,6 +10300,69 @@ function activateAbility(fc,abl){
       if(tfc){ tfc.mustAttack=true; log(`Combat Control: ${DB[tfc.cid].name} must attack on its next turn if able.`,'gain'); }
       renderAll();
     },{sourcePlayer:G.activePlayer,title:'Combat Control',desc:'Choose an opponent character — it must attack on its next turn if able.'});
+    return;
+  }
+  // ── GORIM (Herald): Ravager Strike — every 4 turns. Flip a coin; heads deals 6
+  // damage to a chosen enemy character, tails banishes it to the Rift Zone.
+  if(abl.label==='Ravager Strike'){
+    const ap=G.activePlayer; const pl=G.players[ap];
+    if(fc.ravagerStrikeTurn && (G.turn - fc.ravagerStrikeTurn) < 4){
+      log(`Ravager Strike: recharging — usable again in ${4-(G.turn-fc.ravagerStrikeTurn)} turn(s).`,'dmg'); return;
+    }
+    const oppNum=ap===1?2:1;
+    const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
+    if(!enemies.length){ log('Ravager Strike: no opponent characters to target.','dmg'); return; }
+    fc.ravagerStrikeTurn=G.turn;
+    pl.usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    const heads=coin(); const oppN=oppNum;
+    closeAllModals();
+    openEnemyTargetPicker(enemies,(uid)=>{
+      const tfc=G.players[oppN].field.find(f=>f.uid===uid);
+      if(tfc){
+        const tname=DB[tfc.cid].name;
+        if(heads){
+          tfc.currentHP-=6;
+          if(typeof showDmgPopup==='function')showDmgPopup(oppN,'-6',tfc.uid);
+          log(`Ravager Strike: HEADS — ${tname} takes 6 damage!`,'dmg');
+          if(tfc.currentHP<=0){ G.players[oppN].field=G.players[oppN].field.filter(x=>x.uid!==tfc.uid); (tfc.attachments||[]).forEach(eq=>G.players[oppN].discard.push(eq)); G.players[oppN].discard.push(tfc.cid); log(`${tname} is destroyed!`,'death'); }
+        } else {
+          G.players[oppN].field=G.players[oppN].field.filter(x=>x.uid!==tfc.uid);
+          (tfc.attachments||[]).forEach(eq=>G.players[oppN].discard.push(eq));
+          sendToRift(oppN,tfc.cid,'Ravager Strike');
+          log(`Ravager Strike: TAILS — ${tname} is banished to the Rift Zone!`,'gain');
+        }
+      }
+      if(typeof recalcPassives==='function')recalcPassives();
+      renderAll();
+    },{sourcePlayer:ap,title:'Ravager Strike',desc:(heads?'HEADS — deal 6 damage to':'TAILS — banish to the Rift Zone')+' an opponent character.'});
+    return;
+  }
+  // ── GORIM (Herald): Darkness Overturn — pay 7⚡, return any 1 CHARACTER card
+  // from your Discard pile to your hand.
+  if(abl.label==='Darkness Overturn'){
+    const ap=G.activePlayer; const pl=G.players[ap];
+    if(pl.energy<7){ log('Darkness Overturn: need 7⚡.','dmg'); return; }
+    const charsInDiscard = pl.discard.filter(cid=>isChar(DB[cid]));
+    if(!charsInDiscard.length){ log('Darkness Overturn: no character cards in your Discard pile.','dmg'); return; }
+    spendEnergy(ap,7,DB[fc.cid]?.color||null);
+    pl.usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    const body=document.createElement('div');
+    body.innerHTML='<div style="font-size:11px;color:#fca5a5;margin-bottom:8px">🜂 Choose a CHARACTER from your Discard pile to return to your hand.</div>';
+    const list=document.createElement('div'); list.style.cssText='display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto';
+    charsInDiscard.forEach(cid=>{
+      const c2=DB[cid]; const url=(typeof getImg==='function')?getImg(cid):null;
+      const row=document.createElement('button'); row.className='btn-gray btn-sm'; row.style.cssText='display:flex;align-items:center;gap:9px;padding:7px 10px;text-align:left;width:100%';
+      row.innerHTML=`<div style="width:30px;height:42px;border-radius:4px;background:#16162a;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px">${url?`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`:(c2.sym||'🃏')}</div><span style="font-weight:700;color:#e2e8f0">${c2.name}</span>`;
+      row.onclick=()=>{ const realIdx=pl.discard.indexOf(cid); if(realIdx>=0)pl.discard.splice(realIdx,1); const nf=newFC(cid); if(nf)pl.hand.push(nf); log(`Darkness Overturn: ${c2.name} returns to ${pname(ap)}'s hand!`,'gain'); if(typeof checkHandLimit==='function')checkHandLimit(ap); closeAllModals(); renderAll(); };
+      list.appendChild(row);
+    });
+    body.appendChild(list);
+    const skip=document.createElement('button'); skip.className='btn-gray'; skip.style.cssText='margin-top:10px;width:100%;padding:8px'; skip.textContent='Skip'; skip.onclick=()=>{ closeAllModals(); renderAll(); };
+    body.appendChild(skip);
+    showModalEl('🜂 Darkness Overturn', body);
     return;
   }
   // ── NAJEELA: Healing Hands — taps; flip a coin, on TAILS heal a chosen friendly
