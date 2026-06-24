@@ -7291,7 +7291,7 @@ const isLoc =c=>c&&c.type==='location';
 const isEquip=c=>c&&(c.type==='equipment'||c.id==='move_out');
 const isAbil =c=>c&&c.type==='ability';
 const isInst =c=>c&&c.type==='instant';
-const MAX_HAND=12, MAX_FIELD=5, MAX_OTHER=5, MAX_LOC=4; // 5 fighters + 5 other = 10 total
+const MAX_HAND=12, MAX_FIELD=8, MAX_OTHER=5, MAX_LOC=4; // 8 fighters + 5 other
 let us=0;function uid(){return 'u'+(++us);}
 
 function newFC(cid){
@@ -9511,7 +9511,7 @@ function onHandClick(p,uid,fc){
     const namedFighters=pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken).length;
     const otherCards=pl.field.filter(f=>!isChar(DB[f.cid])&&!isLoc(DB[f.cid])).length;
     const totalField=pl.field.filter(f=>!isLoc(DB[f.cid])).length;
-    if(isChar(DB[fco.cid])&&!DB[fco.cid]?.isToken&&namedFighters>=MAX_FIELD){log('Fighter zone full! (max 5 named fighters).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
+    if(isChar(DB[fco.cid])&&!DB[fco.cid]?.isToken&&namedFighters>=MAX_FIELD){log('Fighter zone full! (max 8 named fighters).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     if(!isChar(DB[fco.cid])&&otherCards>=MAX_OTHER){log('Field full! (max 5 other cards on field).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     pl.field.push(fco);log(`${pname(p)} plays ${c.name}.`,'info');playCardZoom(fco.cid);if(typeof SFX!=='undefined')SFX.cardPlay();if(p===1)sendGameAction('card_play',{cardId:fco.cid});onEntry(p,fco);
     if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
@@ -10149,8 +10149,12 @@ function doTransform(fieldUid,newCid,handUid,cost){
     const prevAttachments=fc.attachments||[];
     fc.cid=newCid;fc.currentHP=nc.hp;fc.currentATK=nc.atk;fc.baseHP=nc.hp;fc.baseATK=nc.atk;
     fc.hpBonus=0;fc.atkBonus=0;fc.abilityUsed={};fc.damagedThisTurn=false;fc.markedDamage=0;
+    fc.nullify=0; // recomputed from carried equipment below
     // Keep persistent attachments
     fc.attachments=prevAttachments.filter(eqId=>{const eq=DB[eqId];return eq&&eq.persistent!==false;});
+    // Carry EQUIPMENT STATS across the transformation: re-apply each carried-over
+    // equipment's bonus to the new form so its ATK/HP (and effects) persist.
+    fc.attachments.forEach(eqId=>{ const eq=DB[eqId]; if(eq && typeof applyEquip==='function') applyEquip(fc,eq); });
     // Flag for First Transformation achievement
     if(!_achData.has_transformed){
       _achData.has_transformed=true;
