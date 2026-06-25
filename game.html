@@ -6382,6 +6382,7 @@ const DEFAULTS={
   gorim_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/145-150%20(Herald%20Gorim).png',
   peleus_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/146-150%20(Herald%20Peleus).png',
   aquatic_hearth: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/071-150%20(Aquatic%20Hearth%20Equiptment).png',
+  surfacer_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/147-150%20(Herald%20The%20Surfacer).png',
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
   billy_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/005-150%20(Billy%20SSJ1).png',
   veelden_kingdom_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/065-150%20(Veelden%20Kingdom%20Location).png',
@@ -6633,6 +6634,12 @@ const DB={
     abilities:[
       {type:'passive',label:'All Father Judgement',cost:0,text:'For each Derulian or Chaos Lord on your field each character you play gains +1 ATK.'},
       {type:'activated',label:'Imperfect Strike',cost:5,limit:'every_other_turn',text:"Roll a 5 dye twice. For every odd number you land on you may choose and attack any character on your opponent's field for that number."}
+    ],transforms:[]},
+  surfacer_herald:{id:'surfacer_herald',rarity:'mythic',name:'The Surfacer',type:'herald',race:'Celestial',cost:0,atk:13,hp:13,sym:'👑',subtypes:['Celestial'],color:'purple',colors:['blue','purple'],keywords:[],
+    heraldFlip:null,autoFlip:false,setId:'base_set',cardNumber:'147/150',
+    abilities:[
+      {type:'activated',label:'Surface Depletion',cost:0,limit:'once_per_turn',text:"Target an opponent's field character. That character gets -2 Attack and -2 Health until end of turn. If it is destroyed this turn, you draw 1 card."},
+      {type:'passive',label:'Surfacer Binding',cost:0,text:"At the start of each opponent's turn, they must choose one: Discard 1 card or lose 2 Energy."}
     ],transforms:[]},
 
 };
@@ -7028,7 +7035,7 @@ function openDeckPicker(player){
   } else {
     decks.forEach(([id,deck])=>{
       if(!deck||!deck.cards)return;
-      const colDefs=deck.cards.reduce((acc,cid)=>{const col=DB[cid]?.color;if(col&&!acc.includes(col))acc.push(col);return acc;},[]);
+      const colDefs=deck.cards.reduce((acc,cid)=>{(typeof cardColors==='function'?cardColors(cid):[DB[cid]?.color]).forEach(col=>{if(col&&!acc.includes(col))acc.push(col);});return acc;},[]);
       const colorPips=colDefs.slice(0,5).map(c=>{const hex=COLOR_DEFS[c]?.hex||'#6b7280';return '<span style="width:8px;height:8px;border-radius:50%;background:'+hex+';display:inline-block"></span>';}).join('');
       const thumbs=deck.cards.slice(0,3).map(cid=>{const url=getImg(cid);return url?'<img src="'+url+'" style="width:30px;height:42px;object-fit:cover;border-radius:4px;flex-shrink:0"/>':`<span style="font-size:18px">${DB[cid]?.sym||'?'}</span>`;}).join('');
       const row=document.createElement('div');
@@ -7069,7 +7076,7 @@ function selectDeck(player,deckId){
     } else {
       const deck=SAVED_DECKS[deckId];
       if(deck){
-        const colDefs=deck.cards.reduce((acc,cid)=>{const col=DB[cid]?.color;if(col&&!acc.includes(col))acc.push(col);return acc;},[]);
+        const colDefs=deck.cards.reduce((acc,cid)=>{(typeof cardColors==='function'?cardColors(cid):[DB[cid]?.color]).forEach(col=>{if(col&&!acc.includes(col))acc.push(col);});return acc;},[]);
         const colorPips=colDefs.slice(0,5).map(c=>{const hex=COLOR_DEFS[c]?.hex||'#6b7280';return '<span style="width:8px;height:8px;border-radius:50%;background:'+hex+';display:inline-block"></span>';}).join('');
         const thumb=deck.cards.slice(0,1).map(cid=>{const url=getImg(cid);return url?'<img src="'+url+'" style="width:36px;height:50px;object-fit:cover;border-radius:5px"/>':`<span style="font-size:22px">${DB[cid]?.sym||'?'}</span>`;}).join('');
         display.innerHTML='<div style="display:flex;align-items:center;gap:10px;width:100%">'
@@ -7913,6 +7920,12 @@ function dealDamage(tp,tuid,amt){
 
 function killCard(p,fc){
   const c=DB[fc.cid];if(!c)return;
+  // SURFACE DEPLETION (The Surfacer): if a depleted character dies this turn, its
+  // marker's owner draws 1 card.
+  if(fc.surfacerDrawMark===G.turn && fc.surfacerDrawFor && typeof drawCard==='function'){
+    drawCard(fc.surfacerDrawFor); log(`Surface Depletion: ${pname(fc.surfacerDrawFor)} draws 1 (depleted target destroyed).`,'gain');
+    fc.surfacerDrawMark=null;
+  }
   // VIOLET BOND (Virora base): if a "Violet" character is on the controller's
   // field, shuffle Virora into the deck instead of discarding her.
   if((c.abilities||[]).some(a=>a.label==='Violet Bond')){
@@ -10344,6 +10357,43 @@ function activateAbility(fc,abl){
     },{sourcePlayer:G.activePlayer,title:'Combat Control',desc:'Choose an opponent character — it must attack on its next turn if able.'});
     return;
   }
+  // ── THE SURFACER (Herald): Surface Depletion — once per turn. Target an enemy
+  // character: -2 ATK / -2 HP until end of turn; if it dies this turn, draw 1.
+  if(abl.label==='Surface Depletion'){
+    const ap=G.activePlayer; const pl=G.players[ap];
+    if(fc.abilityUsed && fc.abilityUsed['Surface Depletion']){ log('Surface Depletion: already used this turn.','dmg'); return; }
+    const oppNum=ap===1?2:1;
+    const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
+    if(!enemies.length){ log('Surface Depletion: no opponent characters to target.','dmg'); return; }
+    if(!fc.abilityUsed)fc.abilityUsed={};
+    fc.abilityUsed['Surface Depletion']=true;
+    pl.usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    const oppN=oppNum;
+    closeAllModals();
+    openEnemyTargetPicker(enemies,(uid)=>{
+      const tfc=G.players[oppN].field.find(f=>f.uid===uid);
+      if(tfc){
+        const tname=DB[tfc.cid].name;
+        // -2 ATK / -2 HP until end of turn (tracked for restoration)
+        tfc.currentATK=(tfc.currentATK||0)-2; tfc.atkBonus=(tfc.atkBonus||0)-2; tfc.surfacerAtkDebuff=(tfc.surfacerAtkDebuff||0)+2;
+        tfc.currentHP=(tfc.currentHP||0)-2; tfc.hpBonus=(tfc.hpBonus||0)-2; tfc.surfacerHpDebuff=(tfc.surfacerHpDebuff||0)+2;
+        // Mark so the Surfacer's controller draws if this dies THIS turn
+        tfc.surfacerDrawMark=G.turn; tfc.surfacerDrawFor=ap;
+        log(`Surface Depletion: ${tname} gets -2 ATK / -2 HP until end of turn.`,'gain');
+        if(tfc.currentHP<=0){
+          G.players[oppN].field=G.players[oppN].field.filter(x=>x.uid!==tfc.uid);
+          (tfc.attachments||[]).forEach(eq=>G.players[oppN].discard.push(eq));
+          G.players[oppN].discard.push(tfc.cid);
+          log(`${tname} is destroyed by Surface Depletion!`,'death');
+          if(typeof drawCard==='function'){ drawCard(ap); log(`Surface Depletion: ${pname(ap)} draws 1.`,'gain'); }
+        }
+      }
+      if(typeof recalcPassives==='function')recalcPassives();
+      renderAll();
+    },{sourcePlayer:ap,title:'Surface Depletion',desc:'Target an opponent character: -2 ATK / -2 HP until end of turn. Draw 1 if it dies this turn.'});
+    return;
+  }
   // ── PELEUS (Herald): Imperfect Strike — 5⚡, every other turn. Roll a d5 twice;
   // for each ODD result, deal that much damage to a chosen opponent character.
   if(abl.label==='Imperfect Strike'){
@@ -11161,8 +11211,46 @@ function applyEndOfTurnHandPenalty(p){
 }
 
 // START-OF-TURN triggers for the player whose turn is beginning.
+// SURFACER BINDING — the bound player chooses: discard 1 card, or lose 2 Energy.
+function applySurfacerBinding(player){
+  const pl=G.players[player]; if(!pl) return;
+  const loseEnergy=()=>{ const lost=Math.min(2, pl.energy||0); pl.energy=Math.max(0,(pl.energy||0)-2); log(`🔮 Surfacer Binding: ${pname(player)} loses ${lost} Energy.`,'dmg'); renderAll(); };
+  const discardOne=(cid)=>{ const idx=pl.hand.findIndex(h=>h.uid===cid); if(idx>=0){ const d=pl.hand.splice(idx,1)[0]; pl.discard.push(d.cid); log(`🔮 Surfacer Binding: ${pname(player)} discards ${DB[d.cid]?.name||d.cid}.`,'dmg'); } renderAll(); };
+  // AI (or empty-handed) auto-resolves: lose energy if it can, else discard.
+  if(!isHumanPlayer(player)){
+    if((pl.energy||0)>=2 || !pl.hand.length){ loseEnergy(); }
+    else { const pick=pl.hand[Math.floor(Math.random()*pl.hand.length)]; discardOne(pick.uid); }
+    return;
+  }
+  // Human: present the choice.
+  const body=document.createElement('div');
+  body.innerHTML=`<div style="font-size:12px;color:#d8b4fe;margin-bottom:12px;line-height:1.5">🔮 <b>Surfacer Binding</b> — the enemy Herald binds you. Choose one:</div>`;
+  const eBtn=document.createElement('button'); eBtn.className='btn-gray'; eBtn.style.cssText='width:100%;padding:10px;margin-bottom:8px';
+  eBtn.textContent=`⚡ Lose 2 Energy (you have ${pl.energy||0})`;
+  eBtn.onclick=()=>{ closeAllModals(); loseEnergy(); };
+  const dBtn=document.createElement('button'); dBtn.className='btn-gray'; dBtn.style.cssText='width:100%;padding:10px';
+  dBtn.textContent=`🗑 Discard 1 card (${pl.hand.length} in hand)`;
+  dBtn.disabled=!pl.hand.length;
+  dBtn.onclick=()=>{
+    if(!pl.hand.length){ closeAllModals(); return; }
+    const dl=document.createElement('div'); dl.innerHTML='<div style="font-size:11px;color:#d8b4fe;margin-bottom:8px">Choose a card to discard:</div>';
+    const list=document.createElement('div'); list.style.cssText='display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto';
+    pl.hand.forEach(h=>{ const c2=DB[h.cid]; const row=document.createElement('button'); row.className='btn-gray btn-sm'; row.style.cssText='padding:8px 10px;text-align:left;width:100%;font-weight:700;color:#e2e8f0'; row.textContent=c2?.name||h.cid; row.onclick=()=>{ closeAllModals(); discardOne(h.uid); }; list.appendChild(row); });
+    dl.appendChild(list); showModalEl('🗑 Surfacer Binding — Discard', dl);
+  };
+  body.appendChild(eBtn); body.appendChild(dBtn);
+  showModalEl('🔮 Surfacer Binding', body);
+}
 function startTurnFx(player){
   const pl=G.players[player]; if(!pl) return;
+  // ── SURFACER BINDING (The Surfacer Herald): if an OPPONENT has The Surfacer as
+  // their herald, at the start of this player's turn they must discard 1 card or
+  // lose 2 Energy.
+  (function(){
+    const opps = (G.is2v2 && typeof teamPlayers==='function') ? teamPlayers(enemyTeamOf(player)) : [player===1?2:1];
+    const bound = opps.some(op=>G.players[op] && G.players[op].herald && G.players[op].herald.cid==='surfacer_herald');
+    if(bound) applySurfacerBinding(player);
+  })();
   const cards=[...pl.field]; if(pl.herald) cards.push(pl.herald);
   cards.forEach(fc=>{
     const c=DB[fc.cid]; if(!c||!c.abilities) return;
@@ -11205,6 +11293,12 @@ function startTurnFx(player){
 
 function endTurnFx(p){
   const o=p===1?2:1;
+  // SURFACE DEPLETION restore: the -2/-2 lasts "until end of turn" — give it back
+  // to any surviving character at the end of the turn it was applied.
+  [1,2,3,4].forEach(pp=>{ const P=G.players[pp]; if(!P||!P.field)return; P.field.forEach(f=>{
+    if(f.surfacerAtkDebuff){ f.currentATK=(f.currentATK||0)+f.surfacerAtkDebuff; f.atkBonus=(f.atkBonus||0)+f.surfacerAtkDebuff; f.surfacerAtkDebuff=0; }
+    if(f.surfacerHpDebuff){ f.hpBonus=(f.hpBonus||0)+f.surfacerHpDebuff; f.currentHP=(f.currentHP||0)+f.surfacerHpDebuff; f.surfacerHpDebuff=0; }
+  }); });
   // Snapshot "attacked last turn" for the player whose turn is ending (used by
   // Saiyan Spirit etc.). Only the active player's cards can have attacked, so we
   // set it only for p — the opponent's flag stays from THEIR last turn.
@@ -11556,18 +11650,27 @@ const COLOR_DEFS = {
 };
 
 function getCardColor(cid){ return DB[cid]?.color||null; }
+// Multi-color support: a card may declare colors:['blue','purple']. cardColors()
+// returns the full list; single-color cards fall back to [color].
+function cardColors(cidOrCard){
+  const c = (typeof cidOrCard==='string') ? DB[cidOrCard] : cidOrCard;
+  if(!c) return [];
+  if(Array.isArray(c.colors) && c.colors.length) return c.colors.slice();
+  return c.color ? [c.color] : [];
+}
 
 function getDeckColors(deck){
-  // Returns array of unique colors present in the deck
+  // Returns array of unique colors present in the deck (multi-color cards count for all)
   const colors=new Set();
-  deck.forEach(cid=>{ const col=getCardColor(cid); if(col&&col!=='white') colors.add(col); });
+  deck.forEach(cid=>{ cardColors(cid).forEach(col=>{ if(col&&col!=='white') colors.add(col); }); });
   return [...colors];
 }
 
 function isUnstable(cid, deckColors){
-  const col=getCardColor(cid);
-  if(!col||col==='white') return false; // white always on-color
-  return !deckColors.includes(col);
+  const cols=cardColors(cid).filter(c=>c!=='white');
+  if(!cols.length) return false; // white / colorless always on-color
+  // On-color only if EVERY color the card belongs to is supported by the deck.
+  return !cols.every(c=>deckColors.includes(c));
 }
 
 function getColorClass(color){ return color?'fc-'+color:''; }
@@ -12452,13 +12555,12 @@ function showFullCard(cid,fc){
   const url=getImg(cid);if(url){const img=document.createElement('img');img.src=url;imgWrap.appendChild(img);}else{imgWrap.style.height='80px';imgWrap.textContent=c.sym||'?';}
   wrap.appendChild(imgWrap);
   const meta=document.createElement('div');
-  // Build color badge for full card view
-  const fcColorDef=c.color&&COLOR_DEFS[c.color]?COLOR_DEFS[c.color]:null;
-  const fcColorBadge=fcColorDef
-    ? `<span style="display:inline-flex;align-items:center;gap:3px;background:${fcColorDef.hex}22;border:1px solid ${fcColorDef.hex};border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700;color:${fcColorDef.hex};letter-spacing:.5px;margin-bottom:5px">
-        <span style="width:7px;height:7px;border-radius:50%;background:${fcColorDef.hex};display:inline-block"></span>
-        ${fcColorDef.label.toUpperCase()} — ${fcColorDef.identity}
-      </span><br>`
+  // Build color badge(s) for full card view — supports multi-color cards.
+  const fcCols=(typeof cardColors==='function'?cardColors(c):[c.color]).filter(col=>COLOR_DEFS[col]);
+  const fcColorBadge = fcCols.length
+    ? fcCols.map(col=>{const d=COLOR_DEFS[col];return `<span style="display:inline-flex;align-items:center;gap:3px;background:${d.hex}22;border:1px solid ${d.hex};border-radius:4px;padding:1px 6px;font-size:9px;font-weight:700;color:${d.hex};letter-spacing:.5px;margin:0 4px 5px 0">
+        <span style="width:7px;height:7px;border-radius:50%;background:${d.hex};display:inline-block"></span>
+        ${d.label.toUpperCase()} — ${d.identity}</span>`;}).join('')+'<br>'
     : '';
   meta.innerHTML=`<div style="font-weight:900;font-size:15px;color:#c8a0ff;margin-bottom:2px">${c.name}</div>
     <div style="font-size:10px;color:#6b7280;margin-bottom:4px">${c.race}·${c.type.replace('_',' ').toUpperCase()}·${(c.subtypes||[]).join(', ')}</div>
