@@ -5732,6 +5732,7 @@ textarea{
         <option value="energy_card">⚡ Energy</option>
         <option value="base_char">Base Chars</option>
         <option value="char">Characters</option>
+        <option value="transform">🔄 Transformations</option>
         <option value="team">Team</option>
         <option value="location">Locations</option>
         <option value="equipment">Equipment</option>
@@ -6197,6 +6198,7 @@ textarea{
       <option value="energy_card">⚡ Energy</option>
       <option value="base_char">Base Chars</option>
       <option value="char">Characters</option>
+      <option value="transform">🔄 Transformations</option>
       <option value="team">Team</option>
       <option value="location">Locations</option>
       <option value="equipment">Equipment</option>
@@ -6673,7 +6675,7 @@ function buildUploadScreen(){
 
   // Filter
   let slots=allSlots.filter(slot=>{
-    if(typeFilter!=='all'&&slot.type!==typeFilter)return false;
+    if(typeFilter!=='all'){const _et=DB[slot.id]&&DB[slot.id].transformOnly?'transform':slot.type;if(_et!==typeFilter)return false;}
     if(colorFilter!=='all'&&slot.color!==colorFilter)return false;
     if(search&&!slot.label.toLowerCase().includes(search)&&!slot.id.toLowerCase().includes(search))return false;
     if(statusFilter==='custom'&&!IMG[slot.id])return false;
@@ -6691,14 +6693,14 @@ function buildUploadScreen(){
     return;
   }
 
-  // Group by type for section headers
-  const typeOrder=['system','herald','energy_card','base_char','char','team','location','equipment','instant','token'];
-  const typeLabels={system:'System',herald:'👑 Heralds',energy_card:'⚡ Energy Cards',base_char:'Base Characters',char:'Characters',team:'Team Cards',location:'Locations',equipment:'Equipment',instant:'Instants',token:'Tokens'};
+  // Group by type for section headers (transform-only forms get their own group)
+  const typeOrder=['system','herald','energy_card','base_char','char','transform','team','location','equipment','instant','token'];
+  const typeLabels={system:'System',herald:'👑 Heralds',energy_card:'⚡ Energy Cards',base_char:'Base Characters',char:'Characters',transform:'🔄 Transformations',team:'Team Cards',location:'Locations',equipment:'Equipment',instant:'Instants',token:'Tokens'};
 
   // Only show section headers if not filtering by specific type
   const showHeaders=typeFilter==='all'&&!search;
   const grouped={};
-  slots.forEach(s=>{const t=s.type||'system';if(!grouped[t])grouped[t]=[];grouped[t].push(s);});
+  slots.forEach(s=>{const t=DB[s.id]&&DB[s.id].transformOnly?'transform':(s.type||'system');if(!grouped[t])grouped[t]=[];grouped[t].push(s);});
 
   typeOrder.forEach(type=>{
     const group=grouped[type];if(!group||!group.length)return;
@@ -13411,7 +13413,7 @@ function filterImgsCards(){
   const colorFilter=document.getElementById('imgs-color-filter')?.value||'all';
   const cont=document.getElementById('imgs-content');if(!cont)return;
   let cards=Object.values(DB).filter(c=>getImg(c.id));
-  if(typeFilter!=='all') cards=cards.filter(c=>c.type===typeFilter);
+  if(typeFilter!=='all') cards=cards.filter(c=>(c.transformOnly?'transform':c.type)===typeFilter);
   if(colorFilter!=='all') cards=cards.filter(c=>c.color===colorFilter);
   if(search) cards=cards.filter(c=>c.name.toLowerCase().includes(search)||(c.color||'').toLowerCase().includes(search)||(c.type||'').includes(search));
   const colDefs=COLOR_DEFS;
@@ -14422,7 +14424,7 @@ function renderCardManagerList(){
   // Filter
   const filtered = allCards.filter(id => {
     const c = DB[id];
-    if(typeFilter !== 'all' && c.type !== typeFilter) return false;
+    if(typeFilter !== 'all'){ const _et=c.transformOnly?'transform':c.type; if(_et !== typeFilter) return false; }
     // Status filter: enabled / disabled / all
     if(statusFilter === 'enabled' && _disabledCards[id]) return false;
     if(statusFilter === 'disabled' && !_disabledCards[id]) return false;
@@ -19297,6 +19299,7 @@ window.addEventListener('load',async()=>{
         <option value="all">All Types</option>
         <option value="base_char">Base Characters</option>
         <option value="char">Characters</option>
+        <option value="transform">🔄 Transformations</option>
         <option value="team">Teams</option>
         <option value="herald">Heralds</option>
         <option value="location">Locations</option>
