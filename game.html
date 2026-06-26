@@ -6496,11 +6496,11 @@ const DB={
 
   // ── Darkspine Virora (Base Set 128) — Mythic standalone (no transforms).
   // RED+GREEN: raw-damage nuke + reactive defensive growth. ──
-  darkspine_virora_bse:{id:'darkspine_virora_bse',rarity:'mythic',name:'Darkspine Virora',color:'red',colors:['red','green'],charName:'Darkspine Virora',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:12,atk:13,hp:11,sym:'DV',setId:'base_set',cardNumber:'128/150',
+  darkspine_virora_bse:{id:'darkspine_virora_bse',rarity:'mythic',name:'Darkspine Virora',color:'red',colors:['red','green'],charName:'Darkspine Virora',subtypes:['Royal','Saiyan'],type:'char',race:'Royal Saiyan',cost:12,atk:13,hp:11,sym:'DV',setId:'base_set',cardNumber:'128/150',
     abilities:[{label:'Power of the Ancients',type:'passive',cost:0,text:"This card gains +2 Defense each time a character with a 5 energy cost or above is cast onto your opponent's field."},{label:'Ancient God Rasengan',type:'activated',cost:8,text:"Choose a character or location card in your opponent's playing field. This attack does +8 damage. If a location is chosen it's automatically destroyed. (Cost 8 Energy)"}]},
 
   // ── Lumina (Base Set 010) — Legend "Moon Queen". Green team-buff + recursion. ──
-  lumina_bse:{id:'lumina_bse',rarity:'legend',name:'Lumina',color:'green',subtypes:['Moon','Queen'],type:'base_char',race:'Moon Queen',cost:10,atk:11,hp:13,sym:'LUM',setId:'base_set',cardNumber:'010/150',
+  lumina_bse:{id:'lumina_bse',rarity:'legend',name:'Lumina',color:'green',subtypes:['Moon','Queen'],type:'char',race:'Moon Queen',cost:10,atk:11,hp:13,sym:'LUM',setId:'base_set',cardNumber:'010/150',
     abilities:[{label:'Crescent Light',type:'passive',cost:0,text:'All characters on your field gain +2 Attack and +2 Health while Lumina is on the field.'},{label:'Full Moon Awakening',type:'activated',cost:7,text:'Flip a coin if heads you may choose any 1 card out of your Discard pile and bring it back into your hand. (Cost 7 Energy)'}]},
 
   // ── Veelden Kingdom (Base Set 065) — green Saiyan-tribal location (anthem + heal) ──
@@ -6543,7 +6543,7 @@ const DB={
     abilities:[{label:'Omega Swap',type:'triggered',cost:0,text:'Omega in play: flip — Heads swap; Tails opp -4 HP.'},{label:'Dark Draw',type:'passive',cost:0,text:'Draw 1 if hand = 5.'},{label:'Obscure Darkness',type:'activated',cost:0,text:'Roll d5×3 — each 2: +2 dmg. KO removes opp Location.'}],transforms:[],path:null},
   goku_ue:{id:'goku_ue',rarity:'legend',name:'Goku (Ultra Ego)',color:'red',charName:'Goku',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:8,atk:10,hp:15,sym:'UE',keywords:['onslaught'],
     abilities:[{label:'Ultra Ego Growth',type:'triggered',cost:0,text:'+1 ATK/+1 HP at end of your turn.'},{label:'Rival Synergy',type:'triggered',cost:0,text:'Vegeta/Goku on field: flip — Heads paralyze 1 opp.'},{label:'Destroyer Kamehameha',type:'activated',cost:0,limit:'once_per_turn',text:'Roll d8 — 1 or 7: +8 dmg. Other: +3.'}],transforms:[],path:null},
-  paradox:{id:'paradox',rarity:'legend',name:'Paradox',color:'purple',charName:'Paradox',subtypes:['Void','Celestial','Saiyan'],type:'char',race:'Void Celestial Saiyan',cost:9,atk:11,hp:17,sym:'PX',
+  paradox:{id:'paradox',rarity:'legend',name:'Paradox',color:'purple',charName:'Paradox',subtypes:['Void','Celestial','Saiyan'],type:'base_char',race:'Void Celestial Saiyan',cost:9,atk:11,hp:17,sym:'PX',
     abilities:[{label:'Combat Reflex',type:'triggered',cost:0,text:'Draw 1 after each attack taken.'},{label:'Void Synergy',type:'passive',cost:0,text:'Vildrex/Virora on field: special cost 0.'},{label:'Artificial Moon',type:'triggered',cost:0,limit:'once_per_turn',text:'If damaged this turn: transform to Great Ape free + draw 2.'}],transforms:['paradox_ape'],path:null},
   paradox_ape:{id:'paradox_ape',rarity:'mythic',color:'red',name:'Paradox (Great Ape)',charName:'Paradox',subtypes:['Void','Celestial','Saiyan'],type:'char',race:'Void Celestial Saiyan',cost:0,atk:16,hp:20,sym:'APE',transformOnly:true,
     abilities:[{label:'Great Ape Form',type:'passive',cost:0,text:'Draw 2 on transform.'}],transforms:[],path:null},
