@@ -6484,6 +6484,9 @@ const DEFAULTS={
   aquatic_hearth: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/071-150%20(Aquatic%20Hearth%20Equiptment).png',
   surfacer_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/147-150%20(Herald%20The%20Surfacer).png',
   darkspine_virora_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/128-150%20(Darkspine%20Virora).png',
+  najeela_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/012-150%20(Najeela%20SSJ).png',
+  najeela_ssj2_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/013-150%20(Najeela%20SSJ2).png',
+  najeela_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/014-150%20(Najeela%20SSG).png',
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
   billy_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/005-150%20(Billy%20SSJ1).png',
   veelden_kingdom_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/065-150%20(Veelden%20Kingdom%20Location).png',
@@ -6591,8 +6594,18 @@ const DB={
 
   // ── Najeela (Base Set 011) — common green Saiyan healer (base form). ──
   najeela_base_bse:{id:'najeela_base_bse',rarity:'common',name:'Najeela',color:'green',charName:'Najeela',charLine:'najeela',formTier:'base',subtypes:['Saiyan'],type:'base_char',race:'Saiyan',cost:1,atk:2,hp:2,sym:'N',setId:'base_set',cardNumber:'011/150',
-    nextForms:[],path:'base',
+    nextForms:['ssj1','ssg'],path:'base',
     abilities:[{label:'Healing Hands',type:'activated',cost:0,text:'Flip a coin if tails you may choose 1 character on your field to heal for +2 Health. (Card Taps)'}]},
+  // ── Najeela transform line: base → SSJ → SSJ2 (Saiyan path), and base → SSG (God path) ──
+  najeela_ssj1_bse:{id:'najeela_ssj1_bse',rarity:'rare',name:'Najeela (SSJ)',color:'green',charName:'Najeela',charLine:'najeela',formTier:'ssj1',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:5,atk:5,hp:5,sym:'SSJ',transformOnly:true,setId:'base_set',cardNumber:'012/150',
+    nextForms:['ssj2'],path:'saiyan',
+    abilities:[{label:"Warrior's Honor",type:'triggered',cost:0,text:'Upon entry you may choose one character on your field to attach an equipment to free of cost from your hand.'},{label:"The King's Charge",type:'activated',cost:0,limit:'once_per_game',text:'Flip a coin. If heads every Saiyan on your field gains +2/+2. (Only Once)'}]},
+  najeela_ssj2_bse:{id:'najeela_ssj2_bse',rarity:'rare',name:'Najeela (SSJ2)',color:'green',charName:'Najeela',charLine:'najeela',formTier:'ssj2',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:5,atk:7,hp:6,sym:'SSJ2',transformOnly:true,setId:'base_set',cardNumber:'013/150',
+    nextForms:[],path:'saiyan',
+    abilities:[{label:'Continuous Onslaught',type:'activated',cost:0,limit:'once_per_turn',text:'Flip a coin, if heads this card gains +2 Health. (May use once each turn)'}]},
+  najeela_ssg_bse:{id:'najeela_ssg_bse',rarity:'rare',name:'Najeela (SSG)',color:'yellow',charName:'Najeela',charLine:'najeela',formTier:'ssg',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:6,atk:5,hp:7,sym:'SSG',transformOnly:true,setId:'base_set',cardNumber:'014/150',
+    nextForms:[],path:'god',
+    abilities:[{label:'God Step',type:'passive',cost:0,text:'This character cannot be targeted by opponent abilities unless they pay 2 Energy.'},{label:'Flame of Veelden',type:'passive',cost:0,text:'This character cannot be blocked by characters with lower Attack Power than it.'}]},
 
   // ── Darkspine Virora (Base Set 128) — Mythic standalone (no transforms).
   // RED+GREEN: raw-damage nuke + reactive defensive growth. ──
@@ -9131,7 +9144,7 @@ function onFieldClick(p,uid,fc){
 // ═══════════════════════════════════════════════════
 function hasGodlyEvasion(fc){
   const c=DB[fc.cid];
-  return !!(c&&c.abilities&&c.abilities.some(a=>a.label==='Godly Evasion'));
+  return !!(c&&c.abilities&&c.abilities.some(a=>a.label==='Godly Evasion'||a.label==='God Step'));
 }
 // DRUNKEN STANCE (Billy): cannot be targeted by opponent abilities at all
 // (no toll, absolute). Attacks are NOT restricted by it.
@@ -9153,13 +9166,24 @@ function effPower(fc){ return (fc.currentATK||0)+(fc.nextAttackBonus||0); }
 function isUnblockable(fc){
   const c=DB[fc.cid];
   if(typeof hasKW==='function' && hasKW(fc,'unblockable'))return true;
-  return !!(c&&c.abilities&&c.abilities.some(a=>/unblockable|cannot be blocked/i.test(a.text||'')));
+  return !!(c&&c.abilities&&c.abilities.some(a=>{
+    if(a.label==='Flame of Veelden')return false;      // conditional, not absolute
+    const t=a.text||'';
+    if(/lower\s+attack/i.test(t))return false;          // conditional block restriction
+    return /unblockable|cannot be blocked/i.test(t);
+  }));
+}
+// FLAME OF VEELDEN (Najeela SSG): cannot be blocked by characters with lower ATK.
+function hasFlameOfVeelden(fc){ const c=DB[fc.cid]; return !!(c&&c.abilities&&c.abilities.some(a=>a.label==='Flame of Veelden')); }
+function canBlockAttacker(blocker, afc){
+  if(hasFlameOfVeelden(afc) && effPower(blocker) < effPower(afc)) return false;
+  return true;
 }
 // AI picks whether/what to block with when its Life is attacked.
 function aiChooseBlocker(defenderPlayer, afc){
   const pl=G.players[defenderPlayer];
   const power=effPower(afc);
-  const blockers=pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
+  const blockers=pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken&&canBlockAttacker(f,afc));
   if(!blockers.length)return null;
   const life=pl.lifeForce||0;
   let best=blockers.find(b=> b.currentHP>power && effPower(b)>power && (effPower(b)-power)>=(afc.currentHP||0) );
@@ -9229,6 +9253,7 @@ function resolveLifeAttack(attackerPlayer, afc, blocker){
 }
 // ── 2v2: team-routed Life attacks + blocking ──────────────────────────────
 function aiChooseBlockerFromPool(blockers, afc){
+  blockers=(blockers||[]).filter(f=>canBlockAttacker(f,afc));
   const power=effPower(afc);
   if(!blockers||!blockers.length)return null;
   let best=blockers.find(b=> b.currentHP>power && effPower(b)>power && (effPower(b)-power)>=(afc.currentHP||0));
@@ -9383,7 +9408,7 @@ function openHumanTeamBlockPrompt(aiPlayer, afc, humanTeam, done, onChoose){
     return;
   }
   const choose = onChoose || ((b)=>{ resolveAITeamAttack(aiPlayer, afc, b, humanTeam); if(done)done(); });
-  const blockers=teamBlockerPool(humanTeam);
+  const blockers=teamBlockerPool(humanTeam).filter(f=>canBlockAttacker(f,afc));
   const body=document.createElement('div');
   const capNote = (G.is2v2 && G.blockCaptain) ? `<div style="font-size:9px;color:#a5b4fc;margin-bottom:6px;letter-spacing:.5px">🪙 Block Captain this match: <b>${_V2LBL[G.blockCaptain]}</b> — may block with either teammate's characters.</div>` : '';
   body.innerHTML=`${capNote}<div style="font-size:12px;color:#fca5a5;margin-bottom:10px;line-height:1.5">AI's <b>${DB[afc.cid].name}</b> attacks Team ${humanTeam}'s Life for <b style="color:#ef4444">${power}</b>. Tap 👁 to inspect a card, then block or take it.</div>`;
@@ -9468,7 +9493,7 @@ function aiAttackHumanLife(afc, done){
 // Modal: choose a blocker for the AI's incoming Life attack, or take it.
 function openHumanBlockPrompt(afc, done){
   const power=effPower(afc);
-  const mine=G.players[1].field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
+  const mine=G.players[1].field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken&&canBlockAttacker(f,afc));
   const body=document.createElement('div');
   body.innerHTML=`<div style="font-size:12px;color:#fca5a5;margin-bottom:10px;line-height:1.5">AI's <b>${DB[afc.cid].name}</b> attacks your Life for <b style="color:#ef4444">${power}</b>. Tap 👁 to inspect a card, then block or take it.</div>`;
   mine.forEach(b=>{
@@ -9931,9 +9956,45 @@ function onEntry(p,fc){
       if(f.cid==='darkspine_virora_bse'){ f.hpBonus=(f.hpBonus||0)+2; f.currentHP=(f.currentHP||0)+2; log(`Power of the Ancients: Darkspine Virora gains +2 Defense (now ${(f.baseHP||0)+(f.hpBonus||0)+(f.passiveHp||0)} max).`,'gain'); }
     }); });
   }
+  // WARRIOR'S HONOR (Najeela SSJ): upon entry you may attach an equipment from
+  // your hand to a character on your field, free of cost.
+  if(c.id==='najeela_ssj1_bse'){
+    const equips=G.players[p].hand.filter(h=>DB[h.cid]&&DB[h.cid].type==='equipment');
+    const chars=G.players[p].field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
+    if(equips.length && chars.length){
+      const doAttach=(tfc,eHandCard)=>{
+        const ec=DB[eHandCard.cid];
+        G.players[p].hand=G.players[p].hand.filter(h=>h.uid!==eHandCard.uid);
+        applyEquip(tfc,ec);
+        if(ec.persistent===false){ G.players[p].discard.push(ec.id); }
+        else { if(!tfc.attachments)tfc.attachments=[]; tfc.attachments.push(ec.id); }
+        log(`Warrior's Honor: ${ec.name} → ${DB[tfc.cid].name} (free).`,'gain');
+        if(typeof recalcPassives==='function')recalcPassives();
+        renderAll();
+      };
+      if(isHumanPlayer(p)){
+        // Pick a character, then pick an equipment from hand.
+        const cbody=document.createElement('div');
+        cbody.innerHTML='<div style="font-size:11px;color:#9ca3af;margin-bottom:8px">Warrior\'s Honor — choose a character to equip (free):</div>';
+        const clist=document.createElement('div'); clist.style.cssText='display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto';
+        chars.forEach(tf=>{ const b=document.createElement('button'); b.className='btn-gray btn-sm'; b.style.cssText='padding:8px 10px;text-align:left;width:100%;font-weight:700;color:#e2e8f0'; b.innerHTML=`${DB[tf.cid].name} <span style="color:#22c55e">♥${tf.currentHP}</span>`; b.onclick=()=>{
+          const ebody=document.createElement('div');
+          ebody.innerHTML=`<div style="font-size:11px;color:#9ca3af;margin-bottom:8px">Attach which equipment to ${DB[tf.cid].name}?</div>`;
+          const elist=document.createElement('div'); elist.style.cssText='display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto';
+          equips.forEach(eh=>{ const eb=document.createElement('button'); eb.className='btn-gray btn-sm'; eb.style.cssText='padding:8px 10px;text-align:left;width:100%;font-weight:700;color:#e2e8f0'; eb.textContent=DB[eh.cid].name; eb.onclick=()=>{ closeAllModals(); doAttach(tf,eh); }; elist.appendChild(eb); });
+          const skip=document.createElement('button'); skip.className='btn-gray btn-sm'; skip.style.cssText='padding:8px 10px;width:100%;margin-top:6px;opacity:.7'; skip.textContent='Skip'; skip.onclick=()=>closeAllModals();
+          ebody.appendChild(elist); ebody.appendChild(skip); showModalEl("Warrior's Honor — Equipment", ebody);
+        }; clist.appendChild(b); });
+        const skipC=document.createElement('button'); skipC.className='btn-gray btn-sm'; skipC.style.cssText='padding:8px 10px;width:100%;margin-top:6px;opacity:.7'; skipC.textContent='Skip'; skipC.onclick=()=>closeAllModals();
+        cbody.appendChild(clist); cbody.appendChild(skipC); showModalEl("Warrior's Honor", cbody);
+      } else {
+        // AI: attach the first equipment to its strongest character.
+        const tfc=chars.reduce((a,b)=>effPower(b)>effPower(a)?b:a, chars[0]);
+        doAttach(tfc, equips[0]);
+      }
+    }
+  }
 }
-
-// POWER DRAIN (Virora SSB): on the SSB controller's turn start, each opponent
 // character with HIGHER ATK than the SSB loses 2 HP.
 function runPowerDrain(p){
   const pl=G.players[p]; if(!pl)return;
@@ -10469,6 +10530,43 @@ function activateAbility(fc,abl){
       if(tfc){ tfc.mustAttack=true; log(`Combat Control: ${DB[tfc.cid].name} must attack on its next turn if able.`,'gain'); }
       renderAll();
     },{sourcePlayer:G.activePlayer,title:'Combat Control',desc:'Choose an opponent character — it must attack on its next turn if able.'});
+    return;
+  }
+  // ── NAJEELA SSJ: The King's Charge — once per GAME. Coin: heads → every Saiyan
+  // on your field gains +2/+2.
+  if(abl.label==="The King's Charge"){
+    const ap=G.activePlayer; const pl=G.players[ap];
+    if(fc.kingsChargeUsed){ log("The King's Charge: already used (once per game).",'dmg'); return; }
+    fc.kingsChargeUsed=true;
+    pl.usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    const resolve=(heads)=>{
+      if(heads){
+        let n=0; pl.field.forEach(f=>{ if(isSaiyanChar(DB[f.cid])){ f.currentATK=(f.currentATK||0)+2; f.atkBonus=(f.atkBonus||0)+2; f.hpBonus=(f.hpBonus||0)+2; f.currentHP=(f.currentHP||0)+2; n++; } });
+        log(`The King's Charge: HEADS — ${n} Saiyan(s) gain +2/+2!`,'gain');
+      } else { log("The King's Charge: tails — no effect.",'dmg'); }
+      if(typeof recalcPassives==='function')recalcPassives();
+      renderAll();
+    };
+    if(typeof showCoinFlip==='function'){ showCoinFlip(coin(), (heads)=>resolve(heads)); }
+    else { resolve(coin()); }
+    return;
+  }
+  // ── NAJEELA SSJ2: Continuous Onslaught — once per turn. Coin: heads → +2 Health.
+  if(abl.label==='Continuous Onslaught'){
+    const ap=G.activePlayer; const pl=G.players[ap];
+    if(fc.contOnslaughtTurn===G.turn){ log('Continuous Onslaught: already used this turn.','dmg'); return; }
+    fc.contOnslaughtTurn=G.turn;
+    pl.usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    const resolve=(heads)=>{
+      if(heads){ fc.hpBonus=(fc.hpBonus||0)+2; fc.currentHP=(fc.currentHP||0)+2; log(`Continuous Onslaught: HEADS — ${DB[fc.cid].name} gains +2 Health.`,'gain'); }
+      else { log('Continuous Onslaught: tails — no effect.','dmg'); }
+      if(typeof recalcPassives==='function')recalcPassives();
+      renderAll();
+    };
+    if(typeof showCoinFlip==='function'){ showCoinFlip(coin(), (heads)=>resolve(heads)); }
+    else { resolve(coin()); }
     return;
   }
   // ── DARKSPINE VIRORA: Ancient God Rasengan — 8⚡. Hit an enemy character for 8
