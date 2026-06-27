@@ -5524,7 +5524,7 @@ textarea{
 #game-screen{ --rd-accent:#00d4ff; --rd-accent-glow:rgba(0,212,255,.45); --rd-red:#f87171; --rd-redglow:rgba(239,68,68,.4); }
 
 /* wider rails for breathing room */
-#game-screen .battle-layout{ max-width:1880px; margin-inline:auto; grid-template-columns:212px minmax(0,1fr) 320px !important; gap:13px !important; }
+#game-screen .battle-layout{ grid-template-columns:230px minmax(0,1fr) 344px !important; gap:16px !important; }
 #game-screen .prize-sidebar{ gap:12px !important; border-color:rgba(120,150,200,.14) !important; }
 
 /* ── PLAYER PANELS ── colour-coded, accent top-line ── */
@@ -5541,7 +5541,9 @@ textarea{
 
 /* ── PRIZE CARDS ── fill 2-col, ornate glow ── */
 #game-screen .prize-grid{ grid-template-columns:1fr 1fr !important; gap:7px !important; justify-items:center !important; }
-#game-screen .prize-card{ width:74px !important; height:104px !important; border:1.5px solid rgba(200,164,74,.4) !important; box-shadow:inset 0 0 0 1px rgba(232,197,112,.1) !important; }
+#game-screen .prize-card{ width:74px; height:104px; border:1.5px solid rgba(200,164,74,.4); box-shadow:inset 0 0 0 1px rgba(232,197,112,.1); }
+#game-screen .prize-card.claimable{ border-color:#fbbf24; }
+#game-screen .prize-card.claimed{ border-color:rgba(75,85,99,.3); }
 #game-screen .prize-section-label{ letter-spacing:2px; }
 
 /* ── ARENAS ── defined battlefields with subtle grid + colored floor ── */
