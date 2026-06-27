@@ -5902,7 +5902,6 @@ textarea{
       <div class="v2-ctrl-divider"></div>
       <div class="v2-phases">
         <button class="phase-pill" id="v2-ph-draw" onclick="doPhase('draw')" title="Draw">🎴</button>
-        <button class="phase-pill" id="v2-ph-resource" onclick="doPhase('resource')" title="Resource">⚡</button>
         <button class="phase-pill" id="v2-ph-main" onclick="doPhase('main')" title="Main">⚔️</button>
         <button class="phase-pill" id="v2-ph-attack" onclick="doPhase('attack')" title="Attack">🗡️</button>
       </div>
@@ -6096,7 +6095,6 @@ textarea{
       <div class="center-strip">
         <div class="phase-bar-center">
           <button class="phase-pill" id="ph-draw" onclick="doPhase('draw')"><span class="phase-pill-icon">🎴</span><span class="phase-pill-label">Draw</span></button>
-          <button class="phase-pill" id="ph-resource" onclick="doPhase('resource')"><span class="phase-pill-icon">⚡</span><span class="phase-pill-label">Resource</span></button>
           <button class="phase-pill" id="ph-main" onclick="doPhase('main')"><span class="phase-pill-icon">⚔️</span><span class="phase-pill-label">Main</span></button>
           <button class="phase-pill" id="ph-attack" onclick="doPhase('attack')"><span class="phase-pill-icon">🗡️</span><span class="phase-pill-label">Attack</span></button>
         </div>
@@ -11129,6 +11127,9 @@ function doPhase(ph){
     if(!G.phasesDone.includes('end')){G.phasesDone.push('end');execEnd();}
     return;
   }
+  // Resource is no longer a phase — its energy is granted automatically at turn
+  // start (folded into Draw). Ignore any stray calls.
+  if(ph==='resource'){ return; }
   // Attack phase: auto power-up if skipped
   if(ph==='attack'&&G.phasesDone.includes('attack'))return;
   // Already done phases cannot be repeated
@@ -11136,6 +11137,8 @@ function doPhase(ph){
   G.phasesDone.push(ph);G.phase=ph;
   if(ph==='draw'){
     G.players[mp].energy+=1;resetEnergyCardFlag(mp);drawCard(mp);log('+1⚡ (banked energy)','gain');
+    gainLocationEnergy(mp); // auto resource — energy from your Locations
+    G.phasesDone.push('resource'); // keep legacy flag consistent
     untapAll(mp);
     G.players[mp].usedAbilityThisTurn=false;
     G.players[mp].field.forEach(fc=>{
@@ -11148,11 +11151,16 @@ function doPhase(ph){
     });
     runPowerDrain(mp);
   }
-  else if(ph==='resource'){if(isLockedDown(mp)){log('Field Lockdown: your Locations are disabled — no energy.','dmg');}else{let g=0;G.players[mp].field.filter(f=>isLoc(DB[f.cid])).forEach(()=>g++);if(g>0){G.players[mp].energy+=g;log(`+${g}⚡ locations.`,'gain');}}}
   else if(ph==='main')log('Main Phase.','info');
   else if(ph==='attack'){log('Attack — green char → target.','info');G.selectedAttacker=null;}
   // end is handled above
   renderAll();
+}
+// Auto "Resource": grant +1 energy per Location you control (unless locked down).
+function gainLocationEnergy(p){
+  if(typeof isLockedDown==='function' && isLockedDown(p)){ log('Field Lockdown: your Locations are disabled — no energy.','dmg'); return; }
+  let g=0; G.players[p].field.filter(f=>isLoc(DB[f.cid])).forEach(()=>g++);
+  if(g>0){ G.players[p].energy+=g; log(`+${g}⚡ from Locations.`,'gain'); }
 }
 
 let _endingTurn=false;
@@ -11909,7 +11917,7 @@ function playEnergyCard(p, cid){
     // Auto-advance to main phase if not there yet
     if(G.activePlayer===p&&!G.phasesDone.includes('main')){
       // Push through to main phase
-      if(!G.phasesDone.includes('draw')){G.phasesDone.push('draw');G.players[p].energy+=1;resetEnergyCardFlag(p);drawCard(p);}
+      if(!G.phasesDone.includes('draw')){G.phasesDone.push('draw');G.players[p].energy+=1;resetEnergyCardFlag(p);drawCard(p);gainLocationEnergy(p);}
       if(!G.phasesDone.includes('resource'))G.phasesDone.push('resource');
       G.phasesDone.push('main');G.phase='main';
       log('Auto-advanced to Main Phase to play energy card.','info');
@@ -13102,7 +13110,7 @@ function renderV2HandFor(hp){
   });
 }
 function renderPhaseBar2v2(){
-  ['draw','resource','main','attack'].forEach(ph=>{
+  ['draw','main','attack'].forEach(ph=>{
     const btn=document.getElementById('v2-ph-'+ph);if(!btn)return;
     btn.className='phase-pill';
     if(G.phasesDone.includes(ph))btn.classList.add('done-phase');
@@ -13265,7 +13273,7 @@ function renderHand(){
 
 function renderPhaseBar(){
   // Phase pills (draw/resource/main/attack)
-  ['draw','resource','main','attack'].forEach(ph=>{
+  ['draw','main','attack'].forEach(ph=>{
     const btn=document.getElementById('ph-'+ph);if(!btn)return;
     btn.className='phase-pill';
     if(G.phasesDone.includes(ph))btn.classList.add('done-phase');
