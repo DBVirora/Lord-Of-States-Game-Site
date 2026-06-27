@@ -353,6 +353,11 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .phase-btn.active-phase{background:rgba(124,58,237,.25);color:#c4b5fd;border-color:var(--violet);box-shadow:0 0 8px var(--glow-v)}
 .phase-btn.done-phase{background:rgba(17,17,17,.4);color:#2a2a2a;cursor:default;border-color:rgba(34,34,34,.3)}
 .log-box{background:rgba(10,10,24,.7);border:1px solid rgba(30,30,56,.8);border-radius:8px;padding:4px 8px;height:50px;overflow-y:auto;font-size:10px;color:#6b7280;flex:1;backdrop-filter:blur(4px)}
+/* Battle log relocated into the right card-preview sidebar */
+.hover-preview-sidebar .log-box{width:100%;flex:1 1 auto;height:auto;min-height:160px;margin-top:8px;text-align:left;line-height:1.5}
+.sidebar-log-label{width:100%;margin-top:14px;padding-top:10px;border-top:1px solid rgba(200,164,74,.15);font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;color:#c8a04a;text-align:left}
+/* Center-bar log is a mobile fallback only (sidebar is hidden on mobile) */
+#log-box-center{display:none}
 .log-entry{padding:1px 0;font-family:'Share Tech Mono',monospace}
 .log-dmg{color:#fca5a5}.log-gain{color:#86efac}.log-info{color:#7dd3fc}.log-death{color:#f87171;font-weight:700}
 
@@ -3766,6 +3771,7 @@ textarea{
   display:flex;
   gap:12px;
   align-items:stretch;
+  justify-content:center;
   height:54px;
 }
 .turn-banner-inline{
@@ -4800,6 +4806,8 @@ textarea{
   .hover-preview-sidebar{
     display:none !important;
   }
+  /* Sidebar is hidden on mobile, so the battle log falls back to the center bar */
+  #log-box-center{display:block !important;flex:1;height:50px;min-height:40px}
 
   /* ─── Drawer tab button (left edge) — prominent pull-tab ─── */
   .mobile-drawer-tab{
@@ -6107,7 +6115,7 @@ textarea{
           <button class="action-tool-btn sac" onclick="openSacrificeModal()" title="Sacrifice">💀</button>
         </div>
         <button class="end-turn-btn" id="ph-end" onclick="endTurnNow()"><span style="font-size:16px">⏭</span> END TURN</button>
-        <div class="log-box" id="log-box"></div>
+        <div class="log-box" id="log-box-center"></div>
       </div>
 
       <!-- P1 field -->
@@ -6157,6 +6165,8 @@ textarea{
         <div style="font-size:11px;color:#4b5563;letter-spacing:1px;margin-top:8px;text-align:center">Hover a card<br>to preview</div>
       </div>
       <div class="hover-preview-content" id="hover-preview-content" style="display:none"></div>
+      <div class="sidebar-log-label">⚔ BATTLE LOG</div>
+      <div class="log-box" id="log-box"></div>
     </div>
 
   </div>
@@ -13340,9 +13350,8 @@ function renderBanner(){
   }
 }
 function renderLog(){
-  const el=document.getElementById('log-box');
-  el.innerHTML=G.log.slice(-30).map(e=>`<div class="log-entry log-${e.t}">${e.m}</div>`).join('');
-  el.scrollTop=el.scrollHeight;
+  const html=G.log.slice(-30).map(e=>`<div class="log-entry log-${e.t}">${e.m}</div>`).join('');
+  document.querySelectorAll('.log-box').forEach(el=>{ el.innerHTML=html; el.scrollTop=el.scrollHeight; });
 }
 
 // Get a player's display name for logs/UI (real name for humans, 'AI' for AI)
