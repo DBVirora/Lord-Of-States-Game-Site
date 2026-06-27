@@ -5524,12 +5524,12 @@ textarea{
 #game-screen{ --rd-accent:#00d4ff; --rd-accent-glow:rgba(0,212,255,.45); --rd-red:#f87171; --rd-redglow:rgba(239,68,68,.4); }
 
 /* wider rails for breathing room */
-#game-screen .battle-layout{ grid-template-columns:214px minmax(0,1fr) 326px !important; gap:13px !important; }
+#game-screen .battle-layout{ max-width:1880px; margin-inline:auto; grid-template-columns:212px minmax(0,1fr) 320px !important; gap:13px !important; }
 #game-screen .prize-sidebar{ gap:12px !important; border-color:rgba(120,150,200,.14) !important; }
 
 /* ── PLAYER PANELS ── colour-coded, accent top-line ── */
-#game-screen .player-panel{ position:relative; border-radius:14px !important; padding:12px !important; overflow:hidden; }
-#game-screen .player-panel::before{ content:''; position:absolute; top:0; left:0; right:0; height:2px; opacity:.85; }
+#game-screen .player-panel{ position:relative; border-radius:14px !important; padding:11px !important; }
+#game-screen .player-panel::before{ content:''; position:absolute; top:0; left:12px; right:12px; height:2px; border-radius:2px; opacity:.85; }
 #game-screen .opp-panel{ border:1px solid rgba(239,68,68,.3) !important; background:linear-gradient(165deg,rgba(40,14,18,.6),rgba(10,8,16,.72)) !important; }
 #game-screen .opp-panel::before{ background:linear-gradient(90deg,transparent,rgba(239,68,68,.7),transparent); }
 #game-screen .you-panel{ border:1px solid var(--rd-accent) !important; background:linear-gradient(165deg,rgba(12,26,34,.62),rgba(8,12,18,.74)) !important; box-shadow:0 0 0 1px rgba(0,212,255,.12),0 0 22px rgba(0,212,255,.1) !important; }
@@ -5540,8 +5540,8 @@ textarea{
 #game-screen .energy-big-amount{ color:#fbbf24 !important; text-shadow:0 0 8px rgba(251,191,36,.45); }
 
 /* ── PRIZE CARDS ── fill 2-col, ornate glow ── */
-#game-screen .prize-grid{ grid-template-columns:1fr 1fr !important; gap:7px !important; }
-#game-screen .prize-card{ width:100% !important; height:auto !important; aspect-ratio:5/7 !important; border:2px solid rgba(200,164,74,.4) !important; box-shadow:inset 0 0 0 1px rgba(232,197,112,.12), inset 0 0 16px rgba(124,58,237,.16) !important; }
+#game-screen .prize-grid{ grid-template-columns:1fr 1fr !important; gap:7px !important; justify-items:center !important; }
+#game-screen .prize-card{ width:74px !important; height:104px !important; border:1.5px solid rgba(200,164,74,.4) !important; box-shadow:inset 0 0 0 1px rgba(232,197,112,.1) !important; }
 #game-screen .prize-section-label{ letter-spacing:2px; }
 
 /* ── ARENAS ── defined battlefields with subtle grid + colored floor ── */
@@ -5558,18 +5558,22 @@ textarea{
    border:1px solid rgba(0,212,255,.16) !important; }
 
 /* ── LOCATIONS ── defined 2-col panel, wider, 4-up grid ── */
-#game-screen .location-zone{ min-width:152px !important; max-width:152px !important; display:grid !important; grid-template-columns:1fr 1fr !important; grid-auto-rows:1fr; gap:6px !important; align-content:stretch !important; background:rgba(10,22,14,.34) !important; border:1px solid rgba(34,197,94,.22) !important; border-radius:10px !important; padding:8px !important; }
-#game-screen .location-zone-label{ grid-column:1 / -1; align-self:start; }
+#game-screen .location-zone{ min-width:182px !important; max-width:182px !important; display:grid !important; grid-template-columns:repeat(2,1fr) !important; grid-auto-rows:min-content; gap:7px !important; align-content:start !important; background:rgba(10,22,14,.34) !important; border:1px solid rgba(34,197,94,.22) !important; border-radius:10px !important; padding:8px !important; overflow:hidden; }
+#game-screen .location-zone-label{ grid-column:1 / -1; }
+#game-screen .location-zone .card-slot{ width:100% !important; height:auto !important; }
+#game-screen .location-zone .card-art-area{ height:58px !important; }
+#game-screen .location-zone .card-name-sm{ font-size:9px !important; }
 
 /* ── HERALD ── the hero card, biggest on the board ── */
 #game-screen .herald-zone{ min-width:120px !important; max-width:120px !important; }
 #game-screen .herald-slot{ width:112px !important; height:158px !important; box-shadow:0 0 14px rgba(168,85,247,.45) !important; }
 
 /* ── COMMAND CONSOLE ── unified bar on the centre seam ── */
-#game-screen .center-strip{ height:64px !important; padding:8px 14px !important; border:1px solid rgba(200,164,74,.28) !important; background:linear-gradient(180deg,rgba(20,20,40,.85),rgba(10,10,24,.92)) !important; border-radius:13px !important; box-shadow:0 0 26px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.05) !important; align-items:center !important; }
-#game-screen .phase-bar-center{ background:rgba(8,8,20,.55) !important; border:1px solid rgba(120,150,200,.18) !important; border-radius:10px !important; padding:4px 6px !important; }
+#game-screen .center-strip{ height:60px !important; padding:7px 18px !important; border:1px solid rgba(200,164,74,.2) !important; background:linear-gradient(180deg,rgba(18,18,36,.8),rgba(10,10,22,.85)) !important; border-radius:12px !important; box-shadow:0 2px 14px rgba(0,0,0,.4) !important; align-items:center !important; gap:16px !important; justify-content:flex-start !important; }
+#game-screen .phase-bar-center{ background:transparent !important; border:none !important; padding:0 !important; gap:6px !important; }
+#game-screen .center-tools{ padding-left:16px !important; border-left:1px solid rgba(120,150,200,.15) !important; }
 #game-screen .phase-pill.active-phase{ box-shadow:0 0 14px rgba(0,212,255,.35) !important; }
-#game-screen .end-turn-btn{ box-shadow:0 0 22px rgba(232,197,112,.4), inset 0 1px 0 rgba(255,255,255,.4) !important; }
+#game-screen .end-turn-btn{ margin-left:auto !important; box-shadow:0 0 18px rgba(232,197,112,.35), inset 0 1px 0 rgba(255,255,255,.4) !important; }
 
 /* ── HAND DOCK + opponent hand strip ── */
 #game-screen .hand-dock{ border:1px solid rgba(232,197,112,.2); border-radius:14px; padding:8px 14px 10px; background:linear-gradient(180deg,rgba(16,16,32,.55),rgba(10,10,22,.7)); }
@@ -5582,6 +5586,10 @@ textarea{
 #game-screen .hover-preview-ability-text{ font-size:12px !important; line-height:1.55 !important; }
 #game-screen .hover-preview-sidebar .log-box{ min-height:120px !important; max-height:240px !important; flex:0 1 auto !important; }
 #game-screen .sidebar-log-label{ color:#9fb0c4 !important; }
+
+/* per-side arena border tint for clarity */
+#game-screen .board-column > .player-area:first-of-type{ border-color:rgba(239,68,68,.22) !important; }
+#game-screen .board-column > .player-area:last-of-type{ border-color:rgba(0,212,255,.22) !important; }
 </style>
 </head>
 <body>
