@@ -5754,6 +5754,94 @@ textarea{
   </div>
 </div>
 
+<style id="menu-compact-redesign">
+/* ════════════════════════════════════════════════════════════
+   MAIN MENU — COMPACT GAME-STYLE LAYOUT (overrides earlier rules)
+   ════════════════════════════════════════════════════════════ */
+@media (min-width:769px){
+  #menu-screen{
+    justify-content:center !important;
+    min-height:100vh !important;
+    padding:18px 24px !important;
+    gap:0 !important;
+  }
+  #menu-screen .menu-title-flourish{ display:block !important; font-size:10px !important; margin:0 0 2px !important; }
+  #menu-screen .menu-title-wrap{ padding:6px 50px 2px !important; margin-bottom:0 !important; }
+  #menu-screen h1{ font-size:clamp(30px,3.6vw,46px) !important; }
+  #menu-screen .menu-crown{ font-size:18px !important; margin:-2px 0 2px !important; }
+  #menu-screen .menu-tagline{ margin-bottom:12px !important; font-size:9px !important; }
+
+  /* Featured event — match panel width */
+  #menu-screen .featured-card-panel{ width:540px !important; max-width:540px !important; margin-bottom:14px !important; padding:11px 16px !important; }
+
+  /* The action cluster */
+  #menu-screen .menu-action-panel{
+    width:540px; max-width:540px;
+    display:flex; flex-direction:column; gap:16px;
+  }
+
+  /* Neutralize the generic 2-col section grid from earlier media queries */
+  #menu-screen .menu-section{
+    display:flex !important; flex-direction:column !important;
+    gap:9px !important; width:100% !important; max-width:540px !important; margin:0 !important;
+  }
+  #menu-screen .menu-section-label{
+    grid-column:auto !important; align-self:center;
+    margin:0 0 2px !important; font-size:11px !important;
+  }
+
+  /* ── Feature tiles (Campaign / Find Match) ── */
+  #menu-screen .menu-feature-row{ display:grid !important; grid-template-columns:1fr 1fr; gap:11px; }
+  #menu-screen .menu-btn-feature{
+    flex-direction:column !important; align-items:flex-start !important; justify-content:center !important;
+    gap:3px !important; padding:15px 18px !important; height:auto !important; min-height:74px;
+    text-align:left !important; letter-spacing:0 !important;
+    background:linear-gradient(135deg, rgba(48,30,86,.72), rgba(18,12,40,.88)) !important;
+  }
+  #menu-screen .menu-btn-feature.mbf-blue{
+    background:linear-gradient(135deg, rgba(20,46,86,.72), rgba(10,16,42,.88)) !important;
+    border-color:rgba(0,180,255,.3) !important;
+  }
+  #menu-screen .menu-btn-feature .mb-ico{ font-size:23px; line-height:1; filter:drop-shadow(0 0 8px rgba(124,58,237,.5)); }
+  #menu-screen .menu-btn-feature .mb-txt{ font-family:'Cinzel',serif; font-size:16px; font-weight:700; letter-spacing:2px; color:#f4ecd0; }
+  #menu-screen .menu-btn-feature .mb-sub{ font-size:9px; letter-spacing:2.5px; color:rgba(200,164,74,.6); text-transform:uppercase; }
+  #menu-screen .menu-btn-feature.mbf-blue .mb-sub{ color:rgba(120,200,255,.6); }
+
+  /* ── 2-col secondary grid ── */
+  #menu-screen .menu-grid-2{ display:grid !important; grid-template-columns:1fr 1fr; gap:9px; }
+
+  /* ── VS AI segmented row ── */
+  #menu-screen .menu-ai-row{ display:flex !important; align-items:stretch; gap:7px; }
+  #menu-screen .menu-ai-label{
+    display:flex; align-items:center; gap:4px; padding:0 8px; white-space:nowrap;
+    font-family:'Cinzel',serif; font-size:11px; font-weight:700; letter-spacing:1.5px;
+    color:rgba(120,200,255,.8);
+  }
+  #menu-screen .ai-chip{ flex:1; padding:10px 4px !important; font-size:11px !important; letter-spacing:1.5px !important; }
+
+  /* ── Tools icon grid ── */
+  #menu-screen .menu-tools-grid{ display:grid !important; grid-template-columns:repeat(4,1fr); gap:8px; }
+  #menu-screen .menu-tool{
+    position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+    padding:12px 4px; border-radius:10px; cursor:pointer; transition:all .2s;
+    border:1px solid rgba(200,164,74,.18);
+    background:linear-gradient(160deg, rgba(22,16,44,.72), rgba(10,8,24,.88));
+    color:rgba(205,212,235,.8); font-family:'Cinzel',serif;
+  }
+  #menu-screen .menu-tool:hover{
+    border-color:var(--gold); color:#fff; transform:translateY(-2px);
+    background:linear-gradient(160deg, rgba(44,28,80,.85), rgba(20,14,46,.92));
+    box-shadow:0 6px 20px rgba(124,58,237,.28), 0 0 14px rgba(200,164,74,.18);
+  }
+  #menu-screen .menu-tool .mt-ico{ font-size:20px; line-height:1; filter:drop-shadow(0 0 6px rgba(124,58,237,.45)); }
+  #menu-screen .menu-tool .mt-lbl{ font-size:9px; letter-spacing:1.5px; text-transform:uppercase; text-align:center; line-height:1.1; }
+  #menu-screen .menu-tool .mt-badge{
+    position:absolute; top:5px; right:7px; background:#ef4444; color:#fff;
+    border-radius:10px; padding:0 5px; font-size:9px; font-family:'Share Tech Mono',monospace;
+  }
+}
+</style>
+
 <!-- MENU -->
 <div id="menu-screen" class="screen active">
   <!-- Atmospheric background layers -->
@@ -5791,32 +5879,49 @@ textarea{
     <button class="news-carousel-admin-edit" id="news-carousel-admin-edit" onclick="openNewsEditor(event)" style="display:none" title="Edit news slides">✎</button>
   </div>
 
+  <!-- ACTION PANEL (compact game-style layout) -->
+  <div class="menu-action-panel">
+
   <!-- BATTLE section -->
-  <div class="menu-section">
+  <div class="menu-section menu-battle-section">
     <div class="menu-section-label">Battle</div>
-    <button class="menu-btn" onclick="showScreen('campaign-worlds-screen');openCampaign()"><span class="menu-btn-sweep"></span>🗺  CAMPAIGN</button>
-    <button class="menu-btn" onclick="showScreen('battle-pass-screen');openBattlePass()"><span class="menu-btn-sweep"></span>⚔  BATTLE PASS</button>
-    <button class="menu-btn" onclick="showScreen('matchmaking-screen');openMatchmaking()"><span class="menu-btn-sweep"></span>🔍  FIND MATCH</button>
-    <button class="menu-btn" onclick="showScreen('online-lobby-screen');openOnlineLobby()"><span class="menu-btn-sweep"></span>🌐  PRIVATE ROOM</button>
-    <button class="menu-btn" onclick="goToDeckSelect('pvp')"><span class="menu-btn-sweep"></span>⚔  LOCAL PVP</button>
-    <button class="menu-btn ai-btn" onclick="goToDeckSelect('easy')"><span class="menu-btn-sweep"></span>🤖  AI · EASY</button>
-    <button class="menu-btn ai-btn" onclick="goToDeckSelect('medium')"><span class="menu-btn-sweep"></span>🤖  AI · MEDIUM</button>
-    <button class="menu-btn ai-btn" onclick="goToDeckSelect('hard')"><span class="menu-btn-sweep"></span>🤖  AI · HARD</button>
-    <button class="menu-btn ai-btn" onclick="open2v2Setup()" title="2v2 Team Battle"><span class="menu-btn-sweep"></span>👥  2v2 TEAM (BETA)</button>
+
+    <div class="menu-feature-row">
+      <button class="menu-btn menu-btn-feature" onclick="showScreen('campaign-worlds-screen');openCampaign()"><span class="menu-btn-sweep"></span><span class="mb-ico">🗺</span><span class="mb-txt">Campaign</span><span class="mb-sub">Story Mode</span></button>
+      <button class="menu-btn menu-btn-feature mbf-blue" onclick="showScreen('matchmaking-screen');openMatchmaking()"><span class="menu-btn-sweep"></span><span class="mb-ico">🔍</span><span class="mb-txt">Find Match</span><span class="mb-sub">Ranked Online</span></button>
+    </div>
+
+    <div class="menu-grid-2">
+      <button class="menu-btn" onclick="showScreen('battle-pass-screen');openBattlePass()"><span class="menu-btn-sweep"></span>⚔  BATTLE PASS</button>
+      <button class="menu-btn" onclick="showScreen('online-lobby-screen');openOnlineLobby()"><span class="menu-btn-sweep"></span>🌐  PRIVATE ROOM</button>
+      <button class="menu-btn" onclick="goToDeckSelect('pvp')"><span class="menu-btn-sweep"></span>⚔  LOCAL PVP</button>
+      <button class="menu-btn ai-btn" onclick="open2v2Setup()" title="2v2 Team Battle"><span class="menu-btn-sweep"></span>👥  2v2 TEAM</button>
+    </div>
+
+    <div class="menu-ai-row">
+      <span class="menu-ai-label">🤖 VS&nbsp;AI</span>
+      <button class="menu-btn ai-btn ai-chip" onclick="goToDeckSelect('easy')"><span class="menu-btn-sweep"></span>EASY</button>
+      <button class="menu-btn ai-btn ai-chip" onclick="goToDeckSelect('medium')"><span class="menu-btn-sweep"></span>MEDIUM</button>
+      <button class="menu-btn ai-btn ai-chip" onclick="goToDeckSelect('hard')"><span class="menu-btn-sweep"></span>HARD</button>
+    </div>
   </div>
 
   <!-- TOOLS section -->
-  <div class="menu-section">
+  <div class="menu-section menu-tools-section">
     <div class="menu-section-label">Tools</div>
-    <button class="menu-btn util-btn" id="menu-friends-btn" onclick="showScreen('friends-screen');openFriends()"><span class="menu-btn-sweep"></span>👥  FRIENDS <span id="menu-friends-badge" style="display:none;background:#ef4444;color:#fff;border-radius:10px;padding:1px 6px;font-size:9px;margin-left:4px">0</span></button>
-    <button class="menu-btn util-btn" onclick="openTradeScreen()"><span class="menu-btn-sweep"></span>🔄  TRADE</button>
-    <button class="menu-btn util-btn" onclick="showScreen('shop-screen');openShop()"><span class="menu-btn-sweep"></span>🏪  SHOP</button>
-    <button class="menu-btn util-btn" onclick="showScreen('profile-screen');refreshProfileScreen()"><span class="menu-btn-sweep"></span>👤  PROFILE</button>
-    <button class="menu-btn util-btn" onclick="showScreen('builder-screen');renderBuilderCards()"><span class="menu-btn-sweep"></span>🃏  DECK BUILDER</button>
-    <button class="menu-btn util-btn" onclick="showScreen('upload-screen');buildUploadScreen()"><span class="menu-btn-sweep"></span>🖼  CARD IMAGES</button>
-    <button class="menu-btn util-btn" onclick="showRulesScreen()"><span class="menu-btn-sweep"></span>📖  RULES &amp; CARDS</button>
-    <button class="menu-btn util-btn" onclick="openGameSettings()"><span class="menu-btn-sweep"></span>⚙  OPTIONS</button>
+    <div class="menu-tools-grid">
+      <button class="menu-tool" id="menu-friends-btn" onclick="showScreen('friends-screen');openFriends()"><span class="mt-ico">👥</span><span class="mt-lbl">Friends</span><span id="menu-friends-badge" class="mt-badge" style="display:none">0</span></button>
+      <button class="menu-tool" onclick="openTradeScreen()"><span class="mt-ico">🔄</span><span class="mt-lbl">Trade</span></button>
+      <button class="menu-tool" onclick="showScreen('shop-screen');openShop()"><span class="mt-ico">🏪</span><span class="mt-lbl">Shop</span></button>
+      <button class="menu-tool" onclick="showScreen('profile-screen');refreshProfileScreen()"><span class="mt-ico">👤</span><span class="mt-lbl">Profile</span></button>
+      <button class="menu-tool" onclick="showScreen('builder-screen');renderBuilderCards()"><span class="mt-ico">🃏</span><span class="mt-lbl">Deck Builder</span></button>
+      <button class="menu-tool" onclick="showScreen('upload-screen');buildUploadScreen()"><span class="mt-ico">🖼</span><span class="mt-lbl">Card Images</span></button>
+      <button class="menu-tool" onclick="showRulesScreen()"><span class="mt-ico">📖</span><span class="mt-lbl">Rules</span></button>
+      <button class="menu-tool" onclick="openGameSettings()"><span class="mt-ico">⚙</span><span class="mt-lbl">Options</span></button>
+    </div>
   </div>
+
+  </div><!-- /menu-action-panel -->
 </div>
 
 <!-- DECK SELECT -->
