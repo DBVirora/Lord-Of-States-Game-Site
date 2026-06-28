@@ -2833,6 +2833,9 @@ textarea{
   position:relative;
   z-index:1;
 }
+/* In-game art areas keep their fixed-height cover sizing even with holo applied */
+.card-art-area.holo-card img,.hand-art-area.holo-card img,.col-card-img.holo-card img,.card-play-zoom-img-wrap.holo-card img{height:100%;width:100%;object-fit:cover;object-position:top;}
+.card-art-area.holo-card,.hand-art-area.holo-card,.col-card-img.holo-card{border-radius:0;overflow:hidden;}
 
 /* All holo effect layers (injected via JS for multi-layer richness) */
 .holo-layer{
@@ -9930,6 +9933,13 @@ function playCardZoom(cardId){
     return;
   }
   img.src = url;
+  // Holo treatment on the "put down" zoom, if the player owns this card as foil.
+  const zWrap=img.parentElement;
+  if(zWrap){
+    zWrap.classList.remove('holo-card','always-on','holo-classic','holo-cosmic','holo-gold','holo-reverse','holo-ruby');
+    zWrap.querySelectorAll('.holo-layer').forEach(l=>l.remove());
+    applyHoloToArt(zWrap,cardId);
+  }
   // Restart animation
   overlay.classList.remove('playing');
   void overlay.offsetWidth; // force reflow
@@ -13504,6 +13514,7 @@ function renderV2HandFor(hp){
     if(!isActive)div.style.opacity='0.5';
     const artWrap=document.createElement('div');artWrap.className='hand-art-area';
     const url=getImg(fc.cid);if(url){const img=document.createElement('img');img.src=url;artWrap.appendChild(img);}else artWrap.textContent=c.sym||'?';
+    applyHoloToArt(artWrap,fc.cid);
     div.appendChild(artWrap);
     const info=document.createElement('div');info.className='hand-info';
     info.innerHTML=`<div class="hand-name">${c.name}</div>
@@ -13635,7 +13646,21 @@ function renderLocZone(p, targetId){
 function makeArtEl(cid,h){
   const wrap=document.createElement('div');wrap.className='card-art-area';wrap.style.height=h+'px';
   const url=getImg(cid);if(url){const img=document.createElement('img');img.src=url;wrap.appendChild(img);}else wrap.textContent=DB[cid]?.sym||'?';
+  applyHoloToArt(wrap,cid);
   return wrap;
+}
+
+// Apply a player's OWNED holo treatment to any art container holding an <img>.
+// Used in-game (field, hand, play-zoom) so a pulled holo shows everywhere it's
+// played or viewed. Layers are injected after the img so they sit on top.
+function applyHoloToArt(wrap,cid){
+  if(!wrap)return;
+  const style=(typeof getOwnedHoloStyle==='function')?getOwnedHoloStyle(cid):null;
+  if(!style)return;
+  wrap.classList.add('holo-card','always-on','holo-'+style);
+  const counts={classic:4,cosmic:3,gold:3,reverse:4,ruby:5};
+  const n=counts[style]||3;
+  for(let i=1;i<=n;i++){ const l=document.createElement('div'); l.className='holo-layer holo-layer-'+i; wrap.appendChild(l); }
 }
 
 function renderP2Backs(){
@@ -13664,6 +13689,7 @@ function renderHand(){
     div.className='hand-card '+(isInst(c)?'instant-card '+(playable?'playable':'not-playable'):playable?'playable':'not-playable');
     const artWrap=document.createElement('div');artWrap.className='hand-art-area';
     const url=getImg(fc.cid);if(url){const img=document.createElement('img');img.src=url;artWrap.appendChild(img);}else artWrap.textContent=c.sym||'?';
+    applyHoloToArt(artWrap,fc.cid);
     div.appendChild(artWrap);
     const info=document.createElement('div');info.className='hand-info';
     const tc={base_char:'#c4b5fd',char:'#a5b4fc',team:'#7dd3fc',location:'#86efac',equipment:'#fcd34d',instant:'#fca5a5',token:'#a78bfa'};
@@ -14542,13 +14568,13 @@ async function awardPack(kind,type,setId,qty,name){
 function _openPackNow(type,setId){
   const pulls=generatePack(type,setId);
   pulls.forEach(p=>{ p.isNew=!_collection[p.cid]; addCardToCollection(p.cid,p.foil); });
-  saveCollection();
+  saveCollection(); saveHoloOwned();
   showPackOpening(pulls,type,false,setId);
 }
 function _openBoxNow(setId){
   let all=[]; for(let i=0;i<BOX_PACKS;i++) all=all.concat(generatePack('basic',setId));
   all.forEach(p=>{ p.isNew=!_collection[p.cid]; addCardToCollection(p.cid,p.foil); });
-  saveCollection();
+  saveCollection(); saveHoloOwned();
   showBoxOpening(all,setId);
 }
 async function openInventoryPack(key){
@@ -14575,6 +14601,12 @@ function addCardToCollection(cid, foil){
   if(foil&&foil!=='none'){
     if(!_collectionFoil[cid])_collectionFoil[cid]={holo:0,reverse:0};
     _collectionFoil[cid][foil]=(_collectionFoil[cid][foil]||0)+1;
+    // Persist the holo STYLE so this card renders as that foil everywhere, forever.
+    // 'reverse' → reverse shimmer; 'holo' → rarity-specific style (classic/cosmic/gold).
+    // Best foil owned wins (a real holo outranks a reverse holo).
+    const style = foil==='reverse' ? 'reverse' : holoStyleForRarity(getRarity(cid));
+    const rank = s => s==='reverse' ? 1 : (s ? 2 : 0);
+    if(rank(style) > rank(_holoOwned[cid])) _holoOwned[cid]=style;
   }
   return true;
 }
@@ -15590,6 +15622,8 @@ function renderProfileCollection(){
     div.innerHTML=
       (url?'<img src="'+url+'" class="col-card-img"/>':'<div class="col-card-img" style="display:flex;align-items:center;justify-content:center;font-size:18px">'+(c.sym||'?')+'</div>')
       +'<div><div class="col-card-name">'+c.name+'</div><div class="col-card-count">x'+count+'</div></div>';
+    const cimg=div.querySelector('img.col-card-img');
+    if(cimg){ const fs=getOwnedHoloStyle(cid); if(fs){ const holoWrap=document.createElement('div'); holoWrap.className='col-card-img'; cimg.classList.remove('col-card-img'); cimg.style.cssText='width:100%;height:100%;display:block'; holoWrap.appendChild(cimg.cloneNode(true)); cimg.replaceWith(holoWrap); applyHoloToArt(holoWrap,cid); } }
     el.appendChild(div);
   });
 }
