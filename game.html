@@ -820,6 +820,7 @@ body{padding-top:46px;}
 .col-card-count{font-size:10px;color:#fbbf24;margin-top:2px;}
 .col-variant-tag{font-size:8px;letter-spacing:.5px;margin-top:3px;border:1px solid;border-radius:6px;padding:1px 5px;display:inline-block;font-family:'Share Tech Mono',monospace;}
 .col-card-mini.col-foil{box-shadow:0 0 10px rgba(168,85,247,.18);}
+.db-variant-tag{font-size:8px;letter-spacing:.5px;border:1px solid;border-radius:5px;padding:0 5px;flex-shrink:0;}
 /* ── TRADE ── */
 .trade-lobby-card{background:linear-gradient(160deg,rgba(30,20,60,.5),rgba(8,8,28,.6));border:1px solid var(--border-v);border-radius:12px;padding:18px;}
 .trade-lobby-title{font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:2px;color:#e9d5ff;margin-bottom:10px;}
@@ -6605,6 +6606,7 @@ const DEFAULTS={
   najeela_ssj2_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/013-150%20(Najeela%20SSJ2).png',
   najeela_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/014-150%20(Najeela%20SSG).png',
   najeela_ssb_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/015-150%20(Najeela%20SSB).png',
+  female_saiyan_citizen_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/040-150%20(Female%20Saiyan%20Citizen).png',
   ghost_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/ghost_hulk_card%20PROMO.png',
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
   billy_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/005-150%20(Billy%20SSJ1).png',
@@ -6733,6 +6735,8 @@ const DB={
       {label:'Etheric Strike',type:'activated',cost:4,text:'Flip a coin. If tails, heal each of your characters for 2, then they get +1 Attack until end of turn. If heads, you gain +1 Life Point. (Cost 4 Energy)'},
       {label:'Defensive Bond',type:'passive',cost:0,text:'Your characters cannot be returned to hand or deck by opponent effects.'}
     ]},
+  // ── Female Saiyan Citizen — vanilla WHITE common (matches any alignment). ──
+  female_saiyan_citizen_bse:{id:'female_saiyan_citizen_bse',rarity:'common',name:'Female Saiyan Citizen',color:'white',charName:'Female Saiyan Citizen',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:1,atk:1,hp:1,sym:'FSC',setId:'base_set',cardNumber:'040/150',abilities:[]},
   // ── Ghost Hulk (PROMO / PRM) — Legend standalone. GREEN+RED: green energy ramp + red dice damage. ──
   ghost_hulk_promo:{id:'ghost_hulk_promo',rarity:'legend',name:'Ghost Hulk',color:'green',colors:['green','red'],charName:'Ghost Hulk',subtypes:['Gamma','Spirit'],type:'char',race:'Gamma Spirit',cost:9,atk:8,hp:14,sym:'GH',setId:'promo',cardNumber:'PROMO',
     abilities:[{label:'Gamma Absorption',type:'triggered',cost:0,text:'When entering the field you gain +2 Green Energy for each card that has a cost above 5.'},{label:'Spirit of Smash',type:'activated',cost:0,limit:'once_per_turn',text:"Choose a character on your opponent's field. Roll a 5 dye, if it lands on 2 this attack does +3 damage. If it lands on 4 it does +6 damage."}]},
@@ -7486,54 +7490,59 @@ function renderBuilderCards(){
     if(colorFilter!=='all'&&c.color!==colorFilter)return false;
     // Rarity filter
     if(rarityFilter!=='all' && getRarity(c.id)!==rarityFilter)return false;
-    // Holo filter — admin sees everything (no ownership check), regular players check _holoOwned
-    if(holoFilter!=='all'){
-      const ownedStyle = getOwnedHoloStyle(c.id); // null if not owned as holo
-      if(holoFilter==='normal'){
-        // Show only cards NOT owned as holo
-        if(ownedStyle)return false;
-      } else if(holoFilter==='any'){
-        // Show any holo style they own
-        if(!ownedStyle)return false;
-      } else {
-        // Specific style: classic / cosmic / gold / reverse / ruby
-        if(ownedStyle !== holoFilter)return false;
-      }
+    // Holo filter — applied precisely per-variant below; here we only drop cards a
+    // non-admin owns no matching version of.
+    if(holoFilter!=='all' && !adminHasUnlimitedCards()){
+      if(holoFilter==='normal'){ if(variantCount(c.id,'none')<=0)return false; }
+      else if(holoFilter==='any'){ if(!VARIANT_ORDER.some(v=>v!=='none'&&variantCount(c.id,v)>0))return false; }
+      else { if(variantCount(c.id,holoFilter)<=0)return false; }
     }
     if(search&&!c.name.toLowerCase().includes(search)&&!(c.color||'').includes(search)&&!(c.keywords||[]).some(k=>k.includes(search)))return false;
     return true;
   }).forEach(c=>{
-    const count=builderDeck.filter(e=>e.cid===c.id).reduce((s,e)=>s+e.count,0);
-    const ownedFoils=VARIANT_ORDER.filter(v=>v!=='none'&&(adminHasUnlimitedCards()?true:variantCount(c.id,v)>0));
     const colDef=c.color&&COLOR_DEFS[c.color]?COLOR_DEFS[c.color]:null;
     const borderCol=colDef?colDef.hex:'#2a2a4a';
-    const ownedHolo=getOwnedHoloStyle(c.id); // for badge rendering
-    const holoBadge = ownedHolo ? buildHoloBadge(ownedHolo) : '';
-    const row=document.createElement('div');row.className='db-card-row'+(count>0?' in-deck':'')+(ownedHolo?' has-holo':'');
-    if(colDef){row.style.borderColor=borderCol;row.style.boxShadow='0 0 5px '+borderCol+'44';}
     const url=getImg(c.id);
-    row.innerHTML=`<div class="db-thumb" style="${colDef?'border:1px solid '+colDef.hex+';':''};cursor:zoom-in;position:relative" onclick="event.stopPropagation();showFullCard('${c.id}',null)" title="Click to view">${url?`<img src="${url}"/>`:(c.sym||'?')}${ownedHolo?`<div class="holo-thumb-glow holo-thumb-${ownedHolo}"></div>`:''}</div>
-      <div style="flex:1;min-width:0">
-        <div style="cursor:pointer" onclick="addCardToBuilder('${c.id}','none')" title="Add a regular copy">
-          <div style="font-size:11px;font-weight:700;color:#c8a0ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:3px">${colDef?`<span style="width:6px;height:6px;border-radius:50%;background:${colDef.hex};flex-shrink:0"></span>`:''} ${c.name} ${holoBadge}</div>
+    // ONE ROW PER OWNED VARIANT. Players only see versions they actually own.
+    // Admins additionally get a Regular row for every card so they can still build/test.
+    let variants = VARIANT_ORDER.filter(v=>variantCount(c.id,v)>0);
+    if(adminHasUnlimitedCards()){
+      variants = ['none', ...VARIANT_ORDER.filter(v=>v!=='none' && variantCount(c.id,v)>0)];
+    }
+    // Holo filter narrows which variant rows show.
+    if(holoFilter==='normal') variants=variants.filter(v=>v==='none');
+    else if(holoFilter==='any') variants=variants.filter(v=>v!=='none');
+    else if(holoFilter!=='all') variants=variants.filter(v=>v===holoFilter);
+    if(!variants.length) return; // nothing owned (or nothing matching the filter)
+    variants.forEach(v=>{
+      const isFoil = v!=='none';
+      const vMeta = VARIANT_META[v] || VARIANT_META.none;
+      const inDeckV = builderDeck.filter(e=>e.cid===c.id && e.variant===v).reduce((s,e)=>s+e.count,0);
+      const ownCount = adminHasUnlimitedCards() ? '∞' : variantCount(c.id,v);
+      const row=document.createElement('div');
+      row.className='db-card-row'+(inDeckV>0?' in-deck':'')+(isFoil?' has-holo':'');
+      if(colDef){row.style.borderColor=borderCol;row.style.boxShadow='0 0 5px '+borderCol+'44';}
+      const vTag = isFoil
+        ? `<span class="db-variant-tag" style="color:${vMeta.accent};border-color:${vMeta.accent}">✦ ${vMeta.label.replace(' Holo','')}</span>`
+        : `<span class="db-variant-tag" style="color:#6b7280;border-color:#374151">Regular</span>`;
+      row.innerHTML=`<div class="db-thumb" style="${colDef?'border:1px solid '+colDef.hex+';':''};cursor:zoom-in;position:relative" onclick="event.stopPropagation();showFullCard('${c.id}',null,'${v}')" title="Click to view">${url?`<img src="${url}"/>`:(c.sym||'?')}${isFoil?`<div class="holo-thumb-glow holo-thumb-${v}"></div>`:''}</div>
+        <div style="flex:1;min-width:0;cursor:pointer" onclick="addCardToBuilder('${c.id}','${v}')" title="Add this ${isFoil?vMeta.label:'regular copy'}">
+          <div style="font-size:11px;font-weight:700;color:#c8a0ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:4px">${colDef?`<span style="width:6px;height:6px;border-radius:50%;background:${colDef.hex};flex-shrink:0"></span>`:''} ${c.name} ${vTag}</div>
           <div style="font-size:10px;color:#6b7280">${c.type.replace('_',' ')}·⚡${c.cost}${colDef?` · <span style="color:${colDef.hex}">${colDef.label}</span>`:''}${getRarity(c.id)?` · <span class="rarity-text rarity-${getRarity(c.id)}">${RARITY_DEFS[getRarity(c.id)]?.label||''}</span>`:''}</div>
           ${c.atk>0?`<div style="font-size:10px;color:#fbbf24">⚔${c.atk}♥${c.hp}</div>`:''}
           ${c.transformOnly?'<div style="font-size:9px;color:#f59e0b">🔒 TF Only</div>':''}
           ${c.keywords?.length?`<div>${c.keywords.map(kw=>KEYWORDS[kw]?`<span class="kw-badge ${KEYWORDS[kw].cls}">${KEYWORDS[kw].label}</span>`:'').join('')}</div>`:''}
+          <div style="font-size:9px;color:#4b5563;margin-top:2px">Owned: ${ownCount}</div>
         </div>
-        <div class="db-foil-chips">
-          <button class="db-foil-chip" style="color:#9ca3af;border-color:#374151" onclick="addCardToBuilder('${c.id}','none')" title="Add a regular copy">+ Regular</button>
-          ${ownedFoils.map(v=>`<button class="db-foil-chip" style="color:${VARIANT_META[v].accent};border-color:${VARIANT_META[v].accent}" onclick="addCardToBuilder('${c.id}','${v}')" title="Add your ${VARIANT_META[v].label}">✦ ${VARIANT_META[v].label.replace(' Holo','')} (${adminHasUnlimitedCards()?'∞':variantCount(c.id,v)})</button>`).join('')}
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0">
-        <button onclick="event.stopPropagation();showFullCard('${c.id}',null)"
-          style="background:#1e1e3a;border:1px solid #3a3a5c;border-radius:4px;width:22px;height:22px;cursor:pointer;font-size:11px;color:#9ca3af;display:flex;align-items:center;justify-content:center"
-          title="View card">👁</button>
-        <div class="db-count-badge">${count}/${c.type==='herald'?1:4}</div>
-      </div>`;
-    row.oncontextmenu=e=>{e.preventDefault();showFullCard(c.id,null);};
-    pool.appendChild(row);
+        <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0">
+          <button onclick="event.stopPropagation();showFullCard('${c.id}',null,'${v}')"
+            style="background:#1e1e3a;border:1px solid #3a3a5c;border-radius:4px;width:22px;height:22px;cursor:pointer;font-size:11px;color:#9ca3af;display:flex;align-items:center;justify-content:center"
+            title="View card">👁</button>
+          <div class="db-count-badge">${inDeckV}/${c.type==='herald'?1:4}</div>
+        </div>`;
+      row.oncontextmenu=e=>{e.preventDefault();showFullCard(c.id,null,v);};
+      pool.appendChild(row);
+    });
   });
   const total=builderDeck.reduce((s,e)=>s+e.count,0);
   document.getElementById('deck-count-display').textContent=total;
@@ -7569,7 +7578,7 @@ function renderBuilderDeck(){
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:3px;flex-shrink:0">
-          <button onclick="showFullCard('${e.cid}',null)"
+          <button onclick="showFullCard('${e.cid}',null,'${e.variant}')"
             style="background:#1e1e3a;border:1px solid #3a3a5c;border-radius:4px;width:18px;height:18px;cursor:pointer;font-size:10px;color:#9ca3af"
             title="View card">👁</button>
           <button style="background:#374151;color:#fff;border:none;border-radius:4px;width:18px;height:18px;cursor:pointer;font-size:12px" onclick="removeCardFromBuilder('${e.cid}','${e.variant}')">−</button>
@@ -13096,7 +13105,7 @@ function setHoloStyle(style){
 }
 
 
-function showFullCard(cid,fc){
+function showFullCard(cid,fc,holoOverride){
   // Clear any active hover state so the field card un-zooms behind the modal
   if(typeof clearHoverPreview==='function')clearHoverPreview();
   // Blur/remove focus so :hover doesn't keep the underlying card zoomed
@@ -13118,35 +13127,27 @@ function showFullCard(cid,fc){
     <div style="font-size:10px;color:#6b7280;margin-bottom:4px">${c.race}·${c.type.replace('_',' ').toUpperCase()}·${(c.subtypes||[]).join(', ')}</div>
     ${fcColorBadge}`;
   wrap.appendChild(meta);
-  // ── HOLO STYLE PICKER — visibility depends on admin setting ──
-  // For players: only show holo treatment automatically if they OWN that card as holo (no picker, no toggling)
-  // For admin: 3-mode setting (show always / show only when owned holo / hide)
-  const ownedHoloStyle = getOwnedHoloStyle(cid); // returns style name if user has holo of this card, else null
-  if(isAdmin()){
-    const holoMode = _adminHoloMode || 'show'; // 'show', 'owned', 'hide'
-    if(holoMode === 'show'){
-      // Picker visible — admin can switch styles
-      const holoPicker = document.createElement('div');
-      holoPicker.className = 'holo-picker';
-      holoPicker.innerHTML =
-        '<div style="width:100%;text-align:center;font-size:9px;color:#6b7280;letter-spacing:2px;margin-bottom:4px;font-family:Cinzel,serif">✨ HOLO PREVIEW <span style="color:#fbbf24">(admin only)</span></div>'
-        + '<button class="holo-picker-btn active" data-holo="none" onclick="setHoloStyle(\'none\')">NORMAL</button>'
-        + '<button class="holo-picker-btn" data-holo="classic" onclick="setHoloStyle(\'classic\')">🌈 CLASSIC</button>'
-        + '<button class="holo-picker-btn" data-holo="cosmic" onclick="setHoloStyle(\'cosmic\')">✨ COSMIC</button>'
-        + '<button class="holo-picker-btn" data-holo="gold" onclick="setHoloStyle(\'gold\')">👑 GOLD</button>'
-        + '<button class="holo-picker-btn" data-holo="reverse" onclick="setHoloStyle(\'reverse\')">💎 REVERSE</button>'
-    + '<button class="holo-picker-btn" data-holo="ruby" onclick="setHoloStyle(\'ruby\')">❤️‍🔥 RUBY</button>';
-      wrap.appendChild(holoPicker);
-    } else if(holoMode === 'owned' && ownedHoloStyle){
-      // Auto-apply owned holo, no picker
-      setTimeout(() => setHoloStyle(ownedHoloStyle), 40);
-    }
-    // holoMode === 'hide' → do nothing (normal card)
-  } else {
-    // NON-ADMIN: only show holo treatment if they own a holo copy of this card
-    if(ownedHoloStyle){
-      setTimeout(() => setHoloStyle(ownedHoloStyle), 40);
-    }
+  // ── HOLO TREATMENT — auto-applies the actual finish for EVERYONE ──
+  // Resolve which finish to preview: explicit override > this specific copy's finish > best-owned holo.
+  const ownedHoloStyle = getOwnedHoloStyle(cid);
+  let previewStyle;
+  if(holoOverride!==undefined && holoOverride!==null){ previewStyle = (holoOverride==='none' ? null : holoOverride); }
+  else if(fc && typeof fc.variant!=='undefined'){ previewStyle = (fc.variant && fc.variant!=='none') ? fc.variant : null; }
+  else { previewStyle = ownedHoloStyle; }
+  const adminHideHolo = isAdmin() && (_adminHoloMode==='hide');
+  // Auto-apply the real finish so the card shows its true treatment (players + admins).
+  if(previewStyle && !adminHideHolo){ setTimeout(()=>setHoloStyle(previewStyle), 40); }
+  // Admins additionally get the override picker (unless they've hidden holos), pre-selected to the real finish.
+  if(isAdmin() && (_adminHoloMode||'show')==='show'){
+    const sel = previewStyle || 'none';
+    const pbtn=(val,label)=>'<button class="holo-picker-btn'+(sel===val?' active':'')+'" data-holo="'+val+'" onclick="setHoloStyle(\''+val+'\')">'+label+'</button>';
+    const holoPicker = document.createElement('div');
+    holoPicker.className = 'holo-picker';
+    holoPicker.innerHTML =
+      '<div style="width:100%;text-align:center;font-size:9px;color:#6b7280;letter-spacing:2px;margin-bottom:4px;font-family:Cinzel,serif">✨ HOLO PREVIEW <span style="color:#fbbf24">(admin override)</span></div>'
+      + pbtn('none','NORMAL') + pbtn('classic','🌈 CLASSIC') + pbtn('cosmic','✨ COSMIC')
+      + pbtn('gold','👑 GOLD') + pbtn('reverse','💎 REVERSE') + pbtn('ruby','❤️‍🔥 RUBY');
+    wrap.appendChild(holoPicker);
   }
   if(fc&&isChar(c)){
     const maxHP=fc.baseHP+fc.hpBonus;const pct=Math.max(0,Math.min(100,fc.currentHP/maxHP*100));const hpCol=pct>60?'#22c55e':pct>30?'#f59e0b':'#ef4444';
@@ -15806,7 +15807,7 @@ function renderProfileCollection(){
         const cimg=div.querySelector('img.col-card-img');
         if(cimg){ const holoWrap=document.createElement('div'); holoWrap.className='col-card-img'; cimg.classList.remove('col-card-img'); cimg.style.cssText='width:100%;height:100%;display:block'; holoWrap.appendChild(cimg.cloneNode(true)); cimg.replaceWith(holoWrap); _applyHoloStyleToWrap(holoWrap, v); }
       }
-      div.onclick=()=>showFullCard(cid,null);
+      div.onclick=()=>showFullCard(cid,null,v);
       el.appendChild(div);
     });
   });
