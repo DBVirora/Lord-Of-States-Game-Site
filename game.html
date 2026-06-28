@@ -10717,6 +10717,10 @@ function doTransform(fieldUid,newCid,handUid,cost){
   const nc=DB[newCid];if(!nc)return;
   const actualCost=cost!==undefined?cost:nc.cost;
   if(pl.energy<actualCost){log('Not enough energy!','dmg');return;}
+  // The transformed character takes the FINISH of the form card played from hand
+  // (e.g. a Ruby SSJ2 in hand → Ruby SSJ2 on the field), not the old form's finish.
+  const _handFc=pl.hand.find(f=>f.uid===handUid);
+  const newVariant=_handFc?(_handFc.variant||'none'):(fc.variant||'none');
   // Remove from hand — FIX: no duplicates
   pl.hand=pl.hand.filter(f=>f.uid!==handUid);
   spendEnergy(owner, actualCost, DB[newCid]?.color||null);
@@ -10727,7 +10731,7 @@ function doTransform(fieldUid,newCid,handUid,cost){
   playTransformAnimation(oldCid, newCid, ()=>{
     // Replace in place — keep uid and attachments
     const prevAttachments=fc.attachments||[];
-    fc.cid=newCid;fc.currentHP=nc.hp;fc.currentATK=nc.atk;fc.baseHP=nc.hp;fc.baseATK=nc.atk;
+    fc.cid=newCid;fc.variant=newVariant;fc.currentHP=nc.hp;fc.currentATK=nc.atk;fc.baseHP=nc.hp;fc.baseATK=nc.atk;
     fc.hpBonus=0;fc.atkBonus=0;fc.abilityUsed={};fc.damagedThisTurn=false;fc.markedDamage=0;
     fc.nullify=0; // recomputed from carried equipment below
     // Keep persistent attachments
