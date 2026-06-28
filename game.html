@@ -6487,6 +6487,7 @@ const DEFAULTS={
   najeela_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/012-150%20(Najeela%20SSJ).png',
   najeela_ssj2_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/013-150%20(Najeela%20SSJ2).png',
   najeela_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/014-150%20(Najeela%20SSG).png',
+  ghost_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/ghost_hulk_card%20PROMO.png',
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
   billy_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/005-150%20(Billy%20SSJ1).png',
   veelden_kingdom_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/065-150%20(Veelden%20Kingdom%20Location).png',
@@ -6606,6 +6607,9 @@ const DB={
   najeela_ssg_bse:{id:'najeela_ssg_bse',rarity:'rare',name:'Najeela (SSG)',color:'yellow',charName:'Najeela',charLine:'najeela',formTier:'ssg',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:6,atk:5,hp:7,sym:'SSG',transformOnly:true,setId:'base_set',cardNumber:'014/150',
     nextForms:[],path:'god',
     abilities:[{label:'God Step',type:'passive',cost:0,text:'This character cannot be targeted by opponent abilities unless they pay 2 Energy.'},{label:'Flame of Veelden',type:'passive',cost:0,text:'This character cannot be blocked by characters with lower Attack Power than it.'}]},
+  // ── Ghost Hulk (PROMO / PRM) — Legend standalone. GREEN+RED: green energy ramp + red dice damage. ──
+  ghost_hulk_promo:{id:'ghost_hulk_promo',rarity:'legend',name:'Ghost Hulk',color:'green',colors:['green','red'],charName:'Ghost Hulk',subtypes:['Gamma','Spirit'],type:'char',race:'Gamma Spirit',cost:9,atk:8,hp:14,sym:'GH',setId:'promo',cardNumber:'PROMO',
+    abilities:[{label:'Gamma Absorption',type:'triggered',cost:0,text:'When entering the field you gain +2 Green Energy for each card that has a cost above 5.'},{label:'Spirit of Smash',type:'activated',cost:0,limit:'once_per_turn',text:"Choose a character on your opponent's field. Roll a 5 dye, if it lands on 2 this attack does +3 damage. If it lands on 4 it does +6 damage."}]},
 
   // ── Darkspine Virora (Base Set 128) — Mythic standalone (no transforms).
   // RED+GREEN: raw-damage nuke + reactive defensive growth. ──
@@ -9994,6 +9998,12 @@ function onEntry(p,fc){
       }
     }
   }
+  // GAMMA ABSORPTION (Ghost Hulk): on entry, +2 energy for each card on your field
+  // with a cost above 5 (Ghost Hulk itself counts).
+  if(c.id==='ghost_hulk_promo'){
+    const big=G.players[p].field.filter(f=>DB[f.cid]&&(DB[f.cid].cost||0)>5).length;
+    if(big>0){ G.players[p].energy+=2*big; log(`Gamma Absorption: +${2*big}⚡ Green Energy (${big} card(s) cost above 5).`,'gain'); }
+  }
 }
 // character with HIGHER ATK than the SSB loses 2 HP.
 function runPowerDrain(p){
@@ -10530,6 +10540,36 @@ function activateAbility(fc,abl){
       if(tfc){ tfc.mustAttack=true; log(`Combat Control: ${DB[tfc.cid].name} must attack on its next turn if able.`,'gain'); }
       renderAll();
     },{sourcePlayer:G.activePlayer,title:'Combat Control',desc:'Choose an opponent character — it must attack on its next turn if able.'});
+    return;
+  }
+  // ── GHOST HULK: Spirit of Smash — once per turn. Choose an enemy character, roll
+  // a d5: a 2 deals +3 damage, a 4 deals +6 damage (other rolls whiff).
+  if(abl.label==='Spirit of Smash'){
+    const ap=G.activePlayer; const pl=G.players[ap];
+    if(fc.spiritSmashTurn===G.turn){ log('Spirit of Smash: already used this turn.','dmg'); return; }
+    const oppNum=ap===1?2:1;
+    const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
+    if(!enemies.length){ log('Spirit of Smash: no opponent characters to target.','dmg'); return; }
+    fc.spiritSmashTurn=G.turn;
+    pl.usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    const oppN=oppNum;
+    closeAllModals();
+    openEnemyTargetPicker(enemies,(uid)=>{
+      const roll=1+Math.floor(Math.random()*5);
+      let dmg=0; if(roll===2)dmg=3; else if(roll===4)dmg=6;
+      log(`Spirit of Smash: rolled a ${roll} — ${dmg>0?('+'+dmg+' damage!'):'no bonus damage.'}`, dmg>0?'gain':'dmg');
+      const tfc=G.players[oppN].field.find(f=>f.uid===uid);
+      if(tfc && dmg>0){
+        const tname=DB[tfc.cid].name;
+        tfc.currentHP-=dmg;
+        if(typeof showDmgPopup==='function')showDmgPopup(oppN,'-'+dmg,tfc.uid);
+        log(`Spirit of Smash: ${tname} takes ${dmg} damage!`,'dmg');
+        if(tfc.currentHP<=0){ G.players[oppN].field=G.players[oppN].field.filter(x=>x.uid!==tfc.uid); (tfc.attachments||[]).forEach(eq=>G.players[oppN].discard.push(eq)); G.players[oppN].discard.push(tfc.cid); log(`${tname} is destroyed!`,'death'); }
+      }
+      if(typeof recalcPassives==='function')recalcPassives();
+      renderAll();
+    },{sourcePlayer:ap,title:'Spirit of Smash',desc:'Choose an opponent character, then roll a d5 (2 → +3 dmg, 4 → +6 dmg).'});
     return;
   }
   // ── NAJEELA SSJ: The King's Charge — once per GAME. Coin: heads → every Saiyan
