@@ -785,6 +785,20 @@ body{padding-top:46px;}
 .shop-pack-art{width:150px;aspect-ratio:1/1;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;animation:pack-float 3.5s ease-in-out infinite;}
 .shop-pack-art img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 22px rgba(124,58,237,.45));}
 .shop-pack-card.premium{border-color:rgba(251,191,36,.45);box-shadow:0 0 24px rgba(251,191,36,.12);}
+.shop-pack-card.box-card{border-color:rgba(240,171,252,.45);box-shadow:0 0 26px rgba(240,171,252,.14);}
+.shop-pack-art.box-art{position:relative;width:170px;}
+.shop-pack-art.box-art img{position:absolute;top:0;width:120px;left:50%;}
+.shop-pack-art.box-art img:nth-child(1){transform:translateX(-72%) rotate(-9deg) scale(.92);filter:drop-shadow(0 6px 14px rgba(124,58,237,.4)) brightness(.8);}
+.shop-pack-art.box-art img:nth-child(2){transform:translateX(-28%) rotate(8deg) scale(.92);filter:drop-shadow(0 6px 14px rgba(124,58,237,.4)) brightness(.85);}
+.shop-pack-art.box-art img:nth-child(3){transform:translateX(-50%) scale(1);z-index:2;filter:drop-shadow(0 8px 22px rgba(240,171,252,.5));}
+/* Box opening summary */
+.pack-cards-grid.box-grid{grid-template-columns:repeat(auto-fill,62px);gap:7px;max-width:820px;max-height:52vh;overflow-y:auto;padding:14px;}
+.pack-cards-grid.box-grid .pack-card-reveal{width:62px;}
+.pack-cards-grid.box-grid .pcr-tag{font-size:6px;}
+.pack-cards-grid.box-grid .pcr-new{font-size:6px;padding:1px 3px;}
+#pack-box-stats{width:100%;max-width:760px;}
+.box-stat-row{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:2px;}
+.box-stat{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;padding:3px 10px;border-radius:20px;border:1px solid;background:rgba(0,0,0,.4);}
 /* Collection tab */
 .col-card-mini{background:rgba(8,8,28,.6);border:1px solid var(--border-v);border-radius:7px;padding:6px;display:flex;align-items:center;gap:8px;transition:all .15s;cursor:pointer;}
 .col-card-mini:hover{border-color:var(--violet2);background:rgba(124,58,237,.1);}
@@ -14940,7 +14954,7 @@ function renderShopPacksTab(){
           return '<div class="shop-set-card" onclick="shopPickSet(\''+s.id+'\')">'
             +'<div class="shop-set-art"><img src="'+PACK_ART+'" alt="'+s.name+'"/></div>'
             +'<div class="shop-set-name">'+s.name+'</div>'
-            +'<div class="shop-set-meta">'+n+' cards · Basic & Premium packs</div>'
+            +'<div class="shop-set-meta">'+(PACK_SIZE||10)+' cards per pack · Basic & Premium</div>'
             +'<div class="shop-set-enter">▸ VIEW PACKS</div>'
           +'</div>';
         }).join('')
@@ -14966,6 +14980,18 @@ function renderShopPacksTab(){
     +'<div class="shop-pack-grid">'
       + tile('basic','BASIC PACK',PACK_COSTS.basic,'#93c5fd','10 cards · 4 Common · 3 Uncommon · 1 Energy · 1 Reverse Holo · 1 guaranteed Rare+')
       + tile('premium','PREMIUM PACK',PACK_COSTS.premium,'#fbbf24','10 cards · same slots, improved Rare+ &amp; Holo odds')
+    +'</div>'
+    +'<div class="shop-section-label" style="margin:22px 0 14px">'+setNm+' — BOOSTER BOX</div>'
+    +'<div class="shop-pack-grid">'
+      + (function(){ const cost=boxCost(); const can=cel>=cost; const full=(PACK_COSTS.basic||300)*BOX_PACKS;
+          return '<div class="shop-pack-card box-card">'
+            +'<div class="shop-pack-art box-art"><img src="'+PACK_ART+'" alt="Box"/><img src="'+PACK_ART+'" alt="Box"/><img src="'+PACK_ART+'" alt="Box"/></div>'
+            +'<div class="shop-pack-name" style="color:#f0abfc">BOOSTER BOX</div>'
+            +'<div class="shop-pack-desc">'+BOX_PACKS+' packs · '+(BOX_PACKS*(PACK_SIZE||10))+' cards · <span style="color:#4ade80">10% OFF</span> <span style="color:#6b7280;text-decoration:line-through">'+full+'</span></div>'
+            +'<div class="shop-pack-price"><img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" style="width:18px;height:18px;border-radius:50%"/><span class="shop-pack-price-num">'+cost+'</span></div>'
+            +'<button class="shop-buy-btn" '+(can?'':'disabled')+' onclick="buyBox()" style="border-color:#f0abfc;color:'+(can?'#f0abfc':'#6b7280')+';background:rgba(240,171,252,.08)">'+(can?'▸ PURCHASE BOX':'Not enough Celestium')+'</button>'
+          +'</div>';
+        })()
     +'</div>';
 }
 function shopPickSet(setId){ _shopSet=setId; renderShopPacksTab(); }
@@ -15062,6 +15088,24 @@ async function buyPack(type){
   showPackOpening(pulls, type, false, setId);
 }
 
+// ── BOOSTER BOX: 36 packs, 10% off the per-pack price ──
+const BOX_PACKS=36, BOX_DISCOUNT=0.10;
+function boxCost(){ return Math.round((PACK_COSTS.basic||300)*BOX_PACKS*(1-BOX_DISCOUNT)); }
+async function buyBox(){
+  const cost=boxCost();
+  if(_celData.celestium<cost){ alert('Not enough Celestium!'); return; }
+  const setId=_shopSet||'base_set';
+  if(_packPool(setId).length===0){ alert('This set has no cards yet.'); return; }
+  let all=[];
+  for(let i=0;i<BOX_PACKS;i++){ all=all.concat(generatePack('basic',setId)); }
+  _celData.celestium-=cost;
+  all.forEach(p=>{ p.isNew=!(_collection[p.cid]); addCardToCollection(p.cid,p.foil); });
+  await Promise.all([saveCelestium(),saveCollection()]);
+  updateCelDisplay(); updateShopButtons();
+  showBoxOpening(all, setId);
+}
+function openAnotherBox(){ const setId=_packState.setId; _shopSet=setId; closePackOpenModal(); buyBox(); }
+
 let _packState={pulls:[],idx:0,type:'basic'};
 
 function _foilTagStyle(foil){
@@ -15077,9 +15121,10 @@ function _holoLayersHTML(style){
 }
 
 function showPackOpening(pulls, type, skipPack, setId){
-  _packState={pulls:pulls||[], idx:0, type:type||'basic', setId:setId||_shopSet||'base_set'};
+  _packState={pulls:pulls||[], idx:0, type:type||'basic', setId:setId||_shopSet||'base_set', isBox:false};
   const modal=document.getElementById('pack-open-modal');
   const img=document.getElementById('pack-img'); if(img)img.src=PACK_ART;
+  const prompt=document.querySelector('.pack-open-prompt'); if(prompt)prompt.textContent='▸ TAP THE PACK TO OPEN ◂';
   document.getElementById('pack-stage-grid').style.display='none';
   const pw=document.getElementById('pack-wrapper'); if(pw)pw.classList.remove('tearing');
   if(skipPack){
@@ -15094,6 +15139,18 @@ function showPackOpening(pulls, type, skipPack, setId){
   modal.classList.add('open');
 }
 
+function showBoxOpening(pulls, setId){
+  _packState={pulls:pulls||[], idx:0, type:'basic', setId:setId||_shopSet||'base_set', isBox:true};
+  const modal=document.getElementById('pack-open-modal');
+  const img=document.getElementById('pack-img'); if(img)img.src=PACK_ART;
+  const prompt=document.querySelector('.pack-open-prompt'); if(prompt)prompt.textContent='▸ TAP TO OPEN YOUR BOX ('+BOX_PACKS+' PACKS) ◂';
+  document.getElementById('pack-stage-grid').style.display='none';
+  document.getElementById('pack-stage-reveal').style.display='none';
+  document.getElementById('pack-stage-pack').style.display='flex';
+  const pw=document.getElementById('pack-wrapper'); if(pw){ pw.classList.remove('tearing'); pw.classList.add('is-box'); }
+  modal.classList.add('open');
+}
+
 function tearOpenPack(){
   const pw=document.getElementById('pack-wrapper'); if(!pw)return;
   if(pw.classList.contains('tearing'))return;
@@ -15101,6 +15158,8 @@ function tearOpenPack(){
   const flash=document.getElementById('pack-flash');
   if(flash){ flash.style.setProperty('--flash-col','#e9d5ff'); flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go'); }
   setTimeout(()=>{
+    pw.classList.remove('is-box');
+    if(_packState.isBox){ showBoxSummary(); return; }
     document.getElementById('pack-stage-pack').style.display='none';
     document.getElementById('pack-stage-reveal').style.display='flex';
     _packState.idx=0;
@@ -15152,11 +15211,61 @@ function advancePackReveal(){
 }
 function skipPackReveal(){ showPackGrid(); }
 
+function _pullCellHTML(p){
+  const c=DB[p.cid]||{}; const url=getImg(p.cid);
+  const rDef=RARITY_DEFS[p.rarity]||RARITY_DEFS.common;
+  return '<div class="pack-card-reveal revealed foil-'+p.foil+'" style="--rc-glow:'+rDef.glow+';border-color:'+rDef.hex+'" onclick="showFullCard(\''+p.cid+'\',null)">'
+    +(url?'<img src="'+url+'" alt="'+(c.name||p.cid)+'"/>':'<div class="pack-card-reveal-placeholder">'+(c.sym||'?')+'</div>')
+    +(p.foil!=='none'?'<div class="pcr-foil"></div>':'')
+    +(p.isNew?'<div class="pcr-new">NEW</div>':'')
+    +(p.foil!=='none'?'<div class="pcr-tag" style="'+_foilTagStyle(p.foil)+'">'+(p.foil==='reverse'?'REV HOLO':'HOLO')+'</div>':'<div class="pcr-tag" style="background:rgba(0,0,0,.7);color:'+rDef.hex+'">'+rDef.label+'</div>')
+  +'</div>';
+}
+
+function showBoxSummary(){
+  document.getElementById('pack-stage-pack').style.display='none';
+  document.getElementById('pack-stage-reveal').style.display='none';
+  const stage=document.getElementById('pack-stage-grid'); stage.style.display='flex';
+  const pulls=_packState.pulls;
+  const counts={common:0,uncommon:0,rare:0,legend:0,mythic:0}; let holos=0,revs=0,news=0;
+  pulls.forEach(p=>{ if(counts[p.rarity]!=null)counts[p.rarity]++; if(p.foil==='holo')holos++; else if(p.foil==='reverse')revs++; if(p.isNew)news++; });
+  const title=stage.querySelector('.pack-open-title'); if(title)title.textContent='✨ BOOSTER BOX — '+pulls.length+' CARDS ✨';
+  const statsEl=document.getElementById('pack-box-stats');
+  if(statsEl){
+    const chip=(label,n,col)=> n>0?'<span class="box-stat" style="color:'+col+';border-color:'+col+'">'+label+' '+n+'</span>':'';
+    statsEl.innerHTML='<div class="box-stat-row">'
+      +chip('MYTHIC',counts.mythic,RARITY_DEFS.mythic.hex)
+      +chip('LEGEND',counts.legend,RARITY_DEFS.legend.hex)
+      +chip('RARE',counts.rare,RARITY_DEFS.rare.hex)
+      +chip('UNCOMMON',counts.uncommon,RARITY_DEFS.uncommon.hex)
+      +chip('COMMON',counts.common,RARITY_DEFS.common.hex)
+      +chip('✦ HOLO',holos,'#fbbf24')
+      +chip('✦ REV HOLO',revs,'#c084fc')
+      +chip('NEW',news,'#4ade80')
+    +'</div>';
+  }
+  const grid=document.getElementById('pack-cards-grid');
+  grid.classList.add('box-grid');
+  const order={mythic:0,legend:1,rare:2,uncommon:3,common:4};
+  const sorted=pulls.slice().sort((a,b)=>{
+    const oa=order[a.rarity]??9, ob=order[b.rarity]??9;
+    if(oa!==ob) return oa-ob;
+    const fa=a.foil!=='none'?0:1, fb=b.foil!=='none'?0:1;
+    return fa-fb;
+  });
+  grid.innerHTML=sorted.map(_pullCellHTML).join('');
+  const again=document.getElementById('pack-again-btn');
+  const cost=boxCost();
+  if(again){ const can=(_celData.celestium||0)>=cost; again.disabled=!can; again.style.opacity=can?'1':'.5'; again.textContent='↻ OPEN ANOTHER BOX ('+cost+')'; again.onclick=openAnotherBox; }
+}
+
 function showPackGrid(){
   document.getElementById('pack-stage-pack').style.display='none';
   document.getElementById('pack-stage-reveal').style.display='none';
   document.getElementById('pack-stage-grid').style.display='flex';
-  const grid=document.getElementById('pack-cards-grid'); grid.innerHTML='';
+  const title=document.querySelector('#pack-stage-grid .pack-open-title'); if(title)title.textContent='✨ YOUR PULLS ✨';
+  const statsEl=document.getElementById('pack-box-stats'); if(statsEl)statsEl.innerHTML='';
+  const grid=document.getElementById('pack-cards-grid'); grid.classList.remove('box-grid'); grid.innerHTML='';
   _packState.pulls.forEach((p,idx)=>{
     const c=DB[p.cid]||{}; const url=getImg(p.cid);
     const rDef=RARITY_DEFS[p.rarity]||RARITY_DEFS.common;
@@ -15174,7 +15283,7 @@ function showPackGrid(){
   });
   const again=document.getElementById('pack-again-btn');
   const cost=PACK_COSTS[_packState.type]||0;
-  if(again){ const can=(_celData.celestium||0)>=cost; again.disabled=!can; again.style.opacity=can?'1':'.5'; again.textContent=`↻ OPEN ANOTHER (${cost})`; }
+  if(again){ const can=(_celData.celestium||0)>=cost; again.disabled=!can; again.style.opacity=can?'1':'.5'; again.textContent=`↻ OPEN ANOTHER (${cost})`; again.onclick=openAnotherPack; }
 }
 
 function openAnotherPack(){ const type=_packState.type; _shopSet=_packState.setId||_shopSet; closePackOpenModal(); buyPack(type); }
@@ -19206,6 +19315,7 @@ window.addEventListener('load',async()=>{
   <!-- Stage 2: final grid summary -->
   <div id="pack-stage-grid" class="pack-stage" style="display:none">
     <div class="pack-open-title">✨ YOUR PULLS ✨</div>
+    <div id="pack-box-stats"></div>
     <div class="pack-cards-grid" id="pack-cards-grid"></div>
     <div style="display:flex;gap:10px;align-items:center">
       <button class="btn-gray btn-sm" id="pack-again-btn" onclick="openAnotherPack()">↻ OPEN ANOTHER</button>
