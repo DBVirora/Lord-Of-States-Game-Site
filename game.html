@@ -2860,7 +2860,7 @@ textarea{
   z-index:1;
 }
 /* In-game art areas keep their fixed-height cover sizing even with holo applied */
-.card-art-area.holo-card img,.hand-art-area.holo-card img,.col-card-img.holo-card img,.card-play-zoom-img-wrap.holo-card img{height:100%;width:100%;object-fit:cover;object-position:top;}
+.card-art-area.holo-card img,.hand-art-area.holo-card img,.col-card-img.holo-card img,.card-play-zoom-img-wrap.holo-card img,.prize-reveal-front.holo-card img{height:100%;width:100%;object-fit:cover;object-position:top;}
 .card-art-area.holo-card,.hand-art-area.holo-card,.col-card-img.holo-card{border-radius:0;overflow:hidden;}
 
 /* All holo effect layers (injected via JS for multi-layer richness) */
@@ -3712,17 +3712,27 @@ textarea{
 #card-play-zoom.playing{
   animation:card-play-flash .9s ease-out forwards;
 }
-.card-play-zoom-img{
+.card-play-zoom-img-wrap{
   width:200px;
   max-width:60vw;
+  aspect-ratio:5/7;
   border-radius:12px;
+  overflow:hidden;
   box-shadow:
     0 0 40px rgba(200,164,74,.6),
     0 0 80px rgba(124,58,237,.4),
     0 20px 50px rgba(0,0,0,.6);
   transform:scale(.4);
 }
-#card-play-zoom.playing .card-play-zoom-img{
+.card-play-zoom-img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:top;
+  border-radius:inherit;
+}
+#card-play-zoom.playing .card-play-zoom-img-wrap{
   animation:card-play-zoom-anim .9s cubic-bezier(.22,1,.36,1) forwards;
 }
 @keyframes card-play-flash{
@@ -7815,14 +7825,21 @@ function startGame(mode,deck1,deck2,foils1,foils2){
   // STEP 2: Shuffle the now-herald-free decks
   const d1=shuffle(raw1), d2=shuffle(raw2);
 
-  // STEP 3: Deal prizes from herald-free shuffled decks
-  const p1=[],p2=[];for(let i=0;i<prizeCount;i++){p1.push(d1.pop());p2.push(d2.pop());}
+  // STEP 3: Deal prizes from herald-free shuffled decks. Each prize records the OWNER's
+  // actual finish for that copy (pulled from their foil pool) so a Reverse Holo Billy
+  // stays Reverse, a normal Billy stays normal, etc. when the prize is claimed.
+  const _takeLocalFoil=(pool,cid)=>(pool&&pool[cid]&&pool[cid].length)?pool[cid].shift():'none';
+  const p1=[],p2=[],pf1=[],pf2=[];
+  for(let i=0;i<prizeCount;i++){
+    const c1=d1.pop(); p1.push(c1); pf1.push(_takeLocalFoil(_fp1,c1));
+    const c2=d2.pop(); p2.push(c2); pf2.push(_takeLocalFoil(_fp2,c2));
+  }
 
   G={turn:1,activePlayer:1,phase:'draw',phasesDone:[],selectedAttacker:null,gameOver:false,
     deckSearchCallback:null,heraldAttacking:false,gameMode:gMode,startingLF:startLF,prizeCount:prizeCount,bonusAttackers:0,
     players:{
-      1:{name:(window._playerName||document.getElementById('hud-username')?.textContent||'Player 1'),energy:5,colorEnergy:{},hand:[],field:[],deck:d1,discard:[],rift:[],prizes:p1,prizesClaimed:0,prizesTaken:[],herald:h1,lifeForce:startLF,foilPool:_fp1},
-      2:{name:((mode==='pvp'||mode==='online')?(G&&G.onlineOpponentName)||window._onlineOpponentName||'Opponent':'AI'),energy:5,colorEnergy:{},hand:[],field:[],deck:d2,discard:[],rift:[],prizes:p2,prizesClaimed:0,prizesTaken:[],herald:h2,lifeForce:startLF,foilPool:_fp2},
+      1:{name:(window._playerName||document.getElementById('hud-username')?.textContent||'Player 1'),energy:5,colorEnergy:{},hand:[],field:[],deck:d1,discard:[],rift:[],prizes:p1,prizesClaimed:0,prizesTaken:[],prizesFoil:pf1,herald:h1,lifeForce:startLF,foilPool:_fp1},
+      2:{name:((mode==='pvp'||mode==='online')?(G&&G.onlineOpponentName)||window._onlineOpponentName||'Opponent':'AI'),energy:5,colorEnergy:{},hand:[],field:[],deck:d2,discard:[],rift:[],prizes:p2,prizesClaimed:0,prizesTaken:[],prizesFoil:pf2,herald:h2,lifeForce:startLF,foilPool:_fp2},
     },log:[]};
   for(let i=0;i<7;i++){drawCard(1,true);drawCard(2,true);}
   if(h1)log(`${pname(1)} Herald: ${DB[h1.cid].name} enters play!`,'gain');
@@ -7940,7 +7957,7 @@ function startGame2v2(mode, decks, seatNames, teamLife, humanSeats){
     players[p]={
       name: human ? ('You ('+(p===1?'A1':'A2')+')') : ('AI ('+(p===2?'B1':p===4?'B2':'A2')+')'),
       energy:5, colorEnergy:{}, hand:[], field:[], deck, discard:[], rift:[],
-      prizes:[], prizesClaimed:0, prizesTaken:[], herald:heralds[p], lifeForce:0
+      prizes:[], prizesClaimed:0, prizesTaken:[], prizesFoil:[], herald:heralds[p], lifeForce:0
     };
   });
   // Seat display names — human seats default to the logged-in account name (A1)
@@ -8152,7 +8169,7 @@ function drawCard(p,silent=false){
     cid=pl.deck.pop();
   }
   if(!cid||isHerald(DB[cid]))return; // nothing valid to draw
-  const fc=newFC(cid);if(fc){ const v=_takeFoil(p,cid); if(v!==null)fc.variant=v; pl.hand.push(fc); }
+  const fc=newFC(cid);if(fc){ const v=_takeFoil(p,cid); fc.variant=(v!==null)?v:'none'; pl.hand.push(fc); }
   if(!silent)log(`P${p} draws.`,'info');
   checkHandLimit(p);
 }
@@ -8460,19 +8477,20 @@ function resolvePrizeClaim(victim, claimer, index){
     claimPrizeFrom(victim, claimer);
     return;
   }
-  // Reveal animation, then the CLAIMER gains the card
+  // Reveal animation, then the CLAIMER gains the card — with the VICTIM's exact finish.
+  const prizeVariant = (vpl.prizesFoil && vpl.prizesFoil[index]!=null) ? vpl.prizesFoil[index] : 'none';
   showPrizeReveal(cid, claimer, ()=>{
-    const fc=newFC(cid);if(fc)cpl.hand.push(fc);
+    const fc=newFC(cid); if(fc){ fc.variant=prizeVariant; cpl.hand.push(fc); }
     log(`🎖 ${pname(claimer)} takes a Prize from ${pname(victim)}: ${DB[cid]?.name||cid}! (${pname(victim)}: ${maxPrizes-vpl.prizesClaimed} prizes left)`,'gain');
     checkHandLimit(claimer);
     renderAll();
     // VICTIM loses when all their prizes are gone → CLAIMER wins
     if(vpl.prizesClaimed>=maxPrizes)setTimeout(()=>triggerWin(claimer,pname(victim)+' lost all prizes!'),400);
-  });
+  }, prizeVariant);
 }
 
 // Prize reveal animation — flip card face-up center screen, then fly to hand
-function showPrizeReveal(cardId, p, onDone){
+function showPrizeReveal(cardId, p, onDone, variant){
   const c=DB[cardId];
   if(!c){ if(onDone)onDone(); return; }
   // Respect animation setting
@@ -8489,6 +8507,11 @@ function showPrizeReveal(cardId, p, onDone){
     + '<div class="prize-reveal-front">'+(url?'<img src="'+url+'"/>':'<div style="padding:30px;font-size:40px">'+(c.sym||'?')+'</div>')+'</div>'
     + '</div>'
     + '<div class="prize-reveal-name">'+c.name+'</div>';
+  // Show the card's actual finish on the revealed face.
+  if(variant && variant!=='none' && typeof applyHoloToArt==='function'){
+    const front=inner.querySelector('.prize-reveal-front');
+    if(front) applyHoloToArt(front, cardId, {variant});
+  }
   overlay.classList.add('open');
   if(typeof SFX!=='undefined')SFX.energy();
   // Trigger flip
@@ -9980,7 +10003,7 @@ function onHandClick(p,uid,fc){
     const totalField=pl.field.filter(f=>!isLoc(DB[f.cid])).length;
     if(isChar(DB[fco.cid])&&!DB[fco.cid]?.isToken&&namedFighters>=MAX_FIELD){log('Fighter zone full! (max 8 named fighters).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     if(!isChar(DB[fco.cid])&&otherCards>=MAX_OTHER){log('Field full! (max 5 other cards on field).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
-    pl.field.push(fco);log(`${pname(p)} plays ${c.name}.`,'info');playCardZoom(fco.cid);if(typeof SFX!=='undefined')SFX.cardPlay();if(p===1)sendGameAction('card_play',{cardId:fco.cid});onEntry(p,fco);
+    pl.field.push(fco);log(`${pname(p)} plays ${c.name}.`,'info');playCardZoom(fco.cid,fco.variant);if(typeof SFX!=='undefined')SFX.cardPlay();if(p===1)sendGameAction('card_play',{cardId:fco.cid,variant:fco.variant});onEntry(p,fco);
     if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
     // Mission tracking: unique characters (only for local player)
     if(p===1&&typeof trackUniqueCharacter==='function'&&['base_char','char','team'].includes(c.type)){
@@ -9989,7 +10012,7 @@ function onHandClick(p,uid,fc){
   } else if(isLoc(c)){
     const locCount=pl.field.filter(f=>isLoc(DB[f.cid])).length;
     if(locCount>=MAX_LOC){log(`Location zone full! (max ${MAX_LOC}).`,'dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
-    pl.field.push(fco);log(`${pname(p)} places ${c.name}.`,'info');playCardZoom(fco.cid);
+    pl.field.push(fco);log(`${pname(p)} places ${c.name}.`,'info');playCardZoom(fco.cid,fco.variant);
     if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
     if(c.id==='time_chamber'){pl.energy+=5;log('Time Chamber: +5⚡!','gain');}
   } else if(isEquip(c)){
@@ -10117,7 +10140,7 @@ function applyEquipToTarget(efc,tfc){
 // Briefly zooms a card in center-screen when it's played to field.
 // Non-blocking — purely visual flourish.
 // ═══════════════════════════════════════════════════
-function playCardZoom(cardId){
+function playCardZoom(cardId, variant){
   const c = DB[cardId];
   if(!c) return;
   if(typeof _gameSettings!=='undefined' && !_gameSettings.animations) return;
@@ -10130,12 +10153,13 @@ function playCardZoom(cardId){
     return;
   }
   img.src = url;
-  // Holo treatment on the "put down" zoom, if the player owns this card as foil.
+  // Holo treatment on the "put down" zoom — ONLY the card's actual finish (no owned-best
+  // fallback), so random/AI decks and regular copies never flash a holo.
   const zWrap=img.parentElement;
   if(zWrap){
     zWrap.classList.remove('holo-card','always-on','holo-classic','holo-cosmic','holo-gold','holo-reverse','holo-ruby');
     zWrap.querySelectorAll('.holo-layer').forEach(l=>l.remove());
-    applyHoloToArt(zWrap,cardId);
+    if(variant && variant!=='none') applyHoloToArt(zWrap,cardId,{variant});
   }
   // Restart animation
   overlay.classList.remove('playing');
@@ -12253,7 +12277,7 @@ function runAI(){
         fc.turnPlayed=G.turn;fc.currentHP=c.hp;fc.currentATK=c.atk;fc.baseHP=c.hp;fc.baseATK=c.atk;
         if(!fc.attachments)fc.attachments=[];fc.abilityUsed={};fc.damagedThisTurn=false;
         pl.field.push(fc);log(`AI plays ${c.name}.`,'info');
-        playCardZoom(fc.cid);if(typeof SFX!=='undefined')SFX.cardPlay();
+        playCardZoom(fc.cid,fc.variant);if(typeof SFX!=='undefined')SFX.cardPlay();
         onEntry(2,fc);
         played++;
       }
@@ -12290,7 +12314,7 @@ function runAI(){
           pl.hand=pl.hand.filter(f=>f.uid!==fc.uid);pl.energy-=c.cost;
           fc.turnPlayed=G.turn;fc.currentHP=c.hp;fc.currentATK=c.atk;fc.baseHP=c.hp;fc.baseATK=c.atk;if(!fc.attachments)fc.attachments=[];
           pl.field.push(fc);log(`AI places ${c.name}.`,'info');
-          playCardZoom(fc.cid);if(typeof SFX!=='undefined')SFX.cardPlay();
+          playCardZoom(fc.cid,fc.variant);if(typeof SFX!=='undefined')SFX.cardPlay();
           if(c.id==='time_chamber'){pl.energy+=5;log('+5⚡!','gain');}
         }
       }
@@ -17163,7 +17187,7 @@ function onReceiveGameAction(payload){
       if(d.cardId) showAbilityReveal(d.cardId, 2, d.label, d.text);
       break;
     case 'card_play':
-      if(d.cardId) playCardZoom(d.cardId);
+      if(d.cardId) playCardZoom(d.cardId,d.variant);
       if(typeof SFX!=='undefined') SFX.cardPlay();
       break;
     default:
@@ -17229,6 +17253,7 @@ function sanitizePlayer(pl){
     prizes:pl.prizes||[],
     prizesClaimed:pl.prizesClaimed||0,
     prizesTaken:pl.prizesTaken||[],
+    prizesFoil:pl.prizesFoil||[],
     lifeForce:pl.lifeForce||0,
     herald:pl.herald||null
   },(k,v)=>typeof v==='function'?undefined:v));
@@ -17316,6 +17341,7 @@ function applyPlayer(dst,src){
   dst.prizes=src.prizes||[];
   dst.prizesClaimed=src.prizesClaimed||0;
   dst.prizesTaken=Array.isArray(src.prizesTaken)?src.prizesTaken:[];
+  dst.prizesFoil=Array.isArray(src.prizesFoil)?src.prizesFoil:[];
   dst.lifeForce=src.lifeForce||0;
   dst.herald=src.herald||null;
 }
