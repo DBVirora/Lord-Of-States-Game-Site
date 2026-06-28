@@ -14453,6 +14453,95 @@ async function saveDisabledCards(){
 }
 
 // ═══════════════════════════════════════════════════════
+// CARD SETS (admin-managed) — assign cards to sets; create future sets.
+// _cardSets: [{id,name}] registry · _cardSetOverrides: {cardId:setId} runtime overrides
+// Both persisted in Supabase app_settings ('card_sets' / 'card_set_overrides').
+// getCardSet(cid) is the single source of truth (override first, else DB setId).
+// ═══════════════════════════════════════════════════════
+const DEFAULT_CARD_SETS=[{id:'base_set',name:'Base Set'},{id:'promo',name:'Promo'}];
+let _cardSets = DEFAULT_CARD_SETS.map(s=>({...s}));
+let _cardSetOverrides = {};
+
+function getCardSet(cid){
+  if(Object.prototype.hasOwnProperty.call(_cardSetOverrides,cid)) return _cardSetOverrides[cid]||'';
+  return (DB[cid] && DB[cid].setId) || '';
+}
+function setLabel(setId){ const s=_cardSets.find(x=>x.id===setId); return s?s.name:(setId||'None'); }
+
+async function loadCardSets(){
+  if(!_celSB) return;
+  try{
+    const {data}=await _celSB.from('app_settings').select('value').eq('key','card_sets').maybeSingle();
+    if(data&&data.value){ const arr=JSON.parse(data.value); if(Array.isArray(arr)&&arr.length) _cardSets=arr; }
+  }catch(e){ console.warn('[CardSets] load error:',e); }
+  try{
+    const {data}=await _celSB.from('app_settings').select('value').eq('key','card_set_overrides').maybeSingle();
+    if(data&&data.value){ _cardSetOverrides=JSON.parse(data.value)||{}; }
+  }catch(e){ console.warn('[CardSetOverrides] load error:',e); }
+}
+async function saveCardSets(){
+  if(!isAdmin()||!_celSB) return;
+  try{ const {error}=await _celSB.from('app_settings').upsert({key:'card_sets',value:JSON.stringify(_cardSets),updated_at:new Date().toISOString()},{onConflict:'key'}); if(error) alert('Save failed (card_sets): '+error.message); }
+  catch(e){ alert('Failed to save sets: '+e.message); }
+}
+async function saveCardSetOverrides(){
+  if(!isAdmin()||!_celSB) return;
+  try{ const {error}=await _celSB.from('app_settings').upsert({key:'card_set_overrides',value:JSON.stringify(_cardSetOverrides),updated_at:new Date().toISOString()},{onConflict:'key'}); if(error) alert('Save failed (card_set_overrides): '+error.message); }
+  catch(e){ alert('Failed to save set assignment: '+e.message); }
+}
+
+async function assignCardSet(cid, setId){
+  if(!isAdmin()) return;
+  _cardSetOverrides[cid]=setId||'';   // '' = unassigned (None)
+  await saveCardSetOverrides();
+  renderCardManagerList();
+  renderCardSetManager();
+}
+async function adminAddCardSet(){
+  if(!isAdmin()) return;
+  const inp=document.getElementById('new-set-name');
+  const name=(inp?.value||'').trim();
+  if(!name){ alert('Enter a set name.'); return; }
+  const id=name.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');
+  if(!id){ alert('Invalid set name.'); return; }
+  if(_cardSets.some(s=>s.id===id)){ alert('A set with that id already exists.'); return; }
+  _cardSets.push({id,name});
+  await saveCardSets();
+  if(inp) inp.value='';
+  renderCardSetManager(); renderCardManagerList();
+}
+async function adminRenameCardSet(id){
+  if(!isAdmin()) return;
+  const s=_cardSets.find(x=>x.id===id); if(!s) return;
+  const name=prompt('Rename set "'+s.name+'" to:', s.name);
+  if(name===null) return;
+  const nm=name.trim(); if(!nm) return;
+  s.name=nm; await saveCardSets(); renderCardSetManager(); renderCardManagerList();
+}
+async function adminRemoveCardSet(id){
+  if(!isAdmin()) return;
+  if(id==='base_set'||id==='promo'){ alert('Built-in sets (Base Set, Promo) cannot be removed.'); return; }
+  if(!confirm('Remove set "'+setLabel(id)+'"? Cards assigned to it will become unassigned.')) return;
+  _cardSets=_cardSets.filter(s=>s.id!==id);
+  Object.keys(_cardSetOverrides).forEach(cid=>{ if(_cardSetOverrides[cid]===id) _cardSetOverrides[cid]=''; });
+  await Promise.all([saveCardSets(),saveCardSetOverrides()]);
+  renderCardSetManager(); renderCardManagerList();
+}
+function renderCardSetManager(){
+  const el=document.getElementById('card-set-manager-list'); if(!el) return;
+  el.innerHTML=_cardSets.map(s=>{
+    const count=Object.keys(DB).filter(id=>{const c=DB[id];return c&&!c.isToken&&c.type!=='token'&&c.type!=='system'&&getCardSet(id)===s.id;}).length;
+    const builtin=(s.id==='base_set'||s.id==='promo');
+    return '<span style="display:inline-flex;align-items:center;gap:7px;background:#15152e;border:1px solid #3a3a5c;border-radius:8px;padding:5px 10px;font-size:11px;color:#cbd5e1">'
+      +'<b style="color:#e9d5ff">'+s.name+'</b>'
+      +'<span style="color:#6b7280;font-size:9px">'+s.id+' · '+count+' cards</span>'
+      +'<button onclick="adminRenameCardSet(\''+s.id+'\')" title="Rename" style="background:none;border:none;color:#93c5fd;cursor:pointer;font-size:11px;padding:0">✎</button>'
+      +(builtin?'':'<button onclick="adminRemoveCardSet(\''+s.id+'\')" title="Remove" style="background:none;border:none;color:#fca5a5;cursor:pointer;font-size:12px;padding:0">✕</button>')
+      +'</span>';
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
 // NEWS CAROUSEL (main menu) — admin-editable via Supabase
 // ═══════════════════════════════════════════════════════
 let _newsSlides = null;
@@ -14698,6 +14787,19 @@ function renderCardManagerList(){
   const filter = (document.getElementById('admin-card-filter')?.value || '').toLowerCase().trim();
   const typeFilter = document.getElementById('admin-card-type-filter')?.value || 'all';
   const statusFilter = document.getElementById('admin-card-status-filter')?.value || 'all';
+  const setFilter = document.getElementById('admin-card-set-filter')?.value || 'all';
+  // Keep the Set filter dropdown options in sync with the registry
+  const setSel=document.getElementById('admin-card-set-filter');
+  if(setSel){
+    const want=['all','__none__'].concat(_cardSets.map(s=>s.id));
+    const have=[...setSel.options].map(o=>o.value);
+    if(want.join('|')!==have.join('|')){
+      const cur=setSel.value;
+      setSel.innerHTML='<option value="all">All Sets</option><option value="__none__">— Unassigned —</option>'
+        +_cardSets.map(s=>'<option value="'+s.id+'">'+s.name+'</option>').join('');
+      setSel.value=want.includes(cur)?cur:'all';
+    }
+  }
 
   const allCards = Object.keys(DB).filter(id => {
     const c = DB[id];
@@ -14716,9 +14818,9 @@ function renderCardManagerList(){
   const filtered = allCards.filter(id => {
     const c = DB[id];
     if(typeFilter !== 'all'){ const _et=c.transformOnly?'transform':c.type; if(_et !== typeFilter) return false; }
-    // Status filter: enabled / disabled / all
     if(statusFilter === 'enabled' && _disabledCards[id]) return false;
     if(statusFilter === 'disabled' && !_disabledCards[id]) return false;
+    if(setFilter !== 'all'){ const cs=getCardSet(id); if(setFilter==='__none__'){ if(cs) return false; } else if(cs!==setFilter) return false; }
     if(filter){
       const hay = (c.name + ' ' + (c.color || '') + ' ' + (c.race || '') + ' ' + (c.subtypes || []).join(' ')).toLowerCase();
       if(!hay.includes(filter)) return false;
@@ -14742,6 +14844,7 @@ function renderCardManagerList(){
   sorted.forEach(id => {
     const c = DB[id];
     const disabled = !!_disabledCards[id];
+    const curSet = getCardSet(id);
     const colDef = c.color && COLOR_DEFS && COLOR_DEFS[c.color] ? COLOR_DEFS[c.color] : null;
     const url = (typeof getImg === 'function') ? getImg(id) : null;
     const row = document.createElement('div');
@@ -14757,9 +14860,14 @@ function renderCardManagerList(){
           + (c.type || '').toUpperCase()
           + ' · cost '+(c.cost ?? '-')
           + (c.atk!=null ? ' · '+c.atk+'/'+c.hp : '')
+          + (curSet ? ' · <span style="color:#c8a0ff">'+setLabel(curSet)+'</span>' : ' · <span style="color:#6b7280">No Set</span>')
         + '</div>'
         + '<div class="admin-card-id">'+id+'</div>'
       + '</div>'
+      + '<select class="admin-input admin-card-set-select" title="Assign set" onchange="assignCardSet(\''+id+'\',this.value)" style="width:auto;min-width:130px;font-size:11px;padding:6px 8px">'
+        + '<option value=""'+(curSet===''?' selected':'')+'>— No Set —</option>'
+        + _cardSets.map(s=>'<option value="'+s.id+'"'+(curSet===s.id?' selected':'')+'>'+s.name+'</option>').join('')
+      + '</select>'
       + '<button class="admin-card-action-btn zoom" onclick="showFullCard(\''+id+'\',null)" title="Zoom into card">🔍</button>'
       + '<button class="admin-card-toggle-btn '+(disabled ? 'enable' : 'disable')+'" onclick="adminToggleCardDisabled(\''+id+'\')">'
         + (disabled ? '✓ ENABLE' : '✗ DISABLE')
@@ -14802,21 +14910,25 @@ function updateShopButtons(){
 // Slots 1-4 Common · 5-7 Uncommon · 8 Energy · 9 Reverse Holo · 10 Rare+
 // ═══════════════════════════════════════════════════
 const PACK_ART='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/Copilot_20260621_173509.png';
+// Which set each pack draws from. Future sets: add a pack type here + tag cards.
+const PACK_SETS={basic:'base_set', premium:'base_set', event:'base_set'};
 
-function _packPool(){
-  // Obtainable cards for packs: no tokens/forms/system, no energy (handled in slot 8),
-  // no promos (reserved), respects disabled cards for non-admins.
+function _packPool(setId){
+  // Obtainable cards for a SET's packs: scoped to that setId. No tokens/forms/system,
+  // no energy (slot 8), no heralds (special/auto), no promos. Respects disabled cards.
   return getCardPool().filter(id=>{
     const c=DB[id];
     if(!c) return false;
-    if(c.type==='energy_card') return false;
-    if(c.setId==='promo') return false;
+    if(c.type==='energy_card'||c.type==='herald') return false;
+    const cset = (typeof getCardSet==='function') ? getCardSet(id) : (c.setId||'');
+    if(cset==='promo') return false;
+    if(setId && cset!==setId) return false;  // ← scope to this pack's set (override-aware)
     return true;
   });
 }
-function _cardsByRarity(rarity){ return _packPool().filter(id=>(DB[id].rarity||'common')===rarity); }
+function _cardsByRarity(rarity,setId){ return _packPool(setId).filter(id=>(DB[id].rarity||'common')===rarity); }
 function _regularEnergyPool(){
-  // Slot 8 = a regular Energy card only (exclude "choice"/"rainbow"/wild special energies).
+  // Slot 8 = a regular Energy card only (energies are universal — not set-scoped).
   return getCardPool().filter(id=>{ const c=DB[id]; return c&&c.type==='energy_card'&&!/choice|rainbow|wild|prism/i.test(id)&&!/choice|rainbow|wild|prism/i.test(c.name||''); });
 }
 function _pickRandom(arr){ return arr.length?arr[Math.floor(Math.random()*arr.length)]:null; }
@@ -14826,13 +14938,14 @@ function _weightedRarity(weights){
   for(const k in weights){ r-=weights[k]; if(r<=0) return k; }
   return Object.keys(weights)[0];
 }
-// Pull a card of a rarity; if that rarity has no cards yet, fall back down the chain.
-function _pullOfRarity(rarity){
+// Pull a card of a rarity from a set; fall back down the rarity chain (then any set).
+function _pullOfRarity(rarity,setId){
   const order=['common','uncommon','rare','legend','mythic'];
   let idx=order.indexOf(rarity); if(idx<0)idx=0;
-  let pool=_cardsByRarity(rarity);
-  while(pool.length===0 && idx>0){ idx--; pool=_cardsByRarity(order[idx]); }
-  if(pool.length===0) pool=_packPool();
+  let pool=_cardsByRarity(rarity,setId);
+  while(pool.length===0 && idx>0){ idx--; pool=_cardsByRarity(order[idx],setId); }
+  if(pool.length===0) pool=_packPool(setId);
+  if(pool.length===0) pool=_packPool();   // ultimate safety net
   return _pickRandom(pool);
 }
 // Regular-holo foil style varies by rarity (purely cosmetic).
@@ -14843,21 +14956,22 @@ function holoStyleForRarity(rarity){
 }
 // Build one pack → array of 10 pull objects {cid, foil:'none'|'holo'|'reverse', rarity}
 function generatePack(type){
+  const setId=PACK_SETS[type]||'base_set';
   const pulls=[];
-  for(let i=0;i<4;i++){ const cid=_pullOfRarity('common');   pulls.push({cid,foil:'none',rarity:getRarity(cid)}); }
-  for(let i=0;i<3;i++){ const cid=_pullOfRarity('uncommon'); pulls.push({cid,foil:'none',rarity:getRarity(cid)}); }
-  // Slot 8 — always a regular Energy
-  { const ep=_regularEnergyPool(); const cid=_pickRandom(ep)||_pullOfRarity('common'); pulls.push({cid,foil:'none',rarity:getRarity(cid)}); }
+  for(let i=0;i<4;i++){ const cid=_pullOfRarity('common',setId);   pulls.push({cid,foil:'none',rarity:getRarity(cid)}); }
+  for(let i=0;i<3;i++){ const cid=_pullOfRarity('uncommon',setId); pulls.push({cid,foil:'none',rarity:getRarity(cid)}); }
+  // Slot 8 — always a regular Energy (universal, not set-scoped)
+  { const ep=_regularEnergyPool(); const cid=_pickRandom(ep)||_pullOfRarity('common',setId); pulls.push({cid,foil:'none',rarity:getRarity(cid)}); }
   // Slot 9 — Reverse Holo (no Mythic). Premium gets slightly better odds.
   { const w = type==='premium' ? {common:38,uncommon:35,rare:22,legend:5} : {common:45,uncommon:35,rare:17,legend:3};
-    const rar=_weightedRarity(w); const cid=_pullOfRarity(rar); pulls.push({cid,foil:'reverse',rarity:getRarity(cid)}); }
+    const rar=_weightedRarity(w); const cid=_pullOfRarity(rar,setId); pulls.push({cid,foil:'reverse',rarity:getRarity(cid)}); }
   // Slot 10 — guaranteed Rare+. Premium has improved odds.
   { const w = type==='premium' ? {rare:60,legend:30,mythic:10} : {rare:75,legend:20,mythic:5};
-    const rar=_weightedRarity(w); const cid=_pullOfRarity(rar); const ar=getRarity(cid);
+    const rar=_weightedRarity(w); const cid=_pullOfRarity(rar,setId); const ar=getRarity(cid);
     let foil='none';
-    if(ar==='mythic') foil='holo';                                   // all mythics are holo
-    else if(ar==='legend') foil = Math.random()<0.40 ? 'holo':'none'; // 40% holo
-    else if(ar==='rare')   foil = Math.random()<0.25 ? 'holo':'none'; // 25% holo
+    if(ar==='mythic') foil='holo';
+    else if(ar==='legend') foil = Math.random()<0.40 ? 'holo':'none';
+    else if(ar==='rare')   foil = Math.random()<0.25 ? 'holo':'none';
     pulls.push({cid,foil,rarity:ar}); }
   return pulls;
 }
@@ -14866,7 +14980,8 @@ async function buyPack(type){
   const cost=PACK_COSTS[type];
   if(!cost)return;
   if(_celData.celestium<cost){alert('Not enough Celestium!');return;}
-  if(_packPool().length===0){alert('Card pool is empty.');return;}
+  const setId=PACK_SETS[type]||'base_set';
+  if(_packPool(setId).length===0){alert('This set has no cards yet.');return;}
   const pulls=generatePack(type);
   _celData.celestium-=cost;
   pulls.forEach(p=>{ p.isNew=!(_collection[p.cid]); addCardToCollection(p.cid, p.foil); });
@@ -15266,7 +15381,7 @@ async function adminResetCampaignIntroWatched(){
 function openCardManager(){
   if(!isAdmin()){ alert('Admin only'); return; }
   showScreen('admin-card-manager-screen');
-  setTimeout(() => renderCardManagerList(), 60);
+  setTimeout(() => { renderCardSetManager(); renderCardManagerList(); }, 60);
 }
 
 
@@ -18624,6 +18739,7 @@ window.addEventListener('load',async()=>{
       await loadCollection();
       await loadAdminToggles();
       await loadDisabledCards();
+      await loadCardSets();
       await loadNewsSlides();
       await loadHoloOwned();
       await loadAdminHoloMode();
@@ -19749,9 +19865,19 @@ window.addEventListener('load',async()=>{
     <button class="btn-gray btn-sm" onclick="showScreen('admin-screen')">← Back</button>
     <div>
       <div style="font-family:'Cinzel',serif;font-size:22px;letter-spacing:4px;color:#fbbf24">🎴 CARD MANAGER</div>
-      <div style="font-size:12px;color:#9ca3af;letter-spacing:2px;margin-top:3px">Disable cards to remove them from packs, deck builder, and random decks for all non-admin players.</div>
+      <div style="font-size:12px;color:#9ca3af;letter-spacing:2px;margin-top:3px">Disable cards to remove them from packs, deck builder, and random decks for all non-admin players. Assign each card to a Set below.</div>
     </div>
     <div style="margin-left:auto" id="admin-card-manager-stats">—</div>
+  </div>
+
+  <!-- MANAGE SETS -->
+  <div class="admin-section" style="margin-bottom:14px">
+    <div style="font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;color:#fbbf24;margin-bottom:10px">🗂 MANAGE SETS</div>
+    <div id="card-set-manager-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px"></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input id="new-set-name" class="admin-input" type="text" placeholder="New set name (e.g. Void Prism)" style="max-width:260px"/>
+      <button class="admin-action-btn" onclick="adminAddCardSet()" style="width:auto;padding:9px 16px;font-size:11px">+ ADD SET</button>
+    </div>
   </div>
 
   <div class="admin-section">
@@ -19773,6 +19899,10 @@ window.addEventListener('load',async()=>{
         <option value="all">All Status</option>
         <option value="enabled">✓ Enabled Only</option>
         <option value="disabled">✗ Disabled Only</option>
+      </select>
+      <select id="admin-card-set-filter" class="admin-input" onchange="renderCardManagerList()" style="width:auto;min-width:160px">
+        <option value="all">All Sets</option>
+        <option value="__none__">— Unassigned —</option>
       </select>
       <div style="display:flex;gap:6px">
         <button class="admin-action-btn" onclick="adminEnableAllCards()" style="width:auto;padding:10px 16px;font-size:11px">✓ ENABLE ALL</button>
