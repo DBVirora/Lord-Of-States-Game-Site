@@ -393,6 +393,9 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .db-thumb{width:30px;height:42px;border-radius:4px;background:#1e1e3a;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px}
 .db-thumb img{width:100%;height:100%;object-fit:cover}
 .db-count-badge{background:#7c3aed;color:#fff;border-radius:4px;padding:2px 6px;font-size:11px;font-weight:700;min-width:22px;text-align:center}
+.db-foil-chips{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px}
+.db-foil-chip{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:.5px;background:rgba(0,0,0,.35);border:1px solid;border-radius:5px;padding:1px 5px;cursor:pointer;transition:all .12s}
+.db-foil-chip:hover{background:rgba(255,255,255,.12)}
 .deck-card-item{display:flex;align-items:center;justify-content:space-between;padding:4px 6px;background:#0f0f1e;border-radius:6px;margin-bottom:3px;font-size:11px}
 .deck-select-card{background:rgba(8,8,28,.8);border:1px solid var(--border-v);border-radius:10px;padding:10px;cursor:pointer;transition:all .2s;text-align:center;backdrop-filter:blur(8px)}
 .deck-select-card:hover{border-color:var(--violet2);background:rgba(124,58,237,.12);box-shadow:0 0 12px var(--glow-v)}
@@ -815,6 +818,28 @@ body{padding-top:46px;}
 .col-card-img{width:36px;height:50px;border-radius:4px;object-fit:cover;background:#0a0a1a;flex-shrink:0;}
 .col-card-name{font-size:11px;font-weight:700;color:#e2e8f0;}
 .col-card-count{font-size:10px;color:#fbbf24;margin-top:2px;}
+.col-variant-tag{font-size:8px;letter-spacing:.5px;margin-top:3px;border:1px solid;border-radius:6px;padding:1px 5px;display:inline-block;font-family:'Share Tech Mono',monospace;}
+.col-card-mini.col-foil{box-shadow:0 0 10px rgba(168,85,247,.18);}
+/* ── TRADE ── */
+.trade-lobby-card{background:linear-gradient(160deg,rgba(30,20,60,.5),rgba(8,8,28,.6));border:1px solid var(--border-v);border-radius:12px;padding:18px;}
+.trade-lobby-title{font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:2px;color:#e9d5ff;margin-bottom:10px;}
+.trade-room-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:space-between;background:rgba(8,8,28,.6);border:1px solid var(--border-v);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#cbd5e1;}
+.trade-panels{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:640px){.trade-panels{grid-template-columns:1fr}}
+.trade-panel{background:rgba(8,8,28,.55);border:1px solid var(--border-v);border-radius:12px;padding:12px;min-height:200px;}
+.trade-panel-title{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;color:#c4b5fd;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.trade-ready-tag{font-size:9px;color:#86efac;border:1px solid #22c55e;border-radius:10px;padding:1px 7px;letter-spacing:1px;}
+.trade-offer-list{display:flex;flex-direction:column;gap:6px;min-height:60px;}
+.trade-offer-row{display:flex;align-items:center;gap:9px;background:rgba(17,17,38,.6);border:1px solid rgba(42,42,74,.6);border-radius:8px;padding:6px 9px;}
+.trade-offer-art{position:relative;width:30px;height:42px;flex-shrink:0;border-radius:4px;overflow:hidden;}
+.trade-offer-art img{width:100%;height:100%;object-fit:cover;}
+.trade-offer-info{flex:1;min-width:0;}
+.trade-offer-name{font-size:11px;font-weight:700;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.trade-offer-tag{font-size:8px;letter-spacing:.5px;border:1px solid;border-radius:5px;padding:0 5px;display:inline-block;margin-top:2px;}
+.trade-offer-empty{font-size:10px;color:#4b5563;text-align:center;padding:18px;font-style:italic;}
+.trade-actions{display:flex;gap:12px;justify-content:center;margin-top:16px;}
+.trade-actions .btn-primary{min-width:200px;}
+.trade-ready .trade-panel{border-color:#22c55e;}
 
 /* ADMIN PANEL */
 .admin-section{background:rgba(139,18,18,.08);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:14px;margin-bottom:12px;}
@@ -5783,6 +5808,7 @@ textarea{
   <div class="menu-section">
     <div class="menu-section-label">Tools</div>
     <button class="menu-btn util-btn" id="menu-friends-btn" onclick="showScreen('friends-screen');openFriends()"><span class="menu-btn-sweep"></span>👥  FRIENDS <span id="menu-friends-badge" style="display:none;background:#ef4444;color:#fff;border-radius:10px;padding:1px 6px;font-size:9px;margin-left:4px">0</span></button>
+    <button class="menu-btn util-btn" onclick="openTradeScreen()"><span class="menu-btn-sweep"></span>🔄  TRADE</button>
     <button class="menu-btn util-btn" onclick="showScreen('shop-screen');openShop()"><span class="menu-btn-sweep"></span>🏪  SHOP</button>
     <button class="menu-btn util-btn" onclick="showScreen('profile-screen');refreshProfileScreen()"><span class="menu-btn-sweep"></span>👤  PROFILE</button>
     <button class="menu-btn util-btn" onclick="showScreen('builder-screen');renderBuilderCards()"><span class="menu-btn-sweep"></span>🃏  DECK BUILDER</button>
@@ -7199,6 +7225,26 @@ function getDeckList(deckId){
   console.warn('[DECK] saved deck not found:',deckId,'generating random');
   return generateRandomDeck();
 }
+// Parallel foils array for a saved deck (null = no per-copy info → fall back to best-owned holo).
+function getDeckFoils(deckId){
+  if(deckId==='__random__')return null;
+  const d=SAVED_DECKS[deckId];
+  return (d&&Array.isArray(d.foils)&&d.foils.length)?[...d.foils]:null;
+}
+// Build a per-card multiset of finishes from a deck's (cards,foils). Consumed as
+// cards are drawn so each physical copy renders as the exact finish it was built with.
+function buildFoilPool(cards,foils){
+  if(!foils||!foils.length)return null;
+  const pool={};
+  (cards||[]).forEach((cid,i)=>{ const v=foils[i]||'none'; (pool[cid]=pool[cid]||[]).push(v); });
+  Object.keys(pool).forEach(k=>{ if(typeof shuffle==='function')shuffle(pool[k]); });
+  return pool;
+}
+function _takeFoil(p,cid){
+  const pl=G&&G.players&&G.players[p];
+  if(!pl||!pl.foilPool||!pl.foilPool[cid]||!pl.foilPool[cid].length)return null;
+  return pl.foilPool[cid].shift();
+}
 
 function validateDeckForPlay(deckId){
   if(deckId==='__random__')return true;
@@ -7326,7 +7372,7 @@ function selectDeck(player,deckId){
 function launchGame(){
   if(!pendingP1Deck||!pendingP2Deck)return;
   if(!validateDeckForPlay(pendingP1Deck)||!validateDeckForPlay(pendingP2Deck))return;
-  startGame(pendingMode,getDeckList(pendingP1Deck),getDeckList(pendingP2Deck));
+  startGame(pendingMode,getDeckList(pendingP1Deck),getDeckList(pendingP2Deck),getDeckFoils(pendingP1Deck),getDeckFoils(pendingP2Deck));
 }
 
 // ── DECK BUILDER ──
@@ -7350,7 +7396,12 @@ function loadDeckIntoBuilder(deckId){
   const deck=SAVED_DECKS[deckId];if(!deck)return;
   document.getElementById('deck-name-input').value=deck.name;
   builderDeck=[];
-  deck.cards.forEach(cid=>{const ex=builderDeck.find(e=>e.cid===cid);if(ex)ex.count++;else builderDeck.push({cid,count:1});});
+  const cards=deck.cards||[], foils=deck.foils||[];
+  cards.forEach((cid,i)=>{
+    const variant=foils[i]||'none';
+    const ex=builderDeck.find(e=>e.cid===cid&&e.variant===variant);
+    if(ex)ex.count++; else builderDeck.push({cid,variant,count:1});
+  });
   builderDeck._editId=deckId;
   renderBuilderCards();renderBuilderDeck();
 }
@@ -7363,9 +7414,9 @@ async function saveDeck(){
   const total=builderDeck.reduce((s,e)=>s+e.count,0);
   if(total<1){alert('Deck is empty.');return;}
   if(total>60){alert(`${total} cards — max 60.`);return;}
-  const cards=[];builderDeck.forEach(e=>{for(let i=0;i<e.count;i++)cards.push(e.cid);});
+  const cards=[],foils=[];builderDeck.forEach(e=>{for(let i=0;i<e.count;i++){cards.push(e.cid);foils.push(e.variant||'none');}});
   const id=builderDeck._editId||('deck_'+Date.now());
-  SAVED_DECKS[id]={name,cards,updatedAt:new Date().toISOString()};
+  SAVED_DECKS[id]={name,cards,foils,updatedAt:new Date().toISOString()};
   const saveStatus=document.getElementById('deck-save-status');
   if(saveStatus){saveStatus.textContent='Saving...';saveStatus.style.color='#fbbf24';}
   const saved=await saveDecksToStorage();
@@ -7380,7 +7431,8 @@ async function saveDeck(){
   if(cards.length>=60)setTimeout(()=>checkAchievements(),500);
 }
 
-function addCardToBuilder(cid){
+function addCardToBuilder(cid, variant){
+  variant=variant||'none';
   // Max 1 Herald per deck
   if(DB[cid]?.type==='herald'){
     const existing=builderDeck.filter(e=>DB[e.cid]?.type==='herald');
@@ -7391,20 +7443,32 @@ function addCardToBuilder(cid){
   if(c.isToken){alert('Token cards cannot be added to decks.');return;}
   const total=builderDeck.reduce((s,e)=>s+e.count,0);
   if(total>=60){return;}
-  const ex=builderDeck.find(e=>e.cid===cid);
-  // Herald cap: 1 per deck. Other cards: 4 per deck.
+  // 4-copy limit is per CARD (all variants combined); Heralds capped at 1.
   const isHerald = c.type === 'herald';
   const maxCopies = isHerald ? 1 : 4;
-  if((ex?ex.count:0) >= maxCopies){
+  const cidTotal = builderDeck.filter(e=>e.cid===cid).reduce((s,e)=>s+e.count,0);
+  if(cidTotal >= maxCopies){
     if(isHerald) alert('Only 1 copy of each Herald allowed per deck.');
     return;
   }
-  if(ex)ex.count++;else builderDeck.push({cid,count:1});
+  // Foil variants are limited to how many you actually OWN (admins unlimited).
+  if(variant!=='none' && !adminHasUnlimitedCards()){
+    const owned=variantCount(cid,variant);
+    const inDeckVar=(builderDeck.find(e=>e.cid===cid&&e.variant===variant)?.count)||0;
+    if(inDeckVar>=owned){ alert('You only own '+owned+'× '+(VARIANT_META[variant]?.label||variant)+' of '+c.name+'.'); return; }
+  }
+  const ex=builderDeck.find(e=>e.cid===cid&&e.variant===variant);
+  if(ex)ex.count++;else builderDeck.push({cid,variant,count:1});
   renderBuilderDeck();renderBuilderCards();
 }
-function removeCardFromBuilder(cid){
-  const ex=builderDeck.find(e=>e.cid===cid);if(!ex)return;
-  ex.count--;if(ex.count<=0)builderDeck=builderDeck.filter(e=>e.cid!==cid);
+function removeCardFromBuilder(cid, variant){
+  variant=variant||'none';
+  const ex=builderDeck.find(e=>e.cid===cid&&e.variant===variant);
+  if(!ex){ // fall back: remove any variant of this cid (e.g. legacy − button)
+    const any=builderDeck.find(e=>e.cid===cid); if(!any)return; any.count--; if(any.count<=0)builderDeck=builderDeck.filter(e=>e!==any);
+    renderBuilderDeck();renderBuilderCards();return;
+  }
+  ex.count--;if(ex.count<=0)builderDeck=builderDeck.filter(e=>!(e.cid===cid&&e.variant===variant));
   renderBuilderDeck();renderBuilderCards();
 }
 function renderBuilderCards(){
@@ -7439,8 +7503,8 @@ function renderBuilderCards(){
     if(search&&!c.name.toLowerCase().includes(search)&&!(c.color||'').includes(search)&&!(c.keywords||[]).some(k=>k.includes(search)))return false;
     return true;
   }).forEach(c=>{
-    const inDeck=builderDeck.find(e=>e.cid===c.id);
-    const count=inDeck?inDeck.count:0;
+    const count=builderDeck.filter(e=>e.cid===c.id).reduce((s,e)=>s+e.count,0);
+    const ownedFoils=VARIANT_ORDER.filter(v=>v!=='none'&&(adminHasUnlimitedCards()?true:variantCount(c.id,v)>0));
     const colDef=c.color&&COLOR_DEFS[c.color]?COLOR_DEFS[c.color]:null;
     const borderCol=colDef?colDef.hex:'#2a2a4a';
     const ownedHolo=getOwnedHoloStyle(c.id); // for badge rendering
@@ -7455,6 +7519,7 @@ function renderBuilderCards(){
         ${c.atk>0?`<div style="font-size:10px;color:#fbbf24">⚔${c.atk}♥${c.hp}</div>`:''}
         ${c.transformOnly?'<div style="font-size:9px;color:#f59e0b">🔒 TF Only</div>':''}
         ${c.keywords?.length?`<div>${c.keywords.map(kw=>KEYWORDS[kw]?`<span class="kw-badge ${KEYWORDS[kw].cls}">${KEYWORDS[kw].label}</span>`:'').join('')}</div>`:''}
+        ${ownedFoils.length?`<div class="db-foil-chips">`+ownedFoils.map(v=>`<button class="db-foil-chip" style="color:${VARIANT_META[v].accent};border-color:${VARIANT_META[v].accent}" onclick="event.stopPropagation();addCardToBuilder('${c.id}','${v}')" title="Add your ${VARIANT_META[v].label}">✦ ${VARIANT_META[v].label.replace(' Holo','')} (${adminHasUnlimitedCards()?'∞':variantCount(c.id,v)})</button>`).join('')+`</div>`:''}
       </div>
       <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0">
         <button onclick="event.stopPropagation();showFullCard('${c.id}',null)"
@@ -7486,25 +7551,26 @@ function renderBuilderDeck(){
       const row=document.createElement('div');row.className='deck-card-item';
       const url=getImg(e.cid);
       const dc=DB[e.cid];const dColDef=dc?.color&&COLOR_DEFS[dc.color]?COLOR_DEFS[dc.color]:null;
-      const deckOwnedHolo = getOwnedHoloStyle(e.cid);
-      const deckHoloBadge = deckOwnedHolo ? buildHoloBadge(deckOwnedHolo) : '';
+      const vstyle = (e.variant&&e.variant!=='none') ? e.variant : null; // THIS copy's exact finish
+      const deckHoloBadge = vstyle ? buildHoloBadge(vstyle) : '';
+      const vMeta = VARIANT_META[e.variant]||VARIANT_META.none;
       row.innerHTML=`<div style="display:flex;align-items:center;flex:1;min-width:0;gap:4px">
           <div style="position:relative;flex-shrink:0">
             ${url?`<img src="${url}" style="width:22px;height:30px;object-fit:cover;border-radius:3px;${dColDef?'border:1px solid '+dColDef.hex+';':''}"/>`:`<span style="font-size:11px">${c.sym||'?'}</span>`}
-            ${deckOwnedHolo?`<div class="holo-thumb-glow holo-thumb-${deckOwnedHolo}" style="width:22px;height:30px"></div>`:''}
+            ${vstyle?`<div class="holo-thumb-glow holo-thumb-${vstyle}" style="width:22px;height:30px"></div>`:''}
           </div>
           <div style="min-width:0">
             <div style="font-size:11px;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:3px">${c.name} ${deckHoloBadge}</div>
-            ${dColDef?`<div style="font-size:9px;color:${dColDef.hex}">${dColDef.label}</div>`:''}
+            <div style="font-size:9px;color:${vstyle?vMeta.accent:'#6b7280'}">${vstyle?'✦ '+vMeta.label:'Regular'}${dColDef?` · <span style="color:${dColDef.hex}">${dColDef.label}</span>`:''}</div>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:3px;flex-shrink:0">
           <button onclick="showFullCard('${e.cid}',null)"
             style="background:#1e1e3a;border:1px solid #3a3a5c;border-radius:4px;width:18px;height:18px;cursor:pointer;font-size:10px;color:#9ca3af"
             title="View card">👁</button>
-          <button style="background:#374151;color:#fff;border:none;border-radius:4px;width:18px;height:18px;cursor:pointer;font-size:12px" onclick="removeCardFromBuilder('${e.cid}')">−</button>
+          <button style="background:#374151;color:#fff;border:none;border-radius:4px;width:18px;height:18px;cursor:pointer;font-size:12px" onclick="removeCardFromBuilder('${e.cid}','${e.variant}')">−</button>
           <span style="color:#c8a0ff;font-weight:700;min-width:14px;text-align:center">${e.count}${DB[e.cid]?.type==='herald'?' 👑':''}</span>
-          <button style="background:#7c3aed;color:#fff;border:none;border-radius:4px;width:18px;height:18px;cursor:pointer;font-size:12px" onclick="addCardToBuilder('${e.cid}')">+</button>
+          <button style="background:#7c3aed;color:#fff;border:none;border-radius:4px;width:18px;height:18px;cursor:pointer;font-size:12px" onclick="addCardToBuilder('${e.cid}','${e.variant}')">+</button>
         </div>`;
       row.oncontextmenu=ev=>{ev.preventDefault();showFullCard(e.cid,null);};
       list.appendChild(row);
@@ -7592,9 +7658,11 @@ function recalcPassives(){
 
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a;}
 
-function startGame(mode,deck1,deck2){
+function startGame(mode,deck1,deck2,foils1,foils2){
   if(typeof loadGameSettings==="function")loadGameSettings();
   gameMode=mode;us=0;
+  // Per-copy finish pools (built from the original deck order before shuffle/herald strip).
+  const _fp1=buildFoilPool(deck1,foils1), _fp2=buildFoilPool(deck2,foils2);
   const gMode=pendingGameMode||'prize';
   const startLF=pendingLFHP||100;
   const prizeCount=pendingPrizeCount||6;
@@ -7624,8 +7692,8 @@ function startGame(mode,deck1,deck2){
   G={turn:1,activePlayer:1,phase:'draw',phasesDone:[],selectedAttacker:null,gameOver:false,
     deckSearchCallback:null,heraldAttacking:false,gameMode:gMode,startingLF:startLF,prizeCount:prizeCount,bonusAttackers:0,
     players:{
-      1:{name:(window._playerName||document.getElementById('hud-username')?.textContent||'Player 1'),energy:5,colorEnergy:{},hand:[],field:[],deck:d1,discard:[],rift:[],prizes:p1,prizesClaimed:0,prizesTaken:[],herald:h1,lifeForce:startLF},
-      2:{name:((mode==='pvp'||mode==='online')?(G&&G.onlineOpponentName)||window._onlineOpponentName||'Opponent':'AI'),energy:5,colorEnergy:{},hand:[],field:[],deck:d2,discard:[],rift:[],prizes:p2,prizesClaimed:0,prizesTaken:[],herald:h2,lifeForce:startLF},
+      1:{name:(window._playerName||document.getElementById('hud-username')?.textContent||'Player 1'),energy:5,colorEnergy:{},hand:[],field:[],deck:d1,discard:[],rift:[],prizes:p1,prizesClaimed:0,prizesTaken:[],herald:h1,lifeForce:startLF,foilPool:_fp1},
+      2:{name:((mode==='pvp'||mode==='online')?(G&&G.onlineOpponentName)||window._onlineOpponentName||'Opponent':'AI'),energy:5,colorEnergy:{},hand:[],field:[],deck:d2,discard:[],rift:[],prizes:p2,prizesClaimed:0,prizesTaken:[],herald:h2,lifeForce:startLF,foilPool:_fp2},
     },log:[]};
   for(let i=0;i<7;i++){drawCard(1,true);drawCard(2,true);}
   if(h1)log(`${pname(1)} Herald: ${DB[h1.cid].name} enters play!`,'gain');
@@ -7955,7 +8023,7 @@ function drawCard(p,silent=false){
     cid=pl.deck.pop();
   }
   if(!cid||isHerald(DB[cid]))return; // nothing valid to draw
-  const fc=newFC(cid);if(fc)pl.hand.push(fc);
+  const fc=newFC(cid);if(fc){ const v=_takeFoil(p,cid); if(v!==null)fc.variant=v; pl.hand.push(fc); }
   if(!silent)log(`P${p} draws.`,'info');
   checkHandLimit(p);
 }
@@ -13514,7 +13582,7 @@ function renderV2HandFor(hp){
     if(!isActive)div.style.opacity='0.5';
     const artWrap=document.createElement('div');artWrap.className='hand-art-area';
     const url=getImg(fc.cid);if(url){const img=document.createElement('img');img.src=url;artWrap.appendChild(img);}else artWrap.textContent=c.sym||'?';
-    applyHoloToArt(artWrap,fc.cid);
+    applyHoloToArt(artWrap,fc.cid,fc);
     div.appendChild(artWrap);
     const info=document.createElement('div');info.className='hand-info';
     info.innerHTML=`<div class="hand-name">${c.name}</div>
@@ -13606,7 +13674,7 @@ function renderField(p, targetId){
       else div.classList.add('targetable');
     }
     const maxHP=fc.baseHP+fc.hpBonus;const pct=Math.max(0,Math.min(100,fc.currentHP/maxHP*100));const hpCol=pct>60?'#22c55e':pct>30?'#f59e0b':'#ef4444';
-    div.appendChild(makeArtEl(fc.cid,108));
+    div.appendChild(makeArtEl(fc.cid,108,fc));
     const info=document.createElement('div');info.className='card-info field-card-info';
     info.innerHTML=`<div class="card-name-sm">${c.name}</div>
       <div class="card-stats-row"><span class="stat-atk">⚔${fc.currentATK}</span><span style="color:${hpCol};font-weight:700">♥${fc.currentHP}</span></div>
@@ -13630,7 +13698,7 @@ function renderLocZone(p, targetId){
     div.setAttribute('data-uid',fc.uid);div.setAttribute('data-player',p);
     if(G.selectedAttacker&&isEnemyBoard(p)&&isLoc(c))div.classList.add('loc-targetable');
     const pct=Math.max(0,Math.min(100,fc.currentHP/(c.hp||6)*100));const hpCol=pct>60?'#22c55e':pct>30?'#f59e0b':'#ef4444';
-    div.appendChild(makeArtEl(fc.cid,108));
+    div.appendChild(makeArtEl(fc.cid,108,fc));
     const info=document.createElement('div');info.className='card-info field-card-info';
     info.innerHTML=`<div class="card-name-sm">${c.name}</div>
       <div class="card-stats-row"><span style="font-size:9px;color:#86efac;font-weight:700">LOC</span><span style="color:${hpCol};font-weight:700">🛡${fc.currentHP}</span></div>
@@ -13643,19 +13711,21 @@ function renderLocZone(p, targetId){
   });
 }
 
-function makeArtEl(cid,h){
+function makeArtEl(cid,h,fc){
   const wrap=document.createElement('div');wrap.className='card-art-area';wrap.style.height=h+'px';
   const url=getImg(cid);if(url){const img=document.createElement('img');img.src=url;wrap.appendChild(img);}else wrap.textContent=DB[cid]?.sym||'?';
-  applyHoloToArt(wrap,cid);
+  applyHoloToArt(wrap,cid,fc);
   return wrap;
 }
 
-// Apply a player's OWNED holo treatment to any art container holding an <img>.
-// Used in-game (field, hand, play-zoom) so a pulled holo shows everywhere it's
-// played or viewed. Layers are injected after the img so they sit on top.
-function applyHoloToArt(wrap,cid){
+// Apply a player's holo treatment to any art container holding an <img>.
+// Priority: the specific copy's finish (fc.variant) if known → else the player's
+// best-owned holo for that card. fc.variant==='none' means an explicitly regular copy.
+function applyHoloToArt(wrap,cid,fc){
   if(!wrap)return;
-  const style=(typeof getOwnedHoloStyle==='function')?getOwnedHoloStyle(cid):null;
+  let style;
+  if(fc && fc.variant!==undefined){ style = (fc.variant && fc.variant!=='none') ? fc.variant : null; }
+  else { style=(typeof getOwnedHoloStyle==='function')?getOwnedHoloStyle(cid):null; }
   if(!style)return;
   wrap.classList.add('holo-card','always-on','holo-'+style);
   const counts={classic:4,cosmic:3,gold:3,reverse:4,ruby:5};
@@ -13689,7 +13759,7 @@ function renderHand(){
     div.className='hand-card '+(isInst(c)?'instant-card '+(playable?'playable':'not-playable'):playable?'playable':'not-playable');
     const artWrap=document.createElement('div');artWrap.className='hand-art-area';
     const url=getImg(fc.cid);if(url){const img=document.createElement('img');img.src=url;artWrap.appendChild(img);}else artWrap.textContent=c.sym||'?';
-    applyHoloToArt(artWrap,fc.cid);
+    applyHoloToArt(artWrap,fc.cid,fc);
     div.appendChild(artWrap);
     const info=document.createElement('div');info.className='hand-info';
     const tc={base_char:'#c4b5fd',char:'#a5b4fc',team:'#7dd3fc',location:'#86efac',equipment:'#fcd34d',instant:'#fca5a5',token:'#a78bfa'};
@@ -14489,8 +14559,46 @@ function renderAchievementsSection(){
 // ═══════════════════════════════════════════════════
 // SHOP + COLLECTION SYSTEM
 // ═══════════════════════════════════════════════════
-let _collection={}; // {cid: count}
-let _collectionFoil={}; // {cid:{holo:n, reverse:n}} — in-memory foil tracking for this session
+let _collection={}; // {cid: total count across all variants}
+// Per-variant foil counts: {cid:{none:n, classic:n, cosmic:n, gold:n, reverse:n, ruby:n}}
+// Persisted in profiles.collection_foil. This is what separates regular copies from
+// each holo style so you know exactly which version you own / use / trade.
+let _collectionFoil={};
+// Variant display metadata (order = collection display order; accent for the chip).
+const VARIANT_META={
+  none:{label:'Regular',accent:'#9ca3af'},
+  classic:{label:'Classic Holo',accent:'#7dd3fc'},
+  cosmic:{label:'Cosmic Holo',accent:'#c084fc'},
+  gold:{label:'Gold Holo',accent:'#fbbf24'},
+  reverse:{label:'Reverse Holo',accent:'#a855f7'},
+  ruby:{label:'Ruby Holo',accent:'#fb7185'}
+};
+const VARIANT_ORDER=['none','classic','cosmic','gold','reverse','ruby'];
+function variantCount(cid,variant){ return (_collectionFoil[cid]&&_collectionFoil[cid][variant])||0; }
+function regularCount(cid){ return variantCount(cid,'none'); }
+function foilTotal(cid){ const f=_collectionFoil[cid]; if(!f)return 0; return VARIANT_ORDER.filter(v=>v!=='none').reduce((s,v)=>s+(f[v]||0),0); }
+// ── Direct collection mutation (used by trading) ──
+function removeVariantFromCollection(cid,variant,n){
+  n=n||1; if(!_collectionFoil[cid])return;
+  _collectionFoil[cid][variant]=Math.max(0,(_collectionFoil[cid][variant]||0)-n);
+  _collection[cid]=Math.max(0,(_collection[cid]||0)-n);
+  if(_collection[cid]<=0)delete _collection[cid];
+}
+function addVariantToCollection(cid,variant,n){
+  n=n||1;
+  if(!_collectionFoil[cid])_collectionFoil[cid]={};
+  _collectionFoil[cid][variant]=(_collectionFoil[cid][variant]||0)+n;
+  _collection[cid]=(_collection[cid]||0)+n;
+}
+// Recompute the best-owned holo style per card (drives single-treatment renders).
+function recomputeHoloOwned(){
+  const rank={reverse:1,classic:2,cosmic:3,gold:4,ruby:5};
+  Object.keys(_collectionFoil).forEach(cid=>{
+    const f=_collectionFoil[cid]||{}; let best=null,bestR=0;
+    Object.keys(rank).forEach(v=>{ if((f[v]||0)>0 && rank[v]>bestR){best=v;bestR=rank[v];} });
+    if(best)_holoOwned[cid]=best; else if(_holoOwned[cid])delete _holoOwned[cid];
+  });
+}
 let _shopTab='packs';
 const ADMIN_USER_IDS=[
   '6fbbf0e0-e0bc-4b71-b5de-e8ffae6ba2ff', // Virora (Discord)
@@ -14520,6 +14628,33 @@ async function saveCollection(){
   try{
     await _celSB.from('profiles').update({collection:JSON.stringify(_collection)}).eq('id',_celUserId);
   }catch(e){console.warn('[COL] save error:',e);}
+}
+
+async function loadCollectionFoil(){
+  if(!_celSB||!_celUserId)return;
+  try{
+    const {data}=await _celSB.from('profiles').select('collection_foil').eq('id',_celUserId).maybeSingle();
+    if(data&&data.collection_foil){ _collectionFoil=JSON.parse(data.collection_foil)||{}; }
+    else _collectionFoil={};
+  }catch(e){ console.warn('[COLFOIL] load error:',e); _collectionFoil={}; }
+  // Migration: older accounts only tracked totals (_collection) + one holo style
+  // (_holoOwned). Seed per-variant counts so nothing is lost.
+  let migrated=false;
+  Object.keys(_collection||{}).forEach(cid=>{
+    const total=_collection[cid]||0; if(total<=0)return;
+    if(!_collectionFoil[cid]){
+      const owned=_holoOwned&&_holoOwned[cid];
+      if(owned && owned!=='none'){ _collectionFoil[cid]={none:Math.max(0,total-1),[owned]:1}; }
+      else { _collectionFoil[cid]={none:total}; }
+      migrated=true;
+    }
+  });
+  if(migrated){ saveCollectionFoil(); }
+}
+async function saveCollectionFoil(){
+  if(!_celSB||!_celUserId)return;
+  try{ await _celSB.from('profiles').update({collection_foil:JSON.stringify(_collectionFoil)}).eq('id',_celUserId); }
+  catch(e){ console.warn('[COLFOIL] save error:',e); }
 }
 
 // ═══════ UNOPENED PACK INVENTORY ═══════
@@ -14565,19 +14700,22 @@ async function awardPack(kind,type,setId,qty,name){
 }
 
 // Generate + add-to-collection + open (no charge, no inventory change)
-function _openPackNow(type,setId){
+function _openPackNow(type,setId,context,invKey){
   const pulls=generatePack(type,setId);
   pulls.forEach(p=>{ p.isNew=!_collection[p.cid]; addCardToCollection(p.cid,p.foil); });
-  saveCollection(); saveHoloOwned();
+  saveCollection(); saveHoloOwned(); saveCollectionFoil();
   showPackOpening(pulls,type,false,setId);
+  _packState.context=context||'shop'; _packState.invKey=invKey||null;
 }
-function _openBoxNow(setId){
+function _openBoxNow(setId,context,invKey){
   let all=[]; for(let i=0;i<BOX_PACKS;i++) all=all.concat(generatePack('basic',setId));
   all.forEach(p=>{ p.isNew=!_collection[p.cid]; addCardToCollection(p.cid,p.foil); });
-  saveCollection(); saveHoloOwned();
+  saveCollection(); saveHoloOwned(); saveCollectionFoil();
   showBoxOpening(all,setId);
+  _packState.context=context||'shop'; _packState.invKey=invKey||null;
 }
-async function openInventoryPack(key){
+async function openInventoryPack(key, context){
+  context=context||'inventory';
   const e=_packInventory.find(x=>x.key===key);
   if(!e||e.qty<=0){ return; }
   e.qty--; const kind=e.kind, type=e.type, setId=e.setId;
@@ -14585,7 +14723,7 @@ async function openInventoryPack(key){
   await savePackInventory();
   renderPackInventory(); updatePackBadge();
   _shopSet=setId;
-  if(kind==='box')_openBoxNow(setId); else _openPackNow(type,setId);
+  if(kind==='box')_openBoxNow(setId,context,key); else _openPackNow(type,setId,context,key);
 }
 
 function getOwnedCount(cid){
@@ -14596,17 +14734,15 @@ function getOwnedCount(cid){
 function addCardToCollection(cid, foil){
   // No collection cap — players can collect unlimited copies for future trading.
   // The 4-copy limit only applies when building decks (enforced in deck builder).
-  const current=_collection[cid]||0;
-  _collection[cid]=current+1;
-  if(foil&&foil!=='none'){
-    if(!_collectionFoil[cid])_collectionFoil[cid]={holo:0,reverse:0};
-    _collectionFoil[cid][foil]=(_collectionFoil[cid][foil]||0)+1;
-    // Persist the holo STYLE so this card renders as that foil everywhere, forever.
-    // 'reverse' → reverse shimmer; 'holo' → rarity-specific style (classic/cosmic/gold).
-    // Best foil owned wins (a real holo outranks a reverse holo).
-    const style = foil==='reverse' ? 'reverse' : holoStyleForRarity(getRarity(cid));
-    const rank = s => s==='reverse' ? 1 : (s ? 2 : 0);
-    if(rank(style) > rank(_holoOwned[cid])) _holoOwned[cid]=style;
+  // Determine the exact variant: 'none', 'reverse', or a rarity holo (classic/cosmic/gold).
+  const variant = (!foil||foil==='none') ? 'none' : (foil==='reverse' ? 'reverse' : holoStyleForRarity(getRarity(cid)));
+  if(!_collectionFoil[cid]) _collectionFoil[cid]={};
+  _collectionFoil[cid][variant]=(_collectionFoil[cid][variant]||0)+1;
+  _collection[cid]=(_collection[cid]||0)+1; // running total across all variants
+  if(variant!=='none'){
+    // Best-owned style drives single-treatment renders (field/full-card default).
+    const rank=s=>({reverse:1,classic:2,cosmic:3,gold:4,ruby:5}[s]||0);
+    if(rank(variant) > rank(_holoOwned[cid])) _holoOwned[cid]=variant;
   }
   return true;
 }
@@ -15335,7 +15471,7 @@ function promptOpenOrStore(kind,type,setId){
       +'<button class="btn-gray btn-sm" id="poc-store">STORE FOR LATER</button>'
     +'</div>';
   showModalEl('PACK ACQUIRED', body);
-  body.querySelector('#poc-open').onclick=()=>{ closeAllModals(); openInventoryPack(key); };
+  body.querySelector('#poc-open').onclick=()=>{ closeAllModals(); openInventoryPack(key,'shop'); };
   body.querySelector('#poc-store').onclick=()=>{ closeAllModals(); };
 }
 
@@ -15344,7 +15480,7 @@ function openAnotherBox(){
   const cost=boxCost();
   if((_celData.celestium||0)<cost){ closePackOpenModal(); alert('Not enough Celestium!'); return; }
   _celData.celestium-=cost; saveCelestium(); updateCelDisplay();
-  closePackOpenModal(); _shopSet=setId; _openBoxNow(setId);
+  closePackOpenModal(); _shopSet=setId; _openBoxNow(setId,'shop');
 }
 
 let _packState={pulls:[],idx:0,type:'basic'};
@@ -15496,8 +15632,17 @@ function showBoxSummary(){
   });
   grid.innerHTML=sorted.map(_pullCellHTML).join('');
   const again=document.getElementById('pack-again-btn');
-  const cost=boxCost();
-  if(again){ const can=(_celData.celestium||0)>=cost; again.disabled=!can; again.style.opacity=can?'1':'.5'; again.textContent='↻ OPEN ANOTHER BOX ('+cost+')'; again.onclick=openAnotherBox; }
+  if(again){
+    if(_packState.context==='inventory'){
+      const e=_packState.invKey?_packInventory.find(x=>x.key===_packState.invKey):null;
+      const left=e?e.qty:0;
+      if(left>0){ again.style.display=''; again.disabled=false; again.style.opacity='1'; again.textContent=`↻ OPEN ANOTHER BOX (${left} owned)`; again.onclick=()=>openInventoryPack(_packState.invKey,'inventory'); }
+      else { again.style.display='none'; }
+    } else {
+      const cost=boxCost(); const can=(_celData.celestium||0)>=cost;
+      again.style.display=''; again.disabled=!can; again.style.opacity=can?'1':'.5'; again.textContent='↻ OPEN ANOTHER BOX ('+cost+')'; again.onclick=openAnotherBox;
+    }
+  }
 }
 
 function showPackGrid(){
@@ -15523,8 +15668,17 @@ function showPackGrid(){
     setTimeout(()=>cell.classList.add('revealed'),idx*70);
   });
   const again=document.getElementById('pack-again-btn');
-  const cost=PACK_COSTS[_packState.type]||0;
-  if(again){ const can=(_celData.celestium||0)>=cost; again.disabled=!can; again.style.opacity=can?'1':'.5'; again.textContent=`↻ OPEN ANOTHER (${cost})`; again.onclick=openAnotherPack; }
+  if(again){
+    if(_packState.context==='inventory'){
+      const e=_packState.invKey?_packInventory.find(x=>x.key===_packState.invKey):null;
+      const left=e?e.qty:0;
+      if(left>0){ again.style.display=''; again.disabled=false; again.style.opacity='1'; again.textContent=`↻ OPEN ANOTHER (${left} owned)`; again.onclick=()=>openInventoryPack(_packState.invKey,'inventory'); }
+      else { again.style.display='none'; }
+    } else {
+      const cost=PACK_COSTS[_packState.type]||0; const can=(_celData.celestium||0)>=cost;
+      again.style.display=''; again.disabled=!can; again.style.opacity=can?'1':'.5'; again.textContent=`↻ OPEN ANOTHER (${cost})`; again.onclick=openAnotherPack;
+    }
+  }
 }
 
 function openAnotherPack(){
@@ -15533,7 +15687,7 @@ function openAnotherPack(){
   const cost=PACK_COSTS[type]||0;
   if((_celData.celestium||0)<cost){ closePackOpenModal(); alert('Not enough Celestium!'); return; }
   _celData.celestium-=cost; saveCelestium(); updateCelDisplay();
-  closePackOpenModal(); _shopSet=setId; _openPackNow(type,setId);
+  closePackOpenModal(); _shopSet=setId; _openPackNow(type,setId,'shop');
 }
 
 function closePackOpenModal(){
@@ -15604,7 +15758,6 @@ function renderProfileCollection(){
   const el=document.getElementById('profile-collection');
   if(!el)return;
   const owned=Object.entries(_collection).filter(([cid,n])=>n>0);
-  // Count total unique vs total in pool
   const totalPool=getCardPool().length;
   const uniqueOwned=owned.length;
   const badge=document.getElementById('col-count-badge');
@@ -15614,18 +15767,53 @@ function renderProfileCollection(){
     return;
   }
   el.innerHTML='';
-  owned.sort(([a],[b])=>(DB[a]?.name||a).localeCompare(DB[b]?.name||b)).forEach(([cid,count])=>{
+  // One tile PER VARIANT owned (regular + each holo style), so foils are never
+  // bundled with regular copies. Each tile shows its own count + style label.
+  owned.sort(([a],[b])=>(DB[a]?.name||a).localeCompare(DB[b]?.name||b)).forEach(([cid,total])=>{
     const c=DB[cid];if(!c)return;
     const url=getImg(cid);
-    const div=document.createElement('div');
-    div.className='col-card-mini';
-    div.innerHTML=
-      (url?'<img src="'+url+'" class="col-card-img"/>':'<div class="col-card-img" style="display:flex;align-items:center;justify-content:center;font-size:18px">'+(c.sym||'?')+'</div>')
-      +'<div><div class="col-card-name">'+c.name+'</div><div class="col-card-count">x'+count+'</div></div>';
-    const cimg=div.querySelector('img.col-card-img');
-    if(cimg){ const fs=getOwnedHoloStyle(cid); if(fs){ const holoWrap=document.createElement('div'); holoWrap.className='col-card-img'; cimg.classList.remove('col-card-img'); cimg.style.cssText='width:100%;height:100%;display:block'; holoWrap.appendChild(cimg.cloneNode(true)); cimg.replaceWith(holoWrap); applyHoloToArt(holoWrap,cid); } }
-    el.appendChild(div);
+    const fmap=_collectionFoil[cid];
+    // Build the list of variants to show. Fall back to a single "regular" tile of
+    // the full total if this card predates per-variant tracking.
+    let variants;
+    if(fmap && Object.keys(fmap).some(v=>fmap[v]>0)){
+      variants=VARIANT_ORDER.filter(v=>(fmap[v]||0)>0).map(v=>({v,n:fmap[v]}));
+    } else {
+      variants=[{v:'none',n:total}];
+    }
+    variants.forEach(({v,n})=>{
+      const meta=VARIANT_META[v]||VARIANT_META.none;
+      const isFoil=v!=='none';
+      const div=document.createElement('div');
+      div.className='col-card-mini'+(isFoil?' col-foil':'');
+      if(isFoil) div.style.borderColor=meta.accent;
+      const imgHTML = url
+        ? '<img src="'+url+'" class="col-card-img"/>'
+        : '<div class="col-card-img" style="display:flex;align-items:center;justify-content:center;font-size:18px">'+(c.sym||'?')+'</div>';
+      div.innerHTML=imgHTML
+        +'<div style="min-width:0">'
+          +'<div class="col-card-name">'+c.name+'</div>'
+          +'<div class="col-card-count">x'+n+'</div>'
+          +(isFoil?'<div class="col-variant-tag" style="color:'+meta.accent+';border-color:'+meta.accent+'">✦ '+meta.label+'</div>'
+                  :'<div class="col-variant-tag" style="color:#6b7280;border-color:#374151">Regular</div>')
+        +'</div>';
+      // Apply the holo treatment matching THIS variant (not just best-owned).
+      if(isFoil){
+        const cimg=div.querySelector('img.col-card-img');
+        if(cimg){ const holoWrap=document.createElement('div'); holoWrap.className='col-card-img'; cimg.classList.remove('col-card-img'); cimg.style.cssText='width:100%;height:100%;display:block'; holoWrap.appendChild(cimg.cloneNode(true)); cimg.replaceWith(holoWrap); _applyHoloStyleToWrap(holoWrap, v); }
+      }
+      div.onclick=()=>showFullCard(cid,null);
+      el.appendChild(div);
+    });
   });
+}
+// Apply a SPECIFIC holo style (not the owned-best) to a wrap — used for per-variant tiles.
+function _applyHoloStyleToWrap(wrap, style){
+  if(!wrap||!style||style==='none')return;
+  wrap.classList.add('holo-card','always-on','holo-'+style);
+  const counts={classic:4,cosmic:3,gold:3,reverse:4,ruby:5};
+  const n=counts[style]||3;
+  for(let i=1;i<=n;i++){ const l=document.createElement('div'); l.className='holo-layer holo-layer-'+i; wrap.appendChild(l); }
 }
 
 
@@ -16212,6 +16400,174 @@ function getOnlineSB(){
   return _onlineSB;
 }
 
+// ═══════════════════════════════════════════════════════
+// TRADING — realtime, friend-to-friend, per-variant.
+// Two players join a trade channel by code; each builds an offer of specific card
+// versions; both LOCK IN, then both CONFIRM, then the swap executes. Each client
+// only writes its OWN collection (RLS-safe). Ownership is re-validated at execute.
+// ═══════════════════════════════════════════════════════
+let _trade=null; // {code, role, channel, partnerName, myOffer:[], theirOffer:[], myReady, theirReady, myConfirm, theirConfirm, done}
+
+function openTradeScreen(){
+  if(!_celUserId){ alert('Sign in to trade.'); return; }
+  _trade=null;
+  document.getElementById('trade-lobby').style.display='block';
+  document.getElementById('trade-room').style.display='none';
+  showScreen('trade-screen');
+}
+function _tradeMyName(){ return document.getElementById('hud-username')?.textContent || window._username || 'Player'; }
+
+function createTrade(){ const code=generateRoomCode(); _enterTrade(code,'host'); }
+function joinTrade(){
+  const code=(document.getElementById('trade-join-code')?.value||'').trim().toUpperCase();
+  if(code.length<4){ alert('Enter a valid trade code.'); return; }
+  _enterTrade(code,'guest');
+}
+function _enterTrade(code, role){
+  const sb=getOnlineSB();
+  _trade={code,role,channel:null,partnerName:null,myOffer:[],theirOffer:[],myReady:false,theirReady:false,myConfirm:false,theirConfirm:false,done:false};
+  const ch=sb.channel('trade:'+code,{config:{broadcast:{self:false}}});
+  ch.on('broadcast',{event:'hello'},(p)=>{
+      if(!_trade)return;
+      _trade.partnerName=p.payload?.name||'Partner';
+      // reply so the newcomer learns our name + current offer
+      _tradeSend('hello_ack',{name:_tradeMyName()});
+      _tradeSend('offer',{offer:_trade.myOffer});
+      _renderTrade();
+    })
+    .on('broadcast',{event:'hello_ack'},(p)=>{ if(!_trade)return; _trade.partnerName=p.payload?.name||'Partner'; _renderTrade(); })
+    .on('broadcast',{event:'offer'},(p)=>{ if(!_trade)return; _trade.theirOffer=p.payload?.offer||[]; _resetReady(); _renderTrade(); })
+    .on('broadcast',{event:'ready'},(p)=>{ if(!_trade)return; _trade.theirReady=!!p.payload?.ready; _renderTrade(); })
+    .on('broadcast',{event:'confirm'},(p)=>{ if(!_trade)return; _trade.theirConfirm=true; _maybeExecuteTrade(); _renderTrade(); })
+    .on('broadcast',{event:'cancel'},(p)=>{ if(!_trade)return; if(_trade.done)return; alert('Your partner cancelled the trade.'); _teardownTrade(); openTradeScreen(); })
+    .subscribe((status)=>{ if(status==='SUBSCRIBED'){ _tradeSend('hello',{name:_tradeMyName()}); } });
+  _trade.channel=ch;
+  document.getElementById('trade-lobby').style.display='none';
+  document.getElementById('trade-room').style.display='block';
+  document.getElementById('trade-code-display').textContent=code;
+  _renderTrade();
+}
+function _tradeSend(event,payload){ try{ _trade&&_trade.channel&&_trade.channel.send({type:'broadcast',event,payload:payload||{}}); }catch(e){} }
+function _resetReady(){ if(!_trade)return; _trade.myReady=false;_trade.theirReady=false;_trade.myConfirm=false;_trade.theirConfirm=false; }
+
+function _offerCount(offer,cid,variant){ const e=offer.find(o=>o.cid===cid&&o.variant===variant); return e?e.n:0; }
+function openTradeAddPicker(){
+  if(!_trade)return;
+  // Build list of owned variants with remaining (owned − already offered).
+  const rows=[];
+  Object.keys(_collection).forEach(cid=>{
+    if(!DB[cid])return;
+    VARIANT_ORDER.forEach(v=>{
+      const owned=variantCount(cid,v); if(owned<=0)return;
+      const remaining=owned-_offerCount(_trade.myOffer,cid,v);
+      if(remaining<=0)return;
+      rows.push({cid,variant:v,remaining});
+    });
+  });
+  rows.sort((a,b)=>(DB[a.cid]?.name||'').localeCompare(DB[b.cid]?.name||'')|| (a.variant>b.variant?1:-1));
+  const body=document.createElement('div');
+  body.innerHTML='<div style="font-size:11px;color:#9ca3af;margin-bottom:8px">Pick a card version to add to your offer:</div>';
+  if(!rows.length){ body.innerHTML+='<div style="color:#6b7280;font-size:11px;padding:12px;text-align:center">No cards available to offer.</div>'; }
+  const list=document.createElement('div'); list.style.cssText='display:flex;flex-direction:column;gap:5px;max-height:55vh;overflow-y:auto';
+  rows.forEach(r=>{
+    const c=DB[r.cid]; const meta=VARIANT_META[r.variant]||VARIANT_META.none; const url=getImg(r.cid);
+    const btn=document.createElement('button'); btn.className='btn-gray btn-sm'; btn.style.cssText='display:flex;align-items:center;gap:9px;padding:6px 9px;text-align:left;width:100%';
+    btn.innerHTML=(url?`<img src="${url}" style="width:24px;height:33px;object-fit:cover;border-radius:3px;flex-shrink:0"/>`:'')
+      +`<div style="flex:1;min-width:0"><div style="font-size:11px;font-weight:700;color:#e2e8f0">${c.name}</div>`
+      +`<div style="font-size:9px;color:${r.variant==='none'?'#6b7280':meta.accent}">${r.variant==='none'?'Regular':'✦ '+meta.label}</div></div>`
+      +`<span style="font-size:10px;color:#9ca3af">${r.remaining} avail</span>`;
+    btn.onclick=()=>{ closeAllModals(); _addToOffer(r.cid,r.variant); };
+    list.appendChild(btn);
+  });
+  body.appendChild(list);
+  showModalEl('🔄 Add to Offer', body);
+}
+function _addToOffer(cid,variant){
+  if(!_trade)return;
+  if(_offerCount(_trade.myOffer,cid,variant) >= variantCount(cid,variant)) return; // can't offer more than owned
+  const e=_trade.myOffer.find(o=>o.cid===cid&&o.variant===variant);
+  if(e)e.n++; else _trade.myOffer.push({cid,variant,n:1});
+  _resetReady(); _tradeSend('offer',{offer:_trade.myOffer}); _tradeSend('ready',{ready:false}); _renderTrade();
+}
+function _removeFromOffer(cid,variant){
+  if(!_trade)return;
+  const e=_trade.myOffer.find(o=>o.cid===cid&&o.variant===variant); if(!e)return;
+  e.n--; if(e.n<=0)_trade.myOffer=_trade.myOffer.filter(o=>!(o.cid===cid&&o.variant===variant));
+  _resetReady(); _tradeSend('offer',{offer:_trade.myOffer}); _tradeSend('ready',{ready:false}); _renderTrade();
+}
+function toggleTradeReady(){
+  if(!_trade)return;
+  _trade.myReady=!_trade.myReady;
+  if(!_trade.myReady){ _trade.myConfirm=false; }
+  _tradeSend('ready',{ready:_trade.myReady}); _renderTrade();
+}
+function confirmTrade(){
+  if(!_trade||!_trade.myReady||!_trade.theirReady)return;
+  _trade.myConfirm=true; _tradeSend('confirm',{}); _maybeExecuteTrade(); _renderTrade();
+}
+function _maybeExecuteTrade(){
+  if(!_trade||_trade.done)return;
+  if(!(_trade.myConfirm&&_trade.theirConfirm))return;
+  // Re-validate ownership of everything I'm giving.
+  for(const o of _trade.myOffer){ if(variantCount(o.cid,o.variant) < o.n){ alert('Trade aborted — you no longer own '+(DB[o.cid]?.name||o.cid)+'.'); leaveTrade(); return; } }
+  _trade.done=true;
+  _trade.myOffer.forEach(o=>removeVariantFromCollection(o.cid,o.variant,o.n));
+  _trade.theirOffer.forEach(o=>addVariantToCollection(o.cid,o.variant,o.n));
+  recomputeHoloOwned();
+  saveCollection(); saveCollectionFoil(); saveHoloOwned();
+  const msg=document.getElementById('trade-status-msg'); if(msg){ msg.textContent='✓ Trade complete! Cards added to your collection.'; msg.style.color='#86efac'; }
+  if(typeof renderProfileCollection==='function')renderProfileCollection();
+  setTimeout(()=>{ _teardownTrade(); alert('✓ Trade complete!'); showScreen('menu-screen'); },1400);
+}
+function leaveTrade(){
+  if(_trade&&!_trade.done){ _tradeSend('cancel',{}); }
+  _teardownTrade();
+}
+function _teardownTrade(){
+  if(_trade&&_trade.channel){ try{ getOnlineSB().removeChannel(_trade.channel); }catch(e){} }
+  _trade=null;
+}
+function _offerRowsHTML(offer,mine){
+  if(!offer||!offer.length) return '<div class="trade-offer-empty">No cards offered yet.</div>';
+  return offer.map(o=>{
+    const c=DB[o.cid]||{}; const meta=VARIANT_META[o.variant]||VARIANT_META.none; const url=getImg(o.cid);
+    const isFoil=o.variant!=='none';
+    return '<div class="trade-offer-row">'
+      +'<div class="trade-offer-art">'+(url?`<img src="${url}"/>`:'')+'</div>'
+      +'<div class="trade-offer-info"><div class="trade-offer-name">'+c.name+(o.n>1?' ×'+o.n:'')+'</div>'
+        +'<span class="trade-offer-tag" style="color:'+(isFoil?meta.accent:'#6b7280')+';border-color:'+(isFoil?meta.accent:'#374151')+'">'+(isFoil?'✦ '+meta.label:'Regular')+'</span></div>'
+      +(mine?'<button class="btn-gray btn-sm" style="padding:3px 8px" onclick="_removeFromOffer(\''+o.cid+'\',\''+o.variant+'\')">−</button>':'')
+    +'</div>';
+  }).join('');
+}
+function _renderTrade(){
+  if(!_trade)return;
+  const partner=_trade.partnerName||'Partner';
+  document.getElementById('trade-partner-name').textContent=partner;
+  document.getElementById('trade-partner-status').textContent=_trade.partnerName?('Connected with '+partner):'Waiting for partner to join…';
+  document.getElementById('trade-my-offer').innerHTML=_offerRowsHTML(_trade.myOffer,true);
+  document.getElementById('trade-their-offer').innerHTML=_offerRowsHTML(_trade.theirOffer,false);
+  document.getElementById('trade-my-ready-tag').style.display=_trade.myReady?'inline-block':'none';
+  document.getElementById('trade-their-ready-tag').style.display=_trade.theirReady?'inline-block':'none';
+  const readyBtn=document.getElementById('trade-ready-btn');
+  readyBtn.textContent=_trade.myReady?'✓ LOCKED — EDIT OFFER':'LOCK IN MY OFFER';
+  readyBtn.style.opacity=_trade.partnerName?'1':'.5';
+  readyBtn.disabled=!_trade.partnerName;
+  const confirmBtn=document.getElementById('trade-confirm-btn');
+  const bothReady=_trade.myReady&&_trade.theirReady;
+  confirmBtn.style.display=bothReady?'inline-block':'none';
+  confirmBtn.disabled=_trade.myConfirm;
+  confirmBtn.textContent=_trade.myConfirm?'✓ CONFIRMED — WAITING…':'✓ CONFIRM TRADE';
+  const msg=document.getElementById('trade-status-msg');
+  if(msg && !_trade.done){
+    if(!_trade.partnerName) msg.textContent='Share the code above with your trade partner.';
+    else if(!bothReady) msg.textContent='Both players must lock in their offers.';
+    else if(_trade.myConfirm&&!_trade.theirConfirm) msg.textContent='Waiting for '+partner+' to confirm…';
+    else if(!_trade.myConfirm) msg.textContent='Both locked in — confirm to complete the swap.';
+    msg.style.color='#9ca3af';
+  }
+}
+
 function generateRoomCode(){
   const chars='ABCDEFGHJKLMNPQRSTUVWXYZ';
   let code='';
@@ -16338,11 +16694,12 @@ function subscribeToRoom(code){
     .on('broadcast',{event:'player_joined'},(payload)=>{
       console.log('[ROOM] player_joined received:',payload.payload);
       if(_onlineRole==='host'){
-        const {guest_name,guest_id,guest_deck,guest_avatar,guest_deck_cards}=payload.payload;
+        const {guest_name,guest_id,guest_deck,guest_avatar,guest_deck_cards,guest_deck_foils}=payload.payload;
         if(guest_avatar)_onlineOpponentAvatar=guest_avatar;
         if(guest_name)window._onlineOpponentName=guest_name;
         _onlineRoom={..._onlineRoom,guest_id,guest_name,guest_deck,status:'ready'};
         if(Array.isArray(guest_deck_cards)&&guest_deck_cards.length){ _onlineRoom.guest_deck_cards=guest_deck_cards; }
+        if(Array.isArray(guest_deck_foils)&&guest_deck_foils.length){ _onlineRoom.guest_deck_foils=guest_deck_foils; }
         const _is2v2 = _onlineRoom && (_onlineRoom.is_2v2 || _onlineRoom.game_mode==='2v2');
         const p2slot=document.getElementById('lobby-player-2-slot');
         if(p2slot){
@@ -16422,6 +16779,7 @@ function subscribeToRoom(code){
             _onlineChannel.send({type:'broadcast',event:'player_joined',payload:{
               guest_id:_celUserId,guest_name:myName,guest_deck:_onlineDeckId,
               guest_deck_cards:(SAVED_DECKS[_onlineDeckId]?.cards||null),
+              guest_deck_foils:(getDeckFoils(_onlineDeckId)||null),
               guest_avatar:(window._playerAvatarUrl||null)
             }});
           },500);
@@ -16484,9 +16842,13 @@ function enterOnlineGame(room){
   if(isHost){
     // HOST builds the authoritative game state
     const hostDeckCards=SAVED_DECKS[room.host_deck]?.cards?[...SAVED_DECKS[room.host_deck].cards]:generateRandomDeck();
-    const guestDeckCards=SAVED_DECKS[room.guest_deck]?.cards?[...SAVED_DECKS[room.guest_deck].cards]:generateRandomDeck();
+    const guestDeckCards=(Array.isArray(room.guest_deck_cards)&&room.guest_deck_cards.length)
+      ? [...room.guest_deck_cards]
+      : (SAVED_DECKS[room.guest_deck]?.cards?[...SAVED_DECKS[room.guest_deck].cards]:generateRandomDeck());
+    const hostFoils=getDeckFoils(room.host_deck);
+    const guestFoils=(Array.isArray(room.guest_deck_foils)&&room.guest_deck_foils.length)?room.guest_deck_foils:null;
     console.log('[ONLINE] HOST building game. hostDeck='+hostDeckCards.length+' guestDeck='+guestDeckCards.length);
-    startGame('online', hostDeckCards, guestDeckCards);
+    startGame('online', hostDeckCards, guestDeckCards, hostFoils, guestFoils);
     G.players[1].name=room.host_name+' (You)';
     G.players[2].name=(room.guest_name||'Opponent')+' (Opponent)';
     G.onlineMode=true;
@@ -19176,6 +19538,7 @@ window.addEventListener('load',async()=>{
       await loadCardSets();
       await loadNewsSlides();
       await loadHoloOwned();
+      await loadCollectionFoil();
       await loadAdminHoloMode();
       updateAdminBadge();
       applyAdminToggleEffects();
@@ -19782,6 +20145,56 @@ window.addEventListener('load',async()=>{
       </div>
     </div>
     <div id="friend-search-results"></div>
+  </div>
+</div>
+
+<!-- TRADE SCREEN -->
+<div id="trade-screen" class="screen" style="padding:62px 32px 24px;max-width:1100px;margin:0 auto">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+    <button class="btn-gray btn-sm" onclick="leaveTrade();showScreen('menu-screen')">← Back</button>
+    <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:#f0abfc;text-shadow:0 0 10px #f0abfc">🔄 TRADE</div>
+  </div>
+
+  <!-- Lobby: create / join -->
+  <div id="trade-lobby">
+    <div style="font-size:11px;color:#9ca3af;letter-spacing:1px;margin-bottom:16px;line-height:1.6">Trade specific card versions with a friend. One of you creates a trade and shares the code; the other joins it. Both pick what to offer, both lock in, both confirm — then the cards swap.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:640px">
+      <div class="trade-lobby-card">
+        <div class="trade-lobby-title">CREATE A TRADE</div>
+        <div style="font-size:10px;color:#9ca3af;margin-bottom:12px">Generates a code to share with your trade partner.</div>
+        <button class="btn-primary btn-sm" style="width:100%" onclick="createTrade()">▸ CREATE TRADE</button>
+      </div>
+      <div class="trade-lobby-card">
+        <div class="trade-lobby-title">JOIN A TRADE</div>
+        <input id="trade-join-code" class="admin-input" placeholder="Enter trade code" style="width:100%;text-transform:uppercase;margin-bottom:10px"/>
+        <button class="btn-primary btn-sm" style="width:100%" onclick="joinTrade()">▸ JOIN TRADE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active trade room -->
+  <div id="trade-room" style="display:none">
+    <div class="trade-room-head">
+      <div>Trade code: <b id="trade-code-display" style="color:#f0abfc;letter-spacing:2px"></b></div>
+      <div id="trade-partner-status" style="font-size:11px;color:#9ca3af">Waiting for partner…</div>
+      <button class="btn-gray btn-sm" onclick="leaveTrade()">✕ Cancel Trade</button>
+    </div>
+    <div class="trade-panels">
+      <div class="trade-panel">
+        <div class="trade-panel-title">YOUR OFFER <span id="trade-my-ready-tag" class="trade-ready-tag" style="display:none">✓ READY</span></div>
+        <div id="trade-my-offer" class="trade-offer-list"></div>
+        <button class="btn-gray btn-sm" style="width:100%;margin-top:8px" onclick="openTradeAddPicker()">+ Add a card</button>
+      </div>
+      <div class="trade-panel">
+        <div class="trade-panel-title"><span id="trade-partner-name">Partner</span>'S OFFER <span id="trade-their-ready-tag" class="trade-ready-tag" style="display:none">✓ READY</span></div>
+        <div id="trade-their-offer" class="trade-offer-list"></div>
+      </div>
+    </div>
+    <div class="trade-actions">
+      <button id="trade-ready-btn" class="btn-primary" onclick="toggleTradeReady()">LOCK IN MY OFFER</button>
+      <button id="trade-confirm-btn" class="btn-primary" style="display:none;background:rgba(34,197,94,.15);border-color:#22c55e;color:#86efac" onclick="confirmTrade()">✓ CONFIRM TRADE</button>
+    </div>
+    <div id="trade-status-msg" style="text-align:center;font-size:11px;color:#9ca3af;margin-top:10px;min-height:16px"></div>
   </div>
 </div>
 
