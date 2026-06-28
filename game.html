@@ -768,7 +768,7 @@ body{padding-top:46px;}
 .pack-card-reveal{position:relative;width:96px;aspect-ratio:5/7;background:rgba(8,8,28,.8);border:2px solid var(--border-v);border-radius:8px;overflow:hidden;transform:scale(.2);opacity:0;transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s;display:flex;align-items:center;justify-content:center;}
 .pack-card-reveal.revealed{transform:scale(1);opacity:1;}
 .pack-card-reveal img{width:100%;height:100%;object-fit:cover;}
-.pack-card-reveal.foil-holo,.pack-card-reveal.foil-reverse{box-shadow:0 0 16px var(--rc-glow,#a855f7);}
+.pack-card-reveal.foil-holo,.pack-card-reveal.foil-reverse,.pack-card-reveal.foil-classic,.pack-card-reveal.foil-cosmic,.pack-card-reveal.foil-gold,.pack-card-reveal.foil-ruby{box-shadow:0 0 16px var(--rc-glow,#a855f7);}
 .pack-card-reveal .pcr-foil{position:absolute;inset:0;background:linear-gradient(125deg,transparent 35%,rgba(255,255,255,.5) 50%,transparent 65%);background-size:300% 300%;animation:pack-shine 2.6s linear infinite;mix-blend-mode:screen;pointer-events:none;}
 .pack-card-reveal .pcr-new{position:absolute;top:4px;right:4px;font-size:7px;font-weight:800;letter-spacing:.5px;color:#052e16;background:#4ade80;padding:2px 4px;border-radius:4px;z-index:6;line-height:1;box-shadow:0 1px 4px rgba(0,0,0,.5);}
 .pack-card-reveal .pcr-tag{position:absolute;bottom:0;left:0;right:0;font-size:7px;text-align:center;letter-spacing:1px;font-family:'Orbitron',sans-serif;padding:2px 0;}
@@ -14785,7 +14785,10 @@ function addCardToCollection(cid, foil){
   // No collection cap — players can collect unlimited copies for future trading.
   // The 4-copy limit only applies when building decks (enforced in deck builder).
   // Determine the exact variant: 'none', 'reverse', or a rarity holo (classic/cosmic/gold).
-  const variant = (!foil||foil==='none') ? 'none' : (foil==='reverse' ? 'reverse' : holoStyleForRarity(getRarity(cid)));
+  // foil may be a concrete variant ('reverse'/'classic'/'cosmic'/'gold'/'ruby'),
+  // 'none', or legacy 'holo' (mapped by rarity).
+  const variant = (!foil||foil==='none') ? 'none'
+    : (VARIANT_META[foil] ? foil : holoStyleForRarity(getRarity(cid)));
   if(!_collectionFoil[cid]) _collectionFoil[cid]={};
   _collectionFoil[cid][variant]=(_collectionFoil[cid][variant]||0)+1;
   _collection[cid]=(_collection[cid]||0)+1; // running total across all variants
@@ -15399,15 +15402,27 @@ const PACK_ART='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Sc
 const PACK_SETS={basic:'base_set', premium:'base_set', event:'base_set'};
 
 function _packPool(setId){
-  // Obtainable cards for a SET's packs: scoped to that setId. No tokens/forms/system,
-  // no energy (slot 8), no heralds (special/auto), no promos. Respects disabled cards.
-  return getCardPool().filter(id=>{
+  // Obtainable cards for a SET's packs (scoped to setId, override-aware). Includes
+  // transform forms now, so they can be collected. Excludes tokens/system, energy
+  // (slot 8), heralds (their own slot 10 chance), promos, and disabled cards.
+  return Object.keys(DB).filter(id=>{
     const c=DB[id];
-    if(!c) return false;
+    if(!c||c.isToken||c.type==='token'||c.type==='system') return false;
     if(c.type==='energy_card'||c.type==='herald') return false;
+    if(!isCardPlayable(id)) return false; // disabled gate (admin sees all)
     const cset = (typeof getCardSet==='function') ? getCardSet(id) : (c.setId||'');
     if(cset==='promo') return false;
-    if(setId && cset!==setId) return false;  // ← scope to this pack's set (override-aware)
+    if(setId && cset!==setId) return false;  // scope to this pack's set
+    return true;
+  });
+}
+function _heraldPool(setId){
+  return Object.keys(DB).filter(id=>{
+    const c=DB[id]; if(!c||c.type!=='herald') return false;
+    if(!isCardPlayable(id)) return false;
+    const cset=(typeof getCardSet==='function')?getCardSet(id):(c.setId||'');
+    if(cset==='promo') return false;
+    if(setId && cset!==setId) return false;
     return true;
   });
 }
@@ -15433,11 +15448,18 @@ function _pullOfRarity(rarity,setId){
   if(pool.length===0) pool=_packPool();   // ultimate safety net
   return _pickRandom(pool);
 }
-// Regular-holo foil style varies by rarity (purely cosmetic).
+// Regular-holo foil style varies by rarity — used only as a legacy fallback now.
 function holoStyleForRarity(rarity){
   if(rarity==='mythic') return 'gold';
   if(rarity==='legend') return 'cosmic';
   return 'classic';
+}
+// When a card becomes holo, pick WHICH finish. Any card (incl. mythics) can be any
+// holo; rarer finishes are rarer rolls. `harder` (heralds) skews toward the rare end.
+function rollHoloType(tier, harder){
+  let w = tier==='premium' ? {classic:50,cosmic:28,gold:15,ruby:7} : {classic:60,cosmic:25,gold:11,ruby:4};
+  if(harder) w = tier==='premium' ? {classic:42,cosmic:28,gold:20,ruby:10} : {classic:50,cosmic:27,gold:16,ruby:7};
+  return _weightedRarity(w);
 }
 // Build one pack → array of 10 pull objects {cid, foil:'none'|'holo'|'reverse', rarity}
 function generatePack(type, setId){
@@ -15447,16 +15469,23 @@ function generatePack(type, setId){
   for(let i=0;i<3;i++){ const cid=_pullOfRarity('uncommon',setId); pulls.push({cid,foil:'none',rarity:getRarity(cid)}); }
   // Slot 8 — always a regular Energy (universal, not set-scoped)
   { const ep=_regularEnergyPool(); const cid=_pickRandom(ep)||_pullOfRarity('common',setId); pulls.push({cid,foil:'none',rarity:getRarity(cid)}); }
-  // Slot 9 — Reverse Holo (no Mythic). Premium gets slightly better odds.
+  // Slot 9 — Reverse Holo. Any card EXCEPT mythics or heralds (heralds aren't in this pool).
   { const w = type==='premium' ? {common:38,uncommon:35,rare:22,legend:5} : {common:45,uncommon:35,rare:17,legend:3};
     const rar=_weightedRarity(w); const cid=_pullOfRarity(rar,setId); pulls.push({cid,foil:'reverse',rarity:getRarity(cid)}); }
-  // Slot 10 — guaranteed Rare+. Premium has improved odds.
-  { const w = type==='premium' ? {rare:60,legend:30,mythic:10} : {rare:75,legend:20,mythic:5};
-    const rar=_weightedRarity(w); const cid=_pullOfRarity(rar,setId); const ar=getRarity(cid);
+  // Slot 10 — guaranteed Rare+ (or, rarely, a Herald — as hard as a Mythic).
+  // The card may be Normal OR any holo finish; holos are harder, rarer finishes rarer.
+  { const w = type==='premium' ? {rare:55,legend:30,mythic:10,herald:5} : {rare:72,legend:20,mythic:5,herald:3};
+    let rar=_weightedRarity(w); let cid, ar, isHerald=false;
+    if(rar==='herald'){
+      const hp=_heraldPool(setId);
+      if(hp.length){ cid=_pickRandom(hp); ar=getRarity(cid)||'mythic'; isHerald=true; }
+      else { rar='mythic'; cid=_pullOfRarity(rar,setId); ar=getRarity(cid); }   // no heralds in set → mythic
+    } else { cid=_pullOfRarity(rar,setId); ar=getRarity(cid); }
+    // Holo chance for slot 10 (harder); heralds are even harder to come in holo.
+    let holoChance = (type==='premium'?0.45:0.30);
+    if(isHerald) holoChance *= 0.5;
     let foil='none';
-    if(ar==='mythic') foil='holo';
-    else if(ar==='legend') foil = Math.random()<0.40 ? 'holo':'none';
-    else if(ar==='rare')   foil = Math.random()<0.25 ? 'holo':'none';
+    if(Math.random()<holoChance) foil = rollHoloType(type, isHerald); // classic/cosmic/gold/ruby (never reverse)
     pulls.push({cid,foil,rarity:ar}); }
   return pulls;
 }
@@ -15560,8 +15589,23 @@ function openAnotherBox(){
 let _packState={pulls:[],idx:0,type:'basic'};
 
 function _foilTagStyle(foil){
-  if(foil==='holo')return 'background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#1a1a00';
   if(foil==='reverse')return 'background:linear-gradient(90deg,#a855f7,#3b82f6);color:#fff';
+  if(foil==='holo')return 'background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#1a1a00';
+  if(foil && foil!=='none' && VARIANT_META[foil])return 'background:'+VARIANT_META[foil].accent+';color:#0a0a18';
+  return '';
+}
+// Short tag text for a foil variant (e.g. 'RUBY', 'GOLD', 'REV HOLO').
+function _foilShort(foil){
+  if(foil==='reverse')return 'REV HOLO';
+  if(foil==='holo')return 'HOLO';
+  if(foil && foil!=='none' && VARIANT_META[foil])return VARIANT_META[foil].label.replace(' Holo','').toUpperCase();
+  return 'HOLO';
+}
+// Full foil name for the big reveal pill (e.g. 'RUBY HOLO').
+function _foilName(foil){
+  if(foil==='reverse')return 'REVERSE HOLO';
+  if(foil==='holo')return 'HOLO';
+  if(foil && foil!=='none' && VARIANT_META[foil])return VARIANT_META[foil].label.toUpperCase();
   return '';
 }
 function _holoLayersHTML(style){
@@ -15625,8 +15669,8 @@ function renderRevealCard(i){
   const url=getImg(p.cid);
   document.getElementById('reveal-counter').textContent=`${i+1} / ${pulls.length}`;
   const bigPull=p.rarity==='legend'||p.rarity==='mythic'||p.foil!=='none';
-  const holoStyle = p.foil==='reverse' ? 'reverse' : (p.foil==='holo' ? holoStyleForRarity(p.rarity) : null);
-  const foilLabel = p.foil==='reverse'?'✦ REVERSE HOLO ✦':(p.foil==='holo'?'✦ HOLO ✦':'');
+  const holoStyle = p.foil==='reverse' ? 'reverse' : (p.foil==='holo' ? holoStyleForRarity(p.rarity) : (VARIANT_META[p.foil]?p.foil:null));
+  const foilLabel = (p.foil&&p.foil!=='none') ? ('✦ '+_foilName(p.foil)+' ✦') : '';
   // Rarity pill ABOVE the card (never overlaps the art/name)
   const rarEl=document.getElementById('reveal-rarity');
   if(rarEl){ rarEl.style.setProperty('--rc-col',rDef.hex); rarEl.style.setProperty('--rc-glow',rDef.glow);
@@ -15669,7 +15713,7 @@ function _pullCellHTML(p){
     +(url?'<img src="'+url+'" alt="'+(c.name||p.cid)+'"/>':'<div class="pack-card-reveal-placeholder">'+(c.sym||'?')+'</div>')
     +(p.foil!=='none'?'<div class="pcr-foil"></div>':'')
     +(p.isNew?'<div class="pcr-new">NEW</div>':'')
-    +(p.foil!=='none'?'<div class="pcr-tag" style="'+_foilTagStyle(p.foil)+'">'+(p.foil==='reverse'?'REV HOLO':'HOLO')+'</div>':'<div class="pcr-tag" style="background:rgba(0,0,0,.7);color:'+rDef.hex+'">'+rDef.label+'</div>')
+    +(p.foil!=='none'?'<div class="pcr-tag" style="'+_foilTagStyle(p.foil)+'">'+_foilShort(p.foil)+'</div>':'<div class="pcr-tag" style="background:rgba(0,0,0,.7);color:'+rDef.hex+'">'+rDef.label+'</div>')
   +'</div>';
 }
 
@@ -15679,7 +15723,7 @@ function showBoxSummary(){
   const stage=document.getElementById('pack-stage-grid'); stage.style.display='flex';
   const pulls=_packState.pulls;
   const counts={common:0,uncommon:0,rare:0,legend:0,mythic:0}; let holos=0,revs=0,news=0;
-  pulls.forEach(p=>{ if(counts[p.rarity]!=null)counts[p.rarity]++; if(p.foil==='holo')holos++; else if(p.foil==='reverse')revs++; if(p.isNew)news++; });
+  pulls.forEach(p=>{ if(counts[p.rarity]!=null)counts[p.rarity]++; if(p.foil==='reverse')revs++; else if(p.foil&&p.foil!=='none')holos++; if(p.isNew)news++; });
   const title=stage.querySelector('.pack-open-title'); if(title)title.textContent='✨ BOOSTER BOX — '+pulls.length+' CARDS ✨';
   const statsEl=document.getElementById('pack-box-stats');
   if(statsEl){
@@ -15736,7 +15780,7 @@ function showPackGrid(){
     cell.innerHTML=(url?`<img src="${url}" alt="${c.name||p.cid}"/>`:`<div class="pack-card-reveal-placeholder">${c.sym||'?'}</div>`)
       +(p.foil!=='none'?'<div class="pcr-foil"></div>':'')
       +(p.isNew?'<div class="pcr-new">NEW</div>':'')
-      +(p.foil!=='none'?`<div class="pcr-tag" style="${_foilTagStyle(p.foil)}">${p.foil==='reverse'?'REV HOLO':'HOLO'}</div>`:`<div class="pcr-tag" style="background:rgba(0,0,0,.7);color:${rDef.hex}">${rDef.label}</div>`);
+      +(p.foil!=='none'?`<div class="pcr-tag" style="${_foilTagStyle(p.foil)}">${_foilShort(p.foil)}</div>`:`<div class="pcr-tag" style="background:rgba(0,0,0,.7);color:${rDef.hex}">${rDef.label}</div>`);
     cell.onclick=()=>showFullCard(p.cid,null);
     grid.appendChild(cell);
     setTimeout(()=>cell.classList.add('revealed'),idx*70);
@@ -15832,7 +15876,7 @@ function renderProfileCollection(){
   const el=document.getElementById('profile-collection');
   if(!el)return;
   const owned=Object.entries(_collection).filter(([cid,n])=>n>0);
-  const totalPool=getCardPool().length;
+  const totalPool=Object.keys(DB).filter(id=>{const cc=DB[id];return cc&&!cc.isToken&&cc.type!=='token'&&cc.type!=='system'&&isCardPlayable(id);}).length;
   const uniqueOwned=owned.length;
   const badge=document.getElementById('col-count-badge');
   if(badge)badge.textContent=uniqueOwned+' / '+totalPool+(isAdmin()?' (ADMIN)':'');
