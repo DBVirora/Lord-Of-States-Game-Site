@@ -13611,9 +13611,9 @@ function showScreen(id){
 function showRulesScreen(){
   const el=document.getElementById('rules-content');
   el.innerHTML=`<div style="color:#9ca3af;font-size:12px;line-height:1.9;margin-bottom:10px">
-    <b style="color:#c8a0ff">Turn:</b> Draw → Resource → Main → Attack → End<br>
-    <b style="color:#c8a0ff">Field Limits:</b> Max 9 characters · Max 4 locations (separate zone on left)<br>
-    <b style="color:#c8a0ff">Hand Limit:</b> 13 cards max — exceed it and you lose!<br>
+    <b style="color:#c8a0ff">Turn:</b> Draw → Main → Attack → End<br>
+    <b style="color:#c8a0ff">Field Limits:</b> Max 8 characters · Max 4 locations (separate zone on left)<br>
+    <b style="color:#c8a0ff">Hand Limit:</b> 12 cards max — exceed it and you lose!<br>
     <b style="color:#c8a0ff">Combat:</b> Green char → red char or yellow location.<br>
     <b style="color:#c8a0ff">Transform:</b> Base on field + next form in hand. Pay cost. 🔒 = TF Only.<br>
     <b style="color:#c8a0ff">Sacrifice:</b> 💀 Destroy your own char for ½ its cost in energy.<br>
@@ -13637,10 +13637,10 @@ function showRulesScreen(){
     <input id="rules-search" type="text" placeholder="🔍 Search cards..." oninput="filterRulesCards()"
       style="width:100%;background:#111126;border:1px solid #3a3a5c;border-radius:6px;padding:7px 10px;color:#e2e8f0;font-size:12px;font-family:inherit;outline:none;margin-bottom:8px"/>
     <div style="display:flex;flex-wrap:wrap;gap:4px" id="rules-filter-btns">
-      ${['all','herald','energy_card','base_char','char','location','equipment','instant','token'].map(t=>`
+      ${['all','herald','energy_card','base_char','char','transform','location','equipment','instant','token'].map(t=>`
         <button onclick="setRulesFilter('${t}')" data-rfilter="${t}"
           style="background:${t==='all'?'#7c3aed':'#1e1e3a'};border:1px solid ${t==='all'?'#a855f7':'#3a3a5c'};border-radius:5px;padding:3px 9px;font-size:10px;color:${t==='all'?'#fff':'#9ca3af'};cursor:pointer;font-family:inherit;letter-spacing:.3px">
-          ${({all:'All',herald:'👑 Heralds',energy_card:'⚡ Energy',base_char:'Base Chars',char:'Characters',location:'Locations',equipment:'Equipment',instant:'Instants',token:'Tokens'})[t]}
+          ${({all:'All',herald:'👑 Heralds',energy_card:'⚡ Energy',base_char:'Base Chars',char:'Characters',transform:'🔄 Transformations',location:'Locations',equipment:'Equipment',instant:'Instants',token:'Tokens'})[t]}
         </button>`).join('')}
     </div>
   </div>
@@ -13701,7 +13701,7 @@ function filterRulesCards(){
   rulesSearch=(document.getElementById('rules-search')?.value||'').toLowerCase();
   const grid=document.getElementById('rules-card-grid');if(!grid)return;
   let cards=Object.values(DB).filter(c=>isCardPlayable(c.id));
-  if(rulesFilter!=='all') cards=cards.filter(c=>c.type===rulesFilter);
+  if(rulesFilter!=='all') cards=cards.filter(c=>(c.transformOnly?'transform':c.type)===rulesFilter);
   if(rulesSearch) cards=cards.filter(c=>
     c.name.toLowerCase().includes(rulesSearch)||
     (c.race||'').toLowerCase().includes(rulesSearch)||
