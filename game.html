@@ -7513,13 +7513,18 @@ function renderBuilderCards(){
     if(colDef){row.style.borderColor=borderCol;row.style.boxShadow='0 0 5px '+borderCol+'44';}
     const url=getImg(c.id);
     row.innerHTML=`<div class="db-thumb" style="${colDef?'border:1px solid '+colDef.hex+';':''};cursor:zoom-in;position:relative" onclick="event.stopPropagation();showFullCard('${c.id}',null)" title="Click to view">${url?`<img src="${url}"/>`:(c.sym||'?')}${ownedHolo?`<div class="holo-thumb-glow holo-thumb-${ownedHolo}"></div>`:''}</div>
-      <div style="flex:1;min-width:0;cursor:pointer" onclick="event.stopPropagation();addCardToBuilder('${c.id}')">
-        <div style="font-size:11px;font-weight:700;color:#c8a0ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:3px">${colDef?`<span style="width:6px;height:6px;border-radius:50%;background:${colDef.hex};flex-shrink:0"></span>`:''} ${c.name} ${holoBadge}</div>
-        <div style="font-size:10px;color:#6b7280">${c.type.replace('_',' ')}·⚡${c.cost}${colDef?` · <span style="color:${colDef.hex}">${colDef.label}</span>`:''}${getRarity(c.id)?` · <span class="rarity-text rarity-${getRarity(c.id)}">${RARITY_DEFS[getRarity(c.id)]?.label||''}</span>`:''}</div>
-        ${c.atk>0?`<div style="font-size:10px;color:#fbbf24">⚔${c.atk}♥${c.hp}</div>`:''}
-        ${c.transformOnly?'<div style="font-size:9px;color:#f59e0b">🔒 TF Only</div>':''}
-        ${c.keywords?.length?`<div>${c.keywords.map(kw=>KEYWORDS[kw]?`<span class="kw-badge ${KEYWORDS[kw].cls}">${KEYWORDS[kw].label}</span>`:'').join('')}</div>`:''}
-        ${ownedFoils.length?`<div class="db-foil-chips">`+ownedFoils.map(v=>`<button class="db-foil-chip" style="color:${VARIANT_META[v].accent};border-color:${VARIANT_META[v].accent}" onclick="event.stopPropagation();addCardToBuilder('${c.id}','${v}')" title="Add your ${VARIANT_META[v].label}">✦ ${VARIANT_META[v].label.replace(' Holo','')} (${adminHasUnlimitedCards()?'∞':variantCount(c.id,v)})</button>`).join('')+`</div>`:''}
+      <div style="flex:1;min-width:0">
+        <div style="cursor:pointer" onclick="addCardToBuilder('${c.id}','none')" title="Add a regular copy">
+          <div style="font-size:11px;font-weight:700;color:#c8a0ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:3px">${colDef?`<span style="width:6px;height:6px;border-radius:50%;background:${colDef.hex};flex-shrink:0"></span>`:''} ${c.name} ${holoBadge}</div>
+          <div style="font-size:10px;color:#6b7280">${c.type.replace('_',' ')}·⚡${c.cost}${colDef?` · <span style="color:${colDef.hex}">${colDef.label}</span>`:''}${getRarity(c.id)?` · <span class="rarity-text rarity-${getRarity(c.id)}">${RARITY_DEFS[getRarity(c.id)]?.label||''}</span>`:''}</div>
+          ${c.atk>0?`<div style="font-size:10px;color:#fbbf24">⚔${c.atk}♥${c.hp}</div>`:''}
+          ${c.transformOnly?'<div style="font-size:9px;color:#f59e0b">🔒 TF Only</div>':''}
+          ${c.keywords?.length?`<div>${c.keywords.map(kw=>KEYWORDS[kw]?`<span class="kw-badge ${KEYWORDS[kw].cls}">${KEYWORDS[kw].label}</span>`:'').join('')}</div>`:''}
+        </div>
+        <div class="db-foil-chips">
+          <button class="db-foil-chip" style="color:#9ca3af;border-color:#374151" onclick="addCardToBuilder('${c.id}','none')" title="Add a regular copy">+ Regular</button>
+          ${ownedFoils.map(v=>`<button class="db-foil-chip" style="color:${VARIANT_META[v].accent};border-color:${VARIANT_META[v].accent}" onclick="addCardToBuilder('${c.id}','${v}')" title="Add your ${VARIANT_META[v].label}">✦ ${VARIANT_META[v].label.replace(' Holo','')} (${adminHasUnlimitedCards()?'∞':variantCount(c.id,v)})</button>`).join('')}
+        </div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0">
         <button onclick="event.stopPropagation();showFullCard('${c.id}',null)"
@@ -7527,7 +7532,6 @@ function renderBuilderCards(){
           title="View card">👁</button>
         <div class="db-count-badge">${count}/${c.type==='herald'?1:4}</div>
       </div>`;
-    row.onclick=()=>addCardToBuilder(c.id);
     row.oncontextmenu=e=>{e.preventDefault();showFullCard(c.id,null);};
     pool.appendChild(row);
   });
@@ -13026,10 +13030,10 @@ async function loadAdminHoloMode(){
 function buildHoloBadge(style){
   if(!style) return '';
   const labels = {
-    classic:  {icon:'🌈', name:'HOLO',     cls:'classic'},
+    classic:  {icon:'🌈', name:'CLASSIC',  cls:'classic'},
     cosmic:   {icon:'✨', name:'COSMIC',   cls:'cosmic'},
     gold:     {icon:'👑', name:'GOLD',     cls:'gold'},
-    reverse:  {icon:'💎', name:'CRYSTAL',  cls:'reverse'},
+    reverse:  {icon:'💎', name:'REVERSE',  cls:'reverse'},
     ruby:     {icon:'❤️‍🔥', name:'RUBY',  cls:'ruby'}
   };
   const def = labels[style];
