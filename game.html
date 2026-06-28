@@ -736,32 +736,55 @@ body{padding-top:46px;}
 @keyframes prompt-blink{0%,100%{opacity:.55}50%{opacity:1}}
 @keyframes pack-tear{0%{transform:scale(1) rotate(0)}40%{transform:scale(1.12) rotate(-3deg)}70%{transform:scale(1.18) rotate(2deg)}100%{transform:scale(2.2) rotate(0);opacity:0}}
 /* Reveal stage */
-.reveal-counter{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:4px;color:#cbd5e1;opacity:.85;}
-.reveal-stage{position:relative;width:300px;max-width:80vw;aspect-ratio:5/7;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.reveal-card{position:absolute;width:100%;height:100%;border-radius:12px;overflow:visible;}
-.reveal-card .rc-inner{width:100%;height:100%;border-radius:12px;overflow:hidden;position:relative;animation:rc-in .55s cubic-bezier(.2,1.3,.4,1) both;box-shadow:0 0 0 2px var(--rc-col,#475569),0 0 28px var(--rc-glow,transparent);}
+.reveal-counter{font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:5px;color:#94a3b8;opacity:.9;}
+.reveal-rarity{display:flex;align-items:center;gap:8px;min-height:26px;}
+.rev-rar-pill{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:4px;padding:4px 16px;border-radius:20px;background:rgba(0,0,0,.45);border:1.5px solid;animation:rar-pill-in .4s ease both;}
+.rev-new-pill{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:800;letter-spacing:1px;color:#052e16;background:#4ade80;padding:3px 8px;border-radius:20px;box-shadow:0 0 10px rgba(74,222,128,.5);}
+.reveal-foil{min-height:22px;display:flex;align-items:center;}
+.rev-foil-pill{font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:3px;padding:3px 14px;border-radius:20px;animation:rar-pill-in .5s .1s ease both;}
+@keyframes rar-pill-in{0%{transform:translateY(-8px) scale(.85);opacity:0}100%{transform:none;opacity:1}}
+.reveal-stage{position:relative;width:280px;max-width:78vw;aspect-ratio:5/7;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.reveal-card{position:absolute;width:100%;height:100%;border-radius:14px;overflow:visible;}
+.reveal-card .rc-inner{width:100%;height:100%;border-radius:14px;overflow:hidden;position:relative;animation:rc-in .55s cubic-bezier(.2,1.3,.4,1) both;box-shadow:0 0 0 2.5px var(--rc-col,#475569),0 14px 40px rgba(0,0,0,.6),0 0 34px var(--rc-glow,transparent);}
 .reveal-card img{width:100%;height:100%;object-fit:cover;display:block;}
-.reveal-card .rc-aura{position:absolute;inset:-30%;z-index:-1;background:radial-gradient(circle,var(--rc-glow,transparent),transparent 60%);filter:blur(26px);opacity:0;animation:rc-aura-in .8s ease forwards;}
-.reveal-card .rc-badge{position:absolute;top:8px;left:50%;transform:translateX(-50%);font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;padding:3px 10px;border-radius:10px;background:rgba(0,0,0,.65);border:1px solid var(--rc-col,#475569);color:var(--rc-col,#cbd5e1);z-index:5;white-space:nowrap;}
-.reveal-card .rc-foil-tag{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:8px;letter-spacing:2px;padding:2px 8px;border-radius:8px;z-index:5;font-family:'Orbitron',sans-serif;}
-.reveal-card .rc-new{position:absolute;top:8px;right:8px;font-size:8px;font-weight:800;letter-spacing:1px;color:#052e16;background:#4ade80;padding:2px 6px;border-radius:6px;z-index:6;}
-@keyframes rc-in{0%{transform:translateY(40px) scale(.6) rotateY(90deg);opacity:0}100%{transform:translateY(0) scale(1) rotateY(0);opacity:1}}
+.reveal-card .rc-aura{position:absolute;inset:-28%;z-index:-1;background:radial-gradient(circle,var(--rc-glow,transparent),transparent 60%);filter:blur(28px);opacity:0;animation:rc-aura-in .8s ease forwards;}
+@keyframes rc-in{0%{transform:translateY(40px) scale(.6) rotateY(80deg);opacity:0}100%{transform:translateY(0) scale(1) rotateY(0);opacity:1}}
 @keyframes rc-aura-in{to{opacity:1}}
-/* Rare-pull dramatic pop: legend/mythic/holo */
 .reveal-card.rare-pop .rc-inner{animation:rc-in .55s cubic-bezier(.2,1.3,.4,1) both, rc-shake .5s .55s ease;}
 @keyframes rc-shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px) rotate(-1deg)}40%{transform:translateX(5px) rotate(1deg)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
-.reveal-card .rc-rays{position:absolute;inset:-60%;z-index:-2;background:conic-gradient(from 0deg,transparent 0 8%,var(--rc-glow) 9% 11%,transparent 12% 20%,var(--rc-glow) 21% 23%,transparent 24%);opacity:0;animation:rc-rays-spin 9s linear infinite, rc-aura-in 1s .3s ease forwards;}
+.reveal-card .rc-rays{position:absolute;inset:-55%;z-index:-2;background:conic-gradient(from 0deg,transparent 0 8%,var(--rc-glow) 9% 11%,transparent 12% 20%,var(--rc-glow) 21% 23%,transparent 24%);opacity:0;animation:rc-rays-spin 9s linear infinite, rc-aura-in 1s .3s ease forwards;}
 @keyframes rc-rays-spin{to{transform:rotate(360deg)}}
-.reveal-controls{display:flex;gap:12px;align-items:center;}
+.reveal-controls{display:flex;gap:12px;align-items:center;margin-top:4px;}
 /* Screen flash for big pulls */
 .pack-flash{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle,var(--flash-col,#fff),transparent 70%);opacity:0;z-index:50;}
 .pack-flash.go{animation:flash-burst .6s ease-out;}
 @keyframes flash-burst{0%{opacity:0;transform:scale(.5)}30%{opacity:.85}100%{opacity:0;transform:scale(1.4)}}
-/* Grid foils */
-.pack-card-reveal.foil-holo,.pack-card-reveal.foil-reverse{box-shadow:0 0 14px var(--rc-glow,#a855f7);}
+/* Final grid */
+.pack-open-title{font-family:'Orbitron',sans-serif;font-size:18px;letter-spacing:5px;color:var(--blue);text-shadow:0 0 16px var(--blue);}
+.pack-cards-grid{display:grid;grid-template-columns:repeat(5,96px);gap:12px;max-width:none;padding:18px;background:rgba(8,8,28,.55);border-radius:14px;border:1px solid var(--border-v);justify-content:center;}
+.pack-card-reveal{position:relative;width:96px;aspect-ratio:5/7;background:rgba(8,8,28,.8);border:2px solid var(--border-v);border-radius:8px;overflow:hidden;transform:scale(.2);opacity:0;transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s;display:flex;align-items:center;justify-content:center;}
+.pack-card-reveal.revealed{transform:scale(1);opacity:1;}
+.pack-card-reveal img{width:100%;height:100%;object-fit:cover;}
+.pack-card-reveal.foil-holo,.pack-card-reveal.foil-reverse{box-shadow:0 0 16px var(--rc-glow,#a855f7);}
 .pack-card-reveal .pcr-foil{position:absolute;inset:0;background:linear-gradient(125deg,transparent 35%,rgba(255,255,255,.5) 50%,transparent 65%);background-size:300% 300%;animation:pack-shine 2.6s linear infinite;mix-blend-mode:screen;pointer-events:none;}
-.pack-card-reveal{position:relative;}
-.pack-card-reveal .pcr-tag{position:absolute;bottom:2px;left:2px;right:2px;font-size:7px;text-align:center;letter-spacing:1px;font-family:'Orbitron',sans-serif;padding:1px 0;border-radius:3px;background:rgba(0,0,0,.6);}
+.pack-card-reveal .pcr-new{position:absolute;top:4px;right:4px;font-size:7px;font-weight:800;letter-spacing:.5px;color:#052e16;background:#4ade80;padding:2px 4px;border-radius:4px;z-index:6;line-height:1;box-shadow:0 1px 4px rgba(0,0,0,.5);}
+.pack-card-reveal .pcr-tag{position:absolute;bottom:0;left:0;right:0;font-size:7px;text-align:center;letter-spacing:1px;font-family:'Orbitron',sans-serif;padding:2px 0;}
+@media (max-width:560px){ .pack-cards-grid{grid-template-columns:repeat(5,16vw);gap:6px;padding:10px} .pack-card-reveal{width:16vw} }
+/* ── SHOP: set tiles + pack tiles ── */
+.shop-section-label{font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:4px;color:#94a3b8;margin-bottom:14px;}
+.shop-packs-head{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.shop-set-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
+.shop-set-card{background:linear-gradient(160deg,rgba(30,20,60,.5),rgba(8,8,28,.6));border:1px solid var(--border-v);border-radius:14px;padding:18px;text-align:center;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.shop-set-card:hover{transform:translateY(-4px);border-color:var(--violet2);box-shadow:0 12px 34px rgba(124,58,237,.3);}
+.shop-set-art{width:120px;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;}
+.shop-set-art img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 6px 18px rgba(124,58,237,.5));}
+.shop-set-name{font-family:'Cinzel',serif;font-size:17px;letter-spacing:2px;color:#e9d5ff;}
+.shop-set-meta{font-size:10px;color:#9ca3af;letter-spacing:.5px;}
+.shop-set-enter{margin-top:6px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;color:#c4b5fd;border:1px solid var(--border-v);border-radius:8px;padding:6px 14px;}
+.shop-pack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,300px));gap:18px;justify-content:center;}
+.shop-pack-art{width:150px;aspect-ratio:1/1;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;animation:pack-float 3.5s ease-in-out infinite;}
+.shop-pack-art img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 22px rgba(124,58,237,.45));}
+.shop-pack-card.premium{border-color:rgba(251,191,36,.45);box-shadow:0 0 24px rgba(251,191,36,.12);}
 /* Collection tab */
 .col-card-mini{background:rgba(8,8,28,.6);border:1px solid var(--border-v);border-radius:7px;padding:6px;display:flex;align-items:center;gap:8px;transition:all .15s;cursor:pointer;}
 .col-card-mini:hover{border-color:var(--violet2);background:rgba(124,58,237,.1);}
@@ -14876,14 +14899,14 @@ function renderCardManagerList(){
   });
 }
 
+let _shopSet=null; // currently selected set in the Booster Packs tab (null = set list)
+
 function openShop(){
-  // Update Celestium display
   const cel=document.getElementById('shop-cel-amount');
   if(cel)cel.textContent=(_celData.celestium||0).toLocaleString();
+  _shopSet=null;
   switchShopTab('packs');
   renderSingleCardsShop();
-  // Disable buy buttons if not enough celestium
-  updateShopButtons();
 }
 
 function switchShopTab(tab){
@@ -14894,15 +14917,63 @@ function switchShopTab(tab){
     if(btn)btn.classList.toggle('active',t===tab);
     if(content)content.style.display=t===tab?'block':'none';
   });
+  if(tab==='packs')renderShopPacksTab();
   if(tab==='cards')renderSingleCardsShop();
 }
 
-function updateShopButtons(){
+// Sets available to buy packs from: non-promo sets that actually have cards.
+function purchasableSets(){
+  return (_cardSets||[]).filter(s=>s.id!=='promo' && _packPool(s.id).length>0);
+}
+
+function renderShopPacksTab(){
+  const host=document.getElementById('shop-packs-inner'); if(!host) return;
   const cel=_celData.celestium||0;
-  const basicBtn=document.getElementById('buy-basic-btn');
-  const premBtn=document.getElementById('buy-premium-btn');
-  if(basicBtn){basicBtn.disabled=cel<PACK_COSTS.basic;basicBtn.textContent=cel<PACK_COSTS.basic?'Not enough Celestium':'▸ PURCHASE';}
-  if(premBtn){premBtn.disabled=cel<PACK_COSTS.premium;premBtn.textContent=cel<PACK_COSTS.premium?'Not enough Celestium':'▸ PURCHASE';}
+  if(!_shopSet){
+    // ── Set selection ──
+    const sets=purchasableSets();
+    if(!sets.length){ host.innerHTML='<div style="text-align:center;color:#6b7280;padding:40px;font-style:italic">No sets are available yet. Assign cards to a set in the Card Manager.</div>'; return; }
+    host.innerHTML='<div class="shop-section-label">CHOOSE A SET</div>'
+      +'<div class="shop-set-grid">'
+      + sets.map(s=>{
+          const n=_packPool(s.id).length;
+          return '<div class="shop-set-card" onclick="shopPickSet(\''+s.id+'\')">'
+            +'<div class="shop-set-art"><img src="'+PACK_ART+'" alt="'+s.name+'"/></div>'
+            +'<div class="shop-set-name">'+s.name+'</div>'
+            +'<div class="shop-set-meta">'+n+' cards · Basic & Premium packs</div>'
+            +'<div class="shop-set-enter">▸ VIEW PACKS</div>'
+          +'</div>';
+        }).join('')
+      +'</div>';
+    return;
+  }
+  // ── Pack selection for the chosen set ──
+  const setNm=setLabel(_shopSet);
+  const tile=(type,name,cost,accent,desc)=>{
+    const can=cel>=cost;
+    return '<div class="shop-pack-card'+(type==='premium'?' premium':'')+'">'
+      +'<div class="shop-pack-art"><img src="'+PACK_ART+'" alt="'+name+'"/></div>'
+      +'<div class="shop-pack-name" style="color:'+accent+'">'+name+'</div>'
+      +'<div class="shop-pack-desc">'+desc+'</div>'
+      +'<div class="shop-pack-price"><img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" style="width:18px;height:18px;border-radius:50%"/><span class="shop-pack-price-num">'+cost+'</span></div>'
+      +'<button class="shop-buy-btn" '+(can?'':'disabled')+' onclick="buyPack(\''+type+'\')" style="border-color:'+accent+';color:'+(can?accent:'#6b7280')+';background:rgba(251,191,36,'+(type==='premium'?'.10':'0')+')">'+(can?'▸ PURCHASE':'Not enough Celestium')+'</button>'
+    +'</div>';
+  };
+  host.innerHTML='<div class="shop-packs-head">'
+      +'<button class="btn-gray btn-sm" onclick="shopBackToSets()">← Sets</button>'
+      +'<div class="shop-section-label" style="margin:0">'+setNm+' — BOOSTER PACKS</div>'
+    +'</div>'
+    +'<div class="shop-pack-grid">'
+      + tile('basic','BASIC PACK',PACK_COSTS.basic,'#93c5fd','10 cards · 4 Common · 3 Uncommon · 1 Energy · 1 Reverse Holo · 1 guaranteed Rare+')
+      + tile('premium','PREMIUM PACK',PACK_COSTS.premium,'#fbbf24','10 cards · same slots, improved Rare+ &amp; Holo odds')
+    +'</div>';
+}
+function shopPickSet(setId){ _shopSet=setId; renderShopPacksTab(); }
+function shopBackToSets(){ _shopSet=null; renderShopPacksTab(); }
+
+function updateShopButtons(){
+  // Re-render packs to refresh affordability/state.
+  if(_shopTab==='packs') renderShopPacksTab();
 }
 
 // ═══════════════════════════════════════════════════
@@ -14955,8 +15026,8 @@ function holoStyleForRarity(rarity){
   return 'classic';
 }
 // Build one pack → array of 10 pull objects {cid, foil:'none'|'holo'|'reverse', rarity}
-function generatePack(type){
-  const setId=PACK_SETS[type]||'base_set';
+function generatePack(type, setId){
+  setId = setId || PACK_SETS[type] || 'base_set';
   const pulls=[];
   for(let i=0;i<4;i++){ const cid=_pullOfRarity('common',setId);   pulls.push({cid,foil:'none',rarity:getRarity(cid)}); }
   for(let i=0;i<3;i++){ const cid=_pullOfRarity('uncommon',setId); pulls.push({cid,foil:'none',rarity:getRarity(cid)}); }
@@ -14980,15 +15051,15 @@ async function buyPack(type){
   const cost=PACK_COSTS[type];
   if(!cost)return;
   if(_celData.celestium<cost){alert('Not enough Celestium!');return;}
-  const setId=PACK_SETS[type]||'base_set';
+  const setId=_shopSet||PACK_SETS[type]||'base_set';
   if(_packPool(setId).length===0){alert('This set has no cards yet.');return;}
-  const pulls=generatePack(type);
+  const pulls=generatePack(type,setId);
   _celData.celestium-=cost;
   pulls.forEach(p=>{ p.isNew=!(_collection[p.cid]); addCardToCollection(p.cid, p.foil); });
   await Promise.all([saveCelestium(),saveCollection()]);
   updateCelDisplay();
   updateShopButtons();
-  showPackOpening(pulls, type);
+  showPackOpening(pulls, type, false, setId);
 }
 
 let _packState={pulls:[],idx:0,type:'basic'};
@@ -15005,14 +15076,13 @@ function _holoLayersHTML(style){
   return s;
 }
 
-function showPackOpening(pulls, type, skipPack){
-  _packState={pulls:pulls||[], idx:0, type:type||'basic'};
+function showPackOpening(pulls, type, skipPack, setId){
+  _packState={pulls:pulls||[], idx:0, type:type||'basic', setId:setId||_shopSet||'base_set'};
   const modal=document.getElementById('pack-open-modal');
   const img=document.getElementById('pack-img'); if(img)img.src=PACK_ART;
   document.getElementById('pack-stage-grid').style.display='none';
   const pw=document.getElementById('pack-wrapper'); if(pw)pw.classList.remove('tearing');
   if(skipPack){
-    // Single-card purchase — skip the pack tear, go straight to the reveal.
     document.getElementById('pack-stage-pack').style.display='none';
     document.getElementById('pack-stage-reveal').style.display='flex';
     modal.classList.add('open');
@@ -15046,21 +15116,25 @@ function renderRevealCard(i){
   document.getElementById('reveal-counter').textContent=`${i+1} / ${pulls.length}`;
   const bigPull=p.rarity==='legend'||p.rarity==='mythic'||p.foil!=='none';
   const holoStyle = p.foil==='reverse' ? 'reverse' : (p.foil==='holo' ? holoStyleForRarity(p.rarity) : null);
-  const foilLabel = p.foil==='reverse'?'✦ REVERSE HOLO':(p.foil==='holo'?'✦ HOLO':'');
+  const foilLabel = p.foil==='reverse'?'✦ REVERSE HOLO ✦':(p.foil==='holo'?'✦ HOLO ✦':'');
+  // Rarity pill ABOVE the card (never overlaps the art/name)
+  const rarEl=document.getElementById('reveal-rarity');
+  if(rarEl){ rarEl.style.setProperty('--rc-col',rDef.hex); rarEl.style.setProperty('--rc-glow',rDef.glow);
+    rarEl.innerHTML=`<span class="rev-rar-pill" style="color:${rDef.hex};border-color:${rDef.hex};box-shadow:0 0 16px ${rDef.glow}">${rDef.label}</span>`+(p.isNew?'<span class="rev-new-pill">NEW</span>':''); }
+  // Foil pill BELOW the card
+  const foilEl=document.getElementById('reveal-foil');
+  if(foilEl){ foilEl.innerHTML = foilLabel?`<span class="rev-foil-pill" style="${_foilTagStyle(p.foil)}">${foilLabel}</span>`:''; }
+  // The card — clean image only (with holo), no overlapping badges
   const stage=document.getElementById('reveal-stage'); stage.innerHTML='';
   const card=document.createElement('div');
   card.className='reveal-card'+(bigPull?' rare-pop':'');
   card.style.setProperty('--rc-col',rDef.hex);
   card.style.setProperty('--rc-glow',rDef.glow);
-  card.innerHTML=`<div class="rc-inner ${holoStyle?('holo-card always-on holo-'+holoStyle):''}">
+  card.innerHTML=`${bigPull?'<div class="rc-rays"></div>':''}<div class="rc-aura"></div>
+    <div class="rc-inner ${holoStyle?('holo-card always-on holo-'+holoStyle):''}">
       ${url?`<img src="${url}" alt="${c.name||p.cid}"/>`:`<div class="pack-card-reveal-placeholder" style="display:flex;align-items:center;justify-content:center;height:100%">${c.sym||'?'}</div>`}
       ${holoStyle?_holoLayersHTML(holoStyle):''}
-      <div class="rc-badge">${rDef.label}</div>
-      ${foilLabel?`<div class="rc-foil-tag" style="${_foilTagStyle(p.foil)}">${foilLabel}</div>`:''}
-      ${p.isNew?'<div class="rc-new">NEW</div>':''}
-    </div>
-    <div class="rc-aura"></div>
-    ${bigPull?'<div class="rc-rays"></div>':''}`;
+    </div>`;
   stage.appendChild(card);
   if(bigPull){
     const flash=document.getElementById('pack-flash');
@@ -15092,8 +15166,8 @@ function showPackGrid(){
     cell.style.borderColor=rDef.hex;
     cell.innerHTML=(url?`<img src="${url}" alt="${c.name||p.cid}"/>`:`<div class="pack-card-reveal-placeholder">${c.sym||'?'}</div>`)
       +(p.foil!=='none'?'<div class="pcr-foil"></div>':'')
-      +(p.foil!=='none'?`<div class="pcr-tag" style="${_foilTagStyle(p.foil)}">${p.foil==='reverse'?'REV HOLO':'HOLO'}</div>`:'')
-      +(p.isNew?'<div class="rc-new">NEW</div>':'');
+      +(p.isNew?'<div class="pcr-new">NEW</div>':'')
+      +(p.foil!=='none'?`<div class="pcr-tag" style="${_foilTagStyle(p.foil)}">${p.foil==='reverse'?'REV HOLO':'HOLO'}</div>`:`<div class="pcr-tag" style="background:rgba(0,0,0,.7);color:${rDef.hex}">${rDef.label}</div>`);
     cell.onclick=()=>showFullCard(p.cid,null);
     grid.appendChild(cell);
     setTimeout(()=>cell.classList.add('revealed'),idx*70);
@@ -15103,7 +15177,7 @@ function showPackGrid(){
   if(again){ const can=(_celData.celestium||0)>=cost; again.disabled=!can; again.style.opacity=can?'1':'.5'; again.textContent=`↻ OPEN ANOTHER (${cost})`; }
 }
 
-function openAnotherPack(){ const type=_packState.type; closePackOpenModal(); buyPack(type); }
+function openAnotherPack(){ const type=_packState.type; _shopSet=_packState.setId||_shopSet; closePackOpenModal(); buyPack(type); }
 
 function closePackOpenModal(){
   document.getElementById('pack-open-modal').classList.remove('open');
@@ -19086,40 +19160,9 @@ window.addEventListener('load',async()=>{
     <button class="shop-tab" id="shop-tab-events" onclick="switchShopTab('events')">🎉 EVENTS</button>
   </div>
 
-  <!-- BOOSTER PACKS TAB -->
+  <!-- BOOSTER PACKS TAB (Sets → Pack types) -->
   <div class="shop-tab-content" id="shop-content-packs">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
-      <div class="shop-pack-card">
-        <div class="shop-pack-icon">📦</div>
-        <div class="shop-pack-name">BASIC PACK</div>
-        <div class="shop-pack-desc">10 cards · 4C / 3U / 1 Energy / 1 Reverse Holo / 1 guaranteed Rare+</div>
-        <div class="shop-pack-price">
-          <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" style="width:18px;height:18px;border-radius:50%"/>
-          <span class="shop-pack-price-num">300</span>
-        </div>
-        <button class="shop-buy-btn" id="buy-basic-btn" onclick="buyPack('basic')">▸ PURCHASE</button>
-      </div>
-      <div class="shop-pack-card" style="border-color:rgba(251,191,36,.4)">
-        <div class="shop-pack-icon">💎</div>
-        <div class="shop-pack-name">PREMIUM PACK</div>
-        <div class="shop-pack-desc">10 cards · same slots, improved Rare+ & holo odds</div>
-        <div class="shop-pack-price">
-          <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" style="width:18px;height:18px;border-radius:50%"/>
-          <span class="shop-pack-price-num">850</span>
-        </div>
-        <button class="shop-buy-btn" id="buy-premium-btn" onclick="buyPack('premium')" style="border-color:#fbbf24;color:#fbbf24;background:rgba(251,191,36,.12)">▸ PURCHASE</button>
-      </div>
-      <div class="shop-pack-card" style="border-color:rgba(75,85,99,.3);opacity:.6">
-        <div class="shop-pack-icon">🎪</div>
-        <div class="shop-pack-name">EVENT PACK</div>
-        <div class="shop-pack-desc">Limited-time themed packs<br><span style="color:#fbbf24;font-size:9px">[ COMING SOON ]</span></div>
-        <div class="shop-pack-price" style="background:rgba(75,85,99,.1);border-color:rgba(75,85,99,.25)">
-          <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" style="width:18px;height:18px;border-radius:50%;filter:grayscale(1)"/>
-          <span class="shop-pack-price-num" style="color:#6b7280">650</span>
-        </div>
-        <button class="shop-buy-btn" disabled>Unavailable</button>
-      </div>
-    </div>
+    <div id="shop-packs-inner"></div>
   </div>
 
   <!-- SINGLE CARDS TAB -->
@@ -19152,7 +19195,9 @@ window.addEventListener('load',async()=>{
   <!-- Stage 1: card-by-card reveal -->
   <div id="pack-stage-reveal" class="pack-stage" style="display:none">
     <div class="reveal-counter" id="reveal-counter">1 / 10</div>
+    <div class="reveal-rarity" id="reveal-rarity"></div>
     <div class="reveal-stage" id="reveal-stage" onclick="advancePackReveal()"></div>
+    <div class="reveal-foil" id="reveal-foil"></div>
     <div class="reveal-controls">
       <button class="btn-gray btn-sm" onclick="skipPackReveal()">SKIP ▸ Reveal All</button>
       <button class="btn-primary btn-sm" id="reveal-next-btn" onclick="event.stopPropagation();advancePackReveal()">NEXT ▸</button>
