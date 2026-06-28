@@ -6575,6 +6575,7 @@ const DEFAULTS={
   najeela_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/012-150%20(Najeela%20SSJ).png',
   najeela_ssj2_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/013-150%20(Najeela%20SSJ2).png',
   najeela_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/014-150%20(Najeela%20SSG).png',
+  najeela_ssb_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/015-150%20(Najeela%20SSB).png',
   ghost_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/ghost_hulk_card%20PROMO.png',
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
   billy_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/005-150%20(Billy%20SSJ1).png',
@@ -6693,8 +6694,16 @@ const DB={
     nextForms:[],path:'saiyan',
     abilities:[{label:'Continuous Onslaught',type:'activated',cost:0,limit:'once_per_turn',text:'Flip a coin, if heads this card gains +2 Health. (May use once each turn)'}]},
   najeela_ssg_bse:{id:'najeela_ssg_bse',rarity:'rare',name:'Najeela (SSG)',color:'yellow',charName:'Najeela',charLine:'najeela',formTier:'ssg',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:6,atk:5,hp:7,sym:'SSG',transformOnly:true,setId:'base_set',cardNumber:'014/150',
-    nextForms:[],path:'god',
+    nextForms:['ssb'],path:'god',
     abilities:[{label:'God Step',type:'passive',cost:0,text:'This character cannot be targeted by opponent abilities unless they pay 2 Energy.'},{label:'Flame of Veelden',type:'passive',cost:0,text:'This character cannot be blocked by characters with lower Attack Power than it.'}]},
+  // ── Najeela (SSB) — Legend, blue+green, extends the God path (SSG → SSB). Support/healer. ──
+  najeela_ssb_bse:{id:'najeela_ssb_bse',rarity:'legend',name:'Najeela (SSB)',color:'blue',colors:['blue','green'],charName:'Najeela',charLine:'najeela',formTier:'ssb',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:8,atk:8,hp:11,sym:'SSB',transformOnly:true,setId:'base_set',cardNumber:'015/150',
+    nextForms:[],path:'god',
+    abilities:[
+      {label:"The Gift of the God's",type:'activated',cost:0,limit:'once_per_turn',text:'Once per turn, you may choose one: heal another character you control for 2, or target opponent loses 1 Energy.'},
+      {label:'Etheric Strike',type:'activated',cost:4,text:'Flip a coin. If tails, heal each of your characters for 2, then they get +1 Attack until end of turn. If heads, you gain +1 Life Point. (Cost 4 Energy)'},
+      {label:'Defensive Bond',type:'passive',cost:0,text:'Your characters cannot be returned to hand or deck by opponent effects.'}
+    ]},
   // ── Ghost Hulk (PROMO / PRM) — Legend standalone. GREEN+RED: green energy ramp + red dice damage. ──
   ghost_hulk_promo:{id:'ghost_hulk_promo',rarity:'legend',name:'Ghost Hulk',color:'green',colors:['green','red'],charName:'Ghost Hulk',subtypes:['Gamma','Spirit'],type:'char',race:'Gamma Spirit',cost:9,atk:8,hp:14,sym:'GH',setId:'promo',cardNumber:'PROMO',
     abilities:[{label:'Gamma Absorption',type:'triggered',cost:0,text:'When entering the field you gain +2 Green Energy for each card that has a cost above 5.'},{label:'Spirit of Smash',type:'activated',cost:0,limit:'once_per_turn',text:"Choose a character on your opponent's field. Roll a 5 dye, if it lands on 2 this attack does +3 damage. If it lands on 4 it does +6 damage."}]},
@@ -7640,6 +7649,12 @@ function startGame(mode,deck1,deck2){
 const TEAM_START_LIFE = 130;
 
 function teamOf(p){ return (p===1||p===3) ? 'A' : 'B'; }
+// DEFENSIVE BOND (Najeela SSB): a player's characters can't be returned to hand/deck
+// by opponent effects. Any future bounce/return effect should gate on this first.
+function hasReturnProtection(playerNum){
+  const P=G&&G.players&&G.players[playerNum]; if(!P||!P.field)return false;
+  return P.field.some(f=>{ const d=DB[f.cid]; return d&&Array.isArray(d.abilities)&&d.abilities.some(a=>a.label==='Defensive Bond'); });
+}
 // True only when board `p` belongs to the OPPOSING team of whoever is acting.
 // In 1v1 the opponent is simply player 2. Used to prevent friendly fire — A1
 // can't attack A2, B1 can't attack B2 (special board-wipe cards use other paths).
@@ -10697,6 +10712,75 @@ function activateAbility(fc,abl){
     else { resolve(coin()); }
     return;
   }
+  // ── NAJEELA SSB: The Gift of the God's — once per turn, choose one:
+  //    heal ANOTHER friendly character +2, OR a target opponent loses 1 Energy.
+  if(abl.label==="The Gift of the God's"){
+    const ap=G.activePlayer; const pl=G.players[ap];
+    if(fc.giftOfGodsTurn===G.turn){ log("The Gift of the God's: already used this turn.",'dmg'); return; }
+    closeAllModals();
+    const commit=()=>{ fc.giftOfGodsTurn=G.turn; pl.usedAbilityThisTurn=true; if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1); };
+    const doHeal=()=>{
+      const chars=pl.field.filter(f=>isChar(DB[f.cid]) && f.uid!==fc.uid);
+      if(!chars.length){ log("The Gift of the God's: no other character to heal.",'info'); return false; }
+      const heal=(t)=>{ const mx=(t.baseHP||0)+(t.hpBonus||0)+(t.passiveHp||0); t.currentHP=Math.min(mx,(t.currentHP||0)+2); log(`The Gift of the God's: ${DB[t.cid].name} heals +2 HP (now ${t.currentHP}).`,'gain'); commit(); renderAll(); };
+      if(chars.length===1){ heal(chars[0]); return true; }
+      const body=document.createElement('div');
+      body.innerHTML='<div style="font-size:11px;color:#86efac;margin-bottom:8px">Choose another character to heal +2 HP.</div>';
+      const list=document.createElement('div'); list.style.cssText='display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto';
+      chars.forEach(t=>{ const c=DB[t.cid]; const mx=(t.baseHP||0)+(t.hpBonus||0)+(t.passiveHp||0);
+        const row=document.createElement('button'); row.className='btn-gray btn-sm'; row.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:8px 10px;text-align:left;width:100%';
+        row.innerHTML=`<span style="font-weight:700;color:#e2e8f0">${c.name}</span><span style="font-size:10px;color:#86efac">${t.currentHP}/${mx}♥ → +2</span>`;
+        row.onclick=()=>{ closeAllModals(); heal(t); }; list.appendChild(row); });
+      body.appendChild(list);
+      showModalEl("✋ The Gift of the God's", body);
+      return true;
+    };
+    const doDrain=()=>{
+      const opps = (G.is2v2 ? teamPlayers(enemyTeamOf(ap)) : [ap===1?2:1]).filter(n=>G.players[n]);
+      const drain=(n)=>{ const before=G.players[n].energy||0; G.players[n].energy=Math.max(0,before-1); log(`The Gift of the God's: ${pname?pname(n):'P'+n} loses 1 Energy (${before} → ${G.players[n].energy}).`,'dmg'); commit(); renderAll(); };
+      if(opps.length===1){ drain(opps[0]); return; }
+      const body=document.createElement('div');
+      body.innerHTML='<div style="font-size:11px;color:#fca5a5;margin-bottom:8px">Choose an opponent to drain 1 Energy.</div>';
+      opps.forEach(n=>{ const row=document.createElement('button'); row.className='btn-gray btn-sm'; row.style.cssText='width:100%;margin-bottom:5px;padding:8px';
+        row.textContent=(pname?pname(n):'Player '+n)+' — '+(G.players[n].energy||0)+'⚡'; row.onclick=()=>{ closeAllModals(); drain(n); }; body.appendChild(row); });
+      showModalEl("✋ The Gift of the God's", body);
+    };
+    const body=document.createElement('div');
+    body.innerHTML='<div style="font-size:11px;color:#cbd5e1;margin-bottom:10px">Choose one:</div>';
+    const b1=document.createElement('button'); b1.className='btn-primary btn-sm'; b1.style.cssText='width:100%;margin-bottom:8px;padding:10px;text-align:left'; b1.innerHTML='💚 <b>Heal</b> another character you control for 2';
+    b1.onclick=()=>{ closeAllModals(); doHeal(); };
+    const b2=document.createElement('button'); b2.className='btn-gray btn-sm'; b2.style.cssText='width:100%;padding:10px;text-align:left'; b2.innerHTML='⚡ <b>Drain</b> — target opponent loses 1 Energy';
+    b2.onclick=()=>{ closeAllModals(); doDrain(); };
+    body.appendChild(b1); body.appendChild(b2);
+    showModalEl("✨ The Gift of the God's", body);
+    return;
+  }
+  // ── NAJEELA SSB: Etheric Strike — 4⚡. Coin: TAILS → heal all your chars 2 and
+  //    give them +1 ATK until end of turn. HEADS → gain +1 Life Point.
+  if(abl.label==='Etheric Strike'){
+    const ap=G.activePlayer; const pl=G.players[ap];
+    if(pl.energy<4){ log('Etheric Strike: need 4⚡.','dmg'); return; }
+    spendEnergy(ap,4,DB[fc.cid]?.color||null);
+    pl.usedAbilityThisTurn=true; if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    const resolve=(heads)=>{
+      if(!heads){ // TAILS — heal + buff your whole field
+        pl.field.filter(f=>isChar(DB[f.cid])).forEach(f=>{
+          const mx=(f.baseHP||0)+(f.hpBonus||0)+(f.passiveHp||0);
+          f.currentHP=Math.min(mx,(f.currentHP||0)+2);
+          f.currentATK=(f.currentATK||0)+1; f.atkBonus=(f.atkBonus||0)+1; f.ssbAtkBuff=(f.ssbAtkBuff||0)+1;
+        });
+        log('Etheric Strike: TAILS — your characters heal 2 and gain +1 Attack until end of turn.','gain');
+      } else { // HEADS — +1 Life Point
+        if(G.gameMode==='lifeforce'||G.gameMode==='combined'){ G.players[ap].lifeForce=(G.players[ap].lifeForce||0)+1; if(typeof renderLifeForce==='function')renderLifeForce(); }
+        else if(G.is2v2&&G.teamLife){ const tm=teamOf(ap); G.teamLife[tm]=(G.teamLife[tm]||0)+1; if(typeof renderTeamLife==='function')renderTeamLife(); }
+        log('Etheric Strike: HEADS — you gain +1 Life Point.','gain');
+      }
+      if(typeof recalcPassives==='function')recalcPassives();
+      renderAll();
+    };
+    if(typeof showCoinFlip==='function'){ showCoinFlip(coin(), resolve); } else { resolve(coin()); }
+    return;
+  }
   // ── DARKSPINE VIRORA: Ancient God Rasengan — 8⚡. Hit an enemy character for 8
   // damage, or target an enemy location to destroy it outright.
   if(abl.label==='Ancient God Rasengan'){
@@ -11683,6 +11767,7 @@ function endTurnFx(p){
   [1,2,3,4].forEach(pp=>{ const P=G.players[pp]; if(!P||!P.field)return; P.field.forEach(f=>{
     if(f.surfacerAtkDebuff){ f.currentATK=(f.currentATK||0)+f.surfacerAtkDebuff; f.atkBonus=(f.atkBonus||0)+f.surfacerAtkDebuff; f.surfacerAtkDebuff=0; }
     if(f.surfacerHpDebuff){ f.hpBonus=(f.hpBonus||0)+f.surfacerHpDebuff; f.currentHP=(f.currentHP||0)+f.surfacerHpDebuff; f.surfacerHpDebuff=0; }
+    if(f.ssbAtkBuff){ f.currentATK=(f.currentATK||0)-f.ssbAtkBuff; f.atkBonus=(f.atkBonus||0)-f.ssbAtkBuff; f.ssbAtkBuff=0; } // Etheric Strike +1 ATK was "until end of turn"
   }); });
   // Snapshot "attacked last turn" for the player whose turn is ending (used by
   // Saiyan Spirit etc.). Only the active player's cards can have attacked, so we
