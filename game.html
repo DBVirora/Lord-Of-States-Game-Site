@@ -7493,7 +7493,11 @@ function renderBuilderCards(){
   Object.values(DB).filter(c=>{
     if(c.isToken)return false;
     if(!isCardPlayable(c.id))return false; // gated for non-admins
-    if(filter!=='all'&&c.type!==filter)return false;
+    // Type filter. Transform forms have type:'char' + transformOnly:true, so route
+    // them to the "🔄 Transformations" tab and keep them OUT of plain "Characters".
+    if(filter==='transform'){ if(!c.transformOnly)return false; }
+    else if(filter==='char'){ if(c.type!=='char'||c.transformOnly)return false; }
+    else if(filter!=='all'&&c.type!==filter)return false;
     if(colorFilter!=='all'&&c.color!==colorFilter)return false;
     // Rarity filter
     if(rarityFilter!=='all' && getRarity(c.id)!==rarityFilter)return false;
