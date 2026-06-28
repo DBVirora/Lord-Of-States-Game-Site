@@ -14766,7 +14766,14 @@ async function openInventoryPack(key, context){
   await savePackInventory();
   renderPackInventory(); updatePackBadge();
   _shopSet=setId;
-  if(kind==='box')_openBoxNow(setId,context,key); else _openPackNow(type,setId,context,key);
+  if(kind==='box'){
+    // Legacy box item → convert into 36 packs (new boxes already grant packs directly).
+    grantPack('pack','basic',setId,BOX_PACKS);
+    await savePackInventory(); renderPackInventory(); updatePackBadge();
+    alert(BOX_PACKS+' packs were added to My Packs — open them individually.');
+    return;
+  }
+  _openPackNow(type,setId,context,key);
 }
 
 function getOwnedCount(cid){
@@ -15354,16 +15361,24 @@ function renderShopPacksTab(){
       + tile('basic','BASIC PACK',PACK_COSTS.basic,'#93c5fd','10 cards · 4 Common · 3 Uncommon · 1 Energy · 1 Reverse Holo · 1 guaranteed Rare+')
       + tile('premium','PREMIUM PACK',PACK_COSTS.premium,'#fbbf24','10 cards · same slots, improved Rare+ &amp; Holo odds')
     +'</div>'
-    +'<div class="shop-section-label" style="margin:22px 0 14px">'+setNm+' — BOOSTER BOX</div>'
+    +'<div class="shop-section-label" style="margin:22px 0 14px">'+setNm+' — BOOSTER BOXES</div>'
     +'<div class="shop-pack-grid">'
-      + (function(){ const cost=boxCost(); const can=cel>=cost; const full=(PACK_COSTS.basic||300)*BOX_PACKS;
-          return '<div class="shop-pack-card box-card">'
-            +'<div class="shop-pack-art box-art"><img src="'+PACK_ART+'" alt="Box"/><img src="'+PACK_ART+'" alt="Box"/><img src="'+PACK_ART+'" alt="Box"/></div>'
-            +'<div class="shop-pack-name" style="color:#f0abfc">BOOSTER BOX</div>'
-            +'<div class="shop-pack-desc">'+BOX_PACKS+' packs · '+(BOX_PACKS*(PACK_SIZE||10))+' cards · <span style="color:#4ade80">10% OFF</span> <span style="color:#6b7280;text-decoration:line-through">'+full+'</span></div>'
-            +'<div class="shop-pack-price"><img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" style="width:18px;height:18px;border-radius:50%"/><span class="shop-pack-price-num">'+cost+'</span></div>'
-            +'<button class="shop-buy-btn" '+(can?'':'disabled')+' onclick="buyBox()" style="border-color:#f0abfc;color:'+(can?'#f0abfc':'#6b7280')+';background:rgba(240,171,252,.08)">'+(can?'▸ PURCHASE BOX':'Not enough Celestium')+'</button>'
-          +'</div>';
+      + (function(){
+          const boxTile=(tier,name,accent,rgb)=>{
+            const cost=boxCost(tier); const can=cel>=cost; const full=boxBasePrice(tier)*BOX_PACKS;
+            const desc=BOX_PACKS+' '+(tier==='premium'?'Premium':'Basic')+' packs'
+              +(tier==='premium'?' · <span style="color:#fbbf24">better Rare+ &amp; Holo odds</span>':'')
+              +' · <span style="color:#4ade80">10% OFF</span> <span style="color:#6b7280;text-decoration:line-through">'+full+'</span>';
+            return '<div class="shop-pack-card box-card'+(tier==='premium'?' premium':'')+'">'
+              +'<div class="shop-pack-art box-art"><img src="'+PACK_ART+'" alt="Box"/><img src="'+PACK_ART+'" alt="Box"/><img src="'+PACK_ART+'" alt="Box"/></div>'
+              +'<div class="shop-pack-name" style="color:'+accent+'">'+name+'</div>'
+              +'<div class="shop-pack-desc">'+desc+'</div>'
+              +'<div class="shop-pack-price"><img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" style="width:18px;height:18px;border-radius:50%"/><span class="shop-pack-price-num">'+cost+'</span></div>'
+              +'<button class="shop-buy-btn" '+(can?'':'disabled')+' onclick="buyBox(\''+tier+'\')" style="border-color:'+accent+';color:'+(can?accent:'#6b7280')+';background:rgba('+rgb+',.08)">'+(can?'▸ PURCHASE BOX':'Not enough Celestium')+'</button>'
+            +'</div>';
+          };
+          return boxTile('basic','BOOSTER BOX','#f0abfc','240,171,252')
+               + boxTile('premium','PREMIUM BOOSTER BOX','#fbbf24','251,191,36');
         })()
     +'</div>';
 }
@@ -15463,17 +15478,33 @@ async function buyPack(type){
 
 // ── BOOSTER BOX: 36 packs, 10% off the per-pack price ──
 const BOX_PACKS=36, BOX_DISCOUNT=0.10;
-function boxCost(){ return Math.round((PACK_COSTS.basic||300)*BOX_PACKS*(1-BOX_DISCOUNT)); }
-async function buyBox(){
-  const cost=boxCost();
+function boxBasePrice(tier){ return tier==='premium'?(PACK_COSTS.premium||850):(PACK_COSTS.basic||300); }
+function boxCost(tier){ return Math.round(boxBasePrice(tier)*BOX_PACKS*(1-BOX_DISCOUNT)); }
+async function buyBox(tier){
+  tier = tier==='premium' ? 'premium' : 'basic';
+  const cost=boxCost(tier);
   if(_celData.celestium<cost){ alert('Not enough Celestium!'); return; }
   const setId=_shopSet||'base_set';
   if(_packPool(setId).length===0){ alert('This set has no cards yet.'); return; }
   _celData.celestium-=cost;
-  grantPack('box','box',setId,1);
+  // A Booster Box grants 36 unopened packs of its tier — opened individually from My Packs.
+  grantPack('pack',tier,setId,BOX_PACKS);
   await Promise.all([saveCelestium(),savePackInventory()]);
   updateCelDisplay(); updateShopButtons(); updatePackBadge();
-  promptOpenOrStore('box','box',setId);
+  const packName=packDisplayName('pack',tier,setId);
+  const key='pack|'+tier+'|'+setId;
+  const body=document.createElement('div');
+  body.style.cssText='text-align:center';
+  body.innerHTML='<div class="box-art" style="justify-content:center;margin-bottom:12px"><img src="'+PACK_ART+'" style="width:74px"/><img src="'+PACK_ART+'" style="width:74px"/><img src="'+PACK_ART+'" style="width:74px"/></div>'
+    +'<div style="font-size:14px;color:'+(tier==='premium'?'#fbbf24':'#f0abfc')+';font-family:\'Orbitron\',sans-serif;letter-spacing:1px;margin-bottom:6px">'+(tier==='premium'?'Premium ':'')+'Booster Box purchased!</div>'
+    +'<div style="font-size:11px;color:#9ca3af;margin-bottom:18px;line-height:1.5"><b style="color:#c4b5fd">'+BOX_PACKS+'× '+packName+'</b> added to <b style="color:#c4b5fd">My Packs</b> (Profile). Open them one at a time whenever you like.</div>'
+    +'<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">'
+      +'<button class="btn-primary btn-sm" id="bb-open">▸ OPEN A PACK NOW</button>'
+      +'<button class="btn-gray btn-sm" id="bb-done">DONE</button>'
+    +'</div>';
+  showModalEl('BOOSTER BOX', body);
+  body.querySelector('#bb-open').onclick=()=>{ closeAllModals(); openInventoryPack(key,'shop'); };
+  body.querySelector('#bb-done').onclick=()=>{ closeAllModals(); };
 }
 function renderPackInventory(){
   const host=document.getElementById('profile-packs'); if(!host)return;
@@ -15805,6 +15836,8 @@ function renderProfileCollection(){
   const uniqueOwned=owned.length;
   const badge=document.getElementById('col-count-badge');
   if(badge)badge.textContent=uniqueOwned+' / '+totalPool+(isAdmin()?' (ADMIN)':'');
+  const resetBtn=document.getElementById('admin-reset-collection-btn');
+  if(resetBtn)resetBtn.style.display=isAdmin()?'block':'none';
   if(!owned.length){
     el.innerHTML='<div style="font-size:11px;color:#4b5563;text-align:center;padding:20px;grid-column:1/-1">No cards collected yet.<br>Visit the Shop to buy your first booster pack!</div>';
     return;
@@ -15995,6 +16028,19 @@ async function adminGrantCelestium(){
   if(!isAdmin())return;
   await awardCelestium(1000,'Admin Grant');
   alert('✓ +1000 Celestium added.');
+}
+async function adminGrantCelestium50k(){
+  if(!isAdmin())return;
+  await awardCelestium(50000,'Admin Grant');
+  alert('✓ +50,000 Celestium added.');
+}
+async function adminResetCollection(){
+  if(!isAdmin())return;
+  if(!confirm('⚠ Zero out ALL cards you own? Your admin unlimited 4-of-each deck-building access is unaffected. This cannot be undone.'))return;
+  _collection={}; _collectionFoil={}; _holoOwned={};
+  await Promise.all([saveCollection(),saveCollectionFoil(),saveHoloOwned()]);
+  if(typeof renderProfileCollection==='function')renderProfileCollection();
+  alert('✓ Card collection reset — you now own 0 cards.');
 }
 
 async function adminUnlockAllAchievements(){
@@ -19895,6 +19941,7 @@ window.addEventListener('load',async()=>{
       <span id="col-chevron" style="color:var(--violet2);font-size:14px;transition:transform .2s">▼</span>
     </button>
     <div id="col-panel" style="display:none;background:rgba(8,8,28,.5);border:1px solid var(--border-v);border-top:none;border-radius:0 0 12px 12px;padding:12px">
+      <button id="admin-reset-collection-btn" class="admin-action-btn danger" style="display:none;margin:0 0 10px;width:100%" onclick="adminResetCollection()">⚠ RESET MY CARD COLLECTION (zero out owned cards)</button>
       <div id="profile-collection" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;max-height:320px;overflow-y:auto">
         <div style="font-size:11px;color:#4b5563;text-align:center;padding:10px;grid-column:1/-1">Loading...</div>
       </div>
@@ -20058,8 +20105,10 @@ window.addEventListener('load',async()=>{
     <div class="admin-section-title">⚡ QUICK ACTIONS</div>
 
     <button class="admin-action-btn" onclick="adminGrantCelestium()">+ GRANT YOURSELF 1000 CELESTIUM</button>
+    <button class="admin-action-btn" onclick="adminGrantCelestium50k()">+ GRANT YOURSELF 50,000 CELESTIUM</button>
     <button class="admin-action-btn" onclick="adminUnlockAllAchievements()">+ UNLOCK ALL ACHIEVEMENTS</button>
     <button class="admin-action-btn" onclick="adminGrantAllCards()">+ GRANT ALL CARDS (4 OF EACH)</button>
+    <button class="admin-action-btn danger" onclick="adminResetCollection()">⚠ RESET MY CARD COLLECTION</button>
     <button class="admin-action-btn" onclick="openCardManager()" style="border-color:rgba(232,197,112,.5);color:#fbbf24">🎴 OPEN CARD MANAGER</button>
     <div class="admin-toggle" style="display:block;margin-top:8px">
       <div style="margin-bottom:8px">
