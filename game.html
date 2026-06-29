@@ -6724,6 +6724,8 @@ const DEFAULTS={
   female_saiyan_citizen_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/040-150%20(Female%20Saiyan%20Citizen).png',
   male_saiyan_citizen_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/041-150%20(Male%20Saiyan%20Citizen).png',
   saiyan_heavy_warrior_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/042-150%20(Saiyan%20Heavy%20Warrior).png',
+  violet_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/016-150%20(Violet%20Base).png',
+  violet_base_sr_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/151-150%20(Violet%20Base)%20(Secret%20Rare).png',
   ghost_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/ghost_hulk_card%20PROMO.png',
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
   billy_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/005-150%20(Billy%20SSJ1).png',
@@ -6859,6 +6861,13 @@ const DB={
   // ── Saiyan Heavy Warrior — GREEN uncommon. On entry, buff a friendly character +2 ATK. ──
   saiyan_heavy_warrior_bse:{id:'saiyan_heavy_warrior_bse',rarity:'uncommon',name:'Saiyan Heavy Warrior',color:'green',charName:'Saiyan Heavy Warrior',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:3,atk:3,hp:3,sym:'SHW',setId:'base_set',cardNumber:'042/150',
     abilities:[{label:'Battle Hardened',type:'triggered',cost:0,text:'Upon entering the field you may choose 1 character you control to gain +2 ATK. (Once)'}]},
+  // ── VIOLET (Base) — BSE Royal Saiyan support. PURPLE. Scales HP with your Saiyan board
+  //    (Royal Amends) and has a 4⚡ targeted nuke that hits harder into bigger defenders
+  //    (Unbroken Hook). 016/150 Uncommon + 151/150 Secret Rare (Mythic alt-art chase). ──
+  violet_base_bse:{id:'violet_base_bse',rarity:'uncommon',name:'Violet',color:'purple',charName:'Violet',charLine:'violet',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:4,atk:3,hp:4,sym:'VIO',setId:'base_set',cardNumber:'016/150',
+    abilities:[{label:'Royal Amends',type:'passive',cost:0,text:'For every Saiyan you control, this card gains +1 Health.'},{label:'Unbroken Hook',type:'activated',cost:4,text:"Choose one character on your opponent's field. This attack does 3 Damage. If the character you chose has a higher Defense than Violet, this attack does 6 Damage instead. (Cost 4 Energy)"}]},
+  violet_base_sr_bse:{id:'violet_base_sr_bse',rarity:'mythic',name:'Violet',secretRare:true,color:'purple',charName:'Violet',charLine:'violet',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:4,atk:3,hp:4,sym:'VIO',setId:'base_set',cardNumber:'151/150',
+    abilities:[{label:'Royal Amends',type:'passive',cost:0,text:'For every Saiyan you control, this card gains +1 Health.'},{label:'Unbroken Hook',type:'activated',cost:4,text:"Choose one character on your opponent's field. This attack does 3 Damage. If the character you chose has a higher Defense than Violet, this attack does 6 Damage instead. (Cost 4 Energy)"}]},
   // ── Ghost Hulk (PROMO / PRM) — Legend standalone. GREEN+RED: green energy ramp + red dice damage. ──
   ghost_hulk_promo:{id:'ghost_hulk_promo',rarity:'legend',name:'Ghost Hulk',color:'green',colors:['green','red'],charName:'Ghost Hulk',subtypes:['Gamma','Spirit'],type:'char',race:'Gamma Spirit',cost:9,atk:8,hp:14,sym:'GH',setId:'promo',cardNumber:'PROMO',
     abilities:[{label:'Gamma Absorption',type:'triggered',cost:0,text:'When entering the field you gain +2 Green Energy for each card that has a cost above 5.'},{label:'Spirit of Smash',type:'activated',cost:0,limit:'once_per_turn',text:"Choose a character on your opponent's field. Roll a 5 dye, if it lands on 2 this attack does +3 damage. If it lands on 4 it does +6 damage."}]},
@@ -7772,6 +7781,11 @@ function recalcPassives(){
       // Evolved Armor (Virora SSBE): +5 HP (DEF)
       if(abils.some(a=>a.label==='Evolved Armor')){
         addH += 5;
+      }
+      // ROYAL AMENDS (Violet): this card gains +1 Health (DEF) for every Saiyan
+      // character you control (Violet herself counts). Scales with your Saiyan board.
+      if(abils.some(a=>a.label==='Royal Amends')){
+        addH += pl.field.filter(f=>isSaiyanChar(DB[f.cid])).length;
       }
       // VEELDEN KINGDOM (location anthem): your Saiyan characters get +1/+1 while
       // you control the Kingdom. Removing the location drops the buff automatically.
@@ -11298,6 +11312,35 @@ function activateAbility(fc,abl){
     }
     return;
   }
+  // ── VIOLET (Base): Unbroken Hook — pay 4⚡, strike an opponent character for 3.
+  //    If that character has MORE Defense (HP) than Violet, it strikes for 6 instead.
+  if(abl.label==='Unbroken Hook'){
+    const oppNum=G.activePlayer===1?2:1;
+    const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
+    if(!enemies.length){ log('Unbroken Hook: no opponent characters to target.','dmg'); return; }
+    if(G.players[G.activePlayer].energy<4){ log('Unbroken Hook: need 4⚡.','dmg'); return; }
+    spendEnergy(G.activePlayer,4,DB[fc.cid]?.color||null);
+    fc.abilityUsed['Unbroken Hook']=true;
+    G.players[G.activePlayer].usedAbilityThisTurn=true;
+    if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; }
+    if(G.activePlayer===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    const oppN=oppNum, myDef=fc.currentHP;
+    closeAllModals();
+    openEnemyTargetPicker(enemies,(uid)=>{
+      const tfc=G.players[oppN].field.find(f=>f.uid===uid);
+      if(tfc){
+        const tname=DB[tfc.cid].name;
+        const dmg=(tfc.currentHP>myDef)?6:3;
+        tfc.currentHP-=dmg;
+        if(typeof showDmgPopup==='function')showDmgPopup(oppN,'-'+dmg,tfc.uid);
+        log(`Unbroken Hook: ${tname} takes ${dmg} damage${dmg===6?' (higher Defense!)':''}.`,'dmg');
+        if(tfc.currentHP<=0){ killCard(oppN,tfc); }
+      }
+      if(typeof recalcPassives==='function') recalcPassives();
+      renderAll();
+    },{sourcePlayer:G.activePlayer,title:'Unbroken Hook',desc:'Choose an opponent character. Deal 3 damage — or 6 if its Defense is higher than Violet.'});
+    return;
+  }
   // ── AOLIATH (SSJ2): Exiled Hook — strike an opponent character for 2; if it
   // dies it is EXILED to the Rift Zone (not discarded, no prize/energy to them).
   if(abl.label==='Exiled Hook'){
@@ -12609,28 +12652,79 @@ function playEnergyCard(p, cid){
   if(ecIdx===-1){log('Energy Card not in hand.','dmg');return;}
   // Apply effect
   const gained=c.energyGain||1;
+  // RAINBOW / "ENERGY OF YOUR CHOICE": let the player pick WHICH color of energy
+  // to gain instead of dumping it into the colorless pool. Detected by the
+  // Multi/Rainbow subtype or a choice/rainbow/wild/prism id.
+  const isChoiceEnergy = (c.subtypes&&(c.subtypes.includes('Multi')||c.subtypes.includes('Rainbow'))) || /choice|rainbow|wild|prism/i.test(cid);
+  const humanCtrl = G.is2v2 ? (G.humanPlayers||[1]).includes(p) : (p===1);
+  if(isChoiceEnergy && humanCtrl){
+    // Ask the human for a color, THEN finish resolving the card.
+    openEnergyColorPicker(p, c, gained, (chosenColor)=>{ _finishEnergyCard(p, cid, gained, chosenColor); });
+    return;
+  }
+  // Fixed-color cards keep their printed color; AI/opponent choice-energy auto-picks.
+  let chosenColor = c.color;
+  if(isChoiceEnergy){ chosenColor = _autoPickEnergyColor(p) || 'white'; }
+  _finishEnergyCard(p, cid, gained, chosenColor);
+}
+
+// Resolve an energy card once its color is known. Handles both fixed-color cards
+// and rainbow/choice cards: adds total energy + the chosen colored bucket,
+// discards, animates and syncs online. Re-finds the card by cid so a deferred
+// color pick can't act on a stale hand index.
+function _finishEnergyCard(p, cid, gained, chosenColor){
+  const pl=G.players[p]; const c=DB[cid]; if(!pl||!c) return;
+  if(pl.energyCardPlayedThisTurn){ log('Already played an Energy Card this turn.','dmg'); return; }
+  const ecIdx=pl.hand.findIndex(fc=>fc.cid===cid);
+  if(ecIdx===-1){ log('Energy Card not in hand.','dmg'); return; }
   pl.energy+=gained;
-  // Track color energy separately for display
-  if(c.color&&c.color!=='white'){
+  if(chosenColor&&chosenColor!=='white'){
     if(!pl.colorEnergy)pl.colorEnergy={};
-    pl.colorEnergy[c.color]=(pl.colorEnergy[c.color]||0)+gained;
+    pl.colorEnergy[chosenColor]=(pl.colorEnergy[chosenColor]||0)+gained;
   }
   pl.energyCardPlayedThisTurn=true;
-  // Remove from hand — find by cid since energy cards are in hand as fc objects
   pl.hand.splice(ecIdx,1);
   if(!pl.discard)pl.discard=[];
   pl.discard.push(cid);
   log(c.name+': +'+gained+'⚡ (total: '+pl.energy+'⚡)','gain');
-  if(c.color&&COLOR_DEFS[c.color])log(COLOR_DEFS[c.color].label+' energy added!','gain');
-  // Special downside effects
+  if(chosenColor&&COLOR_DEFS[chosenColor])log(COLOR_DEFS[chosenColor].label+' energy added!','gain');
   if(c.downside) c.downside(pl,G);
-  // Show card zoom animation + sound (energy cards now get the same treatment)
   playCardZoom(cid);
   if(typeof SFX!=='undefined')SFX.energy();
   renderAll();
   if(p===1)spawnEnergyParticles(Math.max(3,gained+1));
-  // Online: broadcast the energy play so opponent sees the zoom
   if(p===1)sendGameAction('card_play',{cardId:cid});
+}
+
+// Color picker modal for rainbow / "energy of your choice" cards.
+function openEnergyColorPicker(p, c, gained, onPick){
+  const order=['red','blue','purple','black','yellow','green','white'];
+  const body=document.createElement('div');
+  body.innerHTML=`<div style="font-size:11px;color:#9ca3af;margin-bottom:10px">${c.name}: choose which color of energy to gain (+${gained}⚡).</div>`;
+  const grid=document.createElement('div');
+  grid.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:6px';
+  order.forEach(col=>{
+    const def=COLOR_DEFS[col]; if(!def) return;
+    const btn=document.createElement('button');
+    btn.className='btn-gray btn-sm';
+    btn.style.cssText=`width:100%;padding:9px 10px;text-align:left;display:flex;align-items:center;gap:8px;border-left:4px solid ${def.hex}`;
+    btn.innerHTML=`<span style="font-size:14px">${def.pip}</span><span style="font-weight:700">${def.label}</span>`;
+    btn.onclick=()=>{ closeAllModals(); onPick(col); };
+    grid.appendChild(btn);
+  });
+  body.appendChild(grid);
+  showModalEl(c.name||'Choose Energy Color', body);
+}
+
+// AI/opponent auto-pick: favor the most common non-white color in their hand
+// (so the energy is likely to be on-color for what they want to play), else white.
+function _autoPickEnergyColor(p){
+  const pl=G.players[p]; if(!pl) return 'white';
+  const counts={};
+  (pl.hand||[]).forEach(fc=>{ const d=DB[fc.cid]; if(d&&d.color&&d.color!=='white'&&d.type!=='energy_card'){ counts[d.color]=(counts[d.color]||0)+1; } });
+  let best=null,bestN=0;
+  for(const [col,n] of Object.entries(counts)){ if(n>bestN){ best=col; bestN=n; } }
+  return best||'white';
 }
 
 function resetEnergyCardFlag(p){
