@@ -756,6 +756,10 @@ body{padding-top:46px;}
 .reveal-card.rare-pop .rc-inner{animation:rc-in .55s cubic-bezier(.2,1.3,.4,1) both, rc-shake .5s .55s ease;}
 @keyframes rc-shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px) rotate(-1deg)}40%{transform:translateX(5px) rotate(1deg)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
 .reveal-card .rc-rays{position:absolute;inset:-55%;z-index:-2;background:conic-gradient(from 0deg,transparent 0 8%,var(--rc-glow) 9% 11%,transparent 12% 20%,var(--rc-glow) 21% 23%,transparent 24%);opacity:0;animation:rc-rays-spin 9s linear infinite, rc-aura-in 1s .3s ease forwards;}
+.reveal-mystic-rings{position:absolute;inset:0;z-index:6;pointer-events:none;display:flex;align-items:center;justify-content:center;}
+.reveal-mystic-rings::before,.reveal-mystic-rings::after{content:'';position:absolute;width:46%;padding-top:46%;border-radius:50%;border:2px solid var(--mystic-col,#fbbf24);opacity:0;box-shadow:0 0 26px var(--mystic-col,#fbbf24),inset 0 0 18px var(--mystic-col,#fbbf24);animation:mystic-ring 1.15s cubic-bezier(.2,.7,.3,1) forwards;}
+.reveal-mystic-rings::after{animation-delay:.2s;}
+@keyframes mystic-ring{0%{transform:scale(.35);opacity:.85}100%{transform:scale(3.4);opacity:0}}
 @keyframes rc-rays-spin{to{transform:rotate(360deg)}}
 .reveal-controls{display:flex;gap:12px;align-items:center;margin-top:4px;}
 /* Screen flash for big pulls */
@@ -8289,7 +8293,13 @@ const SFX = {
   win(){ [523,659,784,1047].forEach((f,i)=>setTimeout(()=>_playTone(f,0.3,'triangle',0.15),i*140)); },
   lose(){ [392,330,262].forEach((f,i)=>setTimeout(()=>_playTone(f,0.35,'sawtooth',0.12),i*180)); },
   click(){ _playTone(800, 0.05, 'sine', 0.06); },
-  error(){ _playTone(150, 0.2, 'square', 0.1); }
+  error(){ _playTone(150, 0.2, 'square', 0.1); },
+  // Booster pack tears open: paper rip + rising shimmer swell.
+  packOpen(){ _playNoise(0.28, 0.13, 2400); _playTone(160, 0.35, 'sawtooth', 0.07, 620); setTimeout(()=>_playTone(880,0.25,'sine',0.05,1500),120); },
+  // Quick page-flip when moving to the next revealed card.
+  cardFlip(){ _playNoise(0.05, 0.05, 3200); _playTone(560, 0.06, 'triangle', 0.05, 900); },
+  // Mystical fanfare for a Legendary / Mythic pull (grand=true adds a higher sparkle for Mythic).
+  mystical(grand){ [523,784,1047,1568].forEach((f,i)=>setTimeout(()=>_playTone(f,0.6,'sine',0.09,f*1.35),i*90)); setTimeout(()=>_playTone(2093,0.5,'triangle',0.05,2637),260); _playNoise(0.5,0.05,5200); if(grand){ setTimeout(()=>_playTone(3136,0.55,'sine',0.05,3520),380); } }
 };
 
 function toggleSfx(){
@@ -16004,6 +16014,7 @@ function tearOpenPack(){
   const pw=document.getElementById('pack-wrapper'); if(!pw)return;
   if(pw.classList.contains('tearing'))return;
   pw.classList.add('tearing');
+  if(typeof SFX!=='undefined')SFX.packOpen();
   const flash=document.getElementById('pack-flash');
   if(flash){ flash.style.setProperty('--flash-col','#e9d5ff'); flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go'); }
   setTimeout(()=>{
@@ -16023,6 +16034,9 @@ function renderRevealCard(i){
   const url=getImg(p.cid);
   document.getElementById('reveal-counter').textContent=`${i+1} / ${pulls.length}`;
   const bigPull=p.rarity==='legend'||p.rarity==='mythic'||p.foil!=='none';
+  const mysticPull=p.rarity==='legend'||p.rarity==='mythic';
+  // Sound: mystical swell for legend/mythic, quick flip for everything else.
+  if(typeof SFX!=='undefined'){ if(mysticPull) SFX.mystical(p.rarity==='mythic'); else SFX.cardFlip(); }
   const holoStyle = p.foil==='reverse' ? 'reverse' : (p.foil==='holo' ? holoStyleForRarity(p.rarity) : (VARIANT_META[p.foil]?p.foil:null));
   const foilLabel = (p.foil&&p.foil!=='none') ? ('✦ '+_foilName(p.foil)+' ✦') : '';
   // Rarity pill ABOVE the card (never overlaps the art/name)
@@ -16044,6 +16058,7 @@ function renderRevealCard(i){
       ${holoStyle?_holoLayersHTML(holoStyle):''}
     </div>`;
   stage.appendChild(card);
+  if(mysticPull){ const rings=document.createElement('div'); rings.className='reveal-mystic-rings'; rings.style.setProperty('--mystic-col', p.rarity==='mythic'?'#fbbf24':'#c084fc'); stage.appendChild(rings); }
   if(bigPull){
     const flash=document.getElementById('pack-flash');
     flash.style.setProperty('--flash-col', p.rarity==='mythic'?'#fbbf24':(p.rarity==='legend'?'#c084fc':rDef.hex));
