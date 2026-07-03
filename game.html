@@ -6735,6 +6735,7 @@ const DEFAULTS={
   tyler_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/018-150%20(Tyler%20Base).png',
   tyler_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/019-150%20(Tyler%20SSG).png',
   mort_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Dreamworks/Mort%20%231%20(Regular%20Character%20Promo).png',
+  tyler_ssb_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/020-150%20(Tyler%20SSB).png',
   ghost_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/ghost_hulk_card%20PROMO.png',
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
   billy_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/005-150%20(Billy%20SSJ1).png',
@@ -6876,8 +6877,11 @@ const DB={
     canAttackLocations:true,
     abilities:[{label:'Energy Scope',type:'passive',cost:0,text:"Tyler can target enemy location cards that are played on an opponent's field."}]},
   // ── TYLER (SSG) — BSE Saiyan transform form of Tyler. YELLOW. 019/150 Uncommon.
-  tyler_ssg_bse:{id:'tyler_ssg_bse',rarity:'uncommon',name:'Tyler (SSG)',color:'yellow',charName:'Tyler',charLine:'tyler',formTier:'ssg',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:4,atk:4,hp:5,sym:'TYSSG',setId:'base_set',cardNumber:'019/150',nextForms:[],
+  tyler_ssg_bse:{id:'tyler_ssg_bse',rarity:'uncommon',name:'Tyler (SSG)',color:'yellow',charName:'Tyler',charLine:'tyler',formTier:'ssg',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:4,atk:4,hp:5,sym:'TYSSG',setId:'base_set',cardNumber:'019/150',nextForms:['ssb'],
     abilities:[{label:'Godly Movement',type:'triggered',cost:0,text:"If an opponent attacks Tyler (SSG) they must flip a coin. If heads, zero damage is dealt to this card."},{label:'Zone Out',type:'triggered',cost:0,text:"If Tyler (SSG) is destroyed while any equipment card(s) is attached to him, you may choose to return 1 back to your hand."}]},
+  // ── TYLER (SSB) — BSE Saiyan transform form (tier above SSG). BLUE. 020/150 Rare.
+  tyler_ssb_bse:{id:'tyler_ssb_bse',rarity:'rare',name:'Tyler (SSB)',color:'blue',charName:'Tyler',charLine:'tyler',formTier:'ssb',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:6,atk:5,hp:6,sym:'TYSSB',setId:'base_set',cardNumber:'020/150',nextForms:[],
+    abilities:[{label:'Divine Collector',type:'activated',cost:6,text:"Roll a 3 dye. 1: search your deck for a Location card. 2: search for a Character card. 3: search for an Instant or Equipment card. Place the chosen card into your hand. (Cost 6 Energy)"},{label:'Buster Purge',type:'activated',cost:3,text:"Deals 3 damage to any character chosen on your opponent's field. (Cost 3 Energy) This card is tapped afterwards."}]},
   // ── MORT — PROMO Rare regular character (Mouse • Lemur). GREEN (endurance).
   mort_promo:{id:'mort_promo',rarity:'rare',name:'Mort',color:'green',charName:'Mort',subtypes:['Mouse','Lemur'],type:'char',race:'Lemur',cost:4,atk:2,hp:8,sym:'MRT',setId:'promo',cardNumber:'PROMO',
     abilities:[{label:'Immortality',type:'triggered',cost:0,text:"This card gains +2 Health after each time it's attacked. No health is gained if the attack destroys Mort."}]},
@@ -11476,6 +11480,59 @@ function activateAbility(fc,abl){
       log("The Lord's Prayer: HEADS — search for a character (cost 5+).",'gain');
       openDeckSearch("The Lord's Prayer","Choose a character costing 5 or more to add to your hand.",(cc)=>(cc.type==='char'||cc.type==='base_char')&&!cc.transformOnly&&(cc.cost||0)>=5,(cid)=>{ const f=newFC(cid); if(f) pl.hand.push(f); log(`The Lord's Prayer: ${DB[cid].name} added to your hand.`,'gain'); renderAll(); });
     });
+    return;
+  }
+
+  // ── TYLER (SSB): Divine Collector — 6⚡, roll d3 to tutor a Location / Character / Instant-or-Equipment.
+  if(abl.label==='Divine Collector'){
+    const ap=G.activePlayer; const pl=G.players[ap];
+    if(pl.energy<6){ log('Divine Collector: need 6⚡.','dmg'); return; }
+    spendEnergy(ap,6,DB[fc.cid]?.color||null);
+    fc.abilityUsed=fc.abilityUsed||{}; fc.abilityUsed['Divine Collector']=true;
+    pl.usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    const roll=1+Math.floor(Math.random()*3);
+    let kind, filt;
+    if(roll===1){ kind='Location'; filt=(cc)=>cc&&cc.type==='location'; }
+    else if(roll===2){ kind='Character'; filt=(cc)=>cc&&(cc.type==='char'||cc.type==='base_char')&&!cc.transformOnly; }
+    else { kind='Instant or Equipment'; filt=(cc)=>cc&&(cc.type==='instant'||cc.type==='equipment'); }
+    log(`Divine Collector: rolled ${roll} → search for ${kind}.`,'gain');
+    closeAllModals();
+    const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(ap) : (ap===1);
+    if(_human){
+      openDeckSearch('Divine Collector',`Rolled ${roll} — choose a ${kind} card to add to your hand.`,filt,(cid)=>{ const f=newFC(cid); if(f) pl.hand.push(f); log(`Divine Collector: ${DB[cid].name} added to your hand.`,'gain'); renderAll(); });
+    } else {
+      const found=(pl.deck||[]).find(cid=>filt(DB[cid]));
+      if(found){ const i=pl.deck.indexOf(found); if(i>-1)pl.deck.splice(i,1); const f=newFC(found); if(f) pl.hand.push(f); log(`Divine Collector: ${pname(ap)} searches a ${kind}.`,'gain'); }
+      else { log(`Divine Collector: no ${kind} found in deck.`,'info'); }
+      renderAll();
+    }
+    return;
+  }
+
+  // ── TYLER (SSB): Buster Purge — 3⚡, deal 3 to a chosen enemy character; taps afterwards.
+  if(abl.label==='Buster Purge'){
+    const ap=G.activePlayer; const pl=G.players[ap]; const oppNum=ap===1?2:1;
+    const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
+    if(!enemies.length){ log('Buster Purge: no opponent characters to target.','dmg'); return; }
+    if(pl.energy<3){ log('Buster Purge: need 3⚡.','dmg'); return; }
+    spendEnergy(ap,3,DB[fc.cid]?.color||null);
+    fc.abilityUsed=fc.abilityUsed||{}; fc.abilityUsed['Buster Purge']=true;
+    pl.usedAbilityThisTurn=true;
+    fc.tapped=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    openEnemyTargetPicker(enemies,(uid)=>{
+      const tfc=G.players[oppNum].field.find(f=>f.uid===uid);
+      if(tfc){
+        tfc.currentHP-=3;
+        if(typeof showDmgPopup==='function')showDmgPopup(oppNum,'-3',tfc.uid);
+        log(`Buster Purge: ${DB[tfc.cid].name} takes 3.`,'dmg');
+        if(tfc.currentHP<=0){ killCard(oppNum,tfc); }
+      }
+      if(typeof recalcPassives==='function')recalcPassives();
+      closeAllModals(); renderAll();
+    },{sourcePlayer:ap,title:'Buster Purge',desc:'Choose an opponent character to deal 3 damage.'});
     return;
   }
   // ── AOLIATH (SSJ2): Exiled Hook — strike an opponent character for 2; if it
