@@ -6817,6 +6817,8 @@ const DEFAULTS={
   mort_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Dreamworks/Mort%20%231%20(Regular%20Character%20Promo).png',
   void_crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/072-150%20(Void%20Crystal%20Equiptment).png',
   space_crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/073-150%20(Space%20Crystal%20Equiptment).png',
+  tyler_ssbe_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/021-150%20(Tyler%20SSBE).png',
+  tyler_ssbe_sr_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/152-150%20(Tyler%20SSBE)%20(Secret%20Rare).png',
   tyler_ssb_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/020-150%20(Tyler%20SSB).png',
   ghost_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/ghost_hulk_card%20PROMO.png',
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
@@ -6962,8 +6964,14 @@ const DB={
   tyler_ssg_bse:{id:'tyler_ssg_bse',rarity:'uncommon',name:'Tyler (SSG)',color:'yellow',charName:'Tyler',charLine:'tyler',formTier:'ssg',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:4,atk:4,hp:5,sym:'TYSSG',setId:'base_set',cardNumber:'019/150',nextForms:['ssb'],
     abilities:[{label:'Godly Movement',type:'triggered',cost:0,text:"If an opponent attacks Tyler (SSG) they must flip a coin. If heads, zero damage is dealt to this card."},{label:'Zone Out',type:'triggered',cost:0,text:"If Tyler (SSG) is destroyed while any equipment card(s) is attached to him, you may choose to return 1 back to your hand."}]},
   // ── TYLER (SSB) — BSE Saiyan transform form (tier above SSG). BLUE. 020/150 Rare.
-  tyler_ssb_bse:{id:'tyler_ssb_bse',rarity:'rare',name:'Tyler (SSB)',color:'blue',charName:'Tyler',charLine:'tyler',formTier:'ssb',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:6,atk:5,hp:6,sym:'TYSSB',setId:'base_set',cardNumber:'020/150',nextForms:[],
+  tyler_ssb_bse:{id:'tyler_ssb_bse',rarity:'rare',name:'Tyler (SSB)',color:'blue',charName:'Tyler',charLine:'tyler',formTier:'ssb',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:6,atk:5,hp:6,sym:'TYSSB',setId:'base_set',cardNumber:'020/150',nextForms:['ssbe'],
     abilities:[{label:'Divine Collector',type:'activated',cost:6,text:"Roll a 3 dye. 1: search your deck for a Location card. 2: search for a Character card. 3: search for an Instant or Equipment card. Place the chosen card into your hand. (Cost 6 Energy)"},{label:'Buster Purge',type:'activated',cost:3,text:"Deals 3 damage to any character chosen on your opponent's field. (Cost 3 Energy) This card is tapped afterwards."}]},
+  // ── TYLER (SSBE) — BSE transform form (SSB → SSBE). BLUE (control/reactive). 021/150 Legend.
+  tyler_ssbe_bse:{id:'tyler_ssbe_bse',rarity:'legend',name:'Tyler (SSBE)',color:'blue',charName:'Tyler',charLine:'tyler',formTier:'ssbe',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:11,atk:9,hp:13,sym:'TYSSBE',setId:'base_set',cardNumber:'021/150',nextForms:[],
+    abilities:[{label:'Power of Securement',type:'passive',cost:0,text:'This card cannot be sent to the Rift.'},{label:'Sensory Play',type:'activated',cost:0,limit:'every_2_turns',text:"Flip a coin. If heads you may view your opponent's hand. (Once every 2 turns)"},{label:'Shielded Pressure',type:'triggered',cost:0,text:'Every time this card is attacked it counters the attacker for 3 damage.'}],transforms:[]},
+  // ── TYLER (SSBE) SECRET RARE — BSE chase variant. MYTHIC. 152/150.
+  tyler_ssbe_sr_bse:{id:'tyler_ssbe_sr_bse',rarity:'mythic',secretRare:true,name:'Tyler (SSBE)',color:'blue',charName:'Tyler',charLine:'tyler',formTier:'ssbe',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:12,atk:10,hp:14,sym:'TYSSBE',setId:'base_set',cardNumber:'152/150',nextForms:[],
+    abilities:[{label:'Power of Securement',type:'passive',cost:0,text:'This card cannot be sent to the Rift.'},{label:'Sensory Play',type:'activated',cost:0,limit:'every_2_turns',text:"Flip a coin. If heads you may view your opponent's hand. (Once every 2 turns)"},{label:'Shielded Pressure',type:'triggered',cost:0,text:'Every time this card is attacked it counters the attacker for 3 damage.'}],transforms:[]},
   // ── MORT — PROMO Rare regular character (Mouse • Lemur). GREEN (endurance).
   mort_promo:{id:'mort_promo',rarity:'rare',name:'Mort',color:'green',charName:'Mort',subtypes:['Mouse','Lemur'],type:'char',race:'Lemur',cost:4,atk:2,hp:8,sym:'MRT',setId:'promo',cardNumber:'PROMO',
     abilities:[{label:'Immortality',type:'triggered',cost:0,text:"This card gains +2 Health after each time it's attacked. No health is gained if the attack destroys Mort."}]},
@@ -9467,6 +9475,11 @@ function executeCombatDamage(ap,auid,dp,duid){
     log(`Inferno Reflex: ${dc.name} counters ${ac.name} for 2!`,'dmg');
     dealDamage(ap,auid,2);
   }
+  // SHIELDED PRESSURE — Tyler (SSBE) counters any attacker for 3 flat damage when hit.
+  if(dc&&(dc.abilities||[]).some(a=>a.label==='Shielded Pressure')&&G.players[ap].field.some(f=>f.uid===auid)){
+    log(`Shielded Pressure: ${dc.name} counters ${ac.name} for 3!`,'dmg');
+    dealDamage(ap,auid,3);
+  }
   renderAll();
 }
 
@@ -11177,6 +11190,25 @@ function activateAbility(fc,abl){
     renderAll();
     return;
   }
+  // ── TYLER (SSBE): Sensory Play — once every 2 turns, flip a coin; on heads you
+  //    may view the opponent's hand. (Free ability → no tap.)
+  if(abl.label==='Sensory Play'){
+    if(!fc.abilityUsed)fc.abilityUsed={};
+    const last=fc.abilityUsed.sensory_play_turn;
+    if(last!=null && (G.turn-last)<2){ log(`Sensory Play: wait ${2-(G.turn-last)} more turn(s).`,'dmg'); return; }
+    fc.abilityUsed.sensory_play_turn=G.turn;
+    const ap=G.activePlayer; const oppNum=ap===1?2:1;
+    G.players[ap].usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    flipCoinFor({title:'Sensory Play', desc:"Flip a coin. Heads = view your opponent's hand."}, (heads)=>{
+      if(!heads){ log('Sensory Play: TAILS — no peek this time.','dmg'); renderAll(); return; }
+      log("Sensory Play: HEADS — revealing the opponent's hand!",'gain');
+      if(ap===1){ showOpponentHandModal(oppNum); }
+      renderAll();
+    });
+    return;
+  }
   // ── BILLY (SSJ): Combat Control — once every other turn, mark an opponent
   // character "must attack if able" on its next turn. (Free ability → taps.)
   if(abl.label==='Combat Control'){
@@ -11475,6 +11507,8 @@ function activateAbility(fc,abl){
           if(typeof showDmgPopup==='function')showDmgPopup(oppN,'-6',tfc.uid);
           log(`Ravager Strike: HEADS — ${tname} takes 6 damage!`,'dmg');
           if(tfc.currentHP<=0){ G.players[oppN].field=G.players[oppN].field.filter(x=>x.uid!==tfc.uid); (tfc.attachments||[]).forEach(eq=>G.players[oppN].discard.push(eq)); G.players[oppN].discard.push(tfc.cid); log(`${tname} is destroyed!`,'death'); }
+        } else if(isRiftImmune(tfc)){
+          log(`Ravager Strike: ${tname} cannot be sent to the Rift! (Power of Securement)`,'gain');
         } else {
           G.players[oppN].field=G.players[oppN].field.filter(x=>x.uid!==tfc.uid);
           (tfc.attachments||[]).forEach(eq=>G.players[oppN].discard.push(eq));
@@ -11810,10 +11844,15 @@ function activateAbility(fc,abl){
         if(typeof showDmgPopup==='function')showDmgPopup(oppN,'-2',tfc.uid);
         log(`Exiled Hook: ${tname} takes 2 damage.`,'dmg');
         if(tfc.currentHP<=0){
-          G.players[oppN].field=G.players[oppN].field.filter(x=>x.uid!==tfc.uid);
-          (tfc.attachments||[]).forEach(eqId=>G.players[oppN].discard.push(eqId));
-          sendToRift(oppN,tfc.cid,'Exiled Hook');
-          log(`Exiled Hook: ${tname} is slain and exiled to the Rift Zone!`,'gain');
+          if(isRiftImmune(tfc)){
+            log(`Exiled Hook: ${tname} cannot be exiled to the Rift (Power of Securement) — it is destroyed instead.`,'death');
+            killCard(oppN,tfc);
+          } else {
+            G.players[oppN].field=G.players[oppN].field.filter(x=>x.uid!==tfc.uid);
+            (tfc.attachments||[]).forEach(eqId=>G.players[oppN].discard.push(eqId));
+            sendToRift(oppN,tfc.cid,'Exiled Hook');
+            log(`Exiled Hook: ${tname} is slain and exiled to the Rift Zone!`,'gain');
+          }
         }
       }
       if(typeof recalcPassives==='function') recalcPassives();
@@ -11837,7 +11876,9 @@ function activateAbility(fc,abl){
     closeAllModals();
     openEnemyTargetPicker(enemies,(uid)=>{
       const tfc=G.players[oppNum].field.find(f=>f.uid===uid);
-      if(tfc){
+      if(tfc && isRiftImmune(tfc)){
+        log(`Godly Kamui: ${DB[tfc.cid].name} cannot be sent to the Rift! (Power of Securement)`,'gain');
+      } else if(tfc){
         const tname=DB[tfc.cid].name;
         G.players[oppNum].field=G.players[oppNum].field.filter(x=>x.uid!==tfc.uid);
         (tfc.attachments||[]).forEach(eqId=>G.players[oppNum].discard.push(eqId));
@@ -14072,10 +14113,17 @@ function sendToRift(p, cid, sourceName){
   renderAll();
 }
 
+// POWER OF SECUREMENT — some cards can never be banished to the Rift Zone.
+function isRiftImmune(fc){
+  if(!fc)return false;
+  const c=DB[fc.cid];
+  return !!(c && (c.abilities||[]).some(a=>a.label==='Power of Securement'));
+}
 // Remove a card from the field and send it to the Rift Zone
 function riftCard(p, fc, sourceName){
   if(!G||!G.players[p])return;
   const c=DB[fc.cid];
+  if(isRiftImmune(fc)){ log(`${c?.name||'That card'} cannot be sent to the Rift! (Power of Securement)`,'gain'); renderAll(); return; }
   G.players[p].field=G.players[p].field.filter(f=>f.uid!==fc.uid);
   // Attachments go to Otherworld (only the main card goes to Rift)
   fc.attachments?.forEach(eqId=>G.players[p].discard.push(eqId));
@@ -14608,6 +14656,30 @@ function log(m,t=''){G.log.push({m,t});renderLog();}
 // ═══════════════════════════════════════════════════
 // MODAL / SCREEN HELPERS
 // ═══════════════════════════════════════════════════
+// Reveal the opponent's hand face-up in a modal (used by Tyler SSBE 'Sensory Play').
+function showOpponentHandModal(oppNum){
+  const pl=G.players[oppNum]; if(!pl){ return; }
+  const hand=pl.hand||[];
+  const body=document.createElement('div');
+  if(!hand.length){
+    body.innerHTML='<div style="color:#9ca3af;font-size:12px;padding:10px;text-align:center">Opponent\'s hand is empty.</div>';
+  } else {
+    const grid=document.createElement('div');
+    grid.style.cssText='display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:6px 2px;max-height:60vh;overflow-y:auto';
+    hand.forEach(hf=>{
+      const c=DB[hf.cid]; if(!c) return;
+      const url=getImg(hf.cid);
+      const tile=document.createElement('div');
+      tile.style.cssText='width:96px;flex-shrink:0;text-align:center';
+      tile.innerHTML=`<div style="width:96px;height:134px;border-radius:8px;overflow:hidden;background:#1e1e3a;border:1px solid #33335a;display:flex;align-items:center;justify-content:center;font-size:26px">${url?`<img src="${url}" style="width:100%;height:100%;object-fit:cover"/>`:(c.sym||'?')}</div>
+        <div style="font-size:10px;color:#c8a0ff;font-weight:700;margin-top:3px;line-height:1.2">${c.name}</div>
+        <div style="font-size:9px;color:#7dd3fc">⚡${c.cost??0}${isChar(c)?` · ⚔${c.atk} ♥${c.hp}`:''}</div>`;
+      grid.appendChild(tile);
+    });
+    body.appendChild(grid);
+  }
+  showModalEl(`👁 Opponent's Hand (${hand.length})`, body);
+}
 function showModal(title,html){document.getElementById('modal-title').textContent=title;document.getElementById('modal-body').innerHTML=html;document.getElementById('modal-overlay').classList.add('open');}
 function showModalEl(title,bodyEl){document.getElementById('modal-title').textContent=title;const b=document.getElementById('modal-body');b.innerHTML='';b.appendChild(bodyEl);document.getElementById('modal-overlay').classList.add('open');}
 function closeAllModals(){document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('open'));_discardSearchState=null;}
