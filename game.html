@@ -10334,7 +10334,7 @@ function openEquipTargetPicker(efc,chars){
   chars.forEach(cf=>{
     const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:6px 10px';
     btn.textContent=`${DB[cf.cid].name} (${cf.currentHP}/${cf.baseHP+cf.hpBonus} HP)`;
-    btn.onclick=()=>{applyEquipToTarget(efc,cf);closeAllModals();};
+    btn.onclick=()=>{closeAllModals();applyEquipToTarget(efc,cf);};
     body.appendChild(btn);
   });
   showModalEl(`Equip: ${ec.name}`,body);
@@ -10342,6 +10342,9 @@ function openEquipTargetPicker(efc,chars){
 
 function applyEquipToTarget(efc,tfc){
   const ec=DB[efc.cid];
+  // Guard against double-attach: if this exact equipment card object was already
+  // attached (e.g. a stale re-click), do nothing.
+  if(efc._equipped){ closeAllModals(); return; }
   // FIELD LOCKDOWN (Magnus): if this player is locked down, equipment is disabled.
   if(isLockedDown(G.activePlayer)){
     log('Field Lockdown: your Equipment is disabled this turn!','dmg');
@@ -10354,14 +10357,14 @@ function applyEquipToTarget(efc,tfc){
     log("Equipment Nullifier: opponent's Volaris (SSJ) disables your Equipment!",'dmg');
     closeAllModals(); renderAll(); return;
   }
+  efc._equipped=true; // mark this card object so it can't be attached again
   applyEquip(tfc,ec);
-  if(ec.persistent===false){G.players[1].discard.push(ec.id);log(`${ec.name} used & discarded.`,'info');}
+  if(ec.persistent===false){G.players[G.activePlayer].discard.push(ec.id);log(`${ec.name} used & discarded.`,'info');}
   else{if(!tfc.attachments)tfc.attachments=[];tfc.attachments.push(ec.id);log(`${ec.name} → ${DB[tfc.cid].name}.`,'info');}
   // SOUL FIND (Void Crystal): after attaching, may search your discard for a character
-  // and return it to hand.
+  // and return it to hand. (You equip your own field character, so owner = active player.)
   if((ec.abilities||[]).some(a=>a.label==='Soul Find')){
-    const owner=G.players.findIndex(pl=>pl&&pl.field&&pl.field.some(f=>f.uid===tfc.uid));
-    const p = owner>-1 ? owner : G.activePlayer;
+    const p = G.activePlayer;
     const pl=G.players[p];
     const filt=(cc)=>cc&&(cc.type==='char'||cc.type==='base_char')&&!cc.transformOnly;
     const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(p) : (p===1);
@@ -10375,8 +10378,7 @@ function applyEquipToTarget(efc,tfc){
   // SPACIAL FREQUENCY (Space Crystal): after attaching, may search your deck for a
   // Location card and return it to hand.
   if((ec.abilities||[]).some(a=>a.label==='Spacial Frequency')){
-    const owner2=G.players.findIndex(pl=>pl&&pl.field&&pl.field.some(f=>f.uid===tfc.uid));
-    const p2 = owner2>-1 ? owner2 : G.activePlayer;
+    const p2 = G.activePlayer;
     const pl2=G.players[p2];
     const filt2=(cc)=>cc&&cc.type==='location';
     const _human2 = G.is2v2 ? (G.humanPlayers||[1]).includes(p2) : (p2===1);
@@ -11064,7 +11066,7 @@ function openEquipModal(){
       btn.onclick=()=>{
         if(pl.energy<ec.cost){log('Not enough energy!','dmg');return;}
         pl.energy-=ec.cost;pl.hand=pl.hand.filter(f=>f.uid!==ef.uid);
-        applyEquipToTarget(ef,cf);closeAllModals();
+        closeAllModals();applyEquipToTarget(ef,cf);
       };
       row.appendChild(btn);
     });
