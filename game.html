@@ -5981,7 +5981,7 @@ textarea{
     <div class="menu-section-label">Battle</div>
 
     <div class="menu-feature-row">
-      <button class="menu-btn menu-btn-feature" onclick="showScreen('campaign-worlds-screen');openCampaign()"><span class="menu-btn-sweep"></span><span class="mb-ico">🗺</span><span class="mb-txt">Campaign</span><span class="mb-sub">Story Mode</span></button>
+      <button class="menu-btn menu-btn-feature" onclick="enterCampaign()"><span class="menu-btn-sweep"></span><span class="mb-ico">🗺</span><span class="mb-txt">Campaign</span><span class="mb-sub">Story Mode</span></button>
       <button class="menu-btn menu-btn-feature mbf-blue" onclick="showScreen('matchmaking-screen');openMatchmaking()"><span class="menu-btn-sweep"></span><span class="mb-ico">🔍</span><span class="mb-txt">Find Match</span><span class="mb-sub">Ranked Online</span></button>
     </div>
 
@@ -16666,6 +16666,7 @@ let _adminToggles={
   events_enabled:false,
   achievements_enabled:true,
   battle_pass_enabled:false, // WIP — hidden by default
+  campaign_enabled:true, // GLOBAL: when off, non-admins get a 'coming soon' popup (button stays visible/clickable)
   admin_unlimited_cards:true // this one is admin-only, stored locally
 };
 
@@ -16706,7 +16707,8 @@ async function saveAdminToggles(){
       shop_enabled:_adminToggles.shop_enabled,
       events_enabled:_adminToggles.events_enabled,
       achievements_enabled:_adminToggles.achievements_enabled,
-      battle_pass_enabled:_adminToggles.battle_pass_enabled
+      battle_pass_enabled:_adminToggles.battle_pass_enabled,
+      campaign_enabled:_adminToggles.campaign_enabled
     };
     await _celSB.from('app_settings').upsert(
       {key:'feature_flags',value:JSON.stringify(globalFlags),updated_at:new Date().toISOString()},
@@ -18952,7 +18954,24 @@ function getChapterProgress(chapter){
 }
 
 // ─── WORLDS SCREEN ───────────────────────────────
+// Gate for the Campaign menu button. When campaign_enabled is OFF, non-admins
+// see a friendly 'coming soon' popup and are NOT navigated anywhere; admins pass through.
+function enterCampaign(){
+  if(!isFeatureEnabled('campaign_enabled')){
+    showModal('🗺 Campaign','<div style="text-align:center;padding:6px 4px;line-height:1.6"><div style="font-size:34px;margin-bottom:8px">🚧</div><div style="font-size:14px;color:#e8c570;font-family:\'Cinzel\',serif;margin-bottom:6px">Coming Soon</div><div style="font-size:12px;color:#cbd5e1">Campaign mode isn\'t quite ready yet — check back soon!</div></div>');
+    return;
+  }
+  showScreen('campaign-worlds-screen');
+  openCampaign();
+}
 async function openCampaign(){
+  // Defense in depth: if a non-admin reaches this while campaign is disabled
+  // (e.g. via a stale nav path), bounce them back with the same popup.
+  if(!isFeatureEnabled('campaign_enabled')){
+    showScreen('menu-screen');
+    showModal('🗺 Campaign','<div style="text-align:center;padding:6px 4px;line-height:1.6"><div style="font-size:34px;margin-bottom:8px">🚧</div><div style="font-size:14px;color:#e8c570;font-family:\'Cinzel\',serif;margin-bottom:6px">Coming Soon</div><div style="font-size:12px;color:#cbd5e1">Campaign mode isn\'t quite ready yet — check back soon!</div></div>');
+    return;
+  }
   if(!CAMPAIGN_DATA)await loadCampaign();
   renderWorldsGrid();
   // Play intro cutscene on first ever campaign visit
@@ -20855,6 +20874,14 @@ window.addEventListener('load',async()=>{
         <div class="admin-toggle-desc">Show Battle Pass on menu for everyone (you always see it)</div>
       </div>
       <div class="admin-toggle-switch" id="admin-tg-battle_pass_enabled"><div class="admin-toggle-knob"></div></div>
+    </div>
+
+    <div class="admin-toggle" onclick="adminToggle('campaign_enabled')">
+      <div>
+        <div class="admin-toggle-label">🗺 Campaign <span style="font-size:8px;color:#7dd3fc">GLOBAL</span></div>
+        <div class="admin-toggle-desc">When OFF, players can still click Campaign but get a “coming soon” popup (you always have access)</div>
+      </div>
+      <div class="admin-toggle-switch" id="admin-tg-campaign_enabled"><div class="admin-toggle-knob"></div></div>
     </div>
 
     <div class="admin-toggle" onclick="adminToggle('admin_unlimited_cards')">
