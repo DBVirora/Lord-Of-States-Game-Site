@@ -14826,9 +14826,21 @@ async function checkDailyLogin(){
   if(typeof bpOnDailyLogin==='function')await bpOnDailyLogin();
 }
 
+// Rewards (Celestium, XP, win/loss stats) are withheld ONLY for LOCAL
+// player-vs-player (hotseat) matches, in any mode. Everything vs AI or
+// online — including 2v2 co-op — earns rewards.
+function _isLocalPvPMatch(){
+  if(!G) return false;
+  if(G.is2v2){
+    // 2v2 local PvP = not online AND no AI seats (all four seats are local humans).
+    return !G.onlineMode2v2 && ((G.aiPlayers||[]).length===0);
+  }
+  // 1v1 local PvP = the local hotseat 'pvp' mode (not 'ai', not 'online', not campaign).
+  return (typeof gameMode!=='undefined' && gameMode==='pvp') && !G.onlineMode;
+}
 async function onMatchEnd(won){
-  // 2v2 is CO-OP — no XP, no Celestium, no win/loss stats.
-  if(G&&G.is2v2)return;
+  // Only LOCAL player-vs-player withholds rewards; co-op vs AI / online do reward.
+  if(_isLocalPvPMatch())return;
   // Battle Pass XP — every match awards play XP, wins award bonus
   if(typeof bpOnMatchEnd==='function')setTimeout(()=>bpOnMatchEnd(),100);
   if(won&&typeof bpOnMatchWin==='function')setTimeout(()=>bpOnMatchWin(),200);
