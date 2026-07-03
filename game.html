@@ -5237,6 +5237,30 @@ textarea{
   #game-screen .player-area-header{ margin-bottom:3px !important; }
   #game-screen .player-area-header span{ font-size:11px !important; }
   #game-screen .field-wrapper{ padding:2px 0 !important; }
+
+  /* 6) No sideways page scroll; keep everything inside the viewport. */
+  #game-screen{ overflow-x:hidden !important; }
+  #game-screen .battle-layout, #game-screen .board-column{ overflow-x:hidden !important; }
+
+  /* 7) Center strip (phases + tools): compact, wraps instead of overflowing. */
+  #game-screen .center-strip{ height:auto !important; min-height:0 !important; flex-wrap:wrap !important; padding:4px 6px !important; gap:5px !important; }
+  #game-screen .phase-bar-center{ gap:4px !important; }
+  #game-screen .phase-pill{ font-size:9px !important; padding:4px 8px !important; }
+  #game-screen .center-tools{ padding-left:6px !important; gap:3px !important; }
+  #game-screen .center-tools button{ font-size:12px !important; width:28px !important; height:28px !important; padding:2px !important; }
+  #game-screen .end-turn-btn{ font-size:10px !important; padding:5px 10px !important; }
+
+  /* 8) Opponent hand: strict face-down mini stack (backup enforcement). */
+  #game-screen .opp-hand{ max-height:56px !important; overflow:hidden !important; }
+  #game-screen .opp-hand .hand-card{ width:34px !important; height:48px !important; min-width:34px !important; }
+  #game-screen .opp-hand .hand-art-area{ height:46px !important; }
+  #game-screen .opp-hand .hand-name, #game-screen .opp-hand .hand-info{ display:none !important; }
+
+  /* 9) Your hand: readable but capped. */
+  #game-screen .hand-dock{ padding:4px 6px 6px !important; }
+  #game-screen .hand-card{ width:78px !important; height:110px !important; }
+  #game-screen .hand-art-area{ height:70px !important; }
+  #game-screen .hand-name{ font-size:9px !important; }
 }
 
 /* ─── MOBILE CARD PREVIEW BOTTOM SHEET (replaces hover on touch) ─── */
@@ -5701,7 +5725,11 @@ textarea{
 /* ════════════════════════════════════════════════════════════════
    ⚔ BATTLE HUD REDESIGN  —  layered overrides (scoped to #game-screen)
    Restyles existing elements only; all IDs / handlers untouched.
+   DESKTOP-ONLY: this pass sizes the board for large screens (big herald,
+   big cards, wide rails). It is scoped to ≥769px so phones use the
+   compact mobile layout defined earlier.
    ════════════════════════════════════════════════════════════════ */
+@media (min-width:769px){
 #game-screen{ --rd-accent:#00d4ff; --rd-accent-glow:rgba(0,212,255,.45); --rd-red:#f87171; --rd-redglow:rgba(239,68,68,.4); }
 
 /* wider rails for breathing room */
@@ -5787,11 +5815,13 @@ textarea{
 /* per-side arena border tint for clarity */
 #game-screen .board-column > .player-area:first-of-type{ border-color:rgba(239,68,68,.22) !important; }
 #game-screen .board-column > .player-area:last-of-type{ border-color:rgba(0,212,255,.22) !important; }
+} /* end desktop-only battle HUD redesign */
 </style>
 </head>
 <body>
 
 <!-- AUTH HUD -->
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 7.3a</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
