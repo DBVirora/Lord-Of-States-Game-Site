@@ -5189,6 +5189,56 @@ textarea{
   .prize-card{ width:54px; height:76px; }
 }
 
+/* ═════════════════════════════════════════
+   MOBILE 1V1 BOARD FIX v2 — portrait phones (≤768px). Appended last so it
+   wins on source order. Everything here is phone-only; desktop (≥769px)
+   is never touched.
+   ═════════════════════════════════════════ */
+@media (max-width:768px){
+  /* 1) Kill the 3-column grid entirely so the board uses the FULL width
+     (removes the dead space on the right + the left squish). */
+  #game-screen .battle-layout{ display:block !important; }
+  #game-screen .board-column{ width:100% !important; min-width:0 !important; }
+  #game-screen .player-area,
+  #game-screen .field-wrapper,
+  #game-screen .char-field{ width:100% !important; box-sizing:border-box; }
+
+  /* 2) HERALD → compact thumbnail (was rendering as a full-size card that ate
+     the whole screen). !important beats the inline art height set in JS. */
+  #game-screen .herald-zone{ min-width:56px !important; max-width:56px !important; gap:2px !important; }
+  #game-screen .herald-slot{ width:52px !important; height:74px !important; }
+  #game-screen .herald-slot .card-art-area{ height:44px !important; }
+  #game-screen .herald-slot .card-info{ padding:2px 3px !important; }
+  #game-screen .herald-slot .card-name-sm{ font-size:8px !important; }
+  #game-screen .herald-slot .card-stats-row{ font-size:8px !important; }
+  #game-screen .herald-slot .card-stats-row span{ font-size:8px !important; }
+  #game-screen .herald-zone-label{ font-size:8px !important; letter-spacing:1px !important; }
+
+  /* 3) FIELD ROW reflow: aux zones form one tight strip; the CHARACTER field
+     drops to its own full-width row so your characters are big enough to read/tap. */
+  #game-screen .field-wrapper{ flex-wrap:wrap !important; gap:4px !important; align-items:flex-start !important; overflow:visible !important; }
+  #game-screen .deck-pile-wrap{ min-width:46px !important; }
+  #game-screen .deck-pile{ transform:scale(.55); transform-origin:top center; margin-bottom:-38px; }
+  #game-screen .deck-pile-label{ font-size:8px !important; }
+  #game-screen .rift-zone-wrap{ min-width:44px !important; }
+  #game-screen .rift-zone-pile{ width:38px !important; height:54px !important; }
+  #game-screen .rift-zone-label,
+  #game-screen .rift-zone-wrap > div{ font-size:8px !important; }
+  #game-screen .location-zone{ min-width:60px !important; max-width:78px !important; padding:4px !important; }
+  #game-screen .char-field{ flex:1 1 100% !important; min-height:120px !important; padding:5px !important; justify-content:flex-start !important; }
+
+  /* 4) Character (field) cards: readable, wrap neatly, ~4 per row on 430px. */
+  #game-screen .char-field .card-slot{ width:82px !important; height:115px !important; }
+  #game-screen .char-field .card-art-area{ height:76px !important; }
+  #game-screen .char-field .card-name-sm{ font-size:9px !important; }
+
+  /* 5) Tighten vertical rhythm so both boards + your hand fit on one screen. */
+  #game-screen .player-area{ padding:5px 7px !important; margin:0 !important; }
+  #game-screen .player-area-header{ margin-bottom:3px !important; }
+  #game-screen .player-area-header span{ font-size:11px !important; }
+  #game-screen .field-wrapper{ padding:2px 0 !important; }
+}
+
 /* ─── MOBILE CARD PREVIEW BOTTOM SHEET (replaces hover on touch) ─── */
 .mobile-card-sheet{
   display:none;
