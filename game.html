@@ -6840,6 +6840,9 @@ const DEFAULTS={
   tyler_ssbe_sr_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/152-150%20(Tyler%20SSBE)%20(Secret%20Rare).png',
   scorched_titan_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/046-150%20(The%20Scorched%20Titan).png',
   eklif_frost_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/047-150%20(Eklif%20Frost).png',
+  rapture_vortex_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/049-150%20(Rapture%20Of%20The%20Vortex).png',
+  royal_matcha_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/078-150%20(Royal%20Matcha).png',
+  virora_matcha_bse: "https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/079-150%20(Virora's%20Matcha%20Instant).png",
   zephyranth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/075-150%20(Zephyranth%20Fruit%20Instant).png',
   vermynth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/076-150%20(Vermynth%20Fruit%20Instant).png',
   tyler_ssb_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/020-150%20(Tyler%20SSB).png',
@@ -7001,6 +7004,15 @@ const DB={
   // ── VERMYNTH FRUIT — BSE Instant (Consumable). GREEN (healing). 076/150 Uncommon.
   vermynth_fruit_bse:{id:'vermynth_fruit_bse',rarity:'uncommon',name:'Vermynth Fruit',color:'green',charName:'Vermynth Fruit',subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:4,atk:0,hp:0,sym:'🥝',setId:'base_set',cardNumber:'076/150',nextForms:[],
     abilities:[{label:'Vermynth Fruit',type:'instant',cost:0,text:'Heals one of your characters on the field for 4 HP while also adding 2 ATK Power.'}],transforms:[]},
+  // ── RAPTURE OF THE VORTEX — BSE regular character (Titan • Beast). GREEN/PURPLE (endurance + trickery). 049/150 Rare.
+  rapture_vortex_bse:{id:'rapture_vortex_bse',rarity:'rare',name:'Rapture of the Vortex',color:'green',colors:['green','purple'],charName:'Rapture of the Vortex',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:7,atk:6,hp:8,sym:'RVORTEX',setId:'base_set',cardNumber:'049/150',nextForms:[],
+    abilities:[{label:'Vortex Shield',type:'passive',cost:0,text:'This card cannot have any status effects applied to it.'},{label:'The Reckoning',type:'activated',cost:0,text:'Choose 1 Character on your opponent\'s field. Flip a coin. If heads, that character is now under Confusion.'}],transforms:[]},
+  // ── ROYAL MATCHA — BSE Instant (Consumable). GREEN (healing). 078/150 Uncommon.
+  royal_matcha_bse:{id:'royal_matcha_bse',rarity:'uncommon',name:'Royal Matcha',color:'green',charName:'Royal Matcha',subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:2,atk:0,hp:0,sym:'🍵',setId:'base_set',cardNumber:'078/150',nextForms:[],
+    abilities:[{label:'Royal Matcha',type:'instant',cost:0,text:'Heal a chosen character for +2 HP and cure its Confusion status effect.'}],transforms:[]},
+  // ── VIRORA'S MATCHA — BSE Instant (Consumable). GREEN (healing). 079/150 Rare.
+  virora_matcha_bse:{id:'virora_matcha_bse',rarity:'rare',name:"Virora's Matcha",color:'green',charName:"Virora's Matcha",subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:4,atk:0,hp:0,sym:'🧋',setId:'base_set',cardNumber:'079/150',nextForms:[],
+    abilities:[{label:"Virora's Matcha",type:'instant',cost:0,text:'Heal a chosen character for +4 HP and cure ALL status effects on it.'}],transforms:[]},
   // ── EKLIF FROST — BSE regular character (Titan • Beast). BLUE (control). 047/150 Uncommon.
   eklif_frost_bse:{id:'eklif_frost_bse',rarity:'uncommon',name:'Eklif Frost',color:'blue',charName:'Eklif Frost',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:2,atk:2,hp:2,sym:'EKLIF',setId:'base_set',cardNumber:'047/150',nextForms:[],
     abilities:[{label:'Frozen Domain',type:'activated',cost:0,text:"Choose 1 Location card your opponent has in play. That Location has no effects or abilities while this card is in play."}],transforms:[]},
@@ -10308,6 +10320,17 @@ function onHandClick(p,uid,fc){
       openFruitHealPicker(p, fco, chars, healAmt, atkAmt);
       return;
     }
+    if(c.id==='royal_matcha_bse' || c.id==='virora_matcha_bse'){
+      if(!chars.length){log(`No field character to use ${c.name} on!`,'dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
+      if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
+      if(typeof SFX!=='undefined')SFX.instant();
+      if(p===1)sendGameAction('instant_reveal',{cardId:c.id});
+      log(`${pname(p)} plays ${c.name}!`,'info');
+      const healAmt = c.id==='virora_matcha_bse'?4:2;
+      const cureMode = c.id==='virora_matcha_bse'?'all':'confuse';
+      openFruitHealPicker(p, fco, chars, healAmt, 0, cureMode);
+      return;
+    }
     // Show dramatic reveal popup FIRST, then execute the instant's effect
     showInstantReveal(c.id, p);
     if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
@@ -10359,13 +10382,15 @@ function openEnemyTargetPicker(targets, callback, opts){
 
 // ZEPHYRANTH / VERMYNTH FRUIT — heal (and optionally +ATK) one of YOUR field
 // characters, then discard (consumable). AI auto-targets the most-wounded ally.
-function openFruitHealPicker(p, fco, chars, healAmt, atkAmt){
+function openFruitHealPicker(p, fco, chars, healAmt, atkAmt, cureMode){
   const c=DB[fco.cid]; const pl=G.players[p];
   const apply=(target)=>{
     const mx=(target.baseHP||0)+(target.hpBonus||0)+(target.passiveHp||0);
     target.currentHP=Math.min(mx,(target.currentHP||0)+healAmt);
     let msg=`${c.name}: ${DB[target.cid].name} heals +${healAmt} HP (now ${target.currentHP})`;
     if(atkAmt>0){ target.currentATK=(target.currentATK||0)+atkAmt; target.atkBonus=(target.atkBonus||0)+atkAmt; msg+=` and gains +${atkAmt} ATK`; }
+    if(cureMode==='all'){ if(target.statuses&&Object.keys(target.statuses).length){ cureAllStatuses(target); msg+=' and is cleansed of all status effects'; } }
+    else if(cureMode==='confuse'){ if(statusActive(target,'confuse')){ cureStatus(target,'confuse'); msg+=' and its Confusion is cured'; } }
     log(msg+'.','gain');
     pl.discard.push(c.id);
     if(typeof recalcPassives==='function')recalcPassives();
@@ -11888,6 +11913,27 @@ function activateAbility(fc,abl){
     }
     return;
   }
+  // ── RAPTURE OF THE VORTEX: The Reckoning — free: choose an opponent character,
+  //    flip a coin; heads = that character is Confused.
+  if(abl.label==='The Reckoning'){
+    const ap=G.activePlayer; const pl=G.players[ap]; const oppNum=ap===1?2:1;
+    const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
+    if(!enemies.length){ log('The Reckoning: no opponent characters to target.','dmg'); return; }
+    pl.usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    openEnemyTargetPicker(enemies,(uid)=>{
+      const tfc=G.players[oppNum].field.find(f=>f.uid===uid);
+      if(!tfc){ renderAll(); return; }
+      flipCoinFor({title:'The Reckoning',desc:'Heads = the chosen character is Confused.'},(heads)=>{
+        if(heads){ log(`😵 The Reckoning: HEADS — ${DB[tfc.cid].name} is confused!`,'gain'); applyStatus(tfc,'confuse'); }
+        else { log('The Reckoning: TAILS — no effect.','dmg'); }
+        if(typeof recalcPassives==='function')recalcPassives();
+        closeAllModals(); renderAll();
+      });
+    },{sourcePlayer:ap,title:'The Reckoning',desc:'Choose an opponent character to try to Confuse.'});
+    return;
+  }
   // ── THE SCORCHED TITAN: Scorched Strike — free, taps: roll a d4; on a 1, deal
   //    2 damage to a chosen opponent character.
   if(abl.label==='Scorched Strike'){
@@ -12696,6 +12742,8 @@ const STATUS_META = {
 function statusActive(fc,type){ return !!(fc&&fc.statuses&&fc.statuses[type]>0); }
 function applyStatus(fc,type,turns){
   if(!fc||!STATUS_META[type])return false;
+  // VORTEX SHIELD (Rapture of the Vortex): total status immunity.
+  if((DB[fc.cid]?.abilities||[]).some(a=>a.label==='Vortex Shield')){ log(`🛡️ Vortex Shield: ${DB[fc.cid]?.name} is immune to status effects!`,'info'); return false; }
   if(!fc.statuses)fc.statuses={};
   if(fc.statuses[type]>0){ log(`${DB[fc.cid]?.name} is already ${STATUS_META[type].label}ed — it doesn't stack.`,'info'); return false; }
   fc.statuses[type]=turns||STATUS_META[type].dur;
