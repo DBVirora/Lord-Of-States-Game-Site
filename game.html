@@ -6821,6 +6821,8 @@ const DEFAULTS={
   tyler_ssbe_sr_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/152-150%20(Tyler%20SSBE)%20(Secret%20Rare).png',
   scorched_titan_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/046-150%20(The%20Scorched%20Titan).png',
   eklif_frost_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/047-150%20(Eklif%20Frost).png',
+  zephyranth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/075-150%20(Zephyranth%20Fruit%20Instant).png',
+  vermynth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/076-150%20(Vermynth%20Fruit%20Instant).png',
   tyler_ssb_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/020-150%20(Tyler%20SSB).png',
   ghost_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/ghost_hulk_card%20PROMO.png',
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
@@ -6974,6 +6976,12 @@ const DB={
   // ── TYLER (SSBE) SECRET RARE — BSE chase variant. MYTHIC. 152/150.
   tyler_ssbe_sr_bse:{id:'tyler_ssbe_sr_bse',rarity:'mythic',secretRare:true,name:'Tyler (SSBE)',color:'blue',charName:'Tyler',charLine:'tyler',formTier:'ssbe',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:12,atk:10,hp:14,sym:'TYSSBE',setId:'base_set',cardNumber:'152/150',nextForms:[],
     abilities:[{label:'Power of Securement',type:'passive',cost:0,text:'This card cannot be sent to the Rift.'},{label:'Sensory Play',type:'activated',cost:0,limit:'every_2_turns',text:"Flip a coin. If heads you may view your opponent's hand. (Once every 2 turns)"},{label:'Shielded Pressure',type:'triggered',cost:0,text:'Every time this card is attacked it counters the attacker for 3 damage.'}],transforms:[]},
+  // ── ZEPHYRANTH FRUIT — BSE Instant (Consumable). GREEN (healing). 075/150 Common.
+  zephyranth_fruit_bse:{id:'zephyranth_fruit_bse',rarity:'common',name:'Zephyranth Fruit',color:'green',charName:'Zephyranth Fruit',subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:2,atk:0,hp:0,sym:'🍇',setId:'base_set',cardNumber:'075/150',nextForms:[],
+    abilities:[{label:'Zephyranth Fruit',type:'instant',cost:0,text:'Selected Character on your field restores 3 HP.'}],transforms:[]},
+  // ── VERMYNTH FRUIT — BSE Instant (Consumable). GREEN (healing). 076/150 Uncommon.
+  vermynth_fruit_bse:{id:'vermynth_fruit_bse',rarity:'uncommon',name:'Vermynth Fruit',color:'green',charName:'Vermynth Fruit',subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:4,atk:0,hp:0,sym:'🥝',setId:'base_set',cardNumber:'076/150',nextForms:[],
+    abilities:[{label:'Vermynth Fruit',type:'instant',cost:0,text:'Heals one of your characters on the field for 4 HP while also adding 2 ATK Power.'}],transforms:[]},
   // ── EKLIF FROST — BSE regular character (Titan • Beast). BLUE (control). 047/150 Uncommon.
   eklif_frost_bse:{id:'eklif_frost_bse',rarity:'uncommon',name:'Eklif Frost',color:'blue',charName:'Eklif Frost',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:2,atk:2,hp:2,sym:'EKLIF',setId:'base_set',cardNumber:'047/150',nextForms:[],
     abilities:[{label:'Frozen Domain',type:'activated',cost:0,text:"Choose 1 Location card your opponent has in play. That Location has no effects or abilities while this card is in play."}],transforms:[]},
@@ -10262,6 +10270,17 @@ function onHandClick(p,uid,fc){
       if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
       openInstantTargetPicker(fco,chars);return;
     }
+    if(c.id==='zephyranth_fruit_bse' || c.id==='vermynth_fruit_bse'){
+      if(!chars.length){log(`No field character to use ${c.name} on!`,'dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
+      if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
+      if(typeof SFX!=='undefined')SFX.instant();
+      if(p===1)sendGameAction('instant_reveal',{cardId:c.id});
+      log(`${pname(p)} plays ${c.name}!`,'info');
+      const healAmt = c.id==='vermynth_fruit_bse'?4:3;
+      const atkAmt  = c.id==='vermynth_fruit_bse'?2:0;
+      openFruitHealPicker(p, fco, chars, healAmt, atkAmt);
+      return;
+    }
     // Show dramatic reveal popup FIRST, then execute the instant's effect
     showInstantReveal(c.id, p);
     if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
@@ -10311,6 +10330,40 @@ function openEnemyTargetPicker(targets, callback, opts){
   showModalEl(opts.title||'Choose Target',body);
 }
 
+// ZEPHYRANTH / VERMYNTH FRUIT — heal (and optionally +ATK) one of YOUR field
+// characters, then discard (consumable). AI auto-targets the most-wounded ally.
+function openFruitHealPicker(p, fco, chars, healAmt, atkAmt){
+  const c=DB[fco.cid]; const pl=G.players[p];
+  const apply=(target)=>{
+    const mx=(target.baseHP||0)+(target.hpBonus||0)+(target.passiveHp||0);
+    target.currentHP=Math.min(mx,(target.currentHP||0)+healAmt);
+    let msg=`${c.name}: ${DB[target.cid].name} heals +${healAmt} HP (now ${target.currentHP})`;
+    if(atkAmt>0){ target.currentATK=(target.currentATK||0)+atkAmt; target.atkBonus=(target.atkBonus||0)+atkAmt; msg+=` and gains +${atkAmt} ATK`; }
+    log(msg+'.','gain');
+    pl.discard.push(c.id);
+    if(typeof recalcPassives==='function')recalcPassives();
+    closeAllModals(); renderAll();
+  };
+  const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(p) : (p===1);
+  if(!_human){
+    const target=chars.reduce((a,b)=>{
+      const am=((a.baseHP||0)+(a.hpBonus||0))-(a.currentHP||0);
+      const bm=((b.baseHP||0)+(b.hpBonus||0))-(b.currentHP||0);
+      return bm>am?b:a;
+    });
+    apply(target); return;
+  }
+  const body=document.createElement('div');
+  body.innerHTML=`<div style="font-weight:700;color:#86efac;margin-bottom:4px">${c.name}</div><div style="font-size:11px;color:#9ca3af;margin-bottom:10px">${c.abilities[0]?.text||''}</div><div style="font-size:11px;color:#c8a0ff;margin-bottom:6px">Choose one of your characters:</div>`;
+  chars.forEach(cf=>{
+    const cc=DB[cf.cid]; const mx=(cf.baseHP||0)+(cf.hpBonus||0)+(cf.passiveHp||0);
+    const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:7px 10px;display:flex;justify-content:space-between;align-items:center';
+    btn.innerHTML=`<span>${cc.name}</span><span style="color:#22c55e">♥${cf.currentHP}/${mx}${atkAmt>0?` ⚔${cf.currentATK}`:''}</span>`;
+    btn.onclick=()=>apply(cf);
+    body.appendChild(btn);
+  });
+  showModalEl(`Instant: ${c.name}`,body);
+}
 function openInstantTargetPicker(ifc,chars){
   const ic=DB[ifc.cid];
   const body=document.createElement('div');
