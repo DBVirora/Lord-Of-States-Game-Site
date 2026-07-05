@@ -6820,6 +6820,7 @@ const DEFAULTS={
   tyler_ssbe_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/021-150%20(Tyler%20SSBE).png',
   tyler_ssbe_sr_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/152-150%20(Tyler%20SSBE)%20(Secret%20Rare).png',
   scorched_titan_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/046-150%20(The%20Scorched%20Titan).png',
+  eklif_frost_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/047-150%20(Eklif%20Frost).png',
   tyler_ssb_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/020-150%20(Tyler%20SSB).png',
   ghost_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/ghost_hulk_card%20PROMO.png',
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
@@ -6973,6 +6974,9 @@ const DB={
   // ── TYLER (SSBE) SECRET RARE — BSE chase variant. MYTHIC. 152/150.
   tyler_ssbe_sr_bse:{id:'tyler_ssbe_sr_bse',rarity:'mythic',secretRare:true,name:'Tyler (SSBE)',color:'blue',charName:'Tyler',charLine:'tyler',formTier:'ssbe',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:12,atk:10,hp:14,sym:'TYSSBE',setId:'base_set',cardNumber:'152/150',nextForms:[],
     abilities:[{label:'Power of Securement',type:'passive',cost:0,text:'This card cannot be sent to the Rift.'},{label:'Sensory Play',type:'activated',cost:0,limit:'every_2_turns',text:"Flip a coin. If heads you may view your opponent's hand. (Once every 2 turns)"},{label:'Shielded Pressure',type:'triggered',cost:0,text:'Every time this card is attacked it counters the attacker for 3 damage.'}],transforms:[]},
+  // ── EKLIF FROST — BSE regular character (Titan • Beast). BLUE (control). 047/150 Uncommon.
+  eklif_frost_bse:{id:'eklif_frost_bse',rarity:'uncommon',name:'Eklif Frost',color:'blue',charName:'Eklif Frost',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:2,atk:2,hp:2,sym:'EKLIF',setId:'base_set',cardNumber:'047/150',nextForms:[],
+    abilities:[{label:'Frozen Domain',type:'activated',cost:0,text:"Choose 1 Location card your opponent has in play. That Location has no effects or abilities while this card is in play."}],transforms:[]},
   // ── THE SCORCHED TITAN — BSE regular character (Titan • Beast). RED (aggression). 046/150 Uncommon.
   scorched_titan_bse:{id:'scorched_titan_bse',rarity:'uncommon',name:'The Scorched Titan',color:'red',charName:'The Scorched Titan',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:3,atk:2,hp:4,sym:'SCTITAN',setId:'base_set',cardNumber:'046/150',nextForms:[],
     abilities:[{label:'Scorched Strike',type:'activated',cost:0,text:"Roll a 4-sided dye. If it lands on 1, deal 2 damage to an opponent's field character. (Taps)"}],transforms:[]},
@@ -7925,7 +7929,7 @@ function recalcPassives(){
       }
       // VEELDEN KINGDOM (location anthem): your Saiyan characters get +1/+1 while
       // you control the Kingdom. Removing the location drops the buff automatically.
-      if(isSaiyanChar(c) && pl.field.some(f=>f.cid==='veelden_kingdom_bse')){
+      if(isSaiyanChar(c) && pl.field.some(f=>f.cid==='veelden_kingdom_bse' && !isLocationFrozen(f))){
         addA += 1; addH += 1;
       }
       // Support Boost (Volaris SSB): +3 ATK/+4 HP to each char next to this on field
@@ -9889,7 +9893,7 @@ function runAI2v2(p){
   pl.energy+=1; if(typeof resetEnergyCardFlag==='function')resetEnergyCardFlag(p);
   if(typeof untapAll==='function')untapAll(p);
   drawCard(p);
-  if(typeof isLockedDown==='function' && !isLockedDown(p)){ let g=0; pl.field.filter(f=>isLoc(DB[f.cid])).forEach(()=>g++); if(g>0)pl.energy+=g; }
+  if(typeof isLockedDown==='function' && !isLockedDown(p)){ let g=0; pl.field.filter(f=>isLoc(DB[f.cid]) && !isLocationFrozen(f)).forEach(()=>g++); if(g>0)pl.energy+=g; }
   G.phase='main'; renderAll();
   setTimeout(()=>{
     if(G.gameOver)return;
@@ -10691,6 +10695,17 @@ function isLockedDown(p){
   const pl=G.players[p]; if(!pl)return false;
   return (pl.lockdownUntilTurn||0) > (G.turn||0);
 }
+// FROZEN DOMAIN (Eklif Frost): a Location is 'frozen' — no effects or abilities —
+// while any Eklif Frost in play is targeting it. Derived live from Eklif's presence,
+// so the freeze ends automatically the moment Eklif leaves the field.
+function isLocationFrozen(locFc){
+  if(!locFc||!G||!G.players)return false;
+  for(const pn of [1,2]){
+    const pl=G.players[pn]; if(!pl||!pl.field)continue;
+    if(pl.field.some(f=>f.cid==='eklif_frost_bse' && f._frozenLocUid===locFc.uid))return true;
+  }
+  return false;
+}
 
 function applyEquip(fc,eq){
   if(eq.id==='aquatic_hearth'){fc.currentHP+=5;fc.hpBonus+=5;log('Aquatic Hearth: +5 Defense (HP).','gain');}
@@ -11106,6 +11121,7 @@ function openAbilityModal(){
   const cards=pl.field.filter(f=>isChar(DB[f.cid])||isLoc(DB[f.cid]));
   cards.forEach(fc=>{
     const c=DB[fc.cid];if(!c)return;
+    if(isLoc(c) && isLocationFrozen(fc))return; // Frozen Domain: no abilities while frozen
     if(!fc.abilityUsed)fc.abilityUsed={};
     // Combine the character's own activated abilities with any activated abilities
     // granted by attached EQUIPMENT (e.g. Space Crystal's Shift of Space), tagged
@@ -11134,6 +11150,10 @@ function openAbilityModal(){
 }
 
 function activateAbility(fc,abl){
+  // FROZEN DOMAIN: a frozen Location cannot use its abilities.
+  if(typeof isLocationFrozen==='function' && isLoc(DB[fc.cid]) && isLocationFrozen(fc)){
+    log(`${DB[fc.cid]?.name} is frozen — its abilities are disabled (Frozen Domain).`,'dmg'); return;
+  }
   // TAPPED: a tapped card cannot use any more abilities.
   if(fc.tapped){ log(`${DB[fc.cid]?.name} is tapped — it can't use abilities until your next turn.`,'dmg'); return; }
   // FROZEN: a frozen card cannot attack OR use abilities (e.g. Godly Restriction).
@@ -11755,6 +11775,40 @@ function activateAbility(fc,abl){
   }
 
   // ── TYLER (SSB): Buster Purge — 3⚡, deal 3 to a chosen enemy character; taps afterwards.
+  // ── EKLIF FROST: Frozen Domain — free: choose an opponent Location to freeze
+  //    (no effects/abilities) while Eklif Frost stays in play. Re-usable to retarget.
+  if(abl.label==='Frozen Domain'){
+    const ap=G.activePlayer; const pl=G.players[ap]; const oppNum=ap===1?2:1;
+    const locs=G.players[oppNum].field.filter(f=>isLoc(DB[f.cid]));
+    if(!locs.length){ log('Frozen Domain: opponent has no Locations in play.','dmg'); return; }
+    pl.usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    const freeze=(locUid)=>{
+      fc._frozenLocUid=locUid;
+      const lf=locs.find(l=>l.uid===locUid);
+      const lname=lf?DB[lf.cid]?.name:'that Location';
+      log(`❄ Frozen Domain: ${lname} is frozen — no effects or abilities while ${DB[fc.cid].name} is in play!`,'gain');
+      if(typeof recalcPassives==='function')recalcPassives();
+      renderAll();
+    };
+    const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(ap) : (ap===1);
+    if(_human){
+      closeAllModals();
+      const body=document.createElement('div');
+      body.innerHTML='<div style="font-size:11px;color:#9ca3af;margin-bottom:8px">Choose an opponent Location to freeze:</div>';
+      locs.forEach(lf=>{
+        const lc=DB[lf.cid];
+        const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:7px 10px;display:flex;justify-content:space-between;align-items:center';
+        btn.innerHTML=`<span>${lc.name}</span><span style="color:#7dd3fc;font-size:10px">♥${lf.currentHP}</span>`;
+        btn.onclick=()=>{ closeAllModals(); freeze(lf.uid); };
+        body.appendChild(btn);
+      });
+      showModalEl('❄ Frozen Domain',body);
+    } else {
+      freeze(locs[0].uid);
+    }
+    return;
+  }
   // ── THE SCORCHED TITAN: Scorched Strike — free, taps: roll a d4; on a 1, deal
   //    2 damage to a chosen opponent character.
   if(abl.label==='Scorched Strike'){
@@ -12404,7 +12458,7 @@ function doPhase(ph){
 // Auto "Resource": grant +1 energy per Location you control (unless locked down).
 function gainLocationEnergy(p){
   if(typeof isLockedDown==='function' && isLockedDown(p)){ log('Field Lockdown: your Locations are disabled — no energy.','dmg'); return; }
-  let g=0; G.players[p].field.filter(f=>isLoc(DB[f.cid])).forEach(()=>g++);
+  let g=0; G.players[p].field.filter(f=>isLoc(DB[f.cid]) && !isLocationFrozen(f)).forEach(()=>g++);
   if(g>0){ G.players[p].energy+=g; log(`+${g}⚡ from Locations.`,'gain'); }
 }
 
@@ -12856,7 +12910,7 @@ function runAI(){
   runPowerDrain(2);
   renderAll();
   setTimeout(()=>{
-    let g=0;if(!isLockedDown(2)){G.players[2].field.filter(f=>isLoc(DB[f.cid])).forEach(()=>g++);if(g>0)G.players[2].energy+=g;}
+    let g=0;if(!isLockedDown(2)){G.players[2].field.filter(f=>isLoc(DB[f.cid]) && !isLocationFrozen(f)).forEach(()=>g++);if(g>0)G.players[2].energy+=g;}
     G.phasesDone.push('resource');G.phase='resource';renderAll();
     setTimeout(()=>{
       G.phase='main';G.phasesDone.push('main');
