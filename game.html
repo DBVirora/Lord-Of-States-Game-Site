@@ -7303,6 +7303,7 @@ async function handleUpload(e,id){
 let SAVED_DECKS={};
 let builderDeck=[];
 let pendingMode='',pendingP1Deck=null,pendingP2Deck=null;
+let _pendingAdminTest=false; // set when launching AI Admin Testing mode
 
 // ── SUPABASE DECK STORAGE ─────────────────────────
 // Decks are stored per-user in Supabase.
@@ -7893,7 +7894,7 @@ function newFC(cid){
   const c=DB[cid];if(!c)return null;
   return{uid:uid(),cid,currentHP:c.hp,currentATK:c.atk,baseHP:c.hp,baseATK:c.atk,
     turnPlayed:G.turn||1,nullify:0,attachments:[],frozen:0,paralyzed:false,
-    hpBonus:0,atkBonus:0,costMod:0,abilityUsed:{},damagedThisTurn:false,markedDamage:0,isFlipped:false,attacksThisTurn:0,
+    hpBonus:0,atkBonus:0,costMod:0,abilityUsed:{},damagedThisTurn:false,markedDamage:0,isFlipped:false,attacksThisTurn:0,statuses:{},
     passiveAtk:0,passiveHp:0,tapped:false};
 }
 
@@ -8003,6 +8004,7 @@ function startGame(mode,deck1,deck2,foils1,foils2){
       1:{name:(window._playerName||document.getElementById('hud-username')?.textContent||'Player 1'),energy:5,colorEnergy:{},hand:[],field:[],deck:d1,discard:[],rift:[],prizes:p1,prizesClaimed:0,prizesTaken:[],prizesFoil:pf1,herald:h1,lifeForce:startLF,foilPool:_fp1},
       2:{name:((mode==='pvp'||mode==='online')?(G&&G.onlineOpponentName)||window._onlineOpponentName||'Opponent':'AI'),energy:5,colorEnergy:{},hand:[],field:[],deck:d2,discard:[],rift:[],prizes:p2,prizesClaimed:0,prizesTaken:[],prizesFoil:pf2,herald:h2,lifeForce:startLF,foilPool:_fp2},
     },log:[]};
+  if(_pendingAdminTest){ G.adminTestMode=true; _pendingAdminTest=false; log('🧪 AI Admin Testing Mode — status tester enabled.','info'); }
   for(let i=0;i<7;i++){drawCard(1,true);drawCard(2,true);}
   if(h1)log(`${pname(1)} Herald: ${DB[h1.cid].name} enters play!`,'gain');
   if(h2)log(`${pname(2)} Herald: ${DB[h2.cid].name} enters play!`,'gain');
@@ -9473,7 +9475,7 @@ function executeCombatDamage(ap,auid,dp,duid){
     dfc.currentHP+=2;
     log(`Immortality: ${dc.name} gains +2 Health (now ${dfc.currentHP}HP).`,'gain');
   }
-  if(tgtAlive&&!dfc.frozen){
+  if(tgtAlive&&!statusActive(dfc,'freeze')){
     if(hasKW(afc,'pursuit')){
       log(`${dc.name} retaliates ${defenderATK} (Pursuit: target survived).`,'info');
       dealDamage(ap,auid,defenderATK);
@@ -9675,8 +9677,7 @@ function onFieldClick(p,uid,fc){
     if(p===G.activePlayer){
       if(!iControlActive()){ showFullCard(fc.cid,fc); return; }
       if(!isChar(DB[fc.cid]))return;
-      if(fc.frozen>0){log('Frozen!','dmg');return;}
-      if(fc.paralyzed){log('Paralyzed!','dmg');return;}
+      if(statusActive(fc,'freeze')){log('❄️ Frozen — can\'t attack this turn!','dmg');return;}
       if(fc.antiLife&&fc.antiLife>G.turn){log(`${DB[fc.cid].name} is locked by Anti-Life Equation!`,'dmg');return;}
       if(fc.turnPlayed>=G.turn&&!hasKW(fc,'burst_speed')){log('Just played — wait 1 turn.','dmg');return;}
       // ENFORCE: only one character may attack per phase (unless ability grants more)
@@ -9685,6 +9686,7 @@ function onFieldClick(p,uid,fc){
         else {log('Only one character may attack per turn.','dmg');}
         return;
       }
+      if(!rollAttackStatuses(p,fc)){ renderAll(); return; }
       G.selectedAttacker=uid;log(`${DB[fc.cid].name} ready — click target.`,'info');renderAll();
     } else if(!isEnemyBoard(p)){
       // Friendly board (your 2v2 teammate) — never a melee target. Just inspect.
@@ -9922,7 +9924,7 @@ function runAI2v2(p){
     setTimeout(()=>{
       if(G.gameOver)return;
       G.phase='attack';
-      const eligible=pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken&&(f.turnPlayed<G.turn||hasKW(f,'burst_speed'))&&!f.paralyzed&&!f.frozen&&!f.tapped);
+      const eligible=pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken&&(f.turnPlayed<G.turn||hasKW(f,'burst_speed'))&&!statusActive(f,'freeze')&&!statusActive(f,'paralyze')&&!statusActive(f,'confuse')&&!f.tapped);
       const maxAtk=1+(G.bonusAttackers||0);
       const chosen=eligible.sort((a,b)=>b.currentATK-a.currentATK).slice(0,maxAtk);
       if(!chosen.length){ log(`${pl.name} skips attack.`,'info'); setTimeout(()=>{ if(!G.gameOver)execEnd(); },600); return; }
@@ -10573,7 +10575,7 @@ function onEntry(p,fc){
       const h=coin();
       if(h){
         const enemy=G.players[p===1?2:1].field.filter(f=>isChar(DB[f.cid]));
-        if(enemy.length){ const tgt=enemy[0]; tgt.paralyzed=true; log(`Rival Synergy: HEADS — ${DB[tgt.cid].name} paralyzed!`,'gain'); }
+        if(enemy.length){ const tgt=enemy[0]; applyStatus(tgt,'paralyze',2); }
         else log('Rival Synergy: HEADS — but no enemy to paralyze.','info');
       } else log('Rival Synergy: TAILS — no effect.','dmg');
     }
@@ -11093,7 +11095,7 @@ function doTransform(fieldUid,newCid,handUid,cost){
     // Replace in place — keep uid and attachments
     const prevAttachments=fc.attachments||[];
     fc.cid=newCid;fc.variant=newVariant;fc.currentHP=nc.hp;fc.currentATK=nc.atk;fc.baseHP=nc.hp;fc.baseATK=nc.atk;
-    fc.hpBonus=0;fc.atkBonus=0;fc.abilityUsed={};fc.damagedThisTurn=false;fc.markedDamage=0;
+    fc.hpBonus=0;fc.atkBonus=0;fc.abilityUsed={};fc.damagedThisTurn=false;fc.markedDamage=0;fc.statuses={};// transforming cleanses status effects
     fc.nullify=0; // recomputed from carried equipment below
     // Keep persistent attachments
     fc.attachments=prevAttachments.filter(eqId=>{const eq=DB[eqId];return eq&&eq.persistent!==false;});
@@ -11210,7 +11212,7 @@ function activateAbility(fc,abl){
   // TAPPED: a tapped card cannot use any more abilities.
   if(fc.tapped){ log(`${DB[fc.cid]?.name} is tapped — it can't use abilities until your next turn.`,'dmg'); return; }
   // FROZEN: a frozen card cannot attack OR use abilities (e.g. Godly Restriction).
-  if(fc.frozen>0){ log(`${DB[fc.cid]?.name} is frozen — it can't use abilities.`,'dmg'); return; }
+  if(statusActive(fc,'freeze')){ log(`${DB[fc.cid]?.name} is frozen — it can't use abilities.`,'dmg'); return; }
   // ── VOLARIS (PRISM) special routing — intercept before energy spend ──
   if(fc.cid==='volaris_prism'){
     if(abl.label==='Prism Shift'){
@@ -11745,8 +11747,7 @@ function activateAbility(fc,abl){
       openEnemyTargetPicker(live,(uid)=>{
         const tfc=G.players[oppNum].field.find(f=>f.uid===uid);
         if(tfc){
-          tfc.frozen=Math.max(tfc.frozen||0,2);
-          log(`Godly Restriction: ${DB[tfc.cid].name} can't attack or use abilities next turn!`,'dmg');
+          applyStatus(tfc,'freeze',1);
         }
         closeAllModals(); renderAll();
       },{sourcePlayer:G.activePlayer,title:'Godly Restriction',desc:"Choose an opponent character to lock down for their upcoming turn."});
@@ -12652,7 +12653,93 @@ function applySurfacerBinding(player){
   body.appendChild(eBtn); body.appendChild(dBtn);
   showModalEl('🔮 Surfacer Binding', body);
 }
+// ═════════════════════════════════════════
+// STATUS EFFECT ENGINE (Burn / Poison / Freeze / Paralyze / Confusion)
+//  • stored per field-card as fc.statuses = { type: turnsRemaining }
+//  • same status can't stack on itself; different statuses coexist
+//  • DoT applies at the afflicted player's turn START; all statuses count
+//    down at that player's turn END (so each status costs the victim real turns)
+//  • transforming a character clears its statuses (see doTransform)
+// ═════════════════════════════════════════
+const STATUS_META = {
+  burn:    {icon:'🔥', label:'Burn',      color:'#f97316', dur:3},
+  poison:  {icon:'☠️', label:'Poison',    color:'#84cc16', dur:3},
+  freeze:  {icon:'❄️', label:'Freeze',    color:'#38bdf8', dur:1},
+  paralyze:{icon:'⚡', label:'Paralyze',  color:'#facc15', dur:2},
+  confuse: {icon:'😵', label:'Confusion', color:'#c084fc', dur:3},
+};
+function statusActive(fc,type){ return !!(fc&&fc.statuses&&fc.statuses[type]>0); }
+function applyStatus(fc,type,turns){
+  if(!fc||!STATUS_META[type])return false;
+  if(!fc.statuses)fc.statuses={};
+  if(fc.statuses[type]>0){ log(`${DB[fc.cid]?.name} is already ${STATUS_META[type].label}ed — it doesn't stack.`,'info'); return false; }
+  fc.statuses[type]=turns||STATUS_META[type].dur;
+  const m=STATUS_META[type];
+  log(`${m.icon} ${DB[fc.cid]?.name} is afflicted with ${m.label} (${fc.statuses[type]} turn${fc.statuses[type]>1?'s':''})!`,'dmg');
+  return true;
+}
+function cureStatus(fc,type){
+  if(!fc||!fc.statuses||!fc.statuses[type])return false;
+  delete fc.statuses[type];
+  log(`${STATUS_META[type]?.icon||''} ${DB[fc.cid]?.name}'s ${STATUS_META[type]?.label||type} was cured.`,'gain');
+  return true;
+}
+function cureAllStatuses(fc){
+  if(!fc||!fc.statuses||!Object.keys(fc.statuses).length)return false;
+  fc.statuses={};
+  log(`${DB[fc.cid]?.name} was cleansed of all status effects.`,'gain');
+  return true;
+}
+// DoT (Burn back-loaded 1/1/2, Poison ramping 1/2/3) at the afflicted player's turn start.
+function applyStatusDoT(p){
+  const pl=G.players[p]; if(!pl||!pl.field)return;
+  pl.field.slice().forEach(fc=>{
+    if(!fc.statuses)return;
+    if(fc.statuses.burn>0){
+      const d=(fc.statuses.burn===1)?2:1;
+      fc.currentHP-=d; log(`🔥 Burn: ${DB[fc.cid]?.name} takes ${d}.`,'dmg');
+      if(typeof showDmgPopup==='function')showDmgPopup(p,'-'+d,fc.uid);
+      if(fc.currentHP<=0){ killCard(p,fc); return; }
+    }
+    if(fc.statuses.poison>0){
+      const d=(STATUS_META.poison.dur - fc.statuses.poison + 1);
+      fc.currentHP-=d; log(`☠️ Poison: ${DB[fc.cid]?.name} takes ${d}.`,'dmg');
+      if(typeof showDmgPopup==='function')showDmgPopup(p,'-'+d,fc.uid);
+      if(fc.currentHP<=0){ killCard(p,fc); return; }
+    }
+  });
+}
+// Count every status down by 1 at the end of the afflicted player's own turn.
+function decrementStatuses(p){
+  const pl=G.players[p]; if(!pl||!pl.field)return;
+  pl.field.forEach(fc=>{
+    if(!fc.statuses)return;
+    Object.keys(fc.statuses).forEach(type=>{
+      fc.statuses[type]--;
+      if(fc.statuses[type]<=0){ delete fc.statuses[type]; log(`${STATUS_META[type]?.icon||''} ${DB[fc.cid]?.name}'s ${STATUS_META[type]?.label||type} wore off.`,'info'); }
+    });
+  });
+}
+// Paralyze/Confusion roll when a character attempts to attack. Returns true if the
+// attack may proceed; false if it was consumed (fizzle or self-hit) — caller aborts.
+function rollAttackStatuses(p, fc){
+  if(!fc||!fc.statuses) return true;
+  if(fc.statuses.paralyze>0 && !coin()){
+    log(`⚡ ${DB[fc.cid]?.name} is paralyzed — its attack fizzled!`,'dmg');
+    fc.tapped=true; fc.attacksThisTurn=(fc.attacksThisTurn||0)+1; return false;
+  }
+  if(fc.statuses.confuse>0 && !coin()){
+    log(`😵 ${DB[fc.cid]?.name} is confused — it hits itself for 2!`,'dmg');
+    fc.currentHP-=2;
+    if(typeof showDmgPopup==='function')showDmgPopup(p,'-2',fc.uid);
+    fc.tapped=true; fc.attacksThisTurn=(fc.attacksThisTurn||0)+1;
+    if(fc.currentHP<=0){ killCard(p,fc); }
+    return false;
+  }
+  return true;
+}
 function startTurnFx(player){
+  if(typeof applyStatusDoT==='function') applyStatusDoT(player); // Burn/Poison chip at turn start
   const pl=G.players[player]; if(!pl) return;
   // ── SURFACER BINDING (The Surfacer Herald): if an OPPONENT has The Surfacer as
   // their herald, at the start of this player's turn they must discard 1 card or
@@ -12745,11 +12832,10 @@ function endTurnFx(p){
   tokens.forEach(t=>{G.players[p].field=G.players[p].field.filter(f=>f.uid!==t.uid);log('Fighter Token removed.','info');});
   // Status ticks
   [p,o].forEach(pp=>G.players[pp].field.forEach(fc=>{
-    if(fc.frozen>0){fc.frozen--;if(fc.frozen===0)log(`${DB[fc.cid]?.name} unfreezes.`,'info');}
-    if(pp===p&&fc.paralyzed){fc.paralyzed=false;log('Paralysis ends.','info');}
     fc.damagedThisTurn=false;fc.attacksThisTurn=0;
     Object.keys(fc.abilityUsed||{}).forEach(k=>{const c=DB[fc.cid];const a=c?.abilities?.find(ab=>ab.label===k);if(a&&a.limit==='once_per_turn')delete fc.abilityUsed[k];});
   }));
+  decrementStatuses(p); // count down statuses on the player whose turn just ended
   G.bonusAttackers=0; // reset ability-granted extra attackers each turn
   // ── ULTRA EGO GROWTH (Goku UE): grows +1/+1 at the END OF THE OPPONENT'S turn.
   // When player p ends their turn, the OPPONENT's (o's) Goku grows. Permanent.
@@ -13025,7 +13111,7 @@ function runAI(){
       setTimeout(()=>{
         G.phase='attack';G.phasesDone.push('attack');
         const opp=G.players[1];
-        const eligible=G.players[2].field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken&&(f.turnPlayed<G.turn||hasKW(f,'burst_speed'))&&!f.paralyzed&&!f.frozen&&!f.tapped);
+        const eligible=G.players[2].field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken&&(f.turnPlayed<G.turn||hasKW(f,'burst_speed'))&&!statusActive(f,'freeze')&&!statusActive(f,'paralyze')&&!statusActive(f,'confuse')&&!f.tapped);
         const aiMaxAttackers=1+(G.bonusAttackers||0);
         // End the AI's turn and hand back to the human (also fires the human's
         // start-of-turn effects, which this path previously skipped).
@@ -14083,8 +14169,7 @@ function showFullCard(cid,fc,holoOverride){
       <div class="fullcard-stat"><div class="fullcard-stat-val" style="color:#a78bfa">${c.cost}</div><div class="fullcard-stat-lbl">COST</div></div>
     </div>
     <div style="width:100%;height:5px;background:#1e293b;border-radius:3px;margin-bottom:7px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${hpCol};border-radius:3px"></div></div>
-    ${fc.frozen>0?`<div style="color:#38bdf8;font-size:11px;margin-bottom:3px">❄️ Frozen ${fc.frozen} turns</div>`:''}
-    ${fc.paralyzed?`<div style="color:#facc15;font-size:11px;margin-bottom:3px">⚡ Paralyzed</div>`:''}`;
+    ${(()=>{const st=(fc&&fc.statuses)||{};const rows=Object.keys(STATUS_META).filter(t=>st[t]>0).map(t=>{const m=STATUS_META[t];return `<div style="color:${m.color};font-size:11px;margin-bottom:3px">${m.icon} ${m.label} — ${st[t]} turn${st[t]>1?'s':''} left</div>`;}).join('');return rows;})()}`;
     wrap.appendChild(sd);
     // ATTACHED CARDS PANEL
     if(fc.attachments&&fc.attachments.length>0){
@@ -14345,6 +14430,7 @@ function showRiftZone(p){
 // ═══════════════════════════════════════════════════
 function renderAll(){
   if(!G||!G.players)return;
+  if(typeof syncAdminTester==='function') syncAdminTester();
   if(G.is2v2){ renderAll2v2(); return; }
   recalcPassives();
   [1,2].forEach(p=>{
@@ -14601,9 +14687,9 @@ function renderField(p, targetId){
     div.setAttribute('data-uid',fc.uid);div.setAttribute('data-player',p);
     if(c.isToken)div.classList.add('token-card');
     if(fc.tapped)div.classList.add('tapped');
-    if(fc.frozen>0)div.classList.add('frozen');else if(fc.paralyzed)div.classList.add('paralyzed');
+    if(statusActive(fc,'freeze'))div.classList.add('frozen');else if(statusActive(fc,'paralyze'))div.classList.add('paralyzed');
     if(fc.uid===G.selectedAttacker)div.classList.add('attacker-sel');
-    else if(p===G.activePlayer&&G.phase==='attack'&&isChar(c)&&(fc.turnPlayed<G.turn||hasKW(fc,'burst_speed'))&&!fc.frozen&&!fc.paralyzed&&typeof canCharacterAttack==='function'&&canCharacterAttack(p,fc))div.classList.add('can-attack');
+    else if(p===G.activePlayer&&G.phase==='attack'&&isChar(c)&&(fc.turnPlayed<G.turn||hasKW(fc,'burst_speed'))&&!statusActive(fc,'freeze')&&typeof canCharacterAttack==='function'&&canCharacterAttack(p,fc))div.classList.add('can-attack');
     const _selAtk=G.selectedAttacker?G.players[G.activePlayer]?.field.find(f=>f.uid===G.selectedAttacker):null;
     const _oppGuardian=G.players[p]?.field.some(f=>isChar(DB[f.cid])&&hasKW(f,'guardian')&&f.uid!==fc.uid);
     if(G.selectedAttacker&&isEnemyBoard(p)&&isChar(c)){
@@ -14616,7 +14702,7 @@ function renderField(p, targetId){
     info.innerHTML=`<div class="card-name-sm">${c.name}</div>
       <div class="card-stats-row"><span class="stat-atk">⚔${fc.currentATK}</span><span style="color:${hpCol};font-weight:700">♥${fc.currentHP}</span></div>
       <div class="hp-bar-wrap"><div class="hp-bar-fill" style="width:${pct}%;background:${hpCol}"></div></div>
-      ${(fc.frozen>0||fc.paralyzed||(fc.attachments&&fc.attachments.length)||c.isToken)?`<div class="status-icons">${fc.frozen>0?`❄${fc.frozen}`:''}${fc.paralyzed?'⚡':''}${fc.attachments&&fc.attachments.length?'🛡':''}${c.isToken?'⭐':''}</div>`:''}`;
+      ${(()=>{const st=fc.statuses||{};const si=Object.keys(STATUS_META).filter(t=>st[t]>0).map(t=>STATUS_META[t].icon).join('');const ex=`${fc.attachments&&fc.attachments.length?'🛡':''}${c.isToken?'⭐':''}`;return (si||ex)?`<div class="status-icons">${si}${ex}</div>`:'';})()}`;
     div.appendChild(info);
     div.onclick=()=>onFieldClick(p,fc.uid,fc);
     div.onmouseenter=()=>showHoverPreview(fc.cid);
@@ -15156,6 +15242,7 @@ async function checkDailyLogin(){
 // online — including 2v2 co-op — earns rewards.
 function _isLocalPvPMatch(){
   if(!G) return false;
+  if(G.adminTestMode) return true; // admin test matches never grant rewards/stats
   if(G.is2v2){
     // 2v2 local PvP = not online AND no AI seats (all four seats are local humans).
     return !G.onlineMode2v2 && ((G.aiPlayers||[]).length===0);
@@ -16943,6 +17030,66 @@ function isFeatureEnabled(key){
   return _adminToggles[key]!==false;
 }
 
+// ── AI ADMIN TESTING MODE — admin-only sandbox that plays like a normal 1v1 vs-AI
+//    match but enables the on-board Status Tester. No rewards/stats. Invisible to
+//    everyone else (gated by isAdmin + G.adminTestMode).
+function startAdminTestMatch(){
+  if(!isAdmin()){ alert('Admin access required.'); return; }
+  _pendingAdminTest=true;
+  if(typeof goToDeckSelect==='function') goToDeckSelect('ai');
+}
+// Floating tester button: create/show only in admin test mode; hide otherwise.
+function syncAdminTester(){
+  let btn=document.getElementById('admin-tester-btn');
+  const show = !!(G && G.adminTestMode && typeof isAdmin==='function' && isAdmin() && !G.gameOver);
+  if(!show){ if(btn)btn.style.display='none'; return; }
+  if(!btn){
+    btn=document.createElement('button');
+    btn.id='admin-tester-btn';
+    btn.textContent='🧪 Status Tester';
+    btn.style.cssText='position:fixed;left:10px;bottom:44px;z-index:99998;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:1px solid #a78bfa;border-radius:10px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(124,58,237,.5)';
+    btn.onclick=openStatusTester;
+    document.body.appendChild(btn);
+  }
+  btn.style.display='block';
+}
+// The tester modal: pick any field character (either side), then apply a status or cure.
+function openStatusTester(){
+  if(!(G && G.adminTestMode && isAdmin())) return;
+  const body=document.createElement('div');
+  body.innerHTML='<div style="font-size:11px;color:#9ca3af;margin-bottom:8px">Admin sandbox — apply or clear status effects on any field character.</div>';
+  [1,2].forEach(pn=>{
+    const pl=G.players[pn]; if(!pl)return;
+    const chars=pl.field.filter(f=>isChar(DB[f.cid]));
+    if(!chars.length)return;
+    const hdr=document.createElement('div');hdr.style.cssText='font-weight:700;color:#c8a0ff;font-size:12px;margin:8px 0 5px;border-bottom:1px solid #2a2a4a;padding-bottom:3px';
+    hdr.textContent=(pn===1?'Your field':'Opponent field');
+    body.appendChild(hdr);
+    chars.forEach(fc=>{
+      const row=document.createElement('div');row.style.cssText='background:#0f0f1e;border:1px solid #2a2a4a;border-radius:8px;padding:7px;margin-bottom:6px';
+      const active=Object.keys(fc.statuses||{}).filter(t=>fc.statuses[t]>0).map(t=>`${STATUS_META[t].icon}${fc.statuses[t]}`).join(' ')||'—';
+      row.innerHTML=`<div style="font-size:12px;font-weight:700;color:#e5e7eb;margin-bottom:5px">${DB[fc.cid].name} <span style="color:#6b7280;font-weight:400">(♥${fc.currentHP}) • ${active}</span></div>`;
+      const bar=document.createElement('div');bar.style.cssText='display:flex;flex-wrap:wrap;gap:4px';
+      Object.keys(STATUS_META).forEach(type=>{
+        const m=STATUS_META[type];
+        const b=document.createElement('button');b.className='btn-gray btn-sm';b.style.cssText=`padding:4px 8px;font-size:11px;border-color:${m.color}`;
+        b.textContent=`${m.icon} ${m.label}`;
+        b.onclick=()=>{ applyStatus(fc,type); renderAll(); closeAllModals(); setTimeout(openStatusTester,60); };
+        bar.appendChild(b);
+      });
+      const clr=document.createElement('button');clr.className='btn-gray btn-sm';clr.style.cssText='padding:4px 8px;font-size:11px;border-color:#ef4444;color:#fca5a5';
+      clr.textContent='✖ Cure all';
+      clr.onclick=()=>{ cureAllStatuses(fc); renderAll(); closeAllModals(); setTimeout(openStatusTester,60); };
+      bar.appendChild(clr);
+      row.appendChild(bar);
+      body.appendChild(row);
+    });
+  });
+  if(![1,2].some(pn=>G.players[pn]?.field.some(f=>isChar(DB[f.cid])))){
+    body.innerHTML+='<div style="color:#6b7280;font-size:11px;padding:8px">No characters on the field yet — play some first.</div>';
+  }
+  showModalEl('🧪 Status Tester (Admin)',body);
+}
 function openAdminPanel(){
   if(!isAdmin()){
     alert('Admin access required.');
@@ -21118,6 +21265,7 @@ window.addEventListener('load',async()=>{
     <button class="admin-action-btn" onclick="adminGrantAllCards()">+ GRANT ALL CARDS (4 OF EACH)</button>
     <button class="admin-action-btn danger" onclick="adminResetCollection()">⚠ RESET MY CARD COLLECTION</button>
     <button class="admin-action-btn" onclick="openCardManager()" style="border-color:rgba(232,197,112,.5);color:#fbbf24">🎴 OPEN CARD MANAGER</button>
+    <button class="admin-action-btn" onclick="startAdminTestMatch()" style="border-color:rgba(167,139,250,.6);color:#c4b5fd">🧪 AI ADMIN TESTING MODE</button>
     <div class="admin-toggle" style="display:block;margin-top:8px">
       <div style="margin-bottom:8px">
         <div class="admin-toggle-label">✨ Holo Preview Mode <span style="font-size:8px;color:#fcd34d">ADMIN ONLY</span></div>
