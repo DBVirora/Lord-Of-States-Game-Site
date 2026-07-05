@@ -424,6 +424,25 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .menu-btn.util-btn:hover{background:rgba(100,120,160,.1);border-color:rgba(100,120,160,.4);color:rgba(150,180,220,.8)}
 .dmg-popup{position:fixed;pointer-events:none;font-size:22px;font-weight:900;color:#ef4444;text-shadow:0 0 8px #ef444488;animation:floatUp .9s forwards;z-index:300}
 @keyframes floatUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-55px) scale(1.3)}}
+/* ══ STATUS EFFECT FX — per-status card overlays + floating icon ══ */
+.status-fx{position:fixed;pointer-events:none;z-index:305;border-radius:10px;overflow:hidden}
+.status-fx .sfx-layer{position:absolute;inset:0}
+.status-fx.fx-burn .sfx-layer{background:linear-gradient(0deg,#f97316dd,#fde04744 55%,transparent);animation:sfx-burn .95s ease-out forwards}
+@keyframes sfx-burn{0%{opacity:0;transform:translateY(28%)}18%{opacity:1}55%{opacity:.85;transform:translateY(4%)}100%{opacity:0;transform:translateY(-8%)}}
+.status-fx.fx-poison .sfx-layer{background:radial-gradient(circle at 50% 72%,#84cc16bb,transparent 70%);animation:sfx-poison 1s ease-in-out forwards}
+@keyframes sfx-poison{0%{opacity:0}25%{opacity:.95}50%{opacity:.5}75%{opacity:.8}100%{opacity:0}}
+.status-fx.fx-freeze .sfx-layer{background:linear-gradient(135deg,#38bdf8aa,#e0f2fe77);box-shadow:inset 0 0 20px #bae6fd;animation:sfx-freeze 1s ease-out forwards}
+@keyframes sfx-freeze{0%{opacity:0;transform:scale(1.12)}22%{opacity:1;transform:scale(1)}72%{opacity:.85}100%{opacity:0}}
+.status-fx.fx-paralyze .sfx-layer{background:linear-gradient(0deg,#facc1577,#fef08a55);animation:sfx-para .7s steps(3) forwards}
+@keyframes sfx-para{0%,100%{opacity:0}12%,38%,64%{opacity:.95}25%,50%{opacity:.15}}
+.status-fx.fx-confuse .sfx-layer{background:radial-gradient(circle,#c084fc99,transparent 72%);animation:sfx-conf 1s ease-in-out forwards}
+@keyframes sfx-conf{0%{opacity:0}30%{opacity:.95}100%{opacity:0}}
+@keyframes sfx-jitter{0%,100%{transform:translateX(0)}15%{transform:translateX(-4px)}35%{transform:translateX(4px)}55%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+@keyframes sfx-wobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-5deg)}50%{transform:rotate(3deg)}75%{transform:rotate(-3deg)}}
+.sfx-shake{animation:sfx-jitter .55s ease-in-out}
+.sfx-spin{animation:sfx-wobble .75s ease-in-out}
+.status-fx-icon{position:fixed;pointer-events:none;z-index:306;font-size:30px;animation:sfx-float 1s ease-out forwards;filter:drop-shadow(0 0 6px rgba(0,0,0,.7))}
+@keyframes sfx-float{0%{opacity:0;transform:translateY(8px) scale(.55)}25%{opacity:1;transform:translateY(-4px) scale(1.2)}100%{opacity:0;transform:translateY(-48px) scale(1)}}
 
 /* HERALD ZONE */
 .herald-zone{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:108px;max-width:108px;flex-shrink:0;justify-content:center;overflow:visible;}
@@ -8414,6 +8433,12 @@ const SFX = {
   death(){ _playTone(220, 0.4, 'sawtooth', 0.15, 55); },               // descending doom
   ability(){ _playTone(660, 0.18, 'sine', 0.12, 990); _playTone(880, 0.12, 'triangle', 0.08); }, // chime
   instant(){ _playTone(440, 0.1, 'square', 0.1, 660); _playTone(660, 0.12, 'sine', 0.1); },        // zap
+  // ── STATUS EFFECT SOUNDS ──
+  burn(){ _playNoise(0.4, 0.14, 1600); _playTone(90, 0.35, 'sawtooth', 0.06, 40); },                 // crackling sizzle
+  poison(){ _playTone(300, 0.18, 'sine', 0.09, 180); setTimeout(()=>_playTone(240,0.2,'sine',0.08,150),90); setTimeout(()=>_playTone(190,0.22,'sine',0.07,120),190); _playNoise(0.25,0.05,700); }, // gurgling bubbles
+  freeze(){ _playTone(1400, 0.18, 'sine', 0.08, 2200); setTimeout(()=>_playTone(1900,0.22,'triangle',0.06,900),70); _playNoise(0.18,0.05,4200); }, // icy crystalize shimmer
+  paralyze(){ _playNoise(0.06,0.12,3000); setTimeout(()=>_playNoise(0.05,0.1,3400),60); setTimeout(()=>_playNoise(0.05,0.09,2600),120); _playTone(1200,0.05,'square',0.06); }, // stuttering electric zap
+  confuse(){ _playTone(500,0.5,'sine',0.09,300); setTimeout(()=>_playTone(360,0.5,'sine',0.08,600),120); _playTone(430,0.4,'triangle',0.05,380); }, // woozy warble
   energy(){ _playTone(700, 0.12, 'sine', 0.1, 1100); },                // ding
   turnStart(){ _playTone(392, 0.15, 'sine', 0.12); setTimeout(()=>_playTone(523, 0.25, 'sine', 0.12),120); }, // two-note fanfare
   win(){ [523,659,784,1047].forEach((f,i)=>setTimeout(()=>_playTone(f,0.3,'triangle',0.15),i*140)); },
@@ -12675,6 +12700,7 @@ function applyStatus(fc,type,turns){
   if(fc.statuses[type]>0){ log(`${DB[fc.cid]?.name} is already ${STATUS_META[type].label}ed — it doesn't stack.`,'info'); return false; }
   fc.statuses[type]=turns||STATUS_META[type].dur;
   const m=STATUS_META[type];
+  if(typeof showStatusFx==='function')showStatusFx(fc.uid,type);
   log(`${m.icon} ${DB[fc.cid]?.name} is afflicted with ${m.label} (${fc.statuses[type]} turn${fc.statuses[type]>1?'s':''})!`,'dmg');
   return true;
 }
@@ -12698,12 +12724,14 @@ function applyStatusDoT(p){
     if(fc.statuses.burn>0){
       const d=(fc.statuses.burn===1)?2:1;
       fc.currentHP-=d; log(`🔥 Burn: ${DB[fc.cid]?.name} takes ${d}.`,'dmg');
+      if(typeof showStatusFx==='function')showStatusFx(fc.uid,'burn');
       if(typeof showDmgPopup==='function')showDmgPopup(p,'-'+d,fc.uid);
       if(fc.currentHP<=0){ killCard(p,fc); return; }
     }
     if(fc.statuses.poison>0){
       const d=(STATUS_META.poison.dur - fc.statuses.poison + 1);
       fc.currentHP-=d; log(`☠️ Poison: ${DB[fc.cid]?.name} takes ${d}.`,'dmg');
+      if(typeof showStatusFx==='function')showStatusFx(fc.uid,'poison');
       if(typeof showDmgPopup==='function')showDmgPopup(p,'-'+d,fc.uid);
       if(fc.currentHP<=0){ killCard(p,fc); return; }
     }
@@ -12726,10 +12754,12 @@ function rollAttackStatuses(p, fc){
   if(!fc||!fc.statuses) return true;
   if(fc.statuses.paralyze>0 && !coin()){
     log(`⚡ ${DB[fc.cid]?.name} is paralyzed — its attack fizzled!`,'dmg');
+    if(typeof showStatusFx==='function')showStatusFx(fc.uid,'paralyze');
     fc.tapped=true; fc.attacksThisTurn=(fc.attacksThisTurn||0)+1; return false;
   }
   if(fc.statuses.confuse>0 && !coin()){
     log(`😵 ${DB[fc.cid]?.name} is confused — it hits itself for 2!`,'dmg');
+    if(typeof showStatusFx==='function')showStatusFx(fc.uid,'confuse');
     fc.currentHP-=2;
     if(typeof showDmgPopup==='function')showDmgPopup(p,'-2',fc.uid);
     fc.tapped=true; fc.attacksThisTurn=(fc.attacksThisTurn||0)+1;
@@ -13768,6 +13798,30 @@ function showCoinFlip(heads, onDone){
 function flipCoin(){ flipCoinFor({title:'Coin Flip', desc:'A simple coin flip.'}, function(){}); }
 function openDiceModal(){document.getElementById('dice-modal').classList.add('open');}
 function rollDie(s){ document.getElementById('dice-modal').classList.remove('open'); rollDiceFor({title:'Roll d'+s, desc:'Manual dice roll.', sides:s, count:1}, function(){}); }
+// Play a distinct visual effect on a card when a status is applied or ticks.
+//  • body-fixed overlay tinted to the status (survives field re-renders)
+//  • a floating status icon rising off the card
+//  • per-status card motion (paralyze jitters, confusion wobbles)
+function showStatusFx(targetUid, type){
+  if(typeof STATUS_META==='undefined')return;
+  const m=STATUS_META[type]; if(!m||!targetUid)return;
+  if(typeof SFX!=='undefined' && typeof SFX[type]==='function') SFX[type](); // matching status sound
+
+  const cardEl=document.querySelector(`[data-uid="${targetUid}"]`);
+  if(!cardEl)return;
+  const r=cardEl.getBoundingClientRect();
+  if(!r||!r.width)return;
+  const ov=document.createElement('div');
+  ov.className='status-fx fx-'+type;
+  ov.style.left=r.left+'px'; ov.style.top=r.top+'px'; ov.style.width=r.width+'px'; ov.style.height=r.height+'px';
+  ov.innerHTML='<div class="sfx-layer"></div>';
+  document.body.appendChild(ov); setTimeout(()=>ov.remove(),1050);
+  const motion=(type==='paralyze')?'sfx-shake':(type==='confuse')?'sfx-spin':null;
+  if(motion){ cardEl.classList.remove(motion); void cardEl.offsetWidth; cardEl.classList.add(motion); setTimeout(()=>cardEl.classList.remove(motion),760); }
+  const ic=document.createElement('div'); ic.className='status-fx-icon'; ic.textContent=m.icon;
+  ic.style.left=(r.left+r.width/2-15)+'px'; ic.style.top=(r.top+r.height/2-15)+'px';
+  document.body.appendChild(ic); setTimeout(()=>ic.remove(),1050);
+}
 function showDmgPopup(player,text,targetUid){
   // Try to find the specific target card for precise positioning
   let r;
