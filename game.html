@@ -12607,6 +12607,28 @@ function showTurnBanner(isYourTurn, labelOverride, clsOverride){
 }
 
 
+// DECK-OUT STALL LOSS: a player who ends their turn with an EMPTY DECK and NO
+// characters on their field can't establish a board. They get one warning turn;
+// if it's still true at the end of their next turn, they lose (hand contents
+// don't save them — per design, not playing anything = automatic loss).
+const STALL_LOSS_GRACE = 2; // number of the player's own consecutive stalled turn-ends before losing
+function checkStallLoss(p){
+  if(!G || G.gameOver || G.is2v2) return; // (1v1 vs-AI / PvP / online)
+  const pl=G.players[p]; if(!pl) return;
+  const noDeck  = (pl.deck||[]).length===0;
+  const noChars = !pl.field.some(f=>isChar(DB[f.cid]) && !DB[f.cid]?.isToken);
+  if(noDeck && noChars){
+    pl.stallTurns=(pl.stallTurns||0)+1;
+    if(pl.stallTurns>=STALL_LOSS_GRACE){
+      const o=p===1?2:1;
+      triggerWin(o, pname(p)+' has no deck and no characters left — out of moves!');
+    } else {
+      log(`⚠ ${pname(p)} has an empty deck and no characters on the field — establish a board next turn or lose!`,'dmg');
+    }
+  } else {
+    pl.stallTurns=0;
+  }
+}
 function execEnd(){
   if(_endingTurn)return;
   _endingTurn=true;
@@ -12622,6 +12644,8 @@ function execEnd(){
       log('No Power Up bonus — an ability was used this turn.','info');
     }
     endTurnFx(p);
+    checkStallLoss(p);
+    if(G.gameOver){ _endingTurn=false; return; }
     // Use real player label for online so opponent sees correct name
     const turnLabel=pname(p);
     log(turnLabel+' ends turn.','info');
