@@ -6819,6 +6819,7 @@ const DEFAULTS={
   space_crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/073-150%20(Space%20Crystal%20Equiptment).png',
   tyler_ssbe_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/021-150%20(Tyler%20SSBE).png',
   tyler_ssbe_sr_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/152-150%20(Tyler%20SSBE)%20(Secret%20Rare).png',
+  scorched_titan_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/046-150%20(The%20Scorched%20Titan).png',
   tyler_ssb_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/020-150%20(Tyler%20SSB).png',
   ghost_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/ghost_hulk_card%20PROMO.png',
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
@@ -6972,6 +6973,9 @@ const DB={
   // ── TYLER (SSBE) SECRET RARE — BSE chase variant. MYTHIC. 152/150.
   tyler_ssbe_sr_bse:{id:'tyler_ssbe_sr_bse',rarity:'mythic',secretRare:true,name:'Tyler (SSBE)',color:'blue',charName:'Tyler',charLine:'tyler',formTier:'ssbe',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:12,atk:10,hp:14,sym:'TYSSBE',setId:'base_set',cardNumber:'152/150',nextForms:[],
     abilities:[{label:'Power of Securement',type:'passive',cost:0,text:'This card cannot be sent to the Rift.'},{label:'Sensory Play',type:'activated',cost:0,limit:'every_2_turns',text:"Flip a coin. If heads you may view your opponent's hand. (Once every 2 turns)"},{label:'Shielded Pressure',type:'triggered',cost:0,text:'Every time this card is attacked it counters the attacker for 3 damage.'}],transforms:[]},
+  // ── THE SCORCHED TITAN — BSE regular character (Titan • Beast). RED (aggression). 046/150 Uncommon.
+  scorched_titan_bse:{id:'scorched_titan_bse',rarity:'uncommon',name:'The Scorched Titan',color:'red',charName:'The Scorched Titan',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:3,atk:2,hp:4,sym:'SCTITAN',setId:'base_set',cardNumber:'046/150',nextForms:[],
+    abilities:[{label:'Scorched Strike',type:'activated',cost:0,text:"Roll a 4-sided dye. If it lands on 1, deal 2 damage to an opponent's field character. (Taps)"}],transforms:[]},
   // ── MORT — PROMO Rare regular character (Mouse • Lemur). GREEN (endurance).
   mort_promo:{id:'mort_promo',rarity:'rare',name:'Mort',color:'green',charName:'Mort',subtypes:['Mouse','Lemur'],type:'char',race:'Lemur',cost:4,atk:2,hp:8,sym:'MRT',setId:'promo',cardNumber:'PROMO',
     abilities:[{label:'Immortality',type:'triggered',cost:0,text:"This card gains +2 Health after each time it's attacked. No health is gained if the attack destroys Mort."}]},
@@ -11751,6 +11755,36 @@ function activateAbility(fc,abl){
   }
 
   // ── TYLER (SSB): Buster Purge — 3⚡, deal 3 to a chosen enemy character; taps afterwards.
+  // ── THE SCORCHED TITAN: Scorched Strike — free, taps: roll a d4; on a 1, deal
+  //    2 damage to a chosen opponent character.
+  if(abl.label==='Scorched Strike'){
+    const ap=G.activePlayer; const pl=G.players[ap]; const oppNum=ap===1?2:1;
+    if(fc.tapped){ log('Scorched Strike: this card is already tapped.','dmg'); return; }
+    const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
+    if(!enemies.length){ log('Scorched Strike: no opponent characters to target.','dmg'); return; }
+    fc.abilityUsed=fc.abilityUsed||{};
+    fc.tapped=true;
+    pl.usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    rollDiceFor({sides:4,count:1,title:'Scorched Strike',desc:'Roll a 4-sided dye. On a 1, deal 2 damage.'},(roll)=>{
+      const val=Array.isArray(roll)?roll[0]:roll;
+      if(val!==1){ log(`Scorched Strike: rolled ${val} — no effect.`,'dmg'); renderAll(); return; }
+      log('Scorched Strike: rolled 1 — choose a target for 2 damage!','gain');
+      openEnemyTargetPicker(enemies,(uid)=>{
+        const tfc=G.players[oppNum].field.find(f=>f.uid===uid);
+        if(tfc){
+          tfc.currentHP-=2;
+          if(typeof showDmgPopup==='function')showDmgPopup(oppNum,'-2',tfc.uid);
+          log(`Scorched Strike: ${DB[tfc.cid].name} takes 2.`,'dmg');
+          if(tfc.currentHP<=0){ killCard(oppNum,tfc); }
+        }
+        if(typeof recalcPassives==='function')recalcPassives();
+        closeAllModals(); renderAll();
+      },{sourcePlayer:ap,title:'Scorched Strike',desc:'Choose an opponent character to deal 2 damage.'});
+    });
+    return;
+  }
   if(abl.label==='Buster Purge'){
     const ap=G.activePlayer; const pl=G.players[ap]; const oppNum=ap===1?2:1;
     const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
