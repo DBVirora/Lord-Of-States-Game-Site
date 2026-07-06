@@ -6841,6 +6841,7 @@ const DEFAULTS={
   scorched_titan_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/046-150%20(The%20Scorched%20Titan).png',
   eklif_frost_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/047-150%20(Eklif%20Frost).png',
   rapture_vortex_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/049-150%20(Rapture%20Of%20The%20Vortex).png',
+  magnus_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/022-150%20(Magnus%20Base).png',
   royal_matcha_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/078-150%20(Royal%20Matcha).png',
   virora_matcha_bse: "https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/079-150%20(Virora's%20Matcha%20Instant).png",
   zephyranth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/075-150%20(Zephyranth%20Fruit%20Instant).png',
@@ -6850,6 +6851,7 @@ const DEFAULTS={
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
   billy_ssj1_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/005-150%20(Billy%20SSJ1).png',
   veelden_kingdom_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/065-150%20(Veelden%20Kingdom%20Location).png',
+  virora_team_hq_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/064-150%20(Viroras%20Team%20Headquarters%20Location).png',
   nature_focus: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/70-150%20(Nature%20Focus%20Instant).png',
 
   energy_1_black:  'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Energy%20Cards/1%20Black%20Energy%20Card.png',
@@ -7004,6 +7006,9 @@ const DB={
   // ── VERMYNTH FRUIT — BSE Instant (Consumable). GREEN (healing). 076/150 Uncommon.
   vermynth_fruit_bse:{id:'vermynth_fruit_bse',rarity:'uncommon',name:'Vermynth Fruit',color:'green',charName:'Vermynth Fruit',subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:4,atk:0,hp:0,sym:'🥝',setId:'base_set',cardNumber:'076/150',nextForms:[],
     abilities:[{label:'Vermynth Fruit',type:'instant',cost:0,text:'Heals one of your characters on the field for 4 HP while also adding 2 ATK Power.'}],transforms:[]},
+  // ── MAGNUS (Base) — BSE transform-line starter (Royal • Saiyan). BLUE (control). 022/150 Common.
+  magnus_base_bse:{id:'magnus_base_bse',rarity:'common',name:'Magnus',color:'blue',charName:'Magnus',charLine:'magnus',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:3,atk:2,hp:2,sym:'MAG',setId:'base_set',cardNumber:'022/150',canAttackLocations:true,nextForms:[],
+    abilities:[{label:'Runes of Veelden',type:'passive',cost:0,text:'This card can attack Locations.'},{label:'Controlled Sorcery',type:'activated',cost:0,text:'Flip a coin. If tails, you may search your deck for a Transformation card and add it to your hand. (Taps)'}],transforms:[]},
   // ── RAPTURE OF THE VORTEX — BSE regular character (Titan • Beast). GREEN/PURPLE (endurance + trickery). 049/150 Rare.
   rapture_vortex_bse:{id:'rapture_vortex_bse',rarity:'rare',name:'Rapture of the Vortex',color:'green',colors:['green','purple'],charName:'Rapture of the Vortex',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:7,atk:6,hp:8,sym:'RVORTEX',setId:'base_set',cardNumber:'049/150',nextForms:[],
     abilities:[{label:'Vortex Shield',type:'passive',cost:0,text:'This card cannot have any status effects applied to it.'},{label:'The Reckoning',type:'activated',cost:0,text:'Choose 1 Character on your opponent\'s field. Flip a coin. If heads, that character is now under Confusion.'}],transforms:[]},
@@ -7046,6 +7051,9 @@ const DB={
   lumina_bse:{id:'lumina_bse',rarity:'legend',name:'Lumina',color:'green',subtypes:['Moon','Queen'],type:'char',race:'Moon Queen',cost:10,atk:11,hp:13,sym:'LUM',setId:'base_set',cardNumber:'010/150',
     abilities:[{label:'Crescent Light',type:'passive',cost:0,text:'All characters on your field gain +2 Attack and +2 Health while Lumina is on the field.'},{label:'Full Moon Awakening',type:'activated',cost:7,text:'Flip a coin if heads you may choose any 1 card out of your Discard pile and bring it back into your hand. (Cost 7 Energy)'}]},
 
+  // ── VIRORA'S TEAM HEADQUARTERS (Base Set 064) — WHITE Saiyan/Royal-Saiyan anthem + base-char tutor ──
+  virora_team_hq_bse:{id:'virora_team_hq_bse',rarity:'legend',name:"Virora's Team Headquarters",color:'white',charName:"Virora's Team Headquarters",subtypes:['Headquarters','Location'],type:'location',race:'Headquarters',cost:6,atk:0,hp:8,sym:'🏢',canBeAttackedBy:[],setId:'base_set',cardNumber:'064/150',
+    abilities:[{label:'Royal Meeting',type:'passive',cost:0,text:'Each Saiyan on or entering your field gains +3 Defense. Each Royal Saiyan additionally gains +4 Defense and +2 Attack.'},{label:'Veeldens Future',type:'activated',cost:0,limit:'once_per_turn',text:'Roll a d6. If it lands on an even number, you may search your deck for a Base Character and add it to your hand.'}]},
   // ── Veelden Kingdom (Base Set 065) — green Saiyan-tribal location (anthem + heal) ──
   veelden_kingdom_bse:{id:'veelden_kingdom_bse',rarity:'rare',name:'Veelden Kingdom',color:'green',charName:'Veelden Kingdom',subtypes:['Kingdom','Location'],type:'location',race:'Kingdom',cost:4,atk:0,hp:6,sym:'🏰',canBeAttackedBy:[],setId:'base_set',cardNumber:'065/150',
     abilities:[{label:'Saiyan Banner',type:'passive',cost:0,text:'Saiyan characters you control get +1/+1. At the start of your turn, if you control 2 or more Saiyan characters, draw 1 card.'},{label:'Royal Restoration',type:'passive',cost:0,text:'At the start of your turn, heal each of your characters for +1 for every Saiyan character you control.'}]},
@@ -7913,6 +7921,8 @@ let G={},gameMode='';
 const isChar=c=>c&&['base_char','char','team','token'].includes(c.type);
 // A "Saiyan character" — by subtype or race. Used by Veelden Kingdom etc.
 const isSaiyanChar=c=>!!(c&&isChar(c)&&((c.subtypes&&c.subtypes.includes('Saiyan'))|| /saiyan/i.test(c.race||'')));
+// A "Royal Saiyan" — a Saiyan that is also Royal (by subtype or race). Used by Virora's Team HQ.
+const isRoyalSaiyan=c=>!!(isSaiyanChar(c)&&((c.subtypes&&c.subtypes.includes('Royal'))|| /royal/i.test(c.race||'')));
 const isHerald=c=>c&&c.type==='herald';
 const isLoc =c=>c&&c.type==='location';
 const isEquip=c=>c&&(c.type==='equipment'||c.id==='move_out');
@@ -7971,6 +7981,12 @@ function recalcPassives(){
       // you control the Kingdom. Removing the location drops the buff automatically.
       if(isSaiyanChar(c) && pl.field.some(f=>f.cid==='veelden_kingdom_bse' && !isLocationFrozen(f))){
         addA += 1; addH += 1;
+      }
+      // VIRORA'S TEAM HEADQUARTERS (location anthem): Saiyans +3 Def; Royal Saiyans
+      // additionally +4 Def / +2 ATK. Auto-drops if the HQ leaves or is frozen.
+      if(isSaiyanChar(c) && pl.field.some(f=>f.cid==='virora_team_hq_bse' && !isLocationFrozen(f))){
+        addH += 3;
+        if(isRoyalSaiyan(c)){ addH += 4; addA += 2; }
       }
       // Support Boost (Volaris SSB): +3 ATK/+4 HP to each char next to this on field
       // (handled per-neighbor below, after this loop)
@@ -11911,6 +11927,57 @@ function activateAbility(fc,abl){
     } else {
       freeze(locs[0].uid);
     }
+    return;
+  }
+  // ── VIRORA'S TEAM HEADQUARTERS: Veeldens Future — roll a d6; on EVEN you may
+  //    search your deck for a Base Character and add it to your hand. Once/turn.
+  if(abl.label==='Veeldens Future'){
+    const ap=G.activePlayer; const pl=G.players[ap];
+    fc.abilityUsed=fc.abilityUsed||{};
+    if(fc.abilityUsed['Veeldens Future']){ log('Veeldens Future: already used this turn.','dmg'); return; }
+    fc.abilityUsed['Veeldens Future']=true;
+    pl.usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    rollDiceFor({sides:6,count:1,title:'Veeldens Future',desc:'Roll a d6 — even = search your deck for a Base Character.'},(roll)=>{
+      const val=Array.isArray(roll)?roll[0]:roll;
+      if(val%2!==0){ log(`Veeldens Future: rolled ${val} (odd) — no search.`,'dmg'); renderAll(); return; }
+      log(`Veeldens Future: rolled ${val} (even)!`,'gain');
+      const filt=(cc)=>cc && cc.type==='base_char';
+      const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(ap) : (ap===1);
+      if(_human){
+        openDeckSearch('Veeldens Future','Search your deck for a Base Character to add to your hand.',filt,(cid)=>{ const f=newFC(cid); if(f) pl.hand.push(f); log(`Veeldens Future: ${DB[cid].name} added to your hand.`,'gain'); renderAll(); });
+      } else {
+        const found=(pl.deck||[]).find(cid=>filt(DB[cid]));
+        if(found){ const i=pl.deck.indexOf(found); if(i>-1)pl.deck.splice(i,1); const f=newFC(found); if(f) pl.hand.push(f); log(`Veeldens Future: ${pname(ap)} searches a Base Character.`,'gain'); }
+        else { log('Veeldens Future: no Base Characters in deck.','info'); }
+        renderAll();
+      }
+    });
+    return;
+  }
+  // ── MAGNUS: Controlled Sorcery — free, taps: flip a coin; on TAILS you may
+  //    search your deck for a Transformation (form) card and add it to hand.
+  if(abl.label==='Controlled Sorcery'){
+    const ap=G.activePlayer; const pl=G.players[ap];
+    if(fc.tapped){ log('Controlled Sorcery: this card is already tapped.','dmg'); return; }
+    fc.tapped=true;
+    pl.usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    flipCoinFor({title:'Controlled Sorcery',desc:'Tails = search your deck for a Transformation card.'},(heads)=>{
+      if(heads){ log('Controlled Sorcery: HEADS — no search.','dmg'); renderAll(); return; }
+      const filt=(cc)=>cc && cc.transformOnly===true;
+      const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(ap) : (ap===1);
+      if(_human){
+        openDeckSearch('Controlled Sorcery','TAILS — search your deck for a Transformation card to add to your hand.',filt,(cid)=>{ const f=newFC(cid); if(f) pl.hand.push(f); log(`Controlled Sorcery: ${DB[cid].name} added to your hand.`,'gain'); renderAll(); });
+      } else {
+        const found=(pl.deck||[]).find(cid=>filt(DB[cid]));
+        if(found){ const i=pl.deck.indexOf(found); if(i>-1)pl.deck.splice(i,1); const f=newFC(found); if(f) pl.hand.push(f); log(`Controlled Sorcery: ${pname(ap)} searches a Transformation card.`,'gain'); }
+        else { log('Controlled Sorcery: TAILS — no Transformation cards in deck.','info'); }
+        renderAll();
+      }
+    });
     return;
   }
   // ── RAPTURE OF THE VORTEX: The Reckoning — free: choose an opponent character,
