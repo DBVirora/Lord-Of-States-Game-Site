@@ -7340,6 +7340,14 @@ async function handleUpload(e,id){
 // DECK SYSTEM
 // ═══════════════════════════════════════════════════
 let SAVED_DECKS={};
+// Built-in starter decks — always available to everyone (default fallback for
+// players who haven't built a deck; also usable in online play). Not stored in
+// SAVED_DECKS, so they can't be edited or deleted and never pollute saved decks.
+const PRESET_DECKS = {
+  '__preset_verdant__': { name: 'Verdant Guard (Starter)', preset:true, colors:['green'], cards: ["hulk_gs_herald", "najeela_base_bse", "najeela_base_bse", "najeela_base_bse", "najeela_base_bse", "najeela_ssj1_bse", "najeela_ssj1_bse", "najeela_ssj2_bse", "najeela_ssj2_bse", "saiyan_heavy_warrior_bse", "saiyan_heavy_warrior_bse", "saiyan_heavy_warrior_bse", "saiyan_heavy_warrior_bse", "rapture_vortex_bse", "rapture_vortex_bse", "rapture_vortex_bse", "rapture_vortex_bse", "lumina_bse", "lumina_bse", "lumina_bse", "lumina_bse", "veelden_kingdom_bse", "veelden_kingdom_bse", "veelden_kingdom_bse", "veelden_kingdom_bse", "zephyranth_fruit_bse", "zephyranth_fruit_bse", "zephyranth_fruit_bse", "zephyranth_fruit_bse", "vermynth_fruit_bse", "vermynth_fruit_bse", "vermynth_fruit_bse", "vermynth_fruit_bse", "royal_matcha_bse", "royal_matcha_bse", "royal_matcha_bse", "royal_matcha_bse", "virora_matcha_bse", "virora_matcha_bse", "virora_matcha_bse", "virora_matcha_bse", "energy_1_green", "energy_1_green", "energy_1_green", "energy_1_green", "energy_1_green", "energy_1_green", "energy_1_green", "energy_1_green", "energy_1_green", "energy_1_green", "energy_2_green", "energy_2_green", "energy_2_green", "energy_2_green", "energy_2_green", "energy_1_choice", "energy_1_choice", "energy_1_choice", "energy_1_choice"] },
+  '__preset_tidetimber__': { name: 'Tide & Timber (Starter)', preset:true, colors:['green','blue'], cards: ["surfacer_herald", "najeela_base_bse", "najeela_base_bse", "najeela_base_bse", "najeela_base_bse", "najeela_ssj1_bse", "najeela_ssj1_bse", "najeela_ssj2_bse", "najeela_ssj2_bse", "saiyan_heavy_warrior_bse", "saiyan_heavy_warrior_bse", "saiyan_heavy_warrior_bse", "saiyan_heavy_warrior_bse", "rapture_vortex_bse", "rapture_vortex_bse", "rapture_vortex_bse", "rapture_vortex_bse", "lumina_bse", "lumina_bse", "lumina_bse", "veelden_kingdom_bse", "veelden_kingdom_bse", "magnus_base_bse", "magnus_base_bse", "magnus_base_bse", "magnus_base_bse", "eklif_frost_bse", "eklif_frost_bse", "eklif_frost_bse", "eklif_frost_bse", "space_crystal_bse", "space_crystal_bse", "space_crystal_bse", "aquatic_hearth", "aquatic_hearth", "aquatic_hearth", "aquatic_hearth", "zephyranth_fruit_bse", "zephyranth_fruit_bse", "zephyranth_fruit_bse", "zephyranth_fruit_bse", "vermynth_fruit_bse", "vermynth_fruit_bse", "virora_matcha_bse", "virora_matcha_bse", "virora_matcha_bse", "royal_matcha_bse", "royal_matcha_bse", "energy_1_green", "energy_1_green", "energy_1_green", "energy_1_green", "energy_2_green", "energy_1_blue", "energy_1_blue", "energy_1_blue", "energy_2_blue", "energy_1_choice", "energy_1_choice", "energy_1_choice"] }
+};
+
 let builderDeck=[];
 let pendingMode='',pendingP1Deck=null,pendingP2Deck=null;
 let _pendingAdminTest=false; // set when launching AI Admin Testing mode
@@ -7542,6 +7550,7 @@ function addTransformFormsToDeck(deck){
 
 function getDeckList(deckId){
   if(deckId==='__random__')return generateRandomDeck();
+  if(typeof PRESET_DECKS!=='undefined' && PRESET_DECKS[deckId]) return [...PRESET_DECKS[deckId].cards];
   if(SAVED_DECKS[deckId]&&SAVED_DECKS[deckId].cards&&SAVED_DECKS[deckId].cards.length>0){
     return [...SAVED_DECKS[deckId].cards];
   }
@@ -7571,6 +7580,7 @@ function _takeFoil(p,cid){
 
 function validateDeckForPlay(deckId){
   if(deckId==='__random__')return true;
+  if(typeof PRESET_DECKS!=='undefined' && PRESET_DECKS[deckId]) return true;
   const deck=SAVED_DECKS[deckId];
   if(!deck||!deck.cards)return false;
   if(deck.cards.length<60){
@@ -7621,9 +7631,31 @@ function openDeckPicker(player){
   if(sub)sub.textContent='Choose a deck to bring into battle';
   if(!list)return;
   list.innerHTML='';
+  // Built-in starter decks first (always available; default fallback).
+  if(typeof PRESET_DECKS!=='undefined'){
+    Object.entries(PRESET_DECKS).forEach(([id,deck])=>{
+      if(!deck||!deck.cards)return;
+      const thumbs=deck.cards.slice(0,3).map(cid=>{const url=getImg(cid);return url?'<img src="'+url+'" style="width:30px;height:42px;object-fit:cover;border-radius:4px;flex-shrink:0"/>':`<span style="font-size:18px">${DB[cid]?.sym||'?'}</span>`;}).join('');
+      const colorPips=(deck.colors||[]).map(c=>{const hex=COLOR_DEFS[c]?.hex||'#6b7280';return '<span style="width:8px;height:8px;border-radius:50%;background:'+hex+';display:inline-block"></span>';}).join('');
+      const row=document.createElement('div');
+      row.style.cssText='display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(20,83,45,.14);border:1px solid rgba(34,197,94,.35);border-radius:8px;cursor:pointer;transition:all .15s';
+      row.onmouseenter=()=>{row.style.borderColor='#22c55e';row.style.background='rgba(34,197,94,.2)';};
+      row.onmouseleave=()=>{row.style.borderColor='rgba(34,197,94,.35)';row.style.background='rgba(20,83,45,.14)';};
+      row.innerHTML='<div style="display:flex;gap:3px;flex-shrink:0">'+thumbs+'</div>'
+        +'<div style="flex:1;min-width:0">'
+        +'<div style="font-size:13px;font-weight:700;color:#e2e8f0;margin-bottom:3px">'+deck.name+' <span style="font-size:9px;color:#22c55e;border:1px solid rgba(34,197,94,.4);border-radius:4px;padding:1px 5px;margin-left:4px;letter-spacing:.5px">DEFAULT</span></div>'
+        +'<div style="display:flex;align-items:center;gap:6px">'
+        +'<span style="font-size:10px;color:#6b7280">'+deck.cards.length+' cards</span>'
+        +(colorPips?'<span style="display:flex;gap:3px;align-items:center">'+colorPips+'</span>':'')
+        +'</div></div>'
+        +'<div style="font-size:18px;color:rgba(34,197,94,.5)">›</div>';
+      row.onclick=()=>{selectDeck(player,id);document.getElementById('deck-picker-modal').classList.remove('open');};
+      list.appendChild(row);
+    });
+  }
   const decks=Object.entries(SAVED_DECKS);
   if(!decks.length){
-    list.innerHTML='<div style="color:#4b5563;font-size:12px;text-align:center;padding:20px">No saved decks yet.<br>Build one in the Deck Builder first.</div>';
+    // presets already shown above; no saved decks to add
   } else {
     decks.forEach(([id,deck])=>{
       if(!deck||!deck.cards)return;
@@ -18188,7 +18220,7 @@ function subscribeToRoom(code){
           setTimeout(()=>{
             _onlineChannel.send({type:'broadcast',event:'player_joined',payload:{
               guest_id:_celUserId,guest_name:myName,guest_deck:_onlineDeckId,
-              guest_deck_cards:(SAVED_DECKS[_onlineDeckId]?.cards||null),
+              guest_deck_cards:((typeof PRESET_DECKS!=='undefined'&&PRESET_DECKS[_onlineDeckId]?.cards)||SAVED_DECKS[_onlineDeckId]?.cards||null),
               guest_deck_foils:(getDeckFoils(_onlineDeckId)||null),
               guest_avatar:(window._playerAvatarUrl||null)
             }});
@@ -18251,10 +18283,10 @@ function enterOnlineGame(room){
 
   if(isHost){
     // HOST builds the authoritative game state
-    const hostDeckCards=SAVED_DECKS[room.host_deck]?.cards?[...SAVED_DECKS[room.host_deck].cards]:generateRandomDeck();
+    const hostDeckCards=(typeof getDeckList==='function'&&room.host_deck)?getDeckList(room.host_deck):(SAVED_DECKS[room.host_deck]?.cards?[...SAVED_DECKS[room.host_deck].cards]:generateRandomDeck());
     const guestDeckCards=(Array.isArray(room.guest_deck_cards)&&room.guest_deck_cards.length)
       ? [...room.guest_deck_cards]
-      : (SAVED_DECKS[room.guest_deck]?.cards?[...SAVED_DECKS[room.guest_deck].cards]:generateRandomDeck());
+      : ((typeof getDeckList==='function'&&room.guest_deck)?getDeckList(room.guest_deck):(SAVED_DECKS[room.guest_deck]?.cards?[...SAVED_DECKS[room.guest_deck].cards]:generateRandomDeck()));
     const hostFoils=getDeckFoils(room.host_deck);
     const guestFoils=(Array.isArray(room.guest_deck_foils)&&room.guest_deck_foils.length)?room.guest_deck_foils:null;
     console.log('[ONLINE] HOST building game. hostDeck='+hostDeckCards.length+' guestDeck='+guestDeckCards.length);
@@ -18735,10 +18767,10 @@ function enterOnlineGame2v2(room){
   const hostName=room.host_name||'Host';
   const guestName=room.guest_name||'Friend';
   if(isHost){
-    const hostDeck=SAVED_DECKS[room.host_deck]?.cards?[...SAVED_DECKS[room.host_deck].cards]:generateRandomDeck();
+    const hostDeck=(typeof getDeckList==='function'&&room.host_deck)?getDeckList(room.host_deck):(SAVED_DECKS[room.host_deck]?.cards?[...SAVED_DECKS[room.host_deck].cards]:generateRandomDeck());
     const guestDeck=(Array.isArray(room.guest_deck_cards)&&room.guest_deck_cards.length)
       ? [...room.guest_deck_cards]
-      : (SAVED_DECKS[room.guest_deck]?.cards?[...SAVED_DECKS[room.guest_deck].cards]:generateRandomDeck());
+      : ((typeof getDeckList==='function'&&room.guest_deck)?getDeckList(room.guest_deck):(SAVED_DECKS[room.guest_deck]?.cards?[...SAVED_DECKS[room.guest_deck].cards]:generateRandomDeck()));
     const decks=[ hostDeck, generateRandomDeck(), guestDeck, generateRandomDeck() ]; // [A1,B1,A2,B2]
     startGame2v2('lifeforce', decks, {1:hostName,2:'AI',3:guestName,4:'AI'}, teamLife, [1,3]);
     G.onlineMode=true; G.onlineMode2v2=true; G.onlineRole='host'; G.mySeat=1;
