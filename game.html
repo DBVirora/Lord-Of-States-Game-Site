@@ -6902,6 +6902,7 @@ const DEFAULTS={
   eklif_frost_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/047-150%20(Eklif%20Frost).png',
   rapture_vortex_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/049-150%20(Rapture%20Of%20The%20Vortex).png',
   magnus_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/022-150%20(Magnus%20Base).png',
+  magnus_ssj_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/023-150%20(Magnus%20SSJ).png',
   royal_matcha_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/078-150%20(Royal%20Matcha).png',
   virora_matcha_bse: "https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/079-150%20(Virora's%20Matcha%20Instant).png",
   zephyranth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/075-150%20(Zephyranth%20Fruit%20Instant).png',
@@ -7067,8 +7068,11 @@ const DB={
   vermynth_fruit_bse:{id:'vermynth_fruit_bse',rarity:'uncommon',name:'Vermynth Fruit',color:'green',charName:'Vermynth Fruit',subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:4,atk:0,hp:0,sym:'🥝',setId:'base_set',cardNumber:'076/150',nextForms:[],
     abilities:[{label:'Vermynth Fruit',type:'instant',cost:0,text:'Heals one of your characters on the field for 4 HP while also adding 2 ATK Power.'}],transforms:[]},
   // ── MAGNUS (Base) — BSE transform-line starter (Royal • Saiyan). BLUE (control). 022/150 Common.
-  magnus_base_bse:{id:'magnus_base_bse',rarity:'common',name:'Magnus',color:'blue',charName:'Magnus',charLine:'magnus',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:3,atk:2,hp:2,sym:'MAG',setId:'base_set',cardNumber:'022/150',canAttackLocations:true,nextForms:[],
+  magnus_base_bse:{id:'magnus_base_bse',rarity:'common',name:'Magnus',color:'blue',charName:'Magnus',charLine:'magnus',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:3,atk:2,hp:2,sym:'MAG',setId:'base_set',cardNumber:'022/150',canAttackLocations:true,nextForms:['ssj'],
     abilities:[{label:'Runes of Veelden',type:'passive',cost:0,text:'This card can attack Locations.'},{label:'Controlled Sorcery',type:'activated',cost:0,text:'Flip a coin. If tails, you may search your deck for a Transformation card and add it to your hand. (Taps)'}],transforms:[]},
+  // ── MAGNUS (SSJ) — BSE form of Magnus (transform target). BLUE (control/freeze). 023/150 Uncommon.
+  magnus_ssj_bse:{id:'magnus_ssj_bse',rarity:'uncommon',name:'Magnus (SSJ)',color:'blue',charName:'Magnus',charLine:'magnus',formTier:'ssj',subtypes:['Royal','Saiyan'],type:'char',race:'Royal Saiyan',cost:4,atk:4,hp:4,sym:'MAG',transformOnly:true,setId:'base_set',cardNumber:'023/150',nextForms:[],
+    abilities:[{label:'Frost Rune',type:'triggered',cost:0,text:"Once placed onto the field, choose 1 character on your opponent's field. In 2 turns, that card is Frozen."}]},
   // ── RAPTURE OF THE VORTEX — BSE regular character (Titan • Beast). GREEN/PURPLE (endurance + trickery). 049/150 Rare.
   rapture_vortex_bse:{id:'rapture_vortex_bse',rarity:'rare',name:'Rapture of the Vortex',color:'green',colors:['green','purple'],charName:'Rapture of the Vortex',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:7,atk:6,hp:8,sym:'RVORTEX',setId:'base_set',cardNumber:'049/150',nextForms:[],
     abilities:[{label:'Vortex Shield',type:'passive',cost:0,text:'This card cannot have any status effects applied to it.'},{label:'The Reckoning',type:'activated',cost:0,text:'Choose 1 Character on your opponent\'s field. Flip a coin. If heads, that character is now under Confusion.'}],transforms:[]},
@@ -10670,6 +10674,16 @@ function playCardZoom(cardId, variant){
 
 function onEntry(p,fc){
   const c=DB[fc.cid];if(!c)return;
+  // ── MAGNUS (SSJ): Frost Rune — on entry, mark an enemy character to Freeze in 2 turns.
+  if(c.id==='magnus_ssj_bse'){
+    const o=(p===1)?2:1;
+    const enemies=(G.players[o].field||[]).filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
+    const mark=(tf)=>{ if(!tf)return; tf._frostRune={turns:2, by:p}; if(typeof showStatusFx==='function')showStatusFx(tf.uid,'freeze'); log(`❄️ Frost Rune set on ${DB[tf.cid]?.name} — it Freezes in 2 turns.`,'info'); renderAll(); };
+    if(enemies.length){
+      if(p===1 && typeof openEnemyTargetPicker==='function'){ openEnemyTargetPicker(enemies, mark, {title:'Frost Rune', desc:"Choose an enemy character. In 2 turns it will be Frozen."}); }
+      else { mark(enemies[Math.floor(Math.random()*enemies.length)]); }
+    } else { log('Frost Rune: no enemy characters to target.','info'); }
+  }
   // (Card-played / favorites tracking lives in trackCardPlayed, called at each
   // play site, since locations/equipment/instants never reach onEntry.)
   if(c.id==='archon'){drawCard(p);drawCard(p);log('Archon: draw 2!','gain');
@@ -13011,6 +13025,23 @@ function applyStatusDoT(p){
   });
 }
 // Count every status down by 1 at the end of the afflicted player's own turn.
+function tickFrostRunes(p){
+  [1,2].forEach(side=>{
+    const pl=G.players[side]; if(!pl||!pl.field)return;
+    pl.field.forEach(fc=>{
+      if(fc._frostRune && fc._frostRune.by===p){
+        fc._frostRune.turns--;
+        if(fc._frostRune.turns<=0){
+          delete fc._frostRune;
+          if(typeof applyStatus==='function'){ applyStatus(fc,'freeze',(STATUS_META.freeze&&STATUS_META.freeze.dur)||1); if(typeof showStatusFx==='function')showStatusFx(fc.uid,'freeze'); }
+          log(`❄️ Frost Rune triggers — ${DB[fc.cid]?.name} is Frozen!`,'dmg');
+        } else {
+          log(`❄️ Frost Rune: ${DB[fc.cid]?.name} will freeze in ${fc._frostRune.turns} turn(s).`,'info');
+        }
+      }
+    });
+  });
+}
 function decrementStatuses(p){
   const pl=G.players[p]; if(!pl||!pl.field)return;
   pl.field.forEach(fc=>{
@@ -13139,6 +13170,7 @@ function endTurnFx(p){
     Object.keys(fc.abilityUsed||{}).forEach(k=>{const c=DB[fc.cid];const a=c?.abilities?.find(ab=>ab.label===k);if(a&&a.limit==='once_per_turn')delete fc.abilityUsed[k];});
   }));
   decrementStatuses(p); // count down statuses on the player whose turn just ended
+  tickFrostRunes(p); // count down any Frost Rune timers this player set
   G.bonusAttackers=0; // reset ability-granted extra attackers each turn
   // ── ULTRA EGO GROWTH (Goku UE): grows +1/+1 at the END OF THE OPPONENT'S turn.
   // When player p ends their turn, the OPPONENT's (o's) Goku grows. Permanent.
