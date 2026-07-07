@@ -490,11 +490,11 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 @keyframes rc-title-in{0%{opacity:0;transform:scale(.5) translateY(20px)}100%{opacity:1;transform:scale(1) translateY(0)}}
 @keyframes rc-fade{to{opacity:1}}
 .rc-items{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-bottom:24px}
-.rc-item{opacity:0;transform:scale(.4) translateY(24px);width:130px;background:linear-gradient(180deg,rgba(30,22,60,.9),rgba(12,10,30,.95));border:2px solid rgba(251,191,36,.5);border-radius:16px;padding:16px 12px;box-shadow:0 8px 30px rgba(251,191,36,.25),inset 0 0 20px rgba(124,58,237,.15)}
+.rc-item{opacity:0;transform:scale(.4) translateY(24px);width:150px;min-height:150px;background:linear-gradient(180deg,rgba(30,22,60,.9),rgba(12,10,30,.95));border:2px solid rgba(251,191,36,.5);border-radius:16px;padding:16px 12px;box-shadow:0 8px 30px rgba(251,191,36,.25),inset 0 0 20px rgba(124,58,237,.15)}
 .rc-item.pop{animation:rc-pop .55s cubic-bezier(.2,1.5,.4,1) forwards}
 @keyframes rc-pop{0%{opacity:0;transform:scale(.4) translateY(24px)}60%{opacity:1;transform:scale(1.12) translateY(-4px)}100%{opacity:1;transform:scale(1) translateY(0)}}
 .rc-icon{font-size:46px;line-height:1;margin-bottom:8px;filter:drop-shadow(0 0 10px rgba(251,191,36,.6));animation:rc-bob 2.4s ease-in-out infinite}
-.rc-icon img{width:66px;height:66px;object-fit:contain;border-radius:10px}
+.rc-icon img{width:auto;max-width:110px;height:96px;object-fit:contain;border-radius:8px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.5))}
 @keyframes rc-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 .rc-amt{font-size:20px;font-weight:900;color:#fbbf24;margin-bottom:2px}
 .rc-label{font-size:11px;color:#e5e7eb;letter-spacing:.5px;line-height:1.3}
@@ -17734,9 +17734,11 @@ async function onTutorialFinished(p){
   try{ if(typeof checkAchievements==='function') await checkAchievements(); }catch(e){} // unlocks First Steps (+200 Celestium)
   if(typeof _tutFinishRun==='function') _tutFinishRun(); // clear any spotlight overlay
   const _achImg=(typeof ACHIEVEMENTS!=='undefined' && ACHIEVEMENTS.tutorial_complete && ACHIEVEMENTS.tutorial_complete.img) ? ACHIEVEMENTS.tutorial_complete.img : '';
+  const _CEL_IMG='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png';
+  const _PACK_IMG=(typeof PACK_ART!=='undefined'&&PACK_ART)?PACK_ART:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/Copilot_20260621_173509.png';
   const _rewards=[
-    {icon:'💎', amount:'+200', label:'Celestium'},
-    {icon:'📦', amount:'×2', label:'Base Set Booster Packs'},
+    {img:_CEL_IMG, amount:'+200', label:'Celestium'},
+    {img:_PACK_IMG, amount:'×2', label:'Base Set Booster Packs'},
     (_achImg?{img:_achImg, label:'Achievement: First Steps'}:{icon:'🎓', label:'Achievement: First Steps'})
   ];
   showRewardsCelebration(_rewards, ()=>{
