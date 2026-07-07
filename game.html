@@ -12722,6 +12722,14 @@ function endTurnNow(){
 
 function doPhase(ph){
   if(!iControlActive())return;
+  // TUTORIAL PHASE-LOCK: during a guided step, only the phase Virora is asking for works.
+  if(G.tutorialMode && typeof _tutPlayMode!=='undefined' && _tutPlayMode!=='free'){
+    const _wanted = {draw:'draw', main:'main', attack:'attack_phase', end:'endturn'}[ph];
+    if(_tutPendingAction !== _wanted){
+      log("Follow Virora's step — tap the highlighted button to continue.",'dmg');
+      return;
+    }
+  }
   const mp = G.is2v2 ? G.activePlayer : 1; // "my player" — the active human board
   // End turn is always allowed — skip directly regardless of phase order
   if(ph==='end'){
