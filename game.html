@@ -10376,7 +10376,7 @@ function onHandClick(p,uid,fc){
     if(isChar(DB[fco.cid])&&!DB[fco.cid]?.isToken&&namedFighters>=MAX_FIELD){log('Fighter zone full! (max 8 named fighters).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     if(!isChar(DB[fco.cid])&&otherCards>=MAX_OTHER){log('Field full! (max 5 other cards on field).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     pl.field.push(fco);log(`${pname(p)} plays ${c.name}.`,'info');playCardZoom(fco.cid,fco.variant);if(typeof SFX!=='undefined')SFX.cardPlay();if(p===1)sendGameAction('card_play',{cardId:fco.cid,variant:fco.variant});onEntry(p,fco);
-    if(G.tutorialMode&&p===1&&isChar(c)&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('play');
+    if(G.tutorialMode&&p===1&&isChar(c)){ fco.turnPlayed=0; if(typeof tutorialNotifyAction==='function')tutorialNotifyAction('play'); } // tutorial: can attack the same turn
     if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
     // Mission tracking: unique characters (only for local player)
     if(p===1&&typeof trackUniqueCharacter==='function'&&['base_char','char','team'].includes(c.type)){
@@ -12692,6 +12692,7 @@ function doPhase(ph){
   const mp = G.is2v2 ? G.activePlayer : 1; // "my player" — the active human board
   // End turn is always allowed — skip directly regardless of phase order
   if(ph==='end'){
+    if(G.tutorialMode && typeof tutorialNotifyAction==='function')tutorialNotifyAction('endturn');
     if(!G.phasesDone.includes('end')){G.phasesDone.push('end');execEnd();}
     return;
   }
@@ -12722,6 +12723,11 @@ function doPhase(ph){
   else if(ph==='main')log('Main Phase.','info');
   else if(ph==='attack'){log('Attack — green char → target.','info');G.selectedAttacker=null;}
   // end is handled above
+  if(G.tutorialMode && typeof tutorialNotifyAction==='function'){
+    if(ph==='draw')tutorialNotifyAction('draw');
+    else if(ph==='main')tutorialNotifyAction('main');
+    else if(ph==='attack')tutorialNotifyAction('attack_phase');
+  }
   renderAll();
 }
 // Auto "Resource": grant +1 energy per Location you control (unless locked down).
@@ -17487,15 +17493,16 @@ function isFeatureEnabled(key){
 function _setupTutorialBoard(){
   const mk=(cid)=>{ const f=(typeof newFC==='function')?newFC(cid):null; if(f)f.variant='none'; return f; };
   G.gameMode='prize'; // prize mode so knocking out enemies yields Prize cards
+  G.turn=1; G.activePlayer=1; G.phase='draw'; G.phasesDone=[]; // begin in an undrawn Draw phase
   G.prizeCount=3;
   const P1=G.players[1], P2=G.players[2];
   P1.energy=5; P1.colorEnergy={};
-  P1.hand=[mk('najeela_base_bse'),mk('saiyan_heavy_warrior_bse'),mk('najeela_ssj1_bse'),mk('zephyranth_fruit_bse'),mk('energy_1_green'),mk('energy_1_green'),mk('rapture_vortex_bse')].filter(Boolean);
+  P1.hand=[mk('najeela_base_bse'),mk('saiyan_heavy_warrior_bse'),mk('najeela_ssj1_bse'),mk('zephyranth_fruit_bse'),mk('energy_1_green'),mk('rapture_vortex_bse')].filter(Boolean); // 6 — the Draw step adds the 7th
   P1.field=[]; P1.discard=[]; P1.rift=[];
   P1.deck=[]; for(let i=0;i<16;i++)P1.deck.push('energy_1_green'); P1.deck.push('saiyan_heavy_warrior_bse'); P1.deck.push('najeela_base_bse');
   P1.prizes=['energy_1_green','energy_1_green','energy_1_green']; P1.prizesTaken=[false,false,false]; P1.prizesFoil=['none','none','none']; P1.prizesClaimed=0;
   P2.energy=5; P2.colorEnergy={};
-  P2.hand=[mk('female_saiyan_citizen_bse'),mk('male_saiyan_citizen_bse')].filter(Boolean);
+  P2.hand=[mk('female_saiyan_citizen_bse'),mk('male_saiyan_citizen_bse'),mk('female_saiyan_citizen_bse'),mk('energy_1_green'),mk('energy_1_green'),mk('energy_1_green'),mk('energy_1_green')].filter(Boolean); // 7 like the player
   P2.field=[]; P2.discard=[]; P2.rift=[];
   P2.deck=[]; for(let i=0;i<12;i++)P2.deck.push('female_saiyan_citizen_bse'); for(let i=0;i<6;i++)P2.deck.push('energy_1_green');
   P2.prizes=['energy_1_green','energy_1_green','energy_1_green']; P2.prizesTaken=[false,false,false]; P2.prizesFoil=['none','none','none']; P2.prizesClaimed=0;
@@ -17536,21 +17543,20 @@ function buildTutorialSteps(){
     {targetId:'p1-prizes', text:"These are your Prize cards. Claim ALL of your opponent's Prizes to win — but if all of yours are taken, you lose."},
     {targetId:'p1-deck-count', text:"This is your deck. You draw one card from it at the start of every turn."},
     {targetId:'p1-hand', text:"And this is your hand — the cards you can play right now."},
-    {targetId:'ph-draw', text:"Each turn begins with the Draw phase. You've already drawn your card for this turn."},
-    {targetId:'p1-energy', text:"This is your Energy. You gain some every turn and spend it to play cards — pricier cards cost more."},
-    {targetId:'ph-main', text:"Right now you're in the Main phase, where you play characters, locations and equipment, and use abilities."},
+    {targetId:'ph-draw', text:"Every turn starts in the Draw phase. Tap the Draw pill to draw a card and gain your Energy for the turn.", requireAction:'draw', hint:'▸ Tap the Draw phase'},
+    {targetId:'p1-energy', text:"There we go — you drew a card and gained Energy. You spend Energy to play cards; pricier cards cost more."},
+    {targetId:'ph-main', text:"Now move to the Main phase, where you play your cards. Tap the Main pill.", requireAction:'main', hint:'▸ Tap the Main phase'},
     {targetId:'p1-hand', text:"Let's play a character! Tap Najeela in your hand to bring her onto the field.", requireAction:'play', hint:'▸ Play Najeela from your hand'},
-    {targetId:'p1-field', text:"Perfect — your characters live here on the field. You can tap a character to see its abilities and options."},
-    {targetId:'ph-attack', text:"When you're ready to fight, switch to the Attack phase by tapping ATTACK."},
-    {targetId:'p1-field', text:"Now attack! Select your character, then choose the enemy to strike. Knocking one out lets you claim a Prize.", requireAction:'attack', hint:'▸ Attack the enemy character'},
+    {targetId:'p1-field', text:"Perfect — your characters live here on the field. You can tap a character any time to see its abilities and options."},
+    {targetId:'ph-attack', text:"Time to fight! Move to the Attack phase by tapping the Attack pill.", requireAction:'attack_phase', hint:'▸ Tap the Attack phase'},
+    {targetId:'p1-field', text:"Now attack! Tap your character, then tap the enemy to strike. Knock it out to claim one of their Prizes.", requireAction:'attack', hint:'▸ Select your character, then hit the enemy'},
     {targetId:'p1-discard-pile', text:"When cards are used up or characters are knocked out, they go here — your Discard pile."},
     {targetId:'p1-rift-count', text:"The Rift is a separate banish zone. Some powerful effects send cards HERE instead — and Rifted cards are gone for good."},
     {targetId:'p1-prizes', text:"Every enemy you knock out earns you a Prize card. Collect all of your opponent's to win the match!"},
-    {targetId:'ph-end', text:"When you've done everything you want, End your turn to pass play to your opponent.", requireAction:'endturn', hint:'▸ End your turn'},
-    {text:"You've got the basics down! Keep playing characters and attacking to claim the last Prizes. The rest is up to you — go win your very first battle!"}
+    {targetId:'ph-end', text:"When you've done everything you want, end your turn to pass play to your opponent. Tap End Turn.", requireAction:'endturn', hint:'▸ End your turn'},
+    {text:"You've got the basics down! Keep drawing, playing characters and attacking to claim the last Prizes. The rest is up to you — go win your very first battle!"}
   ];
-}
-// Deterministic board so the guided steps + scripted AI always line up. (dup marker)
+}// Deterministic board so the guided steps + scripted AI always line up. (dup marker)
 
 // A guided first match: player uses the Verdant Guard starter vs a deliberately
 // weak, passive AI so they reliably win. Narration fires at checkpoints; winning
