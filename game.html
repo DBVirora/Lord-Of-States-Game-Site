@@ -10382,6 +10382,11 @@ function onHandClick(p,uid,fc){
   const pl=G.players[p];
   const fco=pl.hand.find(f=>f.uid===uid);if(!fco)return;
   const c=DB[fco.cid];if(!c)return;
+  // TUTORIAL: restrict which card can be played during a guided step.
+  if(G.tutorialMode && p===1 && _tutPlayMode!=='free'){
+    if(_tutPlayMode==='none'){ log("Follow Virora's step first — she'll tell you what to play.",'dmg'); showFullCard(fco.cid,null); return; }
+    if(fco.cid!==_tutPlayMode){ log('For this step, play the highlighted card: '+(DB[_tutPlayMode]?.name||'')+'.','dmg'); showFullCard(fco.cid,null); return; }
+  }
   // Energy cards can always be played on your turn during/after main phase
   if(c.type==='energy_card'){
     if(G.activePlayer===p) playEnergyCard(p,fco.cid);
@@ -10410,6 +10415,7 @@ function onHandClick(p,uid,fc){
     const locCount=pl.field.filter(f=>isLoc(DB[f.cid])).length;
     if(locCount>=MAX_LOC){log(`Location zone full! (max ${MAX_LOC}).`,'dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     pl.field.push(fco);log(`${pname(p)} places ${c.name}.`,'info');playCardZoom(fco.cid,fco.variant);
+    if(G.tutorialMode&&p===1&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('play_location');
     if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
     if(c.id==='time_chamber'){pl.energy+=5;log('Time Chamber: +5⚡!','gain');}
   } else if(isEquip(c)){
@@ -10511,6 +10517,7 @@ function openFruitHealPicker(p, fco, chars, healAmt, atkAmt, cureMode){
     pl.discard.push(c.id);
     if(typeof recalcPassives==='function')recalcPassives();
     closeAllModals(); renderAll();
+    if(G.tutorialMode&&p===1&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('instant');
   };
   const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(p) : (p===1);
   if(!_human){
@@ -10590,6 +10597,7 @@ function applyEquipToTarget(efc,tfc){
   applyEquip(tfc,ec);
   if(ec.persistent===false){G.players[G.activePlayer].discard.push(ec.id);log(`${ec.name} used & discarded.`,'info');}
   else{if(!tfc.attachments)tfc.attachments=[];tfc.attachments.push(ec.id);log(`${ec.name} → ${DB[tfc.cid].name}.`,'info');}
+  if(G.tutorialMode&&G.activePlayer===1&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('equip');
   // SOUL FIND (Void Crystal): after attaching, may search your discard for a character
   // and return it to hand. (You equip your own field character, so owner = active player.)
   if((ec.abilities||[]).some(a=>a.label==='Soul Find')){
@@ -11254,6 +11262,7 @@ function doTransform(fieldUid,newCid,handUid,cost){
   pl.hand=pl.hand.filter(f=>f.uid!==handUid);
   spendEnergy(owner, actualCost, DB[newCid]?.color||null);
   log(`${DB[fc.cid].name} → ${nc.name}!`,'gain');
+  if(G.tutorialMode&&owner===1&&typeof tutorialNotifyAction==='function')setTimeout(()=>tutorialNotifyAction('transform'),300);
   const oldCid=fc.cid;
   closeAllModals();
   // Play the cinematic transformation animation, then apply the form change
@@ -13720,6 +13729,7 @@ function _finishEnergyCard(p, cid, gained, chosenColor){
   renderAll();
   if(p===1)spawnEnergyParticles(Math.max(3,gained+1));
   if(p===1)sendGameAction('card_play',{cardId:cid});
+  if(G.tutorialMode&&p===1&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('play_energy');
 }
 
 // Color picker modal for rainbow / "energy of your choice" cards.
@@ -14116,6 +14126,7 @@ function _narrClose(){ const el=document.getElementById('tut-narrator'); if(el)e
 function narrationActive(){ const el=document.getElementById('tut-narrator'); return !!(el&&el.classList.contains('on')); }
 // ── TUTORIAL SPOTLIGHT + STEP RUNNER ─────────────────────────────────
 let _tutSteps=[], _tutStepIdx=0, _tutPendingAction=null, _tutTypeTimer=null;
+let _tutPlayMode='free'; // 'free' | 'none' | a specific cid — restricts which card can be played during guided steps
 function _ensureSpotDom(){
   let el=document.getElementById('tut-spot');
   if(el)return el;
@@ -14170,6 +14181,7 @@ function _tutRenderStep(){
   const nextBtn=document.getElementById('tut-bubble-next');
   const hint=document.getElementById('tut-bubble-hint');
   _tutPendingAction = cfg.requireAction || null;
+  _tutPlayMode = cfg.allowCid ? cfg.allowCid : (cfg.freePlay ? 'free' : 'none');
   if(cfg.requireAction){ nextBtn.style.display='none'; hint.style.display='inline'; hint.textContent=cfg.hint||'…do it to continue'; }
   else { nextBtn.style.display='inline-block'; hint.style.display='none'; nextBtn.textContent=(_tutStepIdx>=_tutSteps.length-1)?'Finish ✓':'Next ▸'; }
   // position first (bubble needs to exist), then typewriter
@@ -14187,7 +14199,7 @@ function tutorialNotifyAction(kind){
     _tutPendingAction=null; _tutStepIdx++; setTimeout(_tutRenderStep, 420);
   }
 }
-function _tutFinishRun(){ const el=document.getElementById('tut-spot'); if(el)el.classList.remove('on'); const pr=document.getElementById('tut-progress'); if(pr)pr.classList.remove('on'); _tutCurrentCfg=null; }
+function _tutFinishRun(){ const el=document.getElementById('tut-spot'); if(el)el.classList.remove('on'); const pr=document.getElementById('tut-progress'); if(pr)pr.classList.remove('on'); _tutCurrentCfg=null; _tutPlayMode='free'; }
 function _tutSkipAll(){ _tutFinishRun(); _tutSteps=[]; _tutPendingAction=null; if(typeof markCutsceneWatched==='function')markCutsceneWatched('welcome_tutorial'); if(G)G.tutorialMode=false; if(typeof showScreen==='function')showScreen('menu-screen'); }
 // Public: run an ordered list of spotlight steps.
 function runTutorialSteps(steps, startIdx){ _tutSteps=steps||[]; _tutStepIdx=startIdx||0; _tutRenderStep(); }
@@ -17522,74 +17534,101 @@ function isFeatureEnabled(key){
 // ── NEW-PLAYER TUTORIAL ──────────────────────────────────────────────
 // Deterministic board so the guided steps + scripted AI always line up.
 function _setupTutorialBoard(){
-  const mk=(cid)=>{ const f=(typeof newFC==='function')?newFC(cid):null; if(f)f.variant='none'; return f; };
-  G.gameMode='prize'; // prize mode so knocking out enemies yields Prize cards
-  G.turn=1; G.activePlayer=1; G.phase='draw'; G.phasesDone=[]; // begin in an undrawn Draw phase
-  G.prizeCount=3;
+  const mk=(cid)=>{ const f=(typeof newFC==="function")?newFC(cid):null; if(f)f.variant="none"; return f; };
+  G.gameMode="prize";
+  G.turn=1; G.activePlayer=1; G.phase="draw"; G.phasesDone=[];
+  G.prizeCount=4;
+  G.tut=G.tut||{shown:{}}; G.tut.aiTurns=0;
   const P1=G.players[1], P2=G.players[2];
-  P1.energy=5; P1.colorEnergy={};
-  P1.hand=[mk('najeela_base_bse'),mk('saiyan_heavy_warrior_bse'),mk('najeela_ssj1_bse'),mk('zephyranth_fruit_bse'),mk('energy_1_green'),mk('rapture_vortex_bse')].filter(Boolean); // 6 — the Draw step adds the 7th
+  P1.energy=25; P1.colorEnergy={};
+  P1.hand=[mk("najeela_base_bse"),mk("female_saiyan_citizen_bse"),mk("veelden_kingdom_bse"),mk("aquatic_hearth"),mk("zephyranth_fruit_bse"),mk("energy_1_green"),mk("najeela_ssj1_bse")].filter(Boolean);
   P1.field=[]; P1.discard=[]; P1.rift=[];
-  P1.deck=[]; for(let i=0;i<16;i++)P1.deck.push('energy_1_green'); P1.deck.push('saiyan_heavy_warrior_bse'); P1.deck.push('najeela_base_bse');
-  P1.prizes=['energy_1_green','energy_1_green','energy_1_green']; P1.prizesTaken=[false,false,false]; P1.prizesFoil=['none','none','none']; P1.prizesClaimed=0;
-  P2.energy=5; P2.colorEnergy={};
-  P2.hand=[mk('female_saiyan_citizen_bse'),mk('male_saiyan_citizen_bse'),mk('female_saiyan_citizen_bse'),mk('energy_1_green'),mk('energy_1_green'),mk('energy_1_green'),mk('energy_1_green')].filter(Boolean); // 7 like the player
+  P1.deck=[]; for(let i=0;i<16;i++)P1.deck.push("energy_1_green"); P1.deck.push("saiyan_heavy_warrior_bse"); P1.deck.push("najeela_base_bse");
+  P1.prizes=["energy_1_green","energy_1_green","energy_1_green","energy_1_green"]; P1.prizesTaken=[false,false,false,false]; P1.prizesFoil=["none","none","none","none"]; P1.prizesClaimed=0;
+  P2.energy=10; P2.colorEnergy={};
+  P2.hand=[mk("female_saiyan_citizen_bse"),mk("male_saiyan_citizen_bse"),mk("saiyan_heavy_warrior_bse"),mk("energy_1_green"),mk("energy_1_green"),mk("female_saiyan_citizen_bse"),mk("energy_1_green")].filter(Boolean);
   P2.field=[]; P2.discard=[]; P2.rift=[];
-  P2.deck=[]; for(let i=0;i<12;i++)P2.deck.push('female_saiyan_citizen_bse'); for(let i=0;i<6;i++)P2.deck.push('energy_1_green');
-  P2.prizes=['energy_1_green','energy_1_green','energy_1_green']; P2.prizesTaken=[false,false,false]; P2.prizesFoil=['none','none','none']; P2.prizesClaimed=0;
-  // Seed one weak enemy so the player has a target to attack right away.
-  const seed=mk('female_saiyan_citizen_bse');
-  if(seed){ const c=DB[seed.cid]; seed.turnPlayed=0; seed.currentHP=c.hp; seed.currentATK=c.atk; seed.baseHP=c.hp; seed.baseATK=c.atk; seed.abilityUsed={}; if(!seed.attachments)seed.attachments=[]; P2.field.push(seed); }
-  if(typeof renderAll==='function')renderAll();
+  P2.deck=[]; for(let i=0;i<10;i++)P2.deck.push("female_saiyan_citizen_bse"); P2.deck.push("saiyan_heavy_warrior_bse"); for(let i=0;i<6;i++)P2.deck.push("energy_1_green");
+  P2.prizes=["energy_1_green","energy_1_green","energy_1_green","energy_1_green"]; P2.prizesTaken=[false,false,false,false]; P2.prizesFoil=["none","none","none","none"]; P2.prizesClaimed=0;
+  if(typeof renderAll==="function")renderAll();
 }
 // Scripted, gentle AI: keeps one weak body on the field for the player to KO, never attacks.
 function runTutorialAI(){
   if(G.activePlayer!==2)return;
   const pl=G.players[2];
-  pl.energy+=1; if(typeof resetEnergyCardFlag==='function')resetEnergyCardFlag(2);
-  if(typeof drawCard==='function')drawCard(2); if(typeof untapAll==='function')untapAll(2);
-  G.phase='main'; if(typeof renderAll==='function')renderAll();
+  G.tut=G.tut||{shown:{}}; G.tut.aiTurns=(G.tut.aiTurns||0)+1; const aiT=G.tut.aiTurns;
+  pl.energy+=1; if(typeof resetEnergyCardFlag==="function")resetEnergyCardFlag(2);
+  if(typeof drawCard==="function")drawCard(2); if(typeof untapAll==="function")untapAll(2);
+  G.phase="main"; if(typeof renderAll==="function")renderAll();
+  const playOne=(ids)=>{
+    let fc=pl.hand.find(f=>ids.includes(f.cid));
+    if(fc){ pl.hand=pl.hand.filter(x=>x.uid!==fc.uid); }
+    else { for(const id of ids){ const idx=pl.deck.lastIndexOf(id); if(idx>-1){ const cid=pl.deck.splice(idx,1)[0]; fc=newFC(cid); break; } } }
+    if(fc){ const c=DB[fc.cid]; fc.turnPlayed=G.turn;fc.currentHP=c.hp;fc.currentATK=c.atk;fc.baseHP=c.hp;fc.baseATK=c.atk;fc.abilityUsed={}; if(!fc.attachments)fc.attachments=[]; pl.field.push(fc); log("AI plays "+c.name+".","info"); if(typeof onEntry==="function")onEntry(2,fc); }
+    return fc;
+  };
+  const charCount=()=>pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken).length;
   setTimeout(()=>{
     if(G.gameOver)return;
-    const hasChar=pl.field.some(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
-    if(!hasChar){
-      let fc=pl.hand.find(f=>['female_saiyan_citizen_bse','male_saiyan_citizen_bse'].includes(f.cid));
-      if(!fc){ const idx=pl.deck.lastIndexOf('female_saiyan_citizen_bse'); if(idx>-1){ const cid=pl.deck.splice(idx,1)[0]; fc=newFC(cid); } }
-      else { pl.hand=pl.hand.filter(x=>x.uid!==fc.uid); }
-      if(fc){ const c=DB[fc.cid]; fc.turnPlayed=G.turn;fc.currentHP=c.hp;fc.currentATK=c.atk;fc.baseHP=c.hp;fc.baseATK=c.atk;fc.abilityUsed={}; if(!fc.attachments)fc.attachments=[]; pl.field.push(fc); log('AI plays '+c.name+'.','info'); if(typeof onEntry==='function')onEntry(2,fc); }
-    }
-    if(typeof renderAll==='function')renderAll();
+    if(aiT===1){ playOne(["saiyan_heavy_warrior_bse"]); if(charCount()<2) playOne(["female_saiyan_citizen_bse","male_saiyan_citizen_bse"]); }
+    else { if(charCount()<1) playOne(["female_saiyan_citizen_bse","male_saiyan_citizen_bse"]); }
+    if(typeof renderAll==="function")renderAll();
     setTimeout(()=>{
       if(G.gameOver)return;
-      if(typeof endTurnFx==='function')endTurnFx(2); log('AI ends.','info');
-      G.activePlayer=1;G.turn++;G.phase='draw';G.phasesDone=[];G.selectedAttacker=null;G.heraldAttacking=false;
-      if(typeof startTurnFx==='function')startTurnFx(1);
-      if(typeof renderAll==='function')renderAll();
-      if(typeof tutorialNotifyAction==='function')setTimeout(()=>tutorialNotifyAction('your_turn'),500);
-    }, 850);
+      let didAttack=false;
+      // Turn 2 only: a ready AI character knocks out the players weakest character as a lesson.
+      if(aiT===2){
+        const attacker=pl.field.find(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken && f.turnPlayed<G.turn && !f.tapped);
+        const targets=G.players[1].field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
+        targets.sort((a,b)=>(a.currentHP||0)-(b.currentHP||0));
+        if(attacker && targets.length){ didAttack=true; log("AI attacks with "+DB[attacker.cid].name+"!","dmg"); if(typeof resolveAttack==="function")resolveAttack(2, attacker.uid, 1, targets[0].uid); }
+      }
+      setTimeout(()=>{
+        if(G.gameOver)return;
+        if(typeof endTurnFx==="function")endTurnFx(2); log("AI ends.","info");
+        G.activePlayer=1;G.turn++;G.phase="draw";G.phasesDone=[];G.selectedAttacker=null;G.heraldAttacking=false;
+        if(typeof startTurnFx==="function")startTurnFx(1);
+        if(typeof renderAll==="function")renderAll();
+        if(typeof tutorialNotifyAction==="function")setTimeout(()=>tutorialNotifyAction("your_turn"),500);
+      }, didAttack?1200:450);
+    }, 700);
   }, 750);
 }
 // The authored step-by-step walkthrough (spotlights + action gates).
 function buildTutorialSteps(){
   return [
-    {targetId:'p1-prizes', text:"These are your Prize cards. Claim ALL of your opponent's Prizes to win — but if all of yours are taken, you lose."},
-    {targetId:'p1-deck-count', text:"This is your deck. You draw one card from it at the start of every turn."},
-    {targetId:'p1-hand', text:"And this is your hand — the cards you can play right now."},
-    {targetId:'ph-draw', text:"Every turn starts in the Draw phase. Tap the Draw pill to draw a card and gain your Energy for the turn.", requireAction:'draw', hint:'▸ Tap the Draw phase'},
-    {targetId:'p1-energy', text:"There we go — you drew a card and gained Energy. You spend Energy to play cards; pricier cards cost more."},
-    {targetId:'ph-main', text:"Now move to the Main phase, where you play your cards. Tap the Main pill.", requireAction:'main', hint:'▸ Tap the Main phase'},
-    {targetId:'p1-hand', text:"Let's play a character! Tap Najeela in your hand to bring her onto the field.", requireAction:'play', hint:'▸ Play Najeela from your hand'},
-    {targetId:'p1-field', text:"Najeela's on the field! But here's a key rule: a character can't attack the turn it's summoned — it needs one full turn to ready up. So we'll strike next turn."},
-    {targetId:'p1-discard-pile', text:"While Najeela gets ready, let me show you around. This is your Discard pile — used-up cards and knocked-out characters go here."},
-    {targetId:'p1-rift-count', text:"The Rift is a separate banish zone. Some powerful effects send cards HERE instead — and Rifted cards are gone for good."},
-    {targetId:'p1-prizes', text:"Remember: each enemy you knock out earns you one of their Prize cards. Collect them all to win."},
-    {targetId:'ph-end', text:"Since Najeela needs to rest, end your turn. Your opponent will take their turn, then we strike back. Tap End Turn.", requireAction:'endturn', hint:'▸ End your turn'},
-    {text:"Your opponent takes their turn… watch what they do, then get ready for yours.", requireAction:'your_turn', hint:'…waiting for your turn'},
-    {targetId:'ph-draw', text:"Your turn again! Start by drawing — tap the Draw phase.", requireAction:'draw', hint:'▸ Tap the Draw phase'},
-    {targetId:'ph-attack', text:"Najeela is rested and ready now. Head to the Attack phase — tap the Attack pill.", requireAction:'attack_phase', hint:'▸ Tap the Attack phase'},
-    {targetId:'p1-field', text:"Now attack! Tap Najeela, then tap the enemy to strike. Knock it out to earn a Prize.", requireAction:'attack', hint:'▸ Select Najeela, then hit the enemy'},
-    {targetId:'p2-prizes', text:"You knocked it out! Now claim your reward — tap one of the glowing Prize cards on your opponent's side to take it. You MUST claim it before your turn can end.", requireAction:'prize_claimed', hint:'▸ Tap a glowing Prize card'},
-    {text:"That's how you claim Prizes! You've got the basics down now — keep drawing, playing characters, and attacking to take the rest. The rest is up to you — go win your very first battle!"}
+    {targetId:"p1-prizes", text:"First, the goal. These are your Prize cards. Claim ALL of your opponent's Prizes to win — but if all of yours are taken, you lose."},
+    {targetId:"p1-deck-pile-wrap", text:"This is your deck — right here. You draw one card from it at the start of every turn."},
+    {targetId:"p1-hand", text:"And this is your hand: the cards you can play this turn."},
+    {targetId:"ph-draw", text:"Every turn begins in the Draw phase. Tap the Draw pill to draw a card and collect your Energy.", requireAction:"draw", hint:"▸ Tap the Draw phase"},
+    {targetId:"p1-energy", text:"This is your Energy. You spend it to play cards — the pricier the card, the more it costs."},
+    {targetId:"ph-main", text:"Now enter the Main phase, where you play your cards. Tap the Main pill.", requireAction:"main", hint:"▸ Tap the Main phase"},
+    {targetId:"p1-hand", text:"See the green Energy card? Playing one gives you extra Energy for the turn. Play it now.", requireAction:"play_energy", allowCid:"energy_1_green", hint:"▸ Play the Energy card"},
+    {targetId:"p1-hand", text:"Locations give ongoing perks and extra Energy each turn. Play Veelden Kingdom.", requireAction:"play_location", allowCid:"veelden_kingdom_bse", hint:"▸ Play Veelden Kingdom"},
+    {targetId:"p1-field", text:"Your Location sits on the field and works passively every turn — giving Energy and buffing your team."},
+    {targetId:"p1-hand", text:"Time for a fighter! Tap Najeela to summon her onto the field.", requireAction:"play", allowCid:"najeela_base_bse", hint:"▸ Play Najeela"},
+    {targetId:"p1-field", text:"Najeela is out! Key rule: a character can't attack the turn it's summoned — it needs one full turn to ready up."},
+    {targetId:"p1-hand", text:"You can field multiple characters. Play this Saiyan Citizen too — a weaker rookie we'll use as an example.", requireAction:"play", allowCid:"female_saiyan_citizen_bse", hint:"▸ Play the Saiyan Citizen"},
+    {targetId:"p1-hand", text:"Equipment makes a character tougher. Play Aquatic Hearth and attach it to Najeela.", requireAction:"equip", allowCid:"aquatic_hearth", hint:"▸ Play Aquatic Hearth → attach to Najeela"},
+    {targetId:"p1-field", text:"That equipment stays attached to Najeela and boosts her — she's now much harder to knock out."},
+    {targetId:"p1-discard-pile", text:"Used-up cards and knocked-out characters go here: your Discard pile."},
+    {targetId:"p1-rift-count", text:"The Rift is a separate banish zone. Some powerful effects send cards HERE instead — and Rifted cards are gone for good."},
+    {targetId:"ph-end", text:"Great first turn! End it now — your characters will be ready to fight next turn. Tap End Turn.", requireAction:"endturn", hint:"▸ End your turn"},
+    {text:"Your opponent takes their turn — watch what they bring out.", requireAction:"your_turn", hint:"…waiting for your turn"},
+    {targetId:"ph-draw", text:"Your turn again! Start by drawing. Tap the Draw phase.", requireAction:"draw", hint:"▸ Tap the Draw phase"},
+    {targetId:"ph-main", text:"Enter the Main phase again. Tap the Main pill.", requireAction:"main", hint:"▸ Tap the Main phase"},
+    {targetId:"p1-field", text:"Now power up! Najeela can TRANSFORM into a stronger form. Tap Najeela and choose Transform into her SSJ form.", requireAction:"transform", hint:"▸ Tap Najeela → Transform"},
+    {targetId:"p1-field", text:"Incredible — Najeela transformed into her SSJ form, far stronger! Transforming also clears any status effects on her."},
+    {targetId:"ph-attack", text:"Now it's time to fight. Enter the Attack phase — tap the Attack pill.", requireAction:"attack_phase", hint:"▸ Tap the Attack phase"},
+    {targetId:"p1-field", text:"Attack! Tap Najeela, then tap an enemy to strike. Knock one out to earn a Prize.", requireAction:"attack", hint:"▸ Select Najeela, then hit an enemy"},
+    {targetId:"p2-prizes", text:"You knocked it out! Now claim your reward — tap a glowing Prize card. You MUST claim it before your turn can end.", requireAction:"prize_claimed", hint:"▸ Tap a glowing Prize card"},
+    {targetId:"ph-end", text:"Well fought! End your turn — but heads up, your opponent has a fighter ready now. Tap End Turn.", requireAction:"endturn", hint:"▸ End your turn"},
+    {text:"Your opponent's fighter is ready… watch closely.", requireAction:"your_turn", hint:"…waiting for your turn"},
+    {targetId:"p1-prizes", text:"See that? Your opponent knocked out one of YOUR characters and took one of your Prizes! That's how you can lose ground too — protect your key fighters."},
+    {targetId:"ph-draw", text:"Let's strike back. Draw your card.", requireAction:"draw", hint:"▸ Tap the Draw phase"},
+    {targetId:"ph-main", text:"Enter the Main phase.", requireAction:"main", hint:"▸ Tap the Main phase"},
+    {targetId:"p1-hand", text:"Najeela took some damage in that fight. Play this Zephyranth Fruit and pick Najeela to heal her.", requireAction:"instant", allowCid:"zephyranth_fruit_bse", hint:"▸ Play Zephyranth Fruit on Najeela"},
+    {text:"Perfect — she's patched up! You now know energy, locations, characters, equipment, transforming, attacking, healing and Prizes. From here it's all you: attack and claim the last Prizes to win. Good luck!", freePlay:true}
   ];
 }// Deterministic board so the guided steps + scripted AI always line up. (dup marker)
 
