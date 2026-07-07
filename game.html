@@ -479,6 +479,29 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .tut-bubble .tb-next:hover{filter:brightness(1.08)}
 .tut-progress{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:99992;background:rgba(9,7,22,.9);border:1px solid rgba(56,189,248,.4);border-radius:20px;padding:5px 14px;font-size:11px;color:#7dd3fc;letter-spacing:1px;display:none}
 .tut-progress.on{display:block}
+/* ══ REWARDS CELEBRATION ══ */
+.rc-overlay{position:fixed;inset:0;z-index:100001;display:none;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,rgba(40,25,80,.9),rgba(4,4,14,.97));overflow:hidden}
+.rc-overlay.on{display:flex}
+.rc-rays{position:absolute;inset:-50%;background:conic-gradient(from 0deg,rgba(251,191,36,.12) 0 8deg,transparent 8deg 20deg);animation:rc-spin 18s linear infinite;pointer-events:none}
+@keyframes rc-spin{to{transform:rotate(360deg)}}
+.rc-panel{position:relative;text-align:center;padding:20px;max-width:520px;width:92%}
+.rc-title{font-size:34px;font-weight:900;letter-spacing:2px;background:linear-gradient(180deg,#fde68a,#f59e0b);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 2px 18px rgba(251,191,36,.5);animation:rc-title-in .6s cubic-bezier(.2,1.3,.4,1);margin-bottom:4px}
+.rc-sub{font-size:13px;letter-spacing:3px;color:#c4b5fd;text-transform:uppercase;margin-bottom:22px;opacity:0;animation:rc-fade .5s ease-out .3s forwards}
+@keyframes rc-title-in{0%{opacity:0;transform:scale(.5) translateY(20px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes rc-fade{to{opacity:1}}
+.rc-items{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-bottom:24px}
+.rc-item{opacity:0;transform:scale(.4) translateY(24px);width:130px;background:linear-gradient(180deg,rgba(30,22,60,.9),rgba(12,10,30,.95));border:2px solid rgba(251,191,36,.5);border-radius:16px;padding:16px 12px;box-shadow:0 8px 30px rgba(251,191,36,.25),inset 0 0 20px rgba(124,58,237,.15)}
+.rc-item.pop{animation:rc-pop .55s cubic-bezier(.2,1.5,.4,1) forwards}
+@keyframes rc-pop{0%{opacity:0;transform:scale(.4) translateY(24px)}60%{opacity:1;transform:scale(1.12) translateY(-4px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.rc-icon{font-size:46px;line-height:1;margin-bottom:8px;filter:drop-shadow(0 0 10px rgba(251,191,36,.6));animation:rc-bob 2.4s ease-in-out infinite}
+.rc-icon img{width:66px;height:66px;object-fit:contain;border-radius:10px}
+@keyframes rc-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.rc-amt{font-size:20px;font-weight:900;color:#fbbf24;margin-bottom:2px}
+.rc-label{font-size:11px;color:#e5e7eb;letter-spacing:.5px;line-height:1.3}
+.rc-continue{opacity:0;background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#2a1a04;border:none;border-radius:12px;padding:13px 40px;font-size:15px;font-weight:800;letter-spacing:1px;cursor:pointer;box-shadow:0 6px 22px rgba(251,191,36,.5);animation:rc-fade .5s ease-out forwards}
+.rc-continue:hover{filter:brightness(1.08)}
+.rc-confetti{position:absolute;top:-12px;width:9px;height:14px;border-radius:2px;opacity:.95;animation:rc-fall linear forwards;pointer-events:none}
+@keyframes rc-fall{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:.9}}
 @media (max-width:768px){.tut-bubble{max-width:78vw}.tut-bubble .tb-text{font-size:13px}}
 
 /* HERALD ZONE */
@@ -8776,6 +8799,7 @@ function resolvePrizeClaim(victim, claimer, index){
   const cid = vpl.prizes[index];
   vpl.prizesTaken[index]=true;
   vpl.prizesClaimed++;
+  if(G.tutorialMode&&claimer===1&&typeof tutorialNotifyAction==='function')setTimeout(()=>tutorialNotifyAction('prize_claimed'),300);
   // Safety: heralds should never be in prizes
   if(isHerald(DB[cid])){
     log(`🎖 ${pname(claimer)} takes a Prize (Herald removed).`,'gain');
@@ -10376,7 +10400,7 @@ function onHandClick(p,uid,fc){
     if(isChar(DB[fco.cid])&&!DB[fco.cid]?.isToken&&namedFighters>=MAX_FIELD){log('Fighter zone full! (max 8 named fighters).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     if(!isChar(DB[fco.cid])&&otherCards>=MAX_OTHER){log('Field full! (max 5 other cards on field).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     pl.field.push(fco);log(`${pname(p)} plays ${c.name}.`,'info');playCardZoom(fco.cid,fco.variant);if(typeof SFX!=='undefined')SFX.cardPlay();if(p===1)sendGameAction('card_play',{cardId:fco.cid,variant:fco.variant});onEntry(p,fco);
-    if(G.tutorialMode&&p===1&&isChar(c)){ fco.turnPlayed=0; if(typeof tutorialNotifyAction==='function')tutorialNotifyAction('play'); } // tutorial: can attack the same turn
+    if(G.tutorialMode&&p===1&&isChar(c)&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('play');
     if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
     // Mission tracking: unique characters (only for local player)
     if(p===1&&typeof trackUniqueCharacter==='function'&&['base_char','char','team'].includes(c.type)){
@@ -12781,6 +12805,13 @@ function checkStallLoss(p){
 }
 function execEnd(){
   if(_endingTurn)return;
+  // MANDATORY PRIZE CLAIM: you knocked out an enemy — you must take a Prize before ending your turn.
+  if(_pendingPrizePick && _pendingPrizePick.claimer===1){
+    log('🎖 You must claim your Prize card first! Tap a glowing Prize on your opponent\'s side.','dmg');
+    if(typeof renderPrizes==='function')renderPrizes(_pendingPrizePick.victim);
+    const _pz=document.getElementById('p2-prizes'); if(_pz){ _pz.style.transition='box-shadow .2s'; _pz.style.boxShadow='0 0 0 3px #fbbf24, 0 0 18px 4px rgba(251,191,36,.8)'; setTimeout(()=>{ if(_pz)_pz.style.boxShadow=''; },1400); }
+    return;
+  }
   _endingTurn=true;
   const p=G.activePlayer;
   try {
@@ -17534,6 +17565,7 @@ function runTutorialAI(){
       G.activePlayer=1;G.turn++;G.phase='draw';G.phasesDone=[];G.selectedAttacker=null;G.heraldAttacking=false;
       if(typeof startTurnFx==='function')startTurnFx(1);
       if(typeof renderAll==='function')renderAll();
+      if(typeof tutorialNotifyAction==='function')setTimeout(()=>tutorialNotifyAction('your_turn'),500);
     }, 850);
   }, 750);
 }
@@ -17547,14 +17579,17 @@ function buildTutorialSteps(){
     {targetId:'p1-energy', text:"There we go — you drew a card and gained Energy. You spend Energy to play cards; pricier cards cost more."},
     {targetId:'ph-main', text:"Now move to the Main phase, where you play your cards. Tap the Main pill.", requireAction:'main', hint:'▸ Tap the Main phase'},
     {targetId:'p1-hand', text:"Let's play a character! Tap Najeela in your hand to bring her onto the field.", requireAction:'play', hint:'▸ Play Najeela from your hand'},
-    {targetId:'p1-field', text:"Perfect — your characters live here on the field. You can tap a character any time to see its abilities and options."},
-    {targetId:'ph-attack', text:"Time to fight! Move to the Attack phase by tapping the Attack pill.", requireAction:'attack_phase', hint:'▸ Tap the Attack phase'},
-    {targetId:'p1-field', text:"Now attack! Tap your character, then tap the enemy to strike. Knock it out to claim one of their Prizes.", requireAction:'attack', hint:'▸ Select your character, then hit the enemy'},
-    {targetId:'p1-discard-pile', text:"When cards are used up or characters are knocked out, they go here — your Discard pile."},
+    {targetId:'p1-field', text:"Najeela's on the field! But here's a key rule: a character can't attack the turn it's summoned — it needs one full turn to ready up. So we'll strike next turn."},
+    {targetId:'p1-discard-pile', text:"While Najeela gets ready, let me show you around. This is your Discard pile — used-up cards and knocked-out characters go here."},
     {targetId:'p1-rift-count', text:"The Rift is a separate banish zone. Some powerful effects send cards HERE instead — and Rifted cards are gone for good."},
-    {targetId:'p1-prizes', text:"Every enemy you knock out earns you a Prize card. Collect all of your opponent's to win the match!"},
-    {targetId:'ph-end', text:"When you've done everything you want, end your turn to pass play to your opponent. Tap End Turn.", requireAction:'endturn', hint:'▸ End your turn'},
-    {text:"You've got the basics down! Keep drawing, playing characters and attacking to claim the last Prizes. The rest is up to you — go win your very first battle!"}
+    {targetId:'p1-prizes', text:"Remember: each enemy you knock out earns you one of their Prize cards. Collect them all to win."},
+    {targetId:'ph-end', text:"Since Najeela needs to rest, end your turn. Your opponent will take their turn, then we strike back. Tap End Turn.", requireAction:'endturn', hint:'▸ End your turn'},
+    {text:"Your opponent takes their turn… watch what they do, then get ready for yours.", requireAction:'your_turn', hint:'…waiting for your turn'},
+    {targetId:'ph-draw', text:"Your turn again! Start by drawing — tap the Draw phase.", requireAction:'draw', hint:'▸ Tap the Draw phase'},
+    {targetId:'ph-attack', text:"Najeela is rested and ready now. Head to the Attack phase — tap the Attack pill.", requireAction:'attack_phase', hint:'▸ Tap the Attack phase'},
+    {targetId:'p1-field', text:"Now attack! Tap Najeela, then tap the enemy to strike. Knock it out to earn a Prize.", requireAction:'attack', hint:'▸ Select Najeela, then hit the enemy'},
+    {targetId:'p2-prizes', text:"You knocked it out! Now claim your reward — tap one of the glowing Prize cards on your opponent's side to take it. You MUST claim it before your turn can end.", requireAction:'prize_claimed', hint:'▸ Tap a glowing Prize card'},
+    {text:"That's how you claim Prizes! You've got the basics down now — keep drawing, playing characters, and attacking to take the rest. The rest is up to you — go win your very first battle!"}
   ];
 }// Deterministic board so the guided steps + scripted AI always line up. (dup marker)
 
@@ -17587,6 +17622,45 @@ function startTutorial(){
     setTimeout(()=>{ if(G && G.tutorialMode && typeof runTutorialSteps==='function') runTutorialSteps(buildTutorialSteps()); }, 800);
   });
 }
+// Big celebratory rewards overlay — confetti + each award popping in up close.
+// items: [{icon|img, amount, label}]. Reusable for any in-game reward moment.
+function showRewardsCelebration(items, onDone){
+  let el=document.getElementById('rc-overlay');
+  if(!el){ el=document.createElement('div'); el.id='rc-overlay'; el.className='rc-overlay'; document.body.appendChild(el); }
+  const itemHtml=(items||[]).map(it=>{
+    const vis = it.img ? ('<div class="rc-icon"><img src="'+it.img+'" alt=""/></div>') : ('<div class="rc-icon">'+(it.icon||'🎁')+'</div>');
+    return '<div class="rc-item">'+vis+(it.amount?('<div class="rc-amt">'+it.amount+'</div>'):'')+'<div class="rc-label">'+(it.label||'')+'</div></div>';
+  }).join('');
+  el.innerHTML='<div class="rc-rays"></div>'
+    +'<div class="rc-panel">'
+    +'<div class="rc-title">VICTORY!</div>'
+    +'<div class="rc-sub">Rewards Earned</div>'
+    +'<div class="rc-items" id="rc-items">'+itemHtml+'</div>'
+    +'<button class="rc-continue" id="rc-continue" style="animation-delay:'+(0.5+(items||[]).length*0.35)+'s">Continue ▸</button>'
+    +'</div>';
+  el.classList.add('on');
+  if(typeof SFX!=='undefined' && SFX.win)SFX.win();
+  // pop items in one-by-one
+  const nodes=el.querySelectorAll('.rc-item');
+  nodes.forEach((n,i)=>{ setTimeout(()=>{ n.classList.add('pop'); _rcBurstConfetti(14); if(typeof SFX!=='undefined'&&SFX.cardPlay)SFX.cardPlay(); }, 500+i*350); });
+  // confetti bursts
+  _rcBurstConfetti(40);
+  const btn=el.querySelector('#rc-continue');
+  btn.onclick=()=>{ el.classList.remove('on'); el.innerHTML=''; if(typeof onDone==='function')onDone(); };
+}
+function _rcBurstConfetti(n){
+  const el=document.getElementById('rc-overlay'); if(!el)return;
+  const cols=['#fbbf24','#a855f7','#38bdf8','#22c55e','#f43f5e','#fde68a'];
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div'); c.className='rc-confetti';
+    c.style.left=(Math.random()*100)+'%';
+    c.style.background=cols[Math.floor(Math.random()*cols.length)];
+    c.style.animationDuration=(1.6+Math.random()*1.6)+'s';
+    c.style.animationDelay=(Math.random()*0.3)+'s';
+    el.appendChild(c);
+    setTimeout(()=>{ if(c.parentNode)c.remove(); }, 3600);
+  }
+}
 // Tutorial completion: grant rewards + achievement, mark seen, return to menu.
 async function onTutorialFinished(p){
   if(p!==1){
@@ -17597,11 +17671,18 @@ async function onTutorialFinished(p){
   if(typeof markCutsceneWatched==='function') markCutsceneWatched('welcome_tutorial');
   try{ if(typeof awardPack==='function') await awardPack('pack','basic','base_set',2,'Base Set Booster'); }catch(e){}
   try{ if(typeof checkAchievements==='function') await checkAchievements(); }catch(e){} // unlocks First Steps (+200 Celestium)
-  showNarration([
-    "Incredible — you won your very first battle!",
-    "For your victory: 200 Celestium and 2 Base Set booster packs to begin your collection.",
-    "You're ready now. The courts await — go make your name, and good luck out there!"
-  ], ()=>{ if(typeof showScreen==='function') showScreen('menu-screen'); if(typeof updateCelDisplay==='function')updateCelDisplay(); });
+  if(typeof _tutFinishRun==='function') _tutFinishRun(); // clear any spotlight overlay
+  const _achImg=(typeof ACHIEVEMENTS!=='undefined' && ACHIEVEMENTS.tutorial_complete && ACHIEVEMENTS.tutorial_complete.img) ? ACHIEVEMENTS.tutorial_complete.img : '';
+  const _rewards=[
+    {icon:'💎', amount:'+200', label:'Celestium'},
+    {icon:'📦', amount:'×2', label:'Base Set Booster Packs'},
+    (_achImg?{img:_achImg, label:'Achievement: First Steps'}:{icon:'🎓', label:'Achievement: First Steps'})
+  ];
+  showRewardsCelebration(_rewards, ()=>{
+    showNarration([
+      "You're ready now. The courts await — go make your name, and good luck out there!"
+    ], ()=>{ if(typeof showScreen==='function') showScreen('menu-screen'); if(typeof updateCelDisplay==='function')updateCelDisplay(); });
+  });
 }
 // Fire the tutorial once for brand-new accounts (0 matches, never seen it).
 function maybeStartTutorialForNewPlayer(){
