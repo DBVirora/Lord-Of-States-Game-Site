@@ -461,6 +461,25 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .tut-next{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:none;border-radius:9px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.5px;box-shadow:0 4px 14px rgba(124,58,237,.5)}
 .tut-next:hover{filter:brightness(1.1)}
 @media (max-width:768px){.tut-portrait{width:44vw;bottom:150px;left:6px}.tut-text{font-size:14px}.tut-speechbox{bottom:14px}}
+/* ══ TUTORIAL SPOTLIGHT (element highlight + coach bubble) ══ */
+.tut-spot{position:fixed;inset:0;z-index:99990;display:none;pointer-events:none}
+.tut-spot.on{display:block}
+.tut-spot-ring{position:absolute;border:3px solid #38bdf8;border-radius:12px;box-shadow:0 0 0 9999px rgba(6,6,20,.72),0 0 22px 4px rgba(56,189,248,.7);transition:all .35s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.tut-spot-ring.pulse{animation:tut-ring-pulse 1.3s ease-in-out infinite}
+@keyframes tut-ring-pulse{0%,100%{box-shadow:0 0 0 9999px rgba(6,6,20,.72),0 0 18px 3px rgba(56,189,248,.55)}50%{box-shadow:0 0 0 9999px rgba(6,6,20,.72),0 0 28px 7px rgba(56,189,248,.95)}}
+.tut-bubble{position:absolute;max-width:340px;background:linear-gradient(180deg,rgba(15,12,34,.98),rgba(9,7,22,.99));border:2px solid #38bdf8;border-radius:14px;padding:14px 16px;box-shadow:0 10px 34px rgba(56,189,248,.35);pointer-events:auto;z-index:2}
+.tut-bubble .tb-face{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.tut-bubble .tb-face img{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid rgba(56,189,248,.6);flex-shrink:0}
+.tut-bubble .tb-name{font-size:11px;font-weight:800;letter-spacing:1.5px;color:#7dd3fc;text-transform:uppercase}
+.tut-bubble .tb-text{font-size:14px;line-height:1.45;color:#f1f5f9;min-height:20px}
+.tut-bubble .tb-ctrl{display:flex;justify-content:space-between;align-items:center;margin-top:11px;gap:8px}
+.tut-bubble .tb-hint{font-size:10px;color:#38bdf8;letter-spacing:.5px;font-style:italic;animation:tut-blink 1.3s steps(1) infinite}
+.tut-bubble .tb-skip{background:none;border:none;color:#6b7280;font-size:10px;letter-spacing:1px;cursor:pointer;text-transform:uppercase}
+.tut-bubble .tb-next{background:linear-gradient(135deg,#0ea5e9,#38bdf8);color:#04121f;border:none;border-radius:8px;padding:8px 18px;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.5px}
+.tut-bubble .tb-next:hover{filter:brightness(1.08)}
+.tut-progress{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:99992;background:rgba(9,7,22,.9);border:1px solid rgba(56,189,248,.4);border-radius:20px;padding:5px 14px;font-size:11px;color:#7dd3fc;letter-spacing:1px;display:none}
+.tut-progress.on{display:block}
+@media (max-width:768px){.tut-bubble{max-width:78vw}.tut-bubble .tb-text{font-size:13px}}
 
 /* HERALD ZONE */
 .herald-zone{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:108px;max-width:108px;flex-shrink:0;justify-content:center;overflow:visible;}
@@ -8108,6 +8127,7 @@ function startGame(mode,deck1,deck2,foils1,foils2){
   if(h1)log(`${pname(1)} Herald: ${DB[h1.cid].name} enters play!`,'gain');
   if(h2)log(`${pname(2)} Herald: ${DB[h2.cid].name} enters play!`,'gain');
   log('Game started! P1 goes first.','info');
+  if(G.tutorialMode && typeof _setupTutorialBoard==='function') _setupTutorialBoard();
   // Step Into the Courts — award immediately on first ever match
   if(!_achData.has_entered_match){
     _achData.has_entered_match=true;
@@ -8770,12 +8790,7 @@ function resolvePrizeClaim(victim, claimer, index){
     log(`🎖 ${pname(claimer)} takes a Prize from ${pname(victim)}: ${DB[cid]?.name||cid}! (${pname(victim)}: ${maxPrizes-vpl.prizesClaimed} prizes left)`,'gain');
     checkHandLimit(claimer);
     renderAll();
-    // Tutorial checkpoints: first prize + the final handoff line.
-    if(G.tutorialMode && G.tut && claimer===1){
-      const left=maxPrizes-vpl.prizesClaimed;
-      if(left===1 && !G.tut.shown.handoff){ tutStep('handoff',["You've got this — the rest is up to you.","Let's claim that last Prize and win your very first battle!"]); }
-      else if(!G.tut.shown.prizes){ tutStep('prizes',["Nicely done — that's a Prize card claimed! Take them all and the match is yours."]); }
-    }
+    // (tutorial prize teaching handled by the guided step runner)
     // VICTIM loses when all their prizes are gone → CLAIMER wins
     if(vpl.prizesClaimed>=maxPrizes)setTimeout(()=>triggerWin(claimer,pname(victim)+' lost all prizes!'),400);
   }, prizeVariant);
@@ -10208,6 +10223,7 @@ function resolveAttack(ap,auid,dp,duid){
   const afc=G.players[ap].field.find(f=>f.uid===auid);
   const dfc=G.players[dp].field.find(f=>f.uid===duid);
   if(!afc||!dfc)return;
+  if(G.tutorialMode&&ap===1&&typeof tutorialNotifyAction==='function')setTimeout(()=>tutorialNotifyAction('attack'),400);
   // Guardian check
   const guardians=G.players[dp].field.filter(f=>isChar(DB[f.cid])&&hasKW(f,'guardian'));
   if(guardians.length>0&&!guardians.find(f=>f.uid===duid)){
@@ -10360,6 +10376,7 @@ function onHandClick(p,uid,fc){
     if(isChar(DB[fco.cid])&&!DB[fco.cid]?.isToken&&namedFighters>=MAX_FIELD){log('Fighter zone full! (max 8 named fighters).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     if(!isChar(DB[fco.cid])&&otherCards>=MAX_OTHER){log('Field full! (max 5 other cards on field).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     pl.field.push(fco);log(`${pname(p)} plays ${c.name}.`,'info');playCardZoom(fco.cid,fco.variant);if(typeof SFX!=='undefined')SFX.cardPlay();if(p===1)sendGameAction('card_play',{cardId:fco.cid,variant:fco.variant});onEntry(p,fco);
+    if(G.tutorialMode&&p===1&&isChar(c)&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('play');
     if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
     // Mission tracking: unique characters (only for local player)
     if(p===1&&typeof trackUniqueCharacter==='function'&&['base_char','char','team'].includes(c.type)){
@@ -12662,6 +12679,7 @@ function getPrevForm(cid){
 // ═══════════════════════════════════════════════════
 function endTurnNow(){
   if(G.gameOver)return;
+  if(G.tutorialMode&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('endturn');
   // In 2v2 the human controls BOTH boards on Team A (players 1 & 3), so allow
   // ending the turn on whichever human board is currently active. Online: only
   // this client's own seat.
@@ -13271,6 +13289,7 @@ function loadGameSettings(){
 
 function runAI(){
   if(G.activePlayer!==2)return;
+  if(G.tutorialMode){ if(typeof runTutorialAI==='function')runTutorialAI(); return; }
   G.players[2].energy+=1;resetEnergyCardFlag(2);drawCard(2);G.phasesDone.push('draw');G.phase='draw';
   untapAll(2);
   G.players[2].usedAbilityThisTurn=false;
@@ -14058,6 +14077,84 @@ function _narrSkip(){
 }
 function _narrClose(){ const el=document.getElementById('tut-narrator'); if(el)el.classList.remove('on'); }
 function narrationActive(){ const el=document.getElementById('tut-narrator'); return !!(el&&el.classList.contains('on')); }
+// ── TUTORIAL SPOTLIGHT + STEP RUNNER ─────────────────────────────────
+let _tutSteps=[], _tutStepIdx=0, _tutPendingAction=null, _tutTypeTimer=null;
+function _ensureSpotDom(){
+  let el=document.getElementById('tut-spot');
+  if(el)return el;
+  el=document.createElement('div'); el.id='tut-spot'; el.className='tut-spot';
+  el.innerHTML='<div class="tut-spot-ring" id="tut-ring"></div>'
+    +'<div class="tut-bubble" id="tut-bubble">'
+    +'<div class="tb-face"><img id="tut-bubble-img" alt="Virora"/><span class="tb-name">Virora</span></div>'
+    +'<div class="tb-text" id="tut-bubble-text"></div>'
+    +'<div class="tb-ctrl"><button class="tb-skip" id="tut-bubble-skip">Skip Tutorial</button>'
+    +'<span class="tb-hint" id="tut-bubble-hint" style="display:none"></span>'
+    +'<button class="tb-next" id="tut-bubble-next">Next ▸</button></div></div>';
+  document.body.appendChild(el);
+  el.querySelector('#tut-bubble-next').onclick=(e)=>{e.stopPropagation();_tutNext();};
+  el.querySelector('#tut-bubble-skip').onclick=(e)=>{e.stopPropagation();_tutSkipAll();};
+  window.addEventListener('resize',()=>{ if(el.classList.contains('on')) _tutPositionCurrent(); });
+  return el;
+}
+let _tutCurrentCfg=null;
+// Position the ring around target element + place the bubble near it.
+function _tutPositionCurrent(){
+  const cfg=_tutCurrentCfg; if(!cfg)return;
+  const ring=document.getElementById('tut-ring');
+  const bubble=document.getElementById('tut-bubble');
+  const el= cfg.targetId ? document.getElementById(cfg.targetId) : null;
+  if(el && ring){
+    const r=el.getBoundingClientRect(); const pad=8;
+    ring.style.display='block';
+    ring.style.left=(r.left-pad)+'px'; ring.style.top=(r.top-pad)+'px';
+    ring.style.width=(r.width+pad*2)+'px'; ring.style.height=(r.height+pad*2)+'px';
+    ring.classList.toggle('pulse', !!cfg.requireAction);
+    // place bubble: prefer above the target, else below
+    const bw=Math.min(340, window.innerWidth*0.8), bh=bubble.offsetHeight||150;
+    let bx=Math.min(Math.max(10, r.left), window.innerWidth-bw-10);
+    let by=(r.top-bh-14 > 10) ? (r.top-bh-14) : Math.min(r.bottom+14, window.innerHeight-bh-10);
+    bubble.style.left=bx+'px'; bubble.style.top=by+'px';
+  } else if(ring){
+    // no target — center the bubble, hide the ring cutout (full dim)
+    ring.style.display='none';
+    const bw=Math.min(360,window.innerWidth*0.86), bh=bubble.offsetHeight||150;
+    bubble.style.left=Math.round((window.innerWidth-bw)/2)+'px';
+    bubble.style.top=Math.round((window.innerHeight-bh)/2)+'px';
+  }
+}
+// Render one step (typewriter text + Next vs action-hint).
+function _tutRenderStep(){
+  const cfg=_tutSteps[_tutStepIdx]; if(!cfg){ _tutFinishRun(); return; }
+  _tutCurrentCfg=cfg;
+  const el=_ensureSpotDom(); el.classList.add('on');
+  const prog=document.getElementById('tut-progress')||(()=>{const d=document.createElement('div');d.id='tut-progress';d.className='tut-progress';document.body.appendChild(d);return d;})();
+  prog.classList.add('on'); prog.textContent='Tutorial · '+(_tutStepIdx+1)+' / '+_tutSteps.length;
+  const img=document.getElementById('tut-bubble-img'); if(img&&img.src!==TUTORIAL_NARRATOR_IMG)img.src=TUTORIAL_NARRATOR_IMG;
+  const nextBtn=document.getElementById('tut-bubble-next');
+  const hint=document.getElementById('tut-bubble-hint');
+  _tutPendingAction = cfg.requireAction || null;
+  if(cfg.requireAction){ nextBtn.style.display='none'; hint.style.display='inline'; hint.textContent=cfg.hint||'…do it to continue'; }
+  else { nextBtn.style.display='inline-block'; hint.style.display='none'; nextBtn.textContent=(_tutStepIdx>=_tutSteps.length-1)?'Finish ✓':'Next ▸'; }
+  // position first (bubble needs to exist), then typewriter
+  _tutPositionCurrent();
+  const txt=document.getElementById('tut-bubble-text'); const line=cfg.text||'';
+  if(_tutTypeTimer)clearInterval(_tutTypeTimer); let i=0; txt.textContent='';
+  _tutTypeTimer=setInterval(()=>{ i++; txt.textContent=line.slice(0,i); if(i>=line.length){clearInterval(_tutTypeTimer);} _tutPositionCurrent(); }, 18);
+  if(typeof cfg.onShow==='function') cfg.onShow();
+}
+function _tutNext(){ if(_tutPendingAction)return; _tutStepIdx++; _tutRenderStep(); }
+// Called by hooked game actions; advances if it matches the pending gate.
+function tutorialNotifyAction(kind){
+  if(!(G&&G.tutorialMode))return;
+  if(_tutPendingAction && (_tutPendingAction===kind || _tutPendingAction==='any')){
+    _tutPendingAction=null; _tutStepIdx++; setTimeout(_tutRenderStep, 420);
+  }
+}
+function _tutFinishRun(){ const el=document.getElementById('tut-spot'); if(el)el.classList.remove('on'); const pr=document.getElementById('tut-progress'); if(pr)pr.classList.remove('on'); _tutCurrentCfg=null; }
+function _tutSkipAll(){ _tutFinishRun(); _tutSteps=[]; _tutPendingAction=null; if(typeof markCutsceneWatched==='function')markCutsceneWatched('welcome_tutorial'); if(G)G.tutorialMode=false; if(typeof showScreen==='function')showScreen('menu-screen'); }
+// Public: run an ordered list of spotlight steps.
+function runTutorialSteps(steps, startIdx){ _tutSteps=steps||[]; _tutStepIdx=startIdx||0; _tutRenderStep(); }
+function tutorialStepsActive(){ const el=document.getElementById('tut-spot'); return !!(el&&el.classList.contains('on')); }
 // Fire a one-time tutorial checkpoint (guarded so each shows once).
 function tutStep(id, lines, onDone){
   if(!(G && G.tutorialMode && G.tut)) return false;
@@ -14068,6 +14165,7 @@ function tutStep(id, lines, onDone){
 }
 // Phase-driven checkpoints — called from renderAll; each fires at most once.
 function tutorialWatch(){
+  return; // superseded by the guided step runner (runTutorialSteps)
   if(!(G && G.tutorialMode && G.tut) || G.gameOver) return;
   if(narrationActive()) return;
   if(G.activePlayer===1 && G.phase==='main' && !G.tut.shown.main){
@@ -17385,6 +17483,75 @@ function isFeatureEnabled(key){
 //    match but enables the on-board Status Tester. No rewards/stats. Invisible to
 //    everyone else (gated by isAdmin + G.adminTestMode).
 // ── NEW-PLAYER TUTORIAL ──────────────────────────────────────────────
+// Deterministic board so the guided steps + scripted AI always line up.
+function _setupTutorialBoard(){
+  const mk=(cid)=>{ const f=(typeof newFC==='function')?newFC(cid):null; if(f)f.variant='none'; return f; };
+  G.gameMode='prize'; // prize mode so knocking out enemies yields Prize cards
+  G.prizeCount=3;
+  const P1=G.players[1], P2=G.players[2];
+  P1.energy=5; P1.colorEnergy={};
+  P1.hand=[mk('najeela_base_bse'),mk('saiyan_heavy_warrior_bse'),mk('najeela_ssj1_bse'),mk('zephyranth_fruit_bse'),mk('energy_1_green'),mk('energy_1_green'),mk('rapture_vortex_bse')].filter(Boolean);
+  P1.field=[]; P1.discard=[]; P1.rift=[];
+  P1.deck=[]; for(let i=0;i<16;i++)P1.deck.push('energy_1_green'); P1.deck.push('saiyan_heavy_warrior_bse'); P1.deck.push('najeela_base_bse');
+  P1.prizes=['energy_1_green','energy_1_green','energy_1_green']; P1.prizesTaken=[false,false,false]; P1.prizesFoil=['none','none','none']; P1.prizesClaimed=0;
+  P2.energy=5; P2.colorEnergy={};
+  P2.hand=[mk('female_saiyan_citizen_bse'),mk('male_saiyan_citizen_bse')].filter(Boolean);
+  P2.field=[]; P2.discard=[]; P2.rift=[];
+  P2.deck=[]; for(let i=0;i<12;i++)P2.deck.push('female_saiyan_citizen_bse'); for(let i=0;i<6;i++)P2.deck.push('energy_1_green');
+  P2.prizes=['energy_1_green','energy_1_green','energy_1_green']; P2.prizesTaken=[false,false,false]; P2.prizesFoil=['none','none','none']; P2.prizesClaimed=0;
+  // Seed one weak enemy so the player has a target to attack right away.
+  const seed=mk('female_saiyan_citizen_bse');
+  if(seed){ const c=DB[seed.cid]; seed.turnPlayed=0; seed.currentHP=c.hp; seed.currentATK=c.atk; seed.baseHP=c.hp; seed.baseATK=c.atk; seed.abilityUsed={}; if(!seed.attachments)seed.attachments=[]; P2.field.push(seed); }
+  if(typeof renderAll==='function')renderAll();
+}
+// Scripted, gentle AI: keeps one weak body on the field for the player to KO, never attacks.
+function runTutorialAI(){
+  if(G.activePlayer!==2)return;
+  const pl=G.players[2];
+  pl.energy+=1; if(typeof resetEnergyCardFlag==='function')resetEnergyCardFlag(2);
+  if(typeof drawCard==='function')drawCard(2); if(typeof untapAll==='function')untapAll(2);
+  G.phase='main'; if(typeof renderAll==='function')renderAll();
+  setTimeout(()=>{
+    if(G.gameOver)return;
+    const hasChar=pl.field.some(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
+    if(!hasChar){
+      let fc=pl.hand.find(f=>['female_saiyan_citizen_bse','male_saiyan_citizen_bse'].includes(f.cid));
+      if(!fc){ const idx=pl.deck.lastIndexOf('female_saiyan_citizen_bse'); if(idx>-1){ const cid=pl.deck.splice(idx,1)[0]; fc=newFC(cid); } }
+      else { pl.hand=pl.hand.filter(x=>x.uid!==fc.uid); }
+      if(fc){ const c=DB[fc.cid]; fc.turnPlayed=G.turn;fc.currentHP=c.hp;fc.currentATK=c.atk;fc.baseHP=c.hp;fc.baseATK=c.atk;fc.abilityUsed={}; if(!fc.attachments)fc.attachments=[]; pl.field.push(fc); log('AI plays '+c.name+'.','info'); if(typeof onEntry==='function')onEntry(2,fc); }
+    }
+    if(typeof renderAll==='function')renderAll();
+    setTimeout(()=>{
+      if(G.gameOver)return;
+      if(typeof endTurnFx==='function')endTurnFx(2); log('AI ends.','info');
+      G.activePlayer=1;G.turn++;G.phase='draw';G.phasesDone=[];G.selectedAttacker=null;G.heraldAttacking=false;
+      if(typeof startTurnFx==='function')startTurnFx(1);
+      if(typeof renderAll==='function')renderAll();
+    }, 850);
+  }, 750);
+}
+// The authored step-by-step walkthrough (spotlights + action gates).
+function buildTutorialSteps(){
+  return [
+    {targetId:'p1-prizes', text:"These are your Prize cards. Claim ALL of your opponent's Prizes to win — but if all of yours are taken, you lose."},
+    {targetId:'p1-deck-count', text:"This is your deck. You draw one card from it at the start of every turn."},
+    {targetId:'p1-hand', text:"And this is your hand — the cards you can play right now."},
+    {targetId:'ph-draw', text:"Each turn begins with the Draw phase. You've already drawn your card for this turn."},
+    {targetId:'p1-energy', text:"This is your Energy. You gain some every turn and spend it to play cards — pricier cards cost more."},
+    {targetId:'ph-main', text:"Right now you're in the Main phase, where you play characters, locations and equipment, and use abilities."},
+    {targetId:'p1-hand', text:"Let's play a character! Tap Najeela in your hand to bring her onto the field.", requireAction:'play', hint:'▸ Play Najeela from your hand'},
+    {targetId:'p1-field', text:"Perfect — your characters live here on the field. You can tap a character to see its abilities and options."},
+    {targetId:'ph-attack', text:"When you're ready to fight, switch to the Attack phase by tapping ATTACK."},
+    {targetId:'p1-field', text:"Now attack! Select your character, then choose the enemy to strike. Knocking one out lets you claim a Prize.", requireAction:'attack', hint:'▸ Attack the enemy character'},
+    {targetId:'p1-discard-pile', text:"When cards are used up or characters are knocked out, they go here — your Discard pile."},
+    {targetId:'p1-rift-count', text:"The Rift is a separate banish zone. Some powerful effects send cards HERE instead — and Rifted cards are gone for good."},
+    {targetId:'p1-prizes', text:"Every enemy you knock out earns you a Prize card. Collect all of your opponent's to win the match!"},
+    {targetId:'ph-end', text:"When you've done everything you want, End your turn to pass play to your opponent.", requireAction:'endturn', hint:'▸ End your turn'},
+    {text:"You've got the basics down! Keep playing characters and attacking to claim the last Prizes. The rest is up to you — go win your very first battle!"}
+  ];
+}
+// Deterministic board so the guided steps + scripted AI always line up. (dup marker)
+
 // A guided first match: player uses the Verdant Guard starter vs a deliberately
 // weak, passive AI so they reliably win. Narration fires at checkpoints; winning
 // grants the completion rewards + achievement (see triggerWin).
@@ -17408,9 +17575,10 @@ function startTutorial(){
   showNarration([
     "Welcome to Lord of Courts! I'm Virora — I'll show you the ropes.",
     "The goal is simple: claim all of your opponent's Prize cards before they claim yours.",
-    "Let's jump into your very first battle. Follow my lead!"
+    "Let's jump into your very first battle — just follow my lead!"
   ], ()=>{
     startGame('ai', playerDeck, _tutorialAiDeck());
+    setTimeout(()=>{ if(G && G.tutorialMode && typeof runTutorialSteps==='function') runTutorialSteps(buildTutorialSteps()); }, 800);
   });
 }
 // Tutorial completion: grant rewards + achievement, mark seen, return to menu.
