@@ -443,6 +443,24 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .sfx-spin{animation:sfx-wobble .75s ease-in-out}
 .status-fx-icon{position:fixed;pointer-events:none;z-index:306;font-size:30px;animation:sfx-float 1s ease-out forwards;filter:drop-shadow(0 0 6px rgba(0,0,0,.7))}
 @keyframes sfx-float{0%{opacity:0;transform:translateY(8px) scale(.55)}25%{opacity:1;transform:translateY(-4px) scale(1.2)}100%{opacity:0;transform:translateY(-48px) scale(1)}}
+/* ══ TUTORIAL NARRATOR (Virora walkthrough) ══ */
+.tut-narrator{position:fixed;inset:0;z-index:100000;display:none;pointer-events:none}
+.tut-narrator.on{display:block}
+.tut-narrator .tut-dim{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 80%,rgba(20,10,40,.35),rgba(0,0,0,.62));pointer-events:auto}
+.tut-portrait{position:absolute;left:18px;bottom:120px;width:min(340px,40vw);max-height:66vh;object-fit:contain;filter:drop-shadow(0 12px 30px rgba(124,58,237,.55));animation:tut-pop .35s ease-out;pointer-events:none;z-index:2}
+@keyframes tut-pop{0%{opacity:0;transform:translateY(24px) scale(.96)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.tut-speechbox{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);width:min(760px,92vw);background:linear-gradient(180deg,rgba(15,12,34,.97),rgba(9,7,22,.98));border:2px solid #7c3aed;border-radius:16px;padding:18px 22px 16px;box-shadow:0 12px 40px rgba(124,58,237,.4),inset 0 0 24px rgba(124,58,237,.12);pointer-events:auto;z-index:3}
+.tut-speaker{font-size:13px;font-weight:800;letter-spacing:2px;color:#c4b5fd;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.tut-speaker::before{content:'';width:9px;height:9px;border-radius:50%;background:#a855f7;box-shadow:0 0 8px #a855f7}
+.tut-text{font-size:16px;line-height:1.5;color:#f1f5f9;min-height:48px}
+.tut-text .cursor{display:inline-block;width:8px;color:#a855f7;animation:tut-blink 1s steps(1) infinite}
+@keyframes tut-blink{50%{opacity:0}}
+.tut-controls{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.tut-skip{background:none;border:none;color:#6b7280;font-size:11px;letter-spacing:1px;cursor:pointer;text-transform:uppercase}
+.tut-skip:hover{color:#9ca3af}
+.tut-next{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:none;border-radius:9px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.5px;box-shadow:0 4px 14px rgba(124,58,237,.5)}
+.tut-next:hover{filter:brightness(1.1)}
+@media (max-width:768px){.tut-portrait{width:44vw;bottom:150px;left:6px}.tut-text{font-size:14px}.tut-speechbox{bottom:14px}}
 
 /* HERALD ZONE */
 .herald-zone{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:108px;max-width:108px;flex-shrink:0;justify-content:center;overflow:visible;}
@@ -7351,6 +7369,7 @@ const PRESET_DECKS = {
 let builderDeck=[];
 let pendingMode='',pendingP1Deck=null,pendingP2Deck=null;
 let _pendingAdminTest=false; // set when launching AI Admin Testing mode
+let _pendingTutorial=false;   // set when launching the new-player tutorial match
 
 // ── SUPABASE DECK STORAGE ─────────────────────────
 // Decks are stored per-user in Supabase.
@@ -8084,6 +8103,7 @@ function startGame(mode,deck1,deck2,foils1,foils2){
       2:{name:((mode==='pvp'||mode==='online')?(G&&G.onlineOpponentName)||window._onlineOpponentName||'Opponent':'AI'),energy:5,colorEnergy:{},hand:[],field:[],deck:d2,discard:[],rift:[],prizes:p2,prizesClaimed:0,prizesTaken:[],prizesFoil:pf2,herald:h2,lifeForce:startLF,foilPool:_fp2},
     },log:[]};
   if(_pendingAdminTest){ G.adminTestMode=true; _pendingAdminTest=false; log('🧪 AI Admin Testing Mode — status tester enabled.','info'); }
+  if(_pendingTutorial){ G.tutorialMode=true; _pendingTutorial=false; G.tut={shown:{}}; log('🎓 Tutorial match started.','info'); }
   for(let i=0;i<7;i++){drawCard(1,true);drawCard(2,true);}
   if(h1)log(`${pname(1)} Herald: ${DB[h1.cid].name} enters play!`,'gain');
   if(h2)log(`${pname(2)} Herald: ${DB[h2.cid].name} enters play!`,'gain');
@@ -8750,6 +8770,12 @@ function resolvePrizeClaim(victim, claimer, index){
     log(`🎖 ${pname(claimer)} takes a Prize from ${pname(victim)}: ${DB[cid]?.name||cid}! (${pname(victim)}: ${maxPrizes-vpl.prizesClaimed} prizes left)`,'gain');
     checkHandLimit(claimer);
     renderAll();
+    // Tutorial checkpoints: first prize + the final handoff line.
+    if(G.tutorialMode && G.tut && claimer===1){
+      const left=maxPrizes-vpl.prizesClaimed;
+      if(left===1 && !G.tut.shown.handoff){ tutStep('handoff',["You've got this — the rest is up to you.","Let's claim that last Prize and win your very first battle!"]); }
+      else if(!G.tut.shown.prizes){ tutStep('prizes',["Nicely done — that's a Prize card claimed! Take them all and the match is yours."]); }
+    }
     // VICTIM loses when all their prizes are gone → CLAIMER wins
     if(vpl.prizesClaimed>=maxPrizes)setTimeout(()=>triggerWin(claimer,pname(victim)+' lost all prizes!'),400);
   }, prizeVariant);
@@ -8822,6 +8848,7 @@ function triggerWin(p,r){
   G.gameOver=true;
   G.winner=p;        // local winner (1 or 2)
   G.winReason=r;
+  if(G.tutorialMode){ if(typeof SFX!=='undefined')SFX.win(); onTutorialFinished(p); return; }
   // In online mode, broadcast game over so the other side(s) update too
   if(G.onlineMode){
     if(G.onlineMode2v2){ setTimeout(()=>{ if(typeof broadcastGameState2v2==='function') broadcastGameState2v2(); },100); }
@@ -13969,6 +13996,94 @@ function showCoinFlip(heads, onDone){
 function flipCoin(){ flipCoinFor({title:'Coin Flip', desc:'A simple coin flip.'}, function(){}); }
 function openDiceModal(){document.getElementById('dice-modal').classList.add('open');}
 function rollDie(s){ document.getElementById('dice-modal').classList.remove('open'); rollDiceFor({title:'Roll d'+s, desc:'Manual dice roll.', sides:s, count:1}, function(){}); }
+// ══════════════════════════════════════════════════════════════════════
+// TUTORIAL NARRATOR ENGINE — Virora walks new players through their first match.
+//  swap TUTORIAL_NARRATOR_IMG with the real portrait URL when ready (one line).
+// ══════════════════════════════════════════════════════════════════════
+const TUTORIAL_NARRATOR_IMG = 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/001-150%20(Virora%20Base).png'; // TODO: replace with clean Virora portrait
+let _narrLines=[], _narrIdx=0, _narrTyping=false, _narrTimer=null, _narrDone=null;
+function _ensureNarratorDom(){
+  let el=document.getElementById('tut-narrator');
+  if(el)return el;
+  el=document.createElement('div'); el.id='tut-narrator'; el.className='tut-narrator';
+  el.innerHTML='<div class="tut-dim"></div>'
+    +'<img class="tut-portrait" id="tut-portrait" alt="Virora"/>'
+    +'<div class="tut-speechbox">'
+    +'<div class="tut-speaker">Virora</div>'
+    +'<div class="tut-text" id="tut-text"></div>'
+    +'<div class="tut-controls"><button class="tut-skip" id="tut-skip">Skip ▸▸</button><button class="tut-next" id="tut-next">Next ▸</button></div>'
+    +'</div>';
+  document.body.appendChild(el);
+  // Advance on clicking the dim area or Next; Skip ends the whole sequence.
+  el.querySelector('.tut-dim').onclick=_narrAdvance;
+  el.querySelector('#tut-next').onclick=(e)=>{e.stopPropagation();_narrAdvance();};
+  el.querySelector('#tut-skip').onclick=(e)=>{e.stopPropagation();_narrSkip();};
+  return el;
+}
+// Show a queue of narration lines; onDone fires after the last line is advanced.
+function showNarration(lines, onDone){
+  const el=_ensureNarratorDom();
+  const img=document.getElementById('tut-portrait'); if(img && img.src!==TUTORIAL_NARRATOR_IMG) img.src=TUTORIAL_NARRATOR_IMG;
+  _narrLines=Array.isArray(lines)?lines.slice():[String(lines)];
+  _narrIdx=0; _narrDone=(typeof onDone==='function')?onDone:null;
+  el.classList.add('on');
+  _narrRender();
+}
+function _narrRender(){
+  const txt=document.getElementById('tut-text'); if(!txt)return;
+  const line=_narrLines[_narrIdx]||'';
+  const skip=document.getElementById('tut-skip'); if(skip) skip.style.visibility=(_narrLines.length>1)?'visible':'hidden';
+  const nextBtn=document.getElementById('tut-next');
+  // typewriter
+  _narrTyping=true; txt.innerHTML=''; let i=0;
+  if(_narrTimer)clearInterval(_narrTimer);
+  if(nextBtn)nextBtn.textContent=(_narrIdx>=_narrLines.length-1)?'Got it ✓':'Next ▸';
+  _narrTimer=setInterval(()=>{
+    i++; txt.innerHTML=_escapeHtml(line.slice(0,i))+'<span class="cursor">▌</span>';
+    if(i>=line.length){ clearInterval(_narrTimer); _narrTyping=false; txt.innerHTML=_escapeHtml(line); }
+  }, 22);
+}
+function _escapeHtml(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function _narrAdvance(){
+  // If still typing, finish the line instantly on first tap.
+  if(_narrTyping){ if(_narrTimer)clearInterval(_narrTimer); _narrTyping=false; const txt=document.getElementById('tut-text'); if(txt)txt.innerHTML=_escapeHtml(_narrLines[_narrIdx]||''); return; }
+  _narrIdx++;
+  if(_narrIdx>=_narrLines.length){ _narrClose(); if(_narrDone){ const d=_narrDone; _narrDone=null; d(); } return; }
+  _narrRender();
+}
+function _narrSkip(){
+  // Skip the rest of THIS narration block and run its onDone (keeps tutorial flowing).
+  if(_narrTimer)clearInterval(_narrTimer); _narrTyping=false;
+  _narrClose(); if(_narrDone){ const d=_narrDone; _narrDone=null; d(); }
+}
+function _narrClose(){ const el=document.getElementById('tut-narrator'); if(el)el.classList.remove('on'); }
+function narrationActive(){ const el=document.getElementById('tut-narrator'); return !!(el&&el.classList.contains('on')); }
+// Fire a one-time tutorial checkpoint (guarded so each shows once).
+function tutStep(id, lines, onDone){
+  if(!(G && G.tutorialMode && G.tut)) return false;
+  if(G.tut.shown[id]) return false;
+  G.tut.shown[id]=true;
+  showNarration(lines, onDone);
+  return true;
+}
+// Phase-driven checkpoints — called from renderAll; each fires at most once.
+function tutorialWatch(){
+  if(!(G && G.tutorialMode && G.tut) || G.gameOver) return;
+  if(narrationActive()) return;
+  if(G.activePlayer===1 && G.phase==='main' && !G.tut.shown.main){
+    tutStep('main',[
+      "This is your turn. At the start of each turn you gain Energy — the number by your avatar.",
+      "Spend Energy to play cards from your hand. Tap one of your characters to bring it onto the field!",
+      "Tip: if you draw a Transformation card matching a character you control, you can evolve them into a stronger form."
+    ]);
+  } else if(G.activePlayer===1 && G.phase==='attack' && !G.tut.shown.attack){
+    tutStep('attack',[
+      "Now the fun part — attacking! Move to your Attack phase, select one of your characters, then choose an enemy to strike.",
+      "Knock out their characters to start claiming their Prize cards. That's how you win."
+    ]);
+  }
+}
+
 // Play a distinct visual effect on a card when a status is applied or ticks.
 //  • body-fixed overlay tinted to the status (survives field re-renders)
 //  • a floating status icon rising off the card
@@ -14656,6 +14771,7 @@ function showRiftZone(p){
 function renderAll(){
   if(!G||!G.players)return;
   if(typeof syncAdminTester==='function') syncAdminTester();
+  if(typeof tutorialWatch==='function') tutorialWatch();
   if(G.is2v2){ renderAll2v2(); return; }
   recalcPassives();
   [1,2].forEach(p=>{
@@ -15468,6 +15584,7 @@ async function checkDailyLogin(){
 function _isLocalPvPMatch(){
   if(!G) return false;
   if(G.adminTestMode) return true; // admin test matches never grant rewards/stats
+  if(G.tutorialMode) return true;   // tutorial grants its own completion rewards
   if(G.is2v2){
     // 2v2 local PvP = not online AND no AI seats (all four seats are local humans).
     return !G.onlineMode2v2 && ((G.aiPlayers||[]).length===0);
@@ -15655,6 +15772,15 @@ function renderProfileStats(){
 // ACHIEVEMENT SYSTEM
 // ═══════════════════════════════════════════════════
 const ACHIEVEMENTS={
+  tutorial_complete:{
+    id:'tutorial_complete',
+    title:"First Steps",
+    desc:"Complete the new-player tutorial.",
+    icon:'🎓',
+    img:'', // TODO: add your tutorial achievement emblem URL here
+    reward:200,
+    check:()=>!!window._tutorialDoneFlag
+  },
   step_into_courts:{
     id:'step_into_courts',
     title:"Step Into the Courts",
@@ -17258,6 +17384,70 @@ function isFeatureEnabled(key){
 // ── AI ADMIN TESTING MODE — admin-only sandbox that plays like a normal 1v1 vs-AI
 //    match but enables the on-board Status Tester. No rewards/stats. Invisible to
 //    everyone else (gated by isAdmin + G.adminTestMode).
+// ── NEW-PLAYER TUTORIAL ──────────────────────────────────────────────
+// A guided first match: player uses the Verdant Guard starter vs a deliberately
+// weak, passive AI so they reliably win. Narration fires at checkpoints; winning
+// grants the completion rewards + achievement (see triggerWin).
+function _tutorialAiDeck(){
+  // Weak, beatable deck: a handful of 1/1 and 2/2 bodies + lots of energy.
+  const d=[];
+  const push=(id,n)=>{ for(let i=0;i<n;i++)d.push(id); };
+  push('female_saiyan_citizen_bse',4); push('male_saiyan_citizen_bse',4);
+  push('najeela_base_bse',4);
+  push('energy_1_green',24); push('energy_1_choice',8);
+  // pad to 60 with more citizens/energy
+  while(d.length<60) d.push('energy_1_green');
+  return d.slice(0,60);
+}
+function startTutorial(){
+  const playerDeck = (typeof getDeckList==='function') ? getDeckList('__preset_verdant__') : null;
+  if(!playerDeck || !playerDeck.length){ alert('Starter deck unavailable.'); return; }
+  _pendingTutorial=true;
+  if(typeof closeAllModals==='function') closeAllModals();
+  // Opening narration, then drop straight into the match.
+  showNarration([
+    "Welcome to Lord of Courts! I'm Virora — I'll show you the ropes.",
+    "The goal is simple: claim all of your opponent's Prize cards before they claim yours.",
+    "Let's jump into your very first battle. Follow my lead!"
+  ], ()=>{
+    startGame('ai', playerDeck, _tutorialAiDeck());
+  });
+}
+// Tutorial completion: grant rewards + achievement, mark seen, return to menu.
+async function onTutorialFinished(p){
+  if(p!==1){
+    showNarration(["Don't worry — even the best stumble their first time.","Let's run that back and try again!"], ()=>{ startTutorial(); });
+    return;
+  }
+  window._tutorialDoneFlag=true;
+  if(typeof markCutsceneWatched==='function') markCutsceneWatched('welcome_tutorial');
+  try{ if(typeof awardPack==='function') await awardPack('pack','basic','base_set',2,'Base Set Booster'); }catch(e){}
+  try{ if(typeof checkAchievements==='function') await checkAchievements(); }catch(e){} // unlocks First Steps (+200 Celestium)
+  showNarration([
+    "Incredible — you won your very first battle!",
+    "For your victory: 200 Celestium and 2 Base Set booster packs to begin your collection.",
+    "You're ready now. The courts await — go make your name, and good luck out there!"
+  ], ()=>{ if(typeof showScreen==='function') showScreen('menu-screen'); if(typeof updateCelDisplay==='function')updateCelDisplay(); });
+}
+// Fire the tutorial once for brand-new accounts (0 matches, never seen it).
+function maybeStartTutorialForNewPlayer(){
+  if(typeof hasCutsceneBeenWatched==='function' && hasCutsceneBeenWatched('welcome_tutorial')) return;
+  const isNew = _celData && (_celData.matches||0)===0 && (_celData.wins||0)===0 && (_celData.losses||0)===0;
+  if(!isNew) return;
+  if(G && !G.gameOver) return;            // don't interrupt an active match
+  if(narrationActive && narrationActive()) return;
+  startTutorial();
+}
+// Admin: reset the tutorial so it can be replayed/tested.
+async function adminResetTutorial(){
+  if(typeof isAdmin==='function' && !isAdmin()) return;
+  window._tutorialDoneFlag=false;
+  if(_campaignProgress && _campaignProgress.watched_cutscenes && _campaignProgress.watched_cutscenes['welcome_tutorial']){
+    delete _campaignProgress.watched_cutscenes['welcome_tutorial'];
+    if(typeof saveCampaignProgress==='function') await saveCampaignProgress();
+  }
+  alert('✓ Tutorial reset. Use "Test Tutorial" or re-login as a new account to see it again.');
+}
 function startAdminTestMatch(){
   if(!isAdmin()){ alert('Admin access required.'); return; }
   _pendingAdminTest=true;
@@ -21009,6 +21199,7 @@ window.addEventListener('load',async()=>{
       await loadCampaign();
       await loadBattlePass();
       if(typeof updateXpHud==='function')updateXpHud();
+      if(typeof maybeStartTutorialForNewPlayer==='function') setTimeout(maybeStartTutorialForNewPlayer, 1100);
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){console.error('[AUTH] error:',e);window.signOutUser=function(){window.location.replace(LOGIN);};}
   }
@@ -21491,6 +21682,8 @@ window.addEventListener('load',async()=>{
     <button class="admin-action-btn danger" onclick="adminResetCollection()">⚠ RESET MY CARD COLLECTION</button>
     <button class="admin-action-btn" onclick="openCardManager()" style="border-color:rgba(232,197,112,.5);color:#fbbf24">🎴 OPEN CARD MANAGER</button>
     <button class="admin-action-btn" onclick="startAdminTestMatch()" style="border-color:rgba(167,139,250,.6);color:#c4b5fd">🧪 AI ADMIN TESTING MODE</button>
+    <button class="admin-action-btn" onclick="startTutorial()" style="border-color:rgba(56,189,248,.6);color:#7dd3fc">🎓 TEST TUTORIAL</button>
+    <button class="admin-action-btn" onclick="adminResetTutorial()" style="border-color:rgba(56,189,248,.4);color:#7dd3fc">🎓 RESET TUTORIAL (new-player replay)</button>
     <div class="admin-toggle" style="display:block;margin-top:8px">
       <div style="margin-bottom:8px">
         <div class="admin-toggle-label">✨ Holo Preview Mode <span style="font-size:8px;color:#fcd34d">ADMIN ONLY</span></div>
