@@ -6595,8 +6595,8 @@ textarea{
         <div class="center-tools">
           <button class="action-tool-btn" onclick="flipCoin()" title="Flip a coin">🪙</button>
           <button class="action-tool-btn" onclick="openDiceModal()" title="Roll dice">🎲</button>
-          <button class="action-tool-btn tf" onclick="openTransformModal()" title="Transform">⬆</button>
-          <button class="action-tool-btn eq" onclick="openEquipModal()" title="Equip">🛡</button>
+          <button class="action-tool-btn tf" id="action-tf-btn" onclick="openTransformModal()" title="Transform">⬆</button>
+          <button class="action-tool-btn eq" id="action-eq-btn" onclick="openEquipModal()" title="Equip">🛡</button>
           <button class="action-tool-btn ab" onclick="openAbilityModal()" title="Abilities">✨</button>
           <button class="action-tool-btn sac" onclick="openSacrificeModal()" title="Sacrifice">💀</button>
         </div>
@@ -9848,6 +9848,7 @@ function onFieldClick(p,uid,fc){
         resolveHeraldVsField(p,fc);return;
       }
       if(!G.selectedAttacker)return;
+      if(G.tutorialMode && _tutAttackTargetCid && isEnemyBoard(p) && isChar(DB[fc.cid]) && fc.cid!==_tutAttackTargetCid){ log('For this step, attack the highlighted enemy: '+(DB[_tutAttackTargetCid]?.name||'')+'.','dmg'); return; }
       const _atkUid=G.selectedAttacker;
       if(typeof SFX!=='undefined')SFX.attack();
       // Play lunge animation, then resolve
@@ -10534,7 +10535,8 @@ function openFruitHealPicker(p, fco, chars, healAmt, atkAmt, cureMode){
     const cc=DB[cf.cid]; const mx=(cf.baseHP||0)+(cf.hpBonus||0)+(cf.passiveHp||0);
     const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:7px 10px;display:flex;justify-content:space-between;align-items:center';
     btn.innerHTML=`<span>${cc.name}</span><span style="color:#22c55e">♥${cf.currentHP}/${mx}${atkAmt>0?` ⚔${cf.currentATK}`:''}</span>`;
-    btn.onclick=()=>apply(cf);
+    if(G.tutorialMode && _tutTargetCid && cf.cid!==_tutTargetCid){ btn.disabled=true; btn.style.opacity='0.4'; btn.style.cursor='not-allowed'; btn.innerHTML+=' 🔒'; }
+    else { btn.onclick=()=>apply(cf); }
     body.appendChild(btn);
   });
   showModalEl(`Instant: ${c.name}`,body);
@@ -10570,7 +10572,8 @@ function openEquipTargetPicker(efc,chars){
   chars.forEach(cf=>{
     const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:6px 10px';
     btn.textContent=`${DB[cf.cid].name} (${cf.currentHP}/${cf.baseHP+cf.hpBonus} HP)`;
-    btn.onclick=()=>{closeAllModals();applyEquipToTarget(efc,cf);};
+    if(G.tutorialMode && _tutTargetCid && cf.cid!==_tutTargetCid){ btn.disabled=true; btn.style.opacity='0.4'; btn.style.cursor='not-allowed'; btn.textContent+='  🔒'; }
+    else { btn.onclick=()=>{closeAllModals();applyEquipToTarget(efc,cf);}; }
     body.appendChild(btn);
   });
   showModalEl(`Equip: ${ec.name}`,body);
@@ -14135,6 +14138,8 @@ function narrationActive(){ const el=document.getElementById('tut-narrator'); re
 // ── TUTORIAL SPOTLIGHT + STEP RUNNER ─────────────────────────────────
 let _tutSteps=[], _tutStepIdx=0, _tutPendingAction=null, _tutTypeTimer=null;
 let _tutPlayMode='free'; // 'free' | 'none' | a specific cid — restricts which card can be played during guided steps
+let _tutTargetCid=null;   // when set, equip/instant targeting is locked to this character cid (tutorial)
+let _tutAttackTargetCid=null; // when set, the player may only attack an enemy of this cid (tutorial)
 function _ensureSpotDom(){
   let el=document.getElementById('tut-spot');
   if(el)return el;
@@ -14190,6 +14195,8 @@ function _tutRenderStep(){
   const hint=document.getElementById('tut-bubble-hint');
   _tutPendingAction = cfg.requireAction || null;
   _tutPlayMode = cfg.allowCid ? cfg.allowCid : (cfg.freePlay ? 'free' : 'none');
+  _tutTargetCid = cfg.targetCid || null;
+  _tutAttackTargetCid = cfg.attackTargetCid || null;
   if(cfg.requireAction){ nextBtn.style.display='none'; hint.style.display='inline'; hint.textContent=cfg.hint||'…do it to continue'; }
   else { nextBtn.style.display='inline-block'; hint.style.display='none'; nextBtn.textContent=(_tutStepIdx>=_tutSteps.length-1)?'Finish ✓':'Next ▸'; }
   // position first (bubble needs to exist), then typewriter
@@ -14207,7 +14214,7 @@ function tutorialNotifyAction(kind){
     _tutPendingAction=null; _tutStepIdx++; setTimeout(_tutRenderStep, 420);
   }
 }
-function _tutFinishRun(){ const el=document.getElementById('tut-spot'); if(el)el.classList.remove('on'); const pr=document.getElementById('tut-progress'); if(pr)pr.classList.remove('on'); _tutCurrentCfg=null; _tutPlayMode='free'; }
+function _tutFinishRun(){ const el=document.getElementById('tut-spot'); if(el)el.classList.remove('on'); const pr=document.getElementById('tut-progress'); if(pr)pr.classList.remove('on'); _tutCurrentCfg=null; _tutPlayMode='free'; _tutTargetCid=null; _tutAttackTargetCid=null; }
 function _tutSkipAll(){ _tutFinishRun(); _tutSteps=[]; _tutPendingAction=null; if(typeof markCutsceneWatched==='function')markCutsceneWatched('welcome_tutorial'); if(G)G.tutorialMode=false; if(typeof showScreen==='function')showScreen('menu-screen'); }
 // Public: run an ordered list of spotlight steps.
 function runTutorialSteps(steps, startIdx){ _tutSteps=steps||[]; _tutStepIdx=startIdx||0; _tutRenderStep(); }
@@ -17578,7 +17585,7 @@ function runTutorialAI(){
   const charCount=()=>pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken).length;
   setTimeout(()=>{
     if(G.gameOver)return;
-    if(aiT===1){ playOne(["saiyan_heavy_warrior_bse"]); if(charCount()<2) playOne(["female_saiyan_citizen_bse","male_saiyan_citizen_bse"]); }
+    if(aiT===1){ playOne(["saiyan_heavy_warrior_bse"]); playOne(["female_saiyan_citizen_bse","male_saiyan_citizen_bse"]); playOne(["female_saiyan_citizen_bse","male_saiyan_citizen_bse"]); }
     else { if(charCount()<1) playOne(["female_saiyan_citizen_bse","male_saiyan_citizen_bse"]); }
     if(typeof renderAll==="function")renderAll();
     setTimeout(()=>{
@@ -17586,10 +17593,17 @@ function runTutorialAI(){
       let didAttack=false;
       // Turn 2 only: a ready AI character knocks out the players weakest character as a lesson.
       if(aiT===2){
-        const attacker=pl.field.find(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken && f.turnPlayed<G.turn && !f.tapped);
-        const targets=G.players[1].field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
-        targets.sort((a,b)=>(a.currentHP||0)-(b.currentHP||0));
-        if(attacker && targets.length){ didAttack=true; log("AI attacks with "+DB[attacker.cid].name+"!","dmg"); if(typeof resolveAttack==="function")resolveAttack(2, attacker.uid, 1, targets[0].uid); }
+        const ready=()=>pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken && f.turnPlayed<G.turn && !f.tapped);
+        // 1) A strong fighter attacks Najeela to damage her (sets up the transform lesson) and Burns her.
+        const najeela=G.players[1].field.find(f=>f.cid==="najeela_base_bse");
+        let shw=ready().find(f=>f.cid==="saiyan_heavy_warrior_bse") || ready()[0];
+        if(shw && najeela){ didAttack=true; log("AI attacks "+DB[najeela.cid].name+" with "+DB[shw.cid].name+"!","dmg"); if(typeof resolveAttack==="function")resolveAttack(2, shw.uid, 1, najeela.uid);
+          if(najeela.currentHP>0 && typeof applyStatus==="function"){ applyStatus(najeela,"burn",3); if(typeof showStatusFx==="function")showStatusFx(najeela.uid,"burn"); log(DB[najeela.cid].name+" is Burned!","dmg"); }
+        }
+        // 2) A rookie fighter knocks out the players throwaway citizen (teaches losing a character + a Prize).
+        const rookie=G.players[1].field.find(f=>f.cid==="female_saiyan_citizen_bse");
+        const cit=ready().find(f=>["female_saiyan_citizen_bse","male_saiyan_citizen_bse"].includes(f.cid));
+        if(cit && rookie && rookie.currentHP>0){ didAttack=true; log("AI attacks your rookie!","dmg"); if(typeof resolveAttack==="function")resolveAttack(2, cit.uid, 1, rookie.uid); }
       }
       setTimeout(()=>{
         if(G.gameOver)return;
@@ -17617,26 +17631,26 @@ function buildTutorialSteps(){
     {targetId:"p1-hand", text:"Time for a fighter! Tap Najeela to summon her onto the field.", requireAction:"play", allowCid:"najeela_base_bse", hint:"▸ Play Najeela"},
     {targetId:"p1-field", text:"Najeela is out! Key rule: a character can't attack the turn it's summoned — it needs one full turn to ready up."},
     {targetId:"p1-hand", text:"You can field multiple characters. Play this Saiyan Citizen too — a weaker rookie we'll use as an example.", requireAction:"play", allowCid:"female_saiyan_citizen_bse", hint:"▸ Play the Saiyan Citizen"},
-    {targetId:"p1-hand", text:"Equipment makes a character tougher. Play Aquatic Hearth and attach it to Najeela.", requireAction:"equip", allowCid:"aquatic_hearth", hint:"▸ Play Aquatic Hearth → attach to Najeela"},
-    {targetId:"p1-field", text:"That equipment stays attached to Najeela and boosts her — she's now much harder to knock out."},
+    {targetId:"p1-hand", text:"Equipment makes a character tougher. Play Aquatic Hearth — and attach it to NAJEELA (the other target is locked).", requireAction:"equip", allowCid:"aquatic_hearth", targetCid:"najeela_base_bse", hint:"▸ Play Aquatic Hearth → attach to Najeela"},
+    {targetId:"p1-field", text:"That equipment stays attached to Najeela and boosts her defense — she's now much harder to knock out."},
     {targetId:"p1-discard-pile", text:"Used-up cards and knocked-out characters go here: your Discard pile."},
     {targetId:"p1-rift-count", text:"The Rift is a separate banish zone. Some powerful effects send cards HERE instead — and Rifted cards are gone for good."},
     {targetId:"ph-end", text:"Great first turn! End it now — your characters will be ready to fight next turn. Tap End Turn.", requireAction:"endturn", hint:"▸ End your turn"},
     {text:"Your opponent takes their turn — watch what they bring out.", requireAction:"your_turn", hint:"…waiting for your turn"},
     {targetId:"ph-draw", text:"Your turn again! Start by drawing. Tap the Draw phase.", requireAction:"draw", hint:"▸ Tap the Draw phase"},
-    {targetId:"ph-main", text:"Enter the Main phase again. Tap the Main pill.", requireAction:"main", hint:"▸ Tap the Main phase"},
-    {targetId:"p1-field", text:"Now power up! Najeela can TRANSFORM into a stronger form. Tap Najeela and choose Transform into her SSJ form.", requireAction:"transform", hint:"▸ Tap Najeela → Transform"},
-    {targetId:"p1-field", text:"Incredible — Najeela transformed into her SSJ form, far stronger! Transforming also clears any status effects on her."},
-    {targetId:"ph-attack", text:"Now it's time to fight. Enter the Attack phase — tap the Attack pill.", requireAction:"attack_phase", hint:"▸ Tap the Attack phase"},
-    {targetId:"p1-field", text:"Attack! Tap Najeela, then tap an enemy to strike. Knock one out to earn a Prize.", requireAction:"attack", hint:"▸ Select Najeela, then hit an enemy"},
-    {targetId:"p2-prizes", text:"You knocked it out! Now claim your reward — tap a glowing Prize card. You MUST claim it before your turn can end.", requireAction:"prize_claimed", hint:"▸ Tap a glowing Prize card"},
-    {targetId:"ph-end", text:"Well fought! End your turn — but heads up, your opponent has a fighter ready now. Tap End Turn.", requireAction:"endturn", hint:"▸ End your turn"},
-    {text:"Your opponent's fighter is ready… watch closely.", requireAction:"your_turn", hint:"…waiting for your turn"},
-    {targetId:"p1-prizes", text:"See that? Your opponent knocked out one of YOUR characters and took one of your Prizes! That's how you can lose ground too — protect your key fighters."},
-    {targetId:"ph-draw", text:"Let's strike back. Draw your card.", requireAction:"draw", hint:"▸ Tap the Draw phase"},
+    {targetId:"ph-attack", text:"Time to fight. Enter the Attack phase — tap the Attack pill.", requireAction:"attack_phase", hint:"▸ Tap the Attack phase"},
+    {targetId:"p1-field", text:"Attack the weak enemy Citizen: tap Najeela, then tap the enemy Saiyan Citizen. (Stronger enemies are locked for now.)", requireAction:"attack", attackTargetCid:"female_saiyan_citizen_bse", hint:"▸ Najeela → enemy Citizen"},
+    {targetId:"p2-prizes", text:"You knocked it out! Claim your reward — tap a glowing Prize card. You MUST claim it before your turn can end.", requireAction:"prize_claimed", hint:"▸ Tap a glowing Prize card"},
+    {targetId:"ph-end", text:"Nice! End your turn — but careful, the enemy has a strong fighter ready now. Tap End Turn.", requireAction:"endturn", hint:"▸ End your turn"},
+    {text:"The enemy's fighters are ready… watch what they do to you.", requireAction:"your_turn", hint:"…waiting for your turn"},
+    {targetId:"p1-prizes", text:"Ouch! The enemy hit Najeela hard AND knocked out your rookie, taking one of YOUR Prizes. That's how you lose ground too. Let's turn this around!"},
+    {targetId:"p1-field", text:"Najeela is wounded and even Burned (that flame icon damages her each turn). Time to fix that.", },
+    {targetId:"ph-draw", text:"Draw your card to begin your comeback.", requireAction:"draw", hint:"▸ Tap the Draw phase"},
     {targetId:"ph-main", text:"Enter the Main phase.", requireAction:"main", hint:"▸ Tap the Main phase"},
-    {targetId:"p1-hand", text:"Najeela took some damage in that fight. Play this Zephyranth Fruit and pick Najeela to heal her.", requireAction:"instant", allowCid:"zephyranth_fruit_bse", hint:"▸ Play Zephyranth Fruit on Najeela"},
-    {text:"Perfect — she's patched up! You now know energy, locations, characters, equipment, transforming, attacking, healing and Prizes. From here it's all you: attack and claim the last Prizes to win. Good luck!", freePlay:true}
+    {targetId:"p1-hand", text:"First, healing. Play Zephyranth Fruit on NAJEELA to restore some HP. (Notice it heals HP, but the Burn stays.)", requireAction:"instant", allowCid:"zephyranth_fruit_bse", targetCid:"najeela_base_bse", hint:"▸ Zephyranth Fruit → Najeela"},
+    {targetId:"action-tf-btn", text:"Now the real power move — TRANSFORM! Tap this ⬆ button, then choose Najeela's SSJ form.", requireAction:"transform", hint:"▸ Tap the ⬆ Transform button"},
+    {targetId:"p1-field", text:"Look at that! Transforming FULLY healed Najeela, cleared her Burn, AND boosted her into a much stronger SSJ form. Transformations are a huge power swing!"},
+    {text:"Now finish strong! You've learned energy, locations, characters, equipment, attacking, healing, transforming and Prizes. Attack and claim the last Prizes to win — it's all you now. Good luck!", freePlay:true}
   ];
 }// Deterministic board so the guided steps + scripted AI always line up. (dup marker)
 
