@@ -6906,6 +6906,7 @@ const DEFAULTS={
   royal_matcha_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/078-150%20(Royal%20Matcha).png',
   virora_matcha_bse: "https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/079-150%20(Virora's%20Matcha%20Instant).png",
   zephyranth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/075-150%20(Zephyranth%20Fruit%20Instant).png',
+  blade_of_udun_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/081-150%20(Blade%20Of%20Udun%20Instant).png',
   vermynth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/076-150%20(Vermynth%20Fruit%20Instant).png',
   tyler_ssb_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/020-150%20(Tyler%20SSB).png',
   ghost_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/ghost_hulk_card%20PROMO.png',
@@ -7082,6 +7083,9 @@ const DB={
   // ── VIRORA'S MATCHA — BSE Instant (Consumable). GREEN (healing). 079/150 Rare.
   virora_matcha_bse:{id:'virora_matcha_bse',rarity:'rare',name:"Virora's Matcha",color:'green',charName:"Virora's Matcha",subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:4,atk:0,hp:0,sym:'🧋',setId:'base_set',cardNumber:'079/150',nextForms:[],
     abilities:[{label:"Virora's Matcha",type:'instant',cost:0,text:'Heal a chosen character for +4 HP and cure ALL status effects on it.'}],transforms:[]},
+  // ── BLADE OF UDUN — BSE instant. RED (direct damage + Burn). 081/150 Uncommon.
+  blade_of_udun_bse:{id:'blade_of_udun_bse',rarity:'uncommon',name:'Blade of Udun',color:'red',charName:'Blade of Udun',subtypes:['Instant','Equipment'],type:'instant',race:'Instant',cost:3,atk:0,hp:0,sym:'🗡️',setId:'base_set',cardNumber:'081/150',nextForms:[],
+    abilities:[{label:'Blade of Udun',type:'instant',cost:0,text:"Choose a character on your opponent's field. That character takes 2 damage and is now Burned."}],transforms:[]},
   // ── EKLIF FROST — BSE regular character (Titan • Beast). BLUE (control). 047/150 Uncommon.
   eklif_frost_bse:{id:'eklif_frost_bse',rarity:'uncommon',name:'Eklif Frost',color:'blue',charName:'Eklif Frost',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:2,atk:2,hp:2,sym:'EKLIF',setId:'base_set',cardNumber:'047/150',nextForms:[],
     abilities:[{label:'Frozen Domain',type:'activated',cost:0,text:"Choose 1 Location card your opponent has in play. That Location has no effects or abilities while this card is in play."}],transforms:[]},
@@ -10445,6 +10449,29 @@ function onHandClick(p,uid,fc){
       const healAmt = c.id==='vermynth_fruit_bse'?4:3;
       const atkAmt  = c.id==='vermynth_fruit_bse'?2:0;
       openFruitHealPicker(p, fco, chars, healAmt, atkAmt);
+      return;
+    }
+    if(c.id==='blade_of_udun_bse'){
+      const o=(p===1)?2:1;
+      const enemies=(G.players[o].field||[]).filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
+      if(!enemies.length){ log('No enemy characters to strike with '+c.name+'!','dmg'); pl.hand.push(fco); pl.energy+=effectiveCost; return; }
+      if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
+      if(typeof SFX!=='undefined')SFX.instant();
+      if(p===1)sendGameAction('instant_reveal',{cardId:c.id});
+      log(`${pname(p)} plays ${c.name}!`,'info');
+      const strike=(tf)=>{
+        if(!tf){ return; }
+        pl.discard.push(c.id);
+        tf.currentHP-=2;
+        log(`🗡️ ${c.name}: ${DB[tf.cid]?.name} takes 2 damage!`,'dmg');
+        if(typeof showDmgPopup==='function')showDmgPopup(o,'-2',tf.uid);
+        if(tf.currentHP<=0){ if(typeof showStatusFx==='function')showStatusFx(tf.uid,'burn'); killCard(o,tf); }
+        else { if(typeof applyStatus==='function')applyStatus(tf,'burn',(STATUS_META.burn&&STATUS_META.burn.dur)||3); }
+        if(typeof recalcPassives==='function')recalcPassives();
+        closeAllModals(); renderAll();
+      };
+      if(p===1 && typeof openEnemyTargetPicker==='function'){ openEnemyTargetPicker(enemies, strike, {title:'Blade of Udun', desc:"Choose an enemy character — it takes 2 damage and is Burned."}); }
+      else { strike(enemies[Math.floor(Math.random()*enemies.length)]); }
       return;
     }
     if(c.id==='royal_matcha_bse' || c.id==='virora_matcha_bse'){
