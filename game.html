@@ -6907,6 +6907,8 @@ const DEFAULTS={
   virora_matcha_bse: "https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/079-150%20(Virora's%20Matcha%20Instant).png",
   zephyranth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/075-150%20(Zephyranth%20Fruit%20Instant).png',
   blade_of_udun_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/081-150%20(Blade%20Of%20Udun%20Instant).png',
+  kevin_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Awakening/Kevin%20(Promo%20Card).png',
+  kevin_ssg_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Awakening/Kevin%20SSG%20(Promo%20Card).png',
   vermynth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/076-150%20(Vermynth%20Fruit%20Instant).png',
   tyler_ssb_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/020-150%20(Tyler%20SSB).png',
   ghost_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/ghost_hulk_card%20PROMO.png',
@@ -7086,6 +7088,12 @@ const DB={
   // ── BLADE OF UDUN — BSE instant. RED (direct damage + Burn). 081/150 Uncommon.
   blade_of_udun_bse:{id:'blade_of_udun_bse',rarity:'uncommon',name:'Blade of Udun',color:'red',charName:'Blade of Udun',subtypes:['Instant','Equipment'],type:'instant',race:'Instant',cost:3,atk:0,hp:0,sym:'🗡️',setId:'base_set',cardNumber:'081/150',nextForms:[],
     abilities:[{label:'Blade of Udun',type:'instant',cost:0,text:"Choose a character on your opponent's field. That character takes 2 damage and is now Burned."}],transforms:[]},
+  // ── KEVIN (Base) — PROMO Prime Saiyan. RED (raw attack power). Transforms into Kevin (SSG).
+  kevin_promo:{id:'kevin_promo',rarity:'common',name:'Kevin',color:'red',charName:'Kevin',charLine:'kevin',formTier:'base',subtypes:['Prime','Saiyan'],type:'base_char',race:'Prime Saiyan',cost:4,atk:2,hp:3,sym:'KEV',setId:'promo',cardNumber:'PROMO',nextForms:['ssg'],
+    abilities:[{label:'Primal Strike',type:'triggered',cost:0,text:'Flip a coin. If heads, this attack does +3 damage.'},{label:'Silent Search',type:'activated',cost:0,text:'If this card has equipment attached to it, you may search your deck for a Transformation card and place it in your hand.'}]},
+  // ── KEVIN (SSG) — PROMO transform form of Kevin. RED (direct damage + destruction).
+  kevin_ssg_promo:{id:'kevin_ssg_promo',rarity:'rare',name:'Kevin (SSG)',color:'red',charName:'Kevin',charLine:'kevin',formTier:'ssg',transformOnly:true,subtypes:['Prime','Saiyan'],type:'char',race:'Prime Saiyan',cost:9,atk:5,hp:7,sym:'KSSG',setId:'promo',cardNumber:'PROMO',
+    abilities:[{label:'Blistering Blast',type:'activated',cost:5,text:"Choose 1 character on your opponent's playing field. After you choose, flip a coin — if heads they take 5 damage, if tails they are now Burned."},{label:'Scorched Earth',type:'activated',cost:4,text:"Choose a Location on your opponent's field (if they have one in play). That Location is destroyed in 3 turns. If this card is destroyed before those 3 turns, that Location stays."}]},
   // ── EKLIF FROST — BSE regular character (Titan • Beast). BLUE (control). 047/150 Uncommon.
   eklif_frost_bse:{id:'eklif_frost_bse',rarity:'uncommon',name:'Eklif Frost',color:'blue',charName:'Eklif Frost',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:2,atk:2,hp:2,sym:'EKLIF',setId:'base_set',cardNumber:'047/150',nextForms:[],
     abilities:[{label:'Frozen Domain',type:'activated',cost:0,text:"Choose 1 Location card your opponent has in play. That Location has no effects or abilities while this card is in play."}],transforms:[]},
@@ -10275,7 +10283,15 @@ function resolveAttack(ap,auid,dp,duid){
   // this once at the penalty, then its ATK is restored after this attack.
   let _restoreOmega=false;
   if(afc.omegaJudged){ _restoreOmega=true; }
-  const atkDmg=afc.currentATK+(afc.nextAttackBonus||0);
+  // ── KEVIN: Primal Strike — flip a coin when this card attacks; heads = +3 damage.
+  //    Generic (label-based) so any future card with the same ability text reuses it.
+  let _primalBonus=0;
+  if((ac.abilities||[]).some(a=>a.label==='Primal Strike')){
+    const _ph=coin();
+    if(_ph){ _primalBonus=3; log('Primal Strike: HEADS — this attack does +3 damage!','gain'); }
+    else { log('Primal Strike: TAILS — no bonus.','info'); }
+  }
+  const atkDmg=afc.currentATK+(afc.nextAttackBonus||0)+_primalBonus;
   log(`⚔ ${ac.name}(${atkDmg}) → ${dc.name}(${dfc.currentHP}HP)`,'info');
   // Pre-combat ability triggers
   if(dfc.cid==='virora_ssg'){const h=coin();log(`Godly Reflexes: ${!h?'dodge! (tails)':'hit! (heads)'}`,!h?'gain':'dmg');if(!h){renderAll();return;}}
@@ -11666,6 +11682,79 @@ function activateAbility(fc,abl){
     return;
   }
   // ── DARKSPINE VIRORA: Ancient God Rasengan — 8⚡. Hit an enemy character for 8
+  // ── KEVIN: Silent Search — free; requires equipment attached; search deck for
+  //    a Transformation card and add it to hand. (Mirrors Controlled Sorcery, no coin flip.)
+  if(abl.label==='Silent Search'){
+    const ap=G.activePlayer; const pl=G.players[ap];
+    if(!fc.attachments || !fc.attachments.length){ log(`Silent Search: no equipment attached to ${DB[fc.cid].name}.`,'dmg'); return; }
+    fc.abilityUsed['Silent Search']=true;
+    pl.usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    const filt=(cc)=>cc && cc.transformOnly===true;
+    const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(ap) : (ap===1);
+    if(_human){
+      openDeckSearch('Silent Search','Search your deck for a Transformation card to add to your hand.',filt,(cid)=>{ const f=newFC(cid); if(f) pl.hand.push(f); log(`Silent Search: ${DB[cid].name} added to your hand.`,'gain'); renderAll(); });
+    } else {
+      const found=(pl.deck||[]).find(cid=>filt(DB[cid]));
+      if(found){ const i=pl.deck.indexOf(found); if(i>-1)pl.deck.splice(i,1); const f=newFC(found); if(f) pl.hand.push(f); log(`Silent Search: ${pname(ap)} searches a Transformation card.`,'gain'); }
+      else { log('Silent Search: no Transformation cards in deck.','info'); }
+      renderAll();
+    }
+    return;
+  }
+  // ── KEVIN (SSG): Blistering Blast — 5⚡, choose an enemy character; coin flip:
+  //    heads = 5 damage, tails = Burned.
+  if(abl.label==='Blistering Blast'){
+    const ap=G.activePlayer; const pl=G.players[ap]; const oppNum=ap===1?2:1;
+    if(pl.energy<5){ log('Blistering Blast: need 5⚡.','dmg'); return; }
+    const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
+    if(!enemies.length){ log('Blistering Blast: no enemy characters to target.','dmg'); return; }
+    spendEnergy(ap,5,DB[fc.cid]?.color||null);
+    fc.abilityUsed['Blistering Blast']=true;
+    pl.usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    const strike=(uid)=>{
+      const tfc=G.players[oppNum].field.find(f=>f.uid===uid); if(!tfc)return;
+      const h=coin();
+      if(h){
+        tfc.currentHP-=5;
+        if(typeof showDmgPopup==='function')showDmgPopup(oppNum,'-5',tfc.uid);
+        log(`Blistering Blast: HEADS — ${DB[tfc.cid]?.name} takes 5 damage!`,'dmg');
+        if(tfc.currentHP<=0){ killCard(oppNum,tfc); }
+      } else {
+        if(typeof applyStatus==='function'){ applyStatus(tfc,'burn',(STATUS_META.burn&&STATUS_META.burn.dur)||3); if(typeof showStatusFx==='function')showStatusFx(tfc.uid,'burn'); }
+        log(`Blistering Blast: TAILS — ${DB[tfc.cid]?.name} is now Burned!`,'dmg');
+      }
+      if(typeof recalcPassives==='function')recalcPassives();
+      renderAll();
+    };
+    openEnemyTargetPicker(enemies, strike, {sourcePlayer:ap, title:'Blistering Blast', desc:'Choose an enemy character — flip a coin: heads deals 5 damage, tails Burns them.'});
+    return;
+  }
+  // ── KEVIN (SSG): Scorched Earth — 4⚡, requires opponent to have a Location in play;
+  //    choose it, and it is destroyed in 3 of Kevin's own turn-ends UNLESS Kevin (SSG)
+  //    is destroyed first (see tickScorchedEarth — it only ticks entries still on the field).
+  if(abl.label==='Scorched Earth'){
+    const ap=G.activePlayer; const pl=G.players[ap]; const oppNum=ap===1?2:1;
+    if(pl.energy<4){ log('Scorched Earth: need 4⚡.','dmg'); return; }
+    const locs=G.players[oppNum].field.filter(f=>isLoc(DB[f.cid]));
+    if(!locs.length){ log('Scorched Earth: opponent has no Locations in play.','dmg'); return; }
+    spendEnergy(ap,4,DB[fc.cid]?.color||null);
+    fc.abilityUsed['Scorched Earth']=true;
+    pl.usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    const mark=(uid)=>{
+      const lf=G.players[oppNum].field.find(f=>f.uid===uid); if(!lf)return;
+      fc._scorchedLocUid=uid; fc._scorchedTurns=3; fc._scorchedOwner=oppNum;
+      log(`🔥 Scorched Earth: ${DB[lf.cid]?.name} will be destroyed in 3 turns — unless ${DB[fc.cid].name} is destroyed first.`,'info');
+      renderAll();
+    };
+    openEnemyTargetPicker(locs, mark, {sourcePlayer:ap, title:'Scorched Earth', desc:'Choose an opponent Location. It is destroyed in 3 turns unless this card dies first.'});
+    return;
+  }
   // damage, or target an enemy location to destroy it outright.
   if(abl.label==='Ancient God Rasengan'){
     const ap=G.activePlayer; const pl=G.players[ap];
@@ -13069,6 +13158,30 @@ function tickFrostRunes(p){
     });
   });
 }
+function tickScorchedEarth(p){
+  [1,2].forEach(side=>{
+    const pl=G.players[side]; if(!pl||!pl.field)return;
+    pl.field.forEach(fc=>{
+      if(fc._scorchedLocUid && side===p){
+        fc._scorchedTurns--;
+        if(fc._scorchedTurns<=0){
+          const oppNum=fc._scorchedOwner;
+          const opl=oppNum?G.players[oppNum]:null;
+          const lf=opl && opl.field.find(f=>f.uid===fc._scorchedLocUid);
+          if(lf){
+            opl.field=opl.field.filter(f=>f.uid!==lf.uid);
+            opl.discard.push(lf.cid);
+            log(`🔥 Scorched Earth triggers — ${DB[lf.cid]?.name} is destroyed!`,'dmg');
+            if(typeof recalcPassives==='function')recalcPassives();
+          }
+          fc._scorchedLocUid=null; fc._scorchedTurns=0; fc._scorchedOwner=null;
+        } else {
+          log(`🔥 Scorched Earth: the marked Location will be destroyed in ${fc._scorchedTurns} turn(s).`,'info');
+        }
+      }
+    });
+  });
+}
 function decrementStatuses(p){
   const pl=G.players[p]; if(!pl||!pl.field)return;
   pl.field.forEach(fc=>{
@@ -13198,6 +13311,7 @@ function endTurnFx(p){
   }));
   decrementStatuses(p); // count down statuses on the player whose turn just ended
   tickFrostRunes(p); // count down any Frost Rune timers this player set
+  tickScorchedEarth(p); // count down any Scorched Earth timers this player set
   G.bonusAttackers=0; // reset ability-granted extra attackers each turn
   // ── ULTRA EGO GROWTH (Goku UE): grows +1/+1 at the END OF THE OPPONENT'S turn.
   // When player p ends their turn, the OPPONENT's (o's) Goku grows. Permanent.
