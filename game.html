@@ -6909,6 +6909,10 @@ const DEFAULTS={
   blade_of_udun_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/081-150%20(Blade%20Of%20Udun%20Instant).png',
   kevin_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Awakening/Kevin%20(Promo%20Card).png',
   kevin_ssg_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Awakening/Kevin%20SSG%20(Promo%20Card).png',
+  lady_loki_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Lady%20Loki%20(Promo).png',
+  lady_loki_vampire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Lady%20Loki%20Vampire%20(Promo).png',
+  paradox_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/027-150%20(Paradox).png',
+  ivan_wca_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Wrestling/Ivan%20WCA%20(Promo%20Card).png',
   vermynth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/076-150%20(Vermynth%20Fruit%20Instant).png',
   tyler_ssb_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/020-150%20(Tyler%20SSB).png',
   ghost_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/ghost_hulk_card%20PROMO.png',
@@ -7094,6 +7098,25 @@ const DB={
   // ── KEVIN (SSG) — PROMO transform form of Kevin. RED (direct damage + destruction).
   kevin_ssg_promo:{id:'kevin_ssg_promo',rarity:'rare',name:'Kevin (SSG)',color:'red',charName:'Kevin',charLine:'kevin',formTier:'ssg',transformOnly:true,subtypes:['Prime','Saiyan'],type:'char',race:'Prime Saiyan',cost:9,atk:5,hp:7,sym:'KSSG',setId:'promo',cardNumber:'PROMO',
     abilities:[{label:'Blistering Blast',type:'activated',cost:5,text:"Choose 1 character on your opponent's playing field. After you choose, flip a coin — if heads they take 5 damage, if tails they are now Burned."},{label:'Scorched Earth',type:'activated',cost:4,text:"Choose a Location on your opponent's field (if they have one in play). That Location is destroyed in 3 turns. If this card is destroyed before those 3 turns, that Location stays."}]},
+  // ── LADY LOKI (Base) — PROMO Marvel Asgardian Legend. PURPLE (trickery/debuffs —
+  //    her Equipment Hex activation cost is literally Purple Energy on the card).
+  //    Can attack Locations directly; transforms into Lady Loki Vampire.
+  lady_loki_promo:{id:'lady_loki_promo',rarity:'legend',name:'Lady Loki',color:'purple',charName:'Lady Loki',charLine:'lady_loki',formTier:'base',subtypes:['Asgardian'],type:'base_char',race:'Asgardian',cost:7,atk:8,hp:7,sym:'LLOKI',setId:'promo',cardNumber:'PROMO',canAttackLocations:true,nextForms:['vampire'],
+    abilities:[{label:'Landmark Price',type:'passive',cost:0,text:'She can attack Locations. When she destroys one, draw 1 card from your deck.'},{label:'Equipment Hex',type:'activated',cost:4,text:"Negate the abilities of one Equipment attached to target character for as long as Lady Loki is on the field. It stays attached. [4 Purple Energy]"}]},
+  // ── LADY LOKI VAMPIRE — PROMO transform form of Lady Loki. BLACK (drain/sacrifice —
+  //    gains stats by draining her victims and inherits a stolen ability from each kill).
+  lady_loki_vampire_promo:{id:'lady_loki_vampire_promo',rarity:'mythic',name:'Lady Loki Vampire',color:'black',charName:'Lady Loki',charLine:'lady_loki',formTier:'vampire',transformOnly:true,subtypes:['Asgardian','Vampire'],type:'char',race:'Asgardian Vampire',cost:9,atk:6,hp:10,sym:'LLOKIV',setId:'promo',cardNumber:'PROMO',
+    abilities:[{label:'Blood Tithe',type:'triggered',cost:0,text:'When this card deals combat damage to a character, that character gets -1/-1 and this card gains +1/+1.'},{label:'Exsanguinate',type:'triggered',cost:0,limit:'finishing_blow',text:'When Lady Loki destroys a character, choose 1 ability that character had. She gains that ability until she leaves play. It keeps its original cost, timing, and limits. She can gain only 1 ability from each character. Abilities gained from different characters stack.'}]},
+  // ── PARADOX — BSE regular character (Celestial • Saiyan). 027/150 Rare. BLUE
+  //    (control/reactive — gains Energy from being hit and mirrors the opponent's
+  //    ability spend). Uses id paradox_bse: a different, unrelated 'paradox' (Void
+  //    Celestial Saiyan Great Ape line) already exists — do NOT merge these.
+  paradox_bse:{id:'paradox_bse',rarity:'rare',name:'Paradox',color:'blue',charName:'Paradox',subtypes:['Celestial','Saiyan'],type:'char',race:'Celestial Saiyan',cost:6,atk:7,hp:7,sym:'PRDX',setId:'base_set',cardNumber:'027/150',nextForms:[],
+    abilities:[{label:'Inherit Tank',type:'triggered',cost:0,text:'When Paradox is dealt combat damage, gain 2 Purple Energy.'},{label:'Dead Circuit',type:'triggered',cost:0,text:"When an opposing character spends Energy for an ability, this card's controller gains that much Energy. (Exact Energy Color used by opponent)"}],transforms:[]},
+  // ── IVAN (WCA) — PROMO Wrestling-series Human Wrestler. RED (raw power/rushdown —
+  //    scales himself and his whole board with ATK, then punishes anyone who hits him).
+  ivan_wca_promo:{id:'ivan_wca_promo',rarity:'legend',name:'Ivan (WCA)',color:'red',charName:'Ivan',subtypes:['Human','Wrestler'],type:'base_char',race:'Human Wrestler',cost:7,atk:6,hp:8,sym:'IVAN',setId:'promo',cardNumber:'PROMO',nextForms:[],
+    abilities:[{label:'Locker Room Law',type:'passive',cost:0,text:'This card gets +1 Attack for each other character you control on your field.'},{label:'Tag Division',type:'passive',cost:0,text:'Other characters you control get +1 Attack while this card is on the field.'},{label:'Receipt',type:'triggered',cost:0,text:'When this card is dealt combat damage, the attacker gets -2 Health.'}],transforms:[]},
   // ── EKLIF FROST — BSE regular character (Titan • Beast). BLUE (control). 047/150 Uncommon.
   eklif_frost_bse:{id:'eklif_frost_bse',rarity:'uncommon',name:'Eklif Frost',color:'blue',charName:'Eklif Frost',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:2,atk:2,hp:2,sym:'EKLIF',setId:'base_set',cardNumber:'047/150',nextForms:[],
     abilities:[{label:'Frozen Domain',type:'activated',cost:0,text:"Choose 1 Location card your opponent has in play. That Location has no effects or abilities while this card is in play."}],transforms:[]},
@@ -8045,7 +8068,70 @@ function newFC(cid){
   return{uid:uid(),cid,currentHP:c.hp,currentATK:c.atk,baseHP:c.hp,baseATK:c.atk,
     turnPlayed:G.turn||1,nullify:0,attachments:[],frozen:0,paralyzed:false,
     hpBonus:0,atkBonus:0,costMod:0,abilityUsed:{},damagedThisTurn:false,markedDamage:0,isFlipped:false,attacksThisTurn:0,statuses:{},
-    passiveAtk:0,passiveHp:0,tapped:false};
+    passiveAtk:0,passiveHp:0,tapped:false,gainedAbilities:[]};
+}
+
+// Generic ability-label check: true if the card's own printed abilities OR any
+// abilities it has GAINED (e.g. Lady Loki Vampire's Exsanguinate) include `label`.
+// Reusable so a stolen ability plugs straight into every existing label-based hook.
+function hasAbilityLabel(fc,label){
+  if(!fc)return false;
+  const own=(DB[fc.cid]?.abilities||[]).some(a=>a&&a.label===label);
+  if(own)return true;
+  return Array.isArray(fc.gainedAbilities)&&fc.gainedAbilities.some(a=>a&&a.label===label);
+}
+
+// RECEIPT (Ivan WCA): whenever `victimFc` is dealt combat damage, the character
+// that just dealt it loses 2 Health (permanent stat reduction, can kill).
+// Called from every spot in executeCombatDamage where combat damage changes hands.
+function triggerReceipt(victimFc, dmg, attackerFc, attackerP){
+  if(dmg<=0 || !hasAbilityLabel(victimFc,'Receipt'))return;
+  if(!G.players[attackerP]||!G.players[attackerP].field.some(f=>f.uid===attackerFc.uid))return;
+  attackerFc.hpBonus=(attackerFc.hpBonus||0)-2; attackerFc.currentHP-=2;
+  log(`Receipt: ${DB[attackerFc.cid]?.name} -2 Health!`,'dmg');
+  if(attackerFc.currentHP<=0 && G.players[attackerP].field.some(f=>f.uid===attackerFc.uid)){ killCard(attackerP,attackerFc); }
+}
+
+// Prompt the controller to pick 1 ability from a destroyed character and grant it
+// permanently (until the gainer leaves play) to `fc` — Lady Loki Vampire's
+// Exsanguinate. Enforces "only 1 ability gained per source character".
+function grantStolenAbility(ownerP, fc, victimCid){
+  const vc=DB[victimCid]; if(!vc||!Array.isArray(vc.abilities)||!vc.abilities.length)return;
+  if(!Array.isArray(fc.gainedAbilities))fc.gainedAbilities=[];
+  if(fc.gainedAbilities.some(a=>a.sourceCid===victimCid))return; // already has one from this character
+  const grant=(abl)=>{
+    fc.gainedAbilities.push({...abl,sourceCid:victimCid,sourceName:vc.name});
+    log(`Exsanguinate: ${DB[fc.cid]?.name} gains "${abl.label}" from ${vc.name}!`,'gain');
+    renderAll();
+  };
+  if(ownerP===1 && vc.abilities.length>1){
+    const body=document.createElement('div');
+    body.innerHTML=`<div style="font-size:12px;color:#9ca3af;margin-bottom:8px">Exsanguinate: choose 1 ability from ${vc.name} to gain permanently.</div>`;
+    vc.abilities.forEach(abl=>{
+      const row=document.createElement('div');row.style.cssText='background:#1a0a12;border:1px solid #7f1d3d;border-radius:8px;padding:7px;margin-bottom:6px';
+      row.innerHTML=`<div style="font-weight:700;color:#fca5c5;font-size:11px">${abl.label}</div><div style="font-size:11px;color:#9ca3af;margin:3px 0">${abl.text||''}</div>`;
+      const btn=document.createElement('button');btn.className='btn-primary btn-sm';btn.textContent='Choose';
+      btn.onclick=()=>{closeAllModals();grant(abl);};
+      row.appendChild(btn);body.appendChild(row);
+    });
+    showModalEl('Exsanguinate',body);
+  } else {
+    // AI, or victim had only 1 ability: auto-pick the first.
+    grant(vc.abilities[0]);
+  }
+}
+
+// Equipment Hex (Lady Loki): true if `eqId` attached to `tfc` is currently
+// negated. The hex holds only while a Lady Loki with this exact hex record is
+// still on the field — same self-cleaning pattern as isLocationFrozen.
+function isEquipHexed(tfc,eqId){
+  if(!tfc||!tfc._equipHex||tfc._equipHex.eqId!==eqId)return false;
+  const hx=tfc._equipHex;
+  for(const pn of [1,2]){
+    const pl=G.players[pn]; if(!pl||!pl.field)continue;
+    if(pl.field.some(f=>f.uid===hx.sourceUid && f.cid==='lady_loki_promo'))return true;
+  }
+  return false;
 }
 
 // ═══════════════════════════════════════════════════
@@ -8104,6 +8190,16 @@ function recalcPassives(){
       // characters (including her) gain +2 ATK / +2 HP. Removing her drops it.
       if(pl.field.some(f=>f.cid==='lumina_bse')){
         addA += 2; addH += 2;
+      }
+      // IVAN (WCA) — Locker Room Law: Ivan himself gets +1 ATK for each OTHER
+      // character on his controller's field. Scales up/down automatically.
+      if(abils.some(a=>a.label==='Locker Room Law')){
+        addA += pl.field.filter(f=>isChar(DB[f.cid])&&f.uid!==fc.uid).length;
+      }
+      // IVAN (WCA) — Tag Division: every OTHER character Ivan's controller owns
+      // gets +1 ATK while Ivan is on the field. Removing Ivan drops it.
+      if(fc.cid!=='ivan_wca_promo' && pl.field.some(f=>f.cid==='ivan_wca_promo')){
+        addA += 1;
       }
       // Apply delta to current stats
       const deltaA=addA-prevA, deltaH=addH-prevH;
@@ -9465,7 +9561,7 @@ function burstPlayInstant(p,fc,role){
 function burstActivateAbility(p,fieldFc,abl,role){
   const pl=G.players[p];
   if(pl.energy<(abl.cost||0)){log('Not enough energy.','dmg');return;}
-  spendEnergy(p,abl.cost||0,DB[fieldFc.cid]?.color||null);
+  spendEnergyAbility(p,abl.cost||0,DB[fieldFc.cid]?.color||null);
   fieldFc.abilityUsed[abl.label]=true;
   log(`[BURST] P${p} activates ${DB[fieldFc.cid].name}: ${abl.label}!`,'gain');
   // Show dramatic Ability reveal popup (visible to both players)
@@ -9606,6 +9702,12 @@ function executeCombatDamage(ap,auid,dp,duid){
     const defenderATK=dfc.currentATK;
     log(`Power Struggle: ${dc.name} wins — deals ${defenderATK} to ${ac.name}!`,'dmg');
     dealDamage(ap,auid,defenderATK);
+    // INHERIT TANK (Paradox): gains 2 Purple Energy whenever dealt combat damage.
+    if(hasAbilityLabel(afc,'Inherit Tank') && defenderATK>0 && G.players[ap].field.some(f=>f.uid===auid)){
+      G.players[ap].energy+=2; log('Inherit Tank: Paradox gains 2 Purple Energy!','gain');
+    }
+    // RECEIPT (Ivan WCA): afc just took combat damage from dfc.
+    triggerReceipt(afc, defenderATK, dfc, dp);
     renderAll();return;
   }
 
@@ -9613,11 +9715,34 @@ function executeCombatDamage(ap,auid,dp,duid){
   const defenderATK=dfc.currentATK;
   dealDamage(dp,dfc.uid,atkDmg);
 
+  // INHERIT TANK (Paradox): the DEFENDER gains 2 Purple Energy when dealt combat damage.
+  if(hasAbilityLabel(dfc,'Inherit Tank') && atkDmg>0){
+    G.players[dp].energy+=2; log('Inherit Tank: Paradox gains 2 Purple Energy!','gain');
+  }
+  // RECEIPT (Ivan WCA): dfc just took combat damage from afc.
+  triggerReceipt(dfc, atkDmg, afc, ap);
+  // BLOOD TITHE (Lady Loki Vampire): drains -1/-1 from the character she hits, +1/+1 to herself.
+  if(hasAbilityLabel(afc,'Blood Tithe') && atkDmg>0 && isChar(dc) && G.players[dp].field.some(f=>f.uid===dfc.uid)){
+    dfc.atkBonus=(dfc.atkBonus||0)-1; dfc.currentATK=Math.max(0,(dfc.currentATK||0)-1);
+    dfc.hpBonus=(dfc.hpBonus||0)-1; dfc.currentHP-=1;
+    log(`Blood Tithe: ${dc.name} -1/-1!`,'dmg');
+    afc.atkBonus=(afc.atkBonus||0)+1; afc.currentATK=(afc.currentATK||0)+1;
+    afc.hpBonus=(afc.hpBonus||0)+1; afc.currentHP=(afc.currentHP||0)+1;
+    log(`Blood Tithe: ${ac.name} gains +1/+1!`,'gain');
+    if(dfc.currentHP<=0 && G.players[dp].field.some(f=>f.uid===dfc.uid)){ killCard(dp,dfc); }
+  }
+
   // GODLY BLITZ (Virora SSG / BSE): on dealing combat damage to an enemy
   // character, the attacker's controller may draw 1 card.
-  if(ac.abilities&&ac.abilities.some(a=>a.label==='Godly Blitz')&&atkDmg>0){
+  if(hasAbilityLabel(afc,'Godly Blitz')&&atkDmg>0){
     drawCard(ap);
     log(`Godly Blitz: ${ac.name} dealt combat damage — draw 1 card!`,'gain');
+  }
+
+  // EXSANGUINATE (Lady Loki Vampire): finishing blow — if this combat damage
+  // destroyed the character, steal 1 of its abilities permanently.
+  if(hasAbilityLabel(afc,'Exsanguinate') && atkDmg>0 && !G.players[dp].field.some(f=>f.uid===dfc.uid)){
+    grantStolenAbility(ap, afc, dfc.cid);
   }
 
   // Breakthrough
@@ -9637,7 +9762,7 @@ function executeCombatDamage(ap,auid,dp,duid){
   const stillOnField=G.players[dp].field.some(f=>f.uid===dfc.uid);
   const tgtAlive=stillOnField&&dfc.currentHP>0;
   // IMMORTALITY (Mort): +2 max Health each time he's attacked and survives (none if it kills him).
-  if(tgtAlive && dc && (dc.abilities||[]).some(a=>a.label==='Immortality')){
+  if(tgtAlive && hasAbilityLabel(dfc,'Immortality')){
     dfc.hpBonus=(dfc.hpBonus||0)+2;
     dfc.currentHP+=2;
     log(`Immortality: ${dc.name} gains +2 Health (now ${dfc.currentHP}HP).`,'gain');
@@ -9650,18 +9775,24 @@ function executeCombatDamage(ap,auid,dp,duid){
       log(`${dc.name} retaliates ${defenderATK}.`,'info');
       dealDamage(ap,auid,defenderATK);
     }
+    // INHERIT TANK (Paradox): attacker gains 2 Purple Energy from taking retaliation damage.
+    if(hasAbilityLabel(afc,'Inherit Tank') && defenderATK>0 && G.players[ap].field.some(f=>f.uid===auid)){
+      G.players[ap].energy+=2; log('Inherit Tank: Paradox gains 2 Purple Energy!','gain');
+    }
+    // RECEIPT (Ivan WCA): afc just took retaliation combat damage from dfc.
+    triggerReceipt(afc, defenderATK, dfc, dp);
   } else if(!stillOnField&&hasKW(afc,'pursuit')){
     log('Pursuit: '+ac.name+' struck first — no retaliation!','gain');
   } else if(!tgtAlive){
     log(`${dc.name} destroyed — no retaliation.`,'info');
   }
   // INFERNO REFLEX — Violet (SSG) counters any attacker for 2 flat damage when hit.
-  if(dc&&(dc.abilities||[]).some(a=>a.label==='Inferno Reflex')&&G.players[ap].field.some(f=>f.uid===auid)){
+  if(hasAbilityLabel(dfc,'Inferno Reflex')&&G.players[ap].field.some(f=>f.uid===auid)){
     log(`Inferno Reflex: ${dc.name} counters ${ac.name} for 2!`,'dmg');
     dealDamage(ap,auid,2);
   }
   // SHIELDED PRESSURE — Tyler (SSBE) counters any attacker for 3 flat damage when hit.
-  if(dc&&(dc.abilities||[]).some(a=>a.label==='Shielded Pressure')&&G.players[ap].field.some(f=>f.uid===auid)){
+  if(hasAbilityLabel(dfc,'Shielded Pressure')&&G.players[ap].field.some(f=>f.uid===auid)){
     log(`Shielded Pressure: ${dc.name} counters ${ac.name} for 3!`,'dmg');
     dealDamage(ap,auid,3);
   }
@@ -9973,7 +10104,7 @@ function resolveLifeAttack(attackerPlayer, afc, blocker){
   const bPow=effPower(blocker);          // captured BEFORE damage so a dying blocker still counters
   // AQUATIC HEARTH: defensive block 50% increase — incoming damage to this blocker is reduced by half.
   let incoming=power;
-  if(Array.isArray(blocker.attachments)&&blocker.attachments.includes('aquatic_hearth')){
+  if(Array.isArray(blocker.attachments)&&blocker.attachments.includes('aquatic_hearth')&&!isEquipHexed(blocker,'aquatic_hearth')){
     incoming=Math.ceil(power*0.5);
     log(`Aquatic Hearth: ${DB[blocker.cid].name} blocks defensively — incoming reduced ${power}→${incoming}.`,'gain');
   }
@@ -10183,7 +10314,7 @@ function resolveAITeamAttack(aiPlayer, afc, blocker, humanTeam){
   const bHP=blocker.currentHP||0, bPow=effPower(blocker);
   // AQUATIC HEARTH: defensive block 50% increase — halve incoming damage to this blocker.
   let incoming=power;
-  if(Array.isArray(blocker.attachments)&&blocker.attachments.includes('aquatic_hearth')){
+  if(Array.isArray(blocker.attachments)&&blocker.attachments.includes('aquatic_hearth')&&!isEquipHexed(blocker,'aquatic_hearth')){
     incoming=Math.ceil(power*0.5);
     log(`Aquatic Hearth: ${DB[blocker.cid].name} blocks defensively — incoming reduced ${power}→${incoming}.`,'gain');
   }
@@ -10339,6 +10470,10 @@ function resolveLocationAttack(ap,auid,dp,duid){
   if(!(DB[afc.cid]?.canAttackLocations || afc.canAttackLocations)){log(`${DB[afc.cid]?.name} cannot attack Locations.`,'dmg');return;}
   log(`⚔ ${DB[afc.cid].name}(${afc.currentATK}) → ${DB[dfc.cid].name}(Toughness:${dfc.currentHP})`,'info');
   dealDamage(dp,dfc.uid,afc.currentATK);
+  // LANDMARK PRICE (Lady Loki): draw 1 card when she destroys a Location this way.
+  if(hasAbilityLabel(afc,'Landmark Price') && !G.players[dp].field.some(f=>f.uid===duid)){
+    drawCard(ap); log('Landmark Price: draw 1 card (Location destroyed)!','gain');
+  }
 }
 
 // ═══════════════════════════════════════════════════
@@ -11419,9 +11554,13 @@ function openAbilityModal(){
     const own=(c.abilities||[]).filter(a=>a.type==='activated').map(a=>({abl:a,src:null}));
     const equipAbls=(fc.attachments||[]).flatMap(eqId=>{
       const eq=DB[eqId]; if(!eq||!eq.abilities) return [];
+      if(isEquipHexed(fc,eqId)) return []; // Equipment Hex (Lady Loki): negated
       return eq.abilities.filter(a=>a.type==='activated').map(a=>({abl:a,src:eq.name}));
     });
-    const all=own.concat(equipAbls);
+    // GAINED abilities (Exsanguinate): stolen activated abilities behave exactly
+    // like the card's own — activateAbility dispatches purely off abl.label.
+    const gainedAbls=(Array.isArray(fc.gainedAbilities)?fc.gainedAbilities:[]).filter(a=>a.type==='activated').map(a=>({abl:a,src:a.sourceName||null}));
+    const all=own.concat(equipAbls).concat(gainedAbls);
     if(!all.length)return;
     anyFound=true;
     const hdr=document.createElement('div');hdr.style.cssText='font-weight:700;color:#c8a0ff;font-size:12px;margin:7px 0 5px;border-bottom:1px solid #2a2a4a;padding-bottom:3px';hdr.textContent=c.name;body.appendChild(hdr);
@@ -11486,7 +11625,7 @@ function activateAbility(fc,abl){
     const attachTargets=opp.field.some(f=>Array.isArray(f.attachments)&&f.attachments.some(a=>isEquip(DB[a])));
     if(!fieldTargets.length && !attachTargets){ log('Prowess Cancel: opponent has no Locations or Equipment.','dmg'); return; }
     if(G.players[G.activePlayer].energy<5){ log('Prowess Cancel: need 5⚡.','dmg'); return; }
-    spendEnergy(G.activePlayer,5,DB[fc.cid]?.color||null);
+    spendEnergyAbility(G.activePlayer,5,DB[fc.cid]?.color||null);
     fc.abilityUsed['Prowess Cancel']=true;
     G.players[G.activePlayer].usedAbilityThisTurn=true;
     if(G.activePlayer===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
@@ -11660,7 +11799,7 @@ function activateAbility(fc,abl){
   if(abl.label==='Etheric Strike'){
     const ap=G.activePlayer; const pl=G.players[ap];
     if(pl.energy<4){ log('Etheric Strike: need 4⚡.','dmg'); return; }
-    spendEnergy(ap,4,DB[fc.cid]?.color||null);
+    spendEnergyAbility(ap,4,DB[fc.cid]?.color||null);
     pl.usedAbilityThisTurn=true; if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
     const resolve=(heads)=>{
       if(!heads){ // TAILS — heal + buff your whole field
@@ -11679,6 +11818,34 @@ function activateAbility(fc,abl){
       renderAll();
     };
     if(typeof showCoinFlip==='function'){ showCoinFlip(coin(), resolve); } else { resolve(coin()); }
+    return;
+  }
+  // ── LADY LOKI: Equipment Hex — 4⚡ (Purple). Negate the abilities of one
+  //    Equipment attached to a target enemy character for as long as Lady Loki
+  //    remains on the field. The Equipment stays attached (only its abilities go dead).
+  if(abl.label==='Equipment Hex'){
+    const ap=G.activePlayer; const pl=G.players[ap];
+    if(pl.energy<4){ log('Equipment Hex: need 4⚡ (Purple).','dmg'); return; }
+    const oppNum=ap===1?2:1; const opp=G.players[oppNum];
+    const targets=opp.field.filter(f=>isChar(DB[f.cid]) && Array.isArray(f.attachments) && f.attachments.some(a=>isEquip(DB[a])));
+    if(!targets.length){ log('Equipment Hex: no enemy character has Equipment attached.','dmg'); return; }
+    spendEnergyAbility(ap,4,'purple');
+    fc.abilityUsed['Equipment Hex']=true;
+    pl.usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    const doHex=(tuid)=>{
+      const tfc=opp.field.find(f=>f.uid===tuid); if(!tfc)return;
+      const eqId=tfc.attachments.find(a=>isEquip(DB[a])); if(!eqId)return;
+      tfc._equipHex={eqId,sourceUid:fc.uid};
+      log(`Equipment Hex: ${DB[eqId]?.name}'s abilities on ${DB[tfc.cid].name} are negated while Lady Loki remains on the field!`,'gain');
+      renderAll();
+    };
+    if(ap===1){
+      openEnemyTargetPicker(targets,doHex,{sourcePlayer:ap,title:'Equipment Hex',desc:"Choose an enemy character with Equipment attached — negate that Equipment's abilities while Lady Loki is on the field."});
+    } else {
+      doHex(targets[0].uid);
+    }
     return;
   }
   // ── DARKSPINE VIRORA: Ancient God Rasengan — 8⚡. Hit an enemy character for 8
@@ -11710,7 +11877,7 @@ function activateAbility(fc,abl){
     if(pl.energy<5){ log('Blistering Blast: need 5⚡.','dmg'); return; }
     const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
     if(!enemies.length){ log('Blistering Blast: no enemy characters to target.','dmg'); return; }
-    spendEnergy(ap,5,DB[fc.cid]?.color||null);
+    spendEnergyAbility(ap,5,DB[fc.cid]?.color||null);
     fc.abilityUsed['Blistering Blast']=true;
     pl.usedAbilityThisTurn=true;
     if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
@@ -11741,7 +11908,7 @@ function activateAbility(fc,abl){
     if(pl.energy<4){ log('Scorched Earth: need 4⚡.','dmg'); return; }
     const locs=G.players[oppNum].field.filter(f=>isLoc(DB[f.cid]));
     if(!locs.length){ log('Scorched Earth: opponent has no Locations in play.','dmg'); return; }
-    spendEnergy(ap,4,DB[fc.cid]?.color||null);
+    spendEnergyAbility(ap,4,DB[fc.cid]?.color||null);
     fc.abilityUsed['Scorched Earth']=true;
     pl.usedAbilityThisTurn=true;
     if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
@@ -11762,7 +11929,7 @@ function activateAbility(fc,abl){
     const oppNum=ap===1?2:1;
     const targets=G.players[oppNum].field.filter(f=>{const d=DB[f.cid];return isChar(d)||isLoc(d);});
     if(!targets.length){ log('Ancient God Rasengan: no valid targets.','dmg'); return; }
-    spendEnergy(ap,8,DB[fc.cid]?.color||null);
+    spendEnergyAbility(ap,8,DB[fc.cid]?.color||null);
     if(!fc.abilityUsed)fc.abilityUsed={};
     fc.abilityUsed['Ancient God Rasengan']=true;
     pl.usedAbilityThisTurn=true;
@@ -11834,7 +12001,7 @@ function activateAbility(fc,abl){
     if(fc.imperfectStrikeTurn && (G.turn - fc.imperfectStrikeTurn) < 2){
       log('Imperfect Strike: recharging — usable every other turn.','dmg'); return;
     }
-    spendEnergy(ap,5,DB[fc.cid]?.color||null);
+    spendEnergyAbility(ap,5,DB[fc.cid]?.color||null);
     fc.imperfectStrikeTurn=G.turn;
     pl.usedAbilityThisTurn=true;
     if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
@@ -11918,7 +12085,7 @@ function activateAbility(fc,abl){
     if(pl.energy<7){ log('Darkness Overturn: need 7⚡.','dmg'); return; }
     const charsInDiscard = pl.discard.filter(cid=>isChar(DB[cid]));
     if(!charsInDiscard.length){ log('Darkness Overturn: no character cards in your Discard pile.','dmg'); return; }
-    spendEnergy(ap,7,DB[fc.cid]?.color||null);
+    spendEnergyAbility(ap,7,DB[fc.cid]?.color||null);
     pl.usedAbilityThisTurn=true;
     if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
@@ -11978,7 +12145,7 @@ function activateAbility(fc,abl){
     const ap=G.activePlayer; const pl=G.players[ap];
     if(pl.energy<7){ log('Full Moon Awakening: need 7⚡.','dmg'); return; }
     if(!pl.discard||!pl.discard.length){ log('Full Moon Awakening: your Discard pile is empty.','dmg'); return; }
-    spendEnergy(ap,7,DB[fc.cid]?.color||null);
+    spendEnergyAbility(ap,7,DB[fc.cid]?.color||null);
     fc.abilityUsed['Full Moon Awakening']=true;
     pl.usedAbilityThisTurn=true;
     if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; }
@@ -12014,7 +12181,7 @@ function activateAbility(fc,abl){
     const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
     if(!enemies.length){ log('Unbroken Hook: no opponent characters to target.','dmg'); return; }
     if(G.players[G.activePlayer].energy<4){ log('Unbroken Hook: need 4⚡.','dmg'); return; }
-    spendEnergy(G.activePlayer,4,DB[fc.cid]?.color||null);
+    spendEnergyAbility(G.activePlayer,4,DB[fc.cid]?.color||null);
     fc.abilityUsed['Unbroken Hook']=true;
     G.players[G.activePlayer].usedAbilityThisTurn=true;
     if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; }
@@ -12113,7 +12280,7 @@ function activateAbility(fc,abl){
   if(abl.label==='Divine Collector'){
     const ap=G.activePlayer; const pl=G.players[ap];
     if(pl.energy<6){ log('Divine Collector: need 6⚡.','dmg'); return; }
-    spendEnergy(ap,6,DB[fc.cid]?.color||null);
+    spendEnergyAbility(ap,6,DB[fc.cid]?.color||null);
     fc.abilityUsed=fc.abilityUsed||{}; fc.abilityUsed['Divine Collector']=true;
     pl.usedAbilityThisTurn=true;
     if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
@@ -12278,7 +12445,7 @@ function activateAbility(fc,abl){
     const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
     if(!enemies.length){ log('Buster Purge: no opponent characters to target.','dmg'); return; }
     if(pl.energy<3){ log('Buster Purge: need 3⚡.','dmg'); return; }
-    spendEnergy(ap,3,DB[fc.cid]?.color||null);
+    spendEnergyAbility(ap,3,DB[fc.cid]?.color||null);
     fc.abilityUsed=fc.abilityUsed||{}; fc.abilityUsed['Buster Purge']=true;
     pl.usedAbilityThisTurn=true;
     fc.tapped=true;
@@ -12391,7 +12558,7 @@ function activateAbility(fc,abl){
     const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
     if(!enemies.length){ log('Godly Kamui: no opponent characters to target.','dmg'); return; }
     if(G.players[G.activePlayer].energy<6){ log('Godly Kamui: need 6⚡.','dmg'); return; }
-    spendEnergy(G.activePlayer,6,DB[fc.cid]?.color||null);
+    spendEnergyAbility(G.activePlayer,6,DB[fc.cid]?.color||null);
     fc.abilityUsed['Godly Kamui']=true;
     G.players[G.activePlayer].usedAbilityThisTurn=true;
     if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; }
@@ -12430,7 +12597,7 @@ function activateAbility(fc,abl){
     if(voidAlly && _cost>0){ _cost=0; log('Void Synergy: Paradox ability cost reduced to 0!','gain'); }
   }
   if(pl.energy<_cost){log('Not enough energy!','dmg');return;}
-  spendEnergy(G.activePlayer, _cost, DB[fc.cid]?.color||null);fc.abilityUsed[abl.label]=true;
+  spendEnergyAbility(G.activePlayer, _cost, DB[fc.cid]?.color||null);fc.abilityUsed[abl.label]=true;
   // TAPPED SYSTEM:
   // - Using ANY activated ability forfeits the +2 "skip attack" energy bonus this turn.
   pl.usedAbilityThisTurn = true;
@@ -13739,6 +13906,26 @@ function spendEnergy(p, amount, cardColor){
   // Rest comes from universal pool
   pl.energy-=amount;
   return true;
+}
+
+// Wraps spendEnergy specifically for ACTIVATED-ABILITY costs (not card plays or
+// transforms). Triggers Paradox's "Dead Circuit": if the opponent controls a
+// Dead Circuit card, they mirror the exact amount/color just spent.
+function spendEnergyAbility(p, amount, cardColor){
+  const ok=spendEnergy(p, amount, cardColor);
+  if(ok && amount>0){
+    const opp=p===1?2:1; const oppl=G.players[opp];
+    if(oppl && oppl.field && oppl.field.some(f=>hasAbilityLabel(f,'Dead Circuit'))){
+      if(cardColor && cardColor!=='white'){
+        oppl.colorEnergy=oppl.colorEnergy||{};
+        oppl.colorEnergy[cardColor]=(oppl.colorEnergy[cardColor]||0)+amount;
+      }
+      oppl.energy+=amount;
+      log(`Dead Circuit: ${pname(opp)} gains ${amount}⚡ (mirrored the opponent's ability cost)!`,'gain');
+      renderAll();
+    }
+  }
+  return ok;
 }
 
 function renderColorEnergyBreakdown(p){
