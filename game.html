@@ -6913,6 +6913,7 @@ const DEFAULTS={
   lady_loki_vampire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Lady%20Loki%20Vampire%20(Promo).png',
   paradox_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/027-150%20(Paradox).png',
   ivan_wca_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Wrestling/Ivan%20WCA%20(Promo%20Card).png',
+  kratos_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/God%20Of%20War/Kratos%20(Promo).png',
   vermynth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/076-150%20(Vermynth%20Fruit%20Instant).png',
   tyler_ssb_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/020-150%20(Tyler%20SSB).png',
   ghost_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/ghost_hulk_card%20PROMO.png',
@@ -7101,11 +7102,13 @@ const DB={
   // ── LADY LOKI (Base) — PROMO Marvel Asgardian Legend. PURPLE (trickery/debuffs —
   //    her Equipment Hex activation cost is literally Purple Energy on the card).
   //    Can attack Locations directly; transforms into Lady Loki Vampire.
-  lady_loki_promo:{id:'lady_loki_promo',rarity:'legend',name:'Lady Loki',color:'purple',charName:'Lady Loki',charLine:'lady_loki',formTier:'base',subtypes:['Asgardian'],type:'base_char',race:'Asgardian',cost:7,atk:8,hp:7,sym:'LLOKI',setId:'promo',cardNumber:'PROMO',canAttackLocations:true,nextForms:['vampire'],
+  lady_loki_promo:{id:'lady_loki_promo',rarity:'legend',name:'Lady Loki',color:'purple',charName:'Lady Loki',subtypes:['Asgardian'],type:'char',race:'Asgardian',cost:7,atk:8,hp:7,sym:'LLOKI',setId:'promo',cardNumber:'PROMO',canAttackLocations:true,nextForms:[],
     abilities:[{label:'Landmark Price',type:'passive',cost:0,text:'She can attack Locations. When she destroys one, draw 1 card from your deck.'},{label:'Equipment Hex',type:'activated',cost:4,text:"Negate the abilities of one Equipment attached to target character for as long as Lady Loki is on the field. It stays attached. [4 Purple Energy]"}]},
-  // ── LADY LOKI VAMPIRE — PROMO transform form of Lady Loki. BLACK (drain/sacrifice —
-  //    gains stats by draining her victims and inherits a stolen ability from each kill).
-  lady_loki_vampire_promo:{id:'lady_loki_vampire_promo',rarity:'mythic',name:'Lady Loki Vampire',color:'black',charName:'Lady Loki',charLine:'lady_loki',formTier:'vampire',transformOnly:true,subtypes:['Asgardian','Vampire'],type:'char',race:'Asgardian Vampire',cost:9,atk:6,hp:10,sym:'LLOKIV',setId:'promo',cardNumber:'PROMO',
+  // ── LADY LOKI VAMPIRE — PROMO standalone character (NOT a transform of Lady
+  //    Loki — played directly from hand like any other character). BLACK
+  //    (drain/sacrifice — gains stats by draining her victims and inherits a
+  //    stolen ability from each kill).
+  lady_loki_vampire_promo:{id:'lady_loki_vampire_promo',rarity:'mythic',name:'Lady Loki Vampire',color:'black',charName:'Lady Loki Vampire',subtypes:['Asgardian','Vampire'],type:'char',race:'Asgardian Vampire',cost:9,atk:6,hp:10,sym:'LLOKIV',setId:'promo',cardNumber:'PROMO',nextForms:[],
     abilities:[{label:'Blood Tithe',type:'triggered',cost:0,text:'When this card deals combat damage to a character, that character gets -1/-1 and this card gains +1/+1.'},{label:'Exsanguinate',type:'triggered',cost:0,limit:'finishing_blow',text:'When Lady Loki destroys a character, choose 1 ability that character had. She gains that ability until she leaves play. It keeps its original cost, timing, and limits. She can gain only 1 ability from each character. Abilities gained from different characters stack.'}]},
   // ── PARADOX — BSE regular character (Celestial • Saiyan). 027/150 Rare. BLUE
   //    (control/reactive — gains Energy from being hit and mirrors the opponent's
@@ -7117,6 +7120,10 @@ const DB={
   //    scales himself and his whole board with ATK, then punishes anyone who hits him).
   ivan_wca_promo:{id:'ivan_wca_promo',rarity:'legend',name:'Ivan (WCA)',color:'red',charName:'Ivan',subtypes:['Human','Wrestler'],type:'base_char',race:'Human Wrestler',cost:7,atk:6,hp:8,sym:'IVAN',setId:'promo',cardNumber:'PROMO',nextForms:[],
     abilities:[{label:'Locker Room Law',type:'passive',cost:0,text:'This card gets +1 Attack for each other character you control on your field.'},{label:'Tag Division',type:'passive',cost:0,text:'Other characters you control get +1 Attack while this card is on the field.'},{label:'Receipt',type:'triggered',cost:0,text:'When this card is dealt combat damage, the attacker gets -2 Health.'}],transforms:[]},
+  // ── KRATOS — PROMO God Of War-series War God. RED (aggression/rushdown — attacks
+  //    immediately on entry and snowballs ATK with every hit).
+  kratos_promo:{id:'kratos_promo',rarity:'legend',name:'Kratos',color:'red',charName:'Kratos',subtypes:['War','God'],type:'char',race:'War God',cost:7,atk:10,hp:7,sym:'KRTS',setId:'promo',cardNumber:'PROMO',keywords:['burst_speed'],nextForms:[],
+    abilities:[{label:'Rage of Sparta',type:'passive',cost:0,text:'This card can attack the turn it enters.'},{label:'Olympian Blood',type:'triggered',cost:0,text:'When this card deals combat damage, it gains +1 Attack.'}]},
   // ── EKLIF FROST — BSE regular character (Titan • Beast). BLUE (control). 047/150 Uncommon.
   eklif_frost_bse:{id:'eklif_frost_bse',rarity:'uncommon',name:'Eklif Frost',color:'blue',charName:'Eklif Frost',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:2,atk:2,hp:2,sym:'EKLIF',setId:'base_set',cardNumber:'047/150',nextForms:[],
     abilities:[{label:'Frozen Domain',type:'activated',cost:0,text:"Choose 1 Location card your opponent has in play. That Location has no effects or abilities while this card is in play."}],transforms:[]},
@@ -8090,6 +8097,16 @@ function triggerReceipt(victimFc, dmg, attackerFc, attackerP){
   attackerFc.hpBonus=(attackerFc.hpBonus||0)-2; attackerFc.currentHP-=2;
   log(`Receipt: ${DB[attackerFc.cid]?.name} -2 Health!`,'dmg');
   if(attackerFc.currentHP<=0 && G.players[attackerP].field.some(f=>f.uid===attackerFc.uid)){ killCard(attackerP,attackerFc); }
+}
+
+// OLYMPIAN BLOOD (Kratos): whenever `sourceFc` deals combat damage (attacking OR
+// retaliating), it permanently gains +1 Attack. Called from every spot in
+// executeCombatDamage where combat damage changes hands.
+function triggerOlympianBlood(sourceFc, sourceP, dmg){
+  if(dmg<=0 || !hasAbilityLabel(sourceFc,'Olympian Blood'))return;
+  if(!G.players[sourceP]||!G.players[sourceP].field.some(f=>f.uid===sourceFc.uid))return;
+  sourceFc.atkBonus=(sourceFc.atkBonus||0)+1; sourceFc.currentATK=(sourceFc.currentATK||0)+1;
+  log(`Olympian Blood: ${DB[sourceFc.cid]?.name} gains +1 Attack (now ${sourceFc.currentATK})!`,'gain');
 }
 
 // Prompt the controller to pick 1 ability from a destroyed character and grant it
@@ -9708,6 +9725,8 @@ function executeCombatDamage(ap,auid,dp,duid){
     }
     // RECEIPT (Ivan WCA): afc just took combat damage from dfc.
     triggerReceipt(afc, defenderATK, dfc, dp);
+    // OLYMPIAN BLOOD (Kratos): dfc just dealt this combat damage.
+    triggerOlympianBlood(dfc, dp, defenderATK);
     renderAll();return;
   }
 
@@ -9721,6 +9740,8 @@ function executeCombatDamage(ap,auid,dp,duid){
   }
   // RECEIPT (Ivan WCA): dfc just took combat damage from afc.
   triggerReceipt(dfc, atkDmg, afc, ap);
+  // OLYMPIAN BLOOD (Kratos): afc just dealt this combat damage.
+  triggerOlympianBlood(afc, ap, atkDmg);
   // BLOOD TITHE (Lady Loki Vampire): drains -1/-1 from the character she hits, +1/+1 to herself.
   if(hasAbilityLabel(afc,'Blood Tithe') && atkDmg>0 && isChar(dc) && G.players[dp].field.some(f=>f.uid===dfc.uid)){
     dfc.atkBonus=(dfc.atkBonus||0)-1; dfc.currentATK=Math.max(0,(dfc.currentATK||0)-1);
@@ -9781,6 +9802,8 @@ function executeCombatDamage(ap,auid,dp,duid){
     }
     // RECEIPT (Ivan WCA): afc just took retaliation combat damage from dfc.
     triggerReceipt(afc, defenderATK, dfc, dp);
+    // OLYMPIAN BLOOD (Kratos): dfc just dealt this retaliation combat damage.
+    triggerOlympianBlood(dfc, dp, defenderATK);
   } else if(!stillOnField&&hasKW(afc,'pursuit')){
     log('Pursuit: '+ac.name+' struck first — no retaliation!','gain');
   } else if(!tgtAlive){
@@ -10610,7 +10633,8 @@ function onHandClick(p,uid,fc){
       if(typeof SFX!=='undefined')SFX.instant();
       if(p===1)sendGameAction('instant_reveal',{cardId:c.id});
       log(`${pname(p)} plays ${c.name}!`,'info');
-      const strike=(tf)=>{
+      const strike=(tuid)=>{
+        const tf=G.players[o].field.find(f=>f.uid===tuid);
         if(!tf){ return; }
         pl.discard.push(c.id);
         tf.currentHP-=2;
@@ -10622,7 +10646,7 @@ function onHandClick(p,uid,fc){
         closeAllModals(); renderAll();
       };
       if(p===1 && typeof openEnemyTargetPicker==='function'){ openEnemyTargetPicker(enemies, strike, {title:'Blade of Udun', desc:"Choose an enemy character — it takes 2 damage and is Burned."}); }
-      else { strike(enemies[Math.floor(Math.random()*enemies.length)]); }
+      else { strike(enemies[Math.floor(Math.random()*enemies.length)].uid); }
       return;
     }
     if(c.id==='royal_matcha_bse' || c.id==='virora_matcha_bse'){
@@ -10856,10 +10880,10 @@ function onEntry(p,fc){
   if(c.id==='magnus_ssj_bse'){
     const o=(p===1)?2:1;
     const enemies=(G.players[o].field||[]).filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
-    const mark=(tf)=>{ if(!tf)return; tf._frostRune={turns:2, by:p}; if(typeof showStatusFx==='function')showStatusFx(tf.uid,'freeze'); log(`❄️ Frost Rune set on ${DB[tf.cid]?.name} — it Freezes in 2 turns.`,'info'); renderAll(); };
+    const mark=(tuid)=>{ const tf=G.players[o].field.find(f=>f.uid===tuid); if(!tf)return; tf._frostRune={turns:2, by:p}; if(typeof showStatusFx==='function')showStatusFx(tf.uid,'freeze'); log(`❄️ Frost Rune set on ${DB[tf.cid]?.name} — it Freezes in 2 turns.`,'info'); renderAll(); };
     if(enemies.length){
       if(p===1 && typeof openEnemyTargetPicker==='function'){ openEnemyTargetPicker(enemies, mark, {title:'Frost Rune', desc:"Choose an enemy character. In 2 turns it will be Frozen."}); }
-      else { mark(enemies[Math.floor(Math.random()*enemies.length)]); }
+      else { mark(enemies[Math.floor(Math.random()*enemies.length)].uid); }
     } else { log('Frost Rune: no enemy characters to target.','info'); }
   }
   // (Card-played / favorites tracking lives in trackCardPlayed, called at each
