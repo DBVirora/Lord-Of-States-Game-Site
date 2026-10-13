@@ -6916,6 +6916,7 @@ const DEFAULTS={
   kratos_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/God%20Of%20War/Kratos%20(Promo).png',
   raven_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Raven%20(Promo%20Card).png',
   raven_vampire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Raven%20Vampire%20(Promo%20Card).png',
+  deerhaunter_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Timesplitters/The%20DeerHaunter%20(PROMO)%20Timesplitters%20Future%20Perfect.png',
   vermynth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/076-150%20(Vermynth%20Fruit%20Instant).png',
   tyler_ssb_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/020-150%20(Tyler%20SSB).png',
   ghost_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/ghost_hulk_card%20PROMO.png',
@@ -7136,6 +7137,11 @@ const DB={
   //    with every attack). Standalone card, NOT a transform of/into Raven.
   raven_vampire_promo:{id:'raven_vampire_promo',rarity:'legend',name:'Raven Vampire',color:'black',charName:'Raven Vampire',subtypes:['Vampire','Sorceress'],type:'char',race:'Vampire Sorceress',cost:7,atk:5,hp:9,sym:'RVNV',setId:'promo',cardNumber:'PROMO',nextForms:[],
     abilities:[{label:'Hollow Vein',type:'triggered',cost:0,text:"At the end of each opponent's turn, if they spent no Energy that turn, this card's controller banks 1 Energy."},{label:'Crimson Tide',type:'passive',cost:0,text:'When an opposing character enters play, it enters with -1/-1.'},{label:'Bloodline Rise',type:'triggered',cost:0,text:'Each time this card attacks, it gains +2 Health.'}]},
+  // ── THE DEERHAUNTER — PROMO Timesplitters-series Mutant Zombie. PURPLE
+  //    (trickery/debuffs — freezes on arrival, taxes enemy abilities, and
+  //    shreds whatever blocks it).
+  deerhaunter_promo:{id:'deerhaunter_promo',rarity:'mythic',name:'The DeerHaunter',color:'purple',charName:'The DeerHaunter',subtypes:['Mutant','Zombie'],type:'char',race:'Mutant Zombie',cost:7,atk:8,hp:7,sym:'DRHNT',setId:'promo',cardNumber:'PROMO',nextForms:[],
+    abilities:[{label:'Moose is Loose',type:'triggered',cost:0,text:"When this card enters, Freeze a target opposing character on your opponent's field."},{label:"Crow's Residue",type:'passive',cost:0,text:'Activated abilities of opposing characters cost 2 more Energy while this card is on the field.'},{label:'Skinless Thrash',type:'triggered',cost:0,text:'When this card is blocked, the blocker gets -1/-1.'}]},
   // ── EKLIF FROST — BSE regular character (Titan • Beast). BLUE (control). 047/150 Uncommon.
   eklif_frost_bse:{id:'eklif_frost_bse',rarity:'uncommon',name:'Eklif Frost',color:'blue',charName:'Eklif Frost',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:2,atk:2,hp:2,sym:'EKLIF',setId:'base_set',cardNumber:'047/150',nextForms:[],
     abilities:[{label:'Frozen Domain',type:'activated',cost:0,text:"Choose 1 Location card your opponent has in play. That Location has no effects or abilities while this card is in play."}],transforms:[]},
@@ -10176,6 +10182,13 @@ function resolveLifeAttack(attackerPlayer, afc, blocker){
     if(typeof damageLifeForce==='function') damageLifeForce(defenderPlayer, power, 'direct attack');
     renderAll(); return;
   }
+  // SKINLESS THRASH (The DeerHaunter): the blocker gets -1/-1 the moment it blocks.
+  if(hasAbilityLabel(afc,'Skinless Thrash')){
+    blocker.atkBonus=(blocker.atkBonus||0)-1; blocker.currentATK=Math.max(0,(blocker.currentATK||0)-1);
+    blocker.hpBonus=(blocker.hpBonus||0)-1; blocker.currentHP-=1;
+    log(`Skinless Thrash: ${DB[blocker.cid]?.name} -1/-1!`,'dmg');
+    if(blocker.currentHP<=0 && G.players[defenderPlayer].field.some(f=>f.uid===blocker.uid)){ killCard(defenderPlayer,blocker); renderAll(); return; }
+  }
   const bHPbefore=blocker.currentHP||0;
   const bPow=effPower(blocker);          // captured BEFORE damage so a dying blocker still counters
   // AQUATIC HEARTH: defensive block 50% increase — incoming damage to this blocker is reduced by half.
@@ -10265,8 +10278,15 @@ function declareTeamLifeAttack(attackerPlayer, attackerUid){
 function resolveTeamLifeAttack(attackerPlayer, afc, blocker, enemyTeam){
   const power=effPower(afc);
   if(!blocker){ damageTeamLife(enemyTeam, power, 'direct attack'); renderAll(); return; }
-  const bHP=blocker.currentHP||0, bPow=effPower(blocker), excess=Math.max(0,power-bHP);
   const owner=ownerOfCard(blocker.uid);
+  // SKINLESS THRASH (The DeerHaunter): the blocker gets -1/-1 the moment it blocks.
+  if(hasAbilityLabel(afc,'Skinless Thrash')){
+    blocker.atkBonus=(blocker.atkBonus||0)-1; blocker.currentATK=Math.max(0,(blocker.currentATK||0)-1);
+    blocker.hpBonus=(blocker.hpBonus||0)-1; blocker.currentHP-=1;
+    log(`Skinless Thrash: ${DB[blocker.cid]?.name} -1/-1!`,'dmg');
+    if(blocker.currentHP<=0 && owner && G.players[owner].field.some(f=>f.uid===blocker.uid)){ killCard(owner,blocker); renderAll(); return; }
+  }
+  const bHP=blocker.currentHP||0, bPow=effPower(blocker), excess=Math.max(0,power-bHP);
   log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHP}HP).`,'info');
   if(owner)dealDamage(owner, blocker.uid, power);          // Step 1-2 (death → -2 team Life via killCard)
   if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(attackerPlayer, afc.uid, c); } // Step 3
@@ -10397,6 +10417,14 @@ function showCaptainBlockPrompt(aiPlayer, afc, humanTeam){
 function resolveAITeamAttack(aiPlayer, afc, blocker, humanTeam){
   const power=effPower(afc);
   if(!blocker){ damageTeamLife(humanTeam, power, 'direct attack'); renderAll(); return; }
+  // SKINLESS THRASH (The DeerHaunter): the blocker gets -1/-1 the moment it blocks.
+  if(hasAbilityLabel(afc,'Skinless Thrash')){
+    const _owner=ownerOfCard(blocker.uid);
+    blocker.atkBonus=(blocker.atkBonus||0)-1; blocker.currentATK=Math.max(0,(blocker.currentATK||0)-1);
+    blocker.hpBonus=(blocker.hpBonus||0)-1; blocker.currentHP-=1;
+    log(`Skinless Thrash: ${DB[blocker.cid]?.name} -1/-1!`,'dmg');
+    if(blocker.currentHP<=0 && _owner && G.players[_owner].field.some(f=>f.uid===blocker.uid)){ killCard(_owner,blocker); renderAll(); return; }
+  }
   const bHP=blocker.currentHP||0, bPow=effPower(blocker);
   // AQUATIC HEARTH: defensive block 50% increase — halve incoming damage to this blocker.
   let incoming=power;
@@ -10968,6 +10996,23 @@ function onEntry(p,fc){
       if(p===1 && typeof openEnemyTargetPicker==='function'){ openEnemyTargetPicker(enemies, mark, {title:'Frost Rune', desc:"Choose an enemy character. In 2 turns it will be Frozen."}); }
       else { mark(enemies[Math.floor(Math.random()*enemies.length)].uid); }
     } else { log('Frost Rune: no enemy characters to target.','info'); }
+  }
+  // ── THE DEERHAUNTER: Moose is Loose — on entry, immediately Freeze a target
+  //    opposing character.
+  if(c.id==='deerhaunter_promo'){
+    const o=(p===1)?2:1;
+    const enemies=(G.players[o].field||[]).filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
+    const freeze=(tuid)=>{
+      const tf=G.players[o].field.find(f=>f.uid===tuid); if(!tf)return;
+      if(typeof applyStatus==='function') applyStatus(tf,'freeze',(STATUS_META.freeze&&STATUS_META.freeze.dur)||1);
+      if(typeof showStatusFx==='function')showStatusFx(tf.uid,'freeze');
+      log(`Moose is Loose: ${DB[tf.cid]?.name} is Frozen!`,'dmg');
+      renderAll();
+    };
+    if(enemies.length){
+      if(p===1 && typeof openEnemyTargetPicker==='function'){ openEnemyTargetPicker(enemies, freeze, {title:'Moose is Loose', desc:"Choose an opposing character to Freeze."}); }
+      else { freeze(enemies[Math.floor(Math.random()*enemies.length)].uid); }
+    } else { log('Moose is Loose: no enemy characters to target.','info'); }
   }
   // (Card-played / favorites tracking lives in trackCardPlayed, called at each
   // play site, since locations/equipment/instants never reach onEntry.)
@@ -11634,7 +11679,9 @@ function openEquipModal(){
 // ═══════════════════════════════════════════════════
 function openAbilityModal(){
   if(!isMyTurn()||G.phase!=='main'){log('Main Phase only.','dmg');return;}
-  const pl=G.players[actingPlayer()];
+  const actP=actingPlayer();
+  const pl=G.players[actP];
+  const _tax=crowsResidueTax(actP); // Crow's Residue (The DeerHaunter): +2⚡ per ability if the opponent has one in play
   const body=document.createElement('div');let anyFound=false;
   // Herald activated abilities
   if(pl.herald){
@@ -11642,13 +11689,14 @@ function openAbilityModal(){
     (hc?.abilities||[]).filter(a=>a.type==='activated').forEach(abl=>{
       if(hfc.abilityUsed?.[abl.label])return;
       anyFound=true;
+      const _cost=(abl.cost||0)+_tax;
       const row=document.createElement('div');row.style.cssText='border:1px solid #7c3aed;border-radius:8px;padding:8px;margin-bottom:6px';
       row.innerHTML=`<div style="font-size:11px;font-weight:700;color:#c4b5fd">👑 ${hc.name}: ${abl.label}</div>
         <div style="font-size:10px;color:#9ca3af;margin:3px 0">${abl.text}</div>
-        <div style="font-size:10px;color:#fbbf24">Cost: ${abl.cost}⚡</div>`;
+        <div style="font-size:10px;color:#fbbf24">Cost: ${_cost}⚡${_tax?` <span style="color:#f87171">(+${_tax} Crow's Residue)</span>`:''}</div>`;
       const btn=document.createElement('button');btn.className='btn-primary btn-sm';btn.style.marginTop='5px';
-      btn.textContent=pl.energy>=(abl.cost||0)?`Use (${abl.cost||0}⚡)`:`Need ${abl.cost||0}⚡`;
-      btn.disabled=pl.energy<(abl.cost||0);
+      btn.textContent=pl.energy>=_cost?`Use (${_cost}⚡)`:`Need ${_cost}⚡`;
+      btn.disabled=pl.energy<_cost;
       btn.onclick=()=>activateAbility(hfc,abl);
       row.appendChild(btn);body.appendChild(row);
     });
@@ -11676,12 +11724,14 @@ function openAbilityModal(){
     anyFound=true;
     const hdr=document.createElement('div');hdr.style.cssText='font-weight:700;color:#c8a0ff;font-size:12px;margin:7px 0 5px;border-bottom:1px solid #2a2a4a;padding-bottom:3px';hdr.textContent=c.name;body.appendChild(hdr);
     all.forEach(({abl,src})=>{
-      const used=fc.abilityUsed[abl.label];const canAfford=pl.energy>=(abl.cost||0);
+      const used=fc.abilityUsed[abl.label];
+      const _cost=(abl.cost||0)+(abl.cost>0?_tax:0);
+      const canAfford=pl.energy>=_cost;
       const row=document.createElement('div');row.style.cssText='background:#0f0f1e;border:1px solid #2a2a4a;border-radius:8px;padding:7px;margin-bottom:5px';
-      row.innerHTML=`<div style="font-weight:700;color:#a78bfa;font-size:11px">${abl.label}${src?` <span style="color:#7dd3fc;font-size:9px">(${src})</span>`:''}${abl.cost>0?` (${abl.cost}⚡)`:''} <span style="color:#6b7280;font-size:9px">${abl.limit?`[${abl.limit.replace(/_/g,' ')}]`:''}</span></div>
+      row.innerHTML=`<div style="font-weight:700;color:#a78bfa;font-size:11px">${abl.label}${src?` <span style="color:#7dd3fc;font-size:9px">(${src})</span>`:''}${_cost>0?` (${_cost}⚡)`:''}${abl.cost>0&&_tax?` <span style="color:#f87171;font-size:9px">(+${_tax} Crow's Residue)</span>`:''} <span style="color:#6b7280;font-size:9px">${abl.limit?`[${abl.limit.replace(/_/g,' ')}]`:''}</span></div>
         <div style="font-size:11px;color:#9ca3af;margin:3px 0;line-height:1.4">${abl.text}</div>`;
       const btn=document.createElement('button');btn.className='btn-primary btn-sm';btn.style.cssText='opacity:'+(used||!canAfford?'.4':'1');
-      btn.disabled=used||!canAfford;btn.textContent=used?'Used':canAfford?'Activate':`Need ${abl.cost}⚡`;
+      btn.disabled=used||!canAfford;btn.textContent=used?'Used':canAfford?'Activate':`Need ${_cost}⚡`;
       btn.onclick=()=>activateAbility(fc,abl);row.appendChild(btn);body.appendChild(row);
     });
   });
@@ -14061,18 +14111,37 @@ function spendEnergy(p, amount, cardColor){
 
 // Wraps spendEnergy specifically for ACTIVATED-ABILITY costs (not card plays or
 // transforms). Triggers Paradox's "Dead Circuit": if the opponent controls a
-// Dead Circuit card, they mirror the exact amount/color just spent.
+// Dead Circuit card, they mirror the exact amount/color just spent. Also
+// applies The DeerHaunter's "Crow's Residue" tax: if the OPPONENT controls a
+// DeerHaunter, this ability costs +2 Energy. Individual ability blocks still
+// pre-check affordability against their own base (un-taxed) cost, so this is
+// the real gate — it blocks the spend outright (refunding nothing, since
+// nothing was taken yet) rather than letting energy go negative.
+// CROW'S RESIDUE (The DeerHaunter): how much extra a given player's activated-
+// ability costs are taxed right now (2 if their opponent controls a DeerHaunter,
+// else 0). Shared by the cost gate in spendEnergyAbility and the ability-list UI.
+function crowsResidueTax(p){
+  const opp=p===1?2:1; const oppl=G.players[opp];
+  return (oppl && oppl.field && oppl.field.some(f=>f.cid==='deerhaunter_promo')) ? 2 : 0;
+}
+
 function spendEnergyAbility(p, amount, cardColor){
-  const ok=spendEnergy(p, amount, cardColor);
-  if(ok && amount>0){
-    const opp=p===1?2:1; const oppl=G.players[opp];
+  const opp=p===1?2:1; const oppl=G.players[opp];
+  let taxed=amount;
+  if(amount>0 && crowsResidueTax(p)>0){
+    taxed=amount+2;
+    log(`Crow's Residue: ability costs +2⚡ (now ${taxed}⚡)!`,'dmg');
+  }
+  if(G.players[p].energy<taxed){ log(`Not enough energy (need ${taxed}⚡).`,'dmg'); return false; }
+  const ok=spendEnergy(p, taxed, cardColor);
+  if(ok && taxed>0){
     if(oppl && oppl.field && oppl.field.some(f=>hasAbilityLabel(f,'Dead Circuit'))){
       if(cardColor && cardColor!=='white'){
         oppl.colorEnergy=oppl.colorEnergy||{};
-        oppl.colorEnergy[cardColor]=(oppl.colorEnergy[cardColor]||0)+amount;
+        oppl.colorEnergy[cardColor]=(oppl.colorEnergy[cardColor]||0)+taxed;
       }
-      oppl.energy+=amount;
-      log(`Dead Circuit: ${pname(opp)} gains ${amount}⚡ (mirrored the opponent's ability cost)!`,'gain');
+      oppl.energy+=taxed;
+      log(`Dead Circuit: ${pname(opp)} gains ${taxed}⚡ (mirrored the opponent's ability cost)!`,'gain');
       renderAll();
     }
   }
