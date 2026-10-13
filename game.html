@@ -6914,6 +6914,8 @@ const DEFAULTS={
   paradox_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/027-150%20(Paradox).png',
   ivan_wca_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Wrestling/Ivan%20WCA%20(Promo%20Card).png',
   kratos_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/God%20Of%20War/Kratos%20(Promo).png',
+  raven_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Raven%20(Promo%20Card).png',
+  raven_vampire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Raven%20Vampire%20(Promo%20Card).png',
   vermynth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/076-150%20(Vermynth%20Fruit%20Instant).png',
   tyler_ssb_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/020-150%20(Tyler%20SSB).png',
   ghost_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/ghost_hulk_card%20PROMO.png',
@@ -7124,6 +7126,16 @@ const DB={
   //    immediately on entry and snowballs ATK with every hit).
   kratos_promo:{id:'kratos_promo',rarity:'legend',name:'Kratos',color:'red',charName:'Kratos',subtypes:['War','God'],type:'char',race:'War God',cost:7,atk:10,hp:7,sym:'KRTS',setId:'promo',cardNumber:'PROMO',keywords:['burst_speed'],nextForms:[],
     abilities:[{label:'Rage of Sparta',type:'passive',cost:0,text:'This card can attack the turn it enters.'},{label:'Olympian Blood',type:'triggered',cost:0,text:'When this card deals combat damage, it gains +1 Attack.'}]},
+  // ── RAVEN — PROMO DC-series Mystic Sorceress. PURPLE (trickery/debuffs — seals an
+  //    enemy's abilities, then lashes out with a field-wide Freeze on death).
+  //    Standalone card, NOT a transform of/into Raven Vampire.
+  raven_promo:{id:'raven_promo',rarity:'rare',name:'Raven',color:'purple',charName:'Raven',subtypes:['Mystic','Sorceress'],type:'char',race:'Mystic Sorceress',cost:6,atk:6,hp:8,sym:'RVN',setId:'promo',cardNumber:'PROMO',nextForms:[],
+    abilities:[{label:'Soul Cage',type:'activated',cost:4,limit:'once_per_game',text:"Target an opposing character. It cannot use activated abilities while this card is on the field. Cost 4 Energy. [Once]"},{label:"Trigon's Shadow",type:'triggered',cost:0,text:'When this card is destroyed, Freeze all opponent field characters.'}]},
+  // ── RAVEN VAMPIRE — PROMO DC-series Vampire Sorceress. BLACK (drain/sacrifice —
+  //    punishes opponent passivity, debuffs anything that enters, and grows tankier
+  //    with every attack). Standalone card, NOT a transform of/into Raven.
+  raven_vampire_promo:{id:'raven_vampire_promo',rarity:'legend',name:'Raven Vampire',color:'black',charName:'Raven Vampire',subtypes:['Vampire','Sorceress'],type:'char',race:'Vampire Sorceress',cost:7,atk:5,hp:9,sym:'RVNV',setId:'promo',cardNumber:'PROMO',nextForms:[],
+    abilities:[{label:'Hollow Vein',type:'triggered',cost:0,text:"At the end of each opponent's turn, if they spent no Energy that turn, this card's controller banks 1 Energy."},{label:'Crimson Tide',type:'passive',cost:0,text:'When an opposing character enters play, it enters with -1/-1.'},{label:'Bloodline Rise',type:'triggered',cost:0,text:'Each time this card attacks, it gains +2 Health.'}]},
   // ── EKLIF FROST — BSE regular character (Titan • Beast). BLUE (control). 047/150 Uncommon.
   eklif_frost_bse:{id:'eklif_frost_bse',rarity:'uncommon',name:'Eklif Frost',color:'blue',charName:'Eklif Frost',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:2,atk:2,hp:2,sym:'EKLIF',setId:'base_set',cardNumber:'047/150',nextForms:[],
     abilities:[{label:'Frozen Domain',type:'activated',cost:0,text:"Choose 1 Location card your opponent has in play. That Location has no effects or abilities while this card is in play."}],transforms:[]},
@@ -8151,6 +8163,19 @@ function isEquipHexed(tfc,eqId){
   return false;
 }
 
+// Soul Cage (Raven): true if `fc` is currently sealed — it cannot use activated
+// abilities while the Raven that caged it remains on the field. Same
+// self-cleaning source-on-field pattern as isEquipHexed/isLocationFrozen.
+function isAbilitySealed(fc){
+  if(!fc||!fc._soulCage)return false;
+  const sourceUid=fc._soulCage.sourceUid;
+  for(const pn of [1,2]){
+    const pl=G.players[pn]; if(!pl||!pl.field)continue;
+    if(pl.field.some(f=>f.uid===sourceUid && f.cid==='raven_promo'))return true;
+  }
+  return false;
+}
+
 // ═══════════════════════════════════════════════════
 // CONTINUOUS PASSIVE RECALCULATION
 // Passive auras (SSB Synergy, Surfacer Bonus, Evolved Armor, Support Boost)
@@ -8834,6 +8859,19 @@ function killCard(p,fc){
   const cardEl=document.querySelector(`[data-uid="${fc.uid}"]`);
   if(cardEl){
     cardEl.classList.add('card-dying');
+  }
+  // TRIGON'S SHADOW (Raven): when she is destroyed, Freeze every character on
+  // the OPPONENT's field (relative to her own controller, p).
+  if(hasAbilityLabel(fc,"Trigon's Shadow")){
+    const oppNum=p===1?2:1;
+    const oppChars=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
+    if(oppChars.length){
+      oppChars.forEach(ofc=>{
+        if(typeof applyStatus==='function') applyStatus(ofc,'freeze',(STATUS_META.freeze&&STATUS_META.freeze.dur)||1);
+        if(typeof showStatusFx==='function')showStatusFx(ofc.uid,'freeze');
+      });
+      log(`Trigon's Shadow: ${c.name} freezes ${pname(oppNum)}'s entire field!`,'dmg');
+    }
   }
   // ZONE OUT (Tyler SSG): if destroyed with equipment attached, return the best one to hand.
   if((c.abilities||[]).some(a=>a.label==='Zone Out') && Array.isArray(fc.attachments) && fc.attachments.length){
@@ -9915,6 +9953,11 @@ function resolveHeraldAttackTarget(targetP, targetHfc){
   const ac=DB[afc.cid];if(!ac)return;
   const atkDmg=afc.currentATK;
   afc.attacksThisTurn=(afc.attacksThisTurn||0)+1;
+  // BLOODLINE RISE (Raven Vampire): gains +2 Health every time she attacks.
+  if(hasAbilityLabel(afc,'Bloodline Rise')){
+    afc.hpBonus=(afc.hpBonus||0)+2; afc.currentHP=(afc.currentHP||0)+2;
+    log(`Bloodline Rise: ${DB[afc.cid]?.name} gains +2 Health (now ${afc.currentHP}).`,'gain');
+  }
   // Guardian check: opponent field guardian must be attacked first
   const guardians=G.players[targetP].field.filter(f=>isChar(DB[f.cid])&&hasKW(f,'guardian'));
   if(guardians.length>0&&targetHfc){
@@ -9948,6 +9991,11 @@ function resolveHeraldVsField(targetP, targetFc){
   const atkDmg=afc.currentATK;
   const defSnap=targetFc.currentATK;
   afc.attacksThisTurn=(afc.attacksThisTurn||0)+1;
+  // BLOODLINE RISE (Raven Vampire): gains +2 Health every time she attacks.
+  if(hasAbilityLabel(afc,'Bloodline Rise')){
+    afc.hpBonus=(afc.hpBonus||0)+2; afc.currentHP=(afc.currentHP||0)+2;
+    log(`Bloodline Rise: ${DB[afc.cid]?.name} gains +2 Health (now ${afc.currentHP}).`,'gain');
+  }
   log('⚔ Herald '+ac.name+'('+atkDmg+') → '+dc.name+'('+targetFc.currentHP+'HP)','info');
   dealDamage(targetP,targetFc.uid,atkDmg);
   // Retaliation if target survived
@@ -10098,6 +10146,11 @@ function declareLifeAttack(attackerPlayer, attackerUid){
   }
   const defenderPlayer = attackerPlayer===1?2:1;
   afc.attacksThisTurn=(afc.attacksThisTurn||0)+1;
+  // BLOODLINE RISE (Raven Vampire): gains +2 Health every time she attacks.
+  if(hasAbilityLabel(afc,'Bloodline Rise')){
+    afc.hpBonus=(afc.hpBonus||0)+2; afc.currentHP=(afc.currentHP||0)+2;
+    log(`Bloodline Rise: ${DB[afc.cid]?.name} gains +2 Health (now ${afc.currentHP}).`,'gain');
+  }
   const power=effPower(afc);
   if(isUnblockable(afc)){
     log(`${DB[afc.cid].name} attacks Life — UNBLOCKABLE for ${power}!`,'gain');
@@ -10192,6 +10245,11 @@ function declareTeamLifeAttack(attackerPlayer, attackerUid){
   if(!canCharacterAttack(attackerPlayer, afc)){ log("That character can't attack right now.",'dmg'); return; }
   const enemyTeam=enemyTeamOf(attackerPlayer);
   afc.attacksThisTurn=(afc.attacksThisTurn||0)+1;
+  // BLOODLINE RISE (Raven Vampire): gains +2 Health every time she attacks.
+  if(hasAbilityLabel(afc,'Bloodline Rise')){
+    afc.hpBonus=(afc.hpBonus||0)+2; afc.currentHP=(afc.currentHP||0)+2;
+    log(`Bloodline Rise: ${DB[afc.cid]?.name} gains +2 Health (now ${afc.currentHP}).`,'gain');
+  }
   const power=effPower(afc);
   if(isUnblockable(afc)){ log(`${DB[afc.cid].name} attacks Team ${enemyTeam} — UNBLOCKABLE for ${power}!`,'gain'); resolveTeamLifeAttack(attackerPlayer, afc, null, enemyTeam); return; }
   const defenderIsHuman=teamPlayers(enemyTeam).some(ep=>isHumanPlayer(ep));
@@ -10263,6 +10321,11 @@ function processAITeamAttacks(aiPlayer, queue, onDone){
   const afc=G.players[aiPlayer].field.find(f=>f.uid===auid);
   if(!afc||!canCharacterAttack(aiPlayer,afc)){ processAITeamAttacks(aiPlayer,queue,onDone); return; }
   afc.attacksThisTurn=(afc.attacksThisTurn||0)+1;
+  // BLOODLINE RISE (Raven Vampire): gains +2 Health every time she attacks.
+  if(hasAbilityLabel(afc,'Bloodline Rise')){
+    afc.hpBonus=(afc.hpBonus||0)+2; afc.currentHP=(afc.currentHP||0)+2;
+    log(`Bloodline Rise: ${DB[afc.cid]?.name} gains +2 Health (now ${afc.currentHP}).`,'gain');
+  }
   const power=effPower(afc);
   const defTeam=enemyTeamOf(aiPlayer);
   const defenderIsHuman=teamPlayers(defTeam).some(ep=>isHumanPlayer(ep));
@@ -10375,6 +10438,11 @@ function processAILifeAttacks(queue, onDone){
 }
 function aiAttackHumanLife(afc, done){
   afc.attacksThisTurn=(afc.attacksThisTurn||0)+1;
+  // BLOODLINE RISE (Raven Vampire): gains +2 Health every time she attacks.
+  if(hasAbilityLabel(afc,'Bloodline Rise')){
+    afc.hpBonus=(afc.hpBonus||0)+2; afc.currentHP=(afc.currentHP||0)+2;
+    log(`Bloodline Rise: ${DB[afc.cid]?.name} gains +2 Health (now ${afc.currentHP}).`,'gain');
+  }
   const power=effPower(afc);
   if(isUnblockable(afc)){
     log(`AI's ${DB[afc.cid].name} attacks your Life — UNBLOCKABLE for ${power}!`,'dmg');
@@ -10433,6 +10501,11 @@ function resolveAttack(ap,auid,dp,duid){
   }
   const ac=DB[afc.cid],dc=DB[dfc.cid];
   afc.attacksThisTurn=(afc.attacksThisTurn||0)+1;
+  // BLOODLINE RISE (Raven Vampire): gains +2 Health every time she attacks.
+  if(hasAbilityLabel(afc,'Bloodline Rise')){
+    afc.hpBonus=(afc.hpBonus||0)+2; afc.currentHP=(afc.currentHP||0)+2;
+    log(`Bloodline Rise: ${DB[afc.cid]?.name} gains +2 Health (now ${afc.currentHP}).`,'gain');
+  }
   // Omega Judgment restore: if this attacker was judged (-3 ATK), it attacks
   // this once at the penalty, then its ATK is restored after this attack.
   let _restoreOmega=false;
@@ -10876,6 +10949,16 @@ function playCardZoom(cardId, variant){
 
 function onEntry(p,fc){
   const c=DB[fc.cid];if(!c)return;
+  // ── CRIMSON TIDE (Raven Vampire): any OPPOSING character enters with -1/-1.
+  {
+    const opp=(p===1)?2:1;
+    if(G.players[opp] && G.players[opp].field.some(f=>hasAbilityLabel(f,'Crimson Tide'))){
+      fc.atkBonus=(fc.atkBonus||0)-1; fc.currentATK=Math.max(0,(fc.currentATK||0)-1);
+      fc.hpBonus=(fc.hpBonus||0)-1; fc.currentHP=(fc.currentHP||0)-1;
+      log(`Crimson Tide: ${c.name} enters with -1/-1!`,'dmg');
+      if(fc.currentHP<=0 && G.players[p].field.some(f=>f.uid===fc.uid)){ killCard(p,fc); return; }
+    }
+  }
   // ── MAGNUS (SSJ): Frost Rune — on entry, mark an enemy character to Freeze in 2 turns.
   if(c.id==='magnus_ssj_bse'){
     const o=(p===1)?2:1;
@@ -11135,6 +11218,9 @@ function untapAll(p){
   if(pl.herald && pl.herald.tapped){ pl.herald.tapped=false; }
   // Clear per-turn activated-ability locks so once-per-turn abilities work each turn.
   resetPerTurnAbilityLocks(p);
+  // Raven Vampire's Hollow Vein needs to know whether THIS player spends any
+  // Energy during their own upcoming turn — reset the tracker here.
+  pl.spentEnergyThisTurn=false;
 }
 
 // FIELD LOCKDOWN (Magnus): returns true if this player's equipment & locations
@@ -11571,6 +11657,7 @@ function openAbilityModal(){
   cards.forEach(fc=>{
     const c=DB[fc.cid];if(!c)return;
     if(isLoc(c) && isLocationFrozen(fc))return; // Frozen Domain: no abilities while frozen
+    if(isAbilitySealed(fc))return; // Soul Cage: no abilities while sealed
     if(!fc.abilityUsed)fc.abilityUsed={};
     // Combine the character's own activated abilities with any activated abilities
     // granted by attached EQUIPMENT (e.g. Space Crystal's Shift of Space), tagged
@@ -11611,6 +11698,8 @@ function activateAbility(fc,abl){
   if(fc.tapped){ log(`${DB[fc.cid]?.name} is tapped — it can't use abilities until your next turn.`,'dmg'); return; }
   // FROZEN: a frozen card cannot attack OR use abilities (e.g. Godly Restriction).
   if(statusActive(fc,'freeze')){ log(`${DB[fc.cid]?.name} is frozen — it can't use abilities.`,'dmg'); return; }
+  // SOUL CAGE (Raven): a sealed card cannot use any activated abilities.
+  if(isAbilitySealed(fc)){ log(`${DB[fc.cid]?.name} is sealed by Soul Cage — it can't use abilities.`,'dmg'); return; }
   // ── VOLARIS (PRISM) special routing — intercept before energy spend ──
   if(fc.cid==='volaris_prism'){
     if(abl.label==='Prism Shift'){
@@ -11842,6 +11931,34 @@ function activateAbility(fc,abl){
       renderAll();
     };
     if(typeof showCoinFlip==='function'){ showCoinFlip(coin(), resolve); } else { resolve(coin()); }
+    return;
+  }
+  // ── RAVEN: Soul Cage — 4⚡, once per game. Seal one enemy character — it can't
+  //    use activated abilities for as long as Raven remains on the field.
+  if(abl.label==='Soul Cage'){
+    if(fc.abilityUsed && fc.abilityUsed['Soul Cage']){ log('Soul Cage already used this game.','dmg'); return; }
+    const ap=G.activePlayer; const pl=G.players[ap];
+    if(pl.energy<4){ log('Soul Cage: need 4⚡.','dmg'); return; }
+    const oppNum=ap===1?2:1; const opp=G.players[oppNum];
+    const targets=opp.field.filter(f=>isChar(DB[f.cid]));
+    if(!targets.length){ log('Soul Cage: opponent has no characters to target.','dmg'); return; }
+    spendEnergyAbility(ap,4,DB[fc.cid]?.color||null);
+    if(!fc.abilityUsed)fc.abilityUsed={};
+    fc.abilityUsed['Soul Cage']=true;
+    pl.usedAbilityThisTurn=true;
+    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    const doCage=(tuid)=>{
+      const tfc=opp.field.find(f=>f.uid===tuid); if(!tfc)return;
+      tfc._soulCage={sourceUid:fc.uid};
+      log(`Soul Cage: ${DB[tfc.cid]?.name} is sealed — it can't use abilities while Raven is on the field!`,'gain');
+      renderAll();
+    };
+    if(ap===1){
+      openEnemyTargetPicker(targets,doCage,{sourcePlayer:ap,title:'Soul Cage',desc:"Choose an enemy character — it can't use activated abilities while Raven is on the field."});
+    } else {
+      doCage(targets[0].uid);
+    }
     return;
   }
   // ── LADY LOKI: Equipment Hex — 4⚡ (Purple). Negate the abilities of one
@@ -13516,6 +13633,15 @@ function endTurnFx(p){
   if(G.players[o].field.some(f=>f.cid==='dynadrax') && G.players[o].hand.length===5){
     drawCard(o); log('Dark Draw: Dynadrax draws 1 (hand was 5).','gain');
   }
+  // ── HOLLOW VEIN (Raven Vampire): if the player whose turn just ended (p) spent
+  // no Energy this turn, the controller of each Raven Vampire on the OTHER side
+  // (o) banks 1 Energy per copy.
+  if(!G.players[p].spentEnergyThisTurn){
+    G.players[o].field.filter(f=>hasAbilityLabel(f,'Hollow Vein')).forEach(()=>{
+      G.players[o].energy+=1;
+      log(`Hollow Vein: ${pname(o)} banks 1 Energy (${pname(p)} spent none)!`,'gain');
+    });
+  }
   // Crystal Void: end-of-turn 1 damage to opponent characters
   const voidOn=G.players[1].field.some(f=>f.cid==='crystal_void')||G.players[2].field.some(f=>f.cid==='crystal_void');
   if(voidOn)G.players[o].field.filter(f=>isChar(DB[f.cid])).forEach(fc=>dealDamage(o,fc.uid,1));
@@ -13929,6 +14055,7 @@ function spendEnergy(p, amount, cardColor){
   }
   // Rest comes from universal pool
   pl.energy-=amount;
+  if(amount>0) pl.spentEnergyThisTurn=true; // Raven Vampire's Hollow Vein tracker
   return true;
 }
 
