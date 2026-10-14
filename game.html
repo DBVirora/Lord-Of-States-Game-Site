@@ -10008,7 +10008,7 @@ function onDeckClick(p){
 //     2v2: the owner's Life takes BREAK_LIFE damage. Herald damage never heals.
 //   Flip HERALD_RULES.canAttack to false to run Heralds as pure passives.
 // ═══════════════════════════════════════════════════
-const HERALD_RULES={ canAttack:true, attackFromRound:4, breakPrizes:2, breakLife:15, duelRetaliation:.5 }; // duel retaliation = ½ ATK so starting the duel isn't a losing move
+const HERALD_RULES={ canAttack:true, attackFromRound:4, breakPrizes:2, breakLife:15, duelRetaliation:.5, charRetaliation:.5 }; // Heralds retaliate for ½ ATK (duels and vs characters) so starting the fight isn't a losing move
 function heraldRound(){ if(!G) return 1; return G.is2v2 ? Math.max(1,G.turn||1) : Math.ceil((G.turn||1)/2); }
 function isHeraldBroken(h){ return !!(h&&h.broken); }
 function heraldAttackBlockReason(p){
@@ -10059,7 +10059,7 @@ function resolveCharVsHerald(ap, auid, dp){
   if(!canCharacterAttack(ap,afc)){ log("That character can't attack right now.",'dmg'); return false; }
   afc.attacksThisTurn=(afc.attacksThisTurn||0)+1;
   if(hasAbilityLabel(afc,'Bloodline Rise')){ afc.hpBonus=(afc.hpBonus||0)+2; afc.currentHP=(afc.currentHP||0)+2; log(`Bloodline Rise: ${DB[afc.cid]?.name} gains +2 Health (now ${afc.currentHP}).`,'gain'); }
-  const dmg=effPower(afc); const retaliate=h.currentATK;
+  const dmg=effPower(afc); const retaliate=Math.floor((h.currentATK||0)*HERALD_RULES.charRetaliation);
   log(`⚔ ${DB[afc.cid].name}(${dmg}) → ${DB[h.cid].name} [Herald] (${h.currentHP}HP)`,'info');
   h.currentHP=Math.max(0,h.currentHP-dmg);
   if(typeof showDmgPopup==='function') try{ showDmgPopup(dp,'-'+dmg,h.uid); }catch(e){}
@@ -10070,7 +10070,7 @@ function resolveCharVsHerald(ap, auid, dp){
   if(h.currentHP>0&&h.cid==='darkseid_herald'&&!afc.omegaJudged){ afc.omegaJudged=true; afc.omegaPenalty=Math.min(3,afc.currentATK); afc.currentATK=Math.max(0,afc.currentATK-3); afc.atkBonus=(afc.atkBonus||0)-afc.omegaPenalty; log(`Omega Judgment: ${DB[afc.cid]?.name} -3 ATK until its next attack!`,'dmg'); }
   if(h.currentHP<=0){ breakHerald(dp, ap, DB[afc.cid].name); }
   else {
-    log(`${DB[h.cid].name} Herald: ${h.currentHP} HP — retaliates for ${retaliate}!`,'dmg');
+    log(`${DB[h.cid].name} Herald: ${h.currentHP} HP — retaliates for ${retaliate} (½ ATK)!`,'dmg');
     claimPrizeOnHeraldHit(ap);
     if(retaliate>0) dealDamage(ap, afc.uid, retaliate);
   }
@@ -14289,7 +14289,7 @@ function aiAttackOptionsFor(p, afc){
   });
   // Empty enemy board → the Herald itself is a target (Break = 2 prizes / 15 Life)
   if(!enemies.length){ aiEnemyPlayersOf(p).forEach(e=>{ const oh=G.players[e]?.herald; if(!oh||oh.broken||(oh.currentHP||0)<=0) return;
-    const breaks=power>=oh.currentHP; const ret=breaks?0:(oh.currentATK||0); const dies=ret>=afc.currentHP;
+    const breaks=power>=oh.currentHP; const ret=breaks?0:Math.floor((oh.currentATK||0)*HERALD_RULES.charRetaliation); const dies=ret>=afc.currentHP;
     let s=power*.5+(breaks?34:6)-(dies?8+atkVal*.9:0)-ret*.3;
     opts.push({score:s,kind:'herald',p:e,uid:null,name:DB[oh.cid]?.name});
   }); }
@@ -14395,6 +14395,9 @@ function runAI(){
         const _aiEndTurn=()=>{
           G._aiTurn=false; G._aiAuto=false;
           if(G.gameOver)return;
+          // Power Up parity: the AI gets +2⚡ for a passive turn exactly like the human.
+          { const ap2=G.players[2]; const didAtk=ap2.field.some(f=>(f.attacksThisTurn||0)>0)||((ap2.herald&&ap2.herald.attacksThisTurn)||0)>0;
+            if(!didAtk&&!ap2.usedAbilityThisTurn){ ap2.energy+=2; log('⚡ AI Power Up! Attack skipped — +2 Energy.','gain'); } }
           endTurnFx(2);log('AI ends.','info');
           G.activePlayer=1;G.turn++;G.phase='draw';G.phasesDone=[];G.selectedAttacker=null;G.heraldAttacking=false;
           if(typeof startTurnFx==='function')startTurnFx(1);
@@ -16753,7 +16756,7 @@ function showRulesScreen(){
     <b style="color:#c8a0ff">Turn:</b> Draw → Main → Attack → End<br>
     <b style="color:#c8a0ff">Field Limits:</b> Max 8 characters · Max 4 locations (separate zone on left)<br>
     <b style="color:#c8a0ff">Hand Limit:</b> 12 cards max — exceed it and you lose!<br>
-    <b style="color:#c8a0ff">Combat:</b> Green char → red char or yellow location. Characters may hit the enemy Herald only when their field is empty.<br>
+    <b style="color:#c8a0ff">Combat:</b> Green char → red char or yellow location. Characters may hit the enemy Herald only when their field is empty (it retaliates for ½ ATK).<br>
     <b style="color:#c8a0ff">Heralds:</b> 👑 Never attack characters. From round 4 your Herald may duel the enemy Herald once per turn (it retaliates). The defender retaliates for ½ its ATK. A Herald at 0 HP is <b>Broken</b>: face-down, all passives & abilities off — the breaker takes <b>2 Prizes</b> (15 Life in Life modes). Herald damage never heals.<br>
     <b style="color:#c8a0ff">Transform:</b> Base on field + next form in hand. Pay cost. 🔒 = TF Only.<br>
     <b style="color:#c8a0ff">Sacrifice:</b> 💀 Destroy your own char for ½ its cost in energy.<br>
