@@ -5431,7 +5431,7 @@ textarea{
   --gap:clamp(4px,.55vw,12px);
   --seam:56px;
   --size-mult:1; --cw-max:clamp(186px,13vh,300px);
-  --cw:clamp(58px, calc(min(calc((100vw - var(--rail) - 120px) / 8.8), calc((100dvh - 196px) * .25)) * var(--size-mult)), var(--cw-max));
+  --cw:clamp(58px, calc(min(calc((100vw - var(--rail) - 120px) / 8.8), calc((100dvh - 196px) * .238)) * var(--size-mult)), var(--cw-max));
   --ch:calc(var(--cw) / .7);
   --pw:calc(var(--cw) * .6);
   --lw:calc(var(--cw) * .72);
@@ -5595,7 +5595,7 @@ textarea{
 #game-screen .herald-slot .card-name-sm{ font-size:calc(var(--fs) * .92); }
 #game-screen .card-slot:hover{ transform:translateY(-5px) scale(1.06); z-index:9999 !important; box-shadow:0 12px 30px rgba(0,0,0,.8),0 0 18px rgba(232,197,112,.4); border-color:var(--ar-gold2); overflow:hidden; }
 /* ── ARENA 3D: cards lie on the table plane, stand up + lean toward the cursor on hover ── */
-#game-screen[data-look="3d"] .char-field,#game-screen[data-look="3d"] .herald-zone,#game-screen[data-look="3d"] .location-zone,#game-screen[data-look="3d"] .hand-fan{ perspective:1100px; transform-style:preserve-3d; }
+#game-screen[data-look="3d"] .char-field,#game-screen[data-look="3d"] .herald-zone,#game-screen[data-look="3d"] .location-zone,#game-screen[data-look="3d"] .hand-fan{ perspective:1100px; transform-style:flat; }
 #game-screen[data-look="3d"] .side .card-slot,#game-screen[data-look="3d"] .side .herald-slot{ transform:rotateX(var(--tilt)); box-shadow:0 10px 18px -6px rgba(0,0,0,.7); transition:transform .22s cubic-bezier(.2,.8,.3,1.2),box-shadow .22s; }
 #game-screen[data-look="3d"] .side .card-slot:hover,#game-screen[data-look="3d"] .side .herald-slot:hover{ transform:rotateX(var(--tx,0deg)) rotateY(var(--ty,0deg)) translateY(-8px) translateZ(34px) scale(1.06); box-shadow:0 26px 40px -10px rgba(0,0,0,.85),0 0 22px rgba(232,197,112,.35); animation:ar-float 2.2s ease-in-out infinite; }
 #game-screen[data-look="3d"] .side .card-slot.tapped{ transform:rotateX(var(--tilt)) rotateZ(90deg) scale(.82); }
@@ -5619,13 +5619,13 @@ textarea{
 #game-screen #log-box-center{ display:none; }
 
 /* ── HAND: fanned arc that compresses as it grows ── */
-#game-screen .hand-dock{ position:relative; height:calc(var(--ch) * .78); min-height:70px; margin:0 var(--gap); padding:0; border:0; background:none; overflow:visible; flex:none; }
+#game-screen .hand-dock{ position:relative; height:calc(var(--ch) * .96); min-height:70px; margin:0 var(--gap); padding:0; border:0; background:none; overflow:visible; flex:none; }
 #game-screen .hand-dock-label{ position:absolute; left:10px; top:4px; z-index:2; font-size:calc(var(--fs) * .85); margin:0; padding:0; }
 #game-screen .hand-hint{ font-size:9px; color:#4b5563; margin-left:4px; }
 #game-screen .hand-fan{ position:absolute; inset:0; display:block; padding:0; background:none; border:0; overflow:visible; }
-#game-screen .hand-fan .hand-card{ position:absolute; left:var(--x,50%); top:calc(var(--ch) * .16); width:var(--cw); height:var(--ch); transform-origin:50% 120%; transform:rotateX(var(--hx,0deg)) rotate(var(--rot,0deg)) translateY(var(--lift,0px)); transition:transform .22s cubic-bezier(.2,.8,.3,1.15),box-shadow .18s ease; will-change:transform; border-radius:9px; }
+#game-screen .hand-fan .hand-card{ position:absolute; left:var(--x,50%); top:calc(var(--ch) * .08); width:var(--cw); height:var(--ch); transform-origin:50% 120%; transform:rotateX(var(--hx,0deg)) rotate(var(--rot,0deg)) translateY(var(--lift,0px)); transition:transform .22s cubic-bezier(.2,.8,.3,1.15),box-shadow .18s ease; will-change:transform; border-radius:9px; }
 #game-screen[data-look="3d"] .hand-fan .hand-card{ --hx:14deg; }
-#game-screen .hand-fan .hand-card:hover{ transform:rotateX(0deg) rotate(0deg) translateY(calc(var(--cw) * -.46)) translateZ(40px) scale(1.12); z-index:9999 !important; border-color:var(--ar-gold2); box-shadow:0 16px 36px rgba(0,0,0,.8),0 0 20px rgba(200,164,74,.5); }
+#game-screen .hand-fan .hand-card:hover{ transform:rotateX(0deg) rotate(0deg) translateY(calc(var(--cw) * -.34)) translateZ(40px) scale(1.14); z-index:9999 !important; border-color:var(--ar-gold2); box-shadow:0 16px 36px rgba(0,0,0,.8),0 0 20px rgba(200,164,74,.5); }
 #game-screen[data-look="3d"] .hand-fan .hand-card:hover{ animation:ar-float 2.2s ease-in-out infinite; }
 #game-screen .hand-card .hand-art-area{ height:auto !important; flex:1 1 auto; min-height:0; }
 #game-screen .hand-card .hand-name{ font-size:calc(var(--fs) * .92); }
@@ -5759,7 +5759,7 @@ textarea{
 #game-screen-2v2 .v2-hand .hand-card:hover{ transform:translateY(-10px) scale(1.1); }
 #game-screen-2v2 .v2-log{ height:38px; font-size:10px; padding:3px 10px; }
 /* Arena 3D look on the 2v2 table */
-#game-screen-2v2[data-look="3d"] .v2-field,#game-screen-2v2[data-look="3d"] .v2-herald,#game-screen-2v2[data-look="3d"] .v2-loc{ perspective:900px; transform-style:preserve-3d; }
+#game-screen-2v2[data-look="3d"] .v2-field,#game-screen-2v2[data-look="3d"] .v2-herald,#game-screen-2v2[data-look="3d"] .v2-loc{ perspective:900px; transform-style:flat; }
 #game-screen-2v2[data-look="3d"] .v2-board .card-slot,#game-screen-2v2[data-look="3d"] .v2-herald .herald-slot{ transform:rotateX(var(--tilt)); transition:transform .22s cubic-bezier(.2,.8,.3,1.2),box-shadow .22s; }
 #game-screen-2v2[data-look="3d"] .v2-board .card-slot:hover,#game-screen-2v2[data-look="3d"] .v2-herald .herald-slot:hover{ transform:rotateX(var(--tx,0deg)) rotateY(var(--ty,0deg)) translateY(-6px) translateZ(26px) scale(1.08); z-index:50; animation:ar-float 2.2s ease-in-out infinite; }
 #game-screen-2v2[data-look="3d"] .v2-board .card-slot.tapped{ transform:rotateX(var(--tilt)) rotateZ(90deg) scale(.82); }
