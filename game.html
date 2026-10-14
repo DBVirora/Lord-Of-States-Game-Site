@@ -5923,6 +5923,96 @@ textarea{
 #coin-toss .ct-result.win{ color:#9af5c0; } #coin-toss .ct-result.lose{ color:#ff9b9b; }
 @media (max-width:900px){ #coin-toss .ct-box{ padding:20px 14px 18px; } #coin-toss .ct-stage{ height:120px; } #coin-toss .ct-coin{ width:96px; height:96px; } #coin-toss .ct-btn{ min-width:120px; padding:10px 18px; font-size:12px; } }
 
+
+/* ════════ ✨ COSMETICS — card backs · playmats · frames · plates · titles · herald entrance ════════ */
+#game-screen .side.player-area{ position:relative; }
+#game-screen .side.player-area::before{ content:''; position:absolute; inset:calc(var(--gap) * -1) 0; border-radius:12px; background:var(--mat-bg,none); background-size:cover; background-position:center; z-index:-1; pointer-events:none; }
+#game-screen .side.opp::before{ transform:rotate(180deg); }
+#game-screen .side.player-area.has-mat::after{ content:''; position:absolute; inset:calc(var(--gap) * -1) 0; border-radius:12px; z-index:-1; pointer-events:none; box-shadow:inset 0 0 40px rgba(0,0,0,.45); border:1px solid var(--mat-line,rgba(255,255,255,.08)); }
+/* avatar frames / plates / titles in the arena identity blocks */
+.player-panel-avatar.cos-framed,#game-screen .ident .player-panel-avatar.cos-framed{ position:relative; overflow:visible; border-radius:50%; border-color:transparent; }
+.player-panel-avatar.cos-framed img{ border-radius:50%; }
+.player-panel-avatar.cos-framed::after{ content:''; position:absolute; inset:-16%; background:var(--frame-img) center/contain no-repeat; pointer-events:none; }
+.player-panel-avatar.cos-ring,#game-screen .ident .player-panel-avatar.cos-ring{ border-radius:50%; border:2px solid var(--ring1,#e8c570); box-shadow:0 0 0 2px var(--ring2,rgba(232,197,112,.35)),0 0 14px var(--ring2,rgba(232,197,112,.35)); }
+.player-panel-avatar.cos-ring img{ border-radius:50%; }
+.player-panel-title{ font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--title-c,#e8c570); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 0 8px var(--title-glow,transparent); margin-top:1px; }
+.player-panel-title:empty{ display:none; }
+.player-panel-top.cos-plate{ background:var(--plate-bg); background-size:cover; background-position:center; border-radius:8px; padding:4px 6px; border:1px solid var(--plate-line,rgba(232,197,112,.3)); }
+/* shop tab */
+.cos-head{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:12px; }
+.cos-chip{ font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1.5px; color:#cfc6dc; background:rgba(14,10,38,.85); border:1px solid rgba(232,197,112,.3); border-radius:999px; padding:5px 11px; cursor:pointer; transition:all .15s; }
+.cos-chip:hover{ border-color:rgba(232,197,112,.7); color:#fff; }
+.cos-chip.on{ background:linear-gradient(90deg,rgba(124,58,237,.6),rgba(60,20,120,.7)); border-color:#e8c570; color:#fff; }
+.cos-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:12px; }
+.cos-tile{ background:rgba(8,8,28,.7); border:1px solid var(--border-v); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px; position:relative; transition:all .2s; }
+.cos-tile:hover{ border-color:rgba(232,197,112,.5); transform:translateY(-2px); }
+.cos-tile.equipped{ border-color:#e8c570; box-shadow:0 0 18px rgba(232,197,112,.25); }
+.cos-tile.locked .cos-prev{ filter:grayscale(.6) brightness(.7); }
+.cos-prev{ height:112px; border-radius:8px; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.35); overflow:hidden; position:relative; }
+.cos-prev img.back{ height:100%; aspect-ratio:5/7; border-radius:6px; object-fit:cover; box-shadow:0 6px 14px rgba(0,0,0,.6); }
+.cos-prev .mat{ position:absolute; inset:0; background-size:cover; background-position:center; }
+.cos-prev .mat::after{ content:''; position:absolute; left:50%; top:50%; width:44px; height:62px; transform:translate(-50%,-50%); border:1px dashed rgba(255,255,255,.4); border-radius:4px; }
+.cos-prev .av{ width:66px; height:66px; border-radius:50%; background:linear-gradient(135deg,#2a2050,#1a1430); display:grid; place-items:center; font-size:30px; position:relative; }
+.cos-prev .av.cos-framed::after{ content:''; position:absolute; inset:-16%; background:var(--frame-img) center/contain no-repeat; }
+.cos-prev .av.cos-ring{ border:2px solid var(--ring1,#e8c570); box-shadow:0 0 0 2px var(--ring2),0 0 14px var(--ring2); }
+.cos-prev .plate{ padding:8px 18px; border-radius:8px; font-family:'Cinzel',serif; font-weight:700; color:#f0e6c8; font-size:13px; background:var(--plate-bg); background-size:cover; border:1px solid var(--plate-line,rgba(232,197,112,.3)); }
+.cos-prev .ttl{ font-family:'Cinzel',serif; font-size:13px; letter-spacing:2px; text-align:center; color:var(--title-c,#e8c570); text-shadow:0 0 10px var(--title-glow,transparent); padding:0 8px; }
+.cos-prev .ent{ width:72px; height:72px; border-radius:50%; display:grid; place-items:center; font-size:32px; background:radial-gradient(circle,var(--c2) 0,transparent 70%); animation:cos-pulse 2s ease-in-out infinite; }
+@keyframes cos-pulse{ 0%,100%{ box-shadow:0 0 10px var(--c); } 50%{ box-shadow:0 0 34px var(--c); } }
+.cos-name{ font-family:'Cinzel',serif; font-size:13px; font-weight:700; color:#f0e6c8; line-height:1.2; }
+.cos-tier{ font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:2px; padding:2px 7px; border-radius:999px; border:1px solid var(--tc); color:var(--tc); display:inline-block; }
+.cos-desc{ font-size:11px; color:#9ca3af; line-height:1.4; flex:1; }
+.cos-btn{ font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:1.5px; padding:8px; border-radius:8px; border:1px solid rgba(232,197,112,.4); background:rgba(124,58,237,.25); color:#fff; cursor:pointer; transition:all .15s; }
+.cos-btn:hover{ background:rgba(124,58,237,.45); }
+.cos-btn.eq{ background:linear-gradient(90deg,rgba(232,197,112,.35),rgba(124,58,237,.35)); border-color:#e8c570; cursor:default; }
+.cos-btn.lock{ background:rgba(0,0,0,.3); color:#9ca3af; cursor:default; border-color:rgba(255,255,255,.1); }
+.cos-btn:disabled{ opacity:.5; cursor:not-allowed; }
+.cos-new{ position:absolute; top:8px; right:8px; font-family:'Share Tech Mono',monospace; font-size:8px; letter-spacing:1px; color:#fff; background:#ef4444; border-radius:6px; padding:2px 6px; }
+.cos-admin{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.cos-admin label{ display:flex; flex-direction:column; gap:3px; font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:1.5px; color:#9ca3af; }
+.cos-admin input,.cos-admin select,.cos-admin textarea{ font-family:'Share Tech Mono',monospace; font-size:12px; color:#ece6d6; background:rgba(0,0,0,.35); border:1px solid rgba(232,197,112,.3); border-radius:6px; padding:6px 8px; }
+.cos-admin .wide{ grid-column:1/-1; }
+.cos-admin input,.cos-admin select,.cos-admin textarea{ min-width:0; width:100%; box-sizing:border-box; }
+@media (max-width:600px){ .cos-admin{ grid-template-columns:1fr; } .cos-admin .wide{ grid-column:auto; } }
+.cos-admin-list{ max-height:220px; overflow:auto; border:1px solid rgba(232,197,112,.2); border-radius:8px; margin-bottom:10px; }
+.cos-admin-row{ display:grid; grid-template-columns:1fr auto auto auto; gap:8px; align-items:center; padding:5px 8px; font-size:11px; color:#cfc6dc; border-bottom:1px solid rgba(255,255,255,.05); }
+.cos-admin-row:hover{ background:rgba(124,58,237,.12); }
+.cos-admin-row button{ font-size:10px; }
+/* ── HERALD ENTRANCE ── */
+#herald-entrance{ position:fixed; inset:0; z-index:9400; display:none; align-items:center; justify-content:center; background:rgba(4,2,12,0); overflow:hidden; cursor:pointer; }
+#herald-entrance.open{ display:flex; animation:he-dim .35s forwards; }
+@keyframes he-dim{ to{ background:rgba(4,2,12,.84); } }
+#herald-entrance.closing{ animation:he-undim .35s forwards !important; pointer-events:none; }
+@keyframes he-undim{ from{ background:rgba(4,2,12,.84); opacity:1; } to{ background:rgba(4,2,12,0); opacity:0; } }
+#herald-entrance .he-fx{ position:absolute; inset:0; pointer-events:none; }
+#herald-entrance .he-card{ position:relative; width:min(300px,56vw); aspect-ratio:5/7; border-radius:14px; overflow:hidden; border:2px solid var(--he-c,#e8c570); box-shadow:0 0 60px var(--he-glow,rgba(232,197,112,.5)),0 30px 80px rgba(0,0,0,.8); transform:scale(2.6) rotate(-6deg); opacity:0; }
+#herald-entrance.slam .he-card{ animation:he-slam .55s cubic-bezier(.2,.9,.25,1.1) forwards; }
+@keyframes he-slam{ 0%{ transform:scale(2.6) rotate(-6deg); opacity:0; } 60%{ transform:scale(.94) rotate(1deg); opacity:1; } 100%{ transform:scale(1) rotate(0); opacity:1; } }
+#herald-entrance .he-card img{ width:100%; height:100%; object-fit:cover; display:block; }
+#herald-entrance .he-name{ position:absolute; left:50%; bottom:10%; transform:translateX(-50%) translateY(20px); opacity:0; text-align:center; font-family:'Cinzel',serif; color:#f4ecd0; white-space:nowrap; max-width:96vw; }
+#herald-entrance.named .he-name{ animation:he-name .5s ease-out forwards; }
+@keyframes he-name{ to{ transform:translateX(-50%) translateY(0); opacity:1; } }
+#herald-entrance .he-name b{ display:block; font-size:clamp(22px,4vw,40px); letter-spacing:6px; color:var(--he-c,#e8c570); text-shadow:0 0 20px var(--he-glow,rgba(232,197,112,.6)); overflow:hidden; text-overflow:ellipsis; }
+#herald-entrance .he-name small{ font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:4px; color:rgba(255,255,255,.7); }
+#herald-entrance .he-skip{ position:absolute; right:14px; bottom:12px; font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:2px; color:rgba(255,255,255,.4); }
+#herald-entrance .he-rays{ position:absolute; left:50%; top:50%; width:200vmax; height:200vmax; margin:-100vmax 0 0 -100vmax; background:repeating-conic-gradient(from 0deg,var(--he-glow,rgba(232,197,112,.5)) 0 5deg,transparent 5deg 16deg); opacity:0; animation:he-rays 2.6s ease-out forwards; -webkit-mask:radial-gradient(circle,#000 0,transparent 52%); mask:radial-gradient(circle,#000 0,transparent 52%); }
+@keyframes he-rays{ 0%{ opacity:0; transform:rotate(0) scale(.6); } 20%{ opacity:.55; } 100%{ opacity:.22; transform:rotate(40deg) scale(1); } }
+#herald-entrance .he-ring{ position:absolute; left:50%; top:50%; width:40px; height:40px; margin:-20px 0 0 -20px; border-radius:50%; border:3px solid var(--he-c,#e8c570); opacity:0; animation:he-ring 1.3s ease-out forwards; }
+@keyframes he-ring{ 0%{ opacity:.9; transform:scale(1); } 100%{ opacity:0; transform:scale(42); } }
+#herald-entrance .he-flash{ position:absolute; inset:0; background:#fff; opacity:0; }
+#herald-entrance .he-flash.go{ animation:he-flash .5s ease-out 1; }
+@keyframes he-flash{ 0%{ opacity:.85; } 100%{ opacity:0; } }
+#herald-entrance .he-bolt{ position:absolute; top:-5%; height:110%; width:14px; background:linear-gradient(#fff,var(--he-c,#60a5fa) 40%,transparent); opacity:0; filter:drop-shadow(0 0 10px var(--he-c,#60a5fa)); clip-path:polygon(40% 0,60% 0,100% 30%,55% 32%,90% 60%,45% 62%,70% 100%,30% 100%,50% 65%,10% 62%,45% 34%,0 30%); animation:he-bolt .5s ease-out 1 forwards; }
+@keyframes he-bolt{ 0%{ opacity:0; } 10%{ opacity:1; } 60%{ opacity:.6; } 100%{ opacity:0; } }
+#herald-entrance .he-ember{ position:absolute; bottom:-10px; width:7px; height:7px; border-radius:50%; background:var(--he-c,#f97316); box-shadow:0 0 10px var(--he-c,#f97316); opacity:0; animation:he-ember var(--d,2s) linear var(--dl,0s) 1 forwards; }
+@keyframes he-ember{ 0%{ opacity:0; transform:translateY(0) scale(1); } 15%{ opacity:1; } 100%{ opacity:0; transform:translateY(-110vh) translateX(var(--x,0)) scale(.3); } }
+#herald-entrance .he-void{ position:absolute; left:50%; top:50%; width:12px; height:12px; margin:-6px 0 0 -6px; border-radius:50%; background:radial-gradient(circle,#000 40%,var(--he-glow,rgba(168,85,247,.6)) 68%,transparent 72%); opacity:0; animation:he-void 1.7s ease-out forwards; }
+@keyframes he-void{ 0%{ opacity:0; transform:scale(1); } 30%{ opacity:1; } 100%{ opacity:0; transform:scale(130); } }
+#herald-entrance .he-glowfloor{ position:absolute; left:0; right:0; bottom:0; height:45%; background:linear-gradient(0deg,var(--he-glow,rgba(232,197,112,.4)),transparent); opacity:0; animation:he-floor 1s ease-out .3s forwards; }
+@keyframes he-floor{ to{ opacity:.5; } }
+body.he-shake{ animation:he-shake .45s linear 1; }
+@keyframes he-shake{ 0%,100%{ transform:translate(0); } 20%{ transform:translate(-7px,4px); } 40%{ transform:translate(6px,-5px); } 60%{ transform:translate(-4px,3px); } 80%{ transform:translate(3px,-2px); } }
+@media (prefers-reduced-motion:reduce){ body.he-shake{ animation:none; } }
 /* ════════ 📜 COURT REGISTRY — card discovery viewer ════════ */
 #registry-screen{ padding:56px 14px 14px; }
 #registry-screen .reg-top{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
@@ -6656,6 +6746,7 @@ textarea{
               <div class="player-panel-avatar" id="p2-avatar">🤖</div>
               <div class="player-panel-info">
                 <div class="player-panel-name" id="p2-panel-name">Opponent</div>
+                <div class="player-panel-title" id="p2-panel-title"></div>
                 <div class="player-panel-phase" id="p2-panel-phase">—</div>
               </div>
             </div>
@@ -6753,6 +6844,7 @@ textarea{
               <div class="player-panel-avatar" id="p1-avatar">👤</div>
               <div class="player-panel-info">
                 <div class="player-panel-name" id="p1-panel-name">Player 1</div>
+                <div class="player-panel-title" id="p1-panel-title"></div>
                 <div class="player-panel-phase you-phase" id="p1-panel-phase">DRAW</div>
               </div>
             </div>
@@ -6885,6 +6977,7 @@ textarea{
 <!-- RULES -->
 
 <!-- 📜 COURT REGISTRY — card discovery viewer -->
+<div id="herald-entrance" onclick="heraldEntranceSkip()"><div class="he-fx" id="he-fx"></div><div class="he-card" id="he-card"></div><div class="he-name" id="he-name"></div><div class="he-skip">TAP TO SKIP</div></div>
 <div id="registry-screen" class="screen">
   <div class="reg-top">
     <button class="reg-back" onclick="showScreen('menu-screen')">← BACK</button>
@@ -7153,7 +7246,7 @@ const DEFAULTS={
   volaris_ssb: GH+'Volaris%20(SSB)%234.png',
 };
 const IMG={};
-function getImg(id){return IMG[id]||DEFAULTS[id]||null;}
+function getImg(id){ if(id==='cardback'&&typeof cosBackUrl==='function'&&typeof _cos!=='undefined'){ try{ return cosBackUrl(cosEquipped('back',1)); }catch(e){} } return IMG[id]||DEFAULTS[id]||null;}
 async function loadUploads(){
   try{const keys=await window.storage.list('img:');if(!keys||!keys.keys)return;
     for(const k of keys.keys){try{const r=await window.storage.get(k);if(r&&r.value&&r.value.startsWith('data:'))IMG[k.replace('img:','')]=r.value;}catch(e){}}
@@ -8517,7 +8610,9 @@ function startGame(mode,deck1,deck2,foils1,foils2){
     setTimeout(()=>checkAchievements(),800);
   }
   const _gs=document.getElementById('game-screen'); if(_gs)_gs.classList.remove('mode-2v2');
+  G.oppCos=(mode==='ai')?Object.assign({},AI_COS):null;
   showScreen('game-screen');renderAll();
+  if(typeof applyCosmetics==='function') applyCosmetics();
   if(mode!=='online'&&!G.tutorialMode){
     const myName=pname(1), oppName=(mode==='pvp')?pname(2):'AI';
     setTimeout(()=>startCoinToss({mode:(mode==='pvp'?'pvp':'ai'),iCall:true,names:{me:myName,opp:oppName}}),350);
@@ -8933,6 +9028,10 @@ const SFX = {
   win(){ [523,659,784,1047].forEach((f,i)=>setTimeout(()=>_playTone(f,0.3,'triangle',0.15),i*140)); },
   lose(){ [392,330,262].forEach((f,i)=>setTimeout(()=>_playTone(f,0.35,'sawtooth',0.12),i*180)); },
   click(){ _playTone(800, 0.05, 'sine', 0.06); },
+  // ── HERALD ENTRANCE ──
+  heraldSlam(kind){ _playNoise(0.35, 0.3, 500); _playTone(70, 0.6, 'sawtooth', 0.22, 38); if(kind==='royal'){ [523,659,784].forEach((f,i)=>setTimeout(()=>_playTone(f,0.35,'triangle',0.12),200+i*120)); } if(kind==='inferno'){ _playNoise(0.8, 0.12, 1800); } if(kind==='abyss'){ _playTone(160, 0.9, 'sine', 0.14, 40); } },
+  heraldStorm(){ _playNoise(0.08, 0.3, 4000); setTimeout(()=>_playNoise(0.25, 0.25, 900),60); _playTone(1200, 0.06, 'square', 0.08); },
+  heraldName(kind){ if(kind==='royal'){ _playTone(1047, 0.5, 'triangle', 0.12, 1319); } else if(kind==='storm'){ _playTone(880, 0.25, 'sine', 0.1, 1320); } else if(kind==='abyss'){ _playTone(220, 0.6, 'sine', 0.1, 110); } else { _playTone(440, 0.4, 'sawtooth', 0.08, 660); } },
   error(){ _playTone(150, 0.2, 'square', 0.1); },
   // Booster pack tears open: paper rip + rising shimmer swell.
   packOpen(){ _playNoise(0.28, 0.13, 2400); _playTone(160, 0.35, 'sawtooth', 0.07, 620); setTimeout(()=>_playTone(880,0.25,'sine',0.05,1500),120); },
@@ -10125,7 +10224,7 @@ function renderDeckPile(p){
   el.style.display='block';
   // Arena layout: the pile is the real card back, sized by CSS (--pw); the count sits on it.
   const wrap=document.createElement('div');wrap.style.cssText='position:relative;width:100%;height:100%;';
-  const url=(typeof getImg==='function')?getImg('cardback'):null;
+  const url=(typeof cardBackFor==='function')?cardBackFor(p):((typeof getImg==='function')?getImg('cardback'):null);
   if(url && count>0){ const img=document.createElement('img'); img.src=url; img.className='deck-img'; img.alt=''; wrap.appendChild(img); }
   else { wrap.innerHTML='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:18px;color:rgba(124,58,237,.45)">'+(count>0?'✦':'∅')+'</div>'; }
   const n=document.createElement('div'); n.className='deck-n'; n.textContent=count; wrap.appendChild(n);
@@ -14028,7 +14127,8 @@ let _gameSettings = {
   cardSize: 'medium',
   banners: true,
   boardLook: '3d',
-  aiPace: 'human'   // 'human' = 1–3s between CPU moves (watchable) · 'fast' = snappy
+  aiPace: 'human',   // 'human' = 1–3s between CPU moves (watchable) · 'fast' = snappy
+  entrances: true    // Herald entrance cinematic before the coin toss
 };
 function setAiPace(v){
   _gameSettings.aiPace=(v==='fast')?'fast':'human';
@@ -14132,6 +14232,7 @@ function syncSettingsUI(){
   });
   document.querySelectorAll('.settings-look-btn').forEach(b=>b.classList.toggle('active', b.dataset.look===(_gameSettings.boardLook||'3d')));
   document.querySelectorAll('.settings-pace-btn').forEach(b=>b.classList.toggle('active', b.dataset.pace===(_gameSettings.aiPace||'human')));
+  document.querySelectorAll('.settings-ent-btn').forEach(b=>b.classList.toggle('active', (b.dataset.ent==='on')===(_gameSettings.entrances!==false)));
 }
 
 function toggleSetting(key){
@@ -15035,7 +15136,7 @@ function renderHeraldSlot(p, targetId){
   const hc=DB[hfc.cid];if(!hc)return;
   if(hfc.broken){
     const bd=document.createElement('div'); bd.className='herald-slot herald-broken';
-    const back=getImg('cardback');
+    const back=(typeof cardBackFor==='function')?cardBackFor(p):getImg('cardback');
     bd.innerHTML=(back?`<img src="${back}" style="width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(1) brightness(.45)">`:'')+`<div class="herald-broken-tag">💔 BROKEN</div>`;
     bd.onclick=()=>showFullCard(hfc.origCid||hfc.cid,hfc);
     bd.onmouseenter=()=>showHoverPreview(hfc.origCid||hfc.cid); bd.onmouseleave=()=>clearHoverPreview();
@@ -15299,6 +15400,12 @@ function aiChooseGoFirst(aiP){
 function startCoinToss(cfg){
   if(!G||G.gameOver)return;
   if(window._skipCoinToss){ G.coinTossPending=false; return; } // dev/harness: skip the toss, P1 opens
+  if(!G._entrancesDone&&!G.tutorialMode&&!G.is2v2&&(cfg.mode==='ai'||cfg.mode==='pvp'||cfg.mode==='online')&&_gameSettings.entrances!==false&&typeof playHeraldEntrances==='function'){
+    G._entrancesDone=true; G.coinTossPending=true;
+    if(cfg.mode==='online'&&typeof cosHelloSend==='function') cosHelloSend();
+    playHeraldEntrances(()=>{ if(!G||G.gameOver)return; startCoinToss(cfg); const q=G._ctQueue||[]; G._ctQueue=null; q.forEach(([a,d])=>{ try{ ctOnRemote(a,d); }catch(e){} }); });
+    return;
+  }
   CT=Object.assign({stage:'call',call:null,result:null,winner:null,first:null,applied:false},cfg);
   const o=_ctEl('coin-toss'); if(!o){ _ctApply(CT.first||'me'); return; }
   G.coinTossPending=true;
@@ -15509,6 +15616,7 @@ function markSighted(cid){
 function markRegistered(cid){
   if(!registryEligible(cid)) return;
   if(!_registry.first[cid]){ _registry.first[cid]=Date.now(); _registry.sighted[cid]=_registry.sighted[cid]||_registry.first[cid]; saveRegistry(); updateRegistryBadge(); }
+  if(typeof cosCheckUnlocks==='function') cosCheckUnlocks();
 }
 function registryState(cid){
   if((typeof getCollectionCount==='function'?getCollectionCount(cid):(_collection[cid]||0))>0) return 'registered';
@@ -15660,6 +15768,301 @@ function registrySelect(cid,quiet){
 }
 // ── 3D floater: slow continuous spin so both faces show; hover holds, drag turns ──
 // ── scan margin trim: most card scans carry a thin black border outside the card rim; measure it once per image and crop it off ──
+
+// ═══════════════════════════════════════════════════════════════════════
+// ✨ COSMETICS — card backs · playmats · avatar frames · name plates · titles · Herald entrances
+//   Catalogue = COS_BUILTIN merged with app_settings key 'cosmetics' (admin additions/overrides).
+//   Player state = profiles.cosmetics jsonb {owned:{id:ts}, equipped:{type:id}} (localStorage fallback).
+//   Hooks for other systems: grantCosmetic(id, source, celebrate)  ·  cosCheckUnlocks()
+// ═══════════════════════════════════════════════════════════════════════
+const COS_TYPES={ back:{label:'CARD BACKS',icon:'🂠'}, mat:{label:'PLAYMATS',icon:'🟪'}, frame:{label:'AVATAR FRAMES',icon:'🖼️'}, plate:{label:'NAME PLATES',icon:'🏷️'}, title:{label:'TITLES',icon:'📜'}, entrance:{label:'HERALD ENTRANCES',icon:'👑'} };
+const COS_TIERS={ default:{label:'STANDARD',hex:'#9ca3af',price:0}, common:{label:'COMMON',hex:'#9ca3af',price:300}, rare:{label:'RARE',hex:'#60a5fa',price:900}, legendary:{label:'LEGENDARY',hex:'#fbbf24',price:2500}, exclusive:{label:'EXCLUSIVE',hex:'#e8c570',price:0} };
+const COS_DEFAULT_EQUIP={ back:'back_default', mat:'mat_default', frame:'frame_none', plate:'plate_none', title:'title_none', entrance:'ent_royal' };
+function _cosSvgBack(o){
+  const emblem={
+    star:`<path d='M250 236 L272 328 L364 350 L272 372 L250 464 L228 372 L136 350 L228 328 Z' fill='${o.gold}'/><path d='M250 290 L262 338 L310 350 L262 362 L250 410 L238 362 L190 350 L238 338 Z' fill='${o.c2}'/>`,
+    crown:`<path d='M150 400 L150 300 L205 350 L250 270 L295 350 L350 300 L350 400 Z' fill='${o.gold}'/><rect x='150' y='400' width='200' height='22' fill='${o.accent}' opacity='.9'/><circle cx='250' cy='268' r='10' fill='${o.accent}'/>`,
+    rings:`<circle cx='250' cy='350' r='70' fill='none' stroke='${o.accent}' stroke-width='3' opacity='.8'/><circle cx='250' cy='350' r='44' fill='none' stroke='${o.gold}' stroke-width='2'/><circle cx='250' cy='350' r='18' fill='${o.accent}'/><circle cx='250' cy='350' r='8' fill='#000'/>`,
+    sigil:`<path d='M250 250 L330 350 L250 450 L170 350 Z' fill='none' stroke='${o.gold}' stroke-width='4'/><path d='M250 290 L300 350 L250 410 L200 350 Z' fill='${o.accent}' opacity='.85'/><circle cx='250' cy='350' r='14' fill='${o.gold}'/>`
+  }[o.emblem||'star'];
+  const svg=`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 700'><defs><radialGradient id='g' cx='50%' cy='50%' r='70%'><stop offset='0' stop-color='${o.c1}'/><stop offset='1' stop-color='${o.c2}'/></radialGradient><pattern id='p' width='40' height='40' patternUnits='userSpaceOnUse' patternTransform='rotate(45)'><path d='M0 20h40M20 0v40' stroke='${o.accent}' stroke-opacity='.16' stroke-width='1.5'/></pattern></defs><rect width='500' height='700' fill='url(#g)'/><rect width='500' height='700' fill='url(#p)'/><rect x='22' y='22' width='456' height='656' rx='22' fill='none' stroke='${o.gold}' stroke-width='3' opacity='.9'/><rect x='34' y='34' width='432' height='632' rx='16' fill='none' stroke='${o.accent}' stroke-width='1.5' opacity='.55'/><circle cx='250' cy='350' r='122' fill='none' stroke='${o.gold}' stroke-width='2' opacity='.7'/><circle cx='250' cy='350' r='98' fill='${o.accent}' fill-opacity='.08' stroke='${o.accent}' stroke-width='1.5' opacity='.8'/>${emblem}<text x='250' y='640' text-anchor='middle' font-family='Georgia,serif' font-size='20' letter-spacing='8' fill='${o.gold}'>LORD OF COURTS</text><text x='250' y='78' text-anchor='middle' font-family='Georgia,serif' font-size='16' letter-spacing='6' fill='${o.accent}' opacity='.9'>${o.court||''}</text></svg>`;
+  return 'data:image/svg+xml;utf8,'+encodeURIComponent(svg);
+}
+function _cosMat(accent,b1,b2,kind){
+  const a=accent;
+  const pat={
+    lines:`repeating-linear-gradient(45deg,rgba(${a},.055) 0 2px,transparent 2px 30px),repeating-linear-gradient(-45deg,rgba(${a},.055) 0 2px,transparent 2px 30px)`,
+    rings:`repeating-radial-gradient(circle at 50% 100%,rgba(${a},.10) 0 2px,transparent 2px 44px)`,
+    hex:`repeating-linear-gradient(0deg,rgba(${a},.06) 0 1px,transparent 1px 26px),repeating-linear-gradient(60deg,rgba(${a},.06) 0 1px,transparent 1px 26px),repeating-linear-gradient(120deg,rgba(${a},.06) 0 1px,transparent 1px 26px)`,
+    frost:`radial-gradient(circle at 20% 30%,rgba(255,255,255,.08),transparent 25%),radial-gradient(circle at 80% 60%,rgba(255,255,255,.07),transparent 22%),repeating-linear-gradient(30deg,rgba(${a},.07) 0 1px,transparent 1px 18px)`
+  }[kind||'lines'];
+  return `radial-gradient(60% 90% at 50% 100%,rgba(${a},.28),transparent 70%),${pat},linear-gradient(180deg,${b1},${b2})`;
+}
+const COS_BUILTIN=[
+  // card backs
+  { id:'back_default', type:'back', name:'Lord of States', tier:'default', free:true, desc:'The standard court-issued back.' },
+  { id:'back_blue_court', type:'back', name:'Blue Court Sigil', tier:'common', svg:{c1:'#17306b',c2:'#050a1c',accent:'#00d4ff',gold:'#e8c570',emblem:'star',court:'BLUE COURT'}, desc:'Navy lattice, eight-point star of the Blue Court.' },
+  { id:'back_crimson_court', type:'back', name:'Crimson Crown', tier:'common', svg:{c1:'#5a0d16',c2:'#160306',accent:'#f87171',gold:'#e8c570',emblem:'crown',court:'CRIMSON COURT'}, desc:'The crown of the Crimson Court on blood-dark velvet.' },
+  { id:'back_veelden', type:'back', name:'Veelden Sigil', tier:'rare', svg:{c1:'#0b3a3a',c2:'#03110f',accent:'#34d399',gold:'#e8c570',emblem:'sigil',court:'VEELDEN'}, desc:'Rune-cut jade of the Veelden Kingdom.' },
+  { id:'back_abyss', type:'back', name:'Abyss Eye', tier:'legendary', svg:{c1:'#2a0a4a',c2:'#07020f',accent:'#a855f7',gold:'#e8c570',emblem:'rings',court:'THE ABYSS'}, desc:'Something stares back from the void.' },
+  { id:'back_bse_master', type:'back', name:'Registrar of the Base Set', tier:'exclusive', svg:{c1:'#3a2a05',c2:'#120c02',accent:'#fbbf24',gold:'#fff3c4',emblem:'star',court:'BASE SET · COMPLETE'}, desc:'Awarded for registering every card of the Base Set in the Court Registry.', unlock:{kind:'registry_set',set:'base_set'} },
+  // playmats
+  { id:'mat_default', type:'mat', name:'Court Arena', tier:'default', free:true, desc:'The standard arena floor.' },
+  { id:'mat_blue_court', type:'mat', name:'Blue Court Hall', tier:'common', mat:_cosMat('0,212,255','#0a1230','#060a1c','lines'), accent:'#00d4ff', desc:'Cool stone and cyan light.' },
+  { id:'mat_crimson_court', type:'mat', name:'Crimson Court Hall', tier:'common', mat:_cosMat('248,113,113','#2a0a10','#120306','hex'), accent:'#f87171', desc:'Ember-lit red marble.' },
+  { id:'mat_veelden_frost', type:'mat', name:'Veelden Frost', tier:'rare', mat:_cosMat('180,230,255','#0b2a34','#05141c','frost'), accent:'#b4e6ff', desc:'Frozen ground of the northern kingdom.' },
+  { id:'mat_abyss', type:'mat', name:'Abyss Rift', tier:'legendary', mat:_cosMat('168,85,247','#1a0630','#06020f','rings'), accent:'#a855f7', desc:'Rings of the rift spread beneath your field.' },
+  // avatar frames
+  { id:'frame_none', type:'frame', name:'No Frame', tier:'default', free:true, desc:'Plain portrait.' },
+  { id:'frame_gold', type:'frame', name:'Gold Ring', tier:'common', ring:['#e8c570','rgba(232,197,112,.45)'], desc:'A simple gold ring.' },
+  { id:'frame_cyan', type:'frame', name:'Blue Court Ring', tier:'common', ring:['#00d4ff','rgba(0,212,255,.45)'], desc:'Cyan-lit ring of the Blue Court.' },
+  { id:'frame_violet', type:'frame', name:'Abyss Ring', tier:'rare', ring:['#a855f7','rgba(168,85,247,.5)'], desc:'Violet void-light.' },
+  // name plates
+  { id:'plate_none', type:'plate', name:'No Plate', tier:'default', free:true, desc:'Plain name.' },
+  { id:'plate_gold', type:'plate', name:'Gilded Plate', tier:'common', bg:'linear-gradient(90deg,rgba(232,197,112,.28),rgba(232,197,112,.05))', line:'rgba(232,197,112,.5)', desc:'Gold leaf behind your name.' },
+  { id:'plate_abyss', type:'plate', name:'Abyss Plate', tier:'rare', bg:'linear-gradient(90deg,rgba(168,85,247,.35),rgba(60,20,120,.1))', line:'rgba(168,85,247,.6)', desc:'Void-purple plate.' },
+  // titles
+  { id:'title_none', type:'title', name:'No Title', tier:'default', free:true, text:'', desc:'Just your name.' },
+  { id:'title_lord_blue', type:'title', name:'Lord of the Blue Court', tier:'common', text:'LORD OF THE BLUE COURT', color:'#00d4ff', desc:'Shown under your name in matches.' },
+  { id:'title_lord_crimson', type:'title', name:'Lord of the Crimson Court', tier:'common', text:'LORD OF THE CRIMSON COURT', color:'#f87171', desc:'Shown under your name in matches.' },
+  { id:'title_void_walker', type:'title', name:'Void Walker', tier:'rare', text:'VOID WALKER', color:'#a855f7', desc:'Shown under your name in matches.' },
+  { id:'title_herald_breaker', type:'title', name:'Herald Breaker', tier:'legendary', text:'HERALD BREAKER', color:'#fbbf24', desc:'For those who bring Heralds down.' },
+  // herald entrances
+  { id:'ent_royal', type:'entrance', name:'Royal Decree', tier:'default', free:true, fx:'royal', c:'#e8c570', glow:'rgba(232,197,112,.55)', icon:'👑', desc:'Golden rays and a fanfare.' },
+  { id:'ent_storm', type:'entrance', name:'Storm Court', tier:'rare', fx:'storm', c:'#7dd3fc', glow:'rgba(125,211,252,.6)', icon:'⚡', desc:'Lightning cracks the hall.' },
+  { id:'ent_abyss', type:'entrance', name:'Abyss Tear', tier:'rare', fx:'abyss', c:'#a855f7', glow:'rgba(168,85,247,.6)', icon:'🌀', desc:'The void opens behind your Herald.' },
+  { id:'ent_inferno', type:'entrance', name:'Inferno', tier:'legendary', fx:'inferno', c:'#f97316', glow:'rgba(249,115,22,.6)', icon:'🔥', desc:'Embers rise, the floor burns.' }
+];
+let _cosCatalogExtra={};  // app_settings 'cosmetics' → {id:{...fields, enabled:false?}}
+function cosCatalog(){
+  const map={}; COS_BUILTIN.forEach(it=>{ map[it.id]=Object.assign({},it); });
+  Object.entries(_cosCatalogExtra||{}).forEach(([id,o])=>{ if(!o||typeof o!=='object')return; map[id]=Object.assign(map[id]||{id,type:'back',tier:'common'},o,{id}); if(map[id].img&&map[id].type==='mat'){ map[id].mat=`linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),url("${map[id].img}")`; } });
+  const order=['back','mat','frame','plate','title','entrance']; const tier=['default','common','rare','legendary','exclusive'];
+  return Object.values(map).filter(it=>it.enabled!==false&&COS_TYPES[it.type]).sort((a,b)=>order.indexOf(a.type)-order.indexOf(b.type)||tier.indexOf(a.tier)-tier.indexOf(b.tier)||String(a.name).localeCompare(String(b.name)));
+}
+function cosItem(id){ return cosCatalog().find(it=>it.id===id)||null; }
+function cosPrice(it){ if(!it)return 0; if(it.price!=null&&it.price!=='')return +it.price||0; return (COS_TIERS[it.tier]||COS_TIERS.common).price; }
+let _cos={owned:{},equipped:{}}; let _cosColumnOK=true, _cosSaveTimer=null;
+function cosKey(){ return 'loc_cosmetics_'+(_celUserId||'guest'); }
+async function loadCosmetics(){
+  try{ const ls=localStorage.getItem(cosKey()); if(ls){ const o=JSON.parse(ls); if(o&&typeof o==='object') _cos=Object.assign({owned:{},equipped:{}},o); } }catch(e){}
+  if(_celSB&&_celUserId){
+    try{
+      const {data,error}=await _celSB.from('profiles').select('cosmetics').eq('id',_celUserId).maybeSingle();
+      if(error){ _cosColumnOK=false; console.warn('[Cosmetics] profiles.cosmetics column missing — using local storage only. Add it with: alter table profiles add column cosmetics jsonb;'); }
+      else if(data&&data.cosmetics){ const o=typeof data.cosmetics==='string'?JSON.parse(data.cosmetics):data.cosmetics; if(o&&typeof o==='object'){ Object.assign(_cos.owned,o.owned||{}); _cos.equipped=Object.assign({},_cos.equipped,o.equipped||{}); } }
+    }catch(e){ _cosColumnOK=false; }
+  }
+  try{ const {data}=_celSB?await _celSB.from('app_settings').select('value').eq('key','cosmetics').maybeSingle():{data:null}; if(data&&data.value){ _cosCatalogExtra=JSON.parse(data.value)||{}; } }catch(e){}
+  applyCosmetics();
+}
+function saveCosmetics(){
+  try{ localStorage.setItem(cosKey(),JSON.stringify(_cos)); }catch(e){}
+  if(!_celSB||!_celUserId||!_cosColumnOK) return;
+  clearTimeout(_cosSaveTimer);
+  _cosSaveTimer=setTimeout(async()=>{ try{ const {error}=await _celSB.from('profiles').update({cosmetics:_cos}).eq('id',_celUserId); if(error){ _cosColumnOK=false; console.warn('[Cosmetics] save failed:',error.message); } }catch(e){} },600);
+}
+async function saveCosCatalog(){
+  if(!isAdmin()||!_celSB) return false;
+  try{ const {error}=await _celSB.from('app_settings').upsert({key:'cosmetics',value:JSON.stringify(_cosCatalogExtra),updated_at:new Date().toISOString()},{onConflict:'key'}); if(error){ alert('Save failed (cosmetics): '+error.message); return false; } return true; }
+  catch(e){ alert('Failed to save cosmetics catalogue: '+e.message); return false; }
+}
+function cosOwned(id){ const it=cosItem(id); return !!(it&&(it.free||it.tier==='default'||_cos.owned[id])); }
+function cosEquipped(type,p){
+  if(p===undefined||p===1){ const id=_cos.equipped[type]||COS_DEFAULT_EQUIP[type]; return cosOwned(id)?id:COS_DEFAULT_EQUIP[type]; }
+  const oc=(G&&G.oppCos)||{}; const id=oc[type]; return (id&&cosItem(id))?id:COS_DEFAULT_EQUIP[type];
+}
+function cosEquip(id){
+  const it=cosItem(id); if(!it||!cosOwned(id)) return false;
+  _cos.equipped[it.type]=id; saveCosmetics(); applyCosmetics();
+  if(typeof SFX!=='undefined') SFX.click();
+  if(_shopTab==='cos') renderCosShop();
+  return true;
+}
+function grantCosmetic(id,source,celebrate){
+  const it=cosItem(id); if(!it||_cos.owned[id]) return false;
+  _cos.owned[id]=Date.now(); _cos.newest=id; saveCosmetics();
+  if(celebrate&&typeof showRewardsCelebration==='function'){ showRewardsCelebration([{icon:(COS_TYPES[it.type]||{}).icon||'✨',label:it.name+(source?' · '+source:'')}]); }
+  return true;
+}
+async function buyCosmetic(id){
+  const it=cosItem(id); if(!it) return;
+  if(cosOwned(id)){ cosEquip(id); return; }
+  if(it.tier==='exclusive'||it.unlock){ alert('This item is unlocked by: '+cosUnlockText(it)); return; }
+  const cost=cosPrice(it);
+  if((_celData.celestium||0)<cost){ alert('Not enough Celestium!'); return; }
+  _celData.celestium-=cost;
+  grantCosmetic(id,null,false); _cos.equipped[it.type]=id; saveCosmetics(); applyCosmetics();
+  try{ await saveCelestium(); }catch(e){}
+  if(typeof updateCelDisplay==='function') updateCelDisplay();
+  const cel=document.getElementById('shop-cel-amount'); if(cel)cel.textContent=(_celData.celestium||0).toLocaleString();
+  if(typeof SFX!=='undefined') SFX.energy();
+  renderCosShop();
+}
+function cosUnlockText(it){
+  const u=it.unlock||{}; if(u.kind==='registry_set') return 'Registry: complete '+((typeof setLabel==='function'&&setLabel(u.set))||u.set);
+  if(u.kind==='pass') return 'Battle Pass'; if(u.kind==='achievement') return 'Achievement: '+(u.id||''); if(u.kind==='event') return 'Event reward';
+  return it.tier==='exclusive'?'Exclusive reward':'Shop';
+}
+// set-completion & other unlock checks (call after any collection change)
+function cosCheckUnlocks(){
+  try{
+    cosCatalog().filter(it=>it.unlock&&it.unlock.kind==='registry_set'&&!cosOwned(it.id)).forEach(it=>{
+      const set=it.unlock.set; const ids=Object.keys(DB).filter(cid=>registryEligible(cid)&&getCardSet(cid)===set);
+      if(ids.length&&ids.every(cid=>registryState(cid)==='registered')) grantCosmetic(it.id,'Registry complete',true);
+    });
+  }catch(e){}
+}
+// ── rendering hooks ──
+function cosBackUrl(id){
+  const it=cosItem(id)||cosItem('back_default');
+  if(it&&it.id!=='back_default'){ if(it.img) return it.img; if(it.svg){ if(!it._svgUrl) it._svgUrl=_cosSvgBack(it.svg); return it._svgUrl; } }
+  return IMG['cardback']||DEFAULTS['cardback']||null;
+}
+function cardBackFor(p){ return cosBackUrl(cosEquipped('back',p)); }
+function _cosMatBg(id){ const it=cosItem(id); if(!it||it.id==='mat_default') return null; return it.mat||null; }
+function applyCosmetics(){
+  const you=document.querySelector('#game-screen .side.you'), opp=document.querySelector('#game-screen .side.opp');
+  [[you,1],[opp,2]].forEach(([el,p])=>{ if(!el)return; const id=cosEquipped('mat',p); const bg=_cosMatBg(id); const it=cosItem(id);
+    el.classList.toggle('has-mat',!!bg); if(bg){ el.style.setProperty('--mat-bg',bg); el.style.setProperty('--mat-line',(it&&it.accent)?it.accent+'55':'rgba(255,255,255,.08)'); } else { el.style.removeProperty('--mat-bg'); el.style.removeProperty('--mat-line'); } });
+  [1,2].forEach(p=>applyIdentCos(p));
+}
+function applyIdentCos(p){
+  const av=document.getElementById('p'+p+'-avatar'); const top=av?av.closest('.player-panel-top'):null; const ttl=document.getElementById('p'+p+'-panel-title');
+  const isAI=(p===2&&G&&!G.onlineMode&&gameMode!=='pvp');
+  const fr=cosItem(cosEquipped('frame',p)); const pl=cosItem(cosEquipped('plate',p)); const ti=cosItem(cosEquipped('title',p));
+  if(av){ av.classList.remove('cos-framed','cos-ring'); av.style.removeProperty('--frame-img'); av.style.removeProperty('--ring1'); av.style.removeProperty('--ring2');
+    if(fr&&fr.id!=='frame_none'){ if(fr.img){ av.classList.add('cos-framed'); av.style.setProperty('--frame-img',`url("${fr.img}")`); } else if(fr.ring){ av.classList.add('cos-ring'); av.style.setProperty('--ring1',fr.ring[0]); av.style.setProperty('--ring2',fr.ring[1]); } } }
+  if(top){ top.classList.toggle('cos-plate',!!(pl&&pl.id!=='plate_none')); if(pl&&pl.id!=='plate_none'){ top.style.setProperty('--plate-bg',pl.img?`url("${pl.img}")`:pl.bg); top.style.setProperty('--plate-line',pl.line||'rgba(232,197,112,.3)'); } else { top.style.removeProperty('--plate-bg'); } }
+  if(ttl){ const txt=(ti&&ti.id!=='title_none')?(ti.text||ti.name):''; ttl.textContent=isAI&&!txt?'':txt; ttl.style.setProperty('--title-c',(ti&&ti.color)||'#e8c570'); ttl.style.setProperty('--title-glow',(ti&&ti.color)?ti.color+'88':'transparent'); }
+}
+const AI_COS={ entrance:'ent_abyss' };
+function cosHelloSend(){ if(!G||!G.onlineMode||typeof sendGameAction!=='function') return; const eq={}; Object.keys(COS_TYPES).forEach(t=>eq[t]=cosEquipped(t,1)); let n=0; const iv=setInterval(()=>{ sendGameAction('cos_hello',{cos:eq}); if(++n>=4) clearInterval(iv); },400); }
+function cosHelloRecv(d){ if(!G) return; G.oppCos=(d&&d.cos)||{}; applyCosmetics(); if(typeof renderP2Backs==='function') renderP2Backs(); if(typeof renderDeckPile==='function') renderDeckPile(2); }
+// ── SHOP TAB ──
+let _cosFilter='all', _cosOwnedOnly=false;
+function renderCosShop(){
+  const host=document.getElementById('cos-shop'); if(!host) return;
+  const chips=[['all','✨ ALL']].concat(Object.entries(COS_TYPES).map(([k,v])=>[k,v.icon+' '+v.label]));
+  const head=`<div class="cos-head">${chips.map(([k,l])=>`<button class="cos-chip${_cosFilter===k?' on':''}" onclick="_cosFilter='${k}';renderCosShop()">${l}</button>`).join('')}
+    <button class="cos-chip${_cosOwnedOnly?' on':''}" style="margin-left:auto" onclick="_cosOwnedOnly=!_cosOwnedOnly;renderCosShop()">🎒 MY LOCKER</button>
+    ${isAdmin()?'<button class="cos-chip" onclick="cosManage()">✎ MANAGE</button>':''}</div>`;
+  let items=cosCatalog().filter(it=>_cosFilter==='all'||it.type===_cosFilter); if(_cosOwnedOnly) items=items.filter(it=>cosOwned(it.id));
+  const tiles=items.map(it=>{
+    const owned=cosOwned(it.id), eq=cosEquipped(it.type,1)===it.id, tier=COS_TIERS[it.tier]||COS_TIERS.common, price=cosPrice(it);
+    const locked=!owned&&(it.tier==='exclusive'||it.unlock);
+    let btn;
+    if(eq) btn=`<button class="cos-btn eq">✓ EQUIPPED</button>`;
+    else if(owned) btn=`<button class="cos-btn" onclick="cosEquip('${it.id}')">EQUIP</button>`;
+    else if(locked) btn=`<button class="cos-btn lock" title="${cosUnlockText(it)}">🔒 ${cosUnlockText(it).toUpperCase()}</button>`;
+    else btn=`<button class="cos-btn" onclick="buyCosmetic('${it.id}')" ${(_celData.celestium||0)<price?'disabled':''}>BUY · ${price.toLocaleString()} <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" alt="C" style="height:12px;vertical-align:-2px"></button>`;
+    return `<div class="cos-tile${eq?' equipped':''}${locked?' locked':''}">${_cos.newest===it.id&&owned?'<span class="cos-new">NEW</span>':''}<div class="cos-prev">${cosPreviewHtml(it)}</div>
+      <div><div class="cos-name">${escapeHtml(it.name)}</div><span class="cos-tier" style="--tc:${tier.hex}">${tier.label}</span></div>
+      <div class="cos-desc">${escapeHtml(it.desc||'')}</div>${btn}</div>`;
+  }).join('');
+  host.innerHTML=head+(tiles?`<div class="cos-grid">${tiles}</div>`:'<div style="text-align:center;padding:40px;color:#6b7280">Nothing here yet.</div>');
+}
+function cosPreviewHtml(it){
+  switch(it.type){
+    case 'back': { const u=cosBackUrl(it.id); return u?`<img class="back" src="${u}" alt="">`:'<span style="font-size:40px">🂠</span>'; }
+    case 'mat': { const bg=_cosMatBg(it.id)||'linear-gradient(180deg,#1a1230,#0c0b22)'; return `<div class="mat" style="background:${bg.replace(/"/g,'&quot;')}"></div>`; }
+    case 'frame': { if(it.img) return `<div class="av cos-framed" style="--frame-img:url('${it.img}')">👤</div>`; if(it.ring) return `<div class="av cos-ring" style="--ring1:${it.ring[0]};--ring2:${it.ring[1]}">👤</div>`; return '<div class="av">👤</div>'; }
+    case 'plate': { const bg=it.img?`url('${it.img}')`:(it.bg||'rgba(0,0,0,.3)'); return `<div class="plate" style="--plate-bg:${bg};--plate-line:${it.line||'rgba(232,197,112,.3)'}">${escapeHtml((window._playerName||'PLAYER').toUpperCase())}</div>`; }
+    case 'title': return `<div class="ttl" style="--title-c:${it.color||'#e8c570'};--title-glow:${(it.color||'#e8c570')+'88'}">${escapeHtml(it.text||'—')}</div>`;
+    case 'entrance': return `<div class="ent" style="--c:${it.c||'#e8c570'};--c2:${it.glow||'rgba(232,197,112,.5)'}">${it.icon||'👑'}</div>`;
+  }
+  return '';
+}
+// ── ADMIN: catalogue manager ──
+function cosManage(){
+  if(!isAdmin()) return;
+  const body=document.createElement('div');
+  const all=cosCatalog(); const extra=_cosCatalogExtra||{};
+  const allIds=Array.from(new Set(COS_BUILTIN.map(i=>i.id).concat(Object.keys(extra))));
+  const rows=allIds.map(id=>{ const it=cosItem(id)||Object.assign({id,name:id,type:'?'},extra[id]||{}); const off=extra[id]&&extra[id].enabled===false; return `<div class="cos-admin-row"><span>${escapeHtml(it.name||id)} <small style="color:#6b7280">· ${it.type} · ${it.tier||''}${COS_BUILTIN.some(b=>b.id===id)?'':' · custom'}${off?' · OFF':''}</small></span><button class="reg-chip" onclick="cosAdminEdit('${id}')">EDIT</button><button class="reg-chip" onclick="cosAdminToggle('${id}')">${off?'ENABLE':'DISABLE'}</button><button class="reg-chip" onclick="cosAdminGrant('${id}')" title="Give to yourself for testing">GIVE ME</button></div>`; }).join('');
+  const sets=(typeof _cardSets!=='undefined'?_cardSets:[]).map(s=>`<option value="${s.id}">${escapeHtml(s.name||s.id)}</option>`).join('');
+  body.innerHTML=`<div class="cos-admin-list">${rows}</div>
+  <form class="cos-admin" id="cos-admin-form" onsubmit="return cosAdminSave(event)">
+    <label>ID (letters, digits, _)<input name="id" required pattern="[a-z0-9_]+" placeholder="back_my_art"></label>
+    <label>TYPE<select name="type">${Object.entries(COS_TYPES).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('')}</select></label>
+    <label>NAME<input name="name" required></label>
+    <label>TIER<select name="tier">${Object.keys(COS_TIERS).map(t=>`<option value="${t}">${COS_TIERS[t].label}</option>`).join('')}</select></label>
+    <label>PRICE (blank = tier default)<input name="price" type="number" min="0" placeholder="900"></label>
+    <label>ACCENT (#hex, playmats / titles)<input name="accent" placeholder="#00d4ff"></label>
+    <label class="wide">IMAGE URL (card back 1000×1400 · playmat half 2400×1200 · frame 512 · plate 1200×320)<input name="img" placeholder="https://raw.githubusercontent.com/…png"></label>
+    <label>TITLE TEXT (titles only)<input name="text" placeholder="LORD OF THE BLUE COURT"></label>
+    <label>UNLOCK<select name="unlock"><option value="shop">Shop (Celestium)</option><option value="registry_set">Registry: complete a set</option><option value="pass">Battle Pass</option><option value="achievement">Achievement</option><option value="event">Event / manual grant</option></select></label>
+    <label>SET (for Registry unlock)<select name="set"><option value="">—</option>${sets}</select></label>
+    <label>ENTRANCE FX (entrances only)<select name="fx"><option value="royal">Royal rays</option><option value="storm">Storm</option><option value="abyss">Abyss</option><option value="inferno">Inferno</option></select></label>
+    <label class="wide">DESCRIPTION<textarea name="desc" rows="2"></textarea></label>
+    <div class="wide" style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="reg-chip" onclick="document.getElementById('cos-admin-form').reset()">CLEAR</button><button type="submit" class="cos-btn">SAVE ITEM</button></div>
+  </form>`;
+  showModalEl('✨ Cosmetics Catalogue',body,{forceHuman:true});
+}
+function cosAdminEdit(id){
+  const it=cosItem(id)||(_cosCatalogExtra[id]?Object.assign({id},_cosCatalogExtra[id]):null); const f=document.getElementById('cos-admin-form'); if(!it||!f) return;
+  f.id.value=it.id; f.type.value=it.type||'back'; f.name.value=it.name||''; f.tier.value=it.tier||'common'; f.price.value=(it.price!=null?it.price:''); f.accent.value=it.accent||it.color||it.c||''; f.img.value=it.img||''; f.text.value=it.text||'';
+  f.unlock.value=(it.unlock&&it.unlock.kind)||'shop'; f.set.value=(it.unlock&&it.unlock.set)||''; f.fx.value=it.fx||'royal'; f.desc.value=it.desc||'';
+  f.scrollIntoView({block:'nearest'});
+}
+async function cosAdminSave(ev){
+  ev.preventDefault(); const f=ev.target; const id=f.id.value.trim(); if(!id) return false;
+  const o={ type:f.type.value, name:f.name.value.trim(), tier:f.tier.value, desc:f.desc.value.trim() };
+  if(f.price.value!=='') o.price=+f.price.value;
+  if(f.img.value.trim()) o.img=f.img.value.trim();
+  const acc=f.accent.value.trim(); if(acc){ o.accent=acc; if(o.type==='title') o.color=acc; if(o.type==='entrance') { o.c=acc; o.glow=acc+'99'; } if(o.type==='mat'&&!o.img){ const m=acc.match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i); if(m) o.mat=_cosMat(parseInt(m[1],16)+','+parseInt(m[2],16)+','+parseInt(m[3],16),'#120e2a','#06040f','lines'); } }
+  if(o.type==='title') o.text=f.text.value.trim();
+  if(o.type==='entrance') o.fx=f.fx.value;
+  const uk=f.unlock.value; if(uk!=='shop'){ o.unlock={kind:uk}; if(uk==='registry_set') o.unlock.set=f.set.value; if(uk!=='registry_set'&&o.tier==='common') o.tier='exclusive'; }
+  const prev=_cosCatalogExtra[id]||{}; _cosCatalogExtra[id]=Object.assign({},prev,o,{enabled:prev.enabled===false?false:true});
+  if(await saveCosCatalog()){ if(typeof SFX!=='undefined')SFX.energy(); cosManage(); renderCosShop(); }
+  return false;
+}
+async function cosAdminToggle(id){ const prev=_cosCatalogExtra[id]||{}; _cosCatalogExtra[id]=Object.assign({},prev,{enabled:prev.enabled===false}); if(await saveCosCatalog()){ cosManage(); renderCosShop(); } }
+function cosAdminGrant(id){ grantCosmetic(id,'admin',false); renderCosShop(); cosManage(); }
+// ── HERALD ENTRANCE ──
+let _he={timers:[],done:null};
+function setEntrances(v){ _gameSettings.entrances=!!v; document.querySelectorAll('.settings-ent-btn').forEach(b=>b.classList.toggle('active',(b.dataset.ent==='on')===!!v)); if(typeof SFX!=='undefined')SFX.click(); saveGameSettings(); }
+function heraldEntranceSkip(){ if(_he.done){ const d=_he.done; _he.done=null; _he.timers.forEach(clearTimeout); _he.timers=[]; _heClose(d); } }
+function _heClose(done){ const o=document.getElementById('herald-entrance'); if(o){ o.classList.add('closing'); setTimeout(()=>{ o.className=''; o.style.display='none'; document.body.classList.remove('he-shake'); done&&done(); },330); } else done&&done(); }
+function playHeraldEntrance(p,styleId,done){
+  const o=document.getElementById('herald-entrance'); const h=G&&G.players&&G.players[p]&&G.players[p].herald;
+  if(!o||!h||!DB[h.cid]){ done&&done(); return; }
+  const st=cosItem(styleId)||cosItem('ent_royal')||{fx:'royal',c:'#e8c570',glow:'rgba(232,197,112,.55)'};
+  const fx=document.getElementById('he-fx'), card=document.getElementById('he-card'), nm=document.getElementById('he-name');
+  o.style.setProperty('--he-c',st.c||'#e8c570'); o.style.setProperty('--he-glow',st.glow||'rgba(232,197,112,.55)');
+  fx.innerHTML=''; card.innerHTML=''; nm.innerHTML='';
+  const url=getImg(h.cid); card.innerHTML=url?`<img src="${url}" alt="" style="position:absolute;left:0;top:0">`:'<div style="display:grid;place-items:center;height:100%;font-size:60px">👑</div>'; if(url&&typeof applyScanTrim==='function') applyScanTrim(card.querySelector('img'));
+  const who=p===1?(G.onlineMode?(G.onlineMyName||'YOU'):pname(1)):(G.onlineMode?(G.onlineOpponentName||'OPPONENT'):pname(2));
+  nm.innerHTML=`<small>${escapeHtml(String(who).replace(/ \((You|Opponent)\)$/,'').toUpperCase())}'S HERALD</small><b>${escapeHtml(DB[h.cid].name.toUpperCase())}</b><small>${escapeHtml((st.name||'').toUpperCase())}</small>`;
+  o.className='open'; o.style.display='flex';
+  _he.done=done; _he.timers.forEach(clearTimeout); _he.timers=[];
+  const T=(ms,fn)=>_he.timers.push(setTimeout(fn,ms));
+  const kind=st.fx||'royal';
+  // pre-slam build
+  if(kind==='abyss'){ const v=document.createElement('div'); v.className='he-void'; fx.appendChild(v); }
+  if(kind==='inferno'){ fx.innerHTML='<div class="he-glowfloor"></div>'; for(let i=0;i<34;i++){ const e=document.createElement('div'); e.className='he-ember'; e.style.left=(Math.random()*100)+'%'; e.style.setProperty('--d',(1.6+Math.random()*1.6)+'s'); e.style.setProperty('--dl',(Math.random()*1.2)+'s'); e.style.setProperty('--x',((Math.random()-.5)*160)+'px'); e.style.width=e.style.height=(4+Math.random()*6)+'px'; fx.appendChild(e); } }
+  if(kind==='storm'){ T(120,()=>{ const b=document.createElement('div'); b.className='he-bolt'; b.style.left=(25+Math.random()*50)+'%'; fx.appendChild(b); const f=document.createElement('div'); f.className='he-flash go'; fx.appendChild(f); if(typeof SFX!=='undefined'&&SFX.heraldStorm)SFX.heraldStorm(); }); T(520,()=>{ const b=document.createElement('div'); b.className='he-bolt'; b.style.left=(15+Math.random()*70)+'%'; b.style.transform='scaleX(-1)'; fx.appendChild(b); }); }
+  // slam
+  T(kind==='abyss'?700:350,()=>{
+    o.classList.add('slam'); document.body.classList.remove('he-shake'); void document.body.offsetWidth; document.body.classList.add('he-shake');
+    const r=document.createElement('div'); r.className='he-ring'; fx.appendChild(r);
+    if(kind==='royal'){ const ry=document.createElement('div'); ry.className='he-rays'; fx.appendChild(ry); }
+    if(kind==='storm'){ const f=document.createElement('div'); f.className='he-flash go'; fx.appendChild(f); }
+    if(typeof SFX!=='undefined'&&SFX.heraldSlam) SFX.heraldSlam(kind);
+  });
+  T(kind==='abyss'?1150:800,()=>{ o.classList.add('named'); if(typeof SFX!=='undefined'&&SFX.heraldName)SFX.heraldName(kind); });
+  T(2700,()=>{ const d=_he.done; _he.done=null; _heClose(d); });
+}
+function playHeraldEntrances(done){
+  const run=()=>{ G._entrancePlaying=true; const order=[1,2];
+    const next=i=>{ if(i>=order.length||!G||G.gameOver){ if(G)G._entrancePlaying=false; done&&done(); return; } const p=order[i]; playHeraldEntrance(p,cosEquipped('entrance',p),()=>setTimeout(()=>next(i+1),220)); };
+    next(0); };
+  // online guest: wait for the host's real state so the right Heralds are shown
+  if(G&&G.onlineMode&&G.waitingForHostState){ let w=0; const iv=setInterval(()=>{ if(!G||!G.waitingForHostState||++w>40){ clearInterval(iv); run(); } },200); return; }
+  run();
+}
+
 const _scanTrim={};
 function measureScanTrim(url,cb){
   if(!url){ cb(null); return; }
@@ -17005,7 +17408,7 @@ function renderP2Backs(){
   G.players[2].hand.forEach((_,i)=>{
     const wrap=document.createElement('div');wrap.className='back-card'+(n>prevN&&i>=prevN?' just-drawn':'');
     wrap.style.setProperty('--r',((i-(n-1)/2)*step).toFixed(2)+'deg');
-    const url=getImg('cardback');
+    const url=(typeof cardBackFor==='function')?cardBackFor(2):getImg('cardback');
     if(url){const img=document.createElement('img');img.src=url;img.style.cssText='width:100%;height:100%;object-fit:cover;display:block';wrap.appendChild(img);}
     else{const ph=document.createElement('div');ph.className='back-ph';ph.innerHTML='<span>⚔️</span><span style="font-size:8px;margin-top:2px">VCU</span>';wrap.appendChild(ph);}
     el.appendChild(wrap);
@@ -18662,7 +19065,7 @@ function openShop(){
 
 function switchShopTab(tab){
   _shopTab=tab;
-  ['packs','cards','events'].forEach(t=>{
+  ['packs','cards','cos','events'].forEach(t=>{
     const btn=document.getElementById('shop-tab-'+t);
     const content=document.getElementById('shop-content-'+t);
     if(btn)btn.classList.toggle('active',t===tab);
@@ -18670,6 +19073,7 @@ function switchShopTab(tab){
   });
   if(tab==='packs')renderShopPacksTab();
   if(tab==='cards')renderSingleCardsShop();
+  if(tab==='cos')renderCosShop();
 }
 
 // Sets available to buy packs from: non-promo sets that actually have cards.
@@ -20701,7 +21105,11 @@ function onReceiveGameAction(payload){
       if(typeof SFX!=='undefined') SFX.cardPlay();
       break;
     case 'coin_call': case 'coin_result': case 'coin_choice':
+      if(G&&G._entrancePlaying){ (G._ctQueue=G._ctQueue||[]).push([payload.action,d]); break; }
       if(typeof ctOnRemote==='function') ctOnRemote(payload.action,d);
+      break;
+    case 'cos_hello':
+      if(typeof cosHelloRecv==='function') cosHelloRecv(d);
       break;
     default:
       break;
@@ -23341,6 +23749,7 @@ window.addEventListener('load',async()=>{
       await loadCollectionFoil();
       await loadRegistry();
       await loadCardMeta();
+      await loadCosmetics();
       await loadAdminHoloMode();
       updateAdminBadge();
       applyAdminToggleEffects();
@@ -23700,6 +24109,7 @@ window.addEventListener('load',async()=>{
   <div style="display:flex;gap:4px;margin-bottom:0">
     <button class="shop-tab active" id="shop-tab-packs" onclick="switchShopTab('packs')">🎁 BOOSTER PACKS</button>
     <button class="shop-tab" id="shop-tab-cards" onclick="switchShopTab('cards')">🎴 SINGLE CARDS</button>
+    <button class="shop-tab" id="shop-tab-cos" onclick="switchShopTab('cos')">✨ COSMETICS</button>
     <button class="shop-tab" id="shop-tab-events" onclick="switchShopTab('events')">🎉 EVENTS</button>
   </div>
 
@@ -23712,6 +24122,11 @@ window.addEventListener('load',async()=>{
   <div class="shop-tab-content" id="shop-content-cards" style="display:none">
     <div style="font-size:10px;color:#6b7280;letter-spacing:1px;margin-bottom:14px">Rotating selection of individual cards. Refreshes daily.</div>
     <div id="shop-single-cards-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px"></div>
+  </div>
+
+  <!-- COSMETICS TAB -->
+  <div class="shop-tab-content" id="shop-content-cos" style="display:none">
+    <div id="cos-shop"></div>
   </div>
 
   <!-- EVENTS TAB -->
@@ -24666,6 +25081,16 @@ window.addEventListener('load',async()=>{
         <div class="settings-size-btns">
           <button class="settings-size-btn settings-pace-btn active" data-pace="human" onclick="setAiPace('human')">Human</button>
           <button class="settings-size-btn settings-pace-btn" data-pace="fast" onclick="setAiPace('fast')">Fast</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Herald Entrances</div>
+          <div class="settings-label-desc">Cinematic reveal of both Heralds before the coin toss (your equipped entrance style)</div>
+        </div>
+        <div class="settings-size-btns">
+          <button class="settings-size-btn settings-ent-btn active" data-ent="on" onclick="setEntrances(true)">On</button>
+          <button class="settings-size-btn settings-ent-btn" data-ent="off" onclick="setEntrances(false)">Off</button>
         </div>
       </div>
     </div>
