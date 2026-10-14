@@ -8174,7 +8174,11 @@ function grantStolenAbility(ownerP, fc, victimCid){
   if(fc.gainedAbilities.some(a=>a.sourceCid===victimCid))return; // already has one from this character
   const grant=(abl)=>{
     fc.gainedAbilities.push({...abl,sourceCid:victimCid,sourceName:vc.name});
+    // keyword-in-disguise passives and keywords the ability text names
+    const kw=(abl.keyword)||KEYWORD_PASSIVES[abl.label]||Object.keys(KEYWORDS).find(k=>new RegExp('\\b'+KEYWORDS[k].label+'\\b','i').test(abl.text||''));
+    if(kw){ if(!Array.isArray(fc.gainedKeywords))fc.gainedKeywords=[]; if(!fc.gainedKeywords.includes(kw))fc.gainedKeywords.push(kw); }
     log(`Exsanguinate: ${DB[fc.cid]?.name} gains "${abl.label}" from ${vc.name}!`,'gain');
+    if(typeof recalcPassives==='function')recalcPassives();
     renderAll();
   };
   if(ownerP===1 && vc.abilities.length>1){
@@ -8202,7 +8206,7 @@ function isEquipHexed(tfc,eqId){
   const hx=tfc._equipHex;
   for(const pn of [1,2]){
     const pl=G.players[pn]; if(!pl||!pl.field)continue;
-    if(pl.field.some(f=>f.uid===hx.sourceUid && f.cid==='lady_loki_promo'))return true;
+    if(pl.field.some(f=>f.uid===hx.sourceUid && hasAbilityLabel(f,'Equipment Hex')))return true;
   }
   return false;
 }
@@ -8215,7 +8219,7 @@ function isAbilitySealed(fc){
   const sourceUid=fc._soulCage.sourceUid;
   for(const pn of [1,2]){
     const pl=G.players[pn]; if(!pl||!pl.field)continue;
-    if(pl.field.some(f=>f.uid===sourceUid && f.cid==='raven_promo'))return true;
+    if(pl.field.some(f=>f.uid===sourceUid && hasAbilityLabel(f,'Soul Cage')))return true; // the sealer may be a Raven or a thief of her ability
   }
   return false;
 }
@@ -8237,7 +8241,7 @@ function recalcPassives(){
       // Remove previous passive contribution, then recompute
       const prevA=fc.passiveAtk||0, prevH=fc.passiveHp||0;
       let addA=0, addH=0;
-      const abils=c.abilities||[];
+      const abils=(c.abilities||[]).concat(Array.isArray(fc.gainedAbilities)?fc.gainedAbilities:[]); // stolen passives count too
 
       // SSB Synergy (Virora SSB): +4 ATK for each SSB-subtype char you control
       if(abils.some(a=>a.label==='SSB Synergy')){
@@ -8274,7 +8278,7 @@ function recalcPassives(){
 
       // LUMINA — Crescent Light: while a Lumina is on your field, ALL your
       // characters (including her) gain +2 ATK / +2 HP. Removing her drops it.
-      if(pl.field.some(f=>f.cid==='lumina_bse')){
+      if(pl.field.some(f=>hasAbilityLabel(f,'Crescent Light'))){
         addA += 2; addH += 2;
       }
       // IVAN (WCA) — Locker Room Law: Ivan himself gets +1 ATK for each OTHER
@@ -8284,9 +8288,8 @@ function recalcPassives(){
       }
       // IVAN (WCA) — Tag Division: every OTHER character Ivan's controller owns
       // gets +1 ATK while Ivan is on the field. Removing Ivan drops it.
-      if(fc.cid!=='ivan_wca_promo' && pl.field.some(f=>f.cid==='ivan_wca_promo')){
-        addA += 1;
-      }
+      // One +1 for each Tag Division source other than this character (Ivan, or a thief of his ability).
+      addA += pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'Tag Division')).length;
       // Apply delta to current stats
       const deltaA=addA-prevA, deltaH=addH-prevH;
       fc.passiveAtk=addA; fc.passiveHp=addH;
@@ -8893,7 +8896,7 @@ function killCard(p,fc){
   }
   // VIOLET BOND (Virora base): if a "Violet" character is on the controller's
   // field, shuffle Virora into the deck instead of discarding her.
-  if((c.abilities||[]).some(a=>a.label==='Violet Bond')){
+  if(hasAbilityLabel(fc,'Violet Bond')){
     const violetInPlay=G.players[p].field.some(f=>{const d=DB[f.cid];return d&&(/violet/i.test(d.name||'')||/violet/i.test(d.charName||''));});
     if(violetInPlay){
       G.players[p].field=G.players[p].field.filter(f=>f.uid!==fc.uid);
@@ -8924,7 +8927,7 @@ function killCard(p,fc){
     }
   }
   // ZONE OUT (Tyler SSG): if destroyed with equipment attached, return the best one to hand.
-  if((c.abilities||[]).some(a=>a.label==='Zone Out') && Array.isArray(fc.attachments) && fc.attachments.length){
+  if(hasAbilityLabel(fc,'Zone Out') && Array.isArray(fc.attachments) && fc.attachments.length){
     const equips=fc.attachments.filter(eq=>DB[eq]&&DB[eq].type==='equipment');
     if(equips.length){
       equips.sort((a,b)=>(DB[b].cost||0)-(DB[a].cost||0));
@@ -10229,13 +10232,13 @@ function onFieldClick(p,uid,fc){
 // ═══════════════════════════════════════════════════
 function hasGodlyEvasion(fc){
   const c=DB[fc.cid];
-  return !!(c&&c.abilities&&c.abilities.some(a=>a.label==='Godly Evasion'||a.label==='God Step'));
+  return hasAbilityLabel(fc,'Godly Evasion')||hasAbilityLabel(fc,'God Step');
 }
 // DRUNKEN STANCE (Billy): cannot be targeted by opponent abilities at all
 // (no toll, absolute). Attacks are NOT restricted by it.
 function hasDrunkenStance(fc){
   const c=DB[fc.cid];
-  return !!(c&&c.abilities&&c.abilities.some(a=>a.label==='Drunken Stance'));
+  return hasAbilityLabel(fc,'Drunken Stance');
 }
 // Returns true if attackerPlayer may target targetFc, paying the 2⚡ toll if
 // Godly Evasion applies. Charges + logs when paid; returns false if unaffordable.
@@ -10251,7 +10254,8 @@ function effPower(fc){ return (fc.currentATK||0)+(fc.nextAttackBonus||0); }
 function isUnblockable(fc){
   const c=DB[fc.cid];
   if(typeof hasKW==='function' && hasKW(fc,'unblockable'))return true;
-  return !!(c&&c.abilities&&c.abilities.some(a=>{
+  const _abls=((c&&c.abilities)||[]).concat(Array.isArray(fc.gainedAbilities)?fc.gainedAbilities:[]);
+  return !!(_abls.some(a=>{
     if(a.label==='Flame of Veelden')return false;      // conditional, not absolute
     const t=a.text||'';
     if(/lower\s+attack/i.test(t))return false;          // conditional block restriction
@@ -10259,7 +10263,7 @@ function isUnblockable(fc){
   }));
 }
 // FLAME OF VEELDEN (Najeela SSG): cannot be blocked by characters with lower ATK.
-function hasFlameOfVeelden(fc){ const c=DB[fc.cid]; return !!(c&&c.abilities&&c.abilities.some(a=>a.label==='Flame of Veelden')); }
+function hasFlameOfVeelden(fc){ return hasAbilityLabel(fc,'Flame of Veelden'); }
 function canBlockAttacker(blocker, afc){
   if(hasFlameOfVeelden(afc) && effPower(blocker) < effPower(afc)) return false;
   return true;
@@ -10671,7 +10675,7 @@ function resolveAttack(ap,auid,dp,duid){
   // ── KEVIN: Primal Strike — flip a coin when this card attacks; heads = +3 damage.
   //    Generic (label-based) so any future card with the same ability text reuses it.
   let _primalBonus=0;
-  if((ac.abilities||[]).some(a=>a.label==='Primal Strike')){
+  if(hasAbilityLabel(afc,'Primal Strike')){
     const _ph=coin();
     if(_ph){ _primalBonus=3; log('Primal Strike: HEADS — this attack does +3 damage!','gain'); }
     else { log('Primal Strike: TAILS — no bonus.','info'); }
@@ -10681,7 +10685,7 @@ function resolveAttack(ap,auid,dp,duid){
   // Pre-combat ability triggers
   if(dfc.cid==='virora_ssg'){const h=coin();log(`Godly Reflexes: ${!h?'dodge! (tails)':'hit! (heads)'}`,!h?'gain':'dmg');if(!h){renderAll();return;}}
   // GODLY MOVEMENT (Tyler SSG): the attacker flips a coin — heads = 0 damage to Tyler.
-  if((dc.abilities||[]).some(a=>a.label==='Godly Movement')){const h=coin();log(`Godly Movement: ${h?'blocked! (heads)':'hit! (tails)'}`,h?'gain':'dmg');if(h){renderAll();return;}}
+  if(hasAbilityLabel(dfc,'Godly Movement')){const h=coin();log(`Godly Movement: ${h?'blocked! (heads)':'hit! (tails)'}`,h?'gain':'dmg');if(h){renderAll();return;}}
   // Evolved State (Virora SSBE): flip coin when attacked — heads = attacker's next attack -4 dmg
   if(dfc.cid==='virora_ssbe'){
     const h=coin();
@@ -11360,7 +11364,7 @@ function onEntry(p,fc){
 function runPowerDrain(p){
   const pl=G.players[p]; if(!pl)return;
   const oppNum=p===1?2:1;
-  const drains=pl.field.filter(f=>DB[f.cid]&&(DB[f.cid].abilities||[]).some(a=>a.label==='Power Drain'));
+  const drains=pl.field.filter(f=>hasAbilityLabel(f,'Power Drain'));
   if(!drains.length)return;
   drains.forEach(ssb=>{
     G.players[oppNum].field.forEach(ef=>{
@@ -11425,7 +11429,7 @@ function isLocationFrozen(locFc){
   if(!locFc||!G||!G.players)return false;
   for(const pn of [1,2]){
     const pl=G.players[pn]; if(!pl||!pl.field)continue;
-    if(pl.field.some(f=>f.cid==='eklif_frost_bse' && f._frozenLocUid===locFc.uid))return true;
+    if(pl.field.some(f=>f._frozenLocUid===locFc.uid && hasAbilityLabel(f,'Frozen Domain')))return true;
   }
   return false;
 }
@@ -12971,7 +12975,10 @@ function activateAbility(fc,abl){
 // asynchronously via callbacks (do NOT closeAllModals after this).
 // ═══════════════════════════════════════════════════
 function runAbilityEffect(fc, abl, pl){
-  const cid = fc.cid, label = abl.label;
+  const label = abl.label;
+  // A stolen ability (Exsanguinate) dispatches as if used by its original card.
+  const _g=Array.isArray(fc.gainedAbilities)?fc.gainedAbilities.find(a=>a.label===label&&a.sourceCid):null;
+  const cid = _g ? _g.sourceCid : fc.cid;
 
   // ── VIRORA: Freeze Over — opponent flips coin; heads = they skip their turn ──
   if(label==='Freeze Over'){
@@ -13601,7 +13608,7 @@ function statusActive(fc,type){ return !!(fc&&fc.statuses&&fc.statuses[type]>0);
 function applyStatus(fc,type,turns){
   if(!fc||!STATUS_META[type])return false;
   // VORTEX SHIELD (Rapture of the Vortex): total status immunity.
-  if((DB[fc.cid]?.abilities||[]).some(a=>a.label==='Vortex Shield')){ log(`🛡️ Vortex Shield: ${DB[fc.cid]?.name} is immune to status effects!`,'info'); return false; }
+  if(hasAbilityLabel(fc,'Vortex Shield')){ log(`🛡️ Vortex Shield: ${DB[fc.cid]?.name} is immune to status effects!`,'info'); return false; }
   if(!fc.statuses)fc.statuses={};
   if(fc.statuses[type]>0){ log(`${DB[fc.cid]?.name} is already ${STATUS_META[type].label}ed — it doesn't stack.`,'info'); return false; }
   fc.statuses[type]=turns||STATUS_META[type].dur;
@@ -13728,9 +13735,9 @@ function startTurnFx(player){
   })();
   const cards=[...pl.field]; if(pl.herald) cards.push(pl.herald);
   cards.forEach(fc=>{
-    const c=DB[fc.cid]; if(!c||!c.abilities) return;
+    const c=DB[fc.cid]; if(!c) return;
     // ── VIOLET (SSG): Heart of a Saiyan God — heals +2 HP after every 2 of your turns.
-    if(c.abilities.some(a=>a.label==='Heart of a Saiyan God')){
+    if(hasAbilityLabel(fc,'Heart of a Saiyan God')){
       fc._hosgTurns=(fc._hosgTurns||0)+1;
       if(fc._hosgTurns>=2){
         fc._hosgTurns=0;
@@ -13739,7 +13746,7 @@ function startTurnFx(player){
       }
     }
     // ── DAREDEVIL (Herald): Godly Radar — every 2 of your turns, tutor an energy card.
-    if(c.abilities.some(a=>a.label==='Godly Radar')){
+    if(hasAbilityLabel(fc,'Godly Radar')){
       fc._radarTurns=(fc._radarTurns||0)+1;
       if(fc._radarTurns>=2){
         fc._radarTurns=0;
@@ -13753,7 +13760,7 @@ function startTurnFx(player){
       }
     }
     // ── BILLY (SSJ): Saiyan Spirit — if it attacked last turn, +2 ATK and draw 1.
-    if(c.abilities.some(a=>a.label==='Saiyan Spirit') && fc.attackedLastTurn){
+    if(hasAbilityLabel(fc,'Saiyan Spirit') && fc.attackedLastTurn){
       fc.atkBonus=(fc.atkBonus||0)+2;
       log(`Saiyan Spirit: ${c.name} gains +2 ATK for attacking last turn!`,'gain');
       if(typeof drawCard==='function'){ drawCard(player); log(`Saiyan Spirit: ${pname(player)} draws 1.`,'gain'); }
@@ -14497,7 +14504,9 @@ const KEYWORDS = {
   drain:        {label:'Drain',        cls:'kw-drain',        desc:'Gain Energy equal to damage dealt.'},
   warp:         {label:'Warp',         cls:'kw-warp',         desc:'Has an Enter-the-Field effect when played.'},
 };
-function hasKW(fc, kw){ return DB[fc.cid]?.keywords?.includes(kw)||false; }
+function hasKW(fc, kw){ if(DB[fc.cid]?.keywords?.includes(kw))return true; return Array.isArray(fc&&fc.gainedKeywords)&&fc.gainedKeywords.includes(kw); }
+// Passive abilities that are really a keyword in disguise — stealing one grants the keyword.
+const KEYWORD_PASSIVES={'Rage of Sparta':'burst_speed'};
 function renderKeywordBadges(fc){
   const kws=DB[fc.cid]?.keywords; if(!kws||!kws.length) return '';
   return kws.map(kw=>{ const k=KEYWORDS[kw]; if(!k) return ''; return '<span class="kw-badge '+k.cls+'" title="'+k.desc+'">'+k.label+'</span>'; }).join('');
@@ -15935,6 +15944,15 @@ function showFullCard(cid,fc,holoOverride){
       wrap.appendChild(d);
     });
   }
+  // Abilities STOLEN via Exsanguinate (live field copy only)
+  if(fc&&Array.isArray(fc.gainedAbilities)&&fc.gainedAbilities.length){
+    const tlbl2={passive:'PASSIVE',triggered:'TRIGGERED',activated:'ACTIVATED'};
+    fc.gainedAbilities.forEach(abl=>{
+      const d=document.createElement('div');d.className=`ability-block ability-${abl.type||'activated'}`;d.style.borderColor='#be185d';
+      d.innerHTML=`<div class="ability-type-tag" style="color:#f9a8d4">🩸 STOLEN · ${tlbl2[abl.type]||''}${abl.cost>0?` — ${abl.cost}⚡`:''}${abl.limit?` [${abl.limit.replace(/_/g,' ')}]`:''} · from ${abl.sourceName||'?'}</div><b>${abl.label}:</b> ${abl.text||''}`;
+      wrap.appendChild(d);
+    });
+  }
   if(c.transforms&&c.transforms.length){
     const t=document.createElement('div');t.style.cssText='font-size:10px;color:#6b7280;margin-top:6px;padding:5px;background:#0f0f1e;border-radius:5px';
     t.textContent='Transforms → '+c.transforms.map(id=>DB[id]?.name||id).join(' / ')+' (next form must be in hand)';wrap.appendChild(t);
@@ -16075,7 +16093,7 @@ function sendToRift(p, cid, sourceName){
 function isRiftImmune(fc){
   if(!fc)return false;
   const c=DB[fc.cid];
-  return !!(c && (c.abilities||[]).some(a=>a.label==='Power of Securement'));
+  return hasAbilityLabel(fc,'Power of Securement');
 }
 // Remove a card from the field and send it to the Rift Zone
 function riftCard(p, fc, sourceName){
