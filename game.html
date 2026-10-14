@@ -5431,7 +5431,7 @@ textarea{
   --gap:clamp(4px,.55vw,12px);
   --seam:56px;
   --size-mult:1; --cw-max:clamp(186px,13vh,300px);
-  --cw:clamp(58px, calc(min(calc((100vw - var(--rail) - 120px) / 8.8), calc((100dvh - 200px) * .226)) * var(--size-mult)), var(--cw-max));
+  --cw:clamp(58px, calc(min(calc((100vw - var(--rail) - 120px) / 8.8), calc((100dvh - 200px) * .2)) * var(--size-mult)), var(--cw-max));
   --ch:calc(var(--cw) / .7);
   --pw:calc(var(--cw) * .6);
   --lw:calc(var(--cw) * .72);
@@ -5490,11 +5490,20 @@ textarea{
 /* ── a SIDE = one player's row (mirrored for the opponent) ── */
 #game-screen .side.player-area{ display:grid; align-items:center; gap:var(--gap); padding:0 var(--gap); min-height:0; min-width:0; background:none; border:0; box-shadow:none; border-radius:0; flex:none; overflow:visible; }
 #game-screen .side .strip{ display:contents; }
-#game-screen .side.opp{ grid-template-columns:var(--idw) auto minmax(0,1fr) auto auto; grid-template-areas:'ident locs field herald piles'; }
+#game-screen .side.opp{ grid-template-columns:var(--idw) auto minmax(0,1fr) auto auto; grid-template-rows:auto minmax(0,1fr); grid-template-areas:'hand hand hand hand hand' 'ident locs field herald piles'; }
 #game-screen .side.you{ grid-template-columns:auto auto minmax(0,1fr) auto var(--idw); grid-template-areas:'piles herald field locs ident'; }
 #game-screen .side .ident{ grid-area:ident; } #game-screen .side .location-zone{ grid-area:locs; } #game-screen .side .char-field{ grid-area:field; }
 #game-screen .side .herald-zone{ grid-area:herald; } #game-screen .side .piles{ grid-area:piles; }
-#game-screen .side .opp-hand{ display:none; }
+/* ── OPPONENT HAND: face-down fan hanging from the top edge (count readable at a glance) ── */
+#game-screen .side .opp-hand{ grid-area:hand; display:flex; justify-content:center; align-items:flex-start; gap:0; height:calc(var(--cw) * .58); min-height:0; margin:0; padding:0; position:relative; overflow:visible; background:none; border:0; perspective:900px; transform-style:flat; }
+#game-screen .side .opp-hand .back-card{ width:calc(var(--cw) * .46); height:calc(var(--cw) * .46 / .7); margin:calc(var(--cw) * -.12) calc(var(--cw) * -.11) 0; border-radius:calc(var(--cw) * .05); border:1px solid rgba(239,68,68,.4); background:#1e1b4b; box-shadow:0 5px 12px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.6); transform:rotate(var(--r,0deg)); transform-origin:50% -60%; transition:transform .25s ease, margin .25s ease; position:relative; }
+#game-screen .side .opp-hand .back-card::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(0,0,0,.35)); pointer-events:none; }
+#game-screen[data-look="3d"] .side .opp-hand .back-card{ transform:rotateX(var(--tilt)) rotate(var(--r,0deg)); }
+#game-screen .side .opp-hand[data-n]::after{ content:'✋ ' attr(data-n); align-self:center; margin-left:calc(var(--cw) * .3); flex:0 0 auto; font-family:'Share Tech Mono',monospace; font-size:calc(var(--fs) * .95); color:#f5a3a3; background:rgba(10,10,24,.85); border:1px solid rgba(239,68,68,.35); border-radius:999px; padding:2px 8px; letter-spacing:1px; pointer-events:none; z-index:2; }
+#game-screen .side .opp-hand[data-n="0"]::after{ content:'✋ 0 · EMPTY'; opacity:.7; }
+#game-screen .side .opp-hand.opp-active .back-card{ border-color:rgba(200,164,74,.6); box-shadow:0 5px 12px rgba(0,0,0,.55), 0 0 10px rgba(200,164,74,.25); }
+#game-screen .side .opp-hand .back-card.just-drawn{ animation:opp-draw .45s cubic-bezier(.2,.8,.3,1) both; }
+@keyframes opp-draw{ from{ transform:translateY(-40%) rotate(var(--r,0deg)) scale(.7); opacity:0; } to{ transform:rotate(var(--r,0deg)); opacity:1; } }
 #game-screen .side.crowded{ --idw:138px; }
 #game-screen .side.opp.crowded{ grid-template-columns:138px auto minmax(0,1fr) auto auto; }
 #game-screen .side.you.crowded{ grid-template-columns:auto auto minmax(0,1fr) auto 138px; }
@@ -5650,6 +5659,10 @@ textarea{
   #game-screen .side .strip{ display:flex; align-items:center; gap:5px; min-width:0; overflow-x:auto; scrollbar-width:none; padding:2px 0; }
   #game-screen .side .strip::-webkit-scrollbar{ display:none; }
   #game-screen .side.you .strip{ order:2; }
+  #game-screen .side .opp-hand{ order:-1; height:calc(var(--cw) * .5); justify-content:center; margin:-2px 0 0; perspective:none; }
+  #game-screen .side .opp-hand .back-card{ width:calc(var(--cw) * .4); height:calc(var(--cw) * .4 / .7); margin:calc(var(--cw) * -.1) calc(var(--cw) * -.1) 0; }
+  #game-screen[data-look="3d"] .side .opp-hand .back-card{ transform:rotate(var(--r,0deg)); }
+  #game-screen .side .opp-hand[data-n]::after{ margin-left:calc(var(--cw) * .25); font-size:10px; padding:1px 6px; }
   #game-screen .ident.player-panel{ flex-direction:row; align-items:center; gap:8px; padding:5px 8px; flex:0 0 auto; max-width:72vw; min-width:0; order:-1; }
   #game-screen .ident.player-panel::before{ display:none; }
   #game-screen .ident .player-panel-top{ flex:1; }
@@ -5704,7 +5717,7 @@ textarea{
    ════════════════════════════════════════════════════════════════════════ */
 #game-screen-2v2{
   --size-mult:1; --tilt:0deg;
-  --cw2:clamp(44px, calc(min(calc((100vw - 240px) / 13), calc((100dvh - 330px) / 4.1 * .7)) * var(--size-mult)), 150px);
+  --cw2:clamp(44px, calc(min(calc((100vw - 240px) / 13), calc((100dvh - 330px) / 4.5 * .7)) * var(--size-mult)), 150px);
   --ch2:calc(var(--cw2) / .7);
   --fs2:clamp(8px, calc(var(--cw2) * .12), 12px);
   padding:46px 1.2vw 6px !important;
@@ -5713,7 +5726,12 @@ textarea{
 #game-screen-2v2[data-look="3d"]{ --tilt:11deg; }
 #game-screen-2v2 .v2-wrap{ height:calc(100dvh - 52px); gap:5px; }
 /* enemy face-down hand rows → gone (the HUD already shows ✋ hand counts) */
-#game-screen-2v2 .v2-hand-top{ display:none; }
+#game-screen-2v2 .v2-hand-top{ display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+#game-screen-2v2 .v2-hand-top .v2-hand-col{ display:flex; align-items:center; gap:8px; padding:2px 10px; min-height:0; }
+#game-screen-2v2 .v2-hand-top .v2-hand-label{ flex:0 0 auto; font-size:10px; }
+#game-screen-2v2 .v2-hand-top .v2-hand{ min-height:0; height:calc(var(--cw2) * .55); align-items:flex-start; justify-content:center; gap:0; padding:0; flex:1 1 auto; overflow:visible; }
+#game-screen-2v2 .v2-hand-top .v2-hand-back-card{ width:calc(var(--cw2) * .42); height:calc(var(--cw2) * .42 / .7); margin:calc(var(--cw2) * -.1) calc(var(--cw2) * -.1) 0; border-radius:4px; box-shadow:0 4px 10px rgba(0,0,0,.5); transform:rotate(var(--r,0deg)); transform-origin:50% -60%; }
+#game-screen-2v2 .v2-hand-top .v2-hand::after{ content:'✋ ' attr(data-n); margin-left:auto; align-self:center; font-family:'Share Tech Mono',monospace; font-size:10px; color:#fca5a5; background:rgba(10,10,24,.85); border:1px solid rgba(239,68,68,.35); border-radius:999px; padding:1px 7px; flex:0 0 auto; }
 #game-screen-2v2 .v2-teamlife{ padding:3px 16px; font-size:11px; }
 #game-screen-2v2 .v2-life-num{ font-size:18px; }
 #game-screen-2v2 .v2-board-row{ gap:8px; flex:1 1 0; min-height:0; }
@@ -15614,8 +15632,10 @@ function renderV2EnemyHands(){
   [2,4].forEach(p=>{
     const el=document.getElementById('v2-hand-'+p); if(!el)return; el.innerHTML='';
     const pl=G.players[p]; if(!pl)return;
-    for(let i=0;i<pl.hand.length;i++){
+    const n=pl.hand.length; el.dataset.n=n; const step=Math.min(5,30/Math.max(n,1));
+    for(let i=0;i<n;i++){
       const d=document.createElement('div'); d.className='v2-hand-back-card';
+      d.style.setProperty('--r',((i-(n-1)/2)*step).toFixed(2)+'deg');
       if(backUrl){ const img=document.createElement('img'); img.src=backUrl; d.appendChild(img); }
       el.appendChild(d);
     }
@@ -15808,9 +15828,16 @@ function applyHoloToArt(wrap,cid,fc){
 }
 
 function renderP2Backs(){
-  const el=document.getElementById('p2-hand-display');el.innerHTML='';
-  G.players[2].hand.forEach(()=>{
-    const wrap=document.createElement('div');wrap.className='back-card';
+  const el=document.getElementById('p2-hand-display');if(!el)return;
+  const prevN=+(el.dataset.n||0);
+  el.innerHTML='';
+  const n=G.players[2].hand.length;
+  el.dataset.n=n;
+  el.classList.toggle('opp-active',G.activePlayer===2);
+  const step=Math.min(5,36/Math.max(n,1));
+  G.players[2].hand.forEach((_,i)=>{
+    const wrap=document.createElement('div');wrap.className='back-card'+(n>prevN&&i>=prevN?' just-drawn':'');
+    wrap.style.setProperty('--r',((i-(n-1)/2)*step).toFixed(2)+'deg');
     const url=getImg('cardback');
     if(url){const img=document.createElement('img');img.src=url;img.style.cssText='width:100%;height:100%;object-fit:cover;display:block';wrap.appendChild(img);}
     else{const ph=document.createElement('div');ph.className='back-ph';ph.innerHTML='<span>⚔️</span><span style="font-size:8px;margin-top:2px">VCU</span>';wrap.appendChild(ph);}
