@@ -5880,6 +5880,10 @@ textarea{
 }
 
 
+/* ════════ 💔 BROKEN HERALD ════════ */
+.herald-slot.herald-broken{ border-color:#5b5b7a!important; box-shadow:none!important; cursor:pointer; background:#0b0b16; }
+.herald-slot.herald-broken:hover{ transform:none; border-color:#8b8bb0!important; }
+.herald-broken-tag{ position:absolute; left:0; right:0; bottom:6px; text-align:center; font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; color:#fca5a5; background:rgba(60,8,16,.85); padding:3px 0; border-top:1px solid rgba(239,68,68,.4); border-bottom:1px solid rgba(239,68,68,.4); }
 /* ════════ 🪙 COIN TOSS — decides who goes first (all modes) ════════ */
 #coin-toss{ position:fixed; inset:0; z-index:100050; display:none; align-items:center; justify-content:center; background:radial-gradient(ellipse at 50% 40%,rgba(40,20,60,.92),rgba(4,4,12,.96)); backdrop-filter:blur(6px); }
 #coin-toss.open{ display:flex; }
@@ -7323,6 +7327,8 @@ const DB={
   surge_energy:{id:'surge_energy',name:'Surge Energy',type:'energy_card',race:'Energy',cost:0,atk:0,hp:0,color:'white',sym:'⚡',energyGain:4,subtypes:['Energy','Special'],downside:(pl,G)=>{pl.skipNextDraw=true;},abilities:[{type:'activated',label:'Surge Energy',cost:0,text:'Gain +4 Energy. Skip your next draw step. Discard after use. Limit 1 per turn.'}],transforms:[]},
 
   // ── HERALD CARDS ──────────────────────────────────
+  // Shell a Herald becomes when it is BROKEN (0 HP): no stats, no passives, no abilities.
+  herald_broken:{id:'herald_broken',rarity:'common',name:'Broken Herald',type:'herald',race:'—',cost:0,atk:0,hp:0,sym:'💔',subtypes:[],color:'white',keywords:[],isToken:true,heraldFlip:null,autoFlip:false,abilities:[],transforms:[]},
 
 
   darkseid_herald:{id:'darkseid_herald',rarity:'legend',name:'Darkseid',type:'herald',race:'New God',cost:0,atk:10,hp:16,sym:'👑',subtypes:['New God'],color:'red',keywords:['guardian'],
@@ -7585,7 +7591,7 @@ async function loadDecksFromStorage(){
 
 function generateRandomDeck(){
   // Separate card pools
-  const heraldIds=Object.keys(DB).filter(id=>DB[id].type==='herald'&&isCardPlayable(id));
+  const heraldIds=Object.keys(DB).filter(id=>DB[id].type==='herald'&&!DB[id].isToken&&isCardPlayable(id));
   const charIds=Object.keys(DB).filter(id=>
     ['base_char','char','team'].includes(DB[id].type)&&
     !DB[id].transformOnly&&!DB[id].isToken&&isCardPlayable(id)
@@ -8492,6 +8498,7 @@ function startGame2v2(mode, decks, seatNames, teamLife, humanSeats){
 // 2v2 turn advancement: step through [1,2,3,4]. (AI boards currently pass — the
 // per-board AI and the 4-board interactive UI are the next slices.)
 function execEnd2v2(p){
+  G._aiTurn=false; G._aiAuto=false;
   endTurnFx(p);
   log((G.players[p]?.name||('P'+p))+' ends turn.','info');
   G.turnIndex=((G.turnIndex||0)+1)%G.turnOrder.length;
@@ -8990,8 +8997,12 @@ function claimPrize(claimer){
 function pickPrizeCard(victim, index){
   if(!_pendingPrizePick || _pendingPrizePick.victim!==victim)return;
   const claimer=_pendingPrizePick.claimer;
+  const remaining=(_pendingPrizePick.remaining||1)-1;
   _pendingPrizePick = null;
   resolvePrizeClaim(victim, claimer, index);
+  // Multi-prize claims (Herald Break): keep picking until done or the pile is empty
+  const vpl=G.players[victim]; const left=(G.prizeCount||6)-(vpl.prizesClaimed||0);
+  if(remaining>0&&left>0){ _pendingPrizePick={victim:victim, claimer:claimer, remaining:remaining}; log(`🎖 Choose ${remaining} more Prize Card${remaining>1?'s':''}.`,'gain'); setTimeout(()=>renderPrizes(victim),50); }
 }
 
 // Resolve: remove prize from VICTIM's pile, give card to CLAIMER's hand
@@ -9223,6 +9234,12 @@ let _discardSearchState=null;
 // Soul Find and any future recursion effects.
 function openDiscardSearch(title,desc,filterFn,callback){
   _multiSearchState=null;
+  if(G&&G._aiAuto){
+    const pl=G.players[G.activePlayer]; const cands=pl.discard.filter(cid=>DB[cid]&&(!filterFn||filterFn(DB[cid])));
+    if(!cands.length){ log(`${title}: nothing to recover.`,'info'); return; }
+    const cid=cands.reduce((a,b)=>aiCardValue(DB[b])>aiCardValue(DB[a])?b:a);
+    pl.discard.splice(pl.discard.indexOf(cid),1); log(`${pname(G.activePlayer)} recovers ${DB[cid].name}.`,'info'); if(callback)callback(cid); return;
+  }
   _discardSearchState={filterFn,callback};
   document.getElementById('deck-search-title').textContent=title;
   document.getElementById('deck-search-desc').textContent=desc;
@@ -9269,6 +9286,12 @@ function renderDiscardSearchList(){
 let _multiSearchState = null;
 
 function startMultiDeckSearch(title, desc, filterFn, count, callback){
+  if(G&&G._aiAuto){
+    const pl=G.players[G.activePlayer]; const picked=[];
+    for(let i=0;i<count;i++){ const cid=aiPickDeckCard(pl,filterFn); if(!cid)break; pl.deck.splice(pl.deck.indexOf(cid),1); picked.push(cid); }
+    if(picked.length) log(`${pname(G.activePlayer)} searches: ${picked.map(c=>DB[c].name).join(', ')}.`,'info');
+    if(callback)callback(picked); return;
+  }
   _multiSearchState = {
     filterFn: filterFn,
     count: count,
@@ -9375,6 +9398,12 @@ function renderMultiDeckSearch(){
 
 function openDeckSearch(title,desc,filterFn,callback){
   _discardSearchState=null;
+  if(G&&G._aiAuto){
+    const pl=G.players[G.activePlayer]; const cid=aiPickDeckCard(pl,filterFn);
+    if(cid){ pl.deck.splice(pl.deck.indexOf(cid),1); log(`${pname(G.activePlayer)} searches: ${DB[cid].name}.`,'info'); if(callback)callback(cid); }
+    else log(`${title}: nothing found.`,'info');
+    return;
+  }
   deckSearchFilter=filterFn;deckSearchCallback=callback;
   document.getElementById('deck-search-title').textContent=title;
   document.getElementById('deck-search-desc').textContent=desc;
@@ -9441,11 +9470,14 @@ function openBurstWindow(ap, auid, dp, duid, phase){
   const atkDmg=afc.currentATK+(afc.nextAttackBonus||0);
   const isPSPossible=(phase==='burst1'&&atkDmg===dfc.currentATK);
 
+  // 🧠 AI defender: respond with a saving instant (heal / Saiyan Blood / Blade of Udun) before the human's window.
+  if(aiIsDefender&&typeof aiBurstResponse==='function'){ try{ aiBurstResponse(ap,afc,dp,dfc); }catch(e){ console.warn('[AI] burst response',e); } }
   // If human has nothing to do and no Power Struggle — skip burst, go straight to resolution
   if(!hasInstants&&!hasAbilities&&!isPSPossible){
     finishBurst(ap,auid,dp,duid,phase);
     return;
   }
+  G._aiAuto=false; // the human is about to act — their pickers must render
 
   // AI auto-passes its side immediately
   burstState={ap,auid,dp,duid,phase,
@@ -9688,6 +9720,7 @@ function checkBurstClose(){
 }
 
 function finishBurst(ap,auid,dp,duid,phase){
+  if(G&&G._aiTurn) G._aiAuto=true; // back to the AI's turn
   const afc=G.players[ap]?.field.find(f=>f.uid===auid);
   const dfc=G.players[dp]?.field.find(f=>f.uid===duid);
   if(!afc||!dfc){renderAll();return;}
@@ -9961,16 +9994,100 @@ function onDeckClick(p){
 // ═══════════════════════════════════════════════════
 // HERALD COMBAT
 // ═══════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════
+// 👑 HERALD RULES (v2) — Heralds duel Heralds.
+//   • A Herald never attacks characters. From round ATTACK_FROM_ROUND it may
+//     attack the enemy Herald once per turn (defender retaliates). In Life modes
+//     it may also strike Life/Team Life, but only on an EMPTY enemy board.
+//   • Characters may attack the enemy Herald only when the enemy has NO
+//     characters on the field (the Herald retaliates with its ATK).
+//   • A Herald at 0 HP is BROKEN: it flips face-down (herald_broken shell), loses
+//     every passive/triggered/activated ability and can't attack for the rest of
+//     the match. Prize/Combined: the breaker claims BREAK_PRIZES Prizes. Life /
+//     2v2: the owner's Life takes BREAK_LIFE damage. Herald damage never heals.
+//   Flip HERALD_RULES.canAttack to false to run Heralds as pure passives.
+// ═══════════════════════════════════════════════════
+const HERALD_RULES={ canAttack:true, attackFromRound:4, breakPrizes:2, breakLife:15, duelRetaliation:.5 }; // duel retaliation = ½ ATK so starting the duel isn't a losing move
+function heraldRound(){ if(!G) return 1; return G.is2v2 ? Math.max(1,G.turn||1) : Math.ceil((G.turn||1)/2); }
+function isHeraldBroken(h){ return !!(h&&h.broken); }
+function heraldAttackBlockReason(p){
+  const h=G.players[p]&&G.players[p].herald; if(!h) return 'No Herald to attack with.';
+  if(isHeraldBroken(h)) return 'Your Herald is broken — it can no longer attack.';
+  if(!HERALD_RULES.canAttack) return 'Heralds cannot attack in this ruleset.';
+  const r=heraldRound(); if(r<HERALD_RULES.attackFromRound) return `Heralds may attack from round ${HERALD_RULES.attackFromRound} (this is round ${r}).`;
+  return null;
+}
+// Is the enemy board (all enemy seats) empty of characters?
+function enemyBoardEmpty(p){
+  const ps=G.is2v2 ? (teamOf(p)==='A'?[2,4]:[1,3]) : [p===1?2:1];
+  return ps.every(e=>!(G.players[e]&&G.players[e].field.some(f=>isChar(DB[f.cid]))));
+}
+// Claim several prizes from the victim (human claimer picks them one at a time).
+function claimPrizesFrom(victim, claimer, n){
+  n=n||1;
+  if(G&&G.is2v2) return;
+  if(claimer===1){
+    const vpl=G.players[victim]; const left=(G.prizeCount||6)-(vpl.prizesClaimed||0);
+    const want=Math.min(n,left); if(want<=0) return;
+    _pendingPrizePick={victim:victim, claimer:1, remaining:want};
+    log(`🎖 Choose ${want} Prize Card${want>1?'s':''} to take from the opponent.`,'gain');
+    renderPrizes(victim); return;
+  }
+  for(let i=0;i<n;i++) claimPrizeFrom(victim, claimer);
+}
+function breakHerald(ownerP, byP, source){
+  const pl=G.players[ownerP]; const h=pl&&pl.herald; if(!h||h.broken) return;
+  const name=DB[h.cid]?.name||'Herald';
+  h.broken=true; h.origCid=h.cid; h.cid='herald_broken'; h.currentHP=0; h.currentATK=0; h.hpBonus=0; h.atkBonus=0; h.tapped=true; h.abilityUsed={}; h.isFlipped=false;
+  log(`💔 ${pname(ownerP)}'s Herald ${name} is BROKEN${source?' by '+source:''}! Its passives and abilities are gone for the rest of the match.`,'dmg');
+  if(typeof SFX!=='undefined'&&SFX.destroy)try{SFX.destroy();}catch(e){}
+  if(typeof recalcPassives==='function') recalcPassives();
+  if(G.is2v2){ damageTeamLife(teamOf(ownerP), HERALD_RULES.breakLife, 'Herald broken'); }
+  else if(G.gameMode==='lifeforce'){ damageLifeForce(ownerP, HERALD_RULES.breakLife, 'Herald broken'); }
+  else { claimPrizesFrom(ownerP, byP, HERALD_RULES.breakPrizes); }
+  if(byP===1&&typeof bumpStat==='function') bumpStat('heralds_broken',1);
+  if(typeof showTurnBanner==='function') showTurnBanner(byP===1||(G.is2v2&&isHumanPlayer(byP)), `${name.toUpperCase()} BROKEN`, byP===1?'your-turn':'opp-turn');
+  renderAll();
+}
+// A CHARACTER attacks the enemy Herald — only on an empty enemy board.
+function resolveCharVsHerald(ap, auid, dp){
+  const afc=G.players[ap].field.find(f=>f.uid===auid); const h=G.players[dp]&&G.players[dp].herald;
+  if(!afc||!h) return false;
+  if(isHeraldBroken(h)){ log('That Herald is already broken.','dmg'); return false; }
+  if(!enemyBoardEmpty(ap)){ log('You can only attack the enemy Herald when their field has no characters.','dmg'); return false; }
+  if(!canCharacterAttack(ap,afc)){ log("That character can't attack right now.",'dmg'); return false; }
+  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1;
+  if(hasAbilityLabel(afc,'Bloodline Rise')){ afc.hpBonus=(afc.hpBonus||0)+2; afc.currentHP=(afc.currentHP||0)+2; log(`Bloodline Rise: ${DB[afc.cid]?.name} gains +2 Health (now ${afc.currentHP}).`,'gain'); }
+  const dmg=effPower(afc); const retaliate=h.currentATK;
+  log(`⚔ ${DB[afc.cid].name}(${dmg}) → ${DB[h.cid].name} [Herald] (${h.currentHP}HP)`,'info');
+  h.currentHP=Math.max(0,h.currentHP-dmg);
+  if(typeof showDmgPopup==='function') try{ showDmgPopup(dp,'-'+dmg,h.uid); }catch(e){}
+  if(typeof triggerOlympianBlood==='function') try{ triggerOlympianBlood(afc,ap,dmg); }catch(e){}
+  afc.nextAttackBonus=0;
+  // Herald triggered abilities on being hit (same as the engine's Herald hooks)
+  if(h.currentHP>0&&h.cid==='hulk_gs_herald'){ h.atkBonus=(h.atkBonus||0)+dmg; h.currentATK=(h.currentATK||0)+dmg; log(`Rage Eternal: Hulk gains +${dmg} ATK (now ${h.currentATK})!`,'gain'); }
+  if(h.currentHP>0&&h.cid==='darkseid_herald'&&!afc.omegaJudged){ afc.omegaJudged=true; afc.omegaPenalty=Math.min(3,afc.currentATK); afc.currentATK=Math.max(0,afc.currentATK-3); afc.atkBonus=(afc.atkBonus||0)-afc.omegaPenalty; log(`Omega Judgment: ${DB[afc.cid]?.name} -3 ATK until its next attack!`,'dmg'); }
+  if(h.currentHP<=0){ breakHerald(dp, ap, DB[afc.cid].name); }
+  else {
+    log(`${DB[h.cid].name} Herald: ${h.currentHP} HP — retaliates for ${retaliate}!`,'dmg');
+    claimPrizeOnHeraldHit(ap);
+    if(retaliate>0) dealDamage(ap, afc.uid, retaliate);
+  }
+  renderAll(); return true;
+}
+
 function selectHeraldAsAttacker(p){
   const okTurn = G.is2v2 ? isHumanPlayer(G.activePlayer) : (G.activePlayer===1);
   if(!okTurn||G.phase!=='attack'){log('Attack phase only.','dmg');return;}
   if(p!==G.activePlayer){log('You can only attack with your own Herald.','dmg');return;}
   const hfc=G.players[p].herald;if(!hfc){log('No Herald to attack with.','dmg');return;}
+  const _why=heraldAttackBlockReason(p); if(_why){ log(_why,'dmg'); return; }
   if(hfc.tapped){log(`${DB[hfc.cid]?.name} is tapped — it can't attack this turn.`,'dmg');return;}
   if(hfc.attacksThisTurn>0&&!hasKW(hfc,'onslaught')){log('Herald already attacked this turn.','dmg');return;}
   G.heraldAttacking=!G.heraldAttacking;
   G.selectedAttacker=null; // clear field attacker
-  log(G.heraldAttacking?DB[hfc.cid].name+' ready — click target or opponent Herald.':'Herald attack cancelled.','info');
+  log(G.heraldAttacking?DB[hfc.cid].name+' ready — click the opponent\'s Herald to duel.':'Herald attack cancelled.','info');
   renderAll();
 }
 
@@ -9985,25 +10102,24 @@ function resolveHeraldAttackTarget(targetP, targetHfc){
     afc.hpBonus=(afc.hpBonus||0)+2; afc.currentHP=(afc.currentHP||0)+2;
     log(`Bloodline Rise: ${DB[afc.cid]?.name} gains +2 Health (now ${afc.currentHP}).`,'gain');
   }
-  // Guardian check: opponent field guardian must be attacked first
-  const guardians=G.players[targetP].field.filter(f=>isChar(DB[f.cid])&&hasKW(f,'guardian'));
-  if(guardians.length>0&&targetHfc){
-    log('Guardian on field — attack them first before targeting the Herald!','dmg');
-    G.heraldAttacking=false;renderAll();return;
-  }
+  if(targetHfc&&isHeraldBroken(targetHfc)){ log('That Herald is already broken.','dmg'); G.heraldAttacking=false; renderAll(); return; }
   if(targetHfc){
-    // Attacking opponent's Herald
-    const defSnap=targetHfc.currentATK;
+    // HERALD DUEL — Guardians don't interfere; the defender retaliates if it survives.
+    const defSnap=Math.floor((targetHfc.currentATK||0)*HERALD_RULES.duelRetaliation);
     log('⚔ '+ac.name+'('+atkDmg+') → '+DB[targetHfc.cid].name+' [Herald]','info');
     targetHfc.currentHP=Math.max(0,targetHfc.currentHP-atkDmg);
-    log(DB[targetHfc.cid].name+' Herald: '+targetHfc.currentHP+' HP remaining','dmg');
-    // Combined Mode: every Herald hit = 1 prize (attacker = active board)
-    claimPrizeOnHeraldHit(G.activePlayer);
-    // Retaliation from opponent Herald
-    if(targetHfc.currentHP>0){
-      log(DB[targetHfc.cid].name+' Herald retaliates '+defSnap,'info');
+    if(typeof showDmgPopup==='function') try{ showDmgPopup(targetP,'-'+atkDmg,targetHfc.uid); }catch(e){}
+    if(targetHfc.currentHP<=0){
+      breakHerald(targetP, G.activePlayer, ac.name);
+    } else {
+      log(DB[targetHfc.cid].name+' Herald: '+targetHfc.currentHP+' HP remaining','dmg');
+      // Combined Mode: every Herald hit = 1 prize (attacker = active board)
+      claimPrizeOnHeraldHit(G.activePlayer);
+      // Retaliation from opponent Herald
+      log(DB[targetHfc.cid].name+' Herald retaliates '+defSnap+' (½ ATK)','info');
       afc.currentHP=Math.max(0,afc.currentHP-defSnap);
       log(ac.name+' Herald: '+afc.currentHP+' HP remaining','dmg');
+      if(afc.currentHP<=0) breakHerald(G.activePlayer, targetP, DB[targetHfc.cid].name+"'s retaliation");
     }
   }
   G.heraldAttacking=false;renderAll();
@@ -10088,9 +10204,9 @@ function onFieldClick(p,uid,fc){
       // Friendly board (your 2v2 teammate) — never a melee target. Just inspect.
       showFullCard(fc.cid,fc);
     } else {
-      // Herald attacking a field character
+      // Heralds duel Heralds — they never attack characters.
       if(G.heraldAttacking&&isEnemyBoard(p)&&isChar(DB[fc.cid])){
-        resolveHeraldVsField(p,fc);return;
+        log("Heralds can't attack characters — click the opponent's Herald to duel it.",'dmg');return;
       }
       if(!G.selectedAttacker)return;
       if(G.tutorialMode && _tutAttackTargetCid && isEnemyBoard(p) && isChar(DB[fc.cid]) && fc.cid!==_tutAttackTargetCid){ log('For this step, attack the highlighted enemy: '+(DB[_tutAttackTargetCid]?.name||'')+'.','dmg'); return; }
@@ -10259,9 +10375,8 @@ function onTeamLifeClick(team){
   if(G.heraldAttacking){
     const hfc=G.players[G.activePlayer].herald;
     if(!hfc){ G.heraldAttacking=false; return; }
-    // Enemy guardians must be cleared first
-    const guard=teamBlockerPool(team).some(f=>hasKW(f,'guardian'));
-    if(guard){ log('Enemy Guardian on the field — clear it before hitting Life with your Herald.','dmg'); G.heraldAttacking=false; renderAll(); return; }
+    // Heralds may only strike Life when the enemy team has no characters.
+    if(teamBlockerPool(team).length){ log("Heralds can't strike Life while the enemy team has characters — duel their Herald instead.",'dmg'); G.heraldAttacking=false; renderAll(); return; }
     const dmg=hfc.currentATK;
     hfc.attacksThisTurn=(hfc.attacksThisTurn||0)+1;
     log(`👑 Herald ${DB[hfc.cid].name} strikes Team ${team}'s Life for ${dmg}!`,'gain');
@@ -10328,29 +10443,21 @@ function runAI2v2(p){
   G.phase='main'; renderAll();
   setTimeout(()=>{
     if(G.gameOver)return;
-    // Deploy affordable characters (strongest first), up to the field cap.
-    const MAXF=5;
-    pl.hand.filter(fc=>{const c=DB[fc.cid];return c&&isChar(c)&&!c.transformOnly;})
-      .sort((a,b)=>(DB[b.cid].cost||0)-(DB[a.cid].cost||0))
-      .forEach(fc=>{
-        const c=DB[fc.cid]; const cost=Math.max(0,c.cost+(fc.costMod||0));
-        if(pl.field.filter(f=>isChar(DB[f.cid])).length>=MAXF)return;
-        if(pl.energy<cost)return;
-        pl.hand=pl.hand.filter(f=>f.uid!==fc.uid); pl.energy-=cost;
-        fc.turnPlayed=G.turn; fc.attacksThisTurn=0;
-        pl.field.push(fc); log(`${pl.name} plays ${c.name}.`,'info');
-        if(typeof onEntry==='function')onEntry(p,fc);
-      });
+    // 🧠 AI Brain: energy cards, transforms, characters, locations, equipment, instants, abilities.
+    if(typeof aiCheckHeraldFlip==='function')aiCheckHeraldFlip(p);
+    aiMainPhase(p, ()=>{
     renderAll();
     setTimeout(()=>{
       if(G.gameOver)return;
       G.phase='attack';
       const eligible=pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken&&(f.turnPlayed<G.turn||hasKW(f,'burst_speed'))&&!statusActive(f,'freeze')&&!statusActive(f,'paralyze')&&!statusActive(f,'confuse')&&!f.tapped);
       const maxAtk=1+(G.bonusAttackers||0);
-      const chosen=eligible.sort((a,b)=>b.currentATK-a.currentATK).slice(0,maxAtk);
-      if(!chosen.length){ log(`${pl.name} skips attack.`,'info'); setTimeout(()=>{ if(!G.gameOver)execEnd(); },600); return; }
-      processAITeamAttacks(p, chosen.map(c=>c.uid), ()=>{ if(!G.gameOver)execEnd(); });
+      const chosen=eligible.sort((a,b)=>effPower(b)-effPower(a)).slice(0,maxAtk);
+      const heraldDuel=()=>{ try{ const ho=aiHeraldOptions(p); if(ho.length&&ho[0].score>3){ const o=ho[0]; G.heraldAttacking=true; resolveHeraldAttackTarget(o.p,o.fc); G.heraldAttacking=false; renderAll(); } }catch(e){ console.warn('[AI] herald duel',e); } };
+      if(!chosen.length){ heraldDuel(); log(`${pl.name} skips attack.`,'info'); setTimeout(()=>{ if(!G.gameOver)execEnd(); },600); return; }
+      processAITeamAttacks(p, chosen.map(c=>c.uid), ()=>{ heraldDuel(); if(!G.gameOver)execEnd(); });
     }, 650);
+    }); // aiMainPhase
   }, 650);
 }
 // Queue: AI swings at the human team's Life one attacker at a time; each opens
@@ -10416,7 +10523,7 @@ function openHumanTeamBlockPrompt(aiPlayer, afc, humanTeam, done, onChoose){
     const sel=document.createElement('button');sel.className='btn-gray btn-sm';
     sel.style.cssText='flex:1;text-align:left;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px';
     sel.innerHTML=`<span>🛡 ${c.name} <span style="font-size:9px;color:#9ca3af">(${_V2LBL[owner]} · ${effPower(b)}⚔/${b.currentHP}♥)</span></span><span style="font-size:9px;color:${willDie?'#ef4444':'#22c55e'};text-align:right">${willDie?'dies':'survives'}${counter?` · counter ${counter}`:''}${excess?` · ${excess}→Life`:''}</span>`;
-    sel.onclick=()=>{ if(typeof closeFullCard==='function')closeFullCard(); closeAllModals(); choose(b); };
+    sel.onclick=()=>{ _pendingBlockDefault=null; if(typeof closeFullCard==='function')closeFullCard(); closeAllModals(); choose(b); };
     const view=document.createElement('button');view.className='btn-gray btn-sm';view.title='View card stats & abilities';
     view.style.cssText='flex:0 0 auto;padding:8px 11px;font-size:14px';view.textContent='👁';
     view.onclick=(e)=>{ e.stopPropagation(); showFullCard(b.cid,b); };
@@ -10424,9 +10531,10 @@ function openHumanTeamBlockPrompt(aiPlayer, afc, humanTeam, done, onChoose){
   });
   const take=document.createElement('button');take.className='btn-red btn-sm';take.style.cssText='width:100%;margin-top:6px;padding:9px';
   take.textContent=`✋ Take ${power} to Team ${humanTeam} Life`;
-  take.onclick=()=>{ if(typeof closeFullCard==='function')closeFullCard(); closeAllModals(); choose(null); };
+  take.onclick=()=>{ _pendingBlockDefault=null; if(typeof closeFullCard==='function')closeFullCard(); closeAllModals(); choose(null); };
   body.appendChild(take);
-  showModalEl('🛡 Block?', body);
+  _pendingBlockDefault=()=>choose(null);
+  showModalEl('🛡 Block?', body, {forceHuman:true});
 }
 // Block Captain (guest) shows the prompt and sends the choice back to the host.
 function showCaptainBlockPrompt(aiPlayer, afc, humanTeam){
@@ -10517,7 +10625,7 @@ function openHumanBlockPrompt(afc, done){
     sel.style.cssText='flex:1;text-align:left;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px';
     sel.innerHTML=`<span>🛡 ${c.name} <span style="font-size:9px;color:#9ca3af">(${effPower(b)}⚔/${b.currentHP}♥)</span></span>`
       +`<span style="font-size:9px;color:${willDie?'#ef4444':'#22c55e'};text-align:right">${willDie?'dies':'survives'}${counter?` · counter ${counter}`:''}${excess?` · ${excess}→Life`:''}</span>`;
-    sel.onclick=()=>{ if(typeof closeFullCard==='function')closeFullCard(); closeAllModals(); resolveLifeAttack(2, afc, b); if(done)done(); };
+    sel.onclick=()=>{ _pendingBlockDefault=null; if(typeof closeFullCard==='function')closeFullCard(); closeAllModals(); resolveLifeAttack(2, afc, b); if(done)done(); };
     const view=document.createElement('button');view.className='btn-gray btn-sm';view.title='View card stats & abilities';
     view.style.cssText='flex:0 0 auto;padding:8px 11px;font-size:14px';view.textContent='👁';
     view.onclick=(e)=>{ e.stopPropagation(); showFullCard(b.cid,b); };
@@ -10526,9 +10634,10 @@ function openHumanBlockPrompt(afc, done){
   const take=document.createElement('button');take.className='btn-red btn-sm';
   take.style.cssText='width:100%;margin-top:6px;padding:9px;letter-spacing:1px';
   take.textContent=`✋ Take ${power} damage to Life`;
-  take.onclick=()=>{ closeAllModals(); resolveLifeAttack(2, afc, null); if(done)done(); };
+  take.onclick=()=>{ _pendingBlockDefault=null; closeAllModals(); resolveLifeAttack(2, afc, null); if(done)done(); };
   body.appendChild(take);
-  showModalEl('🛡 Block?', body);
+  _pendingBlockDefault=()=>{ resolveLifeAttack(2, afc, null); if(done)done(); };
+  showModalEl('🛡 Block?', body, {forceHuman:true});
 }
 
 function resolveAttack(ap,auid,dp,duid){
@@ -10768,7 +10877,7 @@ function onHandClick(p,uid,fc){
         closeAllModals(); renderAll();
       };
       if(p===1 && typeof openEnemyTargetPicker==='function'){ openEnemyTargetPicker(enemies, strike, {title:'Blade of Udun', desc:"Choose an enemy character — it takes 2 damage and is Burned."}); }
-      else { strike(enemies[Math.floor(Math.random()*enemies.length)].uid); }
+      else { const t=(typeof aiPickEnemyTarget==='function')?aiPickEnemyTarget(enemies,{desc:'2 damage'}):null; strike((t||enemies[Math.floor(Math.random()*enemies.length)]).uid); }
       return;
     }
     if(c.id==='royal_matcha_bse' || c.id==='virora_matcha_bse'){
@@ -10798,6 +10907,12 @@ function onHandClick(p,uid,fc){
 // GENERIC ENEMY TARGET PICKER — pick one enemy character, run callback(uid)
 function openEnemyTargetPicker(targets, callback, opts){
   opts = opts || {};
+  if(G&&G._aiAuto){ // 🧠 AI: pick the best target and resolve immediately
+    const t=aiPickEnemyTarget(targets,opts);
+    if(!t){ log('AI: no valid target.','info'); return; }
+    if(hasGodlyEvasion(t)&&!canPayEvasionToll(opts.sourcePlayer||G.activePlayer||2,t)) return;
+    closeAllModals(); renderAll(); callback(t.uid); return;
+  }
   // DRUNKEN STANCE: absolutely untargetable by opponent abilities — remove from list.
   const _before = targets.length;
   targets = (targets||[]).filter(cf=>!hasDrunkenStance(cf));
@@ -10871,6 +10986,13 @@ function openFruitHealPicker(p, fco, chars, healAmt, atkAmt, cureMode){
 }
 function openInstantTargetPicker(ifc,chars){
   const ic=DB[ifc.cid];
+  if(G&&G._aiAuto){
+    const saiyans=chars.filter(cf=>DB[cf.cid]?.subtypes?.some(x=>x.toLowerCase().includes('saiyan')));
+    const cf=(saiyans.length?saiyans:chars).reduce((a,b)=>effPower(b)>effPower(a)?b:a);
+    const bonus=saiyans.includes(cf)?3:2;
+    cf.currentHP+=bonus;cf.hpBonus+=bonus;cf.attachments.push(ifc.cid);
+    log(`Saiyan Blood: ${DB[cf.cid].name} +${bonus} DEF!`,'gain'); renderAll(); return;
+  }
   const body=document.createElement('div');
   body.innerHTML=`<div style="font-weight:700;color:#ef4444;margin-bottom:4px">${ic.name}</div><div style="font-size:11px;color:#9ca3af;margin-bottom:10px">${ic.abilities[0]?.text||''}</div><div style="font-size:11px;color:#c8a0ff;margin-bottom:6px">Attach to:</div>`;
   chars.forEach(cf=>{
@@ -10892,6 +11014,7 @@ function openInstantTargetPicker(ifc,chars){
 
 function openEquipTargetPicker(efc,chars){
   const ec=DB[efc.cid];
+  if(G&&G._aiAuto){ const t=aiPickFriendlyTarget(chars,ec); if(t){ closeAllModals(); applyEquipToTarget(efc,t); } return; }
   const body=document.createElement('div');
   body.innerHTML=`<div style="font-weight:700;color:#fcd34d;margin-bottom:3px">${ec.name}</div>
     <div style="font-size:10px;color:${ec.persistent===false?'#fca5a5':ec.persistent==='until_used'?'#fde68a':'#86efac'};margin-bottom:6px">${ec.persistent===false?'Consumable':ec.persistent==='until_used'?'Until Used':'Persistent'}</div>
@@ -11614,11 +11737,12 @@ function playTransformAnimation(oldCid, newCid, onComplete){
   }, 1850);
 }
 
-function doTransform(fieldUid,newCid,handUid,cost){
+function doTransform(fieldUid,newCid,handUid,cost,ownerOverride){
   // Resolve which player owns the field card being transformed. In 2v2 this may
   // be the active human board (A1=1 or A2=3); in 1v1 it's always player 1.
-  let owner=1;
-  if(G.is2v2){
+  // AI boards pass their player number explicitly.
+  let owner=ownerOverride||1;
+  if(G.is2v2&&!ownerOverride){
     for(const pp of (G.humanPlayers||[1])){ if(G.players[pp]&&G.players[pp].field.some(f=>f.uid===fieldUid)){ owner=pp; break; } }
   }
   const pl=G.players[owner];const fc=pl.field.find(f=>f.uid===fieldUid);if(!fc)return;
@@ -13917,6 +14041,333 @@ function loadGameSettings(){
 }
 
 
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 🧠 AI BRAIN v2 — generic, card-agnostic decision engine for every CPU board
+// (1v1 opponent, 2v2 B1/B2). The AI plays through the SAME engine paths a human
+// uses (onHandClick, doTransform, activateAbility, resolveAttack, Herald combat)
+// so every card mechanic works for it automatically. Target pickers / choice
+// modals that would normally wait for a click auto-resolve while G._aiAuto is on.
+//   • Main phase: scores every legal action (energy card, transform, character,
+//     location, equipment, instant, activated ability incl. Herald + equipment-
+//     granted + stolen abilities) and greedily executes the best until nothing
+//     worthwhile is affordable.
+//   • Attack phase: evaluates every attacker × target (characters, Locations for
+//     canAttackLocations fighters, the enemy Herald) for kills, safe trades and
+//     prize value; respects Guardian, Godly Evasion toll, Onslaught, attacker cap.
+//   • Per-card tuning hook: an ability may declare ai:{when:'enemy'|'wounded'|
+//     'always'|'never', weight:N} to override the text heuristics.
+// ═══════════════════════════════════════════════════════════════════════════
+const AIB={ tried:new Set(), noop:new Set(), turnKey:null, stepDelay:520 };
+function aiSetAuto(on){ if(G) G._aiAuto=!!on; }
+function aiEnemyPlayersOf(p){ return G.is2v2 ? (teamOf(p)==='A'?[2,4]:[1,3]) : [p===1?2:1]; }
+function aiEnemyChars(p){ const out=[]; aiEnemyPlayersOf(p).forEach(e=>{ const pl=G.players[e]; if(pl) pl.field.forEach(f=>{ if(isChar(DB[f.cid])) out.push({fc:f,p:e}); }); }); return out; }
+function aiMaxHP(f){ return (f.baseHP||0)+(f.hpBonus||0)+(f.passiveHp||0); }
+function aiCardValue(c){ if(!c)return 0; return (c.atk||0)*1.2+(c.hp||0)+((c.keywords||[]).length)*1.5+((c.abilities||[]).length)*1.2; }
+function aiFcValue(fc){ const c=DB[fc.cid]||{}; return (effPower(fc))*1.2+(fc.currentHP||0)+((c.keywords||[]).length)*1.5+((c.abilities||[]).length)+((DB[fc.cid]||{}).cost||0)*.4; }
+function aiReady(fc){ return !fc.tapped&&(fc.turnPlayed<G.turn||hasKW(fc,'burst_speed'))&&!statusActive(fc,'freeze')&&!statusActive(fc,'paralyze')&&!statusActive(fc,'confuse'); }
+function aiTurnKey(p){ return G.turn+':'+p; }
+function aiMark(key){ AIB.tried.add(key); }
+function aiTried(key){ return AIB.tried.has(key); }
+
+// ── auto-resolution helpers (used by the patched pickers while G._aiAuto) ──
+function aiPickEnemyTarget(targets, opts){
+  const p=G.activePlayer; const pl=G.players[p]; opts=opts||{};
+  const text=((opts.desc||'')+' '+(opts.title||'')).toLowerCase();
+  const pool=(targets||[]).filter(t=>t&&!hasDrunkenStance(t)&&(!hasGodlyEvasion(t)||pl.energy>=2));
+  if(!pool.length) return null;
+  const m=text.match(/(\d+)\s*damage/); const d=m?+m[1]:0;
+  if(d){ const kill=pool.filter(t=>t.currentHP<=d); if(kill.length) return kill.reduce((a,b)=>aiFcValue(b)>aiFcValue(a)?b:a); }
+  if(/destroy|banish|kill|remove|exile/.test(text)) return pool.reduce((a,b)=>aiFcValue(b)>aiFcValue(a)?b:a);
+  // disable / debuff / steal: hit the biggest threat; default the same, tie → lowest HP
+  return pool.reduce((a,b)=>(effPower(b)>effPower(a)||(effPower(b)===effPower(a)&&b.currentHP<a.currentHP))?b:a);
+}
+function aiPickFriendlyTarget(chars, card){
+  const text=(card?((card.abilities||[]).map(a=>a.text||'').join(' ')+' '+(card.name||'')):'').toLowerCase();
+  if(/heal|restore|cure|recover/.test(text)){
+    const w=chars.filter(f=>f.currentHP<aiMaxHP(f));
+    if(w.length) return w.reduce((a,b)=>(aiMaxHP(b)-b.currentHP)>(aiMaxHP(a)-a.currentHP)?b:a);
+  }
+  const ready=chars.filter(f=>aiReady(f)); const pool=ready.length?ready:chars;
+  return pool.reduce((a,b)=>effPower(b)>effPower(a)?b:a);
+}
+function aiPickDeckCard(pl, filterFn){
+  const cands=pl.deck.filter(cid=>{ const c=DB[cid]; return c&&(!filterFn||filterFn(c)); });
+  if(!cands.length) return null;
+  return cands.reduce((a,b)=>(aiCardValue(DB[b])+(DB[b].cost||0)*.5)>(aiCardValue(DB[a])+(DB[a].cost||0)*.5)?b:a);
+}
+function aiAutoModalChoice(bodyEl){
+  const btns=[...bodyEl.querySelectorAll('button')].filter(b=>!b.disabled&&!/cancel|close|skip|back|👁|view|never ?mind|no thanks|dismiss/i.test(b.textContent||''));
+  if(!btns.length) return false;
+  const pick=btns[Math.floor(Math.random()*btns.length)];
+  setTimeout(()=>{ try{ pick.click(); }catch(e){ console.warn('[AI] modal choice failed',e); } },0);
+  return true;
+}
+// If an ability left a "click your deck" search pending, the AI resolves it now.
+function aiFlushPendingSearch(){
+  try{ if(typeof deckSearchActive!=='undefined'&&deckSearchActive&&G.deckSearchCallback){ const cb=G.deckSearchCallback; G.deckSearchCallback=null; deckSearchActive=false; cb(); } }catch(e){}
+}
+
+// ── ability scoring (text heuristics + optional abl.ai overrides) ──
+function aiScoreAbility(p, fc, abl, src){
+  const pl=G.players[p]; const c=DB[fc.cid]||{};
+  const tax=(typeof crowsResidueTax==='function')?crowsResidueTax(p):0;
+  const cost=(abl.cost||0)+((abl.cost||0)>0?tax:0);
+  if(pl.energy<cost) return -1;
+  if(fc.abilityUsed&&fc.abilityUsed[abl.label]) return -1;
+  if(aiTried('abl:'+fc.uid+':'+abl.label)) return -1;
+  if(abl.ai&&abl.ai.when==='never') return -1;
+  if(AIB.noop.has(abl.label)) return -1; // learned: this ability has no coded effect
+  const text=((abl.text||'')+' '+(abl.label||'')).toLowerCase();
+  const enemies=aiEnemyChars(p); const allies=pl.field.filter(f=>isChar(DB[f.cid]));
+  const wounded=allies.filter(f=>f.currentHP<aiMaxHP(f)*.7);
+  const needsEnemy=/damage|destroy|freeze|burn|poison|paraly|confus|banish|steal|seal|negate|opponent'?s? (character|fighter)|enemy|target (an|one|a) (opponent|enemy)|weaken|-\d+ (atk|hp|attack|health)/.test(text)&&!/your (character|fighter|field)/.test(text.split('opponent')[0]||'');
+  const heals=/heal|restore|cure|remove .*(damage|status)/.test(text);
+  const draws=/draw|search your deck|add .* to (your )?hand|look at the top/.test(text);
+  const gainsEnergy=/gain \d+ (energy|⚡)|\+\d+ ?(energy|⚡)|energy equal/.test(text);
+  const buff=/\+\d+ ?(atk|attack|hp|health|def)|gains? \+|double/.test(text);
+  const costly=/sacrifice|discard (a|one|two|\d) card|destroy (one|a) of your|lose \d+ (life|hp|health)|pay \d+ life/.test(text);
+  const when=abl.ai&&abl.ai.when;
+  if(when==='enemy'&&!enemies.length) return -1;
+  if(when==='wounded'&&!wounded.length) return -1;
+  if(!when){
+    if(needsEnemy&&!enemies.length) return -1;
+    if(heals&&!needsEnemy&&!wounded.length&&!draws) return -1;
+  }
+  let s=18+Math.min(cost,8)*2.2-cost*1.1;
+  if(abl.ai&&typeof abl.ai.weight==='number') s+=abl.ai.weight;
+  if(needsEnemy){ s+=10; const big=enemies.reduce((m,e)=>Math.max(m,aiFcValue(e.fc)),0); s+=Math.min(12,big*.6); }
+  if(heals&&wounded.length) s+=8+wounded.length*2;
+  if(draws) s+=9;
+  if(gainsEnergy) s+=10;
+  if(buff) s+=5+(allies.filter(aiReady).length?4:0);
+  if(costly) s-=12;
+  if(abl.limit==='once_per_game'||abl.limit==='once'){ s-=6; if(G.turn<3&&!(needsEnemy&&enemies.length>=2)) s-=10; }
+  // Using an ability taps the character (unless noTapOnAbility): don't waste our best attacker.
+  const taps=c.noTapOnAbility!==true&&!src&&isChar(c);
+  if(taps){
+    const best=aiBestAttackerValue(p);
+    if(aiReady(fc)&&effPower(fc)>0&&best.uid===fc.uid&&best.score>0) s-=Math.min(30,best.score*.8);
+    else if(!aiReady(fc)) s+=6; // can't attack anyway — free value
+  }
+  return s;
+}
+function aiBestAttackerValue(p){
+  const pl=G.players[p]; let best={uid:null,score:0};
+  pl.field.filter(f=>isChar(DB[f.cid])&&aiReady(f)&&!DB[f.cid]?.isToken).forEach(f=>{
+    const opts=aiAttackOptionsFor(p,f); const top=opts.length?opts[0].score:0;
+    if(top>best.score) best={uid:f.uid,score:top};
+  });
+  return best;
+}
+
+// ── enumerate every main-phase action with a score ──
+function aiEnumerateActions(p){
+  const pl=G.players[p]; const acts=[];
+  const chars=pl.field.filter(f=>isChar(DB[f.cid]));
+  const named=chars.filter(f=>!DB[f.cid]?.isToken).length;
+  const locs=pl.field.filter(f=>isLoc(DB[f.cid])).length;
+  const enemies=aiEnemyChars(p);
+  const wounded=chars.filter(f=>f.currentHP<aiMaxHP(f)*.6);
+  const handCids=new Set(pl.hand.map(f=>f.cid));
+  // 1) Energy card — free value, always first
+  if(!pl.energyCardPlayedThisTurn){
+    const ec=pl.hand.find(f=>DB[f.cid]?.type==='energy_card');
+    if(ec){ acts.push({score:95,label:'energy '+DB[ec.cid].name,run:()=>playEnergyCard(p,ec.cid)}); }
+  }
+  // 2) Transformations (new charLine/nextForms system + legacy arrays via getTransformTargets)
+  pl.field.filter(f=>isChar(DB[f.cid])&&hasTransformTargets(f.cid)).forEach(fc=>{
+    getTransformTargets(fc.cid).forEach(tid=>{
+      const tc=DB[tid]; if(!tc) return;
+      const inHand=pl.hand.find(f=>f.cid===tid); if(!inHand) return;
+      let cost=tc.cost; if(fc.cid==='lazarus'&&fc.attachments?.includes('saiyan_blood'))cost=0; else cost=effectiveTransformCost(p,cost);
+      if(pl.energy<cost) return;
+      if(aiTried('tf:'+fc.uid+':'+tid)) return;
+      const gain=((tc.atk||0)+(tc.hp||0))-((fc.currentATK||0)+(fc.currentHP||0));
+      const abilGain=((tc.abilities||[]).length)-((DB[fc.cid]?.abilities||[]).length);
+      let s=50+gain*2+abilGain*4-cost*.4;
+      if(gain<=0&&abilGain<=0) s-=25;
+      acts.push({score:s,label:'transform '+DB[fc.cid].name+'→'+tc.name,run:()=>{ aiMark('tf:'+fc.uid+':'+tid); doTransform(fc.uid,tid,inHand.uid,cost,p); },delay:1400});
+    });
+  });
+  // 3-6) Cards from hand
+  pl.hand.forEach(fc=>{
+    const c=DB[fc.cid]; if(!c||c.type==='energy_card'||c.transformOnly||c.isToken) return;
+    const cost=Math.max(0,(c.cost||0)+(fc.costMod||0)); if(pl.energy<cost) return;
+    if(aiTried('hand:'+fc.uid)) return;
+    const base=()=>({run:()=>{ aiMark('hand:'+fc.uid); onHandClick(p,fc.uid,fc); }});
+    if(isChar(c)){
+      if(named>=MAX_FIELD) return;
+      let s=38+aiCardValue(c)-cost*.9;
+      if(!chars.length) s+=18;                       // need a board
+      if(hasKW(fc,'burst_speed')) s+=4;
+      if(getTransformTargets(c.id).some(t=>handCids.has(t))) s+=6;   // its next form is already in hand
+      if(c.type==='base_char'&&hasTransformTargets(c.id)) s+=2;
+      acts.push(Object.assign({score:s,label:'play '+c.name},base()));
+    } else if(isLoc(c)){
+      if(locs>=MAX_LOC) return;
+      let s=30+cost*1.2+((c.abilities||[]).length)*3; if(c.id==='time_chamber') s+=15;
+      acts.push(Object.assign({score:s,label:'place '+c.name},base()));
+    } else if(isEquip(c)){
+      if(!chars.length) return;
+      const t=((c.abilities||[]).map(a=>a.text||'').join(' ')).toLowerCase();
+      const healEq=/heal|restore|cure/.test(t);
+      if(c.persistent===false&&healEq&&!wounded.length) return;   // consumable heal with nobody hurt
+      let s=(healEq?(wounded.length?44:0):28)+cost*.8+((c.abilities||[]).length)*2;
+      if(!healEq&&chars.some(aiReady)) s+=4;
+      acts.push(Object.assign({score:s,label:'equip '+c.name},base()));
+    } else if(isInst(c)){
+      const t=((c.abilities||[]).map(a=>a.text||'').join(' ')).toLowerCase();
+      let s=-1;
+      if(c.id==='zephyranth_fruit_bse'||c.id==='vermynth_fruit_bse'||c.id==='royal_matcha_bse'||c.id==='virora_matcha_bse'){ if(wounded.length) s=42+wounded.length*3; else if(c.id==='virora_matcha_bse'&&chars.some(f=>f.statuses&&Object.keys(f.statuses).length)) s=40; }
+      else if(c.id==='blade_of_udun_bse'){ if(enemies.length){ s=36; if(enemies.some(e=>e.fc.currentHP<=2)) s+=22; } }
+      else if(c.id==='saiyan_blood'){ if(chars.some(f=>DB[f.cid]?.subtypes?.some(x=>/saiyan/i.test(x)))) s=34; else if(chars.length) s=24; }
+      else if(c.id==='nature_focus'){ s=60; }
+      else { s=(/damage|destroy|freeze|burn/.test(t)?(enemies.length?34:-1):(/heal/.test(t)?(wounded.length?34:-1):26)); }
+      if(s>0) acts.push(Object.assign({score:s,label:'instant '+c.name},base()));
+    }
+  });
+  // 7) Activated abilities — field characters/locations, equipment-granted, stolen, and the Herald
+  const tax=(typeof crowsResidueTax==='function')?crowsResidueTax(p):0;
+  const consider=(fc,abl,src)=>{
+    const s=aiScoreAbility(p,fc,abl,src); if(s<=0) return;
+    acts.push({score:s,label:'ability '+abl.label+' ('+(DB[fc.cid]?.name||'?')+')',run:()=>{ aiMark('abl:'+fc.uid+':'+abl.label); const n0=G.log.length; activateAbility(fc,abl); aiFlushPendingSearch(); if(G.log.slice(n0).some(l=>/no additional coded effect|nothing happens|no effect/i.test(l.m||''))) AIB.noop.add(abl.label); },delay:800});
+  };
+  pl.field.filter(f=>isChar(DB[f.cid])||isLoc(DB[f.cid])).forEach(fc=>{
+    const c=DB[fc.cid]; if(!c) return;
+    if(isLoc(c)&&isLocationFrozen(fc)) return; if(isAbilitySealed(fc)) return; if(fc.tapped) return; if(statusActive(fc,'freeze')) return;
+    if(!fc.abilityUsed) fc.abilityUsed={};
+    (c.abilities||[]).filter(a=>a.type==='activated').forEach(a=>consider(fc,a,null));
+    (fc.attachments||[]).forEach(eqId=>{ const eq=DB[eqId]; if(!eq||!eq.abilities||isEquipHexed(fc,eqId)) return; eq.abilities.filter(a=>a.type==='activated').forEach(a=>consider(fc,a,eq.name)); });
+    (Array.isArray(fc.gainedAbilities)?fc.gainedAbilities:[]).filter(a=>a.type==='activated').forEach(a=>consider(fc,a,a.sourceName||'stolen'));
+  });
+  if(pl.herald&&!pl.herald.tapped){ const hc=DB[pl.herald.cid]; if(!pl.herald.abilityUsed)pl.herald.abilityUsed={}; (hc&&hc.abilities||[]).filter(a=>a.type==='activated').forEach(a=>consider(pl.herald,a,'herald')); }
+  return acts.sort((a,b)=>b.score-a.score);
+}
+
+// ── main phase driver: pick best, execute, pace, repeat ──
+function aiMainPhase(p, onDone){
+  if(aiTurnKey(p)!==AIB.turnKey){ AIB.turnKey=aiTurnKey(p); AIB.tried.clear(); }
+  G._aiTurn=true; aiSetAuto(true); // stays on through the attack phase (async ability flows, Exsanguinate picks…)
+  let steps=0;
+  const step=()=>{
+    if(G.gameOver){ G._aiTurn=false; aiSetAuto(false); return; }
+    if(G.activePlayer!==p||G.phase!=='main'){ if(onDone)onDone(); return; }
+    let acts=[]; try{ acts=aiEnumerateActions(p); }catch(e){ console.warn('[AI] enumerate failed',e); }
+    const best=acts.find(a=>a.score>0);
+    if(!best||steps>=24){ renderAll(); if(onDone)onDone(); return; }
+    steps++;
+    aiSetAuto(true);
+    try{ best.run(); }catch(e){ console.warn('[AI] action failed:',best.label,e); log('AI hesitates…','info'); }
+    try{ if(typeof recalcPassives==='function')recalcPassives(); renderAll(); }catch(e){}
+    setTimeout(step, best.delay||AIB.stepDelay);
+  };
+  step();
+}
+
+// ── attack evaluation ──
+function aiAttackOptionsFor(p, afc){
+  const opts=[]; const pl=G.players[p]; const power=effPower(afc);
+  if(power<=0) return opts;
+  const atkVal=aiFcValue(afc);
+  const enemies=aiEnemyChars(p);
+  const guardians=enemies.filter(e=>hasKW(e.fc,'guardian'));
+  const pool=guardians.length?guardians:enemies;
+  pool.forEach(({fc:t,p:tp})=>{
+    const toll=hasGodlyEvasion(t)?2:0; if(toll&&pl.energy<toll) return;
+    const kills=power>=t.currentHP&&!(hasKW(t,'resolve')&&t.currentHP>1);
+    const retaliation=kills&&hasKW(afc,'pursuit')?0:effPower(t);
+    const dies=retaliation>=afc.currentHP;
+    let s=power*.6; if(kills) s+=14+aiFcValue(t)*.9; if(dies) s-=10+atkVal*.9; else s+=4;
+    if(!kills&&retaliation>0) s-=retaliation*.4;
+    // Losing our last fighter exposes our Herald to direct attacks — be careful when it's low.
+    if(dies&&pl.field.filter(f=>isChar(DB[f.cid])).length<=1&&pl.herald&&!pl.herald.broken&&pl.herald.currentHP<=aiMaxHP(pl.herald)*.5) s-=22;
+    s-=toll*2;
+    if(hasKW(afc,'breakthrough')&&kills) s+=4;
+    if(G.gameMode!=='lifeforce'&&kills) s+=8; // prize for the kill
+    opts.push({score:s,kind:'char',p:tp,uid:t.uid,name:DB[t.cid]?.name});
+  });
+  // Empty enemy board → the Herald itself is a target (Break = 2 prizes / 15 Life)
+  if(!enemies.length){ aiEnemyPlayersOf(p).forEach(e=>{ const oh=G.players[e]?.herald; if(!oh||oh.broken||(oh.currentHP||0)<=0) return;
+    const breaks=power>=oh.currentHP; const ret=breaks?0:(oh.currentATK||0); const dies=ret>=afc.currentHP;
+    let s=power*.5+(breaks?34:6)-(dies?8+atkVal*.9:0)-ret*.3;
+    opts.push({score:s,kind:'herald',p:e,uid:null,name:DB[oh.cid]?.name});
+  }); }
+  if((DB[afc.cid]?.canAttackLocations||afc.canAttackLocations)&&!aiTried('locatk:'+afc.uid)){
+    aiEnemyPlayersOf(p).forEach(e=>{ (G.players[e]?.field||[]).filter(f=>isLoc(DB[f.cid])).forEach(l=>{
+      const kills=power>=(l.currentHP||0); let s=(kills?10+(DB[l.cid]?.cost||0)*1.5+((DB[l.cid]?.abilities||[]).length)*2:power*.3); if(l.cid==='time_chamber'&&kills) s+=6;
+      if(hasAbilityLabel(afc,'Landmark Price')&&kills) s+=5;
+      opts.push({score:s,kind:'loc',p:e,uid:l.uid,name:DB[l.cid]?.name});
+    }); });
+  }
+  return opts.sort((a,b)=>b.score-a.score);
+}
+function aiHeraldOptions(p){
+  const pl=G.players[p]; const h=pl.herald; if(!h||h.broken||h.tapped||(h.attacksThisTurn||0)>0||(h.currentATK||0)<=0||(h.currentHP||0)<=0) return [];
+  if(heraldAttackBlockReason(p)) return [];
+  const opts=[];
+  // HERALD DUEL only (Heralds never attack characters)
+  aiEnemyPlayersOf(p).forEach(e=>{ const oh=G.players[e]?.herald; if(!oh||oh.broken||(oh.currentHP||0)<=0) return;
+    const breaks=h.currentATK>=oh.currentHP;
+    const ret=breaks?0:Math.floor((oh.currentATK||0)*HERALD_RULES.duelRetaliation); const getsBroken=ret>=h.currentHP;
+    let s=h.currentATK*.45+(breaks?30:0)+(G.gameMode==='combined'&&!breaks?14:0)-ret*.5;
+    if(getsBroken) s-=55;                                   // never trade our Herald away for chip damage
+    else if(h.currentHP-ret<Math.max(3,aiMaxHP(h)*.3)) s-=10; // keep a buffer
+    if(!breaks&&(oh.currentHP-h.currentATK)<=h.currentATK) s+=8; // sets up the break next turn
+    opts.push({score:s,kind:'hherald',p:e,fc:oh,name:DB[oh.cid]?.name});
+  });
+  return opts.sort((a,b)=>b.score-a.score);
+}
+
+// Defender-side response during the human's attack: play a saving instant if it changes the outcome.
+function aiBurstResponse(ap, afc, dp, dfc){
+  const pl=G.players[dp]; if(!pl||G.activePlayer===dp) return;
+  const dmg=effPower(afc); if(dmg<(dfc.currentHP||0)) return; // survives anyway
+  const hand=pl.hand.slice();
+  const tryPlay=(fc)=>{ const c=DB[fc.cid]; if(!c||pl.energy<Math.max(0,(c.cost||0)+(fc.costMod||0))) return false;
+    const was=G._aiAuto; G._aiAuto=true; const ph=G.phase, apl=G.activePlayer; G.phase='main'; G.activePlayer=dp;
+    try{ onHandClick(dp,fc.uid,fc); } finally { G.phase=ph; G.activePlayer=apl; G._aiAuto=was; }
+    log(`AI responds with ${c.name}!`,'info'); return true; };
+  // 1) kill the attacker outright (Blade of Udun: 2 dmg)
+  const udun=hand.find(f=>f.cid==='blade_of_udun_bse'); if(udun&&(afc.currentHP||0)<=2&&tryPlay(udun)) return;
+  // 2) heal so the defender survives
+  const heals={zephyranth_fruit_bse:3,vermynth_fruit_bse:4,royal_matcha_bse:2,virora_matcha_bse:4};
+  const mx=aiMaxHP(dfc);
+  for(const f of hand){ const h=heals[f.cid]; if(!h) continue; if(Math.min(mx,dfc.currentHP+h)>dmg&&tryPlay(f)) return; }
+  // 3) Saiyan Blood (+2/+3 DEF)
+  const sb=hand.find(f=>f.cid==='saiyan_blood'); if(sb){ const bonus=DB[dfc.cid]?.subtypes?.some(x=>/saiyan/i.test(x))?3:2; if(dfc.currentHP+bonus>dmg&&tryPlay(sb)) return; }
+}
+
+// 1v1 prize/combined attack phase: best attacker×target pairs within the attacker cap.
+function aiAttackPhase1v1(p, onDone){
+  const pl=G.players[p]; const queue=[];
+  const fighters=pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken&&aiReady(f));
+  const swings=()=>{
+    if(G.gameOver){ return; }
+    // choose the best (attacker,target) right now
+    let best=null;
+    fighters.forEach(f=>{ if(!canCharacterAttack(p,f)||!aiReady(f)) return; const o=aiAttackOptionsFor(p,f); if(o.length&&(!best||o[0].score>best.score)) best={score:o[0].score,afc:f,opt:o[0]}; });
+    if(best&&best.score>2){
+      const {afc,opt}=best;
+      if(opt.kind==='loc'){ aiMark('locatk:'+afc.uid); if(!afc.attacksThisTurn)afc.attacksThisTurn=0; resolveLocationAttack(p,afc.uid,opt.p,opt.uid); }
+      else if(opt.kind==='herald'){ resolveCharVsHerald(p,afc.uid,opt.p); }
+      else resolveAttack(p,afc.uid,opt.p,opt.uid);
+      renderAll();
+      setTimeout(swings,650); return;
+    }
+    // Herald swing (independent of the character attacker cap)
+    const ho=aiHeraldOptions(p);
+    if(ho.length&&ho[0].score>3){
+      const o=ho[0]; G.heraldAttacking=true;
+      resolveHeraldAttackTarget(o.p,o.fc);
+      G.heraldAttacking=false; renderAll();
+      setTimeout(()=>{ if(onDone)onDone(); },500); return;
+    }
+    if(onDone)onDone();
+  };
+  swings();
+}
+
 function runAI(){
   if(G.activePlayer!==2)return;
   if(G.tutorialMode){ if(typeof runTutorialAI==='function')runTutorialAI(); return; }
@@ -13931,59 +14382,8 @@ function runAI(){
     setTimeout(()=>{
       G.phase='main';G.phasesDone.push('main');
       aiCheckHeraldFlip();
-      const pl=G.players[2];
-      const sorted=[...pl.hand].sort((a,b)=>(DB[a.cid]?.cost||0)-(DB[b.cid]?.cost||0));
-      let played=0;
-      // Pass 1: Characters (cheapest first, skip transformOnly)
-      for(const fc of sorted){
-        if(played>=2||pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken).length>=MAX_FIELD)break;
-        const c=DB[fc.cid];if(!c||!isChar(c)||c.transformOnly||c.isToken)continue;
-        if(pl.energy<c.cost)continue;
-        pl.hand=pl.hand.filter(f=>f.uid!==fc.uid);pl.energy-=c.cost;
-        fc.turnPlayed=G.turn;fc.currentHP=c.hp;fc.currentATK=c.atk;fc.baseHP=c.hp;fc.baseATK=c.atk;
-        if(!fc.attachments)fc.attachments=[];fc.abilityUsed={};fc.damagedThisTurn=false;
-        pl.field.push(fc);log(`AI plays ${c.name}.`,'info');
-        playCardZoom(fc.cid,fc.variant);if(typeof SFX!=='undefined')SFX.cardPlay();
-        onEntry(2,fc);
-        played++;
-      }
-      // Pass 2: AI Transforms (strict — base on field + next form in hand)
-      pl.field.filter(f=>DB[f.cid]?.transforms?.length>0).forEach(fc=>{
-        DB[fc.cid].transforms.forEach(tid=>{
-          const tc=DB[tid];if(!tc)return;
-          const inHand=pl.hand.find(f=>f.cid===tid);
-          if(!inHand||pl.energy<tc.cost)return;
-          // Only transform if it's a meaningful upgrade
-          if(tc.atk<=fc.currentATK&&tc.hp<=fc.currentHP)return;
-          pl.hand=pl.hand.filter(f=>f.uid!==inHand.uid);pl.energy-=tc.cost;
-          log(`AI transforms ${DB[fc.cid].name} → ${tc.name}.`,'info');
-          const prev=fc.attachments||[];
-          fc.cid=tid;fc.currentHP=tc.hp;fc.currentATK=tc.atk;fc.baseHP=tc.hp;fc.baseATK=tc.atk;fc.hpBonus=0;fc.atkBonus=0;fc.abilityUsed={};
-          fc.attachments=prev.filter(eqId=>{const eq=DB[eqId];return eq&&eq.persistent!==false;});
-        });
-      });
-      // Pass 3: Equipment (chars on field only)
-      if(pl.field.filter(f=>isChar(DB[f.cid])).length>0){
-        for(const fc of sorted){
-          const c=DB[fc.cid];if(!c||!isEquip(c))continue;if(pl.energy<c.cost)continue;
-          const chars=pl.field.filter(f=>isChar(DB[f.cid]));if(!chars.length)break;
-          if(c.id==='senzu_bean'){const w=chars.find(f=>f.currentHP<(f.baseHP+f.hpBonus)*.5);if(!w)continue;pl.hand=pl.hand.filter(f=>f.uid!==fc.uid);pl.energy-=c.cost;applyEquip(w,c);pl.discard.push(c.id);log(`AI heals ${DB[w.cid].name}.`,'info');continue;}
-          if(c.id==='move_out'){const best=chars.reduce((a,b)=>b.currentHP>a.currentHP?b:a);pl.hand=pl.hand.filter(f=>f.uid!==fc.uid);pl.energy-=c.cost;if(!best.attachments)best.attachments=[];best.attachments.push('move_out');log(`AI: Move Out on ${DB[best.cid].name}.`,'info');continue;}
-          pl.hand=pl.hand.filter(f=>f.uid!==fc.uid);pl.energy-=c.cost;applyEquip(chars[0],c);if(c.persistent!==false)chars[0].attachments.push(c.id);else pl.discard.push(c.id);log(`AI equips ${c.name}.`,'info');
-        }
-      }
-      // Pass 4: Locations (only if chars on field)
-      if(pl.field.filter(f=>isChar(DB[f.cid])).length>0&&pl.field.filter(f=>isLoc(DB[f.cid])).length<MAX_LOC){
-        for(const fc of sorted){
-          if(pl.field.filter(f=>isLoc(DB[f.cid])).length>=MAX_LOC)break;
-          const c=DB[fc.cid];if(!c||!isLoc(c))continue;if(pl.energy<c.cost)continue;
-          pl.hand=pl.hand.filter(f=>f.uid!==fc.uid);pl.energy-=c.cost;
-          fc.turnPlayed=G.turn;fc.currentHP=c.hp;fc.currentATK=c.atk;fc.baseHP=c.hp;fc.baseATK=c.atk;if(!fc.attachments)fc.attachments=[];
-          pl.field.push(fc);log(`AI places ${c.name}.`,'info');
-          playCardZoom(fc.cid,fc.variant);if(typeof SFX!=='undefined')SFX.cardPlay();
-          if(c.id==='time_chamber'){pl.energy+=5;log('+5⚡!','gain');}
-        }
-      }
+      renderAll();
+      aiMainPhase(2, ()=>{
       renderAll();
       setTimeout(()=>{
         G.phase='attack';G.phasesDone.push('attack');
@@ -13993,6 +14393,7 @@ function runAI(){
         // End the AI's turn and hand back to the human (also fires the human's
         // start-of-turn effects, which this path previously skipped).
         const _aiEndTurn=()=>{
+          G._aiTurn=false; G._aiAuto=false;
           if(G.gameOver)return;
           endTurnFx(2);log('AI ends.','info');
           G.activePlayer=1;G.turn++;G.phase='draw';G.phasesDone=[];G.selectedAttacker=null;G.heraldAttacking=false;
@@ -14003,30 +14404,20 @@ function runAI(){
         if(G.gameMode==='lifeforce'){
           const chosen=eligible.sort((a,b)=>b.currentATK-a.currentATK).slice(0,aiMaxAttackers);
           renderAll();
-          if(!chosen.length){ log('AI skips attack.','info'); setTimeout(_aiEndTurn,500); }
-          else processAILifeAttacks(chosen.map(a=>a.uid), _aiEndTurn);
+          const _duelThenEnd=()=>{ try{ const ho=aiHeraldOptions(2); if(ho.length&&ho[0].score>3){ const o=ho[0]; G.heraldAttacking=true; resolveHeraldAttackTarget(o.p,o.fc); G.heraldAttacking=false; renderAll(); } }catch(e){} setTimeout(_aiEndTurn,500); };
+          if(!chosen.length){ log('AI skips attack.','info'); _duelThenEnd(); }
+          else processAILifeAttacks(chosen.map(a=>a.uid), _duelThenEnd);
           return; // the queue drives the rest, including end-of-turn
         }
-        // PRIZE / COMBINED: existing character-targeting combat
-        const oppChars=opp.field.filter(f=>isChar(DB[f.cid]));
-        if(eligible.length>0&&oppChars.length>0){
-          const chosen=eligible.sort((a,b)=>b.currentATK-a.currentATK).slice(0,aiMaxAttackers);
-          chosen.forEach(atk=>{
-            const swings=hasKW(atk,'onslaught')?2:1;
-            for(let s=0;s<swings;s++){
-              const alive=opp.field.filter(f=>isChar(DB[f.cid]));if(!alive.length)break;
-              if((atk.attacksThisTurn||0)>=swings)break;
-              const reachable=alive.filter(f=>!hasGodlyEvasion(f) || G.players[2].energy>=2);
-              const pool=reachable.length?reachable:[];
-              if(!pool.length)break;
-              const tgt=pool.reduce((a,b)=>b.currentHP<a.currentHP?b:a);
-              resolveAttack(2,atk.uid,1,tgt.uid);
-            }
-          });
-        } else log('AI skips attack.','info');
-        renderAll();
-        setTimeout(_aiEndTurn,600);
+        // PRIZE / COMBINED: evaluator picks attacker×target (characters, Locations, Herald)
+        const before=G.log.length;
+        aiAttackPhase1v1(2, ()=>{
+          if(G.log.length===before) log('AI skips attack.','info');
+          renderAll();
+          setTimeout(_aiEndTurn,600);
+        });
       },600);
+      }); // aiMainPhase
     },400);
   },400);
 }
@@ -14437,6 +14828,14 @@ function renderHeraldSlot(p, targetId){
     return;
   }
   const hc=DB[hfc.cid];if(!hc)return;
+  if(hfc.broken){
+    const bd=document.createElement('div'); bd.className='herald-slot herald-broken';
+    const back=getImg('cardback');
+    bd.innerHTML=(back?`<img src="${back}" style="width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(1) brightness(.45)">`:'')+`<div class="herald-broken-tag">💔 BROKEN</div>`;
+    bd.onclick=()=>showFullCard(hfc.origCid||hfc.cid,hfc);
+    bd.onmouseenter=()=>showHoverPreview(hfc.origCid||hfc.cid); bd.onmouseleave=()=>clearHoverPreview();
+    el.appendChild(bd); return;
+  }
   const maxHP=hfc.baseHP+hfc.hpBonus;
   const hpPct=Math.max(0,Math.min(100,hfc.currentHP/maxHP*100));
   const hpColor=hpPct>60?'#22c55e':hpPct>30?'#f59e0b':'#ef4444';
@@ -14469,7 +14868,7 @@ function renderHeraldSlot(p, targetId){
     div.appendChild(flipBtn);
   }
   // Attack button for the active board you control during attack phase
-  if(p===G.activePlayer&&iControlActive()&&G.phase==='attack'){
+  if(p===G.activePlayer&&iControlActive()&&G.phase==='attack'&&!heraldAttackBlockReason(p)){
     const atkBtn=document.createElement('button');
     atkBtn.style.cssText='position:absolute;top:2px;right:2px;background:#7c3aed;color:#fff;border:none;border-radius:3px;font-size:8px;padding:1px 3px;cursor:pointer;z-index:5;font-weight:700';
     atkBtn.textContent=G.heraldAttacking?'✓ATK':'⚔ATK';
@@ -14478,9 +14877,13 @@ function renderHeraldSlot(p, targetId){
     div.appendChild(atkBtn);
   }
   // Show "TARGET" overlay on an enemy-team herald when something is attacking
-  if(isEnemyBoard(p)&&G.phase==='attack'&&(G.selectedAttacker||G.heraldAttacking)){
+  if(isEnemyBoard(p)&&G.phase==='attack'&&(G.selectedAttacker||G.heraldAttacking)&&!hfc.broken){
     div.style.cursor='crosshair';
-    div.onclick=(e)=>{e.stopPropagation();resolveHeraldAttackTarget(p,hfc);};
+    div.onclick=(e)=>{e.stopPropagation();
+      if(G.heraldAttacking){ resolveHeraldAttackTarget(p,hfc); return; }
+      const auid=G.selectedAttacker; if(!auid) return;
+      if(resolveCharVsHerald(G.activePlayer,auid,p)){ G.selectedAttacker=null; renderAll(); }
+    };
   } else {
     div.onclick=()=>showFullCard(hfc.cid,hfc);
   }
@@ -14518,10 +14921,11 @@ function autoFlipHerald(p){
 }
 
 // AI Herald flip: flip if condition met during main phase
-function aiCheckHeraldFlip(){
-  const hfc=G.players[2]?.herald;if(!hfc||hfc.isFlipped)return;
+function aiCheckHeraldFlip(p){
+  p=p||2;
+  const hfc=G.players[p]?.herald;if(!hfc||hfc.isFlipped)return;
   const hc=DB[hfc.cid];if(!hc?.heraldFlip)return;
-  if(!hc.flipCondition||hc.flipCondition(hfc,G.players[2],G)){
+  if(!hc.flipCondition||hc.flipCondition(hfc,G.players[p],G)){
     const finalCid=hc.heraldFlip;const fc=DB[finalCid];if(!fc)return;
     log(`⚡ AI Herald ${hc.name} FLIPS → ${fc.name}!`,'gain');
     hfc.cid=finalCid;hfc.currentHP=fc.hp;hfc.currentATK=fc.atk;
@@ -15752,6 +16156,7 @@ function showRiftZone(p){
 // RENDER
 // ═══════════════════════════════════════════════════
 function renderAll(){
+  if(G&&!G._aiTurn&&G._aiAuto) G._aiAuto=false;
   if(!G||!G.players)return;
   if(typeof syncAdminTester==='function') syncAdminTester();
   if(typeof tutorialWatch==='function') tutorialWatch();
@@ -16316,9 +16721,19 @@ function showOpponentHandModal(oppNum){
   }
   showModalEl(`👁 Opponent's Hand (${hand.length})`, body);
 }
-function showModal(title,html){document.getElementById('modal-title').textContent=title;document.getElementById('modal-body').innerHTML=html;document.getElementById('modal-overlay').classList.add('open');}
-function showModalEl(title,bodyEl){document.getElementById('modal-title').textContent=title;const b=document.getElementById('modal-body');b.innerHTML='';b.appendChild(bodyEl);document.getElementById('modal-overlay').classList.add('open');}
-function closeAllModals(){document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('open'));_discardSearchState=null;}
+function showModal(title,html){if(G&&G._aiAuto){return;}document.getElementById('modal-title').textContent=title;document.getElementById('modal-body').innerHTML=html;document.getElementById('modal-overlay').classList.add('open');}
+let _pendingBlockDefault=null;
+function showModalEl(title,bodyEl,opts){
+  if(G&&G._aiAuto&&!(opts&&opts.forceHuman)){ // 🧠 AI: resolve choice modals by picking an option instead of opening them
+    const b=document.getElementById('modal-body'); b.innerHTML=''; b.appendChild(bodyEl);
+    if(!aiAutoModalChoice(bodyEl)) b.innerHTML='';
+    return;
+  }
+  document.getElementById('modal-title').textContent=title;const b=document.getElementById('modal-body');b.innerHTML='';b.appendChild(bodyEl);document.getElementById('modal-overlay').classList.add('open');}
+function closeAllModals(){document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('open'));_discardSearchState=null;
+  // A dismissed block prompt resolves as "no block" so the AI's turn can't hang.
+  if(_pendingBlockDefault){ const f=_pendingBlockDefault; _pendingBlockDefault=null; setTimeout(f,0); }
+}
 
 function showScreen(id){
   if(id!=='game-screen'&&id!=='game-screen-2v2'){ const _ct=document.getElementById('coin-toss'); if(_ct&&_ct.classList.contains('open')){ _ct.classList.remove('open'); if(typeof CT!=='undefined'&&CT){ if(CT._resend)clearInterval(CT._resend); if(CT._resend2)clearInterval(CT._resend2); } } }
@@ -16338,7 +16753,8 @@ function showRulesScreen(){
     <b style="color:#c8a0ff">Turn:</b> Draw → Main → Attack → End<br>
     <b style="color:#c8a0ff">Field Limits:</b> Max 8 characters · Max 4 locations (separate zone on left)<br>
     <b style="color:#c8a0ff">Hand Limit:</b> 12 cards max — exceed it and you lose!<br>
-    <b style="color:#c8a0ff">Combat:</b> Green char → red char or yellow location.<br>
+    <b style="color:#c8a0ff">Combat:</b> Green char → red char or yellow location. Characters may hit the enemy Herald only when their field is empty.<br>
+    <b style="color:#c8a0ff">Heralds:</b> 👑 Never attack characters. From round 4 your Herald may duel the enemy Herald once per turn (it retaliates). The defender retaliates for ½ its ATK. A Herald at 0 HP is <b>Broken</b>: face-down, all passives & abilities off — the breaker takes <b>2 Prizes</b> (15 Life in Life modes). Herald damage never heals.<br>
     <b style="color:#c8a0ff">Transform:</b> Base on field + next form in hand. Pay cost. 🔒 = TF Only.<br>
     <b style="color:#c8a0ff">Sacrifice:</b> 💀 Destroy your own char for ½ its cost in energy.<br>
     <b style="color:#c8a0ff">Instants:</b> Red-border cards. Attach to chars for instant effects.<br>
