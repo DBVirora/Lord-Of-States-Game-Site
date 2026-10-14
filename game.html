@@ -5845,7 +5845,7 @@ textarea{
   #menu-screen .menu-ai-row{ display:flex !important; align-items:stretch; gap:6px; }
   #menu-screen .menu-ai-label{ display:flex; align-items:center; padding:0 4px; white-space:nowrap; font-family:'Cinzel',serif; font-size:10px; font-weight:700; color:rgba(120,200,255,.8); }
   #menu-screen .ai-chip{ flex:1; padding:9px 2px !important; font-size:10px !important; letter-spacing:1px !important; margin:0 !important; }
-  #menu-screen .menu-tools-grid{ display:grid !important; grid-template-columns:repeat(4,1fr); gap:6px; }
+  #menu-screen .menu-tools-grid{ display:grid !important; grid-template-columns:repeat(3,1fr); gap:6px; }
   #menu-screen .menu-tool{ position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:10px 2px; border-radius:10px; border:1px solid rgba(200,164,74,.18); background:linear-gradient(160deg,rgba(22,16,44,.72),rgba(10,8,24,.88)); color:rgba(205,212,235,.8); font-family:'Cinzel',serif; }
   #menu-screen .menu-tool .mt-ico{ font-size:18px; line-height:1; }
   #menu-screen .menu-tool .mt-lbl{ font-size:8px; letter-spacing:1px; text-transform:uppercase; text-align:center; line-height:1.1; }
@@ -5922,6 +5922,115 @@ textarea{
 @keyframes ct-pop{ from{ transform:scale(.6); opacity:0; } to{ transform:scale(1); opacity:1; } }
 #coin-toss .ct-result.win{ color:#9af5c0; } #coin-toss .ct-result.lose{ color:#ff9b9b; }
 @media (max-width:900px){ #coin-toss .ct-box{ padding:20px 14px 18px; } #coin-toss .ct-stage{ height:120px; } #coin-toss .ct-coin{ width:96px; height:96px; } #coin-toss .ct-btn{ min-width:120px; padding:10px 18px; font-size:12px; } }
+
+/* ════════ 📜 COURT REGISTRY — card discovery viewer ════════ */
+#registry-screen{ padding:56px 14px 14px; }
+#registry-screen .reg-top{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
+#registry-screen .reg-title{ font-family:'Cinzel',serif; font-weight:900; letter-spacing:5px; font-size:clamp(16px,2.2vw,24px); color:#f4ecd0; text-shadow:0 0 16px rgba(251,191,36,.45),0 0 30px rgba(124,58,237,.35); margin:0; }
+#registry-screen .reg-title small{ display:block; font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:3px; color:rgba(232,197,112,.65); font-weight:400; margin-top:2px; }
+#registry-screen .reg-filters{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-left:auto; }
+#registry-screen .reg-chip{ font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1.5px; color:#cfc6dc; background:rgba(14,10,38,.85); border:1px solid rgba(232,197,112,.3); border-radius:999px; padding:5px 11px; cursor:pointer; transition:all .15s; }
+#registry-screen .reg-chip:hover{ border-color:rgba(232,197,112,.7); color:#fff; }
+#registry-screen .reg-chip.on{ background:linear-gradient(90deg,rgba(124,58,237,.6),rgba(60,20,120,.7)); border-color:#e8c570; color:#fff; }
+#registry-screen .reg-chip .gem{ display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+#registry-screen select.reg-sel{ font-family:'Cinzel',serif; font-size:11px; letter-spacing:1px; color:#f3dfa0; background:rgba(14,10,38,.9); border:1px solid rgba(232,197,112,.4); border-radius:10px; padding:6px 10px; }
+#registry-screen .reg-progress{ display:flex; align-items:center; gap:10px; font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:2px; color:#e8c570; }
+#registry-screen .reg-bar{ width:160px; height:8px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(232,197,112,.3); overflow:hidden; }
+#registry-screen .reg-bar i{ display:block; height:100%; background:linear-gradient(90deg,#7c3aed,#e8c570); width:0; transition:width .5s; }
+#registry-screen .reg-layout{ display:grid; grid-template-columns:260px minmax(0,1fr) 340px; gap:12px; height:calc(100dvh - 130px); min-height:480px; }
+#registry-screen .reg-panel{ background:linear-gradient(180deg,rgba(18,14,44,.92),rgba(10,8,26,.96)); border:1px solid rgba(232,197,112,.35); border-radius:14px; position:relative; min-height:0; box-shadow:0 20px 50px rgba(0,0,0,.5); }
+#registry-screen .reg-panel::before{ content:''; position:absolute; left:14px; right:14px; top:0; height:2px; border-radius:2px; background:linear-gradient(90deg,transparent,rgba(232,197,112,.8),transparent); }
+/* list */
+#registry-screen .reg-list{ display:flex; flex-direction:column; min-height:0; }
+#registry-screen .reg-search{ margin:12px 12px 6px; }
+#registry-screen .reg-search input{ width:100%; font-family:'Share Tech Mono',monospace; font-size:12px; color:#ece6d6; background:rgba(0,0,0,.35); border:1px solid rgba(232,197,112,.3); border-radius:8px; padding:7px 10px; }
+#registry-screen .reg-entries{ overflow:auto; min-height:0; padding:4px 8px 10px; scrollbar-width:thin; scrollbar-color:rgba(232,197,112,.4) transparent; }
+#registry-screen .reg-entry{ display:grid; grid-template-columns:34px 1fr auto; gap:8px; align-items:center; padding:5px 8px; border-radius:9px; cursor:pointer; border:1px solid transparent; color:#cfc6dc; font-size:12px; }
+#registry-screen .reg-entry:hover{ background:rgba(124,58,237,.18); }
+#registry-screen .reg-entry.on{ background:linear-gradient(90deg,rgba(124,58,237,.45),rgba(60,20,120,.5)); border-color:rgba(232,197,112,.5); color:#fff; }
+#registry-screen .reg-entry .thumb{ width:34px; height:34px; border-radius:50%; overflow:hidden; border:1px solid rgba(232,197,112,.35); background:#15122a; display:grid; place-items:center; font-size:14px; }
+#registry-screen .reg-entry .thumb img{ width:100%; height:100%; object-fit:cover; object-position:top; }
+#registry-screen .reg-entry.unreg .thumb img,#registry-screen .reg-entry.sighted .thumb img{ filter:grayscale(1) brightness(.6); }
+#registry-screen .reg-entry.unreg .thumb img{ filter:brightness(.4) saturate(.3); }
+#registry-screen .reg-entry .nm{ min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#registry-screen .reg-entry .nm small{ display:block; font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:1px; color:rgba(232,197,112,.65); }
+#registry-screen .reg-entry .dot{ width:9px; height:9px; border-radius:50%; border:1px solid rgba(255,255,255,.4); }
+#registry-screen .reg-entry.registered .dot{ background:#e8c570; box-shadow:0 0 8px rgba(232,197,112,.8); }
+#registry-screen .reg-entry.sighted .dot{ background:linear-gradient(90deg,#e8c570 50%,transparent 50%); }
+#registry-screen .reg-entry .newb{ font-family:'Share Tech Mono',monospace; font-size:8px; letter-spacing:1px; color:#fff; background:#ef4444; border-radius:6px; padding:1px 5px; margin-left:4px; }
+/* subject */
+#registry-screen .reg-stage{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:18px; overflow:hidden; background:radial-gradient(ellipse at 50% 70%,rgba(124,58,237,.25),transparent 60%),linear-gradient(180deg,rgba(18,14,44,.92),rgba(10,8,26,.96)); }
+#registry-screen .reg-stage .ringbg{ position:absolute; left:50%; bottom:14%; width:min(420px,80%); aspect-ratio:1/.32; transform:translateX(-50%); border-radius:50%; border:2px solid rgba(232,197,112,.5); box-shadow:0 0 30px rgba(232,197,112,.25), inset 0 0 40px rgba(124,58,237,.35); background:radial-gradient(ellipse at 50% 50%,rgba(124,58,237,.35),rgba(0,0,0,0) 70%); pointer-events:none; }
+#registry-screen .reg-stage .ringbg::after{ content:''; position:absolute; inset:14%; border-radius:50%; border:1px solid rgba(232,197,112,.35); }
+#registry-screen .reg-card{ position:relative; width:min(300px,62%); aspect-ratio:.7; border-radius:14px; overflow:hidden; border:2px solid rgba(232,197,112,.55); box-shadow:0 30px 60px rgba(0,0,0,.7),0 0 40px rgba(124,58,237,.35); background:#15122a; z-index:1; transition:transform .25s; }
+#registry-screen .reg-card img{ width:100%; height:100%; object-fit:cover; display:block; }
+#registry-screen .reg-card.sighted img{ filter:grayscale(1) contrast(1.05) brightness(.75); }
+#registry-screen .reg-card.unreg img{ filter:brightness(.35) saturate(.4); }
+#registry-screen .reg-card .stamp{ position:absolute; inset:0; display:grid; place-items:center; pointer-events:none; }
+#registry-screen .reg-card .stamp span{ font-family:'Cinzel',serif; font-weight:900; letter-spacing:6px; font-size:clamp(14px,2vw,22px); color:rgba(232,197,112,.9); border:3px solid rgba(232,197,112,.75); padding:8px 16px; transform:rotate(-18deg); text-shadow:0 2px 10px #000; background:rgba(10,8,26,.55); }
+#registry-screen .reg-card .stamp.unreg span{ font-size:clamp(18px,2.6vw,30px); letter-spacing:4px; transform:none; border:0; background:none; color:rgba(232,197,112,.85); }
+#registry-screen .reg-card.pop{ animation:reg-pop .7s cubic-bezier(.2,.9,.3,1.3); }
+@keyframes reg-pop{ 0%{ transform:scale(.6) rotateY(90deg); opacity:0; } 60%{ transform:scale(1.06) rotateY(0); opacity:1; } 100%{ transform:scale(1); } }
+#registry-screen .reg-card.shimmer::after{ content:''; position:absolute; inset:-50%; background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.55) 50%,transparent 60%); animation:reg-shimmer 1.4s ease-out 1; pointer-events:none; }
+@keyframes reg-shimmer{ from{ transform:translateX(-60%); } to{ transform:translateX(60%); } }
+#registry-screen .reg-nav{ display:flex; align-items:center; gap:14px; z-index:1; }
+#registry-screen .reg-nav button{ font-family:'Cinzel',serif; font-weight:700; color:#f3dfa0; background:rgba(60,44,20,.85); border:1px solid rgba(232,197,112,.5); border-radius:10px; padding:6px 12px; cursor:pointer; }
+#registry-screen .reg-nav .cnt{ font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:3px; color:#e8c570; }
+#registry-screen .reg-finishes{ display:flex; gap:6px; z-index:1; flex-wrap:wrap; justify-content:center; }
+#registry-screen .reg-fin{ font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:1px; padding:3px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.2); color:#9ca3af; background:rgba(0,0,0,.3); cursor:pointer; }
+#registry-screen .reg-fin.own{ color:#fff; border-color:var(--fc,#e8c570); }
+#registry-screen .reg-fin.on{ background:var(--fc,#e8c570); color:#120a20; }
+#registry-screen .reg-fin.locked{ opacity:.35; cursor:default; }
+/* dossier */
+#registry-screen .reg-dossier{ display:flex; flex-direction:column; min-height:0; }
+#registry-screen .reg-head{ padding:14px 16px 10px; border-bottom:1px solid rgba(232,197,112,.25); }
+#registry-screen .reg-no{ font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:3px; color:rgba(232,197,112,.75); display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+#registry-screen .reg-name{ font-family:'Cinzel',serif; font-weight:900; font-size:clamp(16px,1.6vw,22px); letter-spacing:2px; color:#f4ecd0; margin:4px 0 4px; text-wrap:balance; }
+#registry-screen .reg-name.unreg{ color:rgba(244,236,208,.5); letter-spacing:6px; }
+#registry-screen .reg-tags{ display:flex; gap:6px; flex-wrap:wrap; }
+#registry-screen .reg-tag{ font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:1.5px; padding:2px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.2); color:#cfc6dc; }
+#registry-screen .reg-tag.rar{ color:#120a20; font-weight:700; }
+#registry-screen .reg-body{ overflow:auto; min-height:0; padding:12px 16px 16px; display:flex; flex-direction:column; gap:12px; scrollbar-width:thin; scrollbar-color:rgba(232,197,112,.4) transparent; }
+#registry-screen .reg-stats{ display:flex; gap:10px; font-family:'Share Tech Mono',monospace; font-size:12px; letter-spacing:1px; }
+#registry-screen .reg-stats span{ background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.12); border-radius:8px; padding:4px 10px; }
+#registry-screen .reg-quote{ font-family:'Cinzel',serif; font-style:italic; font-size:14px; line-height:1.5; color:#f3dfa0; padding:12px 14px; border-left:3px solid #e8c570; background:linear-gradient(90deg,rgba(232,197,112,.12),transparent); border-radius:0 10px 10px 0; }
+#registry-screen .reg-quote.empty{ color:rgba(243,223,160,.45); font-style:normal; font-size:11px; letter-spacing:1px; }
+#registry-screen .reg-sec{ font-family:'Cinzel',serif; font-size:10px; letter-spacing:3px; color:rgba(232,197,112,.75); margin:4px 0 -6px; }
+#registry-screen .reg-bio{ font-size:13px; line-height:1.6; color:#d9d2e6; }
+#registry-screen .reg-sealed{ font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:1px; color:#9ca3af; background:rgba(0,0,0,.3); border:1px dashed rgba(232,197,112,.35); border-radius:10px; padding:12px; text-align:center; }
+#registry-screen .reg-abl{ background:rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.1); border-radius:8px; padding:7px 10px; font-size:12px; color:#cfc6dc; }
+#registry-screen .reg-abl b{ color:#c4b5fd; font-size:11px; letter-spacing:1px; }
+#registry-screen .reg-abl .kind{ font-family:'Share Tech Mono',monospace; font-size:8px; letter-spacing:1px; color:#e8c570; margin-right:6px; }
+#registry-screen .reg-status{ display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+#registry-screen .reg-status div{ background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.1); border-radius:8px; padding:6px 10px; font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1px; color:#9ca3af; }
+#registry-screen .reg-status b{ display:block; color:#ece6d6; font-size:13px; margin-top:2px; letter-spacing:0; }
+#registry-screen .reg-status b.reg{ color:#e8c570; } #registry-screen .reg-status b.sig{ color:#c4b5fd; }
+#registry-screen .reg-admin{ margin-top:auto; border-top:1px dashed rgba(232,197,112,.3); padding-top:10px; }
+#registry-screen .reg-admin button{ width:100%; font-family:'Cinzel',serif; font-size:11px; letter-spacing:2px; color:#f3dfa0; background:rgba(60,44,20,.85); border:1px solid rgba(232,197,112,.5); border-radius:10px; padding:8px; cursor:pointer; }
+#registry-screen .reg-edit{ display:grid; gap:6px; }
+#registry-screen .reg-edit label{ font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:2px; color:rgba(232,197,112,.75); display:grid; gap:3px; }
+#registry-screen .reg-edit input,#registry-screen .reg-edit textarea,#registry-screen .reg-edit select{ width:100%; font-family:'Segoe UI',system-ui,sans-serif; font-size:12px; color:#ece6d6; background:rgba(0,0,0,.4); border:1px solid rgba(232,197,112,.35); border-radius:8px; padding:6px 8px; }
+#registry-screen .reg-edit textarea{ min-height:64px; resize:vertical; }
+#registry-screen .reg-edit .row{ display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+#registry-screen .reg-edit .btns{ display:flex; gap:6px; }
+#registry-screen .reg-edit .btns button{ flex:1; }
+#registry-screen .reg-drawer-btn{ display:none; }
+#registry-screen .reg-drawer-head{ display:none; }
+@media (max-width:900px){ #registry-screen .reg-drawer-head{ display:flex; justify-content:space-between; align-items:center; padding:12px 14px 0; font-family:'Cinzel',serif; font-size:11px; letter-spacing:3px; color:#e8c570; } #registry-screen .reg-drawer-head button{ background:none; border:1px solid rgba(232,197,112,.4); color:#f3dfa0; border-radius:8px; padding:3px 9px; cursor:pointer; } }
+#registry-screen .reg-back{ font-family:'Cinzel',serif; font-size:11px; letter-spacing:2px; color:#f3dfa0; background:rgba(60,44,20,.85); border:1px solid rgba(232,197,112,.5); border-radius:10px; padding:7px 12px; cursor:pointer; }
+@media (max-width:1100px){ #registry-screen .reg-layout{ grid-template-columns:220px minmax(0,1fr) 300px; } }
+@media (max-width:900px){
+  #registry-screen{ padding:52px 10px 12px; }
+  #registry-screen .reg-layout{ grid-template-columns:1fr; height:auto; min-height:0; }
+  #registry-screen .reg-list{ position:fixed; left:0; top:0; bottom:0; width:min(300px,86vw); z-index:100005; border-radius:0 14px 14px 0; transform:translateX(-105%); transition:transform .25s; }
+  #registry-screen .reg-list.open{ transform:none; }
+  #registry-screen .reg-drawer-btn{ display:inline-block; }
+  #registry-screen .reg-bar{ width:100px; }
+  #registry-screen .reg-stage{ min-height:380px; }
+  #registry-screen .reg-card{ width:min(240px,70%); }
+  #registry-screen .reg-dossier{ max-height:none; }
+  #registry-screen .reg-body{ overflow:visible; }
+}
 </style>
 </head>
 <body>
@@ -6020,7 +6129,7 @@ textarea{
   #menu-screen .ai-chip{ flex:1; padding:10px 4px !important; font-size:11px !important; letter-spacing:1.5px !important; }
 
   /* ── Tools icon grid ── */
-  #menu-screen .menu-tools-grid{ display:grid !important; grid-template-columns:repeat(4,1fr); gap:8px; }
+  #menu-screen .menu-tools-grid{ display:grid !important; grid-template-columns:repeat(3,1fr); gap:8px; }
   #menu-screen .menu-tool{
     position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
     padding:12px 4px; border-radius:10px; cursor:pointer; transition:all .2s;
@@ -6116,6 +6225,7 @@ textarea{
       <button class="menu-tool" onclick="showScreen('profile-screen');refreshProfileScreen()"><span class="mt-ico">👤</span><span class="mt-lbl">Profile</span></button>
       <button class="menu-tool" onclick="showScreen('builder-screen');renderBuilderCards()"><span class="mt-ico">🃏</span><span class="mt-lbl">Deck Builder</span></button>
       <button class="menu-tool" onclick="showScreen('upload-screen');buildUploadScreen()"><span class="mt-ico">🖼</span><span class="mt-lbl">Card Images</span></button>
+      <button class="menu-tool" id="menu-registry-btn" onclick="openRegistry()"><span class="mt-ico">📜</span><span class="mt-lbl">Registry</span><span id="menu-registry-badge" class="mt-badge" style="display:none">0</span></button>
       <button class="menu-tool" onclick="showRulesScreen()"><span class="mt-ico">📖</span><span class="mt-lbl">Rules</span></button>
       <button class="menu-tool" onclick="openGameSettings()"><span class="mt-ico">⚙</span><span class="mt-lbl">Options</span></button>
     </div>
@@ -6763,6 +6873,38 @@ textarea{
 </div>
 
 <!-- RULES -->
+
+<!-- 📜 COURT REGISTRY — card discovery viewer -->
+<div id="registry-screen" class="screen">
+  <div class="reg-top">
+    <button class="reg-back" onclick="showScreen('menu-screen')">← BACK</button>
+    <button class="reg-back reg-drawer-btn" onclick="document.getElementById('reg-list').classList.toggle('open')">☰ ENTRIES</button>
+    <h2 class="reg-title">COURT REGISTRY<small id="reg-sub">BASE SET · 0 / 0 REGISTERED</small></h2>
+    <div class="reg-filters">
+      <select class="reg-sel" id="reg-set" onchange="registrySetFilter('set',this.value)"></select>
+      <div id="reg-rarity-chips" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      <select class="reg-sel" id="reg-sort" onchange="registrySetFilter('sort',this.value)"><option value="number">By Number</option><option value="rarity">By Rarity</option><option value="name">By Name</option><option value="status">By Status</option></select>
+      <div class="reg-progress"><span id="reg-pct">0%</span><div class="reg-bar"><i id="reg-barfill"></i></div></div>
+    </div>
+  </div>
+  <div class="reg-layout">
+    <aside class="reg-panel reg-list" id="reg-list">
+      <div class="reg-drawer-head"><span>ENTRIES</span><button type="button" onclick="document.getElementById('reg-list').classList.remove('open')">✕</button></div>
+      <div class="reg-search"><input id="reg-q" type="search" placeholder="Search entries…" oninput="registrySetFilter('q',this.value)"></div>
+      <div class="reg-entries" id="reg-entries"></div>
+    </aside>
+    <section class="reg-panel reg-stage" id="reg-stage">
+      <div class="ringbg"></div>
+      <div class="reg-card" id="reg-card"></div>
+      <div class="reg-finishes" id="reg-finishes"></div>
+      <div class="reg-nav"><button onclick="registryStep(-1)">◂ PREV</button><span class="cnt" id="reg-cnt">0 OF 0</span><button onclick="registryStep(1)">NEXT ▸</button></div>
+    </section>
+    <aside class="reg-panel reg-dossier" id="reg-dossier">
+      <div class="reg-head" id="reg-head"></div>
+      <div class="reg-body" id="reg-body"></div>
+    </aside>
+  </div>
+</div>
 <div id="rules-screen" class="screen">
   <div style="display:flex;gap:8px;margin-bottom:8px">
     <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
@@ -9052,6 +9194,7 @@ function resolvePrizeClaim(victim, claimer, index){
 
 // Prize reveal animation — flip card face-up center screen, then fly to hand
 function showPrizeReveal(cardId, p, onDone, variant){
+  if(typeof markSighted==='function') markSighted(cardId);
   const c=DB[cardId];
   if(!c){ if(onDone)onDone(); return; }
   // Respect animation setting
@@ -15311,6 +15454,227 @@ function ctOnRemote(action,d){
   }
 }
 
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 📜 COURT REGISTRY — the card discovery viewer (Pokédex / Character Viewer style).
+//   States per card: UNREGISTERED (never seen) · SIGHTED (seen in a match or a pack
+//   reveal, or owned once and traded/sold away) · REGISTERED (owned right now).
+//   Per-account data lives in profiles.registry (jsonb) with a localStorage fallback;
+//   per-card editorial text (number, set, rarity, quote, bio) is admin-edited and
+//   stored in app_settings 'card_meta' as overrides on top of the card DB.
+// ═══════════════════════════════════════════════════════════════════════════
+let _registry={ sighted:{}, first:{}, seen:{} };   // cid→timestamp / cid→timestamp / cid→true (viewed in the Registry)
+let _registryDirty=false, _registrySaveTimer=null, _registryColumnOK=true;
+let _cardMeta={};                                   // cid→{number,rarity,name,quote,bio}
+let _reg={ set:'base_set', rarity:'all', sort:'number', q:'', sel:null, finish:'none', editing:false };
+
+function registryKey(){ return 'loc_registry_'+(_celUserId||'guest'); }
+async function loadRegistry(){
+  // local first (instant), then the profile column if it exists
+  try{ const ls=localStorage.getItem(registryKey()); if(ls){ const o=JSON.parse(ls); if(o&&typeof o==='object') _registry=Object.assign({sighted:{},first:{},seen:{}},o); } }catch(e){}
+  if(!_celSB||!_celUserId) return;
+  try{
+    const {data,error}=await _celSB.from('profiles').select('registry').eq('id',_celUserId).maybeSingle();
+    if(error){ _registryColumnOK=false; console.warn('[Registry] profiles.registry column missing — using local storage only. Add it with: alter table profiles add column registry jsonb;'); return; }
+    if(data&&data.registry){ const o=typeof data.registry==='string'?JSON.parse(data.registry):data.registry; if(o&&typeof o==='object'){
+      // merge: keep the earliest timestamps from either source
+      ['sighted','first'].forEach(k=>{ Object.entries(o[k]||{}).forEach(([cid,ts])=>{ if(!_registry[k][cid]||ts<_registry[k][cid]) _registry[k][cid]=ts; }); });
+      Object.assign(_registry.seen, o.seen||{});
+    } }
+  }catch(e){ _registryColumnOK=false; }
+  updateRegistryBadge();
+}
+function saveRegistry(){
+  try{ localStorage.setItem(registryKey(),JSON.stringify(_registry)); }catch(e){}
+  if(!_celSB||!_celUserId||!_registryColumnOK) return;
+  clearTimeout(_registrySaveTimer);
+  _registrySaveTimer=setTimeout(async()=>{ try{ const {error}=await _celSB.from('profiles').update({registry:_registry}).eq('id',_celUserId); if(error){ _registryColumnOK=false; console.warn('[Registry] save failed:',error.message); } }catch(e){} },1200);
+}
+function registryEligible(cid){ const c=DB[cid]; return !!(c&&!c.isToken&&c.type!=='token'&&c.type!=='system'); }
+function markSighted(cid){
+  if(!registryEligible(cid)||_registry.sighted[cid]) return;
+  _registry.sighted[cid]=Date.now(); saveRegistry(); updateRegistryBadge();
+}
+function markRegistered(cid){
+  if(!registryEligible(cid)) return;
+  if(!_registry.first[cid]){ _registry.first[cid]=Date.now(); _registry.sighted[cid]=_registry.sighted[cid]||_registry.first[cid]; saveRegistry(); updateRegistryBadge(); }
+}
+function registryState(cid){
+  if((typeof getCollectionCount==='function'?getCollectionCount(cid):(_collection[cid]||0))>0) return 'registered';
+  if(_registry.sighted[cid]||_registry.first[cid]) return 'sighted';
+  return 'unregistered';
+}
+function registryNewCount(){ return Object.keys(_registry.first).filter(cid=>registryEligible(cid)&&!_registry.seen[cid]&&registryState(cid)==='registered').length; }
+function updateRegistryBadge(){ const b=document.getElementById('menu-registry-badge'); if(!b) return; const n=registryNewCount(); b.textContent=n; b.style.display=n?'':'none'; }
+// Sight every opponent-controlled card currently visible on the board.
+function registryScanBoard(){
+  if(!G||!G.players) return;
+  const mine=G.is2v2?(G.humanPlayers||[1]):[1];
+  Object.keys(G.players).forEach(p=>{ if(mine.includes(+p)) return; const pl=G.players[p]; if(!pl) return;
+    (pl.field||[]).forEach(f=>{ markSighted(f.cid); (f.attachments||[]).forEach(a=>markSighted(a)); });
+    if(pl.herald) markSighted(pl.herald.origCid||pl.herald.cid);
+  });
+}
+
+// ── card metadata (admin-edited overrides) ──
+async function loadCardMeta(){
+  if(!_celSB) return;
+  try{ const {data}=await _celSB.from('app_settings').select('value').eq('key','card_meta').maybeSingle(); if(data&&data.value){ _cardMeta=JSON.parse(data.value)||{}; } }catch(e){}
+}
+async function saveCardMeta(){
+  if(!isAdmin()||!_celSB) return false;
+  try{ const {error}=await _celSB.from('app_settings').upsert({key:'card_meta',value:JSON.stringify(_cardMeta),updated_at:new Date().toISOString()},{onConflict:'key'}); if(error){ alert('Save failed (card_meta): '+error.message); return false; } return true; }
+  catch(e){ alert('Failed to save card info: '+e.message); return false; }
+}
+function cardMeta(cid){
+  const c=DB[cid]||{}; const m=_cardMeta[cid]||{};
+  return { number:m.number||c.cardNumber||'', setId:getCardSet(cid), rarity:m.rarity||c.rarity||'common', name:m.name||c.name||cid, quote:m.quote||c.quote||'', bio:m.bio||c.bio||c.lore||'' };
+}
+function cardNumberSort(n){ const m=String(n||'').match(/(\d+)/); return m?parseInt(m[1],10):9999; }
+
+// ── screen ──
+function openRegistry(){
+  showScreen('registry-screen');
+  _reg.editing=false;
+  if(!_cardSets.some(s=>s.id===_reg.set)) _reg.set=(_cardSets[0]&&_cardSets[0].id)||'';
+  renderRegistry();
+}
+function registrySetFilter(k,v){ _reg[k]=v; if(k!=='q') _reg.sel=null; renderRegistry(); }
+function registryEntries(){
+  let ids=Object.keys(DB).filter(registryEligible);
+  if(_reg.set==='__all__'){} else if(_reg.set==='__none__'){ ids=ids.filter(id=>!getCardSet(id)); } else ids=ids.filter(id=>getCardSet(id)===_reg.set);
+  if(_reg.rarity!=='all') ids=ids.filter(id=>(_reg.rarity==='herald'?DB[id].type==='herald':cardMeta(id).rarity===_reg.rarity));
+  if(_reg.q){ const q=_reg.q.toLowerCase(); ids=ids.filter(id=>{ const st=registryState(id); const m=cardMeta(id); return (st!=='unregistered'&&m.name.toLowerCase().includes(q))||String(m.number).toLowerCase().includes(q); }); }
+  const rr={common:0,uncommon:1,rare:2,legend:3,mythic:4}; const so={registered:0,sighted:1,unregistered:2};
+  ids.sort((a,b)=>{ const A=cardMeta(a),B=cardMeta(b);
+    if(_reg.sort==='rarity'){ const d=(rr[B.rarity]||0)-(rr[A.rarity]||0); if(d) return d; }
+    if(_reg.sort==='name'){ return (registryState(a)==='unregistered'?'~':A.name).localeCompare(registryState(b)==='unregistered'?'~':B.name); }
+    if(_reg.sort==='status'){ const d=so[registryState(a)]-so[registryState(b)]; if(d) return d; }
+    const d=cardNumberSort(A.number)-cardNumberSort(B.number); if(d) return d; return A.name.localeCompare(B.name); });
+  return ids;
+}
+function renderRegistry(){
+  const setSel=document.getElementById('reg-set'); if(!setSel) return;
+  // set dropdown
+  const opts=_cardSets.map(s=>`<option value="${s.id}">${s.name}</option>`).join('')+'<option value="__all__">All Cards</option>'+(isAdmin()?'<option value="__none__">— Unassigned —</option>':'');
+  if(setSel.innerHTML!==opts) setSel.innerHTML=opts; setSel.value=_reg.set;
+  document.getElementById('reg-sort').value=_reg.sort;
+  // rarity chips
+  const chips=document.getElementById('reg-rarity-chips');
+  const rl=[['all','ALL','#e8c570'],['common','C',RARITY_DEFS.common.hex],['uncommon','U',RARITY_DEFS.uncommon.hex],['rare','R',RARITY_DEFS.rare.hex],['legend','L',RARITY_DEFS.legend.hex],['mythic','M',RARITY_DEFS.mythic.hex],['herald','👑','#f97316']];
+  chips.innerHTML=rl.map(([v,l,h])=>`<button type="button" class="reg-chip${_reg.rarity===v?' on':''}" onclick="registrySetFilter('rarity','${v}')" title="${v}"><span class="gem" style="background:${h}"></span>${l}</button>`).join('');
+  const ids=registryEntries();
+  // progress for the whole set (ignores rarity/search filters)
+  const setIds=Object.keys(DB).filter(registryEligible).filter(id=>_reg.set==='__all__'?true:_reg.set==='__none__'?!getCardSet(id):getCardSet(id)===_reg.set);
+  const regN=setIds.filter(id=>registryState(id)==='registered').length;
+  const pct=setIds.length?Math.round(regN/setIds.length*100):0;
+  document.getElementById('reg-sub').textContent=(_reg.set==='__all__'?'ALL CARDS':_reg.set==='__none__'?'UNASSIGNED':setLabel(_reg.set).toUpperCase())+' · '+regN+' / '+setIds.length+' REGISTERED';
+  document.getElementById('reg-pct').textContent=pct+'%'; document.getElementById('reg-barfill').style.width=pct+'%';
+  // list
+  const list=document.getElementById('reg-entries'); list.innerHTML='';
+  if(!ids.length){ list.innerHTML='<div style="padding:20px;text-align:center;color:#6b7280;font-size:12px">No entries match.</div>'; }
+  ids.forEach(id=>{ const st=registryState(id); const m=cardMeta(id); const url=getImg(id);
+    const d=document.createElement('div'); d.className='reg-entry '+(st==='unregistered'?'unreg':st); d.dataset.cid=id;
+    const isNew=st==='registered'&&_registry.first[id]&&!_registry.seen[id];
+    const turl=st==='unregistered'?(getImg('cardback')||url):url;
+    d.innerHTML=`<div class="thumb">${turl?`<img src="${turl}" alt="" loading="lazy">`:'👑'}</div><div class="nm">${st==='unregistered'?'<span style="letter-spacing:4px;opacity:.6">???</span>':m.name}${isNew?'<span class="newb">NEW</span>':''}<small>${m.number?'No. '+m.number:(DB[id].type==='herald'?'HERALD':'PROMO')}</small></div><div class="dot"></div>`;
+    d.onclick=()=>{ registrySelect(id); document.getElementById('reg-list').classList.remove('open'); };
+    list.appendChild(d); });
+  if(!_reg.sel||!ids.includes(_reg.sel)) _reg.sel=ids[0]||null;
+  registrySelect(_reg.sel,true);
+}
+function registryStep(d){ const ids=registryEntries(); if(!ids.length) return; let i=ids.indexOf(_reg.sel); i=(i+d+ids.length)%ids.length; registrySelect(ids[i]); }
+function registrySelect(cid,quiet){
+  _reg.sel=cid; _reg.editing=false;
+  const ids=registryEntries(); const idx=ids.indexOf(cid);
+  document.querySelectorAll('#reg-entries .reg-entry').forEach(e=>e.classList.toggle('on',e.dataset.cid===cid));
+  const onEl=document.querySelector('#reg-entries .reg-entry.on'); if(onEl&&!quiet) onEl.scrollIntoView({block:'nearest'});
+  document.getElementById('reg-cnt').textContent=(idx+1)+' OF '+ids.length;
+  const card=document.getElementById('reg-card'); card.innerHTML=''; card.className='reg-card';
+  if(!cid){ document.getElementById('reg-head').innerHTML=''; document.getElementById('reg-body').innerHTML='<div class="reg-sealed">No entries in this view.</div>'; document.getElementById('reg-finishes').innerHTML=''; return; }
+  const c=DB[cid]; const m=cardMeta(cid); const st=registryState(cid);
+  const firstView=st==='registered'&&_registry.first[cid]&&!_registry.seen[cid];
+  if(st==='registered'){ if(!_registry.seen[cid]){ _registry.seen[cid]=true; saveRegistry(); updateRegistryBadge(); } }
+  // subject card
+  const url=st==='unregistered'?(getImg('cardback')||null):getImg(cid);
+  if(url){ const img=document.createElement('img'); img.src=url; img.alt=st==='unregistered'?'Unregistered card':m.name; card.appendChild(img); }
+  else { card.innerHTML='<div style="display:grid;place-items:center;height:100%;font-size:40px">👑</div>'; }
+  if(st==='unregistered'){ card.classList.add('unreg'); card.innerHTML+=`<div class="stamp unreg"><span>${m.number?'No. '+m.number:'???'}</span></div>`; }
+  else if(st==='sighted'){ card.classList.add('sighted'); card.innerHTML+='<div class="stamp"><span>SIGHTED</span></div>'; }
+  else {
+    const owned=_collectionFoil[cid]||{}; const fin=_reg.finish&&owned[_reg.finish]?_reg.finish:(_holoOwned[cid]&&owned[_holoOwned[cid]]?_holoOwned[cid]:'none');
+    if(fin!=='none'&&typeof applyHoloToArt==='function') applyHoloToArt(card,cid,{variant:fin});
+    if(firstView) card.classList.add('shimmer');
+  }
+  if(!quiet) { card.classList.remove('pop'); void card.offsetWidth; card.classList.add('pop'); }
+  // finishes row
+  const finEl=document.getElementById('reg-finishes'); finEl.innerHTML='';
+  if(st==='registered'){ const owned=_collectionFoil[cid]||{};
+    VARIANT_ORDER.forEach(v=>{ const meta=VARIANT_META[v]||{label:v,color:'#e8c570'}; const n=owned[v]||0; const b=document.createElement('button'); b.type='button'; b.className='reg-fin'+(n?' own':' locked')+((n&&(_reg.finish===v||(_reg.finish==='none'&&v==='none')))?' on':''); b.style.setProperty('--fc',meta.accent||'#e8c570'); b.textContent=(meta.label||v).toUpperCase()+(n?' ×'+n:''); if(n) b.onclick=()=>{ _reg.finish=v; registrySelect(cid,true); }; finEl.appendChild(b); }); }
+  // dossier
+  const rd=RARITY_DEFS[m.rarity]||RARITY_DEFS.common; const col=COLOR_DEFS[c.color]||null;
+  const head=document.getElementById('reg-head');
+  head.innerHTML=`<div class="reg-no"><span>${m.number?'No. '+m.number:(c.type==='herald'?'HERALD':'UNNUMBERED')}</span><span>·</span><span>${(setLabel(getCardSet(cid))||'NO SET').toUpperCase()}</span></div>
+    <div class="reg-name${st==='unregistered'?' unreg':''}">${st==='unregistered'?'UNREGISTERED':m.name}</div>
+    <div class="reg-tags"><span class="reg-tag rar" style="background:${rd.hex}">${rd.label}</span>${c.type==='herald'?'<span class="reg-tag">👑 HERALD</span>':''}${st!=='unregistered'?`<span class="reg-tag">${(c.transformOnly?'TRANSFORMATION':(c.type||'').replace('_',' ')).toUpperCase()}</span>${c.race?`<span class="reg-tag">${c.race.toUpperCase()}</span>`:''}${col?`<span class="reg-tag" style="border-color:${col.hex};color:${col.hex}">${col.pip} ${col.label.toUpperCase()}</span>`:''}`:''}</div>`;
+  const body=document.getElementById('reg-body'); let h='';
+  if(st==='unregistered'){
+    h+=`<div class="reg-sealed">This card has not been sighted.<br><br>FOUND IN: ${(setLabel(getCardSet(cid))||'Promo').toUpperCase()} PACKS<br>Play against it or pull it to add it to the Registry.</div>`;
+  } else {
+    if(c.type!=='energy_card'&&c.type!=='instant'&&c.type!=='equipment') h+=`<div class="reg-stats"><span>⚡ ${c.cost||0}</span><span>⚔ ${c.atk||0}</span><span>♥ ${c.hp||0}</span></div>`; else h+=`<div class="reg-stats"><span>⚡ ${c.cost||0}</span></div>`;
+    if(st==='registered'){
+      h+=m.quote?`<div class="reg-quote">❝ ${escapeHtml(m.quote)} ❞</div>`:`<div class="reg-quote empty">NO QUOTE RECORDED YET</div>`;
+      h+=`<div class="reg-sec">RECORD</div><div class="reg-bio">${m.bio?escapeHtml(m.bio).replace(/\n/g,'<br>'):'<span style="color:#6b7280">No record written for this card yet.</span>'}</div>`;
+    } else {
+      h+=`<div class="reg-sealed">🔒 SEALED — Register this card (own a copy) to read its quote and record.</div>`;
+    }
+    if(c.abilities&&c.abilities.length){ h+='<div class="reg-sec">ABILITIES</div>'+c.abilities.map(a=>`<div class="reg-abl"><span class="kind">${(a.type||'').toUpperCase()}${a.cost?' '+a.cost+'⚡':''}</span><b>${escapeHtml(a.label||'')}</b><div>${escapeHtml(a.text||'')}</div></div>`).join(''); }
+    if(c.keywords&&c.keywords.length) h+=`<div class="reg-tags">${c.keywords.map(k=>`<span class="reg-tag">${(KEYWORDS[k]&&KEYWORDS[k].label)||k}</span>`).join('')}</div>`;
+    const cnt=_collection[cid]||0; const fins=VARIANT_ORDER.filter(v=>(_collectionFoil[cid]||{})[v]>0).length;
+    const decks=Object.values(SAVED_DECKS||{}).filter(d=>d&&Array.isArray(d.cards)&&d.cards.includes(cid)).length;
+    h+=`<div class="reg-sec">REGISTRY</div><div class="reg-status">
+      <div>STATUS<b class="${st==='registered'?'reg':'sig'}">${st==='registered'?'REGISTERED':'SIGHTED'}</b></div>
+      <div>COPIES<b>${cnt}</b></div>
+      <div>FINISHES<b>${fins} / ${VARIANT_ORDER.length}</b></div>
+      <div>${st==='registered'?'FIRST REGISTERED':'FIRST SIGHTED'}<b>${fmtRegDate(st==='registered'?_registry.first[cid]:_registry.sighted[cid])}</b></div>
+      ${decks?`<div>IN DECKS<b>${decks}</b></div>`:''}</div>`;
+  }
+  if(isAdmin()) h+=`<div class="reg-admin" id="reg-admin"><button type="button" onclick="registryEdit('${cid}')">✎ EDIT ENTRY</button></div>`;
+  body.innerHTML=h; body.scrollTop=0;
+}
+function fmtRegDate(ts){ if(!ts) return '—'; try{ return new Date(ts).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}); }catch(e){ return '—'; } }
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+// ── admin inline editor ──
+function registryEdit(cid){
+  if(!isAdmin()) return;
+  const m=_cardMeta[cid]||{}; const c=DB[cid]||{}; const host=document.getElementById('reg-admin'); if(!host) return;
+  host.innerHTML=`<div class="reg-edit">
+    <div class="row"><label>CARD NUMBER<input id="re-number" value="${escapeHtml(m.number||c.cardNumber||'')}" placeholder="001/150"></label>
+    <label>SET<select id="re-set">${_cardSets.map(s=>`<option value="${s.id}"${getCardSet(cid)===s.id?' selected':''}>${s.name}</option>`).join('')}<option value=""${!getCardSet(cid)?' selected':''}>— None —</option></select></label></div>
+    <div class="row"><label>RARITY<select id="re-rarity">${Object.keys(RARITY_DEFS).map(r=>`<option value="${r}"${(m.rarity||c.rarity)===r?' selected':''}>${RARITY_DEFS[r].label}</option>`).join('')}</select></label>
+    <label>DISPLAY NAME<input id="re-name" value="${escapeHtml(m.name||c.name||'')}"></label></div>
+    <label>QUOTE (in the character's voice)<textarea id="re-quote" placeholder="“The courts bow to no one.”">${escapeHtml(m.quote||'')}</textarea></label>
+    <label>RECORD / BIO<textarea id="re-bio" style="min-height:110px" placeholder="Who this card is, where it comes from, what it does to a match.">${escapeHtml(m.bio||'')}</textarea></label>
+    <div class="btns"><button type="button" onclick="registrySave('${cid}')">💾 SAVE</button><button type="button" onclick="registrySelect('${cid}',true)">CANCEL</button></div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;color:#6b7280">Saved to Supabase app_settings · card_meta (overrides the card file)</div></div>`;
+  host.querySelector('#re-number').focus();
+}
+async function registrySave(cid){
+  if(!isAdmin()) return;
+  const g=id=>document.getElementById(id).value.trim();
+  const c=DB[cid]||{};
+  const m={ number:g('re-number'), rarity:g('re-rarity'), name:g('re-name'), quote:g('re-quote'), bio:g('re-bio') };
+  // store only what differs from the card file
+  const out={}; if(m.number&&m.number!==(c.cardNumber||'')) out.number=m.number; if(m.rarity&&m.rarity!==(c.rarity||'common')) out.rarity=m.rarity; if(m.name&&m.name!==c.name) out.name=m.name; if(m.quote) out.quote=m.quote; if(m.bio) out.bio=m.bio;
+  if(Object.keys(out).length) _cardMeta[cid]=out; else delete _cardMeta[cid];
+  const setV=g('re-set'); if(setV!==getCardSet(cid)){ await assignCardSet(cid,setV); }
+  const ok=await saveCardMeta();
+  if(ok) log&&log('Registry: '+(m.name||cid)+' saved.','gain');
+  renderRegistry(); registrySelect(cid,true);
+}
+// keyboard: ←/→ step entries while the Registry is open
+document.addEventListener('keydown',(e)=>{ const sc=document.getElementById('registry-screen'); if(!sc||!sc.classList.contains('active')) return; if(e.target&&['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return; if(e.key==='ArrowRight') registryStep(1); if(e.key==='ArrowLeft') registryStep(-1); });
+
 function coin(){return Math.random()<.5;}
 // Visual coin flip — spins a 3D coin, lands on the given result, then runs onDone.
 function showCoinFlip(heads, onDone){
@@ -16217,6 +16581,7 @@ function showRiftZone(p){
 // ═══════════════════════════════════════════════════
 function renderAll(){
   if(G&&!G._aiTurn&&G._aiAuto) G._aiAuto=false;
+  if(typeof registryScanBoard==='function') try{ registryScanBoard(); }catch(e){}
   if(!G||!G.players)return;
   if(typeof syncAdminTester==='function') syncAdminTester();
   if(typeof tutorialWatch==='function') tutorialWatch();
@@ -17703,6 +18068,7 @@ function addCardToCollection(cid, foil){
   if(!_collectionFoil[cid]) _collectionFoil[cid]={};
   _collectionFoil[cid][variant]=(_collectionFoil[cid][variant]||0)+1;
   _collection[cid]=(_collection[cid]||0)+1; // running total across all variants
+  if(typeof markRegistered==='function') markRegistered(cid);
   if(variant!=='none'){
     // Best-owned style drives single-treatment renders (field/full-card default).
     const rank=s=>({reverse:1,classic:2,cosmic:3,gold:4,ruby:5}[s]||0);
@@ -18151,6 +18517,7 @@ function renderCardManagerList(){
     if(typeFilter !== 'all'){ const _et=c.transformOnly?'transform':c.type; if(_et !== typeFilter) return false; }
     if(statusFilter === 'enabled' && _disabledCards[id]) return false;
     if(statusFilter === 'disabled' && !_disabledCards[id]) return false;
+    if(statusFilter === 'needsinfo'){ const m=(typeof cardMeta==='function')?cardMeta(id):{}; if(m.number&&getCardSet(id)&&m.quote&&m.bio) return false; }
     if(setFilter !== 'all'){ const cs=getCardSet(id); if(setFilter==='__none__'){ if(cs) return false; } else if(cs!==setFilter) return false; }
     if(filter){
       const hay = (c.name + ' ' + (c.color || '') + ' ' + (c.race || '') + ' ' + (c.subtypes || []).join(' ')).toLowerCase();
@@ -22896,6 +23263,8 @@ window.addEventListener('load',async()=>{
       await loadNewsSlides();
       await loadHoloOwned();
       await loadCollectionFoil();
+      await loadRegistry();
+      await loadCardMeta();
       await loadAdminHoloMode();
       updateAdminBadge();
       applyAdminToggleEffects();
@@ -24106,6 +24475,7 @@ window.addEventListener('load',async()=>{
         <option value="all">All Status</option>
         <option value="enabled">✓ Enabled Only</option>
         <option value="disabled">✗ Disabled Only</option>
+        <option value="needsinfo">📜 Missing Registry Info</option>
       </select>
       <select id="admin-card-set-filter" class="admin-input" onchange="renderCardManagerList()" style="width:auto;min-width:160px">
         <option value="all">All Sets</option>
