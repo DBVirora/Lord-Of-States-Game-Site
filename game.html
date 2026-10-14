@@ -4298,14 +4298,6 @@ textarea{
 }
 
 /* Card size scaling classes (applied to #game-screen) */
-#game-screen.cards-small .card-slot{ width:88px;height:124px; }
-#game-screen.cards-small .card-art-area{ height:80px; }
-#game-screen.cards-small .hand-card{ width:78px;height:110px; }
-#game-screen.cards-small .hand-art-area{ height:70px; }
-#game-screen.cards-large .card-slot{ width:124px;height:174px; }
-#game-screen.cards-large .card-art-area{ height:116px; }
-#game-screen.cards-large .hand-card{ width:110px;height:156px; }
-#game-screen.cards-large .hand-art-area{ height:102px; }
 
 /* Disable animations class */
 #game-screen.no-animations *{
@@ -4963,385 +4955,6 @@ textarea{
   .xp-bar-label{display:none;}
 }
 
-/* ═══════════════════════════════════════════════════════
-   MOBILE OPTIMIZATION — only active on phones (<=768px)
-   Desktop layout is completely untouched.
-   Smart hybrid: board stays focused, side panels become drawers.
-   ═══════════════════════════════════════════════════════ */
-
-/* Drawer tab + backdrop are hidden on desktop */
-.mobile-drawer-tab{ display:none; }
-.mobile-drawer-backdrop{ display:none; }
-
-@media (max-width:768px){
-  /* ─── Game screen container ─── */
-  #game-screen{
-    padding:4px 6px 0;
-    height:calc(100vh - 46px);
-    height:calc(100dvh - 46px);
-  }
-
-  /* ─── Battle layout: collapse 3 columns → single board column ─── */
-  .battle-layout{
-    grid-template-columns:1fr !important;
-    gap:6px;
-  }
-
-  /* Board column is the full-width focus */
-  .board-column{
-    gap:5px;
-  }
-
-  /* ─── LEFT SIDEBAR (prizes + player panels) → slide-in drawer ─── */
-  .prize-sidebar{
-    position:fixed;
-    top:0;
-    left:0;
-    bottom:0;
-    width:82vw;
-    max-width:340px;
-    z-index:9300;
-    transform:translateX(-105%);
-    transition:transform .28s cubic-bezier(.4,0,.2,1);
-    box-shadow:6px 0 30px rgba(0,0,0,.6);
-    border-radius:0 16px 16px 0;
-    padding-top:50px;
-  }
-  #game-screen.drawer-prizes-open .prize-sidebar{
-    transform:translateX(0);
-  }
-
-  /* ─── RIGHT SIDEBAR (hover preview) hidden on mobile ─── */
-  /* On touch there's no hover; card preview uses a bottom sheet instead */
-  .hover-preview-sidebar{
-    display:none !important;
-  }
-  /* Sidebar is hidden on mobile, so the battle log falls back to the center bar */
-  #log-box-center{display:block !important;flex:1;height:50px;min-height:40px}
-
-  /* ─── Drawer tab button (left edge) — prominent pull-tab ─── */
-  .mobile-drawer-tab{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:2px;
-    position:fixed;
-    top:42%;
-    transform:translateY(-50%);
-    left:0;
-    width:44px;
-    height:96px;
-    background:linear-gradient(135deg,rgba(200,164,74,.9),rgba(150,110,40,.92));
-    border:2px solid rgba(255,220,140,.7);
-    border-left:none;
-    border-radius:0 16px 16px 0;
-    font-size:24px;
-    z-index:9200;
-    cursor:pointer;
-    box-shadow:3px 2px 18px rgba(200,164,74,.5),0 0 0 1px rgba(0,0,0,.3);
-    animation:mobile-tab-pulse 2.2s ease-in-out infinite;
-  }
-  .mobile-drawer-tab::after{
-    content:'PRIZES';
-    font-family:'Cinzel',serif;
-    font-size:7px;
-    font-weight:700;
-    letter-spacing:1px;
-    color:#1a1206;
-    writing-mode:initial;
-  }
-  @keyframes mobile-tab-pulse{
-    0%,100%{ box-shadow:3px 2px 18px rgba(200,164,74,.5),0 0 0 1px rgba(0,0,0,.3); }
-    50%{ box-shadow:3px 2px 26px rgba(255,210,120,.85),0 0 0 1px rgba(0,0,0,.3); transform:translateY(-50%) translateX(3px); }
-  }
-  #game-screen.drawer-prizes-open #mobile-prizes-tab{
-    left:82vw;
-    max-width:none;
-    animation:none;
-  }
-  /* When open, the tab becomes a clear "close" affordance */
-  #game-screen.drawer-prizes-open #mobile-prizes-tab::after{
-    content:'CLOSE';
-  }
-
-  /* ─── Drawer backdrop ─── */
-  .mobile-drawer-backdrop{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.5);
-    z-index:9250;
-  }
-  #game-screen.drawer-prizes-open .mobile-drawer-backdrop{
-    display:block;
-  }
-
-  /* ─── Player area: tighter on mobile ─── */
-  .player-area{
-    padding:6px 8px;
-    border-radius:10px;
-  }
-  .player-area-header{
-    margin-bottom:4px;
-  }
-  .player-area-header span{
-    font-size:12px !important;
-  }
-
-  /* ─── Field wrapper: allow horizontal scroll for zones ─── */
-  .field-wrapper{
-    gap:5px;
-    overflow-x:auto;
-    overflow-y:visible;
-    -webkit-overflow-scrolling:touch;
-  }
-
-  /* Shrink the herald / deck / rift / location zones on mobile */
-  .herald-zone{ min-width:74px; max-width:74px; }
-  .herald-slot{ width:64px; height:90px; }
-  .deck-pile-wrap{ min-width:54px; }
-  .deck-pile{ width:54px; height:76px; }
-  .rift-zone-wrap{ min-width:60px; }
-  .rift-zone-pile{ width:52px; height:74px; }
-  .location-zone{ min-width:80px; max-width:80px; padding:5px; }
-
-  /* ─── Cards smaller on mobile ─── */
-  .card-slot{ width:78px; height:110px; }
-  .card-art-area{ height:70px; font-size:22px; }
-  .card-name-sm{ font-size:8px; }
-  .hand-card{ width:72px; height:102px; }
-  .hand-art-area{ height:64px; font-size:20px; }
-
-  /* Hover-zoom is smaller on mobile (and tap-based) */
-  .card-slot:hover{
-    transform:scale(1.15) translateY(-8px);
-  }
-  .hand-card:hover{
-    transform:translateY(-8px) scale(1.08);
-  }
-
-  /* ─── Center command bar: horizontal scroll, stays one row ─── */
-  .center-strip{
-    height:auto;
-    flex-wrap:wrap;
-    gap:5px;
-    padding:2px 0;
-  }
-  .phase-bar-center{
-    padding:0 5px;
-    gap:3px;
-    height:42px;
-    overflow-x:auto;
-  }
-  .phase-pill{ padding:3px 6px; }
-  .phase-pill-label{ font-size:8px; }
-  .phase-pill-icon{ font-size:13px; }
-  .center-tools{
-    padding:0 5px;
-    gap:3px;
-    height:42px;
-  }
-  .center-tools .action-tool-btn{
-    width:32px; height:32px; font-size:15px;
-  }
-  .center-strip .end-turn-btn{
-    height:40px;
-    font-size:12px;
-    padding:0 12px;
-  }
-  .center-strip .log-box{
-    flex:1 1 100%;
-    height:48px;
-    min-height:48px;
-    margin-left:0;
-    font-size:9px;
-  }
-
-  /* ─── Hand dock at bottom ─── */
-  .hand-dock-label{
-    font-size:9px;
-    gap:5px;
-  }
-  .hand-area{
-    padding:20px 6px 4px;
-    gap:5px;
-  }
-
-  /* ─── Floating menu cluster (settings/home) ─── */
-  #game-menu-cluster{
-    bottom:8px;
-    right:8px;
-    gap:6px;
-  }
-  #game-menu-cluster .action-tool-btn{
-    width:38px; height:38px; font-size:17px;
-  }
-
-  /* ─── Prize cards in drawer: 2-col grid, properly sized ─── */
-  .prize-card{ width:60px; height:84px; }
-
-  /* ─── Top HUD: compact on mobile ─── */
-  .hud-bar{ padding:4px 8px; gap:6px; }
-  .hud-logo{ font-size:13px; }
-  .hud-identity{ display:none; } /* hide welcome/avatar block to save space in-game */
-  .xp-badge{ padding:3px 8px 3px 3px; }
-  .xp-bar-wrap{ min-width:70px; }
-  .xp-level-ring{ width:26px; height:26px; font-size:11px; }
-
-  /* ═══════════════════════════════════════════════════
-     MOBILE BOARD FIT — make the whole battle board fit the
-     phone screen instead of stacking into one long scroll.
-     ═══════════════════════════════════════════════════ */
-
-  /* The board column scrolls internally only if truly needed, but each section
-     is height-capped so the layout reads top→bottom: opp field, center, your
-     field, your hand — all visible without a giant page scroll. */
-  .board-column{
-    flex:1;
-    min-height:0;
-    overflow-y:auto;
-    -webkit-overflow-scrolling:touch;
-  }
-
-  /* Player areas: don't let them grow unbounded; size to content */
-  .player-area{
-    flex:0 0 auto;
-    padding:5px 7px;
-  }
-  .field-wrapper{
-    flex:0 0 auto;
-    min-height:0;
-  }
-  .char-field{
-    flex:1;
-    min-height:96px;
-    padding:5px;
-    gap:5px;
-  }
-
-  /* OPPONENT HAND: show as small face-down stack, not full cards.
-     This is the big fix — the opponent's hand was rendering full-size. */
-  .opp-hand{
-    padding:6px 6px 4px;
-    gap:3px;
-    max-height:54px;
-    overflow:hidden;
-  }
-  .opp-hand .hand-card,
-  .opp-hand .card-slot{
-    width:36px !important;
-    height:50px !important;
-    flex-shrink:0;
-  }
-  .opp-hand .hand-art-area,
-  .opp-hand .card-art-area{
-    height:32px !important;
-    font-size:11px !important;
-  }
-  .opp-hand .card-name-sm,
-  .opp-hand .hand-info-area{
-    display:none !important;
-  }
-
-  /* Opponent's "Opponent hand" label smaller */
-  .player-area > div[style*="Opponent hand"]{
-    font-size:8px !important;
-    margin-top:2px !important;
-  }
-
-  /* Your hand dock pinned, scrolls sideways, doesn't eat the whole screen */
-  .hand-dock{
-    flex:0 0 auto;
-  }
-  .hand-dock .hand-area{
-    max-height:128px;
-  }
-}
-
-/* Extra-small phones */
-@media (max-width:420px){
-  .card-slot{ width:68px; height:96px; }
-  .card-art-area{ height:60px; }
-  .hand-card{ width:64px; height:90px; }
-  .hand-art-area{ height:56px; }
-  .prize-card{ width:54px; height:76px; }
-}
-
-/* ═════════════════════════════════════════
-   MOBILE 1V1 BOARD FIX v2 — portrait phones (≤768px). Appended last so it
-   wins on source order. Everything here is phone-only; desktop (≥769px)
-   is never touched.
-   ═════════════════════════════════════════ */
-@media (max-width:768px){
-  /* 1) Kill the 3-column grid entirely so the board uses the FULL width
-     (removes the dead space on the right + the left squish). */
-  #game-screen .battle-layout{ display:block !important; }
-  #game-screen .board-column{ width:100% !important; min-width:0 !important; }
-  #game-screen .player-area,
-  #game-screen .field-wrapper,
-  #game-screen .char-field{ width:100% !important; box-sizing:border-box; }
-
-  /* 2) HERALD → compact thumbnail (was rendering as a full-size card that ate
-     the whole screen). !important beats the inline art height set in JS. */
-  #game-screen .herald-zone{ min-width:56px !important; max-width:56px !important; gap:2px !important; }
-  #game-screen .herald-slot{ width:52px !important; height:74px !important; }
-  #game-screen .herald-slot .card-art-area{ height:44px !important; }
-  #game-screen .herald-slot .card-info{ padding:2px 3px !important; }
-  #game-screen .herald-slot .card-name-sm{ font-size:8px !important; }
-  #game-screen .herald-slot .card-stats-row{ font-size:8px !important; }
-  #game-screen .herald-slot .card-stats-row span{ font-size:8px !important; }
-  #game-screen .herald-zone-label{ font-size:8px !important; letter-spacing:1px !important; }
-
-  /* 3) FIELD ROW reflow: aux zones form one tight strip; the CHARACTER field
-     drops to its own full-width row so your characters are big enough to read/tap. */
-  #game-screen .field-wrapper{ flex-wrap:wrap !important; gap:4px !important; align-items:flex-start !important; overflow:visible !important; }
-  #game-screen .deck-pile-wrap{ min-width:46px !important; }
-  #game-screen .deck-pile{ transform:scale(.55); transform-origin:top center; margin-bottom:-38px; }
-  #game-screen .deck-pile-label{ font-size:8px !important; }
-  #game-screen .rift-zone-wrap{ min-width:44px !important; }
-  #game-screen .rift-zone-pile{ width:38px !important; height:54px !important; }
-  #game-screen .rift-zone-label,
-  #game-screen .rift-zone-wrap > div{ font-size:8px !important; }
-  #game-screen .location-zone{ min-width:60px !important; max-width:78px !important; padding:4px !important; }
-  #game-screen .char-field{ flex:1 1 100% !important; min-height:120px !important; padding:5px !important; justify-content:flex-start !important; }
-
-  /* 4) Character (field) cards: readable, wrap neatly, ~4 per row on 430px. */
-  #game-screen .char-field .card-slot{ width:82px !important; height:115px !important; }
-  #game-screen .char-field .card-art-area{ height:76px !important; }
-  #game-screen .char-field .card-name-sm{ font-size:9px !important; }
-
-  /* 5) Tighten vertical rhythm so both boards + your hand fit on one screen. */
-  #game-screen .player-area{ padding:5px 7px !important; margin:0 !important; }
-  #game-screen .player-area-header{ margin-bottom:3px !important; }
-  #game-screen .player-area-header span{ font-size:11px !important; }
-  #game-screen .field-wrapper{ padding:2px 0 !important; }
-
-  /* 6) No sideways page scroll; keep everything inside the viewport. */
-  #game-screen{ overflow-x:hidden !important; }
-  #game-screen .battle-layout, #game-screen .board-column{ overflow-x:hidden !important; }
-
-  /* 7) Center strip (phases + tools): compact, wraps instead of overflowing. */
-  #game-screen .center-strip{ height:auto !important; min-height:0 !important; flex-wrap:wrap !important; padding:4px 6px !important; gap:5px !important; }
-  #game-screen .phase-bar-center{ gap:4px !important; }
-  #game-screen .phase-pill{ font-size:9px !important; padding:4px 8px !important; }
-  #game-screen .center-tools{ padding-left:6px !important; gap:3px !important; }
-  #game-screen .center-tools button{ font-size:12px !important; width:28px !important; height:28px !important; padding:2px !important; }
-  #game-screen .end-turn-btn{ font-size:10px !important; padding:5px 10px !important; }
-
-  /* 8) Opponent hand: strict face-down mini stack (backup enforcement). */
-  #game-screen .opp-hand{ max-height:56px !important; overflow:hidden !important; }
-  #game-screen .opp-hand .hand-card{ width:34px !important; height:48px !important; min-width:34px !important; }
-  #game-screen .opp-hand .hand-art-area{ height:46px !important; }
-  #game-screen .opp-hand .hand-name, #game-screen .opp-hand .hand-info{ display:none !important; }
-
-  /* 9) Your hand: readable but capped. */
-  #game-screen .hand-dock{ padding:4px 6px 6px !important; }
-  #game-screen .hand-card{ width:78px !important; height:110px !important; }
-  #game-screen .hand-art-area{ height:70px !important; }
-  #game-screen .hand-name{ font-size:9px !important; }
-}
-
 /* ─── MOBILE CARD PREVIEW BOTTOM SHEET (replaces hover on touch) ─── */
 .mobile-card-sheet{
   display:none;
@@ -5801,100 +5414,453 @@ textarea{
   .menu-section:has(.menu-btn){ gap:4px 10px; }
 }
 
-/* ════════════════════════════════════════════════════════════════
-   ⚔ BATTLE HUD REDESIGN  —  layered overrides (scoped to #game-screen)
-   Restyles existing elements only; all IDs / handlers untouched.
-   DESKTOP-ONLY: this pass sizes the board for large screens (big herald,
-   big cards, wide rails). It is scoped to ≥769px so phones use the
-   compact mobile layout defined earlier.
-   ════════════════════════════════════════════════════════════════ */
-@media (min-width:769px){
-#game-screen{ --rd-accent:#00d4ff; --rd-accent-glow:rgba(0,212,255,.45); --rd-red:#f87171; --rd-redglow:rgba(239,68,68,.4); }
 
-/* wider rails for breathing room */
-#game-screen .battle-layout{ grid-template-columns:230px minmax(0,1fr) 344px !important; gap:16px !important; }
-#game-screen .prize-sidebar{ gap:12px !important; border-color:rgba(120,150,200,.14) !important; }
+/* ════════════════════════════════════════════════════════════════════════
+   ⚔ ARENA LAYOUT (v8) — the whole board sizes itself from ONE card width
+   (--cw) solved from BOTH viewport width and height, so a 1280×720 laptop,
+   a 428×740 phone, a 1080p TV and a 3440×1440 ultrawide all fit without
+   overflow. Scoped to #game-screen; all element IDs/handlers unchanged.
+   Phone (≤768px) = stacked layout + bottom sheet. Settings: data-look (3d /
+   flat) and .cards-small/.cards-large (--size-mult).
+   ════════════════════════════════════════════════════════════════════════ */
+#game-screen{
+  --ar-gold:#c8a44a; --ar-gold2:#e8c570; --ar-cyan:#00d4ff; --ar-red:#f87171; --ar-green:#22c55e; --ar-violet:#a78bfa;
+  --ar-panel:rgba(13,12,30,.82); --ar-panel2:rgba(20,18,44,.9); --ar-line:rgba(200,164,74,.22); --ar-line2:rgba(120,140,200,.16);
+  --hud:46px;
+  --rail:clamp(228px,16vw,380px);
+  --gap:clamp(4px,.55vw,12px);
+  --seam:56px;
+  --size-mult:1; --cw-max:clamp(186px,13vh,300px);
+  --cw:clamp(58px, calc(min(calc((100vw - var(--rail) - 120px) / 8.8), calc((100dvh - 196px) * .25)) * var(--size-mult)), var(--cw-max));
+  --ch:calc(var(--cw) / .7);
+  --pw:calc(var(--cw) * .6);
+  --lw:calc(var(--cw) * .72);
+  --idw:clamp(124px, calc(var(--cw) * 1.25), 236px);
+  --fs:clamp(9px, calc(var(--cw) * .085), 13px);
+  --tilt:0deg;
+  padding:var(--gap) !important;
+  height:calc(100dvh - var(--hud)) !important;
+  gap:0 !important;
+  overflow:hidden !important;
+}
+#game-screen.cards-small{ --size-mult:.85; --cw-max:clamp(150px,10vh,220px); }
+#game-screen.cards-large{ --size-mult:1.15; --cw-max:clamp(220px,15vh,340px); }
+#game-screen[data-look="3d"]{ --tilt:11deg; }
 
-/* ── PLAYER PANELS ── colour-coded, accent top-line ── */
-#game-screen .player-panel{ position:relative; border-radius:14px !important; padding:11px !important; }
-#game-screen .player-panel::before{ content:''; position:absolute; top:0; left:12px; right:12px; height:2px; border-radius:2px; opacity:.85; }
-#game-screen .opp-panel{ border:1px solid rgba(239,68,68,.3) !important; background:linear-gradient(165deg,rgba(40,14,18,.6),rgba(10,8,16,.72)) !important; }
-#game-screen .opp-panel::before{ background:linear-gradient(90deg,transparent,rgba(239,68,68,.7),transparent); }
-#game-screen .you-panel{ border:1px solid var(--rd-accent) !important; background:linear-gradient(165deg,rgba(12,26,34,.62),rgba(8,12,18,.74)) !important; box-shadow:0 0 0 1px rgba(0,212,255,.12),0 0 22px rgba(0,212,255,.1) !important; }
-#game-screen .you-panel::before{ background:linear-gradient(90deg,transparent,var(--rd-accent),transparent); }
-#game-screen .you-panel .player-panel-name{ color:#bfe9ff !important; }
-#game-screen .player-panel-avatar{ border-radius:11px !important; width:44px !important; height:44px !important; }
-#game-screen .player-panel-energy{ border-radius:9px !important; }
-#game-screen .energy-big-amount{ color:#fbbf24 !important; text-shadow:0 0 8px rgba(251,191,36,.45); }
+/* ── shell: rail | arena ── */
+#game-screen .battle-layout{ display:grid; grid-template-columns:var(--rail) minmax(0,1fr); gap:var(--gap); flex:1; min-height:0; min-width:0; overflow:visible; }
 
-/* ── PRIZE CARDS ── fill 2-col, ornate glow ── */
-#game-screen .prize-grid{ grid-template-columns:1fr 1fr !important; gap:7px !important; justify-items:center !important; }
-#game-screen .prize-card{ width:74px; height:104px; border:1.5px solid rgba(200,164,74,.4); box-shadow:inset 0 0 0 1px rgba(232,197,112,.1); }
-#game-screen .prize-card.claimable{ border-color:#fbbf24; }
-#game-screen .prize-card.claimed{ border-color:rgba(75,85,99,.3); }
-#game-screen .prize-section-label{ letter-spacing:2px; }
+/* ── LEFT RAIL ── */
+#game-screen .info-rail{ display:flex; flex-direction:column; align-items:stretch; justify-content:flex-start; min-height:0; min-width:0; padding:0; background:var(--ar-panel); border:1px solid var(--ar-line2); border-radius:14px; overflow:hidden; }
+#game-screen .rail-tabs{ display:flex; border-bottom:1px solid var(--ar-line2); flex-shrink:0; }
+#game-screen .rail-tab{ flex:1; background:none; border:0; padding:9px 4px; font-family:'Orbitron',sans-serif; font-size:9px; letter-spacing:2px; color:#8d91ab; border-bottom:2px solid transparent; cursor:pointer; }
+#game-screen .rail-tab[aria-selected="true"]{ color:var(--ar-gold2); border-bottom-color:var(--ar-gold); }
+#game-screen .rail-pane{ display:none; flex:1; min-height:0; overflow:auto; padding:12px; }
+#game-screen .rail-pane.on{ display:flex; flex-direction:column; }
+#game-screen .hover-preview-placeholder{ min-height:0; flex:1; }
+#game-screen .hover-preview-content{ min-height:0; width:100%; }
+#game-screen .hover-preview-img{ border:2px solid var(--ar-gold2); box-shadow:0 0 24px rgba(232,197,112,.3),0 10px 28px rgba(0,0,0,.6); }
+#game-screen .hover-preview-name{ font-size:17px; }
+#game-screen #rail-log .sidebar-log-label{ margin-top:0; padding-top:0; border-top:0; }
+#game-screen #rail-log .log-box{ flex:1 1 auto; min-height:0; height:auto; max-height:none; margin-top:8px; font-size:11px; line-height:1.55; }
+#game-screen .rail-chat-note{ font-size:12px; color:#5b5f78; line-height:1.5; }
 
-/* ── ARENAS ── defined battlefields with subtle grid + colored floor ── */
-#game-screen .player-area{ position:relative; }
-#game-screen #p2-field, #game-screen .opp-hand{ background:
-   radial-gradient(ellipse at 50% 100%, rgba(239,68,68,.07), transparent 70%),
-   linear-gradient(rgba(239,68,68,.035) 1px, transparent 1px) 0 0/46px 46px,
-   rgba(0,0,0,.2) !important;
-   border:1px solid rgba(239,68,68,.16) !important; }
-#game-screen #p1-field{ background:
-   radial-gradient(ellipse at 50% 0%, rgba(0,212,255,.08), transparent 70%),
-   linear-gradient(rgba(0,212,255,.04) 1px, transparent 1px) 0 0/46px 46px,
-   rgba(0,0,0,.2) !important;
-   border:1px solid rgba(0,212,255,.16) !important; }
+/* ── ARENA ── */
+#game-screen .arena{ position:relative; display:grid; grid-template-rows:minmax(0,1fr) var(--seam) minmax(0,1fr) auto; gap:var(--gap); min-height:0; min-width:0; border-radius:16px; overflow:hidden; border:1px solid var(--ar-line2);
+  background:
+    radial-gradient(120% 60% at 50% 50%, rgba(60,40,110,.22), transparent 60%),
+    linear-gradient(180deg,rgba(40,12,18,.35) 0%, rgba(8,8,22,0) 42%, rgba(8,8,22,0) 58%, rgba(0,70,90,.28) 100%),
+    #0c0b22; }
+#game-screen .arena::before,#game-screen .arena::after{ content:''; position:absolute; left:-8%; width:116%; height:46%; pointer-events:none; opacity:0; transition:opacity .4s; z-index:0; }
+#game-screen .arena::before{ top:0; transform-origin:50% 0;
+  background:linear-gradient(90deg,transparent 49.5%,rgba(248,113,113,.12) 50%,transparent 50.5%),
+    repeating-linear-gradient(90deg,rgba(248,113,113,.11) 0 1px,transparent 1px calc(100% / 9)),
+    repeating-linear-gradient(180deg,rgba(248,113,113,.12) 0 1px,transparent 1px 44px),
+    radial-gradient(60% 100% at 50% 100%,rgba(248,113,113,.14),transparent 70%); }
+#game-screen .arena::after{ bottom:0; transform-origin:50% 100%;
+  background:linear-gradient(90deg,transparent 49.5%,rgba(0,212,255,.12) 50%,transparent 50.5%),
+    repeating-linear-gradient(90deg,rgba(0,212,255,.11) 0 1px,transparent 1px calc(100% / 9)),
+    repeating-linear-gradient(180deg,rgba(0,212,255,.12) 0 1px,transparent 1px 44px),
+    radial-gradient(60% 100% at 50% 0%,rgba(0,212,255,.14),transparent 70%); }
+#game-screen[data-look="3d"] .arena::before{ opacity:1; transform:perspective(900px) rotateX(-48deg); }
+#game-screen[data-look="3d"] .arena::after{ opacity:1; transform:perspective(900px) rotateX(48deg); }
+#game-screen[data-look="flat"] .arena{ background:linear-gradient(180deg,rgba(40,12,18,.22),rgba(8,8,22,0) 45%,rgba(8,8,22,0) 55%,rgba(0,70,90,.18)),#0c0b22; }
+#game-screen .arena > *{ position:relative; z-index:1; }
 
-/* ── LOCATIONS ── defined 2-col panel, wider, 4-up grid ── */
-#game-screen .location-zone{ min-width:300px !important; max-width:300px !important; display:grid !important; grid-template-columns:repeat(2,1fr) !important; grid-auto-rows:min-content; gap:11px !important; align-content:start !important; background:rgba(10,22,14,.34) !important; border:1px solid rgba(34,197,94,.22) !important; border-radius:10px !important; padding:11px !important; overflow:hidden; }
-#game-screen .location-zone-label{ grid-column:1 / -1; }
-#game-screen .location-zone .card-slot{ width:100% !important; height:auto !important; }
-#game-screen .location-zone .card-art-area{ height:118px !important; }
-#game-screen .location-zone .card-name-sm{ font-size:12px !important; }
+/* ── a SIDE = one player's row (mirrored for the opponent) ── */
+#game-screen .side.player-area{ display:grid; align-items:center; gap:var(--gap); padding:0 var(--gap); min-height:0; min-width:0; background:none; border:0; box-shadow:none; border-radius:0; flex:none; overflow:visible; }
+#game-screen .side .strip{ display:contents; }
+#game-screen .side.opp{ grid-template-columns:var(--idw) auto minmax(0,1fr) auto auto; grid-template-areas:'ident locs field herald piles'; }
+#game-screen .side.you{ grid-template-columns:auto auto minmax(0,1fr) auto var(--idw); grid-template-areas:'piles herald field locs ident'; }
+#game-screen .side .ident{ grid-area:ident; } #game-screen .side .location-zone{ grid-area:locs; } #game-screen .side .char-field{ grid-area:field; }
+#game-screen .side .herald-zone{ grid-area:herald; } #game-screen .side .piles{ grid-area:piles; }
+#game-screen .side .opp-hand{ display:none; }
+#game-screen .side.crowded{ --idw:138px; }
+#game-screen .side.opp.crowded{ grid-template-columns:138px auto minmax(0,1fr) auto auto; }
+#game-screen .side.you.crowded{ grid-template-columns:auto auto minmax(0,1fr) auto 138px; }
 
-/* ── HERALD ── the hero card, biggest on the board ── */
-#game-screen .herald-zone{ min-width:190px !important; max-width:190px !important; }
-#game-screen .herald-slot{ width:182px !important; height:254px !important; box-shadow:0 0 16px rgba(168,85,247,.5) !important; }
-#game-screen .herald-slot .card-art-area{ height:170px !important; }
-#game-screen .herald-slot .card-name-sm{ font-size:14px !important; }
+/* zone labels */
+#game-screen .herald-zone-label,#game-screen .location-zone-label,#game-screen .pile-label{ font-family:'Cinzel',serif; font-size:calc(var(--fs) * .85); letter-spacing:2px; color:var(--ar-gold); text-align:center; margin:0 0 3px; white-space:nowrap; font-weight:700; }
+#game-screen .opp .herald-zone-label,#game-screen .opp .location-zone-label,#game-screen .opp .pile-label{ color:#f5a3a3; }
 
-/* ── BIGGER FIELD CARDS ── */
-#game-screen .char-field{ gap:12px !important; padding:14px !important; }
-#game-screen .char-field .card-slot{ width:168px !important; height:234px !important; }
-#game-screen .char-field .card-art-area{ height:156px !important; }
-#game-screen .char-field .card-name-sm{ font-size:13px !important; }
-#game-screen .char-field .card-stats-row{ font-size:12px !important; }
+/* ── IDENTITY BLOCK (player panel) ── */
+#game-screen .ident.player-panel{ display:flex; flex-direction:column; gap:5px; background:var(--ar-panel2); border:1px solid var(--ar-line2); border-radius:12px; padding:8px; min-width:0; position:relative; box-shadow:none; }
+#game-screen .ident.player-panel::before{ content:''; position:absolute; top:0; left:12px; right:12px; height:2px; border-radius:2px; }
+#game-screen .opp .ident::before{ background:linear-gradient(90deg,transparent,var(--ar-red),transparent); }
+#game-screen .you .ident{ border-color:rgba(0,212,255,.35); box-shadow:0 0 18px rgba(0,212,255,.08); }
+#game-screen .you .ident::before{ background:linear-gradient(90deg,transparent,var(--ar-cyan),transparent); }
+#game-screen .ident .player-panel-top{ margin-bottom:0; gap:8px; }
+#game-screen .ident .player-panel-avatar{ width:calc(var(--cw) * .36); height:calc(var(--cw) * .36); min-width:34px; min-height:34px; border-radius:10px; font-size:20px; }
+#game-screen .ident .player-panel-name{ font-size:calc(var(--fs) * 1.05); }
+#game-screen .you .ident .player-panel-name{ color:#bfe9ff; }
+#game-screen .ident .player-panel-phase{ font-size:calc(var(--fs) * .8); }
+#game-screen .ident .player-panel-energy{ gap:6px; padding:4px 10px; margin:0; border-radius:9px; }
+#game-screen .ident .energy-big-icon{ font-size:calc(var(--fs) * 1.3); }
+#game-screen .ident .energy-big-amount{ font-family:'Orbitron',sans-serif; font-weight:800; font-size:calc(var(--fs) * 1.5); color:#fbbf24; text-shadow:0 0 8px rgba(251,191,36,.45); }
+#game-screen .ident .energy-word{ font:600 calc(var(--fs) * .72) 'Share Tech Mono',monospace; color:#8d91ab; letter-spacing:1px; }
+#game-screen .ident .energy-big-pips{ margin-left:auto; }
+#game-screen .ident .energy-breakdown:empty{ display:none; }
+#game-screen .ident .player-panel-life{ margin:0; padding:4px 8px; }
+#game-screen .ident .lf-val{ font-size:calc(var(--fs) * 1.1); }
+#game-screen .ident-meta{ font-family:'Share Tech Mono',monospace; font-size:calc(var(--fs) * .82); color:#8d91ab; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#game-screen .ident-meta .hand-limit-bar{ display:inline; margin:0; font-size:inherit; }
+#game-screen .side.crowded .energy-word,#game-screen .side.crowded .ident-meta{ display:none; }
+#game-screen .side.crowded .ident .player-panel-name{ font-size:calc(var(--fs) * .95); }
 
-/* ── BIGGER HAND CARDS ── */
-#game-screen .hand-card{ width:154px !important; height:214px !important; }
-#game-screen .hand-art-area{ height:144px !important; }
-#game-screen .hand-name{ font-size:12px !important; }
+/* ── PILES (outer corner): deck + prize stack, discard + rift chips ── */
+#game-screen .piles{ display:grid; grid-template-columns:var(--pw) var(--pw); grid-template-rows:auto auto; gap:4px; align-content:center; }
+#game-screen .pile-wrap{ display:flex; flex-direction:column; align-items:center; gap:0; min-width:0; justify-content:flex-start; }
+#game-screen .pile-wrap .pile-label{ order:-1; }
+#game-screen .deck-pile{ width:var(--pw); aspect-ratio:5/7; border-radius:7px; position:relative; cursor:pointer; background:#13112a; border:1px solid rgba(168,85,247,.4); overflow:hidden; box-shadow:2px 2px 0 rgba(120,80,180,.28),4px 4px 0 rgba(120,80,180,.16); transition:transform .15s,box-shadow .15s; }
+#game-screen .deck-pile .deck-img{ width:100%; height:100%; object-fit:cover; display:block; }
+#game-screen .deck-pile .deck-n{ position:absolute; left:0; right:0; bottom:0; background:rgba(0,0,0,.72); font-family:'Share Tech Mono',monospace; font-size:calc(var(--fs) * .95); text-align:center; padding:1px 0; color:#fff; }
+#game-screen .deck-pile.searchable{ box-shadow:0 0 14px #a855f7; border-color:#a855f7; }
+#game-screen .deck-pile-label{ display:none; }
+#game-screen .deck-pile-wrap::before{ content:'DECK'; order:-1; font-family:'Cinzel',serif; font-size:calc(var(--fs) * .85); letter-spacing:2px; color:var(--ar-gold); font-weight:700; margin-bottom:3px; }
+#game-screen .opp .deck-pile-wrap::before{ color:#f5a3a3; }
+#game-screen .prize-stack{ display:block; position:relative; width:var(--pw); aspect-ratio:5/7; }
+#game-screen .prize-stack > .prize-card{ position:absolute; inset:0; width:100%; height:100%; border-radius:7px; border:1px solid rgba(200,164,74,.55); box-shadow:none; }
+#game-screen .prize-stack > .prize-card:nth-child(2){ transform:translate(2px,2px); } #game-screen .prize-stack > .prize-card:nth-child(3){ transform:translate(4px,4px); }
+#game-screen .prize-stack > .prize-card:nth-child(n+4){ visibility:hidden; }
+#game-screen .prize-stack > .prize-card.claimed{ display:none; }
+#game-screen .prize-stack .prize-count{ position:absolute; left:0; right:0; bottom:0; z-index:6; background:rgba(0,0,0,.72); font-family:'Share Tech Mono',monospace; font-size:calc(var(--fs) * .95); text-align:center; padding:1px 0; color:#fff; pointer-events:none; }
+#game-screen .prize-stack.hot > .prize-card{ border-color:#fbbf24; animation:prize-sparkle 1.3s ease-in-out infinite; cursor:pointer; }
+/* claim popover: expands from the stack only when YOU have a prize to take */
+#game-screen .side:has(.prize-claim-pop){ z-index:60; }
+#game-screen .prize-claim-pop{ position:absolute; z-index:9500; right:0; left:auto; transform:none; background:var(--ar-panel2); border:1px solid #fbbf24; border-radius:14px; padding:10px 12px; box-shadow:0 0 32px rgba(251,191,36,.3),0 18px 50px rgba(0,0,0,.7); width:max-content; max-width:min(90vw,520px); }
+#game-screen .opp .prize-claim-pop{ top:calc(100% + 8px); right:0; } #game-screen .you .prize-claim-pop{ bottom:calc(100% + 8px); left:0; right:auto; }
+#game-screen .prize-claim-pop .pc-title{ font-family:'Cinzel',serif; font-size:12px; color:var(--ar-gold2); text-align:center; margin-bottom:8px; white-space:normal; }
+#game-screen .prize-claim-pop .pc-grid{ display:grid; grid-template-columns:repeat(6,minmax(44px,64px)); gap:8px; }
+#game-screen .prize-claim-pop .prize-card{ position:static; width:100%; aspect-ratio:5/7; height:auto; transform:none; visibility:visible; display:flex; }
+#game-screen .prize-claim-pop .prize-card.claimed{ display:flex; opacity:.25; }
+#game-screen .chip{ display:flex; align-items:center; justify-content:center; gap:4px; height:calc(var(--ch) * .22); min-height:22px; border-radius:6px; background:rgba(10,10,24,.7); border:1px solid rgba(120,100,160,.35); font-family:'Share Tech Mono',monospace; font-size:calc(var(--fs) * .8); color:#ece6d6; cursor:pointer; overflow:hidden; padding:0 3px; min-width:0; flex:none; width:auto; }
+#game-screen .chip:hover{ border-color:var(--ar-gold); }
+#game-screen .chip .discard-pile-card{ width:calc(var(--ch) * .15); height:calc(var(--ch) * .2); min-width:12px; min-height:16px; border-radius:3px; border:1px solid rgba(120,100,160,.35); overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:10px; flex-shrink:0; }
+#game-screen .chip .discard-pile-card img{ width:100%; height:100%; object-fit:cover; }
+#game-screen .chip .discard-pile-info{ display:flex; flex-direction:row; align-items:baseline; gap:3px; min-width:0; }
+#game-screen .chip .panel-zone-count{ font-weight:700; font-size:calc(var(--fs) * .9); color:inherit; }
+#game-screen .chip .panel-zone-label{ color:#5b5f78; font-size:calc(var(--fs) * .62); letter-spacing:1px; }
+#game-screen .chip.rift-zone-wrap{ color:#c4b5fd; }
+#game-screen .chip .rift-zone-pile{ display:none !important; }
+#game-screen .chip.rift-zone-wrap::before{ content:'🌀'; font-size:calc(var(--fs) * 1.1); }
+#game-screen .rift-hidden-count,#game-screen .rift-zone-label{ display:none; }
 
-/* ── COMMAND CONSOLE ── unified bar on the centre seam ── */
-#game-screen .center-strip{ height:60px !important; padding:7px 18px !important; border:1px solid rgba(200,164,74,.2) !important; background:linear-gradient(180deg,rgba(18,18,36,.8),rgba(10,10,22,.85)) !important; border-radius:12px !important; box-shadow:0 2px 14px rgba(0,0,0,.4) !important; align-items:center !important; gap:14px !important; justify-content:center !important; }
-#game-screen .phase-bar-center{ background:transparent !important; border:none !important; padding:0 !important; gap:6px !important; }
-#game-screen .center-tools{ padding-left:16px !important; border-left:1px solid rgba(120,150,200,.15) !important; }
-#game-screen .phase-pill.active-phase{ box-shadow:0 0 14px rgba(0,212,255,.35) !important; }
-#game-screen .end-turn-btn{ margin-left:6px !important; box-shadow:0 0 18px rgba(232,197,112,.35), inset 0 1px 0 rgba(255,255,255,.4) !important; }
+/* ── HERALD ── */
+#game-screen .herald-zone{ display:flex; flex-direction:column; align-items:center; gap:0; min-width:0; max-width:none; }
+#game-screen .herald-slot{ width:var(--cw); height:var(--ch); box-shadow:0 0 14px rgba(168,85,247,.5); border-color:rgba(168,85,247,.6); }
 
-/* ── HAND DOCK + opponent hand strip ── */
-#game-screen .hand-dock{ border:1px solid rgba(232,197,112,.2); border-radius:14px; padding:8px 14px 10px; background:linear-gradient(180deg,rgba(16,16,32,.55),rgba(10,10,22,.7)); }
-#game-screen .opp-hand{ border-radius:12px !important; padding:8px 12px !important; }
+/* ── CHARACTER FIELD (cards compress so a crowded board stays in bounds) ── */
+#game-screen .char-field{ --fit:1; display:flex; gap:var(--gap); align-items:center; justify-content:center; flex-wrap:nowrap; min-width:0; min-height:calc(var(--ch) + 16px); max-height:calc(var(--ch) + 16px); padding:6px 8px; border-radius:12px; background:rgba(0,0,0,.18); border:1px dashed rgba(200,164,74,.14); overflow:visible; flex:none; }
+#game-screen .opp .char-field{ border-color:rgba(239,68,68,.2); } #game-screen .you .char-field{ border-color:rgba(0,212,255,.2); }
+#game-screen .char-field.rows2{ flex-wrap:wrap; row-gap:4px; align-content:center; }
+#game-screen .char-field .card-slot{ width:calc(var(--cw) * var(--fit)); height:calc(var(--ch) * var(--fit)); }
+#game-screen .char-field:empty::before{ content:'NO CHARACTERS'; font-family:'Share Tech Mono',monospace; font-size:var(--fs); color:#3f4458; letter-spacing:2px; }
 
-/* ── RIGHT RAIL ── bigger preview, trimmed log ── */
-#game-screen .hover-preview-sidebar{ padding:14px !important; border-color:rgba(120,150,200,.16) !important; background:linear-gradient(165deg,rgba(16,16,34,.6),rgba(8,8,18,.74)) !important; }
-#game-screen .hover-preview-img{ border:2px solid #e8c570 !important; box-shadow:0 0 24px rgba(232,197,112,.3),0 10px 28px rgba(0,0,0,.6) !important; }
-#game-screen .hover-preview-name{ font-size:19px !important; }
-#game-screen .hover-preview-ability-text{ font-size:12px !important; line-height:1.55 !important; }
-#game-screen .hover-preview-sidebar .log-box{ min-height:120px !important; max-height:240px !important; flex:0 1 auto !important; }
-#game-screen .sidebar-log-label{ color:#9fb0c4 !important; }
+/* ── LOCATIONS (2-up, shrink when there are 3-4 or the field is crowded) ── */
+#game-screen .location-zone{ display:grid; grid-template-columns:repeat(2,var(--lw)); gap:4px; align-content:center; justify-content:center; min-width:0; max-width:none; min-height:calc(var(--ch) * .6); padding:0; background:none; border:0; overflow:visible; }
+#game-screen .location-zone .location-zone-label{ grid-column:1 / -1; }
+#game-screen .location-zone .card-slot{ width:var(--lw); height:calc(var(--lw) / .7); }
+#game-screen .location-zone.many{ --lw:calc(var(--ch) * .33); }
+#game-screen .side.crowded .location-zone{ grid-template-columns:var(--lw); --lw:calc(var(--ch) * .33); }
+#game-screen .side.crowded .location-zone.many{ --lw:calc(var(--ch) * .22); grid-template-columns:var(--lw) var(--lw); }
 
-/* per-side arena border tint for clarity */
-#game-screen .board-column > .player-area:first-of-type{ border-color:rgba(239,68,68,.22) !important; }
-#game-screen .board-column > .player-area:last-of-type{ border-color:rgba(0,212,255,.22) !important; }
-} /* end desktop-only battle HUD redesign */
+/* ── CARD ELEMENT (field / herald / location) ── */
+#game-screen .card-slot{ border-radius:9px; display:flex; flex-direction:column; box-shadow:0 3px 10px rgba(0,0,0,.45); transition:transform .15s ease,box-shadow .15s ease,border-color .15s; }
+#game-screen .card-slot .card-art-area,#game-screen .herald-slot .card-art-area{ height:auto !important; flex:1 1 auto; min-height:0; }
+#game-screen .card-slot .card-info{ padding:3px 5px 3px; flex:0 0 auto; }
+#game-screen .card-slot .card-name-sm{ font-size:calc(var(--fs) * .92); }
+#game-screen .card-slot .card-stats-row{ font-size:calc(var(--fs) * .95); font-family:'Share Tech Mono',monospace; }
+#game-screen .location-zone .card-name-sm{ font-size:calc(var(--fs) * .8); }
+#game-screen .herald-slot .card-info{ padding:3px 5px; }
+#game-screen .herald-slot .card-name-sm{ font-size:calc(var(--fs) * .92); }
+#game-screen .card-slot:hover{ transform:translateY(-5px) scale(1.06); z-index:9999 !important; box-shadow:0 12px 30px rgba(0,0,0,.8),0 0 18px rgba(232,197,112,.4); border-color:var(--ar-gold2); overflow:hidden; }
+/* ── ARENA 3D: cards lie on the table plane, stand up + lean toward the cursor on hover ── */
+#game-screen[data-look="3d"] .char-field,#game-screen[data-look="3d"] .herald-zone,#game-screen[data-look="3d"] .location-zone,#game-screen[data-look="3d"] .hand-fan{ perspective:1100px; transform-style:preserve-3d; }
+#game-screen[data-look="3d"] .side .card-slot,#game-screen[data-look="3d"] .side .herald-slot{ transform:rotateX(var(--tilt)); box-shadow:0 10px 18px -6px rgba(0,0,0,.7); transition:transform .22s cubic-bezier(.2,.8,.3,1.2),box-shadow .22s; }
+#game-screen[data-look="3d"] .side .card-slot:hover,#game-screen[data-look="3d"] .side .herald-slot:hover{ transform:rotateX(var(--tx,0deg)) rotateY(var(--ty,0deg)) translateY(-8px) translateZ(34px) scale(1.06); box-shadow:0 26px 40px -10px rgba(0,0,0,.85),0 0 22px rgba(232,197,112,.35); animation:ar-float 2.2s ease-in-out infinite; }
+#game-screen[data-look="3d"] .side .card-slot.tapped{ transform:rotateX(var(--tilt)) rotateZ(90deg) scale(.82); }
+#game-screen[data-look="3d"] .deck-pile,#game-screen[data-look="3d"] .prize-stack > .prize-card{ transform:perspective(600px) rotateX(var(--tilt)); }
+#game-screen .prize-stack{ z-index:5; }
+#game-screen[data-look="3d"] .deck-pile:hover{ transform:perspective(600px) rotateX(0deg) translateZ(14px); }
+@keyframes ar-float{ 0%,100%{ translate:0 0; } 50%{ translate:0 -3px; } }
+#game-screen.no-animations .card-slot,#game-screen.no-animations .hand-card{ animation:none !important; transition:none !important; }
+#game-screen .card-slot.can-attack,#game-screen .card-slot.targetable,#game-screen .card-slot.loc-targetable{ border-width:2px; }
+
+/* ── COMMAND SEAM ── */
+#game-screen .center-strip.seam{ display:flex; align-items:center; justify-content:center; gap:clamp(6px,1vw,16px); padding:0 var(--gap); height:var(--seam); min-width:0; flex-wrap:nowrap; overflow:hidden; background:none; border:0; box-shadow:none; border-radius:0; }
+#game-screen .center-strip.seam::before{ content:''; position:absolute; left:0; right:0; top:50%; height:1px; background:linear-gradient(90deg,transparent,rgba(200,164,74,.35),transparent); z-index:-1; }
+#game-screen .turn-chip{ font-family:'Orbitron',sans-serif; font-weight:800; font-size:11px; letter-spacing:2px; color:var(--ar-gold2); background:rgba(10,10,24,.85); border:1px solid var(--ar-line); border-radius:999px; padding:7px 14px; white-space:nowrap; }
+#game-screen .turn-chip small{ color:#8d91ab; font-weight:600; letter-spacing:1px; font-size:10px; }
+#game-screen .turn-chip.opp-turn{ color:#fca5a5; border-color:rgba(239,68,68,.35); }
+#game-screen .phase-bar-center{ display:flex; gap:4px; background:rgba(10,10,24,.85); border:1px solid var(--ar-line2); border-radius:999px; padding:4px; height:auto; }
+#game-screen .center-tools{ display:flex; gap:4px; background:rgba(10,10,24,.85); border:1px solid var(--ar-line2); border-radius:999px; padding:4px; height:auto; }
+#game-screen .center-tools .action-tool-btn{ width:32px; height:32px; }
+#game-screen .center-strip .end-turn-btn{ height:auto; margin:0; border-radius:999px; }
+#game-screen #log-box-center{ display:none; }
+
+/* ── HAND: fanned arc that compresses as it grows ── */
+#game-screen .hand-dock{ position:relative; height:calc(var(--ch) * .78); min-height:70px; margin:0 var(--gap); padding:0; border:0; background:none; overflow:visible; flex:none; }
+#game-screen .hand-dock-label{ position:absolute; left:10px; top:4px; z-index:2; font-size:calc(var(--fs) * .85); margin:0; padding:0; }
+#game-screen .hand-hint{ font-size:9px; color:#4b5563; margin-left:4px; }
+#game-screen .hand-fan{ position:absolute; inset:0; display:block; padding:0; background:none; border:0; overflow:visible; }
+#game-screen .hand-fan .hand-card{ position:absolute; left:var(--x,50%); top:calc(var(--ch) * .16); width:var(--cw); height:var(--ch); transform-origin:50% 120%; transform:rotateX(var(--hx,0deg)) rotate(var(--rot,0deg)) translateY(var(--lift,0px)); transition:transform .22s cubic-bezier(.2,.8,.3,1.15),box-shadow .18s ease; will-change:transform; border-radius:9px; }
+#game-screen[data-look="3d"] .hand-fan .hand-card{ --hx:14deg; }
+#game-screen .hand-fan .hand-card:hover{ transform:rotateX(0deg) rotate(0deg) translateY(calc(var(--cw) * -.46)) translateZ(40px) scale(1.12); z-index:9999 !important; border-color:var(--ar-gold2); box-shadow:0 16px 36px rgba(0,0,0,.8),0 0 20px rgba(200,164,74,.5); }
+#game-screen[data-look="3d"] .hand-fan .hand-card:hover{ animation:ar-float 2.2s ease-in-out infinite; }
+#game-screen .hand-card .hand-art-area{ height:auto !important; flex:1 1 auto; min-height:0; }
+#game-screen .hand-card .hand-name{ font-size:calc(var(--fs) * .92); }
+#game-screen .hand-info{ padding:3px 5px; flex:0 0 auto; }
+
+/* floating menu cluster sits over the hand's right edge */
+#game-screen #game-menu-cluster{ bottom:10px; right:14px; }
+
+/* legacy drawer hooks (unused by the arena layout) */
+#game-screen .mobile-drawer-backdrop,#game-screen .mobile-drawer-tab{ display:none !important; }
+/* mobile-only things hidden on desktop */
+#game-screen .mobile-nav{ display:none; }
+#game-screen .sheet-tabs{ display:none; }
+
+/* ════════ PHONE / NARROW (≤900px, matches isMobileView): stacked layout ════════ */
+@media (max-width:900px){
+  #game-screen{ --rail:0px; --seam:48px; --idw:auto; --cw:clamp(50px, calc((100vw - 28px) / 5.6 * var(--size-mult)), 86px); --pw:calc(var(--cw) * .56); padding:4px !important; }
+  #game-screen .battle-layout{ grid-template-columns:minmax(0,1fr); display:grid !important; }
+  #game-screen .info-rail{ display:none !important; }
+  #game-screen .arena{ grid-template-rows:auto auto auto auto; align-content:start; overflow-y:auto; overflow-x:hidden; gap:6px; -webkit-overflow-scrolling:touch; }
+  #game-screen .side.player-area{ display:flex; flex-direction:column; gap:4px; padding:0 6px; }
+  #game-screen .side .strip{ display:flex; align-items:center; gap:5px; min-width:0; overflow-x:auto; scrollbar-width:none; padding:2px 0; }
+  #game-screen .side .strip::-webkit-scrollbar{ display:none; }
+  #game-screen .side.you .strip{ order:2; }
+  #game-screen .ident.player-panel{ flex-direction:row; align-items:center; gap:8px; padding:5px 8px; flex:0 0 auto; max-width:72vw; min-width:0; order:-1; }
+  #game-screen .ident.player-panel::before{ display:none; }
+  #game-screen .ident .player-panel-top{ flex:1; }
+  #game-screen .ident .player-panel-energy{ padding:3px 8px; }
+  #game-screen .ident .energy-big-amount{ font-size:calc(var(--fs) * 1.3); }
+  #game-screen .ident .energy-big-pips,#game-screen .ident .energy-word,#game-screen .ident-meta,#game-screen .ident .energy-breakdown{ display:none; }
+  #game-screen .piles{ display:flex; gap:4px; }
+  #game-screen .chip{ height:calc(var(--pw) / .7); flex-direction:column; gap:0; min-width:34px; }
+  #game-screen .chip .discard-pile-info{ flex-direction:column; align-items:center; gap:0; }
+  #game-screen .herald-zone-label,#game-screen .location-zone-label,#game-screen .pile-label,#game-screen .deck-pile-wrap::before{ display:none; }
+  #game-screen .herald-slot{ width:var(--pw); height:calc(var(--pw) / .7); }
+  #game-screen .location-zone{ display:flex; flex-direction:row; gap:4px; min-height:0; }
+  #game-screen .location-zone .card-slot{ width:var(--pw); height:calc(var(--pw) / .7); }
+  #game-screen .char-field{ min-height:calc(var(--ch) + 12px); max-height:none; padding:5px 4px; flex-wrap:wrap; justify-content:center; }
+  #game-screen .center-strip.seam{ flex-wrap:wrap; gap:5px; row-gap:6px; padding:4px 6px; height:auto; overflow:visible; }
+  #game-screen .turn-chip{ padding:5px 10px; font-size:10px; }
+  #game-screen .phase-pill{ padding:4px 8px; font-size:10px; }
+  #game-screen .center-tools .action-tool-btn{ width:28px; height:28px; font-size:13px; }
+  #game-screen .center-strip .end-turn-btn{ padding:7px 12px; font-size:11px; letter-spacing:2px; }
+  #game-screen .hand-dock{ height:calc(var(--ch) * .92); margin-top:2px; }
+  #game-screen .hand-fan .hand-card{ top:calc(var(--ch) * .14); }
+  #game-screen .turn-chip small{ display:none; }
+  #game-screen .chip{ height:calc(var(--pw) / .7 * .8); }
+  #game-screen .hand-hint{ display:none; }
+  #game-screen .card-slot:hover,#game-screen .hand-fan .hand-card:hover{ transform:none; animation:none; }
+  #game-screen[data-look="3d"]{ --tilt:0deg; }
+  #game-screen[data-look="3d"] .side .card-slot:hover{ transform:none; }
+  #game-screen[data-look="3d"] .char-field,#game-screen[data-look="3d"] .herald-zone,#game-screen[data-look="3d"] .location-zone,#game-screen[data-look="3d"] .hand-fan{ perspective:none; transform-style:flat; }
+  #game-screen[data-look="3d"] .deck-pile,#game-screen[data-look="3d"] .prize-stack > .prize-card,#game-screen[data-look="3d"] .side .herald-slot{ transform:none; }
+  #game-screen[data-look="3d"] .hand-fan .hand-card{ --hx:0deg; }
+  #game-screen .mobile-nav{ display:flex; gap:4px; position:fixed; right:8px; top:9px; z-index:100001; }
+  body:has(#game-screen.active) #auth-bar .hud-identity,body:has(#game-screen.active) #auth-bar > div:last-child{ display:none !important; }
+  #game-screen .mobile-nav button{ background:rgba(10,10,24,.9); border:1px solid var(--ar-line2); border-radius:8px; padding:4px 7px; font-family:'Share Tech Mono',monospace; font-size:10px; color:#ece6d6; cursor:pointer; }
+  #game-screen .sheet-tabs{ display:flex; margin:-4px 0 10px; }
+  #game-screen #game-menu-cluster{ display:none; }
+  #game-screen .side .prize-claim-pop{ position:fixed; left:50%; right:auto; top:50%; bottom:auto; transform:translate(-50%,-50%); }
+  #game-screen .prize-claim-pop .pc-grid{ grid-template-columns:repeat(3,minmax(54px,74px)); }
+  /* compact top HUD on phones */
+  .hud-identity{ display:none; }
+}
+@media (max-width:900px) and (max-height:700px){
+  #game-screen{ --cw:clamp(46px, calc((100vw - 28px) / 6.2 * var(--size-mult)), 72px); }
+}
+@media (prefers-reduced-motion:reduce){ #game-screen .card-slot,#game-screen .hand-card{ animation:none !important; } }
+
+
+/* ════════════════════════════════════════════════════════════════════════
+   ⚔ 2v2 ARENA (v8) — same sizing system as the 1v1 board: one card width
+   (--cw2) solved from viewport width AND height so both fronts, the hub and
+   the hand dock fit a 1280×720 laptop; phones stack. Shares the Arena 3D /
+   Flat look (data-look) and card-size setting with the 1v1 board.
+   ════════════════════════════════════════════════════════════════════════ */
+#game-screen-2v2{
+  --size-mult:1; --tilt:0deg;
+  --cw2:clamp(44px, calc(min(calc((100vw - 240px) / 13), calc((100dvh - 330px) / 4.1 * .7)) * var(--size-mult)), 150px);
+  --ch2:calc(var(--cw2) / .7);
+  --fs2:clamp(8px, calc(var(--cw2) * .12), 12px);
+  padding:46px 1.2vw 6px !important;
+}
+#game-screen-2v2.cards-small{ --size-mult:.85; } #game-screen-2v2.cards-large{ --size-mult:1.15; }
+#game-screen-2v2[data-look="3d"]{ --tilt:11deg; }
+#game-screen-2v2 .v2-wrap{ height:calc(100dvh - 52px); gap:5px; }
+/* enemy face-down hand rows → gone (the HUD already shows ✋ hand counts) */
+#game-screen-2v2 .v2-hand-top{ display:none; }
+#game-screen-2v2 .v2-teamlife{ padding:3px 16px; font-size:11px; }
+#game-screen-2v2 .v2-life-num{ font-size:18px; }
+#game-screen-2v2 .v2-board-row{ gap:8px; flex:1 1 0; min-height:0; }
+#game-screen-2v2 .v2-board{ padding:6px 8px; gap:6px; }
+#game-screen-2v2 .v2-rail{ width:calc(var(--cw2) * .75); }
+#game-screen-2v2 .v2-deck-pile{ width:calc(var(--cw2) * .7); height:calc(var(--cw2) * .7 / .7); }
+#game-screen-2v2 .v2-disc-mini{ width:calc(var(--cw2) * .7); height:auto; padding:2px 0; }
+#game-screen-2v2 .v2-hud{ gap:6px; padding:3px 6px; }
+#game-screen-2v2 .v2-hud-name{ font-size:calc(var(--fs2) * 1.05); max-width:120px; }
+#game-screen-2v2 .v2-hud-energy{ font-size:calc(var(--fs2) * .95); padding:1px 6px; }
+#game-screen-2v2 .v2-hud-energy b{ font-size:calc(var(--fs2) * 1.25); }
+#game-screen-2v2 .v2-hud-zones{ font-size:calc(var(--fs2) * .9); gap:6px; }
+#game-screen-2v2 .v2-ph-dot{ width:18px; height:16px; font-size:9px; }
+/* quadrant = head row + (herald|field) with locations stacked at the inner edge */
+#game-screen-2v2 .v2-play{ display:grid; grid-template-columns:minmax(0,1fr) auto; grid-template-rows:auto minmax(0,1fr); grid-template-areas:'head head' 'field loc'; gap:4px; }
+#game-screen-2v2 .v2-board.v2-you .v2-play{ grid-template-rows:minmax(0,1fr) auto; grid-template-areas:'field loc' 'head head'; }
+#game-screen-2v2 .v2-board-head{ grid-area:head; }
+#game-screen-2v2 .v2-fieldwrap{ grid-area:field; min-height:0; }
+#game-screen-2v2 .v2-loc{ grid-area:loc; display:flex; flex-direction:column; flex-wrap:nowrap; gap:3px; justify-content:center; align-items:center; min-width:0; }
+#game-screen-2v2 .v2-loc .location-zone-label{ display:none; }
+#game-screen-2v2 .v2-loc .card-slot{ width:calc(var(--cw2) * .55); height:calc(var(--cw2) * .55 / .7); }
+#game-screen-2v2 .v2-loc .card-slot:nth-child(n+4){ display:none; } /* 3 visible; the rest are reachable on hover/preview */
+#game-screen-2v2 .v2-fieldwrap{ gap:6px; }
+#game-screen-2v2 .v2-herald .herald-slot{ width:var(--cw2); height:var(--ch2); }
+#game-screen-2v2 .v2-herald .herald-slot .card-art-area{ height:auto !important; flex:1 1 auto; min-height:0; }
+#game-screen-2v2 .v2-field{ gap:5px; overflow:visible; align-content:center; justify-content:center; }
+#game-screen-2v2 .v2-board .card-slot{ width:var(--cw2); height:var(--ch2); display:flex; flex-direction:column; }
+#game-screen-2v2 .v2-board .card-slot .card-art-area,#game-screen-2v2 .v2-board .card-slot img{ height:auto !important; flex:1 1 auto; min-height:0; }
+#game-screen-2v2 .v2-board .card-slot .card-info{ padding:2px 4px; flex:0 0 auto; }
+#game-screen-2v2 .v2-board .card-slot .card-name-sm{ font-size:calc(var(--fs2) * .9); }
+#game-screen-2v2 .v2-board .card-slot .card-stats-row{ font-size:calc(var(--fs2) * .95); }
+/* crowded 2v2 field (6+ fighters): two tighter rows */
+#game-screen-2v2 .v2-field.crowded .card-slot{ width:calc(var(--cw2) * .68); height:calc(var(--ch2) * .68); }
+/* hub */
+#game-screen-2v2 .v2-control{ padding:4px 12px; gap:8px; }
+#game-screen-2v2 .v2-control .end-turn-btn{ padding:7px 14px; font-size:11px; }
+/* hand dock: both hands, sized by the same card unit */
+#game-screen-2v2 .v2-hand-dock{ gap:6px; }
+#game-screen-2v2 .v2-hand-col{ padding:4px 8px; }
+#game-screen-2v2 .v2-hand{ min-height:0; gap:5px; padding:2px 0; }
+#game-screen-2v2 .v2-hand .hand-card{ width:calc(var(--cw2) * 1.05); height:calc(var(--ch2) * 1.05); }
+#game-screen-2v2 .v2-hand .hand-card .hand-art-area{ height:auto !important; flex:1 1 auto; min-height:0; }
+#game-screen-2v2 .v2-hand .hand-card:hover{ transform:translateY(-10px) scale(1.1); }
+#game-screen-2v2 .v2-log{ height:38px; font-size:10px; padding:3px 10px; }
+/* Arena 3D look on the 2v2 table */
+#game-screen-2v2[data-look="3d"] .v2-field,#game-screen-2v2[data-look="3d"] .v2-herald,#game-screen-2v2[data-look="3d"] .v2-loc{ perspective:900px; transform-style:preserve-3d; }
+#game-screen-2v2[data-look="3d"] .v2-board .card-slot,#game-screen-2v2[data-look="3d"] .v2-herald .herald-slot{ transform:rotateX(var(--tilt)); transition:transform .22s cubic-bezier(.2,.8,.3,1.2),box-shadow .22s; }
+#game-screen-2v2[data-look="3d"] .v2-board .card-slot:hover,#game-screen-2v2[data-look="3d"] .v2-herald .herald-slot:hover{ transform:rotateX(var(--tx,0deg)) rotateY(var(--ty,0deg)) translateY(-6px) translateZ(26px) scale(1.08); z-index:50; animation:ar-float 2.2s ease-in-out infinite; }
+#game-screen-2v2[data-look="3d"] .v2-board .card-slot.tapped{ transform:rotateX(var(--tilt)) rotateZ(90deg) scale(.82); }
+#game-screen-2v2 .v2-board .card-slot:hover{ transform:translateY(-5px) scale(1.08); z-index:50; }
+/* ── 2v2 phone: stack the fronts, let the page scroll ── */
+@media (max-width:900px){
+  #game-screen-2v2{ --cw2:clamp(46px, calc((100vw - 120px) / 5.2 * var(--size-mult)), 80px); --tilt:0deg; padding:46px 6px 6px !important; }
+  #game-screen-2v2 .v2-wrap{ height:auto; min-height:calc(100dvh - 52px); }
+  #game-screen-2v2 .v2-board-row{ grid-template-columns:1fr; gap:6px; flex:none; }
+  #game-screen-2v2 .v2-board{ min-height:calc(var(--ch2) + 64px); overflow:visible; }
+  #game-screen-2v2 .v2-control{ flex-wrap:wrap; }
+  #game-screen-2v2 .v2-board{ flex-direction:row; }
+  #game-screen-2v2 .v2-board.v2-right{ flex-direction:row; }
+  #game-screen-2v2 .v2-board.v2-you .v2-play{ grid-template-rows:auto minmax(0,1fr); grid-template-areas:'head head' 'field loc'; }
+  #game-screen-2v2 .v2-field{ min-height:calc(var(--ch2) + 8px); }
+  #game-screen-2v2 .v2-hand-dock{ grid-template-columns:1fr; }
+  #game-screen-2v2[data-look="3d"] .v2-field,#game-screen-2v2[data-look="3d"] .v2-herald,#game-screen-2v2[data-look="3d"] .v2-loc{ perspective:none; transform-style:flat; }
+  #game-screen-2v2[data-look="3d"] .v2-board .card-slot,#game-screen-2v2[data-look="3d"] .v2-herald .herald-slot{ transform:none; }
+  #game-screen-2v2 .v2-board .card-slot:hover{ transform:none; animation:none; }
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════
+   SHELL & MENUS — responsive pass (HUD bar, main menu, deck builder)
+   ════════════════════════════════════════════════════════════════════════ */
+/* Main menu: the VS AI chips and 2-col buttons inherit a 300px min-width from the
+   compact-height rules, which pushes HARD off the right edge below ~1700px wide. */
+#menu-screen .ai-chip,#menu-screen .menu-grid-2 .menu-btn,#menu-screen .menu-feature-row .menu-btn{ min-width:0 !important; width:auto !important; }
+#menu-screen .menu-ai-row{ min-width:0; }
+#menu-screen .menu-action-panel,#menu-screen .featured-card-panel{ max-width:min(540px,calc(100vw - 32px)) !important; }
+#menu-screen .menu-tagline{ white-space:nowrap; max-width:100%; overflow:hidden; text-overflow:clip; }
+#menu-screen{ overflow-x:hidden; }
+#menu-screen .menu-bg-layer{ overflow:hidden; }
+/* builder phone tabs are desktop-hidden */
+.builder-phone-tabs{ display:none; }
+@media (max-width:900px){
+  /* ── HUD bar: logo + compact level ring + Celestium + sign-out icon ── */
+  #auth-bar{ padding:0 10px; gap:8px; }
+  #auth-bar .hud-logo{ font-size:11px; letter-spacing:3px; white-space:nowrap; }
+  #auth-bar .hud-identity{ display:none; }
+  #auth-bar > div:last-child{ gap:6px; }
+  #auth-bar .xp-badge{ padding:2px 4px; }
+  #auth-bar .xp-bar-wrap{ display:none; }
+  #auth-bar .xp-level-ring{ width:26px; height:26px; font-size:11px; }
+  #auth-bar .cel-badge{ padding:3px 8px; font-size:11px; }
+  #auth-bar .hud-signout{ font-size:0; padding:5px 7px; }
+  #auth-bar .hud-signout::before{ content:'⎋'; font-size:14px; }
+  /* ── Main menu ── */
+  #menu-screen{ padding:62px 14px 24px !important; }
+  #menu-screen h1{ font-size:clamp(26px,8vw,38px) !important; letter-spacing:4px !important; }
+  #menu-screen .menu-tagline{ font-size:clamp(6px,1.9vw,9px) !important; letter-spacing:0 !important; }
+  #menu-screen .menu-title-wrap{ padding:4px 10px 2px !important; }
+  #menu-screen .featured-card-panel{ width:100% !important; }
+  #menu-screen .menu-action-panel{ width:100%; display:flex; flex-direction:column; gap:14px; }
+  #menu-screen .menu-section{ display:flex !important; flex-direction:column !important; align-items:stretch !important; gap:8px !important; width:100% !important; max-width:none !important; margin:0 !important; }
+  #menu-screen .menu-feature-row,#menu-screen .menu-grid-2,#menu-screen .menu-ai-row,#menu-screen .menu-tools-grid{ width:100% !important; max-width:none !important; }
+  #menu-screen .menu-section-label{ align-self:center; }
+  #menu-screen .menu-feature-row{ display:grid !important; grid-template-columns:1fr 1fr; gap:8px; }
+  #menu-screen .menu-btn-feature{ display:flex !important; flex-direction:column !important; align-items:center !important; justify-content:center !important; gap:3px !important; padding:12px 8px !important; min-width:0 !important; width:auto !important; letter-spacing:0 !important; }
+  #menu-screen .menu-btn-feature .mb-ico{ font-size:20px; line-height:1; }
+  #menu-screen .menu-btn-feature .mb-txt{ font-family:'Cinzel',serif; font-size:13px; font-weight:700; letter-spacing:1.5px; }
+  #menu-screen .menu-btn-feature .mb-sub{ font-size:8px; letter-spacing:2px; color:rgba(200,164,74,.65); text-transform:uppercase; }
+  #menu-screen .menu-grid-2{ display:grid !important; grid-template-columns:1fr 1fr; gap:8px; }
+  #menu-screen .menu-grid-2 .menu-btn{ padding:10px 6px !important; font-size:10px !important; letter-spacing:1.5px !important; margin:0 !important; }
+  #menu-screen .menu-ai-row{ display:flex !important; align-items:stretch; gap:6px; }
+  #menu-screen .menu-ai-label{ display:flex; align-items:center; padding:0 4px; white-space:nowrap; font-family:'Cinzel',serif; font-size:10px; font-weight:700; color:rgba(120,200,255,.8); }
+  #menu-screen .ai-chip{ flex:1; padding:9px 2px !important; font-size:10px !important; letter-spacing:1px !important; margin:0 !important; }
+  #menu-screen .menu-tools-grid{ display:grid !important; grid-template-columns:repeat(4,1fr); gap:6px; }
+  #menu-screen .menu-tool{ position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:10px 2px; border-radius:10px; border:1px solid rgba(200,164,74,.18); background:linear-gradient(160deg,rgba(22,16,44,.72),rgba(10,8,24,.88)); color:rgba(205,212,235,.8); font-family:'Cinzel',serif; }
+  #menu-screen .menu-tool .mt-ico{ font-size:18px; line-height:1; }
+  #menu-screen .menu-tool .mt-lbl{ font-size:8px; letter-spacing:1px; text-transform:uppercase; text-align:center; line-height:1.1; }
+  #menu-screen .menu-tool .mt-badge{ position:absolute; top:4px; right:6px; background:#ef4444; color:#fff; border-radius:10px; padding:0 5px; font-size:9px; }
+  /* ── Deck builder: filters wrap, Pool / Deck become tabs ── */
+  #builder-filters{ width:100%; }
+  #builder-filters > *{ flex:1 1 44%; min-width:0; width:auto !important; }
+  #builder-filters #builder-search{ flex-basis:100%; }
+  .builder-phone-tabs{ display:flex; gap:6px; margin:4px 0 8px; }
+  .builder-phone-tabs .bpt{ flex:1; background:rgba(10,10,24,.7); border:1px solid rgba(120,140,200,.2); border-radius:8px; padding:8px 6px; font-family:'Cinzel',serif; font-size:11px; color:#9ca3af; cursor:pointer; }
+  .builder-phone-tabs .bpt.on{ color:#e8c570; border-color:#c8a44a; background:rgba(200,164,74,.12); }
+  #builder-columns{ grid-template-columns:1fr !important; }
+  #builder-columns .builder-col-deck{ display:none; }
+  #builder-columns.show-deck .builder-col-deck{ display:block; }
+  #builder-columns.show-deck .builder-col-pool{ display:none; }
+  #builder-columns #builder-card-pool,#builder-columns #builder-deck-list{ max-height:none !important; }
+}
+
+
+/* ── generic phone pass for the remaining screens (friends / matchmaking / battle pass / etc.) ── */
+@media (max-width:600px){
+  .screen:not(#menu-screen):not(#game-screen):not(#game-screen-2v2){ padding-left:12px !important; padding-right:12px !important; }
+  .screen [style*="grid-template-columns:1fr 1fr 1fr"]{ grid-template-columns:1fr 1fr !important; }
+  .screen [style*="grid-template-columns:1fr 1fr 1fr 1fr"]{ grid-template-columns:1fr 1fr !important; }
+  .screen > div[style*="display:flex"][style*="align-items:center"]{ flex-wrap:wrap; }
+  .friend-tab{ padding:9px 6px; font-size:10px; letter-spacing:1px; }
+  .bp-nav-tab{ padding:6px 8px; font-size:10px; letter-spacing:1px; }
+  #battle-pass-screen > div:first-child{ flex-wrap:wrap; }
+}
+@media (max-width:900px){
+  .tut-progress{ top:52px; left:8px; transform:none; font-size:10px; padding:4px 10px; }
+}
+
 </style>
 </head>
 <body>
@@ -6216,9 +6182,9 @@ textarea{
     <button class="btn-teal btn-sm" onclick="saveDeck()">💾 Save</button>
     <button class="btn-gray btn-sm" onclick="clearBuilder()">🗑 Clear</button>
   </div>
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+  <div id="builder-toolbar" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px;flex-wrap:wrap">
     <span style="font-size:12px;color:#9ca3af">Cards: <span id="deck-count-display" style="color:#c8a0ff;font-weight:700">0</span>/60</span>
-    <div style="display:flex;gap:5px">
+    <div id="builder-filters" style="display:flex;gap:5px;flex-wrap:wrap">
       <input id="builder-search" type="text" placeholder="🔍 Search..." oninput="renderBuilderCards()" style="background:#111126;color:#e2e8f0;border:1px solid #3a3a5c;border-radius:6px;padding:3px 7px;font-size:11px;width:90px"/>
       <select id="builder-filter" onchange="renderBuilderCards()" style="background:#111126;color:#e2e8f0;border:1px solid #3a3a5c;border-radius:6px;padding:3px 7px;font-size:11px">
         <option value="all">All Types</option>
@@ -6263,12 +6229,16 @@ textarea{
       </select>
     </div>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-    <div>
+  <div class="builder-phone-tabs" id="builder-phone-tabs">
+    <button class="bpt on" onclick="builderPhoneTab('pool')">🃏 Card Pool</button>
+    <button class="bpt" onclick="builderPhoneTab('deck')">📋 Your Deck (<span id="deck-count-display-m">0</span>)</button>
+  </div>
+  <div id="builder-columns" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <div class="builder-col builder-col-pool">
       <div style="font-size:10px;color:#6b7280;margin-bottom:5px">Card Pool</div>
       <div id="builder-card-pool" style="max-height:52vh;overflow-y:auto"></div>
     </div>
-    <div>
+    <div class="builder-col builder-col-deck">
       <div style="font-size:10px;color:#6b7280;margin-bottom:5px">Your Deck</div>
       <div id="builder-deck-list" style="max-height:52vh;overflow-y:auto"></div>
     </div>
@@ -6338,7 +6308,7 @@ textarea{
 </div>
 
 <!-- DEDICATED 2v2 SCREEN — Two-Front Arena -->
-<div id="game-screen-2v2" class="screen">
+<div id="game-screen-2v2" class="screen" data-look="3d">
   <div class="v2-wrap">
 
     <!-- ENEMY HAND DOCK (top): B1 + B2 (face-down) -->
@@ -6463,130 +6433,96 @@ textarea{
 </div>
 
 <!-- GAME SCREEN -->
-<div id="game-screen">
-  <!-- MOBILE-ONLY: drawer toggle buttons (hidden on desktop via CSS) -->
-  <button class="mobile-drawer-tab" id="mobile-prizes-tab" onclick="toggleMobileDrawer('prizes')" title="Prizes & Players">🏆</button>
+<div id="game-screen" data-look="3d">
+  <!-- MOBILE-ONLY: legacy drawer hooks kept for JS compatibility (unused by the arena layout) -->
+  <button class="mobile-drawer-tab" id="mobile-prizes-tab" onclick="toggleMobileDrawer('prizes')" title="Prizes & Players" style="display:none">🏆</button>
   <div class="mobile-drawer-backdrop" id="mobile-drawer-backdrop" onclick="closeMobileDrawers()"></div>
 
-  <!-- LEFT: Prize columns + Right: hover preview, with board in middle -->
+  <!-- ARENA LAYOUT: info rail (card info / battle log / chat) | mirrored board -->
   <div class="battle-layout">
 
-    <!-- LEFT SIDEBAR: Player panels + Prize cards -->
-    <div class="prize-sidebar">
-      <!-- Opponent panel -->
-      <div class="player-panel opp-panel" id="p2-panel">
-        <div class="player-panel-top">
-          <div class="player-panel-avatar" id="p2-avatar">🤖</div>
-          <div class="player-panel-info">
-            <div class="player-panel-name" id="p2-panel-name">Opponent</div>
-            <div class="player-panel-phase" id="p2-panel-phase">—</div>
-          </div>
-        </div>
-        <div class="player-panel-energy" onclick="openEnergyModal(2)" title="Energy">
-          <span class="energy-big-icon">⚡</span>
-          <span class="energy-big-amount" id="p2-energy">5</span>
-          <div class="energy-big-pips" id="p2-energy-pips"></div>
-        </div>
-        <div class="energy-breakdown" id="p2-color-energy"></div>
-        <div class="player-panel-life" id="p2-lf-wrap" style="display:none;cursor:pointer" onclick="onLifeBarClick(2)" title="Select an attacker, then click here to attack Life">
-          <span class="lf-heart">❤️</span>
-          <div class="lf-bar-track"><div class="lf-bar-fill" id="p2-lf-bar"></div></div>
-          <span class="lf-val" id="p2-lf-val">75</span>
-        </div>
-        <div class="player-panel-zones">
-          <div class="discard-pile-mini" onclick="showDiscard(2)" title="Discard pile (Otherworld)" id="p2-discard-pile">
-            <div class="discard-pile-card" id="p2-discard-top"><span class="discard-empty-icon">🗑</span></div>
-            <div class="discard-pile-info"><span class="panel-zone-count" id="p2-discard-count">0</span><span class="panel-zone-label">DISCARD</span></div>
-          </div>
-          <div class="panel-zone-btn" onclick="showRiftZone(2)" title="Rift Zone — banished">
-            <span class="panel-zone-icon">🌀</span>
-            <span class="panel-zone-count" id="p2-rift-count">0</span>
-            <span class="panel-zone-label">RIFT</span>
-          </div>
-        </div>
+    <!-- LEFT RAIL -->
+    <aside class="info-rail hover-preview-sidebar" id="hover-preview-sidebar">
+      <div class="rail-tabs" role="tablist">
+        <button class="rail-tab" role="tab" aria-selected="true" data-pane="rail-card" onclick="railTab('rail-card')">CARD INFO</button>
+        <button class="rail-tab" role="tab" aria-selected="false" data-pane="rail-log" onclick="railTab('rail-log')">BATTLE LOG</button>
+        <button class="rail-tab" role="tab" aria-selected="false" data-pane="rail-chat" onclick="railTab('rail-chat')">CHAT</button>
       </div>
-
-      <div class="prize-section">
-        <div class="prize-section-label">OPPONENT PRIZES <span style="font-size:8px;color:#6b7280">(take these)</span></div>
-        <div class="prize-grid" id="p2-prizes"></div>
+      <div class="rail-pane on" id="rail-card">
+        <div class="hover-preview-placeholder" id="hover-preview-placeholder">
+          <div style="font-size:40px;opacity:.2">🃏</div>
+          <div style="font-size:11px;color:#4b5563;letter-spacing:1px;margin-top:8px;text-align:center">Hover a card<br>to preview</div>
+        </div>
+        <div class="hover-preview-content" id="hover-preview-content" style="display:none"></div>
       </div>
-
-      <div class="prize-section">
-        <div class="prize-section-label">YOUR PRIZES <span style="font-size:8px;color:#6b7280">(defend these)</span></div>
-        <div class="prize-grid" id="p1-prizes"></div>
+      <div class="rail-pane" id="rail-log">
+        <div class="sidebar-log-label">⚔ BATTLE LOG</div>
+        <div class="log-box" id="log-box"></div>
       </div>
-
-      <!-- Your panel -->
-      <div class="player-panel you-panel" id="p1-panel">
-        <div class="player-panel-top">
-          <div class="player-panel-avatar" id="p1-avatar">👤</div>
-          <div class="player-panel-info">
-            <div class="player-panel-name" id="p1-panel-name">Player 1</div>
-            <div class="player-panel-phase you-phase" id="p1-panel-phase">DRAW</div>
-          </div>
-        </div>
-        <div class="player-panel-energy" onclick="openEnergyModal(1)" title="Energy">
-          <span class="energy-big-icon">⚡</span>
-          <span class="energy-big-amount" id="p1-energy">5</span>
-          <div class="energy-big-pips" id="p1-energy-pips"></div>
-        </div>
-        <div class="energy-breakdown" id="p1-color-energy"></div>
-        <div class="player-panel-life" id="p1-lf-wrap" style="display:none">
-          <span class="lf-heart">❤️</span>
-          <div class="lf-bar-track"><div class="lf-bar-fill" id="p1-lf-bar"></div></div>
-          <span class="lf-val" id="p1-lf-val">75</span>
-        </div>
-        <div class="player-panel-zones">
-          <div class="discard-pile-mini" onclick="showDiscard(1)" title="Discard pile (Otherworld)" id="p1-discard-pile">
-            <div class="discard-pile-card" id="p1-discard-top"><span class="discard-empty-icon">🗑</span></div>
-            <div class="discard-pile-info"><span class="panel-zone-count" id="p1-discard-count">0</span><span class="panel-zone-label">DISCARD</span></div>
-          </div>
-          <div class="panel-zone-btn" onclick="showRiftZone(1)" title="Rift Zone — banished">
-            <span class="panel-zone-icon">🌀</span>
-            <span class="panel-zone-count" id="p1-rift-count">0</span>
-            <span class="panel-zone-label">RIFT</span>
-          </div>
-        </div>
+      <div class="rail-pane" id="rail-chat">
+        <div class="rail-chat-note" id="rail-chat-note">Match chat is available in online matches.</div>
       </div>
-    </div>
+    </aside>
 
-    <!-- CENTER: The game board -->
-    <div class="board-column">
+    <!-- BOARD -->
+    <div class="board-column arena" id="arena">
 
-      <!-- P2 area -->
-      <div class="player-area">
-        <div class="player-area-header">
-          <span id="p2-name" style="font-weight:700;color:#86efac;font-size:14px;font-family:'Cinzel',serif">Opponent</span>
-          <span id="p2-hand-limit" class="hand-limit-bar hand-limit-ok">Hnd:<span id="p2-hand-count">5</span>/12</span>
-          <span style="font-size:10px;color:#4b5563;display:none">Dk:<span id="p2-deck-count">49</span></span>
-        </div>
-        <div class="field-wrapper">
-          <div class="herald-zone" id="p2-herald-zone">
+      <!-- OPPONENT SIDE (mirrored: identity · locations · field · herald · piles) -->
+      <section class="side opp player-area" id="side-p2">
+        <div class="strip">
+          <div class="ident player-panel opp-panel" id="p2-panel">
+            <div class="player-panel-top">
+              <div class="player-panel-avatar" id="p2-avatar">🤖</div>
+              <div class="player-panel-info">
+                <div class="player-panel-name" id="p2-panel-name">Opponent</div>
+                <div class="player-panel-phase" id="p2-panel-phase">—</div>
+              </div>
+            </div>
+            <div class="player-panel-energy" onclick="openEnergyModal(2)" title="Energy">
+              <span class="energy-big-icon">⚡</span>
+              <span class="energy-big-amount" id="p2-energy">5</span>
+              <span class="energy-word">ENERGY</span>
+              <div class="energy-big-pips" id="p2-energy-pips"></div>
+            </div>
+            <div class="energy-breakdown" id="p2-color-energy"></div>
+            <div class="player-panel-life" id="p2-lf-wrap" style="display:none;cursor:pointer" onclick="onLifeBarClick(2)" title="Select an attacker, then click here to attack Life">
+              <span class="lf-heart">❤️</span>
+              <div class="lf-bar-track"><div class="lf-bar-fill" id="p2-lf-bar"></div></div>
+              <span class="lf-val" id="p2-lf-val">75</span>
+            </div>
+            <div class="ident-meta"><span id="p2-hand-limit" class="hand-limit-bar hand-limit-ok">Hnd:<span id="p2-hand-count">5</span>/12</span> <span class="meta-sep">·</span> Dk:<span id="p2-deck-count">49</span></div>
+          </div>
+          <div class="location-zone locs" id="p2-loc-zone"><div class="location-zone-label">LOCATIONS</div></div>
+          <div class="herald-zone herald" id="p2-herald-zone">
             <div class="herald-zone-label">HERALD</div>
             <div id="p2-herald-slot"></div>
           </div>
-          <div class="deck-pile-wrap" id="p2-deck-pile-wrap">
-            <div class="deck-pile" id="p2-deck-pile" onclick="onDeckClick(2)"></div>
-            <div class="deck-pile-label">Dk:<span id="p2-deck-count-pile">49</span></div>
-          </div>
-          <div class="rift-zone-wrap" id="p2-rift-wrap">
-            <div class="rift-zone-label">RIFT</div>
-            <div class="rift-zone-pile rift-zone-empty" id="p2-rift-pile" onclick="showRiftZone(2)">
-              <span style="font-size:16px;color:rgba(168,85,247,.3)">🌀</span>
+          <div class="piles">
+            <div class="deck-pile-wrap pile-wrap" id="p2-deck-pile-wrap">
+              <div class="deck-pile pile" id="p2-deck-pile" onclick="onDeckClick(2)"></div>
+              <div class="deck-pile-label pile-label">Dk:<span id="p2-deck-count-pile">49</span></div>
             </div>
-            <div style="font-size:8px;color:#581c87;text-align:center">Rz:<span id="p2-rift-pile-count">0</span></div>
+            <div class="prize-wrap pile-wrap">
+              <div class="prize-grid prize-stack" id="p2-prizes"></div>
+              <div class="pile-label">PRIZES</div>
+            </div>
+            <div class="chip discard-pile-mini" onclick="showDiscard(2)" title="Discard pile (Otherworld)" id="p2-discard-pile">
+              <div class="discard-pile-card" id="p2-discard-top"><span class="discard-empty-icon">🗑</span></div>
+              <div class="discard-pile-info"><span class="panel-zone-count" id="p2-discard-count">0</span><span class="panel-zone-label">DISC</span></div>
+            </div>
+            <div class="chip rift-zone-wrap" id="p2-rift-wrap" onclick="showRiftZone(2)" title="Rift Zone — banished">
+              <div class="rift-zone-pile rift-zone-empty" id="p2-rift-pile"><span style="font-size:16px;color:rgba(168,85,247,.3)">🌀</span></div>
+              <div class="discard-pile-info"><span class="panel-zone-count" id="p2-rift-count">0</span><span class="panel-zone-label">RIFT</span><span class="rift-hidden-count">Rz:<span id="p2-rift-pile-count">0</span></span></div>
+            </div>
           </div>
-          <div class="location-zone" id="p2-loc-zone">
-            <div class="location-zone-label">LOCATIONS</div>
-          </div>
-          <div class="char-field" id="p2-field"></div>
         </div>
-        <div style="margin-top:4px;font-size:10px;color:#4b5563">Opponent hand</div>
+        <div class="char-field field" id="p2-field"></div>
         <div class="hand-area opp-hand" id="p2-hand-display"></div>
-      </div>
+      </section>
 
-      <!-- CENTER COMMAND BAR: phase pills + tools + END TURN + log -->
-      <div class="center-strip">
+      <!-- COMMAND SEAM -->
+      <div class="center-strip seam" id="seam">
+        <div class="turn-chip" id="turn-chip">TURN <span id="turn-chip-n">1</span> <small id="turn-chip-who">· YOUR TURN</small></div>
         <div class="phase-bar-center">
           <button class="phase-pill" id="ph-draw" onclick="doPhase('draw')"><span class="phase-pill-icon">🎴</span><span class="phase-pill-label">Draw</span></button>
           <button class="phase-pill" id="ph-main" onclick="doPhase('main')"><span class="phase-pill-icon">⚔️</span><span class="phase-pill-label">Main</span></button>
@@ -6604,64 +6540,91 @@ textarea{
         <div class="log-box" id="log-box-center"></div>
       </div>
 
-      <!-- P1 field -->
-      <div class="player-area">
-        <div class="player-area-header">
-          <span style="font-weight:700;color:#a5b4fc;font-size:14px;font-family:'Cinzel',serif">Player 1</span>
-          <span style="font-size:10px;color:#4b5563;display:none">Dk:<span id="p1-deck-count">49</span></span>
-        </div>
-        <div class="field-wrapper">
-          <div class="herald-zone" id="p1-herald-zone">
+      <!-- YOUR SIDE (piles · herald · field · locations · identity) -->
+      <section class="side you player-area" id="side-p1">
+        <div class="char-field field" id="p1-field"></div>
+        <div class="strip">
+          <div class="piles">
+            <div class="deck-pile-wrap pile-wrap" id="p1-deck-pile-wrap">
+              <div class="deck-pile pile" id="p1-deck-pile" onclick="onDeckClick(1)"></div>
+              <div class="deck-pile-label pile-label">Dk:<span id="p1-deck-count-pile">49</span></div>
+            </div>
+            <div class="prize-wrap pile-wrap">
+              <div class="prize-grid prize-stack" id="p1-prizes"></div>
+              <div class="pile-label">PRIZES</div>
+            </div>
+            <div class="chip discard-pile-mini" onclick="showDiscard(1)" title="Discard pile (Otherworld)" id="p1-discard-pile">
+              <div class="discard-pile-card" id="p1-discard-top"><span class="discard-empty-icon">🗑</span></div>
+              <div class="discard-pile-info"><span class="panel-zone-count" id="p1-discard-count">0</span><span class="panel-zone-label">DISC</span></div>
+            </div>
+            <div class="chip rift-zone-wrap" id="p1-rift-wrap" onclick="showRiftZone(1)" title="Rift Zone — banished">
+              <div class="rift-zone-pile rift-zone-empty" id="p1-rift-pile"><span style="font-size:16px;color:rgba(168,85,247,.3)">🌀</span></div>
+              <div class="discard-pile-info"><span class="panel-zone-count" id="p1-rift-count">0</span><span class="panel-zone-label">RIFT</span><span class="rift-hidden-count">Rz:<span id="p1-rift-pile-count">0</span></span></div>
+            </div>
+          </div>
+          <div class="herald-zone herald" id="p1-herald-zone">
             <div class="herald-zone-label">HERALD</div>
             <div id="p1-herald-slot"></div>
           </div>
-          <div class="deck-pile-wrap" id="p1-deck-pile-wrap">
-            <div class="deck-pile" id="p1-deck-pile" onclick="onDeckClick(1)"></div>
-            <div class="deck-pile-label">Dk:<span id="p1-deck-count-pile">49</span></div>
-          </div>
-          <div class="rift-zone-wrap" id="p1-rift-wrap">
-            <div class="rift-zone-label">RIFT</div>
-            <div class="rift-zone-pile rift-zone-empty" id="p1-rift-pile" onclick="showRiftZone(1)">
-              <span style="font-size:16px;color:rgba(168,85,247,.3)">🌀</span>
+          <div class="location-zone locs" id="p1-loc-zone"><div class="location-zone-label">LOCATIONS</div></div>
+          <div class="ident player-panel you-panel" id="p1-panel">
+            <div class="player-panel-top">
+              <div class="player-panel-avatar" id="p1-avatar">👤</div>
+              <div class="player-panel-info">
+                <div class="player-panel-name" id="p1-panel-name">Player 1</div>
+                <div class="player-panel-phase you-phase" id="p1-panel-phase">DRAW</div>
+              </div>
             </div>
-            <div style="font-size:8px;color:#581c87;text-align:center">Rz:<span id="p1-rift-pile-count">0</span></div>
+            <div class="player-panel-energy" onclick="openEnergyModal(1)" title="Energy">
+              <span class="energy-big-icon">⚡</span>
+              <span class="energy-big-amount" id="p1-energy">5</span>
+              <span class="energy-word">ENERGY</span>
+              <div class="energy-big-pips" id="p1-energy-pips"></div>
+            </div>
+            <div class="energy-breakdown" id="p1-color-energy"></div>
+            <div class="player-panel-life" id="p1-lf-wrap" style="display:none">
+              <span class="lf-heart">❤️</span>
+              <div class="lf-bar-track"><div class="lf-bar-fill" id="p1-lf-bar"></div></div>
+              <span class="lf-val" id="p1-lf-val">75</span>
+            </div>
+            <div class="ident-meta">Dk:<span id="p1-deck-count">49</span></div>
           </div>
-          <div class="location-zone" id="p1-loc-zone">
-            <div class="location-zone-label">LOCATIONS</div>
-          </div>
-          <div class="char-field" id="p1-field"></div>
         </div>
-      </div>
+      </section>
 
-      <!-- P1 HAND (moved to bottom) -->
-      <div class="hand-dock">
+      <!-- YOUR HAND (fanned) -->
+      <div class="hand-dock" id="hand-dock">
         <div class="hand-dock-label">
           <span style="color:#9ca3af">YOUR HAND</span>
           <span id="p1-hand-limit-display" class="hand-limit-ok">0/12</span>
-          <span style="font-size:9px;color:#4b5563;margin-left:4px"><span style="color:#22c55e">green</span>=play · right-click=view · <span style="color:#ef4444">red</span>=instant</span>
+          <span class="hand-hint"><span style="color:#22c55e">green</span>=play · right-click=view · <span style="color:#ef4444">red</span>=instant</span>
         </div>
-        <div class="hand-area" id="p1-hand"></div>
+        <div class="hand-area hand-fan" id="p1-hand"></div>
       </div>
     </div>
-
-    <!-- RIGHT SIDEBAR: hover card preview -->
-    <div class="hover-preview-sidebar" id="hover-preview-sidebar">
-      <div class="hover-preview-placeholder" id="hover-preview-placeholder">
-        <div style="font-size:40px;opacity:.2">🃏</div>
-        <div style="font-size:11px;color:#4b5563;letter-spacing:1px;margin-top:8px;text-align:center">Hover a card<br>to preview</div>
-      </div>
-      <div class="hover-preview-content" id="hover-preview-content" style="display:none"></div>
-      <div class="sidebar-log-label">⚔ BATTLE LOG</div>
-      <div class="log-box" id="log-box"></div>
-    </div>
-
   </div>
 
-  <!-- MOBILE-ONLY: card preview bottom sheet (replaces hover on touch) -->
+  <!-- MOBILE-ONLY: card preview / log / chat bottom sheet -->
   <div class="mobile-card-sheet" id="mobile-card-sheet">
     <div class="mobile-card-sheet-handle"></div>
     <button class="mobile-card-sheet-close" onclick="closeMobileCardSheet()">✕</button>
+    <div class="rail-tabs sheet-tabs">
+      <button class="rail-tab" aria-selected="true" data-pane="card" onclick="mobileSheetTab('card')">CARD</button>
+      <button class="rail-tab" aria-selected="false" data-pane="log" onclick="mobileSheetTab('log')">LOG</button>
+      <button class="rail-tab" aria-selected="false" data-pane="chat" onclick="mobileSheetTab('chat')">CHAT</button>
+    </div>
     <div id="mobile-card-sheet-content"></div>
+    <div id="mobile-sheet-log" style="display:none"><div class="log-box mobile-log-box"></div></div>
+    <div id="mobile-sheet-chat" style="display:none"><div class="rail-chat-note">Match chat is available in online matches.</div></div>
+  </div>
+  <!-- MOBILE-ONLY: quick access to card info / log / chat -->
+  <div class="mobile-nav" id="mobile-nav">
+    <button onclick="openMobileSheet('card')">🃏 Card</button>
+    <button onclick="openMobileSheet('log')">📜 Log</button>
+    <button onclick="openMobileSheet('chat')">💬 Chat</button>
+    <button onclick="openGameSettings()" title="Settings">⚙️</button>
+    <button id="forfeit-btn-m" onclick="forfeitMatch()" title="Forfeit" style="display:none">🏳</button>
+    <button onclick="confirmReturnMenu()" title="Return to menu">🏠</button>
   </div>
 
   <!-- Floating menu cluster (settings / forfeit / home) -->
@@ -7886,6 +7849,7 @@ function loadDeckIntoBuilder(deckId){
   renderBuilderCards();renderBuilderDeck();
 }
 
+function builderPhoneTab(which){ const c=document.getElementById('builder-columns'); if(!c)return; c.classList.toggle('show-deck',which==='deck'); document.querySelectorAll('#builder-phone-tabs .bpt').forEach((b,i)=>b.classList.toggle('on',(i===1)===(which==='deck'))); }
 function clearBuilder(){builderDeck=[];document.getElementById('deck-name-input').value='';renderBuilderCards();renderBuilderDeck();}
 
 async function saveDeck(){
@@ -8028,6 +7992,7 @@ function renderBuilderCards(){
   document.getElementById('deck-count-display').textContent=total;
 }
 function renderBuilderDeck(){
+  try{ const m=document.getElementById('deck-count-display-m'); if(m) m.textContent=builderDeck.reduce((t,e)=>t+e.count,0); }catch(e){}
   const list=document.getElementById('builder-deck-list');if(!list)return;
   const total=builderDeck.reduce((s,e)=>s+e.count,0);
   document.getElementById('deck-count-display').textContent=total;
@@ -9889,31 +9854,15 @@ function renderDeckPile(p){
   const count=G.players[p].deck.length;
   if(countEl)countEl.textContent=count;
   el.innerHTML='';
-  if(count===0){el.style.display='none';return;}
   el.style.display='block';
-  const [h,h1,h2]=getDeckPileSize(count);
-  // Shadow layers (back of stack)
-  const s2=document.createElement('div');s2.className='deck-shadow-2';s2.style.cssText='position:absolute;width:44px;height:'+h2+'px;border-radius:5px;background:#0f0f20;border:2px solid #2d0550;left:4px;top:4px;z-index:1';
-  const s1=document.createElement('div');s1.className='deck-shadow-1';s1.style.cssText='position:absolute;width:44px;height:'+h1+'px;border-radius:5px;background:#151528;border:2px solid #3b0764;left:2px;top:2px;z-index:2';
-  // Top card (main visible card back)
-  const top=document.createElement('div');top.className='deck-card-back';
-  top.style.cssText='width:44px;height:'+h+'px;border-radius:5px;background:linear-gradient(135deg,#1e1e3a 0%,#0d0d1f 50%,#1e1e3a 100%);border:2px solid #4c1d95;display:flex;align-items:center;justify-content:center;position:relative;z-index:3;transition:transform .15s,box-shadow .15s;overflow:hidden;';
-  top.innerHTML='<span style="font-size:14px;color:rgba(124,58,237,.5)">✦</span><div style="position:absolute;inset:4px;border:1px solid rgba(124,58,237,.25);border-radius:3px;pointer-events:none"></div>';
-  // Searchable glow
-  if(deckSearchActive&&p===G.activePlayer){
-    top.style.boxShadow='0 0 14px #a855f7';
-    top.style.borderColor='#a855f7';
-    el.classList.add('searchable');
-  } else {
-    el.classList.remove('searchable');
-  }
-  // Wrap in relative container for absolute shadows
-  const wrap=document.createElement('div');wrap.style.cssText='position:relative;width:50px;height:'+(h+4)+'px;';
-  wrap.appendChild(s2);wrap.appendChild(s1);wrap.appendChild(top);
+  // Arena layout: the pile is the real card back, sized by CSS (--pw); the count sits on it.
+  const wrap=document.createElement('div');wrap.style.cssText='position:relative;width:100%;height:100%;';
+  const url=(typeof getImg==='function')?getImg('cardback'):null;
+  if(url && count>0){ const img=document.createElement('img'); img.src=url; img.className='deck-img'; img.alt=''; wrap.appendChild(img); }
+  else { wrap.innerHTML='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:18px;color:rgba(124,58,237,.45)">'+(count>0?'✦':'∅')+'</div>'; }
+  const n=document.createElement('div'); n.className='deck-n'; n.textContent=count; wrap.appendChild(n);
+  if(deckSearchActive&&p===G.activePlayer){ el.classList.add('searchable'); } else { el.classList.remove('searchable'); }
   el.appendChild(wrap);
-  // Hover lift on top card
-  top.addEventListener('mouseenter',()=>{top.style.transform='translateY(-4px)';top.style.boxShadow='0 8px 20px rgba(124,58,237,.5)';});
-  top.addEventListener('mouseleave',()=>{top.style.transform='';top.style.boxShadow=deckSearchActive?'0 0 14px #a855f7':'';});
 }
 
 function animateDrawFromDeck(p){
@@ -13714,8 +13663,17 @@ let _gameSettings = {
   animations: true,
   reveals: true,
   cardSize: 'medium',
-  banners: true
+  banners: true,
+  boardLook: '3d'
 };
+function setBoardLook(look){
+  _gameSettings.boardLook = (look==='flat')?'flat':'3d';
+  document.querySelectorAll('#game-screen,#game-screen-2v2').forEach(sc=>sc.dataset.look=_gameSettings.boardLook);
+  document.querySelectorAll('.settings-look-btn').forEach(b=>b.classList.toggle('active', b.dataset.look===_gameSettings.boardLook));
+  if(typeof SFX!=='undefined')SFX.click();
+  saveGameSettings();
+  if(typeof layoutHandFan==='function') layoutHandFan();
+}
 
 // ── MENU MUSIC ──────────────────────────────────────────────────────────────
 // Looping background track for the menus. It plays on every menu/non-battle
@@ -13802,6 +13760,7 @@ function syncSettingsUI(){
   document.querySelectorAll('.settings-size-btn').forEach(b=>{
     b.classList.toggle('active', b.dataset.size===_gameSettings.cardSize);
   });
+  document.querySelectorAll('.settings-look-btn').forEach(b=>b.classList.toggle('active', b.dataset.look===(_gameSettings.boardLook||'3d')));
 }
 
 function toggleSetting(key){
@@ -13848,11 +13807,11 @@ function setMusicVolume(val){
 
 function setCardSize(size){
   _gameSettings.cardSize = size;
-  const screen = document.getElementById('game-screen');
-  if(screen){
+  document.querySelectorAll('#game-screen,#game-screen-2v2').forEach(screen=>{
     screen.classList.remove('cards-small','cards-medium','cards-large');
     if(size!=='medium') screen.classList.add('cards-'+size);
-  }
+  });
+  if(typeof fitFields==='function'&&G&&G.players){ fitFields(); layoutHandFan(); }
   document.querySelectorAll('.settings-size-btn').forEach(b=>{
     b.classList.toggle('active', b.dataset.size===size);
   });
@@ -13863,11 +13822,12 @@ function setCardSize(size){
 function saveGameSettings(){
   // Settings persist in-memory for the session.
   // (Could persist to Supabase profile later if desired.)
-  try{ window._gameSettingsCache = JSON.stringify(_gameSettings); }catch(e){}
+  try{ window._gameSettingsCache = JSON.stringify(_gameSettings); localStorage.setItem('loc_game_settings', window._gameSettingsCache); }catch(e){}
 }
 
 function loadGameSettings(){
   try{
+    if(!window._gameSettingsCache){ try{ const ls=localStorage.getItem('loc_game_settings'); if(ls) window._gameSettingsCache=ls; }catch(e){} }
     if(window._gameSettingsCache){
       const s = JSON.parse(window._gameSettingsCache);
       Object.assign(_gameSettings, s);
@@ -13880,6 +13840,7 @@ function loadGameSettings(){
         if(!_gameSettings.animations) screen.classList.add('no-animations');
       }
     }
+    document.querySelectorAll('#game-screen,#game-screen-2v2').forEach(sc=>{ sc.dataset.look=(_gameSettings.boardLook==='flat')?'flat':'3d'; sc.classList.remove('cards-small','cards-large'); if(_gameSettings.cardSize&&_gameSettings.cardSize!=='medium') sc.classList.add('cards-'+_gameSettings.cardSize); });
   }catch(e){}
 }
 
@@ -14908,7 +14869,7 @@ function showHealPopup(player,text,targetUid){
 // MOBILE: drawer toggles + card preview bottom sheet
 // ═══════════════════════════════════════════════════
 function isMobileView(){
-  return window.matchMedia('(max-width:768px)').matches;
+  return window.matchMedia('(max-width:900px)').matches;
 }
 function toggleMobileDrawer(which){
   const gs=document.getElementById('game-screen');
@@ -14962,6 +14923,7 @@ function showMobileCardSheet(cardId){
     html+='</div>';
   }
   contentEl.innerHTML=html;
+  if(typeof mobileSheetTab==='function') mobileSheetTab('card');
   sheet.classList.add('open');
 }
 function closeMobileCardSheet(){
@@ -15548,6 +15510,7 @@ function renderAll(){
   renderDeckPile(1);renderDeckPile(2);
   renderRiftZone(1);renderRiftZone(2);
   renderLifeForce();
+  if(typeof fitFields==='function') fitFields();
   // Color identity pips
   [1,2].forEach(p=>{
     const el=document.getElementById('p'+p+'-color-id');if(!el)return;
@@ -15560,6 +15523,7 @@ function renderAll(){
 }
 
 // Render a 2v2 extra board (player 3 or 4): field, locations, and meta counts.
+function fitFields2v2(){ [1,2,3,4].forEach(p=>{ const f=document.getElementById('v2-field-'+p); if(f) f.classList.toggle('crowded', f.querySelectorAll('.card-slot').length>5); }); }
 function renderBoard2v2(p){
   if(!G.players[p])return;
 }
@@ -15607,6 +15571,7 @@ function renderV2HUD(p){
     +`</div>`;
 }
 function renderAll2v2(){
+  setTimeout(()=>{ if(typeof fitFields2v2==='function') fitFields2v2(); },0);
   if(!G||!G.is2v2)return;
   recalcPassives();
   [1,2,3,4].forEach(p=>{
@@ -15737,28 +15702,31 @@ function renderPrizes(p){
   const backUrl=(typeof getImg==='function')?getImg('cardback'):null;
   // Claimable when the local player (claimer=1) is taking a prize FROM this pile (p===victim)
   const canPick = _pendingPrizePick && _pendingPrizePick.claimer===1 && _pendingPrizePick.victim===p;
-  for(let i=0;i<_maxP;i++){
-    // A slot shows as taken only if THAT specific slot was claimed.
-    const claimed = Array.isArray(pl.prizesTaken) ? !!pl.prizesTaken[i] : (i<pl.prizesClaimed);
+  const makeCard=(i,claimed)=>{
     const d=document.createElement('div');
     d.className='prize-card'+(claimed?' claimed':'');
-    if(!claimed && canPick){
-      d.classList.add('claimable');
-      d.onclick=()=>pickPrizeCard(p, i);
-    }
+    if(!claimed && canPick){ d.classList.add('claimable'); d.onclick=()=>pickPrizeCard(p, i); }
     if(!claimed){
-      if(backUrl){
-        const img=document.createElement('img');
-        img.src=backUrl;img.className='prize-back-img';
-        d.appendChild(img);
-      } else {
-        const ph=document.createElement('div');
-        ph.className='prize-card-placeholder';
-        ph.textContent='✦';
-        d.appendChild(ph);
-      }
+      if(backUrl){ const img=document.createElement('img'); img.src=backUrl; img.className='prize-back-img'; d.appendChild(img); }
+      else { const ph=document.createElement('div'); ph.className='prize-card-placeholder'; ph.textContent='✦'; d.appendChild(ph); }
     }
-    el.appendChild(d);
+    return d;
+  };
+  let left=0;
+  for(let i=0;i<_maxP;i++){
+    const claimed = Array.isArray(pl.prizesTaken) ? !!pl.prizesTaken[i] : (i<pl.prizesClaimed);
+    if(!claimed) left++;
+    el.appendChild(makeCard(i,claimed));
+  }
+  // Arena layout: the pile shows how many prizes remain; the pick grid pops out only when claimable.
+  const cnt=document.createElement('div'); cnt.className='prize-count'; cnt.textContent=left; el.appendChild(cnt);
+  el.classList.toggle('hot', !!canPick);
+  if(canPick){
+    const pop=document.createElement('div'); pop.className='prize-claim-pop';
+    pop.innerHTML='<div class="pc-title">🎖 Knockout! Take one of '+(p===1?'your':"the opponent's")+' Prize cards</div>';
+    const grid=document.createElement('div'); grid.className='pc-grid';
+    for(let i=0;i<_maxP;i++){ const claimed = Array.isArray(pl.prizesTaken) ? !!pl.prizesTaken[i] : (i<pl.prizesClaimed); grid.appendChild(makeCard(i,claimed)); }
+    pop.appendChild(grid); el.appendChild(pop);
   }
 }
 
@@ -15882,6 +15850,70 @@ function renderHand(){
     div.onmouseleave=()=>clearHoverPreview();
     el.appendChild(div);
   });
+  layoutHandFan();
+}
+
+// ── ARENA LAYOUT HELPERS ─────────────────────────────────────────────────────
+// Fan the hand: cards overlap more as the hand grows so it always fits the dock.
+function layoutHandFan(){
+  const fan=document.getElementById('p1-hand'); if(!fan||!fan.classList.contains('hand-fan'))return;
+  const cards=[...fan.querySelectorAll('.hand-card')]; const n=cards.length; if(!n)return;
+  const W=fan.clientWidth; const cw=cards[0].offsetWidth||100;
+  const maxStep=cw*1.04, step=n>1?Math.min(maxStep,(W-cw-24)/(n-1)):0;
+  const total=step*(n-1)+cw; const x0=Math.max(0,(W-total)/2);
+  const spread=Math.min(28, n*3.2);
+  cards.forEach((el,i)=>{ const t=n>1?(i/(n-1)-.5):0; const rot=t*spread; const lift=Math.abs(t)*Math.abs(t)*cw*.28;
+    el.style.setProperty('--x',(x0+i*step)+'px'); el.style.setProperty('--rot',rot.toFixed(2)+'deg'); el.style.setProperty('--lift',lift.toFixed(1)+'px'); el.style.zIndex=10+i; });
+}
+// Fit each character field: compress one row → mark the side "crowded" (locations stack,
+// identity slims) → two rows. Never overflows the board.
+function fitFields(){
+  const gs=document.getElementById('game-screen'); if(!gs||!G||!G.players)return;
+  const phone=window.matchMedia('(max-width:900px)').matches;
+  [1,2].forEach(p=>{
+    const f=document.getElementById('p'+p+'-field'); const sec=document.getElementById('side-p'+p); if(!f||!sec)return;
+    const n=f.querySelectorAll('.card-slot').length;
+    sec.classList.remove('crowded'); f.classList.remove('rows2'); f.style.setProperty('--fit',1);
+    // custom properties don't resolve to px via getComputedStyle — measure a real card at --fit:1
+    const first=f.querySelector('.card-slot'); const cwBase=first?(first.offsetWidth||100):100;
+    const locs=document.getElementById('p'+p+'-loc-zone'); if(locs) locs.classList.toggle('many', locs.querySelectorAll('.card-slot').length>2);
+    if(!n) return;
+    const measure=()=>{ const cs=getComputedStyle(f); return {gap:parseFloat(cs.gap)||6, pad:(parseFloat(cs.paddingLeft)||0)+(parseFloat(cs.paddingRight)||0), cw:cwBase, have:f.clientWidth}; };
+    const oneRow=(m)=>{ const need=n*m.cw+(n-1)*m.gap+m.pad; return need<=m.have?1:(m.have-m.pad-(n-1)*m.gap)/(n*m.cw); };
+    if(phone){ f.classList.add('rows2'); const m=measure(); const perRow=Math.ceil(n/2); const fit=n>4?Math.min(1,(m.have-m.pad-(perRow-1)*m.gap)/(perRow*m.cw)):Math.max(.72,oneRow(m)); f.style.setProperty('--fit',Math.max(.6,Math.min(1,fit)).toFixed(3)); return; }
+    let m=measure(); let fit1=oneRow(m);
+    if(fit1<.68){ sec.classList.add('crowded'); m=measure(); fit1=oneRow(m); }
+    const perRow=Math.ceil(n/2), ch=m.cw/.7, rowGap=4;
+    const fit2=Math.min(((f.clientHeight-12-rowGap)/2)/ch, (m.have-m.pad-(perRow-1)*m.gap)/(perRow*m.cw));
+    let fit=fit1; if(n>4 && fit2>fit1){ fit=fit2; f.classList.add('rows2'); }
+    f.style.setProperty('--fit',Math.max(.4,Math.min(1,fit)).toFixed(3));
+  });
+}
+// Arena 3D: the hovered card leans toward the cursor (event delegation, no per-card listeners).
+(function(){
+  const sel='.card-slot,.herald-slot,.hand-card';
+  document.addEventListener('pointermove',e=>{
+    const el=e.target.closest(sel); if(!el)return; const gs=el.closest('#game-screen,#game-screen-2v2'); if(!gs||gs.dataset.look!=='3d')return;
+    const r=el.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+    el.style.setProperty('--ty',(x*16).toFixed(1)+'deg'); el.style.setProperty('--tx',(-y*12).toFixed(1)+'deg');
+  },{passive:true});
+  document.addEventListener('pointerout',e=>{ const el=e.target.closest&&e.target.closest(sel); if(el){ el.style.removeProperty('--tx'); el.style.removeProperty('--ty'); } },{passive:true});
+  window.addEventListener('resize',()=>{ const gs=document.getElementById('game-screen'); if(gs&&gs.classList.contains('active')&&G&&G.players){ fitFields(); layoutHandFan(); } });
+})();
+// Left rail tabs (desktop) + bottom sheet tabs (phone)
+function railTab(pane){
+  document.querySelectorAll('#game-screen .info-rail .rail-tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.pane===pane));
+  document.querySelectorAll('#game-screen .rail-pane').forEach(x=>x.classList.toggle('on',x.id===pane));
+}
+function mobileSheetTab(pane){
+  document.querySelectorAll('#mobile-card-sheet .sheet-tabs .rail-tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.pane===pane));
+  const c=document.getElementById('mobile-card-sheet-content'), l=document.getElementById('mobile-sheet-log'), ch=document.getElementById('mobile-sheet-chat');
+  if(c)c.style.display=pane==='card'?'':'none'; if(l)l.style.display=pane==='log'?'':'none'; if(ch)ch.style.display=pane==='chat'?'':'none';
+  if(pane==='log'&&typeof renderLog==='function'&&G&&G.log)renderLog();
+}
+function openMobileSheet(pane){
+  const sheet=document.getElementById('mobile-card-sheet'); if(!sheet)return;
+  mobileSheetTab(pane); sheet.classList.add('open');
 }
 
 function renderPhaseBar(){
@@ -15912,6 +15944,10 @@ function renderBanner(){
     if(G.activePlayer===2){ p2phase.textContent=ph; p2phase.className='player-panel-phase active-phase-glow'; }
     else { p2phase.textContent='WAITING'; p2phase.className='player-panel-phase'; }
   }
+  // Arena seam turn chip
+  const tc=document.getElementById('turn-chip'), tcn=document.getElementById('turn-chip-n'), tcw=document.getElementById('turn-chip-who');
+  if(tc){ if(tcn)tcn.textContent=G.turn||1; const mine=(G.is2v2?(typeof isHumanPlayer==='function'&&isHumanPlayer(G.activePlayer)):G.activePlayer===1);
+    if(tcw)tcw.textContent=mine?'· YOUR TURN · '+ph:'· '+(typeof pname==='function'?pname(G.activePlayer).toUpperCase():'OPPONENT')+' · '+ph; tc.classList.toggle('opp-turn',!mine); }
   // Update panel names
   const p1name=document.getElementById('p1-panel-name');
   const p2name=document.getElementById('p2-panel-name');
@@ -19387,7 +19423,7 @@ function enterOnlineGame(room){
     G.onlineOpponentName=room.guest_name;
     G.onlineMyName=room.host_name;
     showScreen('game-screen');
-    const ffBtn=document.getElementById('forfeit-btn');if(ffBtn)ffBtn.style.display='inline-block';
+    const ffBtn=document.getElementById('forfeit-btn');if(ffBtn)ffBtn.style.display='inline-block';const ffM=document.getElementById('forfeit-btn-m');if(ffM)ffM.style.display='';
     renderAll();
     // Broadcast authoritative state repeatedly until guest acks
     let tries=0;
@@ -19410,7 +19446,7 @@ function enterOnlineGame(room){
     G.activePlayer=2; // opponent (host) goes first
     G.waitingForHostState=true;
     showScreen('game-screen');
-    const ffBtn=document.getElementById('forfeit-btn');if(ffBtn)ffBtn.style.display='inline-block';
+    const ffBtn=document.getElementById('forfeit-btn');if(ffBtn)ffBtn.style.display='inline-block';const ffM=document.getElementById('forfeit-btn-m');if(ffM)ffM.style.display='';
     renderAll();
     // Show a "syncing" message
     log('Connecting to host... waiting for game state.','info');
@@ -23392,6 +23428,16 @@ window.addEventListener('load',async()=>{
           <button class="settings-size-btn" data-size="small" onclick="setCardSize('small')">S</button>
           <button class="settings-size-btn active" data-size="medium" onclick="setCardSize('medium')">M</button>
           <button class="settings-size-btn" data-size="large" onclick="setCardSize('large')">L</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Board Look</div>
+          <div class="settings-label-desc">Arena 3D tilts the table and cards; Flat is lighter on older devices</div>
+        </div>
+        <div class="settings-size-btns">
+          <button class="settings-size-btn settings-look-btn active" data-look="3d" onclick="setBoardLook('3d')">Arena 3D</button>
+          <button class="settings-size-btn settings-look-btn" data-look="flat" onclick="setBoardLook('flat')">Flat</button>
         </div>
       </div>
     </div>
