@@ -5968,7 +5968,8 @@ textarea{
 #registry-screen .reg-3d{ position:absolute; inset:0; transform-style:preserve-3d; will-change:transform; }
 #registry-screen .reg-face{ position:absolute; inset:0; border-radius:14px; overflow:hidden; border:2px solid rgba(232,197,112,.55); box-shadow:0 30px 60px rgba(0,0,0,.7),0 0 40px rgba(124,58,237,.35); background:#15122a; backface-visibility:hidden; -webkit-backface-visibility:hidden; }
 #registry-screen .reg-face.back{ transform:rotateY(180deg); }
-#registry-screen .reg-face img{ width:100%; height:100%; object-fit:cover; display:block; }
+#registry-screen .reg-face img{ position:absolute; left:0; top:0; width:100%; height:100%; object-fit:cover; display:block; }
+#registry-screen .reg-face img.trim-fallback{ transform:scale(1.022); transform-origin:50% 50%; }
 #registry-screen .reg-card.sighted .reg-face.front img{ filter:grayscale(1) contrast(1.05) brightness(.75); }
 #registry-screen .reg-card.unreg .reg-face img{ filter:brightness(.35) saturate(.4); }
 #registry-screen .reg-shadow{ position:absolute; left:10%; right:10%; bottom:-26px; height:22px; border-radius:50%; background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,.7),transparent 70%); filter:blur(4px); animation:reg-shadow 5.5s ease-in-out infinite; pointer-events:none; }
@@ -15603,7 +15604,7 @@ function registrySelect(cid,quiet){
   const card=document.getElementById('reg-card'); card.className='reg-card';
   const obj=document.getElementById('reg-3d'); obj.innerHTML='';
   const front=document.createElement('div'); front.className='reg-face front'; const back=document.createElement('div'); back.className='reg-face back';
-  const backUrl=getImg('cardback'); if(backUrl){ const bi=document.createElement('img'); bi.src=backUrl; bi.alt='Card back'; back.appendChild(bi); } else back.innerHTML='<div style="display:grid;place-items:center;height:100%;font-size:40px">⚔️</div>';
+  const backUrl=getImg('cardback'); if(backUrl){ const bi=document.createElement('img'); bi.src=backUrl; bi.alt='Card back'; back.appendChild(bi); applyScanTrim(bi); } else back.innerHTML='<div style="display:grid;place-items:center;height:100%;font-size:40px">⚔️</div>';
   obj.appendChild(front); obj.appendChild(back);
   if(!cid){ document.getElementById('reg-head').innerHTML=''; document.getElementById('reg-body').innerHTML='<div class="reg-sealed">No entries in this view.</div>'; document.getElementById('reg-finishes').innerHTML=''; obj.innerHTML=''; return; }
   const c=DB[cid]; const m=cardMeta(cid); const st=registryState(cid);
@@ -15611,7 +15612,7 @@ function registrySelect(cid,quiet){
   if(st==='registered'){ if(!_registry.seen[cid]){ _registry.seen[cid]=true; saveRegistry(); updateRegistryBadge(); } }
   // subject card
   const url=st==='unregistered'?(getImg('cardback')||null):getImg(cid);
-  if(url){ const img=document.createElement('img'); img.src=url; img.alt=st==='unregistered'?'Unregistered card':m.name; front.appendChild(img); }
+  if(url){ const img=document.createElement('img'); img.src=url; img.alt=st==='unregistered'?'Unregistered card':m.name; front.appendChild(img); applyScanTrim(img); }
   else { front.innerHTML='<div style="display:grid;place-items:center;height:100%;font-size:40px">👑</div>'; }
   if(st==='unregistered'){ card.classList.add('unreg'); front.innerHTML+=`<div class="stamp unreg"><span>${m.number?'No. '+m.number:'???'}</span></div>`; }
   else if(st==='sighted'){ card.classList.add('sighted'); front.innerHTML+='<div class="stamp"><span>SIGHTED</span></div>'; }
@@ -15658,6 +15659,41 @@ function registrySelect(cid,quiet){
   body.innerHTML=h; body.scrollTop=0;
 }
 // ── 3D floater: slow continuous spin so both faces show; hover holds, drag turns ──
+// ── scan margin trim: most card scans carry a thin black border outside the card rim; measure it once per image and crop it off ──
+const _scanTrim={};
+function measureScanTrim(url,cb){
+  if(!url){ cb(null); return; }
+  if(url in _scanTrim){ cb(_scanTrim[url]); return; }
+  const im=new Image(); im.crossOrigin='anonymous';
+  im.onload=()=>{ try{
+    const W=256, H=Math.max(8,Math.round(W*im.naturalHeight/im.naturalWidth));
+    const c=document.createElement('canvas'); c.width=W; c.height=H;
+    const x=c.getContext('2d',{willReadFrequently:true}); x.drawImage(im,0,0,W,H);
+    const d=x.getImageData(0,0,W,H).data; const THR=22, CAP=.03;
+    const rowLum=y=>{ let s=0; for(let i=y*W*4,e=i+W*4;i<e;i+=4) s+=(d[i]+d[i+1]+d[i+2])/3*(d[i+3]/255); return s/W; };
+    const colLum=xx=>{ let s=0; for(let y=0;y<H;y++){ const i=(y*W+xx)*4; s+=(d[i]+d[i+1]+d[i+2])/3*(d[i+3]/255); } return s/H; };
+    let t=0,b=0,l=0,r=0;
+    while(t<H*CAP&&rowLum(t)<THR) t++;
+    while(b<H*CAP&&rowLum(H-1-b)<THR) b++;
+    while(l<W*CAP&&colLum(l)<THR) l++;
+    while(r<W*CAP&&colLum(W-1-r)<THR) r++;
+    const res={t:t/H,b:b/H,l:l/W,r:r/W}; _scanTrim[url]=res; cb(res);
+  }catch(e){ _scanTrim[url]=null; cb(null); } };
+  im.onerror=()=>{ _scanTrim[url]=null; cb(null); };
+  im.src=url;
+}
+function applyScanTrim(img){
+  if(!img||!img.src) return;
+  const url=img.src;
+  measureScanTrim(url,(m)=>{
+    if(img.src!==url) return;
+    if(!m){ img.classList.add('trim-fallback'); return; }
+    const fw=1-m.l-m.r, fh=1-m.t-m.b; if(fw<=.5||fh<=.5) return;
+    img.style.objectFit='fill';
+    img.style.width=(100/fw).toFixed(3)+'%'; img.style.height=(100/fh).toFixed(3)+'%';
+    img.style.left=(-m.l/fw*100).toFixed(3)+'%'; img.style.top=(-m.t/fh*100).toFixed(3)+'%';
+  });
+}
 const _regSpin={ angle:0, speed:22, raf:null, last:0, hold:false, dragging:false, dx:0, lastX:0 };
 function registrySpinStart(){
   if(_regSpin.raf) return;
