@@ -5880,6 +5880,12 @@ textarea{
 }
 
 
+/* ════════ 🤖 AI THINKING INDICATOR ════════ */
+.ai-thinking{ position:fixed; left:50%; top:56px; transform:translateX(-50%) translateY(-8px); z-index:100010; pointer-events:none; opacity:0; transition:opacity .25s, transform .25s; font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:2px; color:#fca5a5; background:rgba(14,8,18,.9); border:1px solid rgba(239,68,68,.35); border-radius:999px; padding:5px 14px; box-shadow:0 6px 20px rgba(0,0,0,.5); }
+.ai-thinking.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+.ai-thinking::after{ content:''; display:inline-block; width:1.2em; text-align:left; animation:ai-dots 1.2s steps(4,end) infinite; }
+@keyframes ai-dots{ 0%{ content:''; } 25%{ content:'.'; } 50%{ content:'..'; } 75%{ content:'...'; } }
+@media (max-width:900px){ .ai-thinking{ top:52px; font-size:10px; padding:4px 10px; } }
 /* ════════ 💔 BROKEN HERALD ════════ */
 .herald-slot.herald-broken{ border-color:#5b5b7a!important; box-shadow:none!important; cursor:pointer; background:#0b0b16; }
 .herald-slot.herald-broken:hover{ transform:none; border-color:#8b8bb0!important; }
@@ -8501,7 +8507,7 @@ function startGame2v2(mode, decks, seatNames, teamLife, humanSeats){
 // 2v2 turn advancement: step through [1,2,3,4]. (AI boards currently pass — the
 // per-board AI and the 4-board interactive UI are the next slices.)
 function execEnd2v2(p){
-  G._aiTurn=false; G._aiAuto=false;
+  G._aiTurn=false; G._aiAuto=false; if(typeof aiThinking==='function')aiThinking(false);
   endTurnFx(p);
   log((G.players[p]?.name||('P'+p))+' ends turn.','info');
   G.turnIndex=((G.turnIndex||0)+1)%G.turnOrder.length;
@@ -10458,11 +10464,11 @@ function runAI2v2(p){
       const maxAtk=1+(G.bonusAttackers||0);
       const chosen=eligible.sort((a,b)=>effPower(b)-effPower(a)).slice(0,maxAtk);
       const heraldDuel=()=>{ try{ const ho=aiHeraldOptions(p); if(ho.length&&ho[0].score>3){ const o=ho[0]; G.heraldAttacking=true; resolveHeraldAttackTarget(o.p,o.fc); G.heraldAttacking=false; renderAll(); } }catch(e){ console.warn('[AI] herald duel',e); } };
-      if(!chosen.length){ heraldDuel(); log(`${pl.name} skips attack.`,'info'); setTimeout(()=>{ if(!G.gameOver)execEnd(); },600); return; }
-      processAITeamAttacks(p, chosen.map(c=>c.uid), ()=>{ heraldDuel(); if(!G.gameOver)execEnd(); });
-    }, 650);
+      if(!chosen.length){ heraldDuel(); log(`${pl.name} skips attack.`,'info'); setTimeout(()=>{ if(!G.gameOver)execEnd(); },aiPace(1200)); return; }
+      processAITeamAttacks(p, chosen.map(c=>c.uid), ()=>{ heraldDuel(); setTimeout(()=>{ if(!G.gameOver)execEnd(); },aiPace(1200)); });
+    }, aiPace(900));
     }); // aiMainPhase
-  }, 650);
+  }, aiPace(900));
 }
 // Queue: AI swings at the human team's Life one attacker at a time; each opens
 // a human block prompt.
@@ -10484,7 +10490,7 @@ function processAITeamAttacks(aiPlayer, queue, onDone){
   if(isUnblockable(afc)){
     log(`AI's ${DB[afc.cid].name} attacks Team ${defTeam} — UNBLOCKABLE for ${power}!`,'dmg');
     damageTeamLife(defTeam, power, 'direct attack'); renderAll();
-    setTimeout(()=>processAITeamAttacks(aiPlayer,queue,onDone),450); return;
+    setTimeout(()=>processAITeamAttacks(aiPlayer,queue,onDone),aiPace(1500)); return;
   }
   if(defenderIsHuman){
     // Defending team has a human — let them choose a block.
@@ -10495,7 +10501,7 @@ function processAITeamAttacks(aiPlayer, queue, onDone){
     if(blk)log(`🛡 ${DB[blk.cid].name} blocks the attack on Team ${defTeam}.`,'info');
     else log(`No block — ${power} to Team ${defTeam} Life.`,'dmg');
     resolveAITeamAttack(aiPlayer, afc, blk, defTeam);
-    setTimeout(()=>processAITeamAttacks(aiPlayer,queue,onDone),450);
+    setTimeout(()=>processAITeamAttacks(aiPlayer,queue,onDone),aiPace(1500));
   }
 }
 function openHumanTeamBlockPrompt(aiPlayer, afc, humanTeam, done, onChoose){
@@ -10595,7 +10601,7 @@ function processAILifeAttacks(queue, onDone){
   const auid=queue.shift();
   const afc=G.players[2].field.find(f=>f.uid===auid);
   if(!afc || !canCharacterAttack(2,afc)){ processAILifeAttacks(queue,onDone); return; }
-  aiAttackHumanLife(afc, ()=>{ setTimeout(()=>processAILifeAttacks(queue,onDone), 450); });
+  aiAttackHumanLife(afc, ()=>{ setTimeout(()=>processAILifeAttacks(queue,onDone), aiPace(1500)); });
 }
 function aiAttackHumanLife(afc, done){
   afc.attacksThisTurn=(afc.attacksThisTurn||0)+1;
@@ -13867,8 +13873,15 @@ let _gameSettings = {
   reveals: true,
   cardSize: 'medium',
   banners: true,
-  boardLook: '3d'
+  boardLook: '3d',
+  aiPace: 'human'   // 'human' = 1–3s between CPU moves (watchable) · 'fast' = snappy
 };
+function setAiPace(v){
+  _gameSettings.aiPace=(v==='fast')?'fast':'human';
+  document.querySelectorAll('.settings-pace-btn').forEach(b=>b.classList.toggle('active', b.dataset.pace===_gameSettings.aiPace));
+  if(typeof SFX!=='undefined')SFX.click();
+  saveGameSettings();
+}
 function setBoardLook(look){
   _gameSettings.boardLook = (look==='flat')?'flat':'3d';
   document.querySelectorAll('#game-screen,#game-screen-2v2').forEach(sc=>sc.dataset.look=_gameSettings.boardLook);
@@ -13964,6 +13977,7 @@ function syncSettingsUI(){
     b.classList.toggle('active', b.dataset.size===_gameSettings.cardSize);
   });
   document.querySelectorAll('.settings-look-btn').forEach(b=>b.classList.toggle('active', b.dataset.look===(_gameSettings.boardLook||'3d')));
+  document.querySelectorAll('.settings-pace-btn').forEach(b=>b.classList.toggle('active', b.dataset.pace===(_gameSettings.aiPace||'human')));
 }
 
 function toggleSetting(key){
@@ -14065,7 +14079,21 @@ function loadGameSettings(){
 //   • Per-card tuning hook: an ability may declare ai:{when:'enemy'|'wounded'|
 //     'always'|'never', weight:N} to override the text heuristics.
 // ═══════════════════════════════════════════════════════════════════════════
-const AIB={ tried:new Set(), noop:new Set(), turnKey:null, stepDelay:520 };
+const AIB={ tried:new Set(), noop:new Set(), turnKey:null, stepDelay:1800 };
+// Human-like pacing: every CPU beat gets a base delay + a little jitter so moves land
+// 1–3s apart and the card-play / attack / popup animations have room to finish.
+// 'fast' (Settings → CPU Pacing) collapses all of this to a snappy ~¼.
+function aiPace(ms){
+  const fast=(typeof _gameSettings!=='undefined'&&_gameSettings.aiPace==='fast')||window._aiFast;
+  if(fast) return Math.max(120, Math.round(ms*.22));
+  return Math.round(ms*(0.85+Math.random()*0.45)); // ±~22% jitter
+}
+// Shown while the CPU "thinks" between beats.
+function aiThinking(on, what){
+  let el=document.getElementById('ai-thinking');
+  if(!el){ el=document.createElement('div'); el.id='ai-thinking'; el.className='ai-thinking'; document.body.appendChild(el); }
+  el.textContent=what||'AI is thinking…'; el.classList.toggle('show',!!on);
+}
 function aiSetAuto(on){ if(G) G._aiAuto=!!on; }
 function aiEnemyPlayersOf(p){ return G.is2v2 ? (teamOf(p)==='A'?[2,4]:[1,3]) : [p===1?2:1]; }
 function aiEnemyChars(p){ const out=[]; aiEnemyPlayersOf(p).forEach(e=>{ const pl=G.players[e]; if(pl) pl.field.forEach(f=>{ if(isChar(DB[f.cid])) out.push({fc:f,p:e}); }); }); return out; }
@@ -14139,6 +14167,7 @@ function aiScoreAbility(p, fc, abl, src){
   if(when==='wounded'&&!wounded.length) return -1;
   if(!when){
     if(needsEnemy&&!enemies.length) return -1;
+    if(needsEnemy&&/equipment/.test(text)&&!enemies.some(e=>(e.fc.attachments||[]).some(a=>isEquip(DB[a])))) return -1; // nothing to hex/strip
     if(heals&&!needsEnemy&&!wounded.length&&!draws) return -1;
   }
   let s=18+Math.min(cost,8)*2.2-cost*1.1;
@@ -14194,7 +14223,7 @@ function aiEnumerateActions(p){
       const abilGain=((tc.abilities||[]).length)-((DB[fc.cid]?.abilities||[]).length);
       let s=50+gain*2+abilGain*4-cost*.4;
       if(gain<=0&&abilGain<=0) s-=25;
-      acts.push({score:s,label:'transform '+DB[fc.cid].name+'→'+tc.name,run:()=>{ aiMark('tf:'+fc.uid+':'+tid); doTransform(fc.uid,tid,inHand.uid,cost,p); },delay:1400});
+      acts.push({score:s,label:'transform '+DB[fc.cid].name+'→'+tc.name,run:()=>{ aiMark('tf:'+fc.uid+':'+tid); doTransform(fc.uid,tid,inHand.uid,cost,p); },delay:2600});
     });
   });
   // 3-6) Cards from hand
@@ -14238,7 +14267,7 @@ function aiEnumerateActions(p){
   const tax=(typeof crowsResidueTax==='function')?crowsResidueTax(p):0;
   const consider=(fc,abl,src)=>{
     const s=aiScoreAbility(p,fc,abl,src); if(s<=0) return;
-    acts.push({score:s,label:'ability '+abl.label+' ('+(DB[fc.cid]?.name||'?')+')',run:()=>{ aiMark('abl:'+fc.uid+':'+abl.label); const n0=G.log.length; activateAbility(fc,abl); aiFlushPendingSearch(); if(G.log.slice(n0).some(l=>/no additional coded effect|nothing happens|no effect/i.test(l.m||''))) AIB.noop.add(abl.label); },delay:800});
+    acts.push({score:s,label:'ability '+abl.label+' ('+(DB[fc.cid]?.name||'?')+')',run:()=>{ aiMark('abl:'+fc.uid+':'+abl.label); const n0=G.log.length; activateAbility(fc,abl); aiFlushPendingSearch(); if(G.log.slice(n0).some(l=>/no additional coded effect|nothing happens|no effect/i.test(l.m||''))) AIB.noop.add(abl.label); },delay:2200});
   };
   pl.field.filter(f=>isChar(DB[f.cid])||isLoc(DB[f.cid])).forEach(fc=>{
     const c=DB[fc.cid]; if(!c) return;
@@ -14258,18 +14287,22 @@ function aiMainPhase(p, onDone){
   G._aiTurn=true; aiSetAuto(true); // stays on through the attack phase (async ability flows, Exsanguinate picks…)
   let steps=0;
   const step=()=>{
-    if(G.gameOver){ G._aiTurn=false; aiSetAuto(false); return; }
-    if(G.activePlayer!==p||G.phase!=='main'){ if(onDone)onDone(); return; }
+    if(G.gameOver){ G._aiTurn=false; aiSetAuto(false); aiThinking(false); return; }
+    if(G.activePlayer!==p||G.phase!=='main'){ aiThinking(false); if(onDone)onDone(); return; }
     let acts=[]; try{ acts=aiEnumerateActions(p); }catch(e){ console.warn('[AI] enumerate failed',e); }
     const best=acts.find(a=>a.score>0);
-    if(!best||steps>=24){ renderAll(); if(onDone)onDone(); return; }
+    if(!best||steps>=24){ aiThinking(false); renderAll(); if(onDone)onDone(); return; }
     steps++;
     aiSetAuto(true);
+    aiThinking(false);
     try{ best.run(); }catch(e){ console.warn('[AI] action failed:',best.label,e); log('AI hesitates…','info'); }
     try{ if(typeof recalcPassives==='function')recalcPassives(); renderAll(); }catch(e){}
-    setTimeout(step, best.delay||AIB.stepDelay);
+    const wait=aiPace(best.delay||AIB.stepDelay);
+    setTimeout(()=>aiThinking(true),Math.min(600,wait*.4));
+    setTimeout(step, wait);
   };
-  step();
+  aiThinking(true);
+  setTimeout(step, aiPace(1100));
 }
 
 // ── attack evaluation ──
@@ -14356,11 +14389,16 @@ function aiAttackPhase1v1(p, onDone){
     fighters.forEach(f=>{ if(!canCharacterAttack(p,f)||!aiReady(f)) return; const o=aiAttackOptionsFor(p,f); if(o.length&&(!best||o[0].score>best.score)) best={score:o[0].score,afc:f,opt:o[0]}; });
     if(best&&best.score>2){
       const {afc,opt}=best;
-      if(opt.kind==='loc'){ aiMark('locatk:'+afc.uid); if(!afc.attacksThisTurn)afc.attacksThisTurn=0; resolveLocationAttack(p,afc.uid,opt.p,opt.uid); }
-      else if(opt.kind==='herald'){ resolveCharVsHerald(p,afc.uid,opt.p); }
-      else resolveAttack(p,afc.uid,opt.p,opt.uid);
-      renderAll();
-      setTimeout(swings,650); return;
+      const go=()=>{
+        if(opt.kind==='loc'){ aiMark('locatk:'+afc.uid); if(!afc.attacksThisTurn)afc.attacksThisTurn=0; resolveLocationAttack(p,afc.uid,opt.p,opt.uid); }
+        else if(opt.kind==='herald'){ resolveCharVsHerald(p,afc.uid,opt.p); }
+        else resolveAttack(p,afc.uid,opt.p,opt.uid);
+        renderAll();
+        setTimeout(swings,aiPace(1900));
+      };
+      if(typeof SFX!=='undefined'&&SFX.attack)try{SFX.attack();}catch(e){}
+      if(opt.uid&&typeof animateAttack==='function') animateAttack(afc.uid,opt.uid,go); else go();
+      return;
     }
     // Herald swing (independent of the character attacker cap)
     const ho=aiHeraldOptions(p);
@@ -14368,11 +14406,12 @@ function aiAttackPhase1v1(p, onDone){
       const o=ho[0]; G.heraldAttacking=true;
       resolveHeraldAttackTarget(o.p,o.fc);
       G.heraldAttacking=false; renderAll();
-      setTimeout(()=>{ if(onDone)onDone(); },500); return;
+      setTimeout(()=>{ if(onDone)onDone(); },aiPace(1600)); return;
     }
     if(onDone)onDone();
   };
-  swings();
+  aiThinking(true,'AI is choosing an attack…');
+  setTimeout(()=>{ aiThinking(false); swings(); }, aiPace(1200));
 }
 
 function runAI(){
@@ -14400,7 +14439,7 @@ function runAI(){
         // End the AI's turn and hand back to the human (also fires the human's
         // start-of-turn effects, which this path previously skipped).
         const _aiEndTurn=()=>{
-          G._aiTurn=false; G._aiAuto=false;
+          G._aiTurn=false; G._aiAuto=false; if(typeof aiThinking==='function')aiThinking(false);
           if(G.gameOver)return;
           // Power Up parity: the AI gets +2⚡ for a passive turn exactly like the human.
           { const ap2=G.players[2]; const didAtk=ap2.field.some(f=>(f.attacksThisTurn||0)>0)||((ap2.herald&&ap2.herald.attacksThisTurn)||0)>0;
@@ -14424,9 +14463,9 @@ function runAI(){
         aiAttackPhase1v1(2, ()=>{
           if(G.log.length===before) log('AI skips attack.','info');
           renderAll();
-          setTimeout(_aiEndTurn,600);
+          setTimeout(_aiEndTurn,aiPace(1400));
         });
-      },600);
+      },aiPace(900));
       }); // aiMainPhase
     },400);
   },400);
@@ -24171,6 +24210,16 @@ window.addEventListener('load',async()=>{
         <div class="settings-size-btns">
           <button class="settings-size-btn settings-look-btn active" data-look="3d" onclick="setBoardLook('3d')">Arena 3D</button>
           <button class="settings-size-btn settings-look-btn" data-look="flat" onclick="setBoardLook('flat')">Flat</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">CPU Pacing</div>
+          <div class="settings-label-desc">Human: the AI pauses 1–3s between moves so you can follow the board; Fast: no pauses</div>
+        </div>
+        <div class="settings-size-btns">
+          <button class="settings-size-btn settings-pace-btn active" data-pace="human" onclick="setAiPace('human')">Human</button>
+          <button class="settings-size-btn settings-pace-btn" data-pace="fast" onclick="setAiPace('fast')">Fast</button>
         </div>
       </div>
     </div>
