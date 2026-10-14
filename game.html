@@ -5962,16 +5962,25 @@ textarea{
 #registry-screen .reg-stage{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:18px; overflow:hidden; background:radial-gradient(ellipse at 50% 70%,rgba(124,58,237,.25),transparent 60%),linear-gradient(180deg,rgba(18,14,44,.92),rgba(10,8,26,.96)); }
 #registry-screen .reg-stage .ringbg{ position:absolute; left:50%; bottom:14%; width:min(420px,80%); aspect-ratio:1/.32; transform:translateX(-50%); border-radius:50%; border:2px solid rgba(232,197,112,.5); box-shadow:0 0 30px rgba(232,197,112,.25), inset 0 0 40px rgba(124,58,237,.35); background:radial-gradient(ellipse at 50% 50%,rgba(124,58,237,.35),rgba(0,0,0,0) 70%); pointer-events:none; }
 #registry-screen .reg-stage .ringbg::after{ content:''; position:absolute; inset:14%; border-radius:50%; border:1px solid rgba(232,197,112,.35); }
-#registry-screen .reg-card{ position:relative; width:min(300px,62%); aspect-ratio:.7; border-radius:14px; overflow:hidden; border:2px solid rgba(232,197,112,.55); box-shadow:0 30px 60px rgba(0,0,0,.7),0 0 40px rgba(124,58,237,.35); background:#15122a; z-index:1; transition:transform .25s; }
-#registry-screen .reg-card img{ width:100%; height:100%; object-fit:cover; display:block; }
-#registry-screen .reg-card.sighted img{ filter:grayscale(1) contrast(1.05) brightness(.75); }
-#registry-screen .reg-card.unreg img{ filter:brightness(.35) saturate(.4); }
+#registry-screen .reg-card{ position:relative; width:min(300px,62%); aspect-ratio:.7; z-index:1; perspective:1400px; animation:reg-float 5.5s ease-in-out infinite; cursor:grab; touch-action:pan-y; }
+#registry-screen .reg-card:active{ cursor:grabbing; }
+@keyframes reg-float{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-10px); } }
+#registry-screen .reg-3d{ position:absolute; inset:0; transform-style:preserve-3d; will-change:transform; }
+#registry-screen .reg-face{ position:absolute; inset:0; border-radius:14px; overflow:hidden; border:2px solid rgba(232,197,112,.55); box-shadow:0 30px 60px rgba(0,0,0,.7),0 0 40px rgba(124,58,237,.35); background:#15122a; backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+#registry-screen .reg-face.back{ transform:rotateY(180deg); }
+#registry-screen .reg-face img{ width:100%; height:100%; object-fit:cover; display:block; }
+#registry-screen .reg-card.sighted .reg-face.front img{ filter:grayscale(1) contrast(1.05) brightness(.75); }
+#registry-screen .reg-card.unreg .reg-face img{ filter:brightness(.35) saturate(.4); }
+#registry-screen .reg-shadow{ position:absolute; left:10%; right:10%; bottom:-26px; height:22px; border-radius:50%; background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,.7),transparent 70%); filter:blur(4px); animation:reg-shadow 5.5s ease-in-out infinite; pointer-events:none; }
+@keyframes reg-shadow{ 0%,100%{ transform:scaleX(1); opacity:.9; } 50%{ transform:scaleX(.85); opacity:.6; } }
 #registry-screen .reg-card .stamp{ position:absolute; inset:0; display:grid; place-items:center; pointer-events:none; }
+#registry-screen .reg-hint{ font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:2px; color:rgba(232,197,112,.5); z-index:1; }
+@media (prefers-reduced-motion:reduce){ #registry-screen .reg-card,#registry-screen .reg-shadow{ animation:none; } }
 #registry-screen .reg-card .stamp span{ font-family:'Cinzel',serif; font-weight:900; letter-spacing:6px; font-size:clamp(14px,2vw,22px); color:rgba(232,197,112,.9); border:3px solid rgba(232,197,112,.75); padding:8px 16px; transform:rotate(-18deg); text-shadow:0 2px 10px #000; background:rgba(10,8,26,.55); }
 #registry-screen .reg-card .stamp.unreg span{ font-size:clamp(18px,2.6vw,30px); letter-spacing:4px; transform:none; border:0; background:none; color:rgba(232,197,112,.85); }
-#registry-screen .reg-card.pop{ animation:reg-pop .7s cubic-bezier(.2,.9,.3,1.3); }
-@keyframes reg-pop{ 0%{ transform:scale(.6) rotateY(90deg); opacity:0; } 60%{ transform:scale(1.06) rotateY(0); opacity:1; } 100%{ transform:scale(1); } }
-#registry-screen .reg-card.shimmer::after{ content:''; position:absolute; inset:-50%; background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.55) 50%,transparent 60%); animation:reg-shimmer 1.4s ease-out 1; pointer-events:none; }
+#registry-screen .reg-card.pop{ animation:reg-pop .7s cubic-bezier(.2,.9,.3,1.3), reg-float 5.5s ease-in-out .7s infinite; }
+@keyframes reg-pop{ 0%{ transform:scale(.6); opacity:0; } 60%{ transform:scale(1.06); opacity:1; } 100%{ transform:scale(1); } }
+#registry-screen .reg-card.shimmer .reg-face.front::after{ content:''; position:absolute; inset:-50%; background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.55) 50%,transparent 60%); animation:reg-shimmer 1.4s ease-out 1; pointer-events:none; }
 @keyframes reg-shimmer{ from{ transform:translateX(-60%); } to{ transform:translateX(60%); } }
 #registry-screen .reg-nav{ display:flex; align-items:center; gap:14px; z-index:1; }
 #registry-screen .reg-nav button{ font-family:'Cinzel',serif; font-weight:700; color:#f3dfa0; background:rgba(60,44,20,.85); border:1px solid rgba(232,197,112,.5); border-radius:10px; padding:6px 12px; cursor:pointer; }
@@ -6895,7 +6904,8 @@ textarea{
     </aside>
     <section class="reg-panel reg-stage" id="reg-stage">
       <div class="ringbg"></div>
-      <div class="reg-card" id="reg-card"></div>
+      <div class="reg-card" id="reg-card"><div class="reg-3d" id="reg-3d"></div><div class="reg-shadow"></div></div>
+      <div class="reg-hint">SLOW SPIN · DRAG TO TURN · HOVER TO HOLD</div>
       <div class="reg-finishes" id="reg-finishes"></div>
       <div class="reg-nav"><button onclick="registryStep(-1)">◂ PREV</button><span class="cnt" id="reg-cnt">0 OF 0</span><button onclick="registryStep(1)">NEXT ▸</button></div>
     </section>
@@ -15590,23 +15600,28 @@ function registrySelect(cid,quiet){
   document.querySelectorAll('#reg-entries .reg-entry').forEach(e=>e.classList.toggle('on',e.dataset.cid===cid));
   const onEl=document.querySelector('#reg-entries .reg-entry.on'); if(onEl&&!quiet) onEl.scrollIntoView({block:'nearest'});
   document.getElementById('reg-cnt').textContent=(idx+1)+' OF '+ids.length;
-  const card=document.getElementById('reg-card'); card.innerHTML=''; card.className='reg-card';
-  if(!cid){ document.getElementById('reg-head').innerHTML=''; document.getElementById('reg-body').innerHTML='<div class="reg-sealed">No entries in this view.</div>'; document.getElementById('reg-finishes').innerHTML=''; return; }
+  const card=document.getElementById('reg-card'); card.className='reg-card';
+  const obj=document.getElementById('reg-3d'); obj.innerHTML='';
+  const front=document.createElement('div'); front.className='reg-face front'; const back=document.createElement('div'); back.className='reg-face back';
+  const backUrl=getImg('cardback'); if(backUrl){ const bi=document.createElement('img'); bi.src=backUrl; bi.alt='Card back'; back.appendChild(bi); } else back.innerHTML='<div style="display:grid;place-items:center;height:100%;font-size:40px">⚔️</div>';
+  obj.appendChild(front); obj.appendChild(back);
+  if(!cid){ document.getElementById('reg-head').innerHTML=''; document.getElementById('reg-body').innerHTML='<div class="reg-sealed">No entries in this view.</div>'; document.getElementById('reg-finishes').innerHTML=''; obj.innerHTML=''; return; }
   const c=DB[cid]; const m=cardMeta(cid); const st=registryState(cid);
   const firstView=st==='registered'&&_registry.first[cid]&&!_registry.seen[cid];
   if(st==='registered'){ if(!_registry.seen[cid]){ _registry.seen[cid]=true; saveRegistry(); updateRegistryBadge(); } }
   // subject card
   const url=st==='unregistered'?(getImg('cardback')||null):getImg(cid);
-  if(url){ const img=document.createElement('img'); img.src=url; img.alt=st==='unregistered'?'Unregistered card':m.name; card.appendChild(img); }
-  else { card.innerHTML='<div style="display:grid;place-items:center;height:100%;font-size:40px">👑</div>'; }
-  if(st==='unregistered'){ card.classList.add('unreg'); card.innerHTML+=`<div class="stamp unreg"><span>${m.number?'No. '+m.number:'???'}</span></div>`; }
-  else if(st==='sighted'){ card.classList.add('sighted'); card.innerHTML+='<div class="stamp"><span>SIGHTED</span></div>'; }
+  if(url){ const img=document.createElement('img'); img.src=url; img.alt=st==='unregistered'?'Unregistered card':m.name; front.appendChild(img); }
+  else { front.innerHTML='<div style="display:grid;place-items:center;height:100%;font-size:40px">👑</div>'; }
+  if(st==='unregistered'){ card.classList.add('unreg'); front.innerHTML+=`<div class="stamp unreg"><span>${m.number?'No. '+m.number:'???'}</span></div>`; }
+  else if(st==='sighted'){ card.classList.add('sighted'); front.innerHTML+='<div class="stamp"><span>SIGHTED</span></div>'; }
   else {
     const owned=_collectionFoil[cid]||{}; const fin=_reg.finish&&owned[_reg.finish]?_reg.finish:(_holoOwned[cid]&&owned[_holoOwned[cid]]?_holoOwned[cid]:'none');
-    if(fin!=='none'&&typeof applyHoloToArt==='function') applyHoloToArt(card,cid,{variant:fin});
+    if(fin!=='none'&&typeof applyHoloToArt==='function') applyHoloToArt(front,cid,{variant:fin});
     if(firstView) card.classList.add('shimmer');
   }
-  if(!quiet) { card.classList.remove('pop'); void card.offsetWidth; card.classList.add('pop'); }
+  if(!quiet) { card.classList.remove('pop'); void card.offsetWidth; card.classList.add('pop'); _regSpin.angle=0; }
+  registrySpinStart();
   // finishes row
   const finEl=document.getElementById('reg-finishes'); finEl.innerHTML='';
   if(st==='registered'){ const owned=_collectionFoil[cid]||{};
@@ -15641,6 +15656,31 @@ function registrySelect(cid,quiet){
   }
   if(isAdmin()) h+=`<div class="reg-admin" id="reg-admin"><button type="button" onclick="registryEdit('${cid}')">✎ EDIT ENTRY</button></div>`;
   body.innerHTML=h; body.scrollTop=0;
+}
+// ── 3D floater: slow continuous spin so both faces show; hover holds, drag turns ──
+const _regSpin={ angle:0, speed:22, raf:null, last:0, hold:false, dragging:false, dx:0, lastX:0 };
+function registrySpinStart(){
+  if(_regSpin.raf) return;
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const obj=document.getElementById('reg-3d'); const card=document.getElementById('reg-card'); if(!obj||!card) return;
+  if(!card._spinWired){ card._spinWired=true;
+    card.addEventListener('pointerenter',()=>{ _regSpin.hold=true; });
+    card.addEventListener('pointerleave',()=>{ _regSpin.hold=false; _regSpin.dragging=false; });
+    card.addEventListener('pointerdown',(e)=>{ _regSpin.dragging=true; _regSpin.lastX=e.clientX; _regSpin.dx=0; try{ card.setPointerCapture(e.pointerId); }catch(x){} });
+    card.addEventListener('pointermove',(e)=>{ if(!_regSpin.dragging) return; const d=e.clientX-_regSpin.lastX; _regSpin.lastX=e.clientX; _regSpin.angle+=d*.6; _regSpin.dx=d; });
+    card.addEventListener('pointerup',()=>{ _regSpin.dragging=false; });
+    card.addEventListener('pointercancel',()=>{ _regSpin.dragging=false; });
+  }
+  const tick=(t)=>{
+    const sc=document.getElementById('registry-screen');
+    if(!sc||!sc.classList.contains('active')){ _regSpin.raf=null; return; }
+    const dt=Math.min(.05,(t-(_regSpin.last||t))/1000); _regSpin.last=t;
+    if(!reduce&&!_regSpin.hold&&!_regSpin.dragging) _regSpin.angle+=_regSpin.speed*dt;
+    else if(!_regSpin.dragging&&_regSpin.dx){ _regSpin.angle+=_regSpin.dx*.6; _regSpin.dx*=.92; if(Math.abs(_regSpin.dx)<.05)_regSpin.dx=0; }
+    obj.style.transform='rotateY('+_regSpin.angle+'deg) rotateX(-4deg)';
+    _regSpin.raf=requestAnimationFrame(tick);
+  };
+  _regSpin.raf=requestAnimationFrame(tick);
 }
 function fmtRegDate(ts){ if(!ts) return '—'; try{ return new Date(ts).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'}); }catch(e){ return '—'; } }
 function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
