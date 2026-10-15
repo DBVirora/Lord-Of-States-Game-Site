@@ -5826,7 +5826,7 @@ textarea{
   #auth-bar .hud-signout{ font-size:0; padding:5px 7px; }
   #auth-bar .hud-signout::before{ content:'⎋'; font-size:14px; }
   /* ── Main menu ── */
-  #menu-screen{ padding:62px 14px 24px !important; }
+  /* #menu-screen padding override removed (Main Menu v2) */
   #menu-screen h1{ font-size:clamp(26px,8vw,38px) !important; letter-spacing:4px !important; }
   #menu-screen .menu-tagline{ font-size:clamp(6px,1.9vw,9px) !important; letter-spacing:0 !important; }
   #menu-screen .menu-title-wrap{ padding:4px 10px 2px !important; }
@@ -5934,11 +5934,11 @@ textarea{
 .menu-bg-layer.has-image::after{ background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%); }
 @media (max-width:900px){ .menu-bg-layer.has-image .menu-bg-image{ background-image:var(--mm-bgm,var(--mm-bg)); } }
 /* ════════ 🏛 MAIN MENU v2 — Fortnite chrome · Duels of the Planeswalkers card carousel ════════ */
-#menu-screen{ --mm-cw:clamp(150px,min(22vw,36vh),330px); --mm-gold:#e8c570; --mm-gold2:#fff0b8; --mm-ink:#f0e6c8; --mm-dim:#9a92b4; --mm-line:rgba(232,197,112,.35); }
-#menu-screen.active{ display:grid !important; grid-template-rows:auto minmax(0,1fr); gap:0; align-items:stretch; justify-content:stretch; text-align:left; padding:50px 14px 10px; height:100vh; height:100dvh; min-height:0; overflow:hidden; }
+#menu-screen{ --mm-cw:clamp(150px,min(22vw,38vh),400px); --mm-gold:#e8c570; --mm-gold2:#fff0b8; --mm-ink:#f0e6c8; --mm-dim:#9a92b4; --mm-line:rgba(232,197,112,.35); }
+#menu-screen.active{ display:grid !important; grid-template-columns:minmax(0,1fr); grid-template-rows:auto minmax(0,1fr); gap:0; align-items:stretch; justify-items:stretch; justify-content:stretch; text-align:left; padding:4px 14px 10px; width:100%; max-width:none; height:calc(100vh - 52px); height:calc(100dvh - 52px); min-height:0; overflow:hidden; box-sizing:border-box; margin:0; }
 #menu-screen .mm-floor{ position:fixed; left:0; right:0; bottom:0; height:34%; z-index:-1; pointer-events:none; background:radial-gradient(60% 100% at 50% 100%,rgba(232,197,112,.16),transparent 70%),linear-gradient(0deg,rgba(0,0,0,.5),transparent); }
 /* tabs */
-#menu-screen .mm-top{ position:relative; z-index:30; display:flex; align-items:center; gap:10px; padding:6px 0 6px; border-bottom:1px solid rgba(232,197,112,.18); }
+#menu-screen .mm-top{ position:relative; z-index:30; display:flex; align-items:center; gap:10px; padding:6px 0 6px; width:100%; max-width:2400px; margin:0 auto; box-sizing:border-box; border-bottom:1px solid rgba(232,197,112,.18); }
 #menu-screen .mm-tabs{ display:flex; gap:4px; flex-wrap:wrap; }
 #menu-screen .mm-tab{ font-family:'Cinzel',serif; font-weight:700; letter-spacing:2px; font-size:12px; padding:8px 14px; border-radius:8px; color:var(--mm-dim); background:none; border:0; cursor:pointer; position:relative; transition:color .15s,background .15s; }
 #menu-screen .mm-tab:hover{ color:var(--mm-ink); }
@@ -5955,7 +5955,7 @@ textarea{
 #menu-screen .mm-ptog input{ accent-color:var(--mm-gold); }
 #menu-screen[data-hide-quick] .mm-quick,#menu-screen[data-hide-ledger] .mm-ledger,#menu-screen[data-hide-loadout] .mm-loadout{ display:none; }
 /* stage */
-#menu-screen .mm-stage{ display:grid; grid-template-columns:clamp(250px,20vw,330px) minmax(0,1fr) clamp(230px,18vw,290px); gap:16px; min-height:0; padding:12px 0 4px; align-items:stretch; }
+#menu-screen .mm-stage{ display:grid; grid-template-columns:clamp(250px,19vw,400px) minmax(0,1fr) clamp(230px,17vw,360px); gap:clamp(12px,1.2vw,28px); min-height:0; min-width:0; width:100%; max-width:2400px; margin:0 auto; padding:12px 0 4px; align-items:stretch; }
 #menu-screen .mm-col{ display:flex; flex-direction:column; gap:12px; min-width:0; min-height:0; overflow:auto; scrollbar-width:none; }
 #menu-screen .mm-col::-webkit-scrollbar{ display:none; }
 #menu-screen .mm-panel{ background:linear-gradient(180deg,rgba(18,14,44,.86),rgba(10,8,26,.93)); border:1px solid var(--mm-line); border-radius:14px; position:relative; overflow:hidden; flex:none; }
@@ -6000,7 +6000,7 @@ textarea{
 #menu-screen .mm-lo .mm-ent{ display:grid; place-items:center; font-size:22px; }
 /* plinth */
 #menu-screen .mm-plinth{ padding:14px 12px 12px; display:flex; flex-direction:column; align-items:center; gap:10px; }
-#menu-screen .mm-herald{ width:min(190px,78%); aspect-ratio:5/7; border-radius:10px; overflow:hidden; border:2px solid var(--mm-gold); box-shadow:0 20px 40px rgba(0,0,0,.7),0 0 30px rgba(124,58,237,.45); animation:mm-float 5s ease-in-out infinite; cursor:pointer; position:relative; background:#15122a; }
+#menu-screen .mm-herald{ width:min(230px,78%); aspect-ratio:5/7; border-radius:10px; overflow:hidden; border:2px solid var(--mm-gold); box-shadow:0 20px 40px rgba(0,0,0,.7),0 0 30px rgba(124,58,237,.45); animation:mm-float 5s ease-in-out infinite; cursor:pointer; position:relative; background:#15122a; }
 #menu-screen .mm-herald img{ position:absolute; left:0; top:0; width:100%; height:100%; object-fit:cover; display:block; }
 @keyframes mm-float{ 0%,100%{ transform:translateY(0) rotateX(4deg); } 50%{ transform:translateY(-6px) rotateX(4deg); } }
 #menu-screen .mm-ring{ width:70%; height:14px; border-radius:50%; margin-top:-4px; background:radial-gradient(ellipse,rgba(232,197,112,.5),transparent 70%); }
@@ -6070,7 +6070,7 @@ textarea{
 /* phone */
 @media (max-width:900px){
   #menu-screen{ --mm-cw:clamp(140px,46vw,190px); }
-  #menu-screen.active{ height:auto; min-height:100vh; overflow:auto; grid-template-rows:auto auto; padding-bottom:84px; }
+  #menu-screen.active{ height:auto; min-height:calc(100vh - 46px); overflow:visible; grid-template-rows:auto auto; padding-bottom:84px; }
   #menu-screen .mm-tabs{ display:none; } #menu-screen .mm-ptog{ display:none; }
   #menu-screen .mm-stage{ grid-template-columns:1fr; gap:12px; }
   #menu-screen .mm-col{ overflow:visible; }
@@ -6340,12 +6340,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
    MAIN MENU — COMPACT GAME-STYLE LAYOUT (overrides earlier rules)
    ════════════════════════════════════════════════════════════ */
 @media (min-width:769px){
-  #menu-screen{
-    justify-content:center !important;
-    min-height:100vh !important;
-    padding:18px 24px !important;
-    gap:0 !important;
-  }
+  /* (old compact-menu overrides removed — Main Menu v2 sizes itself) */
   #menu-screen .menu-title-flourish{ display:block !important; font-size:10px !important; margin:0 0 2px !important; }
   #menu-screen .menu-title-wrap{ padding:6px 50px 2px !important; margin-bottom:0 !important; }
   #menu-screen h1{ font-size:clamp(30px,3.6vw,46px) !important; }
@@ -16269,13 +16264,13 @@ function mmDisplayHerald(){
   const want=(typeof _cos!=='undefined'&&_cos.displayHerald)||null; const owned=mmOwnedHeralds();
   if(want&&DB[want]) return want;
   const q=mmQuickState(); const d=q.deck&&typeof SAVED_DECKS!=='undefined'&&SAVED_DECKS[q.deck]; const fromDeck=d&&(d.cards||[]).find(cid=>DB[cid]&&DB[cid].type==='herald');
-  return fromDeck||owned[0]||Object.keys(DB).find(cid=>DB[cid]&&DB[cid].type==='herald'&&!DB[cid].isToken)||null;
+  return fromDeck||owned[0]||Object.keys(DB).find(cid=>DB[cid]&&DB[cid].type==='herald'&&!DB[cid].isToken&&getImg(cid))||null;
 }
 function mmCycleHerald(){ const owned=mmOwnedHeralds(); if(owned.length<2){ mmRenderPlinth(); return; } const cur=mmDisplayHerald(); const i=owned.indexOf(cur); const nx=owned[(i+1)%owned.length]; if(typeof _cos!=='undefined'){ _cos.displayHerald=nx; saveCosmetics(); } if(typeof SFX!=='undefined'&&_gameSettings.sfx)SFX.click(); mmRenderPlinth(); }
 function mmRenderPlinth(){
   const h=mmDisplayHerald(); const el=document.getElementById('mm-herald'); if(el){ const u=h?getImg(h):null; el.innerHTML=u?`<img src="${u}" alt="">`:'<div style="display:grid;place-items:center;height:100%;font-size:40px">👑</div>'; if(u&&typeof applyScanTrim==='function')applyScanTrim(el.querySelector('img')); }
   const sub=document.getElementById('mm-herald-sub'); if(sub) sub.textContent='HERALD · '+(h?DB[h].name.toUpperCase():'—')+' · TAP TO CHANGE';
-  const nm=document.getElementById('mm-name'); if(nm) nm.textContent=(window._playerName||'PLAYER').toUpperCase();
+  const nm=document.getElementById('mm-name'); if(nm) { let n=(window._playerName||document.getElementById('hud-username')?.textContent||'').trim(); if(!n||/loading/i.test(n)) n='PLAYER'; nm.textContent=n.toUpperCase(); }
   const ti=document.getElementById('mm-title'); if(ti){ const t=(typeof cosItem==='function')?cosItem(cosEquipped('title',1)):null; ti.textContent=(t&&t.id!=='title_none')?(t.text||t.name):''; ti.style.color=(t&&t.color)||'#00d4ff'; }
   const w=_celData.wins||0, l=_celData.losses||0; const W=document.getElementById('mm-wins'); if(W)W.textContent=w; const L=document.getElementById('mm-losses'); if(L)L.textContent=l; const R=document.getElementById('mm-wr'); if(R)R.textContent=(w+l)?Math.round(w/(w+l)*100)+'%':'—';
   const rg=document.getElementById('mm-reg'); if(rg&&typeof registryEligible==='function'){ const all=Object.keys(DB).filter(registryEligible); const reg=all.filter(cid=>registryState(cid)==='registered').length; rg.textContent=all.length?Math.round(reg/all.length*100)+'%':'0%'; }
@@ -16313,12 +16308,18 @@ function mmWire(){
   try{ const sv=JSON.parse(localStorage.getItem('loc_menu_panels')||'null'); if(sv){ ['quick','ledger','loadout'].forEach(k=>{ const on=sv[k]!==false; const cb=document.getElementById('mm-tog-'+k); if(cb)cb.checked=on; document.getElementById('menu-screen').toggleAttribute('data-hide-'+k,!on); }); } }catch(e){}
   addEventListener('resize',()=>{ if(document.getElementById('menu-screen').classList.contains('active')) mmLayout(); });
 }
+function _mmTry(name,fn){ try{ fn(); }catch(e){ console.warn('[menu] '+name+' failed:',e); } }
 function renderMainMenu(){
   const sc=document.getElementById('menu-screen'); if(!sc||!document.getElementById('mm-car')) return;
-  mmWire(); mmBuildTabs(); const pl=document.getElementById('mm-plate'); const T=MENU_TABS[_mm.tab]; if(pl)pl.innerHTML=T.plate+'<small>'+T.sub+'</small>';
-  mmBuildCards(false); mmHeroRender(); mmRenderQuick(); mmRenderLedger(); mmRenderPlinth(); mmRenderLoadout(); mmRenderFriends();
-  mmTip(); clearInterval(_mm.tipTimer); _mm.tipTimer=setInterval(mmTip,7000);
+  _mmTry('wire',mmWire); _mmTry('tabs',mmBuildTabs);
+  _mmTry('plate',()=>{ const pl=document.getElementById('mm-plate'); const T=MENU_TABS[_mm.tab]; if(pl)pl.innerHTML=T.plate+'<small>'+T.sub+'</small>'; });
+  _mmTry('cards',()=>mmBuildCards(false)); _mmTry('hero',mmHeroRender); _mmTry('quick',mmRenderQuick); _mmTry('ledger',mmRenderLedger);
+  _mmTry('plinth',mmRenderPlinth); _mmTry('loadout',mmRenderLoadout); _mmTry('friends',mmRenderFriends);
+  _mmTry('tip',()=>{ mmTip(); clearInterval(_mm.tipTimer); _mm.tipTimer=setInterval(mmTip,7000); });
 }
+// first paint (menu is the default active screen, so showScreen never fires for it) — after the whole script has run
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>{ if(document.getElementById('menu-screen')?.classList.contains('active')) renderMainMenu(); });
+else setTimeout(()=>{ if(document.getElementById('menu-screen')?.classList.contains('active')) renderMainMenu(); },0);
 
 // ── scan margin trim: most card scans carry a thin black border outside the card rim; measure it once per image and crop it off ──
 
@@ -24321,6 +24322,7 @@ window.addEventListener('load',async()=>{
       await loadCampaign();
       await loadBattlePass();
       if(typeof updateXpHud==='function')updateXpHud();
+      if(typeof renderMainMenu==='function'&&document.getElementById('menu-screen')?.classList.contains('active')) renderMainMenu();
       if(typeof maybeStartTutorialForNewPlayer==='function') setTimeout(maybeStartTutorialForNewPlayer, 1100);
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
     }catch(e){console.error('[AUTH] error:',e);window.signOutUser=function(){window.location.replace(LOGIN);};}
