@@ -16375,6 +16375,7 @@ function _cosMat(accent,b1,b2,kind){
 const COS_BUILTIN=[
   // card backs
   { id:'back_default', type:'back', name:'Lord of States', tier:'default', free:true, desc:'The standard court-issued back.' },
+  { id:'back_lc_blue', type:'back', name:'Lord Of Courts Blue', tier:'default', starter:true, img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Lord%20Of%20States%20Default%20Back%20(BLUE).png', unlock:{kind:'starter'}, desc:'The second standard back — sapphire and gold. Every player receives it after the tutorial.' },
   { id:'back_time_splitting_chimp', type:'back', name:'Time Splitting Chimp', tier:'exclusive', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Chrome%20Monkey_%20Lord%20of%20Courts.png', unlock:{kind:'pending'}, desc:'Chrome monkey, holo-blue grid.' },
   { id:'back_king_courts_halloween', type:'back', name:'King Of The Courts: Halloween Edition', tier:'exclusive', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Halloween%20Gorilla%20Lord%20of%20courts%20card%20back.png', unlock:{kind:'pending'}, desc:'The crowned gorilla king, Halloween gilded.' },
   { id:'back_halloween_death_race', type:'back', name:'Halloween Death Race', tier:'exclusive', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Lord%20of%20Courts_%20Gilded%20Apocalypse%20999%20juice%20card%20back.png', unlock:{kind:'pending'}, desc:'Gilded apocalypse on burning roads.' },
@@ -16412,7 +16413,7 @@ function cosCatalog(){
   const map={}; COS_BUILTIN.forEach(it=>{ map[it.id]=Object.assign({},it); });
   Object.entries(_cosCatalogExtra||{}).forEach(([id,o])=>{ if(!o||typeof o!=='object')return; map[id]=Object.assign(map[id]||{id,type:'back',tier:'common'},o,{id}); if(map[id].img&&map[id].type==='mat'){ map[id].mat=`linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),url("${map[id].img}")`; } });
   const order=['back','mat','frame','plate','title','entrance']; const tier=['default','common','rare','legendary','exclusive'];
-  return Object.values(map).filter(it=>it.enabled!==false&&COS_TYPES[it.type]).sort((a,b)=>order.indexOf(a.type)-order.indexOf(b.type)||tier.indexOf(a.tier)-tier.indexOf(b.tier)||String(a.name).localeCompare(String(b.name)));
+  return Object.values(map).filter(it=>it.enabled!==false&&COS_TYPES[it.type]).sort((a,b)=>order.indexOf(a.type)-order.indexOf(b.type)||tier.indexOf(a.tier)-tier.indexOf(b.tier)||((b.free?1:0)-(a.free?1:0))||String(a.name).localeCompare(String(b.name)));
 }
 function cosItem(id){ return cosCatalog().find(it=>it.id===id)||null; }
 function cosPrice(it){ if(!it)return 0; if(it.price!=null&&it.price!=='')return +it.price||0; return (COS_TIERS[it.tier]||COS_TIERS.common).price; }
@@ -16441,7 +16442,7 @@ async function saveCosCatalog(){
   try{ const {error}=await _celSB.from('app_settings').upsert({key:'cosmetics',value:JSON.stringify(_cosCatalogExtra),updated_at:new Date().toISOString()},{onConflict:'key'}); if(error){ alert('Save failed (cosmetics): '+error.message); return false; } return true; }
   catch(e){ alert('Failed to save cosmetics catalogue: '+e.message); return false; }
 }
-function cosOwned(id){ const it=cosItem(id); return !!(it&&(it.free||it.tier==='default'||_cos.owned[id])); }
+function cosOwned(id){ const it=cosItem(id); return !!(it&&(it.free||(it.tier==='default'&&!it.starter)||_cos.owned[id])); }
 function cosEquipped(type,p){
   if(p===undefined||p===1){ const id=_cos.equipped[type]||COS_DEFAULT_EQUIP[type]; return cosOwned(id)?id:COS_DEFAULT_EQUIP[type]; }
   const oc=(G&&G.oppCos)||{}; const id=oc[type]; return (id&&cosItem(id))?id:COS_DEFAULT_EQUIP[type];
@@ -16477,7 +16478,18 @@ function cosUnlockText(it){
   const u=it.unlock||{}; if(u.kind==='registry_set') return 'Registry: complete '+((typeof setLabel==='function'&&setLabel(u.set))||u.set);
   if(u.kind==='pass') return 'Battle Pass'; if(u.kind==='achievement') return 'Achievement: '+(u.id||''); if(u.kind==='event') return 'Event reward';
   if(u.kind==='pending') return 'Coming soon';
+  if(u.kind==='starter') return 'Finish the tutorial';
   return it.tier==='exclusive'?'Exclusive reward':'Shop';
+}
+// Starter cosmetics: granted once the player has finished the tutorial (or is a veteran who already plays matches).
+function cosEnsureStarter(celebrate){
+  try{
+    const done=!!(window._tutorialDoneFlag||(typeof _achData!=='undefined'&&_achData&&_achData.ach_tutorial_complete)||((typeof _celData!=='undefined')&&((_celData.matches||0)>0||(_celData.wins||0)+(_celData.losses||0)>0)));
+    if(!done) return false;
+    let any=false; cosCatalog().filter(it=>it.starter&&!_cos.owned[it.id]).forEach(it=>{ _cos.owned[it.id]=Date.now(); any=true; });
+    if(any){ saveCosmetics(); if(document.getElementById('mm-loadout')) mmRenderLoadout(); }
+    return any;
+  }catch(e){ return false; }
 }
 // set-completion & other unlock checks (call after any collection change)
 function cosCheckUnlocks(){
@@ -16489,9 +16501,32 @@ function cosCheckUnlocks(){
   }catch(e){}
 }
 // ── rendering hooks ──
+const _backTrim={};
+function trimBackArt(url){
+  if(!url||url.startsWith('data:')||url in _backTrim) return;
+  _backTrim[url]=null;
+  const im=new Image(); im.crossOrigin='anonymous';
+  im.onload=()=>{ try{
+    const W=im.naturalWidth,H=im.naturalHeight, s=Math.min(1,256/Math.max(W,H)), w=Math.round(W*s), h=Math.round(H*s);
+    const c=document.createElement('canvas'); c.width=w; c.height=h; const x=c.getContext('2d',{willReadFrequently:true}); x.drawImage(im,0,0,w,h);
+    const d=x.getImageData(0,0,w,h).data; let x0=w,y0=h,x1=-1,y1=-1;
+    for(let yy=0;yy<h;yy++) for(let xx=0;xx<w;xx++){ if(d[(yy*w+xx)*4+3]>24){ if(xx<x0)x0=xx; if(xx>x1)x1=xx; if(yy<y0)y0=yy; if(yy>y1)y1=yy; } }
+    if(x1<0||((x1-x0+1)>=w-2&&(y1-y0+1)>=h-2)){ _backTrim[url]=url; return; } // nothing to trim
+    const sx=Math.max(0,Math.floor(x0/s)), sy=Math.max(0,Math.floor(y0/s)), sw=Math.min(W-sx,Math.ceil((x1-x0+1)/s)), sh=Math.min(H-sy,Math.ceil((y1-y0+1)/s));
+    const k=Math.min(1,1000/sw); const out=document.createElement('canvas'); out.width=Math.round(sw*k); out.height=Math.round(sh*k);
+    out.getContext('2d').drawImage(im,sx,sy,sw,sh,0,0,out.width,out.height);
+    _backTrim[url]=out.toDataURL('image/webp',.92);
+    // repaint everything that shows a back
+    try{ applyCosmetics(); }catch(e){}
+    try{ if(typeof G!=='undefined'&&G&&G.players){ renderDeckPile(1); renderDeckPile(2); renderP2Backs(); } }catch(e){}
+    try{ if(document.getElementById('mm-loadout')) mmRenderLoadout(); if(_shopTab==='cos') renderCosShop(); }catch(e){}
+  }catch(e){ _backTrim[url]=url; } };
+  im.onerror=()=>{ _backTrim[url]=url; };
+  im.src=url;
+}
 function cosBackUrl(id){
   const it=cosItem(id)||cosItem('back_default');
-  if(it&&it.id!=='back_default'){ if(it.img) return it.img; if(it.svg){ if(!it._svgUrl) it._svgUrl=_cosSvgBack(it.svg); return it._svgUrl; } }
+  if(it&&it.id!=='back_default'){ if(it.img){ if(_backTrim[it.img]) return _backTrim[it.img]; trimBackArt(it.img); return it.img; } if(it.svg){ if(!it._svgUrl) it._svgUrl=_cosSvgBack(it.svg); return it._svgUrl; } }
   return IMG['cardback']||DEFAULTS['cardback']||null;
 }
 function cardBackFor(p){ return cosBackUrl(cosEquipped('back',p)); }
@@ -20544,6 +20579,7 @@ async function onTutorialFinished(p){
   if(typeof markCutsceneWatched==='function') markCutsceneWatched('welcome_tutorial');
   try{ if(typeof awardPack==='function') await awardPack('pack','basic','base_set',2,'Base Set Booster'); }catch(e){}
   try{ if(typeof checkAchievements==='function') await checkAchievements(); }catch(e){} // unlocks First Steps (+200 Celestium)
+  try{ if(typeof cosEnsureStarter==='function') cosEnsureStarter(); }catch(e){}
   if(typeof _tutFinishRun==='function') _tutFinishRun(); // clear any spotlight overlay
   const _achImg=(typeof ACHIEVEMENTS!=='undefined' && ACHIEVEMENTS.tutorial_complete && ACHIEVEMENTS.tutorial_complete.img) ? ACHIEVEMENTS.tutorial_complete.img : '';
   const _CEL_IMG='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png';
@@ -20551,7 +20587,8 @@ async function onTutorialFinished(p){
   const _rewards=[
     {img:_CEL_IMG, amount:'+200', label:'Celestium'},
     {img:_PACK_IMG, amount:'×2', label:'Base Set Booster Packs'},
-    (_achImg?{img:_achImg, label:'Achievement: First Steps'}:{icon:'🎓', label:'Achievement: First Steps'})
+    (_achImg?{img:_achImg, label:'Achievement: First Steps'}:{icon:'🎓', label:'Achievement: First Steps'}),
+    {img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Lord%20Of%20States%20Default%20Back%20(BLUE).png', label:'Card Back: Lord Of Courts Blue'}
   ];
   showRewardsCelebration(_rewards, ()=>{
     showNarration([
@@ -24348,6 +24385,7 @@ window.addEventListener('load',async()=>{
       await loadCampaign();
       await loadBattlePass();
       if(typeof updateXpHud==='function')updateXpHud();
+      if(typeof cosEnsureStarter==='function') cosEnsureStarter();
       if(typeof renderMainMenu==='function'&&document.getElementById('menu-screen')?.classList.contains('active')) renderMainMenu();
       if(typeof maybeStartTutorialForNewPlayer==='function') setTimeout(maybeStartTutorialForNewPlayer, 1100);
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
