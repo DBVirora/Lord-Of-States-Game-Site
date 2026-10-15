@@ -7383,6 +7383,7 @@ const DEFAULTS={
   paradox_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/027-150%20(Paradox).png',
   ivan_wca_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Wrestling/Ivan%20WCA%20(Promo%20Card).png',
   wca_overdrive_belt_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Wrestling/WCA%20OVERDRIVE%20CHAMPION%20BELT%20(PROMO%20EQUIPTMENT).png',
+  korra_halloween_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Korra%20Halloween%20(Promo)%20(Secret%20Rare).png',
   korra_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Korra%20(Promo).png',
   kratos_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/God%20Of%20War/Kratos%20(Promo).png',
   raven_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Raven%20(Promo%20Card).png',
@@ -7608,6 +7609,12 @@ const DB={
   // ── KORRA — Avatar TLAB-series promo. BLUE/RED dual (water + fire). Legend, cost 7, 9/7.
   korra_promo:{id:'korra_promo',rarity:'legend',name:'Korra',color:'blue',colors:['blue','red'],charName:'Korra',subtypes:['Avatar','Bender'],type:'char',race:'Avatar Bender',cost:7,atk:9,hp:7,sym:'KORRA',setId:'promo',cardNumber:'PROMO',nextForms:[],
     quote:"Being the Avatar isn't about being the strongest. It's about serving all people.",
+    abilities:[{label:'Tidebreak',type:'triggered',cost:0,text:'When this card enters your field, Freeze a target opposing character.'},
+      {label:'Water Whip',type:'activated',cost:2,limit:'every_other_turn',text:"Tap target opposing character. It can't attack this turn. [Once every 2 turns] Cost 2 Energy"},
+      {label:'Flame Spiral',type:'triggered',cost:0,text:'When this card attacks, it gets +2 Attack until end of next turn.'}]},
+  // ── KORRA (HALLOWEEN) — Secret Rare Promo variant of Korra: same abilities, fire-first, cost 8, 10/8.
+  korra_halloween_promo:{id:'korra_halloween_promo',rarity:'secret',secretRare:true,name:'Korra (Halloween)',color:'red',colors:['red','blue'],charName:'Korra',subtypes:['Avatar','Bender'],type:'char',race:'Avatar Bender',cost:8,atk:10,hp:8,sym:'KORRA',setId:'promo',cardNumber:'PROMO',nextForms:[],
+    quote:"Trick or treat? Nah. Just treat… or I bend the porch lights.",
     abilities:[{label:'Tidebreak',type:'triggered',cost:0,text:'When this card enters your field, Freeze a target opposing character.'},
       {label:'Water Whip',type:'activated',cost:2,limit:'every_other_turn',text:"Tap target opposing character. It can't attack this turn. [Once every 2 turns] Cost 2 Energy"},
       {label:'Flame Spiral',type:'triggered',cost:0,text:'When this card attacks, it gets +2 Attack until end of next turn.'}]},
