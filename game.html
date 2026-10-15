@@ -7199,6 +7199,7 @@ const DEFAULTS={
   lady_loki_vampire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Lady%20Loki%20Vampire%20(Promo).png',
   paradox_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/027-150%20(Paradox).png',
   ivan_wca_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Wrestling/Ivan%20WCA%20(Promo%20Card).png',
+  wca_overdrive_belt_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Wrestling/WCA%20OVERDRIVE%20CHAMPION%20BELT%20(PROMO%20EQUIPTMENT).png',
   kratos_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/God%20Of%20War/Kratos%20(Promo).png',
   raven_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Raven%20(Promo%20Card).png',
   raven_vampire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Raven%20Vampire%20(Promo%20Card).png',
@@ -7411,6 +7412,9 @@ const DB={
     abilities:[{label:'Locker Room Law',type:'passive',cost:0,text:'This card gets +1 Attack for each other character you control on your field.'},{label:'Tag Division',type:'passive',cost:0,text:'Other characters you control get +1 Attack while this card is on the field.'},{label:'Receipt',type:'triggered',cost:0,text:'When this card is dealt combat damage, the attacker gets -2 Health.'}],transforms:[]},
   // ── KRATOS — PROMO God Of War-series War God. RED (aggression/rushdown — attacks
   //    immediately on entry and snowballs ATK with every hit).
+  // ── WCA OVERDRIVE CHAMPION BELT — Wrestling-series promo Equipment. GREEN Legend, cost 5.
+  wca_overdrive_belt_promo:{id:'wca_overdrive_belt_promo',rarity:'legend',color:'green',name:'WCA Overdrive Champion Belt',charName:'WCA Overdrive Champion Belt',subtypes:['Championship','Equipment'],type:'equipment',persistent:true,race:'Championship',cost:5,atk:0,hp:0,sym:'🏆',setId:'promo',cardNumber:'PROMO',
+    abilities:[{label:'Main Event Glow',type:'passive',cost:0,text:'Equipped character gets +2/+3.'},{label:'Title Defense',type:'triggered',cost:0,text:'When equipped character is attacked, the attacker gets -2 Attack until end of their next turn.'},{label:'Showdown Hype',type:'triggered',cost:0,text:'When equipped character destroys a character, its controller banks 3 Energy.'}],transforms:[]},
   kratos_promo:{id:'kratos_promo',rarity:'legend',name:'Kratos',color:'red',charName:'Kratos',subtypes:['War','God'],type:'char',race:'War God',cost:7,atk:10,hp:7,sym:'KRTS',setId:'promo',cardNumber:'PROMO',keywords:['burst_speed'],nextForms:[],
     abilities:[{label:'Rage of Sparta',type:'passive',cost:0,text:'This card can attack the turn it enters.'},{label:'Olympian Blood',type:'triggered',cost:0,text:'When this card deals combat damage, it gains +1 Attack.'}]},
   // ── RAVEN — PROMO DC-series Mystic Sorceress. PURPLE (trickery/debuffs — seals an
@@ -8399,6 +8403,30 @@ function hasAbilityLabel(fc,label){
 // RECEIPT (Ivan WCA): whenever `victimFc` is dealt combat damage, the character
 // that just dealt it loses 2 Health (permanent stat reduction, can kill).
 // Called from every spot in executeCombatDamage where combat damage changes hands.
+// ── WCA OVERDRIVE CHAMPION BELT helpers ──
+function hasBelt(fc){ return !!(fc&&Array.isArray(fc.attachments)&&fc.attachments.includes('wca_overdrive_belt_promo')&&!(typeof isEquipHexed==='function'&&isEquipHexed(fc,'wca_overdrive_belt_promo'))); }
+// TITLE DEFENSE: belted defender is attacked → attacker -2 ATK until the end of its controller's NEXT turn
+// (2 turn-ends of the attacker's controller: this one and the next). Does not stack per attacker.
+function triggerTitleDefense(defFc, atkFc, atkP){
+  if(!hasBelt(defFc)||!atkFc||atkFc._titleDef) return 0;
+  const amt=Math.min(2,atkFc.currentATK||0);
+  atkFc._titleDef={amt, ends:2, owner:atkP};
+  atkFc.currentATK=(atkFc.currentATK||0)-amt; atkFc.atkBonus=(atkFc.atkBonus||0)-amt;
+  log(`🏆 Title Defense: ${DB[atkFc.cid]?.name} -${amt} ATK until the end of its next turn!`,'dmg');
+  return amt;
+}
+function tickTitleDefense(p){
+  [1,2,3,4].forEach(pp=>{ const P=G.players[pp]; if(!P||!P.field)return; P.field.forEach(f=>{
+    const t=f._titleDef; if(!t||t.owner!==p) return;
+    t.ends--; if(t.ends<=0){ f.currentATK=(f.currentATK||0)+t.amt; f.atkBonus=(f.atkBonus||0)+t.amt; f._titleDef=null; log(`${DB[f.cid]?.name} recovers from Title Defense.`,'info'); }
+  }); });
+}
+// SHOWDOWN HYPE: belted character destroys a character → its controller banks 3 Energy.
+function triggerShowdownHype(killerFc, killerP, victimP, victimUid){
+  if(!hasBelt(killerFc)) return;
+  if(G.players[victimP]?.field.some(f=>f.uid===victimUid)) return; // victim survived
+  G.players[killerP].energy+=3; log(`🏆 Showdown Hype: ${pname(killerP)} banks 3 Energy!`,'gain');
+}
 function triggerReceipt(victimFc, dmg, attackerFc, attackerP){
   if(dmg<=0 || !hasAbilityLabel(victimFc,'Receipt'))return;
   if(!G.players[attackerP]||!G.players[attackerP].field.some(f=>f.uid===attackerFc.uid))return;
@@ -8758,6 +8786,7 @@ function execEnd2v2(p){
   G._aiTurn=false; G._aiAuto=false; if(typeof aiThinking==='function')aiThinking(false);
   endTurnFx(p);
   log((G.players[p]?.name||('P'+p))+' ends turn.','info');
+  if(typeof tickTitleDefense==='function') tickTitleDefense(p);
   G.turnIndex=((G.turnIndex||0)+1)%G.turnOrder.length;
   const nx=G.turnOrder[G.turnIndex];
   G.activePlayer=nx;
@@ -10079,6 +10108,7 @@ function executeCombatDamage(ap,auid,dp,duid){
   const dfc=G.players[dp]?.field.find(f=>f.uid===duid);
   if(!afc||!dfc){renderAll();return;}
   const ac=DB[afc.cid],dc=DB[dfc.cid];
+  triggerTitleDefense(dfc, afc, ap); // 🏆 WCA belt on the defender: attacker -2 ATK (applies to this attack)
   let atkDmg=afc.currentATK+(afc.nextAttackBonus||0);
   afc.nextAttackBonus=0;
 
@@ -10103,6 +10133,7 @@ function executeCombatDamage(ap,auid,dp,duid){
     triggerReceipt(afc, defenderATK, dfc, dp);
     // OLYMPIAN BLOOD (Kratos): dfc just dealt this combat damage.
     triggerOlympianBlood(dfc, dp, defenderATK);
+    triggerShowdownHype(dfc, dp, ap, auid);
     renderAll();return;
   }
 
@@ -10136,6 +10167,7 @@ function executeCombatDamage(ap,auid,dp,duid){
     log(`Godly Blitz: ${ac.name} dealt combat damage — draw 1 card!`,'gain');
   }
 
+  triggerShowdownHype(afc, ap, dp, dfc.uid);
   // EXSANGUINATE (Lady Loki Vampire): finishing blow — if this combat damage
   // destroyed the character, steal 1 of its abilities permanently.
   if(hasAbilityLabel(afc,'Exsanguinate') && atkDmg>0 && !G.players[dp].field.some(f=>f.uid===dfc.uid)){
@@ -10180,6 +10212,7 @@ function executeCombatDamage(ap,auid,dp,duid){
     triggerReceipt(afc, defenderATK, dfc, dp);
     // OLYMPIAN BLOOD (Kratos): dfc just dealt this retaliation combat damage.
     triggerOlympianBlood(dfc, dp, defenderATK);
+    triggerShowdownHype(dfc, dp, ap, auid);
   } else if(!stillOnField&&hasKW(afc,'pursuit')){
     log('Pursuit: '+ac.name+' struck first — no retaliation!','gain');
   } else if(!tgtAlive){
@@ -10600,10 +10633,12 @@ function resolveLifeAttack(attackerPlayer, afc, blocker){
   const excess=Math.max(0, incoming-bHPbefore);
   log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHPbefore}HP).`,'info');
   dealDamage(defenderPlayer, blocker.uid, incoming);            // Step 1-2: blocker damage + death
+  triggerShowdownHype(afc, attackerPlayer, defenderPlayer, blocker.uid);
   if(bPow>power){                                              // Step 3: counter (difference only)
     const counter=bPow-power;
     log(`Counter! ${DB[blocker.cid].name} deals ${counter} back.`,'dmg');
     dealDamage(attackerPlayer, afc.uid, counter);
+    triggerShowdownHype(blocker, defenderPlayer, attackerPlayer, afc.uid);
   }
   if(excess>0){                                                // Step 4: trample to Life
     log(`Trample! ${excess} excess damage to Life.`,'dmg');
@@ -10687,8 +10722,8 @@ function resolveTeamLifeAttack(attackerPlayer, afc, blocker, enemyTeam){
   }
   const bHP=blocker.currentHP||0, bPow=effPower(blocker), excess=Math.max(0,power-bHP);
   log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHP}HP).`,'info');
-  if(owner)dealDamage(owner, blocker.uid, power);          // Step 1-2 (death → -2 team Life via killCard)
-  if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(attackerPlayer, afc.uid, c); } // Step 3
+  if(owner){ dealDamage(owner, blocker.uid, power); triggerShowdownHype(afc, attackerPlayer, owner, blocker.uid); } // Step 1-2 (death → -2 team Life via killCard)
+  if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(attackerPlayer, afc.uid, c); if(owner) triggerShowdownHype(blocker, owner, attackerPlayer, afc.uid); } // Step 3
   if(excess>0){ log(`Trample! ${excess} excess to Team ${enemyTeam} Life.`,'dmg'); damageTeamLife(enemyTeam, excess, 'trample'); } // Step 4
   renderAll();
 }
@@ -10827,8 +10862,8 @@ function resolveAITeamAttack(aiPlayer, afc, blocker, humanTeam){
   const excess=Math.max(0,incoming-bHP);
   const owner=ownerOfCard(blocker.uid);
   log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHP}HP).`,'info');
-  if(owner)dealDamage(owner, blocker.uid, incoming);
-  if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(aiPlayer, afc.uid, c); }
+  if(owner){ dealDamage(owner, blocker.uid, incoming); triggerShowdownHype(afc, aiPlayer, owner, blocker.uid); }
+  if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(aiPlayer, afc.uid, c); if(owner) triggerShowdownHype(blocker, owner, aiPlayer, afc.uid); }
   if(excess>0){ log(`Trample! ${excess} to Team ${humanTeam} Life.`,'dmg'); damageTeamLife(humanTeam, excess, 'trample'); }
   renderAll();
 }
@@ -11698,6 +11733,7 @@ function applyEquip(fc,eq){
   if(eq.id==='destroyers_gift'){fc.currentATK+=5;fc.atkBonus+=5;fc.currentHP+=12;fc.hpBonus+=12;log("+5ATK/+12HP!",'gain');}
   if(eq.id==='senzu_bean'){fc.currentHP=fc.baseHP+fc.hpBonus;fc.markedDamage=0;log('Senzu Bean: full HP!','gain');}
   if(eq.id==='crystal_73'){fc.nullify+=1;fc.currentHP+=5;fc.hpBonus+=5;log("73's Crystal: nullify+1, +5HP.",'gain');}
+  if(eq.id==='wca_overdrive_belt_promo'){fc.currentATK+=2;fc.atkBonus+=2;fc.currentHP+=3;fc.hpBonus+=3;log('Main Event Glow: +2/+3!','gain');}
   if(eq.id==='void_crystal_bse'){fc.currentATK+=2;fc.atkBonus+=2;fc.currentHP+=2;fc.hpBonus+=2;log('Void Boost: +2/+2!','gain');}
 }
 
@@ -14080,6 +14116,7 @@ function endTurnFx(p){
   }));
   decrementStatuses(p); // count down statuses on the player whose turn just ended
   tickFrostRunes(p); // count down any Frost Rune timers this player set
+  tickTitleDefense(p); // 🏆 WCA belt debuffs owned by this player
   tickScorchedEarth(p); // count down any Scorched Earth timers this player set
   G.bonusAttackers=0; // reset ability-granted extra attackers each turn
   // ── ULTRA EGO GROWTH (Goku UE): grows +1/+1 at the END OF THE OPPONENT'S turn.
