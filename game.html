@@ -6310,7 +6310,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 <body>
 
 <!-- AUTH HUD -->
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 7.3a</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 7.4 · menu v2</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -6442,6 +6442,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
   <header class="mm-top">
     <nav class="mm-tabs" id="mm-tabs"></nav>
     <div class="mm-right">
+      <button class="mm-pill" id="mm-admin-art" onclick="mmArtManage()" title="Admin: menu card art and backdrop" style="display:none;border-color:#e8c570;color:#fff0b8">🖼 MENU ART</button>
       <div class="mm-ptog" id="mm-ptog"><button class="mm-pill" onclick="document.getElementById('mm-ptog').classList.toggle('open')" title="Choose which side panels show">☰ PANELS</button>
         <div class="mm-menu"><h4>SHOW ON MENU</h4>
           <label><input type="checkbox" id="mm-tog-quick" checked onchange="mmTogPanel('quick',this.checked)"> QUICK PLAY</label>
@@ -16332,6 +16333,7 @@ function _mmTry(name,fn){ try{ fn(); }catch(e){ console.warn('[menu] '+name+' fa
 function renderMainMenu(){
   const sc=document.getElementById('menu-screen'); if(!sc||!document.getElementById('mm-car')) return;
   _mmTry('fit',mmFit); _mmTry('wire',mmWire); _mmTry('tabs',mmBuildTabs);
+  _mmTry('admin',()=>{ const b=document.getElementById('mm-admin-art'); if(b) b.style.display=(typeof isAdmin==='function'&&isAdmin())?'':'none'; });
   _mmTry('plate',()=>{ const pl=document.getElementById('mm-plate'); const T=MENU_TABS[_mm.tab]; if(pl)pl.innerHTML=T.plate+'<small>'+T.sub+'</small>'; });
   _mmTry('cards',()=>mmBuildCards(false)); _mmTry('hero',mmHeroRender); _mmTry('quick',mmRenderQuick); _mmTry('ledger',mmRenderLedger);
   _mmTry('plinth',mmRenderPlinth); _mmTry('loadout',mmRenderLoadout); _mmTry('friends',mmRenderFriends);
