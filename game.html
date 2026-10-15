@@ -3647,6 +3647,7 @@ textarea{
 .rarity-rare{color:#3b82f6;}
 .rarity-legend{color:#a855f7;text-shadow:0 0 4px rgba(168,85,247,.5);}
 .rarity-mythic{color:#fbbf24;text-shadow:0 0 6px rgba(251,191,36,.6);}
+.rarity-secret{color:#ff2a3c;text-shadow:0 0 6px rgba(255,42,60,.75),0 0 16px rgba(255,120,80,.4);background:linear-gradient(90deg,#ff2a3c 0%,#ff8a6a 22%,#ffe29a 38%,#ff2a3c 55%,#c0102a 75%,#ff5c6c 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
 
 /* Rarity badge for card preview modal */
 .fullcard-rarity-badge{
@@ -6662,6 +6663,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
         <option value="rare">🔵 Rare</option>
         <option value="legend">🟣 Legend</option>
         <option value="mythic">🟡 Mythic</option>
+        <option value="secret">🔴 Secret Rare</option>
       </select>
       <select id="builder-holo-filter" onchange="renderBuilderCards()" style="background:#111126;color:#e2e8f0;border:1px solid #3a3a5c;border-radius:6px;padding:3px 7px;font-size:11px">
         <option value="all">✨ All Holos</option>
@@ -7539,7 +7541,7 @@ const DB={
   tyler_ssbe_bse:{id:'tyler_ssbe_bse',rarity:'legend',name:'Tyler (SSBE)',color:'blue',charName:'Tyler',charLine:'tyler',formTier:'ssbe',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:11,atk:9,hp:13,sym:'TYSSBE',setId:'base_set',cardNumber:'021/150',nextForms:[],
     abilities:[{label:'Power of Securement',type:'passive',cost:0,text:'This card cannot be sent to the Rift.'},{label:'Sensory Play',type:'activated',cost:0,limit:'every_2_turns',text:"Flip a coin. If heads you may view your opponent's hand. (Once every 2 turns)"},{label:'Shielded Pressure',type:'triggered',cost:0,text:'Every time this card is attacked it counters the attacker for 3 damage.'}],transforms:[]},
   // ── TYLER (SSBE) SECRET RARE — BSE chase variant. MYTHIC. 152/150.
-  tyler_ssbe_sr_bse:{id:'tyler_ssbe_sr_bse',rarity:'mythic',secretRare:true,name:'Tyler (SSBE)',color:'blue',charName:'Tyler',charLine:'tyler',formTier:'ssbe',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:12,atk:10,hp:14,sym:'TYSSBE',setId:'base_set',cardNumber:'152/150',nextForms:[],
+  tyler_ssbe_sr_bse:{id:'tyler_ssbe_sr_bse',rarity:'secret',secretRare:true,name:'Tyler (SSBE)',color:'blue',charName:'Tyler',charLine:'tyler',formTier:'ssbe',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:12,atk:10,hp:14,sym:'TYSSBE',setId:'base_set',cardNumber:'152/150',nextForms:[],
     abilities:[{label:'Power of Securement',type:'passive',cost:0,text:'This card cannot be sent to the Rift.'},{label:'Sensory Play',type:'activated',cost:0,limit:'every_2_turns',text:"Flip a coin. If heads you may view your opponent's hand. (Once every 2 turns)"},{label:'Shielded Pressure',type:'triggered',cost:0,text:'Every time this card is attacked it counters the attacker for 3 damage.'}],transforms:[]},
   // ── ZEPHYRANTH FRUIT — BSE Instant (Consumable). GREEN (healing). 075/150 Common.
   zephyranth_fruit_bse:{id:'zephyranth_fruit_bse',rarity:'common',name:'Zephyranth Fruit',color:'green',charName:'Zephyranth Fruit',subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:2,atk:0,hp:0,sym:'🍇',setId:'base_set',cardNumber:'075/150',nextForms:[],
@@ -7640,7 +7642,7 @@ const DB={
   //    (Unbroken Hook). 016/150 Uncommon + 151/150 Secret Rare (Mythic alt-art chase). ──
   violet_base_bse:{id:'violet_base_bse',rarity:'uncommon',name:'Violet',color:'purple',charName:'Violet',charLine:'violet',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:4,atk:3,hp:4,sym:'VIO',setId:'base_set',cardNumber:'016/150',nextForms:['ssg'],
     abilities:[{label:'Royal Amends',type:'passive',cost:0,text:'For every Saiyan you control, this card gains +1 Health.'},{label:'Unbroken Hook',type:'activated',cost:4,text:"Choose one character on your opponent's field. This attack does 3 Damage. If the character you chose has a higher Defense than Violet, this attack does 6 Damage instead. (Cost 4 Energy)"}]},
-  violet_base_sr_bse:{id:'violet_base_sr_bse',rarity:'mythic',name:'Violet',secretRare:true,color:'purple',charName:'Violet',charLine:'violet',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:4,atk:3,hp:4,sym:'VIO',setId:'base_set',cardNumber:'151/150',nextForms:['ssg'],
+  violet_base_sr_bse:{id:'violet_base_sr_bse',rarity:'secret',name:'Violet',secretRare:true,color:'purple',charName:'Violet',charLine:'violet',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:4,atk:3,hp:4,sym:'VIO',setId:'base_set',cardNumber:'151/150',nextForms:['ssg'],
     abilities:[{label:'Royal Amends',type:'passive',cost:0,text:'For every Saiyan you control, this card gains +1 Health.'},{label:'Unbroken Hook',type:'activated',cost:4,text:"Choose one character on your opponent's field. This attack does 3 Damage. If the character you chose has a higher Defense than Violet, this attack does 6 Damage instead. (Cost 4 Energy)"}]},
   // ── VIOLET (SSG) — BSE Royal Saiyan transform form of Violet. WHITE (matches any).
   //    017/150 Legend. Counter-on-hit, slow self-heal, coin-flip lockdown. ──
@@ -15956,7 +15958,7 @@ function registryEntries(){
   if(_reg.set==='__all__'){} else if(_reg.set==='__none__'){ ids=ids.filter(id=>!getCardSet(id)); } else ids=ids.filter(id=>getCardSet(id)===_reg.set);
   if(_reg.rarity!=='all') ids=ids.filter(id=>(_reg.rarity==='herald'?DB[id].type==='herald':cardMeta(id).rarity===_reg.rarity));
   if(_reg.q){ const q=_reg.q.toLowerCase(); ids=ids.filter(id=>{ const st=registryState(id); const m=cardMeta(id); return (st!=='unregistered'&&m.name.toLowerCase().includes(q))||String(m.number).toLowerCase().includes(q); }); }
-  const rr={common:0,uncommon:1,rare:2,legend:3,mythic:4}; const so={registered:0,sighted:1,unregistered:2};
+  const rr={common:0,uncommon:1,rare:2,legend:3,mythic:4,secret:5}; const so={registered:0,sighted:1,unregistered:2};
   ids.sort((a,b)=>{ const A=cardMeta(a),B=cardMeta(b);
     if(_reg.sort==='rarity'){ const d=(rr[B.rarity]||0)-(rr[A.rarity]||0); if(d) return d; }
     if(_reg.sort==='name'){ return (registryState(a)==='unregistered'?'~':A.name).localeCompare(registryState(b)==='unregistered'?'~':B.name); }
@@ -15972,7 +15974,7 @@ function renderRegistry(){
   document.getElementById('reg-sort').value=_reg.sort;
   // rarity chips
   const chips=document.getElementById('reg-rarity-chips');
-  const rl=[['all','ALL','#e8c570'],['common','C',RARITY_DEFS.common.hex],['uncommon','U',RARITY_DEFS.uncommon.hex],['rare','R',RARITY_DEFS.rare.hex],['legend','L',RARITY_DEFS.legend.hex],['mythic','M',RARITY_DEFS.mythic.hex],['herald','👑','#f97316']];
+  const rl=[['all','ALL','#e8c570'],['common','C',RARITY_DEFS.common.hex],['uncommon','U',RARITY_DEFS.uncommon.hex],['rare','R',RARITY_DEFS.rare.hex],['legend','L',RARITY_DEFS.legend.hex],['mythic','M',RARITY_DEFS.mythic.hex],['secret','SR',RARITY_DEFS.secret.hex],['herald','👑','#f97316']];
   chips.innerHTML=rl.map(([v,l,h])=>`<button type="button" class="reg-chip${_reg.rarity===v?' on':''}" onclick="registrySetFilter('rarity','${v}')" title="${v}"><span class="gem" style="background:${h}"></span>${l}</button>`).join('');
   const ids=registryEntries();
   // progress for the whole set (ignores rarity/search filters)
@@ -19141,8 +19143,10 @@ const RARITY_DEFS = {
   uncommon:  { label: 'UNCOMMON',  hex: '#22c55e', glow: 'rgba(34,197,94,.4)' },
   rare:      { label: 'RARE',      hex: '#3b82f6', glow: 'rgba(59,130,246,.5)' },
   legend:    { label: 'LEGEND',    hex: '#a855f7', glow: 'rgba(168,85,247,.5)' },
-  mythic:    { label: 'MYTHIC',    hex: '#fbbf24', glow: 'rgba(251,191,36,.6)' }
+  mythic:    { label: 'MYTHIC',    hex: '#fbbf24', glow: 'rgba(251,191,36,.6)' },
+  secret:    { label: 'SECRET RARE', hex: '#ff2a3c', glow: 'rgba(255,42,60,.7)', secret:true }   /* ruby crimson, matches the Promo Set emblem */
 };
+const RARITY_ORDER=['common','uncommon','rare','legend','mythic','secret'];
 
 // Get pool of obtainable cards (excludes heralds — those are unlockable separately later)
 function getCardPool(){
@@ -19767,7 +19771,7 @@ function _weightedRarity(weights){
 }
 // Pull a card of a rarity from a set; fall back down the rarity chain (then any set).
 function _pullOfRarity(rarity,setId){
-  const order=['common','uncommon','rare','legend','mythic'];
+  const order=RARITY_ORDER;
   let idx=order.indexOf(rarity); if(idx<0)idx=0;
   let pool=_cardsByRarity(rarity,setId);
   while(pool.length===0 && idx>0){ idx--; pool=_cardsByRarity(order[idx],setId); }
@@ -19777,6 +19781,7 @@ function _pullOfRarity(rarity,setId){
 }
 // Regular-holo foil style varies by rarity — used only as a legacy fallback now.
 function holoStyleForRarity(rarity){
+  if(rarity==='secret') return 'ruby';
   if(rarity==='mythic') return 'gold';
   if(rarity==='legend') return 'cosmic';
   return 'classic';
@@ -19801,7 +19806,9 @@ function generatePack(type, setId){
     const rar=_weightedRarity(w); const cid=_pullOfRarity(rar,setId); pulls.push({cid,foil:'reverse',rarity:getRarity(cid)}); }
   // Slot 10 — guaranteed Rare+ (or, rarely, a Herald — as hard as a Mythic).
   // The card may be Normal OR any holo finish; holos are harder, rarer finishes rarer.
-  { const w = type==='premium' ? {rare:55,legend:30,mythic:10,herald:5} : {rare:72,legend:20,mythic:5,herald:3};
+  // Secret Rare: the hardest pull in the game — 1 in 100 packs (premium 1 in 50); only if the set actually has one.
+  { const hasSecret=_cardsByRarity('secret',setId).length>0;
+    const w = type==='premium' ? {rare:53,legend:30,mythic:10,herald:5,secret:hasSecret?2:0} : {rare:71,legend:20,mythic:5,herald:3,secret:hasSecret?1:0};
     let rar=_weightedRarity(w); let cid, ar, isHerald=false;
     if(rar==='herald'){
       const hp=_heraldPool(setId);
@@ -19996,10 +20003,10 @@ function renderRevealCard(i){
   const rDef=RARITY_DEFS[p.rarity]||RARITY_DEFS.common;
   const url=getImg(p.cid);
   document.getElementById('reveal-counter').textContent=`${i+1} / ${pulls.length}`;
-  const bigPull=p.rarity==='legend'||p.rarity==='mythic'||p.foil!=='none';
-  const mysticPull=p.rarity==='legend'||p.rarity==='mythic';
+  const bigPull=p.rarity==='legend'||p.rarity==='mythic'||p.rarity==='secret'||p.foil!=='none';
+  const mysticPull=p.rarity==='legend'||p.rarity==='mythic'||p.rarity==='secret';
   // Sound: mystical swell for legend/mythic, quick flip for everything else.
-  if(typeof SFX!=='undefined'){ if(mysticPull) SFX.mystical(p.rarity==='mythic'); else SFX.cardFlip(); }
+  if(typeof SFX!=='undefined'){ if(mysticPull) SFX.mystical(p.rarity==='mythic'||p.rarity==='secret'); else SFX.cardFlip(); }
   const holoStyle = p.foil==='reverse' ? 'reverse' : (p.foil==='holo' ? holoStyleForRarity(p.rarity) : (VARIANT_META[p.foil]?p.foil:null));
   const foilLabel = (p.foil&&p.foil!=='none') ? ('✦ '+_foilName(p.foil)+' ✦') : '';
   // Rarity pill ABOVE the card (never overlaps the art/name)
@@ -20021,10 +20028,10 @@ function renderRevealCard(i){
       ${holoStyle?_holoLayersHTML(holoStyle):''}
     </div>`;
   stage.appendChild(card);
-  if(mysticPull){ const rings=document.createElement('div'); rings.className='reveal-mystic-rings'; rings.style.setProperty('--mystic-col', p.rarity==='mythic'?'#fbbf24':'#c084fc'); stage.appendChild(rings); }
+  if(mysticPull){ const rings=document.createElement('div'); rings.className='reveal-mystic-rings'; rings.style.setProperty('--mystic-col', p.rarity==='secret'?'#ff2a3c':(p.rarity==='mythic'?'#fbbf24':'#c084fc')); stage.appendChild(rings); }
   if(bigPull){
     const flash=document.getElementById('pack-flash');
-    flash.style.setProperty('--flash-col', p.rarity==='mythic'?'#fbbf24':(p.rarity==='legend'?'#c084fc':rDef.hex));
+    flash.style.setProperty('--flash-col', p.rarity==='secret'?'#ff2a3c':(p.rarity==='mythic'?'#fbbf24':(p.rarity==='legend'?'#c084fc':rDef.hex)));
     flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go');
   }
   const nb=document.getElementById('reveal-next-btn');
@@ -20054,7 +20061,7 @@ function showBoxSummary(){
   document.getElementById('pack-stage-reveal').style.display='none';
   const stage=document.getElementById('pack-stage-grid'); stage.style.display='flex';
   const pulls=_packState.pulls;
-  const counts={common:0,uncommon:0,rare:0,legend:0,mythic:0}; let holos=0,revs=0,news=0;
+  const counts={common:0,uncommon:0,rare:0,legend:0,mythic:0,secret:0}; let holos=0,revs=0,news=0;
   pulls.forEach(p=>{ if(counts[p.rarity]!=null)counts[p.rarity]++; if(p.foil==='reverse')revs++; else if(p.foil&&p.foil!=='none')holos++; if(p.isNew)news++; });
   const title=stage.querySelector('.pack-open-title'); if(title)title.textContent='✨ BOOSTER BOX — '+pulls.length+' CARDS ✨';
   const statsEl=document.getElementById('pack-box-stats');
@@ -20062,6 +20069,7 @@ function showBoxSummary(){
     const chip=(label,n,col)=> n>0?'<span class="box-stat" style="color:'+col+';border-color:'+col+'">'+label+' '+n+'</span>':'';
     statsEl.innerHTML='<div class="box-stat-row">'
       +chip('MYTHIC',counts.mythic,RARITY_DEFS.mythic.hex)
+      +(counts.secret?chip('SECRET RARE',counts.secret,RARITY_DEFS.secret.hex):'')
       +chip('LEGEND',counts.legend,RARITY_DEFS.legend.hex)
       +chip('RARE',counts.rare,RARITY_DEFS.rare.hex)
       +chip('UNCOMMON',counts.uncommon,RARITY_DEFS.uncommon.hex)
@@ -20073,7 +20081,7 @@ function showBoxSummary(){
   }
   const grid=document.getElementById('pack-cards-grid');
   grid.classList.add('box-grid');
-  const order={mythic:0,legend:1,rare:2,uncommon:3,common:4};
+  const order={secret:0,mythic:1,legend:2,rare:3,uncommon:4,common:5};
   const sorted=pulls.slice().sort((a,b)=>{
     const oa=order[a.rarity]??9, ob=order[b.rarity]??9;
     if(oa!==ob) return oa-ob;
