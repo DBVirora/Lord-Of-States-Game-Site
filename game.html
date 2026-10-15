@@ -7188,6 +7188,7 @@ const DEFAULTS={
   eklif_frost_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/047-150%20(Eklif%20Frost).png',
   rapture_vortex_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/049-150%20(Rapture%20Of%20The%20Vortex).png',
   magnus_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/022-150%20(Magnus%20Base).png',
+  magnus_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/024-150%20(Magnus%20SSG).png?v=2',
   magnus_ssj_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/023-150%20(Magnus%20SSJ).png',
   royal_matcha_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/078-150%20(Royal%20Matcha).png',
   virora_matcha_bse: "https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/079-150%20(Virora's%20Matcha%20Instant).png",
@@ -7366,11 +7367,17 @@ const DB={
   vermynth_fruit_bse:{id:'vermynth_fruit_bse',rarity:'uncommon',name:'Vermynth Fruit',color:'green',charName:'Vermynth Fruit',subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:4,atk:0,hp:0,sym:'🥝',setId:'base_set',cardNumber:'076/150',nextForms:[],
     abilities:[{label:'Vermynth Fruit',type:'instant',cost:0,text:'Heals one of your characters on the field for 4 HP while also adding 2 ATK Power.'}],transforms:[]},
   // ── MAGNUS (Base) — BSE transform-line starter (Royal • Saiyan). BLUE (control). 022/150 Common.
-  magnus_base_bse:{id:'magnus_base_bse',rarity:'common',name:'Magnus',color:'blue',charName:'Magnus',charLine:'magnus',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:3,atk:2,hp:2,sym:'MAG',setId:'base_set',cardNumber:'022/150',canAttackLocations:true,nextForms:['ssj'],
+  magnus_base_bse:{id:'magnus_base_bse',rarity:'common',name:'Magnus',color:'blue',charName:'Magnus',charLine:'magnus',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:3,atk:2,hp:2,sym:'MAG',setId:'base_set',cardNumber:'022/150',canAttackLocations:true,nextForms:['ssj','ssg'],
     abilities:[{label:'Runes of Veelden',type:'passive',cost:0,text:'This card can attack Locations.'},{label:'Controlled Sorcery',type:'activated',cost:0,text:'Flip a coin. If tails, you may search your deck for a Transformation card and add it to your hand. (Taps)'}],transforms:[]},
   // ── MAGNUS (SSJ) — BSE form of Magnus (transform target). BLUE (control/freeze). 023/150 Uncommon.
-  magnus_ssj_bse:{id:'magnus_ssj_bse',rarity:'uncommon',name:'Magnus (SSJ)',color:'blue',charName:'Magnus',charLine:'magnus',formTier:'ssj',subtypes:['Royal','Saiyan'],type:'char',race:'Royal Saiyan',cost:4,atk:4,hp:4,sym:'MAG',transformOnly:true,setId:'base_set',cardNumber:'023/150',nextForms:[],
+  magnus_ssj_bse:{id:'magnus_ssj_bse',rarity:'uncommon',name:'Magnus (SSJ)',color:'blue',charName:'Magnus',charLine:'magnus',formTier:'ssj',subtypes:['Royal','Saiyan'],type:'char',race:'Royal Saiyan',cost:4,atk:4,hp:4,sym:'MAG',transformOnly:true,setId:'base_set',cardNumber:'023/150',nextForms:['ssg'],
     abilities:[{label:'Frost Rune',type:'triggered',cost:0,text:"Once placed onto the field, choose 1 character on your opponent's field. In 2 turns, that card is Frozen."}]},
+  // ── MAGNUS (SSG) — BSE god form of Magnus (transform target from base or SSJ). RED. 024/150 Rare.
+  magnus_ssg_bse:{id:'magnus_ssg_bse',rarity:'rare',name:'Magnus (SSG)',color:'red',charName:'Magnus',charLine:'magnus',formTier:'ssg',subtypes:['Saiyan','God'],type:'char',race:'Saiyan God',cost:7,atk:6,hp:9,sym:'MSSG',transformOnly:true,setId:'base_set',cardNumber:'024/150',nextForms:[],
+    quote:'Stand with the Court… or be removed from it.',
+    abilities:[{label:"King's Right Hand",type:'triggered',cost:0,text:'When another character enters under your control, this card gets +1/+3 until end of your turn. If King Theoden is the entered character Magnus gains +2/+4 until death.'},
+      {label:'Court Sight',type:'activated',cost:2,energyColor:'blue',limit:'once_per_turn',text:'Search your deck for a character card, reveal it, and put it into your hand. Shuffle. Cost 2 Blue energy.'},
+      {label:'Right Hand Reach',type:'activated',cost:2,limit:'once_per_turn',text:'Search your deck for a Royal Saiyan or Equipment card, reveal it, put it into your hand. Shuffle. Cost: 2 Energy'}]},
   // ── RAPTURE OF THE VORTEX — BSE regular character (Titan • Beast). GREEN/PURPLE (endurance + trickery). 049/150 Rare.
   rapture_vortex_bse:{id:'rapture_vortex_bse',rarity:'rare',name:'Rapture of the Vortex',color:'green',colors:['green','purple'],charName:'Rapture of the Vortex',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:7,atk:6,hp:8,sym:'RVORTEX',setId:'base_set',cardNumber:'049/150',nextForms:[],
     abilities:[{label:'Vortex Shield',type:'passive',cost:0,text:'This card cannot have any status effects applied to it.'},{label:'The Reckoning',type:'activated',cost:0,text:'Choose 1 Character on your opponent\'s field. Flip a coin. If heads, that character is now under Confusion.'}],transforms:[]},
@@ -8787,6 +8794,7 @@ function execEnd2v2(p){
   endTurnFx(p);
   log((G.players[p]?.name||('P'+p))+' ends turn.','info');
   if(typeof tickTitleDefense==='function') tickTitleDefense(p);
+  (G.players[p]?.field||[]).forEach(f=>{ if(f.krhAtk||f.krhHp){ f.currentATK=Math.max(0,(f.currentATK||0)-(f.krhAtk||0)); f.atkBonus=(f.atkBonus||0)-(f.krhAtk||0); f.hpBonus=(f.hpBonus||0)-(f.krhHp||0); f.currentHP=Math.max(1,(f.currentHP||0)-(f.krhHp||0)); f.krhAtk=0; f.krhHp=0; } });
   G.turnIndex=((G.turnIndex||0)+1)%G.turnOrder.length;
   const nx=G.turnOrder[G.turnIndex];
   G.activePlayer=nx;
@@ -11419,6 +11427,16 @@ function playCardZoom(cardId, variant){
 
 function onEntry(p,fc){
   const c=DB[fc.cid];if(!c)return;
+  // ── KING'S RIGHT HAND (Magnus SSG): another character enters under your control →
+  //    +1/+3 until end of your turn; if it's King Theoden → +2/+4 permanently (until death).
+  if(isChar(c)){
+    const isTheoden=/theoden/i.test(c.name||'')||/theoden/i.test(c.charName||'');
+    G.players[p].field.forEach(m=>{
+      if(m.uid===fc.uid||!hasAbilityLabel(m,"King's Right Hand")) return;
+      if(isTheoden){ m.currentATK+=2; m.atkBonus=(m.atkBonus||0)+2; m.currentHP+=4; m.hpBonus=(m.hpBonus||0)+4; log(`King's Right Hand: King Theoden enters — ${DB[m.cid].name} gains +2/+4 permanently!`,'gain'); }
+      else { m.currentATK+=1; m.atkBonus=(m.atkBonus||0)+1; m.currentHP+=3; m.hpBonus=(m.hpBonus||0)+3; m.krhAtk=(m.krhAtk||0)+1; m.krhHp=(m.krhHp||0)+3; log(`King's Right Hand: ${DB[m.cid].name} +1/+3 until end of turn.`,'gain'); }
+    });
+  }
   // ── CRIMSON TIDE (Raven Vampire): any OPPOSING character enters with -1/-1.
   {
     const opp=(p===1)?2:1;
@@ -13232,7 +13250,10 @@ function activateAbility(fc,abl){
     if(voidAlly && _cost>0){ _cost=0; log('Void Synergy: Paradox ability cost reduced to 0!','gain'); }
   }
   if(pl.energy<_cost){log('Not enough energy!','dmg');return;}
-  spendEnergyAbility(G.activePlayer, _cost, DB[fc.cid]?.color||null);fc.abilityUsed[abl.label]=true;
+  // COLORED ABILITY COST (e.g. Magnus SSG Court Sight "Cost 2 Blue energy"): needs that much of the colour banked.
+  if(abl.energyColor && _cost>0 && ((pl.colorEnergy||{})[abl.energyColor]||0)<_cost){ log(`${abl.label} needs ${_cost} ${abl.energyColor.toUpperCase()} Energy (you have ${(pl.colorEnergy||{})[abl.energyColor]||0}).`,'dmg'); return; }
+  if(fc.abilityUsed&&fc.abilityUsed[abl.label]&&abl.limit==='once_per_turn'){ log(`${abl.label} already used this turn.`,'dmg'); return; }
+  spendEnergyAbility(G.activePlayer, _cost, abl.energyColor||DB[fc.cid]?.color||null);fc.abilityUsed[abl.label]=true;
   // TAPPED SYSTEM:
   // - Using ANY activated ability forfeits the +2 "skip attack" energy bonus this turn.
   pl.usedAbilityThisTurn = true;
@@ -13271,6 +13292,20 @@ function activateAbility(fc,abl){
 // ═══════════════════════════════════════════════════
 function runAbilityEffect(fc, abl, pl){
   const label = abl.label;
+  // ── MAGNUS (SSG): Court Sight / Right Hand Reach — tutor a card to hand, shuffle.
+  if(label==='Court Sight'||label==='Right Hand Reach'){
+    const ap=G.activePlayer; const P=G.players[ap];
+    const filt = label==='Court Sight'
+      ? (cc)=>cc && (cc.type==='char'||cc.type==='base_char'||cc.type==='team') && !cc.isToken
+      : (cc)=>cc && (cc.type==='equipment' || /royal\s*saiyan/i.test(cc.race||'') || ((cc.subtypes||[]).includes('Royal')&&(cc.subtypes||[]).includes('Saiyan')));
+    const what = label==='Court Sight' ? 'a character card' : 'a Royal Saiyan or Equipment card';
+    const done=(cid)=>{ const f=newFC(cid); if(f) P.hand.push(f); shuffle(P.deck); log(`${label}: ${pname(ap)} reveals ${DB[cid].name} and puts it into hand. Deck shuffled.`,'gain'); if(ap!==1&&typeof showCardReveal==='function')try{showCardReveal(cid);}catch(e){} renderAll(); };
+    if(!(P.deck||[]).some(cid=>filt(DB[cid]))){ shuffle(P.deck); log(`${label}: no ${what} in deck. Deck shuffled.`,'info'); renderAll(); return; }
+    const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(ap) : (ap===1);
+    if(_human||G._aiAuto){ openDeckSearch(label,`Search your deck for ${what} and put it into your hand.`,filt,done); }
+    else { const found=P.deck.find(cid=>filt(DB[cid])); const i=P.deck.indexOf(found); if(i>-1)P.deck.splice(i,1); done(found); }
+    return;
+  }
   // A stolen ability (Exsanguinate) dispatches as if used by its original card.
   const _g=Array.isArray(fc.gainedAbilities)?fc.gainedAbilities.find(a=>a.label===label&&a.sourceCid):null;
   const cid = _g ? _g.sourceCid : fc.cid;
@@ -14098,6 +14133,7 @@ function endTurnFx(p){
   [1,2,3,4].forEach(pp=>{ const P=G.players[pp]; if(!P||!P.field)return; P.field.forEach(f=>{
     if(f.surfacerAtkDebuff){ f.currentATK=(f.currentATK||0)+f.surfacerAtkDebuff; f.atkBonus=(f.atkBonus||0)+f.surfacerAtkDebuff; f.surfacerAtkDebuff=0; }
     if(f.surfacerHpDebuff){ f.hpBonus=(f.hpBonus||0)+f.surfacerHpDebuff; f.currentHP=(f.currentHP||0)+f.surfacerHpDebuff; f.surfacerHpDebuff=0; }
+    if(f.krhAtk||f.krhHp){ f.currentATK=Math.max(0,(f.currentATK||0)-(f.krhAtk||0)); f.atkBonus=(f.atkBonus||0)-(f.krhAtk||0); f.hpBonus=(f.hpBonus||0)-(f.krhHp||0); f.currentHP=Math.max(1,(f.currentHP||0)-(f.krhHp||0)); f.krhAtk=0; f.krhHp=0; } // King's Right Hand +1/+3 ends
     if(f.ssbAtkBuff){ f.currentATK=(f.currentATK||0)-f.ssbAtkBuff; f.atkBonus=(f.atkBonus||0)-f.ssbAtkBuff; f.ssbAtkBuff=0; } // Etheric Strike +1 ATK was "until end of turn"
   }); });
   // Snapshot "attacked last turn" for the player whose turn is ending (used by
@@ -15838,11 +15874,11 @@ function _cosMat(accent,b1,b2,kind){
 const COS_BUILTIN=[
   // card backs
   { id:'back_default', type:'back', name:'Lord of States', tier:'default', free:true, desc:'The standard court-issued back.' },
-  { id:'back_blue_court', type:'back', name:'Blue Court Sigil', tier:'common', svg:{c1:'#17306b',c2:'#050a1c',accent:'#00d4ff',gold:'#e8c570',emblem:'star',court:'BLUE COURT'}, desc:'Navy lattice, eight-point star of the Blue Court.' },
-  { id:'back_crimson_court', type:'back', name:'Crimson Crown', tier:'common', svg:{c1:'#5a0d16',c2:'#160306',accent:'#f87171',gold:'#e8c570',emblem:'crown',court:'CRIMSON COURT'}, desc:'The crown of the Crimson Court on blood-dark velvet.' },
-  { id:'back_veelden', type:'back', name:'Veelden Sigil', tier:'rare', svg:{c1:'#0b3a3a',c2:'#03110f',accent:'#34d399',gold:'#e8c570',emblem:'sigil',court:'VEELDEN'}, desc:'Rune-cut jade of the Veelden Kingdom.' },
-  { id:'back_abyss', type:'back', name:'Abyss Eye', tier:'legendary', svg:{c1:'#2a0a4a',c2:'#07020f',accent:'#a855f7',gold:'#e8c570',emblem:'rings',court:'THE ABYSS'}, desc:'Something stares back from the void.' },
-  { id:'back_bse_master', type:'back', name:'Registrar of the Base Set', tier:'exclusive', svg:{c1:'#3a2a05',c2:'#120c02',accent:'#fbbf24',gold:'#fff3c4',emblem:'star',court:'BASE SET · COMPLETE'}, desc:'Awarded for registering every card of the Base Set in the Court Registry.', unlock:{kind:'registry_set',set:'base_set'} },
+  { id:'back_time_splitting_chimp', type:'back', name:'Time Splitting Chimp', tier:'exclusive', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Chrome%20Monkey_%20Lord%20of%20Courts.png', unlock:{kind:'pending'}, desc:'Chrome monkey, holo-blue grid.' },
+  { id:'back_king_courts_halloween', type:'back', name:'King Of The Courts: Halloween Edition', tier:'exclusive', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Halloween%20Gorilla%20Lord%20of%20courts%20card%20back.png', unlock:{kind:'pending'}, desc:'The crowned gorilla king, Halloween gilded.' },
+  { id:'back_halloween_death_race', type:'back', name:'Halloween Death Race', tier:'exclusive', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Lord%20of%20Courts_%20Gilded%20Apocalypse%20999%20juice%20card%20back.png', unlock:{kind:'pending'}, desc:'Gilded apocalypse on burning roads.' },
+  { id:'back_gamma_breaker', type:'back', name:'Gamma Breaker', tier:'exclusive', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Neon%20SMASH%20Breakout%20_%20Lord%20Of%20COurts%20card%20back%20HULK.png', unlock:{kind:'pending'}, desc:'Neon green smash breakout.' },
+  { id:'back_bender_havens', type:'back', name:'The Bender Of The Havens', tier:'exclusive', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Pavi%20Card%20Back%20Avatar%20seven%20haveens%20card%20back.png', unlock:{kind:'pending'}, desc:'Elements of the Seven Havens bend to one hand.' },
   // playmats
   { id:'mat_default', type:'mat', name:'Court Arena', tier:'default', free:true, desc:'The standard arena floor.' },
   { id:'mat_blue_court', type:'mat', name:'Blue Court Hall', tier:'common', mat:_cosMat('0,212,255','#0a1230','#060a1c','lines'), accent:'#00d4ff', desc:'Cool stone and cyan light.' },
@@ -15939,6 +15975,7 @@ async function buyCosmetic(id){
 function cosUnlockText(it){
   const u=it.unlock||{}; if(u.kind==='registry_set') return 'Registry: complete '+((typeof setLabel==='function'&&setLabel(u.set))||u.set);
   if(u.kind==='pass') return 'Battle Pass'; if(u.kind==='achievement') return 'Achievement: '+(u.id||''); if(u.kind==='event') return 'Event reward';
+  if(u.kind==='pending') return 'Coming soon';
   return it.tier==='exclusive'?'Exclusive reward':'Shop';
 }
 // set-completion & other unlock checks (call after any collection change)
