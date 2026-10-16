@@ -6139,6 +6139,9 @@ textarea{
 .cos-prev{ height:112px; border-radius:8px; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.35); overflow:hidden; position:relative; }
 .cos-prev img.back{ height:100%; aspect-ratio:5/7; border-radius:6px; object-fit:cover; box-shadow:0 6px 14px rgba(0,0,0,.6); }
 .cos-prev .mat{ position:absolute; inset:0; background-size:cover; background-position:center; }
+.cos-tile.cos-set{ border-color:rgba(232,197,112,.55); box-shadow:0 0 0 1px rgba(232,197,112,.15) inset; }
+.cos-tile.cos-set .cos-prev img.back{ height:88%; }
+.cos-save{ position:absolute; top:8px; right:8px; z-index:3; background:#e8c570; color:#1a1030; font-weight:800; font-size:10px; letter-spacing:.08em; padding:3px 7px; border-radius:6px; }
 .cos-prev .mat::after{ content:''; position:absolute; left:50%; top:50%; width:44px; height:62px; transform:translate(-50%,-50%); border:1px dashed rgba(255,255,255,.4); border-radius:4px; }
 .cos-prev .av{ width:66px; height:66px; border-radius:50%; background:linear-gradient(135deg,#2a2050,#1a1430); display:grid; place-items:center; font-size:30px; position:relative; }
 .cos-prev .av.cos-framed::after{ content:''; position:absolute; inset:-16%; background:var(--frame-img) center/contain no-repeat; }
@@ -6331,7 +6334,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 <body>
 
 <!-- AUTH HUD -->
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 7.5 · menu v2</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 7.7 · menu v2</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -9044,7 +9047,7 @@ function execEnd2v2(p){
   // AI-controlled boards play out their turn. Online: only the HOST runs the AI
   // (so the two enemies don't execute twice).
   if((G.aiPlayers||[]).includes(nx) && (!G.onlineMode2v2 || G.mySeat===1)){
-    setTimeout(()=>{ if(!G.gameOver) runAI2v2(nx); }, 800);
+    aiLater(()=>{ if(!G.gameOver) runAI2v2(nx); }, 800);
   }
 }
 
@@ -10980,21 +10983,21 @@ function runAI2v2(p){
   drawCard(p);
   if(typeof isLockedDown==='function' && !isLockedDown(p)){ let g=0; pl.field.filter(f=>isLoc(DB[f.cid]) && !isLocationFrozen(f)).forEach(()=>g++); if(g>0)pl.energy+=g; }
   G.phase='main'; renderAll();
-  setTimeout(()=>{
+  aiLater(()=>{
     if(G.gameOver)return;
     // 🧠 AI Brain: energy cards, transforms, characters, locations, equipment, instants, abilities.
     if(typeof aiCheckHeraldFlip==='function')aiCheckHeraldFlip(p);
     aiMainPhase(p, ()=>{
     renderAll();
-    setTimeout(()=>{
+    aiLater(()=>{
       if(G.gameOver)return;
       G.phase='attack';
       const eligible=pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken&&(f.turnPlayed<G.turn||hasKW(f,'burst_speed'))&&!statusActive(f,'freeze')&&!statusActive(f,'paralyze')&&!statusActive(f,'confuse')&&!f.tapped);
       const maxAtk=1+(G.bonusAttackers||0);
       const chosen=eligible.sort((a,b)=>effPower(b)-effPower(a)).slice(0,maxAtk);
       const heraldDuel=()=>{ try{ const ho=aiHeraldOptions(p); if(ho.length&&ho[0].score>3){ const o=ho[0]; G.heraldAttacking=true; resolveHeraldAttackTarget(o.p,o.fc); G.heraldAttacking=false; renderAll(); } }catch(e){ console.warn('[AI] herald duel',e); } };
-      if(!chosen.length){ heraldDuel(); log(`${pl.name} skips attack.`,'info'); setTimeout(()=>{ if(!G.gameOver)execEnd(); },aiPace(1200)); return; }
-      processAITeamAttacks(p, chosen.map(c=>c.uid), ()=>{ heraldDuel(); setTimeout(()=>{ if(!G.gameOver)execEnd(); },aiPace(1200)); });
+      if(!chosen.length){ heraldDuel(); log(`${pl.name} skips attack.`,'info'); aiLater(()=>{ if(!G.gameOver)execEnd(); },aiPace(1200)); return; }
+      processAITeamAttacks(p, chosen.map(c=>c.uid), ()=>{ heraldDuel(); aiLater(()=>{ if(!G.gameOver)execEnd(); },aiPace(1200)); });
     }, aiPace(900));
     }); // aiMainPhase
   }, aiPace(900));
@@ -11019,18 +11022,18 @@ function processAITeamAttacks(aiPlayer, queue, onDone){
   if(isUnblockable(afc)){
     log(`AI's ${DB[afc.cid].name} attacks Team ${defTeam} — UNBLOCKABLE for ${power}!`,'dmg');
     damageTeamLife(defTeam, power, 'direct attack'); renderAll();
-    setTimeout(()=>processAITeamAttacks(aiPlayer,queue,onDone),aiPace(1500)); return;
+    aiLater(()=>processAITeamAttacks(aiPlayer,queue,onDone),aiPace(1500)); return;
   }
   if(defenderIsHuman){
     // Defending team has a human — let them choose a block.
-    openHumanTeamBlockPrompt(aiPlayer, afc, defTeam, ()=>{ setTimeout(()=>processAITeamAttacks(aiPlayer,queue,onDone),400); });
+    openHumanTeamBlockPrompt(aiPlayer, afc, defTeam, ()=>{ aiLater(()=>processAITeamAttacks(aiPlayer,queue,onDone),400); });
   } else {
     // AI-vs-AI (e.g. your AI teammate swinging at the AI enemy team) — auto-block.
     const blk=aiChooseBlockerFromPool(teamBlockerPool(defTeam), afc);
     if(blk)log(`🛡 ${DB[blk.cid].name} blocks the attack on Team ${defTeam}.`,'info');
     else log(`No block — ${power} to Team ${defTeam} Life.`,'dmg');
     resolveAITeamAttack(aiPlayer, afc, blk, defTeam);
-    setTimeout(()=>processAITeamAttacks(aiPlayer,queue,onDone),aiPace(1500));
+    aiLater(()=>processAITeamAttacks(aiPlayer,queue,onDone),aiPace(1500));
   }
 }
 function openHumanTeamBlockPrompt(aiPlayer, afc, humanTeam, done, onChoose){
@@ -11042,7 +11045,7 @@ function openHumanTeamBlockPrompt(aiPlayer, afc, humanTeam, done, onChoose){
     try{ _onlineChannel && _onlineChannel.send({type:'broadcast',event:'block_request',payload:{from:_onlineRole, aiPlayer, afcUid:afc.uid, humanTeam, power}}); }catch(e){}
     log('🛡 Waiting for your Block Captain teammate to choose a block…','info');
     if(_pendingBlockTimer)clearTimeout(_pendingBlockTimer);
-    _pendingBlockTimer=setTimeout(()=>{ // fallback so the game can't lock if they go silent
+    _pendingBlockTimer=aiLater(()=>{ // fallback so the game can't lock if they go silent
       if(_pendingTeamBlock){ const pend=_pendingTeamBlock; _pendingTeamBlock=null;
         const a=G.players[pend.aiPlayer]?.field.find(f=>f.uid===pend.afcUid);
         if(a){ log('Block Captain timed out — you decide.','info'); openHumanTeamBlockPrompt(pend.aiPlayer,a,pend.humanTeam,pend.done,(b)=>{ resolveAITeamAttack(pend.aiPlayer,a,b,pend.humanTeam); if(pend.done)pend.done(); }); }
@@ -11130,7 +11133,7 @@ function processAILifeAttacks(queue, onDone){
   const auid=queue.shift();
   const afc=G.players[2].field.find(f=>f.uid===auid);
   if(!afc || !canCharacterAttack(2,afc)){ processAILifeAttacks(queue,onDone); return; }
-  aiAttackHumanLife(afc, ()=>{ setTimeout(()=>processAILifeAttacks(queue,onDone), aiPace(1500)); });
+  aiAttackHumanLife(afc, ()=>{ aiLater(()=>processAILifeAttacks(queue,onDone), aiPace(1500)); });
 }
 function aiAttackHumanLife(afc, done){
   afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc);
@@ -14088,7 +14091,7 @@ function execEnd(){
       if(G.onlineMode){ broadcastGameState(); }
       // If the skipped player was the AI, the human (p===1) just regained the turn — no AI call.
       // If the human was skipped, hand back to AI:
-      if(gameMode!=='pvp'&&gameMode!=='online'&&p===2)setTimeout(runAI,700);
+      if(gameMode!=='pvp'&&gameMode!=='online'&&p===2)aiLater(runAI,700);
       _endingTurn=false;
       return;
     }
@@ -14107,7 +14110,7 @@ function execEnd(){
       console.log('[END] online turn handoff — force broadcasting end state');
       broadcastGameState();
     }
-    if(gameMode!=='pvp'&&gameMode!=='online'&&nx===2)setTimeout(runAI,700);
+    if(gameMode!=='pvp'&&gameMode!=='online'&&nx===2)aiLater(runAI,700);
   } catch(err){
     console.error('[END] error:',err);
     log('Error ending turn — check console.','dmg');
@@ -14674,6 +14677,21 @@ function aiThinking(on, what){
   el.textContent=what||'AI is thinking…'; el.classList.toggle('show',!!on);
 }
 function aiSetAuto(on){ if(G) G._aiAuto=!!on; }
+// Match session: every CPU timer is tied to the match that scheduled it. Leaving the match
+// (quit to menu, new match) bumps the session so any pending AI step silently dies.
+let _matchSession=0;
+function aiLater(fn,ms){ const s=_matchSession; return setTimeout(()=>{ if(s!==_matchSession) return; if(typeof G!=='undefined'&&G&&G._abandoned) return; fn(); },ms); }
+function abandonMatch(){
+  _matchSession++;
+  if(typeof G!=='undefined'&&G&&G.players){ if(!G.gameOver){ G.gameOver=true; G._abandoned=true; } G._aiTurn=false; G._aiAuto=false; G._v2AIRunning=false; }
+  try{ aiThinking(false); }catch(e){}
+  if(typeof _pendingBlockTimer!=='undefined'&&_pendingBlockTimer){ try{ clearTimeout(_pendingBlockTimer); }catch(e){} }
+  // clear any in-match overlays the CPU's last action may have opened
+  const cz=document.getElementById('card-play-zoom'); if(cz) cz.classList.remove('playing');
+  const ir=document.getElementById('instant-reveal-overlay'); if(ir) ir.classList.remove('open');
+  const he=document.getElementById('herald-entrance'); if(he&&he.classList.contains('open')){ he.className=''; he.style.display='none'; document.body.classList.remove('he-shake'); }
+  document.querySelectorAll('.modal-overlay.open').forEach(m=>{ if(m.id!=='win-modal') m.classList.remove('open'); });
+}
 function aiEnemyPlayersOf(p){ return G.is2v2 ? (teamOf(p)==='A'?[2,4]:[1,3]) : [p===1?2:1]; }
 function aiEnemyChars(p){ const out=[]; aiEnemyPlayersOf(p).forEach(e=>{ const pl=G.players[e]; if(pl) pl.field.forEach(f=>{ if(isChar(DB[f.cid])) out.push({fc:f,p:e}); }); }); return out; }
 function aiMaxHP(f){ return (f.baseHP||0)+(f.hpBonus||0)+(f.passiveHp||0); }
@@ -14877,11 +14895,11 @@ function aiMainPhase(p, onDone){
     try{ best.run(); }catch(e){ console.warn('[AI] action failed:',best.label,e); log('AI hesitates…','info'); }
     try{ if(typeof recalcPassives==='function')recalcPassives(); renderAll(); }catch(e){}
     const wait=aiPace(best.delay||AIB.stepDelay);
-    setTimeout(()=>aiThinking(true),Math.min(600,wait*.4));
-    setTimeout(step, wait);
+    aiLater(()=>aiThinking(true),Math.min(600,wait*.4));
+    aiLater(step, wait);
   };
   aiThinking(true);
-  setTimeout(step, aiPace(1100));
+  aiLater(step, aiPace(1100));
 }
 
 // ── attack evaluation ──
@@ -14973,7 +14991,7 @@ function aiAttackPhase1v1(p, onDone){
         else if(opt.kind==='herald'){ resolveCharVsHerald(p,afc.uid,opt.p); }
         else resolveAttack(p,afc.uid,opt.p,opt.uid);
         renderAll();
-        setTimeout(swings,aiPace(1900));
+        aiLater(swings,aiPace(1900));
       };
       if(typeof SFX!=='undefined'&&SFX.attack)try{SFX.attack();}catch(e){}
       if(opt.uid&&typeof animateAttack==='function') animateAttack(afc.uid,opt.uid,go); else go();
@@ -14985,32 +15003,32 @@ function aiAttackPhase1v1(p, onDone){
       const o=ho[0]; G.heraldAttacking=true;
       resolveHeraldAttackTarget(o.p,o.fc);
       G.heraldAttacking=false; renderAll();
-      setTimeout(()=>{ if(onDone)onDone(); },aiPace(1600)); return;
+      aiLater(()=>{ if(onDone)onDone(); },aiPace(1600)); return;
     }
     if(onDone)onDone();
   };
   aiThinking(true,'AI is choosing an attack…');
-  setTimeout(()=>{ aiThinking(false); swings(); }, aiPace(1200));
+  aiLater(()=>{ aiThinking(false); swings(); }, aiPace(1200));
 }
 
 function runAI(){
-  if(G.activePlayer!==2)return;
+  if(!G||G.gameOver||G.activePlayer!==2)return;
   if(G.tutorialMode){ if(typeof runTutorialAI==='function')runTutorialAI(); return; }
   G.players[2].energy+=1;resetEnergyCardFlag(2);drawCard(2);G.phasesDone.push('draw');G.phase='draw';
   untapAll(2);
   G.players[2].usedAbilityThisTurn=false;
   runPowerDrain(2);
   renderAll();
-  setTimeout(()=>{
+  aiLater(()=>{
     let g=0;if(!isLockedDown(2)){G.players[2].field.filter(f=>isLoc(DB[f.cid]) && !isLocationFrozen(f)).forEach(()=>g++);if(g>0)G.players[2].energy+=g;}
     G.phasesDone.push('resource');G.phase='resource';renderAll();
-    setTimeout(()=>{
+    aiLater(()=>{
       G.phase='main';G.phasesDone.push('main');
       aiCheckHeraldFlip();
       renderAll();
       aiMainPhase(2, ()=>{
       renderAll();
-      setTimeout(()=>{
+      aiLater(()=>{
         G.phase='attack';G.phasesDone.push('attack');
         const opp=G.players[1];
         const eligible=G.players[2].field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken&&(f.turnPlayed<G.turn||hasKW(f,'burst_speed'))&&!statusActive(f,'freeze')&&!statusActive(f,'paralyze')&&!statusActive(f,'confuse')&&!f.tapped);
@@ -15032,7 +15050,7 @@ function runAI(){
         if(G.gameMode==='lifeforce'){
           const chosen=eligible.sort((a,b)=>b.currentATK-a.currentATK).slice(0,aiMaxAttackers);
           renderAll();
-          const _duelThenEnd=()=>{ try{ const ho=aiHeraldOptions(2); if(ho.length&&ho[0].score>3){ const o=ho[0]; G.heraldAttacking=true; resolveHeraldAttackTarget(o.p,o.fc); G.heraldAttacking=false; renderAll(); } }catch(e){} setTimeout(_aiEndTurn,500); };
+          const _duelThenEnd=()=>{ try{ const ho=aiHeraldOptions(2); if(ho.length&&ho[0].score>3){ const o=ho[0]; G.heraldAttacking=true; resolveHeraldAttackTarget(o.p,o.fc); G.heraldAttacking=false; renderAll(); } }catch(e){} aiLater(_aiEndTurn,500); };
           if(!chosen.length){ log('AI skips attack.','info'); _duelThenEnd(); }
           else processAILifeAttacks(chosen.map(a=>a.uid), _duelThenEnd);
           return; // the queue drives the rest, including end-of-turn
@@ -15042,7 +15060,7 @@ function runAI(){
         aiAttackPhase1v1(2, ()=>{
           if(G.log.length===before) log('AI skips attack.','info');
           renderAll();
-          setTimeout(_aiEndTurn,aiPace(1400));
+          aiLater(_aiEndTurn,aiPace(1400));
         });
       },aiPace(900));
       }); // aiMainPhase
@@ -15863,7 +15881,7 @@ function _ctApply(firstWho){
         if(rel==='you')showTurnBanner(true,'YOUR TURN','your-turn'); else if(rel==='teammate')showTurnBanner(false,"TEAMMATE'S TURN",'your-turn'); else showTurnBanner(false,"OPPONENT'S TURN",'opp-turn');
       }
       if(G.onlineMode2v2&&typeof broadcastGameState2v2==='function'&&G.mySeat===1)broadcastGameState2v2();
-      if((G.aiPlayers||[]).includes(G.activePlayer)&&(!G.onlineMode2v2||G.mySeat===1)) setTimeout(()=>{ if(!G.gameOver)runAI2v2(G.activePlayer); },800);
+      if((G.aiPlayers||[]).includes(G.activePlayer)&&(!G.onlineMode2v2||G.mySeat===1)) aiLater(()=>{ if(!G.gameOver)runAI2v2(G.activePlayer); },800);
       return;
     }
     G.activePlayer = firstWho==='me' ? 1 : 2;
@@ -15872,7 +15890,7 @@ function _ctApply(firstWho){
     renderAll();
     if(typeof showTurnBanner==='function')showTurnBanner(G.activePlayer===1);
     if(G.onlineMode){ if(_onlineRole==='host')broadcastGameState(); return; }
-    if(gameMode!=='pvp'&&G.activePlayer===2) setTimeout(runAI,700);
+    if(gameMode!=='pvp'&&G.activePlayer===2) aiLater(runAI,700);
   },1300);
 }
 
@@ -16386,6 +16404,13 @@ else setTimeout(()=>{ if(document.getElementById('menu-screen')?.classList.conta
 //   Hooks for other systems: grantCosmetic(id, source, celebrate)  ·  cosCheckUnlocks()
 // ═══════════════════════════════════════════════════════════════════════
 const COS_TYPES={ back:{label:'CARD BACKS',icon:'🂠'}, mat:{label:'PLAYMATS',icon:'🟪'}, frame:{label:'AVATAR FRAMES',icon:'🖼️'}, plate:{label:'NAME PLATES',icon:'🏷️'}, title:{label:'TITLES',icon:'📜'}, entrance:{label:'HERALD ENTRANCES',icon:'👑'} };
+// Shop SETS: a card back + its matching playmat, cheaper together. Price scales down for pieces you already own.
+const COS_SETS=[
+  { id:'set_gamma_breaker', name:'Gamma Breaker Set', items:['back_gamma_breaker','mat_gamma_breaker'], price:4000 },
+  { id:'set_king_courts_halloween', name:'King Of Courts: Halloween Set', items:['back_king_courts_halloween','mat_king_courts_halloween'], price:4000 },
+  { id:'set_time_splitting_chimp', name:'Time Splitting Chimp Set', items:['back_time_splitting_chimp','mat_time_splitting_chimp'], price:4000 },
+  { id:'set_bender_havens', name:'The Bender Of The Havens Set', items:['back_bender_havens','mat_bender_havens'], price:4000 },
+];
 const COS_TIERS={ default:{label:'STANDARD',hex:'#9ca3af',price:0}, common:{label:'COMMON',hex:'#9ca3af',price:300}, rare:{label:'RARE',hex:'#60a5fa',price:900}, legendary:{label:'LEGENDARY',hex:'#fbbf24',price:2500}, exclusive:{label:'EXCLUSIVE',hex:'#e8c570',price:0} };
 const COS_DEFAULT_EQUIP={ back:'back_default', mat:'mat_default', frame:'frame_none', plate:'plate_none', title:'title_none', entrance:'ent_royal' };
 function _cosSvgBack(o){
@@ -16412,16 +16437,20 @@ const COS_BUILTIN=[
   // card backs
   { id:'back_default', type:'back', name:'Lord of States', tier:'default', free:true, desc:'The standard court-issued back.' },
   { id:'back_lc_blue', type:'back', name:'Lord Of Courts Blue', tier:'default', starter:true, img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Lord%20Of%20States%20Default%20Back%20(BLUE).png', unlock:{kind:'starter'}, desc:'The second standard back — sapphire and gold. Every player receives it after the tutorial.' },
-  { id:'back_time_splitting_chimp', type:'back', name:'Time Splitting Chimp', tier:'exclusive', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Chrome%20Monkey_%20Lord%20of%20Courts.png', unlock:{kind:'pending'}, desc:'Chrome monkey, holo-blue grid.' },
-  { id:'back_king_courts_halloween', type:'back', name:'King Of The Courts: Halloween Edition', tier:'exclusive', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Halloween%20Gorilla%20Lord%20of%20courts%20card%20back.png', unlock:{kind:'pending'}, desc:'The crowned gorilla king, Halloween gilded.' },
+  { id:'back_time_splitting_chimp', type:'back', set:'set_time_splitting_chimp', name:'Time Splitting Chimp', tier:'legendary', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Chrome%20Monkey_%20Lord%20of%20Courts.png', desc:'Chrome monkey, holo-blue grid.' },
+  { id:'back_king_courts_halloween', type:'back', set:'set_king_courts_halloween', name:'King Of The Courts: Halloween Edition', tier:'legendary', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Halloween%20Gorilla%20Lord%20of%20courts%20card%20back.png', desc:'The crowned gorilla king, Halloween gilded.' },
   { id:'back_halloween_death_race', type:'back', name:'Halloween Death Race', tier:'exclusive', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Lord%20of%20Courts_%20Gilded%20Apocalypse%20999%20juice%20card%20back.png', unlock:{kind:'pending'}, desc:'Gilded apocalypse on burning roads.' },
-  { id:'back_gamma_breaker', type:'back', name:'Gamma Breaker', tier:'exclusive', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Neon%20SMASH%20Breakout%20_%20Lord%20Of%20COurts%20card%20back%20HULK.png', unlock:{kind:'pending'}, desc:'Neon green smash breakout.' },
-  { id:'back_bender_havens', type:'back', name:'The Bender Of The Havens', tier:'exclusive', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Pavi%20Card%20Back%20Avatar%20seven%20haveens%20card%20back.png', unlock:{kind:'pending'}, desc:'Elements of the Seven Havens bend to one hand.' },
+  { id:'back_gamma_breaker', type:'back', set:'set_gamma_breaker', name:'Gamma Breaker', tier:'legendary', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Neon%20SMASH%20Breakout%20_%20Lord%20Of%20COurts%20card%20back%20HULK.png', desc:'Neon green smash breakout.' },
+  { id:'back_bender_havens', type:'back', set:'set_bender_havens', name:'The Bender Of The Havens', tier:'legendary', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Pavi%20Card%20Back%20Avatar%20seven%20haveens%20card%20back.png', desc:'Elements of the Seven Havens bend to one hand.' },
   // playmats
   { id:'mat_default', type:'mat', name:'Court Arena', tier:'default', free:true, desc:'The standard arena floor.' },
   { id:'mat_blue_court', type:'mat', name:'Blue Court Hall', tier:'common', mat:_cosMat('0,212,255','#0a1230','#060a1c','lines'), accent:'#00d4ff', desc:'Cool stone and cyan light.' },
   { id:'mat_crimson_court', type:'mat', name:'Crimson Court Hall', tier:'common', mat:_cosMat('248,113,113','#2a0a10','#120306','hex'), accent:'#f87171', desc:'Ember-lit red marble.' },
   { id:'mat_veelden_frost', type:'mat', name:'Veelden Frost', tier:'rare', mat:_cosMat('180,230,255','#0b2a34','#05141c','frost'), accent:'#b4e6ff', desc:'Frozen ground of the northern kingdom.' },
+  { id:'mat_gamma_breaker', type:'mat', set:'set_gamma_breaker', name:'Gamma Breaker', tier:'legendary', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Playing%20Matts/Gamma%20Smash%20Playing%20Matt.png', mat:'linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),url("https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Playing%20Matts/Gamma%20Smash%20Playing%20Matt.png")', accent:'#84ff3c', desc:'Cracked gamma bedrock and a reactor seal.' },
+  { id:'mat_king_courts_halloween', type:'mat', set:'set_king_courts_halloween', name:'King Of Courts: Halloween Edition', tier:'legendary', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Playing%20Matts/Halloween%20Universe%20theme.png', mat:'linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),url("https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Playing%20Matts/Halloween%20Universe%20theme.png")', accent:'#ff8a1f', desc:'A pumpkin sun orbited by grinning moons.' },
+  { id:'mat_time_splitting_chimp', type:'mat', set:'set_time_splitting_chimp', name:'Time Splitting Chimp', tier:'legendary', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Playing%20Matts/Monkey%20Splitter%20of%20Time.png', mat:'linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),url("https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Playing%20Matts/Monkey%20Splitter%20of%20Time.png")', accent:'#3b9cff', desc:'The chrome chimp guards the time-split vault.' },
+  { id:'mat_bender_havens', type:'mat', set:'set_bender_havens', name:'The Bender Of The Havens', tier:'legendary', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Playing%20Matts/Pavi%20Avatar%20of%20Havens.png', mat:'linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),url("https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Playing%20Matts/Pavi%20Avatar%20of%20Havens.png")', accent:'#e8c570', desc:'Pavi bends water and fire across the Havens.' },
   { id:'mat_abyss', type:'mat', name:'Abyss Rift', tier:'legendary', mat:_cosMat('168,85,247','#1a0630','#06020f','rings'), accent:'#a855f7', desc:'Rings of the rift spread beneath your field.' },
   // avatar frames
   { id:'frame_none', type:'frame', name:'No Frame', tier:'default', free:true, desc:'Plain portrait.' },
@@ -16601,11 +16630,12 @@ function cosHelloRecv(d){ if(!G) return; G.oppCos=(d&&d.cos)||{}; applyCosmetics
 let _cosFilter='all', _cosOwnedOnly=false;
 function renderCosShop(){
   const host=document.getElementById('cos-shop'); if(!host) return;
-  const chips=[['all','✨ ALL']].concat(Object.entries(COS_TYPES).map(([k,v])=>[k,v.icon+' '+v.label]));
+  const chips=[['all','✨ ALL'],['sets','🎁 SETS']].concat(Object.entries(COS_TYPES).map(([k,v])=>[k,v.icon+' '+v.label]));
   const head=`<div class="cos-head">${chips.map(([k,l])=>`<button class="cos-chip${_cosFilter===k?' on':''}" onclick="_cosFilter='${k}';renderCosShop()">${l}</button>`).join('')}
     <button class="cos-chip${_cosOwnedOnly?' on':''}" style="margin-left:auto" onclick="_cosOwnedOnly=!_cosOwnedOnly;renderCosShop()">🎒 MY LOCKER</button>
     ${isAdmin()?'<button class="cos-chip" onclick="cosManage()">✎ MANAGE</button>':''}</div>`;
-  let items=cosCatalog().filter(it=>_cosFilter==='all'||it.type===_cosFilter); if(_cosOwnedOnly) items=items.filter(it=>cosOwned(it.id));
+  let items=_cosFilter==='sets'?[]:cosCatalog().filter(it=>_cosFilter==='all'||it.type===_cosFilter); if(_cosOwnedOnly) items=items.filter(it=>cosOwned(it.id));
+  let sets=(_cosFilter==='all'||_cosFilter==='sets')?cosSetList():[]; if(_cosOwnedOnly) sets=sets.filter(s=>s.items.every(id=>cosOwned(id)));
   const tiles=items.map(it=>{
     const owned=cosOwned(it.id), eq=cosEquipped(it.type,1)===it.id, tier=COS_TIERS[it.tier]||COS_TIERS.common, price=cosPrice(it);
     const locked=!owned&&(it.tier==='exclusive'||it.unlock);
@@ -16618,8 +16648,34 @@ function renderCosShop(){
       <div><div class="cos-name">${escapeHtml(it.name)}</div><span class="cos-tier" style="--tc:${tier.hex}">${tier.label}</span></div>
       <div class="cos-desc">${escapeHtml(it.desc||'')}</div>${btn}</div>`;
   }).join('');
-  host.innerHTML=head+(tiles?`<div class="cos-grid">${tiles}</div>`:'<div style="text-align:center;padding:40px;color:#6b7280">Nothing here yet.</div>');
+  const setTiles=sets.map(cosSetTile).join('');
+  host.innerHTML=head+((setTiles||tiles)?`<div class="cos-grid">${setTiles}${tiles}</div>`:'<div style="text-align:center;padding:40px;color:#6b7280">Nothing here yet.</div>');
 }
+function cosSetList(){ return COS_SETS.map(s=>Object.assign({},s,{items:s.items.filter(id=>cosItem(id))})).filter(s=>s.items.length>1); }
+function cosSetPrice(s){ const full=s.items.reduce((a,id)=>a+cosPrice(cosItem(id)),0)||1; const missing=s.items.filter(id=>!cosOwned(id)).reduce((a,id)=>a+cosPrice(cosItem(id)),0); return Math.round(s.price*missing/full/10)*10; }
+function cosSetTile(s){
+  const back=s.items.map(cosItem).find(i=>i.type==='back'), mat=s.items.map(cosItem).find(i=>i.type==='mat');
+  const owned=s.items.every(id=>cosOwned(id)); const price=cosSetPrice(s); const full=s.items.reduce((a,id)=>a+cosPrice(cosItem(id)),0);
+  const eq=s.items.every(id=>cosEquipped(cosItem(id).type,1)===id);
+  const cel='<img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" alt="C" style="height:12px;vertical-align:-2px">';
+  const btn=eq?'<button class="cos-btn eq">✓ SET EQUIPPED</button>':owned?`<button class="cos-btn" onclick="cosEquipSet('${s.id}')">EQUIP SET</button>`:`<button class="cos-btn" onclick="buyCosSet('${s.id}')" ${(_celData.celestium||0)<price?'disabled':''}>BUY SET · ${price.toLocaleString()} ${cel}</button>`;
+  const missingVal=s.items.filter(id=>!cosOwned(id)).reduce((a,id)=>a+cosPrice(cosItem(id)),0); const save=!owned&&missingVal>price?`<span class="cos-save">SAVE ${(missingVal-price).toLocaleString()}</span>`:'';
+  return `<div class="cos-tile cos-set${eq?' equipped':''}">${save}<div class="cos-prev">${mat?`<div class="mat" style="background:${(_cosMatBg(mat.id)||'').replace(/"/g,'&quot;')}"></div>`:''}${back?`<img class="back" src="${cosBackUrl(back.id)}" alt="" style="position:relative;z-index:1">`:''}</div>
+    <div><div class="cos-name">${escapeHtml(s.name)}</div><span class="cos-tier" style="--tc:#e8c570">CARD BACK + PLAYMAT</span></div>
+    <div class="cos-desc">${s.items.map(id=>(cosOwned(id)?'✓ ':'')+escapeHtml(cosItem(id).name)+' · '+(COS_TYPES[cosItem(id).type]||{}).label.toLowerCase().replace(/s$/,'')).join('<br>')}</div>${btn}</div>`;
+}
+async function buyCosSet(sid){
+  const s=cosSetList().find(x=>x.id===sid); if(!s) return; const cost=cosSetPrice(s);
+  if((_celData.celestium||0)<cost){ alert('Not enough Celestium!'); return; }
+  _celData.celestium-=cost;
+  s.items.forEach(id=>{ grantCosmetic(id,null,false); const it=cosItem(id); _cos.equipped[it.type]=id; }); _cos.newest=s.items[0]; saveCosmetics(); applyCosmetics();
+  try{ await saveCelestium(); }catch(e){}
+  if(typeof updateCelDisplay==='function') updateCelDisplay();
+  const cel=document.getElementById('shop-cel-amount'); if(cel)cel.textContent=(_celData.celestium||0).toLocaleString();
+  if(typeof SFX!=='undefined') SFX.energy();
+  renderCosShop(); if(typeof renderMainMenu==='function'){ try{ mmRenderLoadout(); }catch(e){} }
+}
+function cosEquipSet(sid){ const s=cosSetList().find(x=>x.id===sid); if(!s) return; s.items.forEach(id=>{ if(cosOwned(id)) _cos.equipped[cosItem(id).type]=id; }); saveCosmetics(); applyCosmetics(); renderCosShop(); }
 function cosPreviewHtml(it){
   switch(it.type){
     case 'back': { const u=cosBackUrl(it.id); return u?`<img class="back" src="${u}" alt="">`:'<span style="font-size:40px">🂠</span>'; }
@@ -18299,6 +18355,7 @@ function closeAllModals(){document.querySelectorAll('.modal-overlay').forEach(m=
 }
 
 function showScreen(id){
+  if(id!=='game-screen'&&id!=='game-screen-2v2'&&document.querySelector('#game-screen.active,#game-screen-2v2.active')&&typeof abandonMatch==='function'){ try{ abandonMatch(); }catch(e){ console.warn('[abandon]',e); } }
   if(id!=='game-screen'&&id!=='game-screen-2v2'){ const _ct=document.getElementById('coin-toss'); if(_ct&&_ct.classList.contains('open')){ _ct.classList.remove('open'); if(typeof CT!=='undefined'&&CT){ if(CT._resend)clearInterval(CT._resend); if(CT._resend2)clearInterval(CT._resend2); } } }
   document.querySelectorAll('#menu-screen,#game-screen,.screen').forEach(s=>{s.classList.remove('active');if(s.id==='game-screen')s.style.display='none';});
   const el=document.getElementById(id);
@@ -20479,12 +20536,12 @@ function runTutorialAI(){
     return fc;
   };
   const charCount=()=>pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken).length;
-  setTimeout(()=>{
+  aiLater(()=>{
     if(G.gameOver)return;
     if(aiT===1){ playOne(["saiyan_heavy_warrior_bse"]); playOne(["female_saiyan_citizen_bse","male_saiyan_citizen_bse"]); playOne(["female_saiyan_citizen_bse","male_saiyan_citizen_bse"]); }
     else { if(charCount()<1) playOne(["female_saiyan_citizen_bse","male_saiyan_citizen_bse"]); }
     if(typeof renderAll==="function")renderAll();
-    setTimeout(()=>{
+    aiLater(()=>{
       if(G.gameOver)return;
       let didAttack=false;
       // Turn 2 only: a ready AI character knocks out the players weakest character as a lesson.
@@ -20501,13 +20558,13 @@ function runTutorialAI(){
         const cit=ready().find(f=>["female_saiyan_citizen_bse","male_saiyan_citizen_bse"].includes(f.cid));
         if(cit && rookie && rookie.currentHP>0){ didAttack=true; log("AI attacks your rookie!","dmg"); if(typeof resolveAttack==="function")resolveAttack(2, cit.uid, 1, rookie.uid); }
       }
-      setTimeout(()=>{
+      aiLater(()=>{
         if(G.gameOver)return;
         if(typeof endTurnFx==="function")endTurnFx(2); log("AI ends.","info");
         G.activePlayer=1;G.turn++;G.phase="draw";G.phasesDone=[];G.selectedAttacker=null;G.heraldAttacking=false;
         if(typeof startTurnFx==="function")startTurnFx(1);
         if(typeof renderAll==="function")renderAll();
-        if(typeof tutorialNotifyAction==="function")setTimeout(()=>tutorialNotifyAction("your_turn"),500);
+        if(typeof tutorialNotifyAction==="function")aiLater(()=>tutorialNotifyAction("your_turn"),500);
       }, didAttack?1200:450);
     }, 700);
   }, 750);
@@ -22152,7 +22209,7 @@ function onReceiveGameState2v2(payload){
   // Host kicks off an AI board's turn when the guest hands off to one.
   if(G.mySeat===1 && (G.aiPlayers||[]).includes(G.activePlayer) && !G.gameOver && !G._v2AIRunning){
     G._v2AIRunning=true;
-    setTimeout(()=>{ G._v2AIRunning=false; if(!G.gameOver) runAI2v2(G.activePlayer); }, 700);
+    aiLater(()=>{ G._v2AIRunning=false; if(!G.gameOver) runAI2v2(G.activePlayer); }, 700);
   }
 }
 function syncOnlineState2v2(){
