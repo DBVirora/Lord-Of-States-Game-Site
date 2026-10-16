@@ -6095,6 +6095,9 @@ textarea{
 #game-screen .side.player-area{ position:relative; }
 #game-screen .side.player-area::before{ content:''; position:absolute; inset:calc(var(--gap) * -1) 0; border-radius:12px; background:var(--mat-bg,none); background-size:cover; background-position:center; z-index:-1; pointer-events:none; }
 #game-screen .side.opp::before{ transform:rotate(180deg); }
+#game-screen-2v2 .v2-board{ position:relative; isolation:isolate; }
+#game-screen-2v2 .v2-board.has-mat::before{ content:''; position:absolute; inset:0; border-radius:inherit; background:var(--mat-bg); background-size:cover; background-position:center; z-index:-1; pointer-events:none; box-shadow:inset 0 0 40px rgba(0,0,0,.45); border:1px solid var(--mat-line,rgba(255,255,255,.08)); }
+#game-screen-2v2 .v2-board.v2-enemy.has-mat::before{ transform:rotate(180deg); }
 #game-screen .side.player-area.has-mat::after{ content:''; position:absolute; inset:calc(var(--gap) * -1) 0; border-radius:12px; z-index:-1; pointer-events:none; box-shadow:inset 0 0 40px rgba(0,0,0,.45); border:1px solid var(--mat-line,rgba(255,255,255,.08)); }
 /* avatar frames / plates / titles in the arena identity blocks */
 .player-panel-avatar.cos-framed,#game-screen .ident .player-panel-avatar.cos-framed{ position:relative; overflow:visible; border-radius:50%; border-color:transparent; }
@@ -8854,7 +8857,7 @@ function startGame(mode,deck1,deck2,foils1,foils2){
     setTimeout(()=>checkAchievements(),800);
   }
   const _gs=document.getElementById('game-screen'); if(_gs)_gs.classList.remove('mode-2v2');
-  G.oppCos=(mode==='ai')?Object.assign({},AI_COS):null;
+  G.oppCos=(mode==='ai')?aiCosLoadout():null; G.cosBySeat=null;
   showScreen('game-screen');renderAll();
   if(typeof applyCosmetics==='function') applyCosmetics();
   if(mode!=='online'&&!G.tutorialMode){
@@ -8982,7 +8985,7 @@ function startGame2v2(mode, decks, seatNames, teamLife, humanSeats){
     turn:1, is2v2:true, gameMode:'lifeforce', // 2v2 uses Health/team-life rules
     turnOrder:turnSeq, turnIndex:0, activePlayer:turnSeq[0],
     teams:{A:[1,3], B:[2,4]}, teamLife:{A:startLife, B:startLife}, startingTeamLife:startLife,
-    humanPlayers:_humans, aiPlayers:_ais, v2SeatNames:_seatNames, blockCaptain:_blockCaptain,
+    humanPlayers:_humans, aiPlayers:_ais, v2SeatNames:_seatNames, blockCaptain:_blockCaptain, cosBySeat:Object.fromEntries((_ais||[]).map(a=>[a,aiCosLoadout()])),
     phase:'draw', phasesDone:[], selectedAttacker:null, gameOver:false,
     deckSearchCallback:null, heraldAttacking:false, bonusAttackers:0,
     players, log:[]
@@ -9539,6 +9542,7 @@ function resolvePrizeClaim(victim, claimer, index){
   }
   // Reveal animation, then the CLAIMER gains the card — with the VICTIM's exact finish.
   const prizeVariant = (vpl.prizesFoil && vpl.prizesFoil[index]!=null) ? vpl.prizesFoil[index] : 'none';
+  G._prizeRevealBackOf=victim;
   showPrizeReveal(cid, claimer, ()=>{
     const fc=newFC(cid); if(fc){ fc.variant=prizeVariant; cpl.hand.push(fc); }
     log(`🎖 ${pname(claimer)} takes a Prize from ${pname(victim)}: ${DB[cid]?.name||cid}! (${pname(victim)}: ${maxPrizes-vpl.prizesClaimed} prizes left)`,'gain');
@@ -9565,7 +9569,7 @@ function showPrizeReveal(cardId, p, onDone, variant){
   if(!overlay||!inner){ if(onDone)onDone(); return; }
   const url=getImg(cardId);
   inner.innerHTML = '<div class="prize-reveal-flip">'
-    + '<div class="prize-reveal-back">'+(getImg('cardback')?'<img src="'+getImg('cardback')+'"/>':'✦')+'</div>'
+    + (()=>{ const _bp=(G&&G._prizeRevealBackOf)||(p===1?2:1); const _bu=(typeof cardBackFor==='function')?cardBackFor(_bp):getImg('cardback'); return '<div class="prize-reveal-back">'+(_bu?'<img src="'+_bu+'"/>':'✦')+'</div>'; })()
     + '<div class="prize-reveal-front">'+(url?'<img src="'+url+'"/>':'<div style="padding:30px;font-size:40px">'+(c.sym||'?')+'</div>')+'</div>'
     + '</div>'
     + '<div class="prize-reveal-name">'+c.name+'</div>';
@@ -16447,7 +16451,15 @@ async function saveCosCatalog(){
 function cosOwned(id){ const it=cosItem(id); return !!(it&&(it.free||(it.tier==='default'&&!it.starter)||_cos.owned[id])); }
 function cosEquipped(type,p){
   if(p===undefined||p===1){ const id=_cos.equipped[type]||COS_DEFAULT_EQUIP[type]; return cosOwned(id)?id:COS_DEFAULT_EQUIP[type]; }
-  const oc=(G&&G.oppCos)||{}; const id=oc[type]; return (id&&cosItem(id))?id:COS_DEFAULT_EQUIP[type];
+  const seat=(typeof G!=='undefined'&&G&&G.cosBySeat&&G.cosBySeat[p])||null;
+  const oc=seat||(p===2&&typeof G!=='undefined'&&G&&G.oppCos)||{}; const id=oc[type]; return (id&&cosItem(id))?id:COS_DEFAULT_EQUIP[type];
+}
+// AI loadout: a random pick per slot from the free standards, the tutorial starters, and anything the
+// HUMAN playing this match owns (shop backs, playmats, titles, entrances…). Locked items they don't own never show up.
+function aiCosLoadout(){
+  const out={};
+  Object.keys(COS_TYPES).forEach(t=>{ const pool=cosCatalog().filter(it=>it.type===t&&(it.free||it.starter||(it.tier==='default'&&!it.unlock)||cosOwned(it.id))); const pick=pool[Math.floor(Math.random()*pool.length)]; out[t]=pick?pick.id:COS_DEFAULT_EQUIP[t]; });
+  return out;
 }
 function cosEquip(id){
   const it=cosItem(id); if(!it||!cosOwned(id)) return false;
@@ -16538,6 +16550,10 @@ function applyCosmetics(){
   [[you,1],[opp,2]].forEach(([el,p])=>{ if(!el)return; const id=cosEquipped('mat',p); const bg=_cosMatBg(id); const it=cosItem(id);
     el.classList.toggle('has-mat',!!bg); if(bg){ el.style.setProperty('--mat-bg',bg); el.style.setProperty('--mat-line',(it&&it.accent)?it.accent+'55':'rgba(255,255,255,.08)'); } else { el.style.removeProperty('--mat-bg'); el.style.removeProperty('--mat-line'); } });
   [1,2].forEach(p=>applyIdentCos(p));
+  // 2v2: each seat's board gets that seat's own playmat (you = your loadout, AI seats = their rolled loadout)
+  [1,2,3,4].forEach(p=>{ const el=document.getElementById('v2-board-'+p); if(!el)return; const on=!!(typeof G!=='undefined'&&G&&G.is2v2);
+    const id=on?cosEquipped('mat',p):null; const bg=id?_cosMatBg(id):null; const it=id?cosItem(id):null;
+    el.classList.toggle('has-mat',!!bg); if(bg){ el.style.setProperty('--mat-bg',bg); el.style.setProperty('--mat-line',(it&&it.accent)?it.accent+'55':'rgba(255,255,255,.08)'); } else { el.style.removeProperty('--mat-bg'); el.style.removeProperty('--mat-line'); } });
 }
 function applyIdentCos(p){
   const av=document.getElementById('p'+p+'-avatar'); const top=av?av.closest('.player-panel-top'):null; const ttl=document.getElementById('p'+p+'-panel-title');
@@ -17771,6 +17787,7 @@ function renderV2HUD(p){
     +`</div>`;
 }
 function renderAll2v2(){
+  if(typeof applyCosmetics==='function'&&G&&G.is2v2&&!G._cosApplied){ G._cosApplied=true; try{ applyCosmetics(); }catch(e){} }
   setTimeout(()=>{ if(typeof fitFields2v2==='function') fitFields2v2(); },0);
   if(!G||!G.is2v2)return;
   recalcPassives();
@@ -17784,7 +17801,7 @@ function renderAll2v2(){
     // Outer-edge library (card back + count) and discard mini
     const dk=document.getElementById('v2-deck-'+p);
     if(dk){
-      const backUrl=(typeof getImg==='function')?getImg('cardback'):null;
+      const backUrl=(typeof cardBackFor==='function')?cardBackFor(p):getImg('cardback');
       dk.innerHTML = (backUrl?`<img src="${backUrl}" alt=""/>`:'') + `<span class="v2-deck-count">${pl.deck.length}</span>`;
       dk.style.opacity = pl.deck.length>0 ? '1' : '.4';
     }
@@ -17810,8 +17827,8 @@ function renderAll2v2(){
 }
 // Enemy team hands shown face-down at the top (count visible, cards hidden).
 function renderV2EnemyHands(){
-  const backUrl=(typeof getImg==='function')?getImg('cardback'):null;
   [2,4].forEach(p=>{
+    const backUrl=(typeof cardBackFor==='function')?cardBackFor(p):getImg('cardback');
     const el=document.getElementById('v2-hand-'+p); if(!el)return; el.innerHTML='';
     const pl=G.players[p]; if(!pl)return;
     const n=pl.hand.length; el.dataset.n=n; const step=Math.min(5,30/Math.max(n,1));
@@ -17837,7 +17854,7 @@ function renderV2HandFor(hp){
   if(hideHand){
     const lblEl=document.querySelector('#v2-handcol-'+hp+' .v2-hand-label');
     if(lblEl)lblEl.textContent=(_V2LBL[hp]||('P'+hp))+' HAND'+(isHumanPlayer(hp)?'':' · AI');
-    const backUrl=(typeof getImg==='function')?getImg('cardback'):null;
+    const backUrl=(typeof cardBackFor==='function')?cardBackFor(hp):getImg('cardback');
     for(let i=0;i<pl.hand.length;i++){
       const d=document.createElement('div'); d.className='v2-hand-back-card';
       if(backUrl){ const img=document.createElement('img'); img.src=backUrl; d.appendChild(img); }
@@ -17901,7 +17918,7 @@ function renderPrizes(p){
   if(!el)return;
   el.innerHTML='';
   const _maxP=G?.prizeCount||6;
-  const backUrl=(typeof getImg==='function')?getImg('cardback'):null;
+  const backUrl=(typeof cardBackFor==='function')?cardBackFor(p):((typeof getImg==='function')?getImg('cardback'):null);
   // Claimable when the local player (claimer=1) is taking a prize FROM this pile (p===victim)
   const canPick = _pendingPrizePick && _pendingPrizePick.claimer===1 && _pendingPrizePick.victim===p;
   const makeCard=(i,claimed)=>{
