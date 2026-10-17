@@ -6505,7 +6505,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 <body>
 
 <!-- AUTH HUD -->
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.0 · decks v2</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.1 · decks v2</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -7537,6 +7537,7 @@ const DEFAULTS={
   rapture_vortex_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/049-150%20(Rapture%20Of%20The%20Vortex).png',
   magnus_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/022-150%20(Magnus%20Base).png',
   magnus_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/024-150%20(Magnus%20SSG).png?v=2',
+  magnus_ssb_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/025-150%20(Magnus%20SSB).png',
   magnus_ssj_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/023-150%20(Magnus%20SSJ).png',
   royal_matcha_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/078-150%20(Royal%20Matcha).png',
   virora_matcha_bse: "https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/079-150%20(Virora's%20Matcha%20Instant).png",
@@ -7723,11 +7724,17 @@ const DB={
   magnus_ssj_bse:{id:'magnus_ssj_bse',rarity:'uncommon',name:'Magnus (SSJ)',color:'blue',charName:'Magnus',charLine:'magnus',formTier:'ssj',subtypes:['Royal','Saiyan'],type:'char',race:'Royal Saiyan',cost:4,atk:4,hp:4,sym:'MAG',transformOnly:true,setId:'base_set',cardNumber:'023/150',nextForms:['ssg'],
     abilities:[{label:'Frost Rune',type:'triggered',cost:0,text:"Once placed onto the field, choose 1 character on your opponent's field. In 2 turns, that card is Frozen."}]},
   // ── MAGNUS (SSG) — BSE god form of Magnus (transform target from base or SSJ). RED. 024/150 Rare.
-  magnus_ssg_bse:{id:'magnus_ssg_bse',rarity:'rare',name:'Magnus (SSG)',color:'red',charName:'Magnus',charLine:'magnus',formTier:'ssg',subtypes:['Saiyan','God'],type:'char',race:'Saiyan God',cost:7,atk:6,hp:9,sym:'MSSG',transformOnly:true,setId:'base_set',cardNumber:'024/150',nextForms:[],
+  magnus_ssg_bse:{id:'magnus_ssg_bse',rarity:'rare',name:'Magnus (SSG)',color:'red',charName:'Magnus',charLine:'magnus',formTier:'ssg',subtypes:['Saiyan','God'],type:'char',race:'Saiyan God',cost:7,atk:6,hp:9,sym:'MSSG',transformOnly:true,setId:'base_set',cardNumber:'024/150',nextForms:['ssb'],
     quote:'Stand with the Court… or be removed from it.',
     abilities:[{label:"King's Right Hand",type:'triggered',cost:0,text:'When another character enters under your control, this card gets +1/+3 until end of your turn. If King Theoden is the entered character Magnus gains +2/+4 until death.'},
       {label:'Court Sight',type:'activated',cost:2,energyColor:'blue',limit:'once_per_turn',text:'Search your deck for a character card, reveal it, and put it into your hand. Shuffle. Cost 2 Blue energy.'},
       {label:'Right Hand Reach',type:'activated',cost:2,limit:'once_per_turn',text:'Search your deck for a Royal Saiyan or Equipment card, reveal it, put it into your hand. Shuffle. Cost: 2 Energy'}]},
+  // ── MAGNUS (SSB) — BSE god-line apex (Base → SSG → SSB). BLUE. 025/150 Mythic.
+  magnus_ssb_bse:{id:'magnus_ssb_bse',rarity:'mythic',name:'Magnus (SSB)',color:'blue',charName:'Magnus',charLine:'magnus',formTier:'ssb',subtypes:['Saiyan','God'],type:'char',race:'Saiyan God',cost:10,atk:7,hp:10,sym:'MSSB',transformOnly:true,setId:'base_set',cardNumber:'025/150',nextForms:[],
+    quote:'The throne does not argue. Neither do I.',
+    abilities:[{label:'God Ki Mandate',type:'passive',cost:0,text:'Characters you control enter with +1/+1 while this card is on the field.'},
+      {label:'Court Sight',type:'activated',cost:2,energyColor:'purple',limit:'once_per_turn',text:'Look at the top 4 cards of your deck. Put one character into your hand. Put the rest on the bottom in any order. Cost: 2 Purple Energy, once per turn.'},
+      {label:'Kinetic Bind',type:'activated',cost:2,limit:'once_per_turn',text:"Target opposing character gets -3 Attack and can't use activated abilities until end of their following turn. Cost: 2 Energy, once per turn."}],transforms:[]},
   // ── RAPTURE OF THE VORTEX — BSE regular character (Titan • Beast). GREEN/PURPLE (endurance + trickery). 049/150 Rare.
   rapture_vortex_bse:{id:'rapture_vortex_bse',rarity:'rare',name:'Rapture of the Vortex',color:'green',colors:['green','purple'],charName:'Rapture of the Vortex',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:7,atk:6,hp:8,sym:'RVORTEX',setId:'base_set',cardNumber:'049/150',nextForms:[],
     abilities:[{label:'Vortex Shield',type:'passive',cost:0,text:'This card cannot have any status effects applied to it.'},{label:'The Reckoning',type:'activated',cost:0,text:'Choose 1 Character on your opponent\'s field. Flip a coin. If heads, that character is now under Confusion.'}],transforms:[]},
@@ -8876,6 +8883,7 @@ function isEquipHexed(tfc,eqId){
 // abilities while the Raven that caged it remains on the field. Same
 // self-cleaning source-on-field pattern as isEquipHexed/isLocationFrozen.
 function isAbilitySealed(fc){
+  if(fc&&fc._kb)return true; // Kinetic Bind (Magnus SSB)
   if(!fc||!fc._soulCage)return false;
   const sourceUid=fc._soulCage.sourceUid;
   for(const pn of [1,2]){
@@ -11804,6 +11812,11 @@ function playCardZoom(cardId, variant){
 
 function onEntry(p,fc){
   const c=DB[fc.cid];if(!c)return;
+  // ── GOD KI MANDATE (Magnus SSB): your characters enter with +1/+1 while it is on the field.
+  if(isChar(c) && G.players[p].field.some(m=>m.uid!==fc.uid && hasAbilityLabel(m,'God Ki Mandate'))){
+    fc.currentATK=(fc.currentATK||0)+1; fc.atkBonus=(fc.atkBonus||0)+1; fc.currentHP=(fc.currentHP||0)+1; fc.hpBonus=(fc.hpBonus||0)+1;
+    log(`God Ki Mandate: ${c.name} enters with +1/+1.`,'gain');
+  }
   // ── KING'S RIGHT HAND (Magnus SSG): another character enters under your control →
   //    +1/+3 until end of your turn; if it's King Theoden → +2/+4 permanently (until death).
   if(isChar(c)){
@@ -13686,6 +13699,39 @@ function activateAbility(fc,abl){
 // ═══════════════════════════════════════════════════
 function runAbilityEffect(fc, abl, pl){
   const label = abl.label;
+  // ── MAGNUS (SSB): Court Sight — look at the top 4, take one character, rest to the bottom.
+  if(label==='Court Sight' && fc.cid==='magnus_ssb_bse'){
+    const ap=G.activePlayer; const P=G.players[ap];
+    const top=(P.deck||[]).slice(0,4);
+    const isCh=(cc)=>cc&&(cc.type==='char'||cc.type==='base_char'||cc.type==='team')&&!cc.isToken;
+    if(!top.length){ log('Court Sight: your deck is empty.','info'); renderAll(); return; }
+    log(`Court Sight: ${pname(ap)} looks at the top ${top.length}: ${top.map(c=>DB[c]?.name||c).join(', ')}.`,'info');
+    const restToBottom=()=>{ const n=Math.min(top.length-(top._took?1:0),P.deck.length); const rest=P.deck.splice(0,n); P.deck.push(...rest); if(rest.length) log(`Court Sight: ${rest.length} card${rest.length===1?'':'s'} go to the bottom.`,'info'); renderAll(); };
+    if(!top.some(c=>isCh(DB[c]))){ log('Court Sight: no character among them.','info'); restToBottom(); return; }
+    const topSet=top.slice();
+    const done=(cid)=>{ top._took=true; const f=newFC(cid); if(f) P.hand.push(f); log(`Court Sight: ${pname(ap)} takes ${DB[cid].name}.`,'gain'); if(ap!==1&&typeof showCardReveal==='function')try{showCardReveal(cid);}catch(e){} restToBottom(); };
+    const filt=(cc)=>cc&&isCh(cc)&&topSet.includes(cc.id);
+    const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(ap) : (ap===1);
+    if(_human||G._aiAuto){ openDeckSearch('Court Sight','Top 4 of your deck — choose ONE character to put into your hand. The rest go to the bottom.',filt,done); }
+    else { const found=P.deck.find(cid=>filt(DB[cid])); const i=P.deck.indexOf(found); if(i>-1)P.deck.splice(i,1); done(found); }
+    return;
+  }
+  // ── MAGNUS (SSB): Kinetic Bind — target enemy -3 ATK and no activated abilities until end of their following turn.
+  if(label==='Kinetic Bind'){
+    const ap=G.activePlayer; const oppNum=ap===1?2:1;
+    const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
+    if(!enemies.length){ log('Kinetic Bind: no opponent characters to target.','dmg'); renderAll(); return; }
+    const bind=(uid)=>{ const t=G.players[oppNum].field.find(f=>f.uid===uid); if(!t){ renderAll(); return; }
+      const cut=Math.min(3,Math.max(0,t.currentATK||0));
+      t.currentATK=(t.currentATK||0)-cut; t.atkBonus=(t.atkBonus||0)-cut;
+      t._kb={atk:cut,until:G.turn+1};
+      log(`Kinetic Bind: ${DB[t.cid].name} gets -3 Attack and is bound — no activated abilities until the end of their next turn.`,'dmg');
+      closeAllModals(); renderAll(); };
+    const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(ap) : (ap===1);
+    if(_human&&!G._aiAuto){ openEnemyTargetPicker(enemies,bind,{sourcePlayer:ap,title:'Kinetic Bind',desc:'Choose an opponent character: -3 Attack and no activated abilities until the end of their following turn.'}); }
+    else { const best=enemies.slice().sort((a,b)=>(b.currentATK||0)-(a.currentATK||0))[0]; bind(best.uid); }
+    return;
+  }
   // ── MAGNUS (SSG): Court Sight / Right Hand Reach — tutor a card to hand, shuffle.
   if(label==='Court Sight'||label==='Right Hand Reach'){
     const ap=G.activePlayer; const P=G.players[ap];
@@ -14528,7 +14574,8 @@ function endTurnFx(p){
     if(f.surfacerAtkDebuff){ f.currentATK=(f.currentATK||0)+f.surfacerAtkDebuff; f.atkBonus=(f.atkBonus||0)+f.surfacerAtkDebuff; f.surfacerAtkDebuff=0; }
     if(f.surfacerHpDebuff){ f.hpBonus=(f.hpBonus||0)+f.surfacerHpDebuff; f.currentHP=(f.currentHP||0)+f.surfacerHpDebuff; f.surfacerHpDebuff=0; }
     if(f.krhAtk||f.krhHp){ f.currentATK=Math.max(0,(f.currentATK||0)-(f.krhAtk||0)); f.atkBonus=(f.atkBonus||0)-(f.krhAtk||0); f.hpBonus=(f.hpBonus||0)-(f.krhHp||0); f.currentHP=Math.max(1,(f.currentHP||0)-(f.krhHp||0)); f.krhAtk=0; f.krhHp=0; } // King's Right Hand +1/+3 ends
-    if(f.ssbAtkBuff){ f.currentATK=(f.currentATK||0)-f.ssbAtkBuff; f.atkBonus=(f.atkBonus||0)-f.ssbAtkBuff; f.ssbAtkBuff=0; } // Etheric Strike +1 ATK was "until end of turn"
+    if(f.ssbAtkBuff){ f.currentATK=(f.currentATK||0)-f.ssbAtkBuff; f.atkBonus=(f.atkBonus||0)-f.ssbAtkBuff; f.ssbAtkBuff=0; }
+    if(f._kb&&G.turn>=f._kb.until){ f.currentATK=(f.currentATK||0)+f._kb.atk; f.atkBonus=(f.atkBonus||0)+f._kb.atk; delete f._kb; log(`Kinetic Bind on ${DB[f.cid]?.name} ends.`,'info'); } // Kinetic Bind (Magnus SSB) expires // Etheric Strike +1 ATK was "until end of turn"
   }); });
   // Snapshot "attacked last turn" for the player whose turn is ending (used by
   // Saiyan Spirit etc.). Only the active player's cards can have attacked, so we
