@@ -6330,11 +6330,182 @@ body.he-shake{ animation:he-shake .45s linear 1; }
   #registry-screen .reg-body{ overflow:visible; }
 }
 </style>
+<style>
+/* ═══════════════════ DECKS REWORK (build 8.0) — My Decks · Deck Builder · Choose Deck ═══════════════════ */
+.dk-wrap{max-width:1500px;margin:0 auto}
+.dk-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.dk-title{font-family:'Cinzel',serif;font-size:24px;font-weight:800;letter-spacing:4px;color:#f0d58a;text-shadow:0 0 18px rgba(232,197,112,.35)}
+.dk-sub{font-size:10px;letter-spacing:2px;color:#6b6b8a;margin-top:4px}
+.dk-search{display:flex;align-items:center;gap:8px;padding:7px 13px;border-radius:20px;border:1px solid #2d2d4e;background:#0a0a1e;width:240px;max-width:100%}
+.dk-search input{background:transparent;border:0;outline:0;color:#e9e4ff;font-family:'Share Tech Mono',monospace;font-size:12px;width:100%}
+.dk-pill{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;padding:6px 12px;border-radius:20px;border:1px solid #2d2d4e;color:#9d93c4;background:rgba(255,255,255,.03);cursor:pointer;white-space:nowrap;transition:all .15s}
+.dk-pill:hover{border-color:#e8c570;color:#f0d58a}
+.dk-pill.on{border-color:#e8c570;color:#f0d58a;background:#2a1f4e}
+.dk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:24px 18px;align-content:start;padding:6px 2px 14px}
+.dk-box{position:relative;aspect-ratio:208/292;border-radius:10px;background:#0d0b22;border:1px solid #2d2d4e;overflow:hidden;box-shadow:0 14px 30px rgba(0,0,0,.55);transition:transform .18s,box-shadow .18s,border-color .18s;cursor:pointer;user-select:none}
+.dk-box:hover{transform:translateY(-4px);border-color:#7c3aed;box-shadow:0 0 0 1px #7c3aed,0 0 22px rgba(124,58,237,.4),0 18px 36px rgba(0,0,0,.6)}
+.dk-box.sel{transform:translateY(-6px);border-color:#e8c570;box-shadow:0 0 0 2px #e8c570,0 0 28px rgba(232,197,112,.5),0 18px 36px rgba(0,0,0,.6)}
+.dk-box .art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 27%;display:block;transform:scale(1.95);transform-origin:50% 27%}
+.dk-box .sym{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:54px;opacity:.5}
+.dk-box .spine{position:absolute;top:0;bottom:0;right:0;width:7%;background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.55));border-left:1px solid rgba(255,255,255,.08)}
+.dk-box .lip{position:absolute;left:0;right:0;top:0;height:10px;background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,0))}
+.dk-box .shade{position:absolute;left:0;right:0;bottom:0;height:42%;background:linear-gradient(180deg,rgba(6,5,26,0),rgba(6,5,26,.92))}
+.dk-box .crest{position:absolute;right:8%;top:4%;width:17%;aspect-ratio:1;border-radius:50%;border:2px solid #e8c570;overflow:hidden;box-shadow:0 0 10px rgba(232,197,112,.5);background:#000}
+.dk-box .crest img{width:100%;height:100%;object-fit:cover;object-position:50% 26%;transform:scale(1.9);transform-origin:50% 26%}
+.dk-box .legal{position:absolute;left:5%;top:4%;font-size:10px;letter-spacing:1px;padding:3px 8px;border-radius:12px;background:rgba(6,5,26,.82);border:1px solid #2d2d4e;color:#9d93c4;font-family:'Share Tech Mono',monospace}
+.dk-box .legal.ok{color:#4ade80;border-color:rgba(74,222,128,.5)}
+.dk-box .legal.warn{color:#f59e0b;border-color:rgba(245,158,11,.6)}
+.dk-box .legal.starter{color:#22c55e;border-color:rgba(34,197,94,.5)}
+.dk-box .fav{position:absolute;left:5%;top:16%;font-size:14px;filter:drop-shadow(0 0 4px #000)}
+.dk-box .pips{position:absolute;left:6%;bottom:21%;display:flex;gap:4px}
+.dk-box .pip{width:13px;height:13px;border-radius:50%;border:1px solid rgba(0,0,0,.6);box-shadow:0 0 6px rgba(0,0,0,.6)}
+.dk-box .plate{position:absolute;left:5%;right:5%;bottom:4%;height:13%;border-radius:40px;background:rgba(10,8,30,.92);border:1px solid #3a2a6a;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 10px}
+.dk-box .plate .nm{font-family:'Cinzel',serif;font-weight:700;font-size:12px;color:#f0d58a;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dk-box .plate .pen{flex:none;font-size:10px;opacity:.65}
+.dk-box .quick{position:absolute;left:0;right:0;top:40%;display:flex;justify-content:center;gap:5px;flex-wrap:wrap;padding:0 6px}
+.dk-box .quick button{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;padding:5px 9px;border-radius:14px;border:1px solid #e8c570;background:rgba(10,8,30,.92);color:#f0d58a;cursor:pointer}
+.dk-box .quick button:hover{background:#2a1f4e}
+.dk-box.new{background:#0b0a24;border:2px dashed #3a2a6a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;box-shadow:none}
+.dk-box.new:hover{border-color:#7c3aed;transform:translateY(-4px)}
+.dk-box.new .plus{width:72px;height:72px;border-radius:50%;border:2px solid #7c3aed;display:flex;align-items:center;justify-content:center;box-shadow:0 0 24px rgba(124,58,237,.5);font-size:40px;color:#c4b5fd;font-weight:700;line-height:1}
+.dk-box.new .t{font-family:'Cinzel',serif;font-size:12px;letter-spacing:3px;color:#c4b5fd;font-weight:700}
+.dk-box.new .s{font-size:9px;letter-spacing:1px;color:#6b6b8a}
+.dk-box.rand{background:#0b0a24;border:2px dashed #3a2a6a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:none;text-align:center;padding:8px}
+.dk-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 0 0;border-top:1px solid #1f1b3a;margin-top:6px}
+.dk-foot .mid{flex:1;font-size:10px;letter-spacing:2px;color:#6b6b8a;text-align:center;min-width:160px}
+.dk-tool{width:40px;height:40px;border-radius:50%;border:1px solid #2d2d4e;background:#120e2a;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:#9d93c4;transition:all .15s}
+.dk-tool:hover{border-color:#e8c570;color:#f0d58a}
+.dk-tool.on{border-color:#e8c570;color:#f0d58a;background:#2a1f4e}
+.dk-btn{font-family:'Cinzel',serif;font-weight:700;letter-spacing:2px;border-radius:10px;border:1px solid #3a2a6a;background:#1a1236;color:#e9e4ff;padding:11px 20px;font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.dk-btn:hover{border-color:#e8c570;color:#fff}
+.dk-btn.gold{background:linear-gradient(180deg,#f0d58a,#c9a24a);border-color:#f7e3a6;color:#1a1030;box-shadow:0 0 16px rgba(232,197,112,.4);font-size:14px;padding:12px 28px}
+.dk-btn.gold:hover{background:linear-gradient(180deg,#f7e3a6,#d6b45c);color:#0a0820}
+.dk-btn.teal{border-color:#00d4ff;color:#00d4ff}
+.dk-btn:disabled{opacity:.4;cursor:not-allowed}
+.dk-empty{grid-column:1/-1;padding:30px;text-align:center;color:#6b6b8a;font-size:12px;letter-spacing:1px}
+
+/* ── builder ── */
+.bld-filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.bld-pips{display:flex;gap:5px;padding:0 10px;border-left:1px solid #2d2d4e;border-right:1px solid #2d2d4e}
+.bld-cpip{width:26px;height:26px;border-radius:50%;border:2px solid #2d2d4e;display:flex;align-items:center;justify-content:center;background:#0a0a1e;cursor:pointer;padding:0;transition:all .15s}
+.bld-cpip i{display:block;width:13px;height:13px;border-radius:50%;opacity:.4}
+.bld-cpip:hover{border-color:#9d93c4}
+.bld-cpip.on{border-color:#e8c570;box-shadow:0 0 10px rgba(232,197,112,.5)}
+.bld-cpip.on i{opacity:1}
+.bld-sel{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;padding:6px 10px;border-radius:20px;border:1px solid #2d2d4e;color:#9d93c4;background:#0a0a1e;cursor:pointer;appearance:none;-webkit-appearance:none}
+.bld-sel.on{border-color:#e8c570;color:#f0d58a;background:#2a1f4e}
+.bld-main{display:flex;gap:16px;align-items:flex-start}
+.bld-left{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px}
+.bld-browser{display:flex;gap:10px;align-items:stretch}
+.bld-arrow{width:34px;flex:none;border-radius:8px;border:1px solid #2d2d4e;background:#0d0b22;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#9d93c4;font-size:18px;transition:all .15s}
+.bld-arrow:hover{border-color:#e8c570;color:#f0d58a}
+.bld-arrow:disabled{opacity:.3;cursor:default}
+.bld-pool{flex:1;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;min-height:200px}
+.bld-card{position:relative;aspect-ratio:5/7;border-radius:9px;overflow:hidden;border:1px solid #2d2d4e;background:#000;box-shadow:0 10px 24px rgba(0,0,0,.55);cursor:pointer;transition:transform .15s,box-shadow .15s}
+.bld-card:hover{transform:translateY(-4px);box-shadow:0 0 0 1px #e8c570,0 0 18px rgba(232,197,112,.4),0 14px 30px rgba(0,0,0,.6)}
+.bld-card.pv{box-shadow:0 0 0 2px #e8c570,0 0 22px rgba(232,197,112,.55)}
+.bld-card img{width:100%;height:100%;object-fit:cover;display:block}
+.bld-card .sym{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:44px;opacity:.5}
+.bld-card .own{position:absolute;left:6px;top:6px;font-size:9px;padding:2px 7px;border-radius:12px;background:rgba(6,5,26,.85);border:1px solid #2d2d4e;color:#9d93c4;letter-spacing:1px;font-family:'Share Tech Mono',monospace}
+.bld-card .indeck{position:absolute;right:6px;top:6px;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;padding:2px 7px;border-radius:12px;background:rgba(42,31,78,.95);border:1px solid #e8c570;color:#f0d58a}
+.bld-card .indeck.zero{border-color:#2d2d4e;color:#6b6b8a;background:rgba(6,5,26,.8)}
+.bld-card .fin{position:absolute;left:6px;bottom:7px;display:flex;gap:3px}
+.bld-card .fin i{display:block;width:9px;height:9px;border-radius:50%;border:1px solid rgba(0,0,0,.6)}
+.bld-card .add{position:absolute;right:6px;bottom:6px;width:28px;height:28px;border-radius:50%;background:#e8c570;color:#1a1030;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;box-shadow:0 0 12px rgba(232,197,112,.6);border:0;cursor:pointer;line-height:1}
+.bld-card .add:hover{background:#f7e3a6}
+.bld-card.max .add{background:#3a3a5c;color:#9d93c4;box-shadow:none}
+.bld-card.max img{opacity:.55}
+.bld-card.holo{border-color:#a855f7;box-shadow:0 0 0 1px rgba(168,85,247,.5),0 0 20px rgba(168,85,247,.45)}
+.bld-pageinfo{text-align:center;font-size:10px;letter-spacing:2px;color:#6b6b8a}
+.bld-bar{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:12px;border:1px solid #3a2a6a;background:linear-gradient(90deg,#120e2a,#0d0b22);flex-wrap:wrap}
+.bld-bar .cover{width:42px;height:58px;border-radius:6px;overflow:hidden;border:1px solid #e8c570;flex:none;box-shadow:0 0 10px rgba(232,197,112,.4);background:#000}
+.bld-bar .cover img{width:100%;height:100%;object-fit:cover;object-position:50% 27%;transform:scale(1.95);transform-origin:50% 27%}
+.bld-bar .lbl{font-size:9px;letter-spacing:2px;color:#6b6b8a;margin-bottom:3px}
+.bld-bar input#deck-name-input{background:transparent !important;border:0 !important;border-bottom:1px solid #3a2a6a !important;outline:0;color:#f0d58a !important;font-family:'Cinzel',serif !important;font-weight:700;font-size:17px !important;padding:2px 0 !important;width:185px;border-radius:0 !important}
+.bld-bar .cnt{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:700;color:#f59e0b;line-height:1}
+.bld-bar .cnt small{color:#6b6b8a;font-size:11px}
+.bld-bar .cnt.ok{color:#4ade80}.bld-bar .cnt.over{color:#ef4444}
+.bld-bar .sep{align-self:stretch;width:1px;background:#2d2d4e}
+.bld-curve{display:flex;align-items:flex-end;gap:3px;height:26px}
+.bld-curve i{display:block;width:9px;background:linear-gradient(180deg,#f0d58a,#7c3aed);border-radius:2px 2px 0 0;min-height:2px;position:relative}
+.bld-curve i::after{content:attr(data-c);position:absolute;top:100%;left:50%;transform:translateX(-50%);font-size:7px;color:#6b6b8a;margin-top:2px}
+.bld-stacks{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;align-items:start;padding-top:4px}
+.bld-col{display:flex;flex-direction:column;min-width:0}
+.bld-col .hd{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:#9d93c4;display:flex;justify-content:space-between;padding:0 4px 6px;border-bottom:1px solid #2d2d4e;margin-bottom:8px}
+.bld-col .hd b{color:#f0d58a}
+.bld-strip{position:relative;height:42px;border-radius:6px;overflow:hidden;border:1px solid #2d2d4e;background:#0d0b22;margin-top:-10px;box-shadow:0 -6px 14px rgba(0,0,0,.5);cursor:pointer;transition:transform .12s}
+.bld-strip:first-of-type{margin-top:0}
+.bld-strip:hover{transform:translateY(-3px);border-color:#e8c570;z-index:2}
+.bld-strip img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 22%;opacity:.85}
+.bld-strip .bar{position:absolute;left:0;right:0;top:0;height:19px;background:linear-gradient(90deg,rgba(6,5,26,.96) 60%,rgba(6,5,26,.15));display:flex;align-items:center;gap:5px;padding:0 5px;font-size:10px}
+.bld-strip .bar .cost{font-family:'Orbitron',sans-serif;font-weight:700;font-size:8px;color:#1a1030;background:#e8c570;border-radius:8px;padding:1px 5px;flex:none}
+.bld-strip .bar .n{color:#e9e4ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bld-strip .x{position:absolute;right:5px;bottom:3px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;color:#f0d58a;text-shadow:0 0 6px #000}
+.bld-strip .ctl{position:absolute;left:4px;bottom:3px;display:none;gap:3px}
+.bld-strip:hover .ctl{display:flex}
+.bld-strip .ctl button{width:18px;height:18px;border-radius:4px;border:0;font-size:12px;cursor:pointer;line-height:1;color:#fff}
+.bld-strip.f-classic{border-color:#7dd3fc;box-shadow:0 0 10px rgba(125,211,252,.45)}
+.bld-strip.f-cosmic{border-color:#a855f7;box-shadow:0 0 10px rgba(168,85,247,.5)}
+.bld-strip.f-gold{border-color:#fbbf24;box-shadow:0 0 10px rgba(251,191,36,.45)}
+.bld-strip.f-reverse{border-color:#60a5fa;box-shadow:0 0 10px rgba(96,165,250,.5)}
+.bld-strip.f-ruby{border-color:#ff2a3c;box-shadow:0 0 10px rgba(255,42,60,.5)}
+.bld-prev{width:290px;flex:none;display:flex;flex-direction:column;gap:9px;padding:12px;border-radius:14px;border:1px solid #3a2a6a;background:#0d0b22;position:sticky;top:66px}
+.bld-prev .big{border-radius:12px;overflow:hidden;border:1px solid #3a2a6a;background:#000;aspect-ratio:5/7;position:relative;cursor:zoom-in}
+.bld-prev .big img{width:100%;height:100%;object-fit:cover;display:block}
+.bld-prev .nm{font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:#f0d58a;letter-spacing:1px}
+.bld-prev .tl{font-size:10px;letter-spacing:2px;color:#9d93c4}
+.bld-prev .st{display:flex;gap:12px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700}
+.bld-prev .ab{padding:7px 9px;border-radius:8px;background:#0a0a1e;border:1px solid #2a2a4a;font-size:10px;line-height:1.45;color:#9d93c4}
+.bld-prev .ab b{display:block;color:#a78bfa;font-size:10px;margin-bottom:2px}
+.bld-prev .ab b em{font-style:normal;color:#6b6b8a;font-size:8px;letter-spacing:1px;margin-left:5px}
+.bld-prev .kv{display:flex;justify-content:space-between;align-items:center;font-size:10px;padding:5px 0;border-bottom:1px dashed #2d2d4e;gap:8px}
+.bld-prev .kv span:last-child{color:#f0d58a;text-align:right}
+.bld-prev .kv select{font-family:'Share Tech Mono',monospace;font-size:10px;background:#1a1236;color:#f0d58a;border:1px solid #3a2a6a;border-radius:6px;padding:3px 6px}
+.bld-prev .empty{padding:30px 10px;text-align:center;color:#6b6b8a;font-size:11px;letter-spacing:1px;line-height:1.6}
+.bld-prev .abs{max-height:150px;overflow:auto;display:flex;flex-direction:column;gap:5px}
+@media (max-width:1180px){ .bld-prev{display:none} .bld-pool{grid-template-columns:repeat(4,minmax(0,1fr))} .bld-stacks{grid-template-columns:repeat(4,minmax(0,1fr))} }
+@media (max-width:760px){
+  .bld-pool{grid-template-columns:repeat(3,minmax(0,1fr))} .bld-stacks{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .bld-bar input#deck-name-input{width:150px} .dk-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:16px 12px}
+  #builder-screen.show-deck .bld-browser,#builder-screen.show-deck .bld-pageinfo{display:none}
+  .bld-bar{gap:8px;padding:8px} .bld-bar .sep,.bld-bar .bld-curve,.bld-bar .lbl{display:none} .bld-bar .cover{width:34px;height:47px}
+  #builder-screen:not(.show-deck) .bld-stacks{display:none}
+}
+
+/* ── choose deck ── */
+.ds2-top{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}
+.ds2-hero{display:flex;gap:16px;width:420px;max-width:100%}
+.ds2-hero .dk-box{width:200px;flex:none;cursor:default}
+.ds2-hero .dk-box:hover{transform:none}
+.ds2-stats{flex:1;display:flex;flex-direction:column;min-width:150px}
+.ds2-stats .kv{display:flex;justify-content:space-between;font-size:11px;padding:6px 0;border-bottom:1px dashed #2d2d4e;gap:8px}
+.ds2-stats .kv span:last-child{color:#f0d58a;text-align:right}
+.ds2-name{font-family:'Cinzel',serif;font-size:19px;font-weight:800;color:#f0d58a;line-height:1.15;margin:2px 0 8px}
+.ds2-right{flex:1;min-width:300px;display:flex;flex-direction:column;gap:14px}
+.ds2-lbl{font-size:9px;letter-spacing:2px;color:#6b6b8a;margin-bottom:6px}
+.ds2-modes{display:flex;gap:10px}
+.ds2-modes .ds-mode-btn{flex:1;padding:12px 10px;border-radius:12px;border:1px solid #2d2d4e;background:#0d0b22;display:flex;flex-direction:column;align-items:center;gap:4px}
+.ds2-modes .ds-mode-btn.selected{border-color:#e8c570;background:#2a1f4e;box-shadow:0 0 16px rgba(232,197,112,.35)}
+.ds2-modes .mt{font-family:'Cinzel',serif;font-weight:700;font-size:12px;color:#f0d58a;letter-spacing:1px}
+.ds2-modes .ms{font-size:9px;color:#9d93c4}
+.ds2-opts{display:flex;gap:30px;flex-wrap:wrap}
+.ds2-opts .ds-opt-btn{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;padding:7px 0;width:48px;text-align:center;border-radius:8px}
+.ds2-opts .ds-opt-btn.selected{border-color:#e8c570;color:#f0d58a;background:#2a1f4e}
+.ds2-opp{padding:12px 14px;border-radius:12px;border:1px solid #2d2d4e;background:#0d0b22;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ds2-opp .av{width:48px;height:48px;border-radius:50%;border:1px solid #3a2a6a;background:#120e2a;display:flex;align-items:center;justify-content:center;font-size:20px;flex:none}
+.ds2-seg{display:flex;border:1px solid #2d2d4e;border-radius:20px;overflow:hidden}
+.ds2-seg button{padding:6px 14px;font-size:10px;letter-spacing:2px;color:#9d93c4;background:transparent;border:0;cursor:pointer;font-family:'Share Tech Mono',monospace}
+.ds2-seg button.on{background:#2a1f4e;color:#f0d58a}
+.ds2-shelf{display:flex;gap:12px;overflow-x:auto;padding:8px 2px 12px;scrollbar-width:thin}
+.ds2-shelf .dk-box{width:146px;flex:none}
+.ds2-go{display:flex;justify-content:flex-end;align-items:center;gap:14px;flex-wrap:wrap}
+@media (max-width:760px){ .ds2-hero{width:100%} .ds2-hero .dk-box{width:150px} }
+</style>
 </head>
 <body>
 
 <!-- AUTH HUD -->
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 7.9 · menu v2</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.0 · decks v2</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -6536,189 +6707,159 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 </div>
 
 <!-- DECK SELECT -->
-<div id="deck-select-screen" class="screen" style="padding:62px 32px 24px;max-width:1280px;margin:0 auto">
-
-  <!-- HEADER -->
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
-    <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
-    <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:var(--blue);text-shadow:0 0 10px var(--blue)" id="deck-select-title">CHOOSE DECKS</div>
-    <div id="deck-select-status" style="font-size:10px;color:#6b7280;margin-left:auto;letter-spacing:1px">Select a deck for each player</div>
-  </div>
-
-  <!-- TWO PLAYER DECK PICKERS -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
-
-    <!-- P1 -->
-    <div style="background:rgba(30,27,75,.35);border:1px solid rgba(99,102,241,.25);border-radius:12px;padding:16px">
-      <div style="font-size:10px;font-weight:700;color:#a5b4fc;letter-spacing:3px;margin-bottom:14px;display:flex;align-items:center;gap:6px">
-        <span style="width:9px;height:9px;border-radius:50%;background:#6366f1;display:inline-block;box-shadow:0 0 6px #6366f1"></span>
-        PLAYER 1
-      </div>
-      <!-- Chosen deck display -->
-      <div id="p1-chosen-display" style="background:rgba(8,8,28,.6);border:1px dashed rgba(99,102,241,.3);border-radius:8px;padding:14px;text-align:center;margin-bottom:10px;min-height:72px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px">
-        <div style="font-size:22px">🃏</div>
-        <div style="font-size:11px;color:#4b5563;letter-spacing:1px">No deck selected</div>
-      </div>
-      <button class="ds-pick-btn" onclick="openDeckPicker(1)">⊕ Choose Deck</button>
-      <button class="ds-pick-btn ds-pick-random" onclick="selectDeck(1,'__random__')" style="margin-top:6px">🎲 Random</button>
+<!-- ═══ MY DECKS (build 8.0) ═══ -->
+<div id="decks-screen" class="screen" style="padding:62px 28px 20px">
+  <div class="dk-wrap">
+    <div class="dk-head">
+      <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
+      <div><div class="dk-title">MY DECKS</div><div class="dk-sub" id="md-sub">—</div></div>
+      <div style="flex:1"></div>
+      <label class="dk-search" for="md-search">🔍 <input id="md-search" placeholder="Search decks…" oninput="_md.q=this.value.toLowerCase();renderMyDecks()"></label>
+      <span class="dk-pill on" data-sort="recent" onclick="mdSort('recent')">RECENT</span>
+      <span class="dk-pill" data-sort="name" onclick="mdSort('name')">NAME</span>
+      <span class="dk-pill" data-sort="herald" onclick="mdSort('herald')">HERALD</span>
+      <span class="dk-pill" id="md-legal" onclick="_md.legal=!_md.legal;renderMyDecks()">LEGAL ONLY</span>
     </div>
-
-    <!-- P2 -->
-    <div style="background:rgba(20,83,45,.2);border:1px solid rgba(34,197,94,.2);border-radius:12px;padding:16px">
-      <div style="font-size:10px;font-weight:700;color:#86efac;letter-spacing:3px;margin-bottom:14px;display:flex;align-items:center;gap:6px" id="p2-deck-label">
-        <span style="width:9px;height:9px;border-radius:50%;background:#22c55e;display:inline-block;box-shadow:0 0 6px #22c55e"></span>
-        PLAYER 2
-      </div>
-      <!-- Chosen deck display -->
-      <div id="p2-chosen-display" style="background:rgba(8,8,28,.6);border:1px dashed rgba(34,197,94,.2);border-radius:8px;padding:14px;text-align:center;margin-bottom:10px;min-height:72px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px">
-        <div style="font-size:22px">🃏</div>
-        <div style="font-size:11px;color:#4b5563;letter-spacing:1px">No deck selected</div>
-      </div>
-      <button class="ds-pick-btn ds-pick-p2" onclick="openDeckPicker(2)">⊕ Choose Deck</button>
-      <button class="ds-pick-btn ds-pick-random ds-pick-p2" onclick="selectDeck(2,'__random__')" style="margin-top:6px">🎲 Random</button>
-    </div>
-
-  </div>
-
-  <!-- GAME MODE -->
-  <div style="background:rgba(8,8,28,.6);border:1px solid var(--border-v);border-radius:12px;padding:16px;margin-bottom:16px">
-    <div style="font-size:10px;font-weight:700;color:var(--violet2);letter-spacing:3px;margin-bottom:12px">⚡ GAME MODE</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
-      <button class="ds-mode-btn selected" id="mode-prize" onclick="selectGameMode('prize')">
-        <div style="font-size:20px;margin-bottom:4px">🏆</div>
-        <div style="font-size:11px;font-weight:700;color:#c4b5fd">Prize Mode</div>
-        <div style="font-size:9px;color:#4b5563;margin-top:2px">Claim all prizes to win</div>
-      </button>
-      <button class="ds-mode-btn" id="mode-lifeforce" onclick="selectGameMode('lifeforce')">
-        <div style="font-size:20px;margin-bottom:4px">❤️</div>
-        <div style="font-size:11px;font-weight:700;color:#c4b5fd">Life Force</div>
-        <div style="font-size:9px;color:#4b5563;margin-top:2px">Reduce HP to 0</div>
-      </button>
-      <button class="ds-mode-btn" id="mode-combined" onclick="selectGameMode('combined')">
-        <div style="font-size:20px;margin-bottom:4px">⚔️</div>
-        <div style="font-size:11px;font-weight:700;color:#c4b5fd">Combined</div>
-        <div style="font-size:9px;color:#4b5563;margin-top:2px">Prizes or HP wins</div>
-      </button>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <div id="lf-hp-wrap" style="display:none">
-        <div style="font-size:9px;color:#fca5a5;margin-bottom:6px;letter-spacing:2px">LIFE FORCE HP</div>
-        <div style="display:flex;gap:5px;flex-wrap:wrap">
-          <button class="ds-opt-btn selected" onclick="selectLFHP(100)" data-hp="100">100</button>
-          <button class="ds-opt-btn" onclick="selectLFHP(125)" data-hp="125">125</button>
-          <button class="ds-opt-btn" onclick="selectLFHP(150)" data-hp="150">150</button>
-          <button class="ds-opt-btn" onclick="selectLFHP(175)" data-hp="175">175</button>
-          <button class="ds-opt-btn" onclick="selectLFHP(200)" data-hp="200">200</button>
-        </div>
-      </div>
-      <div id="prize-count-wrap">
-        <div style="font-size:9px;color:#fbbf24;margin-bottom:6px;letter-spacing:2px">PRIZE COUNT</div>
-        <div style="display:flex;gap:5px;flex-wrap:wrap">
-          <button class="ds-opt-btn selected" onclick="selectPrizeCount(6)" data-pc="6">6</button>
-          <button class="ds-opt-btn" onclick="selectPrizeCount(7)" data-pc="7">7</button>
-          <button class="ds-opt-btn" onclick="selectPrizeCount(8)" data-pc="8">8</button>
-          <button class="ds-opt-btn" onclick="selectPrizeCount(9)" data-pc="9">9</button>
-          <button class="ds-opt-btn" onclick="selectPrizeCount(10)" data-pc="10">10</button>
-        </div>
-      </div>
+    <div class="dk-grid" id="md-grid"></div>
+    <div class="dk-foot">
+      <button class="dk-btn" onclick="openRegistry()">◫ &nbsp;REGISTRY</button>
+      <button class="dk-tool" title="Import deck code" onclick="mdImport()">⇩</button>
+      <button class="dk-tool" title="Export deck code" onclick="mdExport()">⇧</button>
+      <button class="dk-tool" id="md-fav-btn" title="Favourite" onclick="mdFav()">♥</button>
+      <button class="dk-tool" title="Duplicate" onclick="mdDuplicate()">⧉</button>
+      <button class="dk-tool" title="Rename" onclick="mdRename()">✎</button>
+      <button class="dk-tool" title="Delete" onclick="mdDelete()">🗑</button>
+      <div class="mid" id="md-selinfo">SELECT A DECK</div>
+      <button class="dk-btn" onclick="mdPlay()">▶ &nbsp;PLAY THIS DECK</button>
+      <button class="dk-btn gold" onclick="mdEdit()">EDIT DECK</button>
     </div>
   </div>
-
-  <!-- START -->
-  <button class="btn-primary" id="start-game-btn" onclick="launchGame()"
-    style="width:100%;padding:14px;font-size:14px;font-family:'Orbitron',sans-serif;letter-spacing:4px;font-weight:700" disabled>
-    ▶ START GAME
-  </button>
-
 </div>
 
-<!-- DECK PICKER MODAL -->
+<!-- ═══ CHOOSE DECK (pre-match, build 8.0) ═══ -->
+<div id="deck-select-screen" class="screen" style="padding:62px 28px 20px">
+  <div class="dk-wrap">
+    <div class="dk-head">
+      <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
+      <div><div class="dk-title" id="deck-select-title">CHOOSE YOUR DECK</div><div class="dk-sub" id="deck-select-status">Select a deck</div></div>
+      <div style="flex:1"></div>
+      <div class="ds2-seg" id="ds2-who" style="display:none">
+        <button class="on" id="ds2-who-1" onclick="ds2Who(1)">PLAYER 1</button>
+        <button id="ds2-who-2" onclick="ds2Who(2)">PLAYER 2</button>
+      </div>
+    </div>
+    <div class="ds2-top">
+      <div class="ds2-hero">
+        <div id="ds2-hero-box"></div>
+        <div class="ds2-stats" id="ds2-hero-stats"></div>
+      </div>
+      <div class="ds2-right">
+        <div>
+          <div class="ds2-lbl">⚡ GAME MODE</div>
+          <div class="ds2-modes">
+            <button class="ds-mode-btn selected" id="mode-prize" onclick="selectGameMode('prize')"><div style="font-size:20px">🏆</div><div class="mt">PRIZE MODE</div><div class="ms">Claim all prizes to win</div></button>
+            <button class="ds-mode-btn" id="mode-lifeforce" onclick="selectGameMode('lifeforce')"><div style="font-size:20px">❤️</div><div class="mt">LIFE FORCE</div><div class="ms">Reduce HP to 0</div></button>
+            <button class="ds-mode-btn" id="mode-combined" onclick="selectGameMode('combined')"><div style="font-size:20px">⚔️</div><div class="mt">COMBINED</div><div class="ms">Prizes or HP wins</div></button>
+          </div>
+        </div>
+        <div class="ds2-opts">
+          <div id="prize-count-wrap"><div class="ds2-lbl">PRIZE COUNT</div><div style="display:flex;gap:6px">
+            <button class="ds-opt-btn selected" onclick="selectPrizeCount(6)" data-pc="6">6</button><button class="ds-opt-btn" onclick="selectPrizeCount(7)" data-pc="7">7</button><button class="ds-opt-btn" onclick="selectPrizeCount(8)" data-pc="8">8</button><button class="ds-opt-btn" onclick="selectPrizeCount(9)" data-pc="9">9</button><button class="ds-opt-btn" onclick="selectPrizeCount(10)" data-pc="10">10</button></div></div>
+          <div id="lf-hp-wrap"><div class="ds2-lbl">LIFE FORCE HP</div><div style="display:flex;gap:6px">
+            <button class="ds-opt-btn selected" onclick="selectLFHP(100)" data-hp="100">100</button><button class="ds-opt-btn" onclick="selectLFHP(125)" data-hp="125">125</button><button class="ds-opt-btn" onclick="selectLFHP(150)" data-hp="150">150</button><button class="ds-opt-btn" onclick="selectLFHP(175)" data-hp="175">175</button><button class="ds-opt-btn" onclick="selectLFHP(200)" data-hp="200">200</button></div></div>
+        </div>
+        <div class="ds2-opp">
+          <div class="av" id="ds2-opp-av">🤖</div>
+          <div style="flex:1;min-width:160px"><div class="ds2-lbl" style="margin-bottom:2px" id="p2-deck-label">OPPONENT</div><div id="p2-chosen-display" style="font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:#e9e4ff">AI · random deck</div></div>
+          <button class="ds-pick-btn" style="width:auto;padding:8px 14px" onclick="openDeckPicker(2)">⊕ Pick deck</button>
+          <button class="ds-pick-btn" style="width:auto;padding:8px 14px" onclick="selectDeck(2,'__random__')">🎲 Random</button>
+        </div>
+        <div class="ds2-go">
+          <div style="font-size:10px;letter-spacing:2px;color:#6b6b8a">COIN TOSS DECIDES WHO OPENS</div>
+          <button class="dk-btn gold" id="start-game-btn" onclick="launchGame()" disabled>▶ &nbsp;START MATCH</button>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:14px">
+      <div class="ds2-lbl" style="display:flex;justify-content:space-between"><span id="ds2-shelf-lbl">YOUR DECKS · PICK ONE</span><span>‹ SCROLL ›</span></div>
+      <div class="ds2-shelf" id="ds2-shelf"></div>
+    </div>
+    <div id="p1-chosen-display" style="display:none"></div>
+  </div>
+</div>
 <div class="modal-overlay" id="deck-picker-modal" onclick="if(event.target===this)document.getElementById('deck-picker-modal').classList.remove('open')">
-  <div class="modal" style="max-width:440px;padding:20px">
-    <div style="font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;color:var(--blue);margin-bottom:4px" id="deck-picker-title">SELECT DECK</div>
-    <div style="font-size:10px;color:#4b5563;margin-bottom:14px" id="deck-picker-sub">Choose a deck for this player</div>
-    <div id="deck-picker-list" style="display:flex;flex-direction:column;gap:6px;max-height:360px;overflow-y:auto;margin-bottom:14px"></div>
-    <button class="btn-gray btn-sm" style="width:100%" onclick="document.getElementById('deck-picker-modal').classList.remove('open')">Cancel</button>
+  <div class="modal" style="max-width:520px">
+    <div style="font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:#e8c570;letter-spacing:2px;margin-bottom:4px" id="deck-picker-title">SELECT DECK</div>
+    <div style="font-size:11px;color:#9ca3af;margin-bottom:12px" id="deck-picker-sub">Choose a deck for this player</div>
+    <div id="deck-picker-list" style="display:flex;flex-direction:column;gap:6px;max-height:60vh;overflow:auto"></div>
+    <button class="btn-gray btn-sm" style="margin-top:12px;width:100%" onclick="document.getElementById('deck-picker-modal').classList.remove('open')">Cancel</button>
   </div>
 </div>
 
-<!-- DECK BUILDER -->
-<div id="builder-screen" class="screen">
-  <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
-    <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Menu</button>
-    <h2 style="color:#c8a0ff;flex:1">🃏 Deck Builder</h2>
-    <button class="btn-primary btn-sm" onclick="openDeckManager()">📂 My Decks</button>
-  </div>
-  <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap">
-    <input id="deck-name-input" placeholder="Deck name..." style="flex:1;background:#111126;color:#e2e8f0;border:1px solid #3a3a5c;border-radius:6px;padding:6px 10px;font-size:12px;min-width:110px"/>
-    <button class="btn-teal btn-sm" onclick="saveDeck()">💾 Save</button>
-    <button class="btn-gray btn-sm" onclick="clearBuilder()">🗑 Clear</button>
-  </div>
-  <div id="builder-toolbar" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px;flex-wrap:wrap">
-    <span style="font-size:12px;color:#9ca3af">Cards: <span id="deck-count-display" style="color:#c8a0ff;font-weight:700">0</span>/60</span>
-    <div id="builder-filters" style="display:flex;gap:5px;flex-wrap:wrap">
-      <input id="builder-search" type="text" placeholder="🔍 Search..." oninput="renderBuilderCards()" style="background:#111126;color:#e2e8f0;border:1px solid #3a3a5c;border-radius:6px;padding:3px 7px;font-size:11px;width:90px"/>
-      <select id="builder-filter" onchange="renderBuilderCards()" style="background:#111126;color:#e2e8f0;border:1px solid #3a3a5c;border-radius:6px;padding:3px 7px;font-size:11px">
-        <option value="all">All Types</option>
-        <option value="herald">👑 Heralds</option>
-        <option value="energy_card">⚡ Energy</option>
-        <option value="base_char">Base Chars</option>
-        <option value="char">Characters</option>
-        <option value="transform">🔄 Transformations</option>
-        <option value="team">Team</option>
-        <option value="location">Locations</option>
-        <option value="equipment">Equipment</option>
-        <option value="instant">Instants</option>
-        <option value="token">Tokens</option>
-      </select>
-      <select id="builder-color-filter" onchange="renderBuilderCards()" style="background:#111126;color:#e2e8f0;border:1px solid #3a3a5c;border-radius:6px;padding:3px 7px;font-size:11px">
-        <option value="all">🎨 Color</option>
-        <option value="red">🔴 Red</option>
-        <option value="blue">🔵 Blue</option>
-        <option value="purple">🟣 Purple</option>
-        <option value="black">⚫ Black</option>
-        <option value="yellow">🟡 Yellow</option>
-        <option value="green">🟢 Green</option>
-        <option value="white">⚪ White</option>
-      </select>
-      <select id="builder-rarity-filter" onchange="renderBuilderCards()" style="background:#111126;color:#e2e8f0;border:1px solid #3a3a5c;border-radius:6px;padding:3px 7px;font-size:11px">
-        <option value="all">⭐ Rarity</option>
-        <option value="common">⚪ Common</option>
-        <option value="uncommon">🟢 Uncommon</option>
-        <option value="rare">🔵 Rare</option>
-        <option value="legend">🟣 Legend</option>
-        <option value="mythic">🟡 Mythic</option>
-        <option value="secret">🔴 Secret Rare</option>
-      </select>
-      <select id="builder-holo-filter" onchange="renderBuilderCards()" style="background:#111126;color:#e2e8f0;border:1px solid #3a3a5c;border-radius:6px;padding:3px 7px;font-size:11px">
-        <option value="all">✨ All Holos</option>
-        <option value="any">✨ Any Holo</option>
-        <option value="classic">🌈 Classic</option>
-        <option value="cosmic">✨ Cosmic</option>
-        <option value="gold">👑 Gold</option>
-        <option value="reverse">💎 Reverse</option>
-        <option value="ruby">❤️‍🔥 Ruby</option>
-        <option value="normal">Normal Only</option>
-      </select>
+<!-- ═══ DECK BUILDER (build 8.0) ═══ -->
+<div id="builder-screen" class="screen" style="padding:62px 22px 20px">
+  <div class="dk-wrap" style="max-width:1600px">
+    <div class="dk-head" style="margin-bottom:8px">
+      <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Menu</button>
+      <button class="btn-gray btn-sm" onclick="openMyDecks()">📂 My Decks</button>
+      <div class="dk-title" style="font-size:20px">DECK BUILDER</div>
+      <div style="flex:1"></div>
+      <span id="deck-save-status" style="font-size:10px;letter-spacing:1px"></span>
     </div>
-  </div>
-  <div class="builder-phone-tabs" id="builder-phone-tabs">
-    <button class="bpt on" onclick="builderPhoneTab('pool')">🃏 Card Pool</button>
-    <button class="bpt" onclick="builderPhoneTab('deck')">📋 Your Deck (<span id="deck-count-display-m">0</span>)</button>
-  </div>
-  <div id="builder-columns" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-    <div class="builder-col builder-col-pool">
-      <div style="font-size:10px;color:#6b7280;margin-bottom:5px">Card Pool</div>
-      <div id="builder-card-pool" style="max-height:52vh;overflow-y:auto"></div>
+    <!-- hidden state holders (kept so older code paths keep working) -->
+    <div style="display:none">
+      <select id="builder-filter" onchange="renderBuilderCards()"><option value="all">All</option><option value="herald">Heralds</option><option value="energy_card">Energy</option><option value="base_char">Base</option><option value="char">Characters</option><option value="transform">Transformations</option><option value="team">Team</option><option value="location">Locations</option><option value="equipment">Equipment</option><option value="instant">Instants</option></select>
+      <select id="builder-color-filter"><option value="all">all</option></select>
+      <span id="deck-count-display">0</span><span id="deck-count-display-m">0</span>
+      <div id="builder-columns"></div><div id="builder-card-pool"></div>
     </div>
-    <div class="builder-col builder-col-deck">
-      <div style="font-size:10px;color:#6b7280;margin-bottom:5px">Your Deck</div>
-      <div id="builder-deck-list" style="max-height:52vh;overflow-y:auto"></div>
+    <div class="bld-filters" id="bld-filters">
+      <label class="dk-search" for="builder-search" style="width:200px">🔍 <input id="builder-search" placeholder="Search…" oninput="_bPage=0;renderBuilderCards()"></label>
+      <div class="bld-pips" id="bld-pips"></div>
+      <div id="bld-types" style="display:flex;gap:5px;flex-wrap:wrap"></div>
+      <div style="flex:1"></div>
+      <select id="builder-set-filter" class="bld-sel" onchange="_bPage=0;renderBuilderCards()"><option value="all">SET · ALL</option></select>
+      <select id="builder-rarity-filter" class="bld-sel" onchange="_bPage=0;renderBuilderCards()">
+        <option value="all">RARITY · ALL</option><option value="common">COMMON</option><option value="uncommon">UNCOMMON</option><option value="rare">RARE</option><option value="legend">LEGEND</option><option value="mythic">MYTHIC</option><option value="secret">SECRET RARE</option></select>
+      <select id="builder-holo-filter" class="bld-sel" onchange="_bPage=0;renderBuilderCards()">
+        <option value="all">✨ HOLO · ALL</option><option value="any">ANY HOLO</option><option value="classic">CLASSIC</option><option value="cosmic">COSMIC</option><option value="gold">GOLD</option><option value="reverse">REVERSE</option><option value="ruby">RUBY</option><option value="normal">NORMAL ONLY</option></select>
+      <select id="builder-sort" class="bld-sel" onchange="_bPage=0;renderBuilderCards()">
+        <option value="set">SORT · SET › COST</option><option value="cost">SORT · COST</option><option value="name">SORT · NAME</option><option value="rarity">SORT · RARITY</option><option value="atk">SORT · ATTACK</option><option value="owned">SORT · OWNED</option></select>
+    </div>
+    <div class="builder-phone-tabs" id="builder-phone-tabs">
+      <button class="bpt on" onclick="builderPhoneTab('pool')">🃏 Card Pool</button>
+      <button class="bpt" onclick="builderPhoneTab('deck')">📋 Your Deck (<span id="deck-count-display-p">0</span>)</button>
+    </div>
+    <div class="bld-main">
+      <div class="bld-left">
+        <div class="bld-browser">
+          <button class="bld-arrow" id="bld-prev" onclick="bldPage(-1)">‹</button>
+          <div class="bld-pool" id="bld-pool"></div>
+          <button class="bld-arrow" id="bld-next" onclick="bldPage(1)">›</button>
+        </div>
+        <div class="bld-pageinfo" id="bld-pageinfo"></div>
+        <div class="bld-bar">
+          <div class="cover" id="bld-cover" title="Deck cover — pick a card and press ★ SET AS COVER"></div>
+          <div><div class="lbl">DECK NAME</div><input id="deck-name-input" placeholder="Name your deck…"></div>
+          <div class="sep"></div>
+          <div style="text-align:center"><div class="cnt" id="bld-cnt">0<small>/60</small></div><div class="lbl" id="bld-cnt-sub" style="margin:3px 0 0">EMPTY</div></div>
+          <div class="sep"></div>
+          <div><div class="lbl">COST CURVE</div><div class="bld-curve" id="bld-curve"></div></div>
+          <div><div class="lbl">COLOURS</div><div style="display:flex;gap:4px" id="bld-colors"></div></div>
+          <div><div class="lbl">HERALD</div><div style="font-size:11px;color:#e9e4ff" id="bld-herald">—</div></div>
+          <div style="flex:1"></div>
+          <button class="dk-btn" onclick="if(confirm('Clear the whole deck?'))clearBuilder()" title="Clear deck" style="padding:11px 12px">🗑</button>
+          <button class="dk-btn" onclick="bldExportCurrent()" title="Copy deck code" style="padding:11px 12px">⇧</button>
+          <button class="dk-btn teal" onclick="saveDeck()">💾 SAVE</button>
+          <button class="dk-btn gold" onclick="saveDeck(true)">DONE</button>
+        </div>
+        <div class="bld-stacks" id="builder-deck-list"></div>
+      </div>
+      <div class="bld-prev" id="bld-preview"><div class="empty">CLICK A CARD<br>TO PREVIEW IT HERE</div></div>
     </div>
   </div>
 </div>
 
-<!-- 2v2 SETUP / LOBBY SCREEN -->
 <div id="setup-2v2-screen" class="screen" style="padding:58px 28px 24px;max-width:1080px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
     <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">‹ Back</button>
@@ -16117,7 +16258,7 @@ function registrySelect(cid,quiet){
 const MENU_ART={};
 const MENU_FALLBACK_CARD={ campaign:'darkseid_herald', match:'kratos_promo', ai:'deerhaunter_promo', room:'lady_loki_promo', team:'magnus_virora', pvp:'ivan_wca_promo',
   packs:'destroyers_gift', singles:'aquatic_hearth', cosmetics:'back', events:'volaris_prism',
-  builder:'magnus_base_bse', loadout:'back', herald:'peleus_herald', images:'volaris_prism',
+  mydecks:'surfacer_herald', builder:'magnus_base_bse', loadout:'back', herald:'peleus_herald', images:'volaris_prism',
   registry:'virora_base_bse', rulebook:'nature_focus', pass:'virora_ssg', profile:'virora', friends:'najeela_ssg_bse', trade:'void_crystal_bse',
   tutorial:'billy_ssj1_bse', settings:'eklif_frost_bse', rules:'raven_promo', credits:'wca_overdrive_belt_promo', menuart:'volaris_prism' };
 const MENU_TABS=[
@@ -16136,6 +16277,7 @@ const MENU_TABS=[
   {id:'events',t:'Events',s:'LIMITED TIME',d:'Seasonal packs and exclusive rewards.',go:()=>{showScreen('shop-screen');openShop();switchShopTab('events');}},
  ]},
  {id:'locker',label:'LOCKER',icon:'🎒',plate:'LOCKER',sub:'DECKS & LOADOUT',items:[
+  {id:'mydecks',t:'My Decks',s:'DECK BOXES',d:'Browse, play, copy and share your decks. Double-click a deck to edit it.',go:()=>openMyDecks()},
   {id:'builder',t:'Deck Builder',s:'BUILD · EDIT',d:'Build 60-card decks from your collection.',go:()=>{showScreen('builder-screen');renderBuilderCards();}},
   {id:'loadout',t:'Loadout',s:'EQUIPPED COSMETICS',d:'Choose your card back, playmat, frame, title and entrance.',go:()=>{_cosOwnedOnly=true;showScreen('shop-screen');openShop();switchShopTab('cos');}},
   {id:'herald',t:'Herald',s:'CHOOSE YOUR HERALD',d:'The Herald shown on your plinth. Tap it on the right to cycle through the Heralds you own.',go:()=>mmCycleHerald()},
@@ -25880,6 +26022,453 @@ window.addEventListener('load',async()=>{
   </button>
   <div class="cutscene-hint" id="cutscene-hint" style="display:none">Press SPACE or click SKIP to continue</div>
 </div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+// DECKS REWORK (build 8.0) — My Decks grid · Arena-style Deck Builder · Choose Deck
+// Overrides the older builder/deck-select renderers; data model (SAVED_DECKS, builderDeck,
+// per-copy finishes, collection counts, PRESET_DECKS) is unchanged. New per-deck fields:
+// cover (cid shown on the deck box; defaults to the Herald), fav (bool).
+// ═══════════════════════════════════════════════════════════════════════
+const DK_TYPE_ORDER=['herald','energy_card','base_char','char','team','location','equipment','instant'];
+const DK_TYPE_LABEL={herald:'HERALD',energy_card:'ENERGY',base_char:'BASE CHARS',char:'CHARACTERS',team:'TEAM',location:'LOCATIONS',equipment:'EQUIPMENT',instant:'INSTANTS'};
+const DK_TYPE_CHIPS=[['all','ALL'],['herald','👑 HERALDS'],['base_char','BASE'],['char','CHARACTERS'],['transform','TRANSFORMS'],['team','TEAM'],['location','LOCATIONS'],['equipment','EQUIPMENT'],['instant','INSTANTS'],['energy_card','⚡ ENERGY']];
+function dkEsc(s){ return String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function dkHeraldCid(cards){ return (cards||[]).find(cid=>DB[cid]&&DB[cid].type==='herald')||null; }
+function dkCoverCid(deck){
+  if(!deck) return null;
+  if(deck.cover&&DB[deck.cover]&&(deck.cards||[]).includes(deck.cover)) return deck.cover;
+  return dkHeraldCid(deck.cards)||(deck.cards&&deck.cards[0])||null;
+}
+function dkColors(cards){ const s=[]; (cards||[]).forEach(cid=>{ (typeof cardColors==='function'?cardColors(cid):[DB[cid]?.color]).forEach(c=>{ if(c&&!s.includes(c)) s.push(c); }); }); return s; }
+function dkLegal(deck){
+  const n=(deck&&deck.cards||[]).length;
+  if(deck&&deck.preset) return {cls:'starter',txt:'STARTER · 60'};
+  if(n===60) return {cls:'ok',txt:'60/60 ✓'};
+  if(n>60) return {cls:'warn',txt:n+'/60 ✖'};
+  return {cls:'warn',txt:n+'/60 ⚠'};
+}
+function dkImgOrSym(cid,cls){ const u=getImg(cid); return u?`<img class="${cls}" src="${u}" alt="" loading="lazy">`:`<div class="sym">${DB[cid]?.sym||'🃏'}</div>`; }
+// One deck box. opts: {sel, quick:[{t,fn}], onclick, dbl, small}
+function dkBoxHtml(id,deck,opts){
+  opts=opts||{};
+  const cover=dkCoverCid(deck), herald=dkHeraldCid(deck.cards), legal=dkLegal(deck);
+  const pips=dkColors(deck.cards).slice(0,5).map(c=>`<span class="pip" style="background:${COLOR_DEFS[c]?.hex||'#6b7280'}"></span>`).join('');
+  const quick=(opts.sel&&opts.quick&&opts.quick.length)?`<div class="quick">${opts.quick.map((q,i)=>`<button onclick="event.stopPropagation();${q.fn}">${q.t}</button>`).join('')}</div>`:'';
+  return `<div class="dk-box${opts.sel?' sel':''}" data-id="${dkEsc(id)}" ${opts.onclick?`onclick="${opts.onclick}"`:''} ${opts.dbl?`ondblclick="${opts.dbl}"`:''} title="${dkEsc(deck.name)}">
+    ${cover?dkImgOrSym(cover,'art'):'<div class="sym">🃏</div>'}
+    <div class="lip"></div><div class="spine"></div><div class="shade"></div>
+    <div class="legal ${legal.cls}">${legal.txt}</div>
+    ${deck.fav?'<div class="fav">♥</div>':''}
+    ${herald&&getImg(herald)?`<div class="crest" title="${dkEsc(DB[herald].name)}"><img src="${getImg(herald)}" alt=""></div>`:''}
+    ${quick}
+    <div class="pips">${pips}</div>
+    <div class="plate"><div class="nm">${dkEsc(deck.name)}</div>${deck.preset?'':'<span class="pen">✎</span>'}</div>
+  </div>`;
+}
+// All decks the player can see: saved (editable) + starter presets (read-only).
+function dkAllDecks(){
+  const out=[];
+  Object.entries(SAVED_DECKS).forEach(([id,d])=>{ if(d&&Array.isArray(d.cards)) out.push({id,deck:d}); });
+  if(typeof PRESET_DECKS!=='undefined') Object.entries(PRESET_DECKS).forEach(([id,d])=>{ if(d&&Array.isArray(d.cards)) out.push({id,deck:d}); });
+  return out;
+}
+// ── deck codes (share / import) ──
+function deckCodeEncode(deck){
+  const o={n:deck.name,c:deck.cards||[],f:(deck.foils||[]).some(v=>v&&v!=='none')?deck.foils:undefined,v:deck.cover||undefined};
+  const s=unescape(encodeURIComponent(JSON.stringify(o)));
+  return 'LOC1.'+btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function deckCodeDecode(code){
+  try{
+    code=String(code||'').trim(); if(!code.startsWith('LOC1.')) return null;
+    let b=code.slice(5).replace(/-/g,'+').replace(/_/g,'/'); while(b.length%4)b+='=';
+    const o=JSON.parse(decodeURIComponent(escape(atob(b))));
+    if(!o||!Array.isArray(o.c)) return null;
+    const cards=o.c.filter(cid=>DB[cid]);
+    const foils=Array.isArray(o.f)&&o.f.length===o.c.length?o.c.map((cid,i)=>DB[cid]?(o.f[i]||'none'):null).filter(x=>x!==null):cards.map(()=>'none');
+    return {name:String(o.n||'Imported Deck').slice(0,40),cards,foils,cover:o.v&&DB[o.v]?o.v:undefined};
+  }catch(e){ return null; }
+}
+
+// ═══ MY DECKS ═══
+let _md={sort:'recent',q:'',legal:false,sel:null};
+async function openMyDecks(){
+  showScreen('decks-screen');
+  const g=document.getElementById('md-grid'); if(g&&!g.children.length) g.innerHTML='<div class="dk-empty">Loading…</div>';
+  try{ await loadDecksFromStorage(); }catch(e){}
+  renderMyDecks();
+}
+function openDeckManager(){ openMyDecks(); }   // old modal → new screen
+function mdSort(s){ _md.sort=s; document.querySelectorAll('#decks-screen .dk-pill[data-sort]').forEach(p=>p.classList.toggle('on',p.dataset.sort===s)); renderMyDecks(); }
+function mdList(){
+  let list=dkAllDecks();
+  if(_md.q) list=list.filter(x=>x.deck.name.toLowerCase().includes(_md.q)||(DB[dkHeraldCid(x.deck.cards)]?.name||'').toLowerCase().includes(_md.q));
+  if(_md.legal) list=list.filter(x=>x.deck.preset||(x.deck.cards||[]).length===60);
+  const hn=x=>DB[dkHeraldCid(x.deck.cards)]?.name||'~';
+  list.sort((a,b)=>{
+    if(!!b.deck.fav!==!!a.deck.fav) return b.deck.fav?1:-1;
+    if(!!a.deck.preset!==!!b.deck.preset) return a.deck.preset?1:-1;    // starters last
+    if(_md.sort==='name') return a.deck.name.localeCompare(b.deck.name);
+    if(_md.sort==='herald') return hn(a).localeCompare(hn(b))||a.deck.name.localeCompare(b.deck.name);
+    return String(b.deck.updatedAt||'').localeCompare(String(a.deck.updatedAt||''));
+  });
+  return list;
+}
+function renderMyDecks(){
+  const g=document.getElementById('md-grid'); if(!g) return;
+  const list=mdList();
+  if(_md.sel&&!list.some(x=>x.id===_md.sel)&&!SAVED_DECKS[_md.sel]&&!(typeof PRESET_DECKS!=='undefined'&&PRESET_DECKS[_md.sel])) _md.sel=null;
+  const all=dkAllDecks();
+  const sub=document.getElementById('md-sub'); if(sub) sub.textContent=`${Object.keys(SAVED_DECKS).length} DECKS · ${all.filter(x=>x.deck.preset||x.deck.cards.length===60).length} READY TO PLAY`;
+  const lp=document.getElementById('md-legal'); if(lp) lp.classList.toggle('on',_md.legal);
+  let html=`<div class="dk-box new" onclick="mdNew()"><div class="plus">+</div><div class="t">NEW DECK</div><div class="s">or import a deck code</div></div>`;
+  list.forEach(x=>{
+    const sel=_md.sel===x.id;
+    const quick=x.deck.preset
+      ?[{t:'PLAY',fn:`mdPlay('${x.id}')`},{t:'COPY',fn:`mdDuplicate('${x.id}')`}]
+      :[{t:'EDIT',fn:`mdEdit('${x.id}')`},{t:'PLAY',fn:`mdPlay('${x.id}')`},{t:'COPY',fn:`mdDuplicate('${x.id}')`}];
+    html+=dkBoxHtml(x.id,x.deck,{sel,quick,onclick:`mdSelect('${x.id}')`,dbl:x.deck.preset?`mdPlay('${x.id}')`:`mdEdit('${x.id}')`});
+  });
+  if(!list.length) html+='<div class="dk-empty">No decks match. Build one with NEW DECK.</div>';
+  g.innerHTML=html;
+  mdFootRefresh();
+}
+function mdFootRefresh(){
+  const d=mdCur(); const info=document.getElementById('md-selinfo'); const fav=document.getElementById('md-fav-btn');
+  if(!d){ if(info) info.textContent='SELECT A DECK · DOUBLE-CLICK TO EDIT'; if(fav) fav.classList.remove('on'); return; }
+  const h=DB[dkHeraldCid(d.cards)]?.name||'no Herald';
+  if(info) info.innerHTML=`SELECTED · <span style="color:#e9e4ff">${dkEsc(d.name)}</span> · ${dkEsc(h)} · ${d.cards.length}/60${d.preset?' · STARTER':''}`;
+  if(fav) fav.classList.toggle('on',!!d.fav);
+}
+function mdCur(){ return _md.sel?(SAVED_DECKS[_md.sel]||(typeof PRESET_DECKS!=='undefined'?PRESET_DECKS[_md.sel]:null)):null; }
+function mdSelect(id){ _md.sel=(_md.sel===id)?null:id; renderMyDecks(); }
+function mdNew(){ clearBuilder(); builderDeck._editId=null; builderDeck._cover=null; showScreen('builder-screen'); setTimeout(()=>{ const i=document.getElementById('deck-name-input'); if(i) i.focus(); },50); }
+function mdEdit(id){
+  id=id||_md.sel; if(!id){ alert('Select a deck first.'); return; }
+  if(typeof PRESET_DECKS!=='undefined'&&PRESET_DECKS[id]){ mdDuplicate(id,true); return; }
+  loadDeckIntoBuilder(id); showScreen('builder-screen');
+}
+function mdPlay(id){
+  id=id||_md.sel; if(!id){ alert('Select a deck first.'); return; }
+  const q=(typeof mmQuickState==='function')?mmQuickState():{};
+  const mode=(q.mode==='pvp')?'pvp':'ai';
+  goToDeckSelect(mode).then(()=>{ selectDeck(1,id); });
+}
+async function mdDuplicate(id,thenEdit){
+  id=id||_md.sel; const src=SAVED_DECKS[id]||(typeof PRESET_DECKS!=='undefined'?PRESET_DECKS[id]:null); if(!src){ alert('Select a deck first.'); return; }
+  const nid='deck_'+Date.now();
+  SAVED_DECKS[nid]={name:(src.name.replace(/ \(Starter\)$/,'')+' (copy)').slice(0,40),cards:[...src.cards],foils:src.foils?[...src.foils]:src.cards.map(()=>'none'),cover:src.cover,updatedAt:new Date().toISOString()};
+  await saveDecksToStorage(); _md.sel=nid;
+  if(thenEdit){ loadDeckIntoBuilder(nid); showScreen('builder-screen'); } else renderMyDecks();
+}
+async function mdDelete(){
+  const id=_md.sel; if(!id||!SAVED_DECKS[id]){ alert('Select one of your own decks first.'); return; }
+  if(!confirm('Delete "'+SAVED_DECKS[id].name+'"?')) return;
+  delete SAVED_DECKS[id]; _md.sel=null; await saveDecksToStorage(); renderMyDecks();
+}
+async function mdRename(){
+  const id=_md.sel; if(!id||!SAVED_DECKS[id]){ alert('Select one of your own decks first.'); return; }
+  const n=prompt('Deck name:',SAVED_DECKS[id].name); if(!n||!n.trim()) return;
+  SAVED_DECKS[id].name=n.trim().slice(0,40); SAVED_DECKS[id].updatedAt=new Date().toISOString(); await saveDecksToStorage(); renderMyDecks();
+}
+async function mdFav(){
+  const id=_md.sel; if(!id||!SAVED_DECKS[id]){ alert('Select one of your own decks first.'); return; }
+  SAVED_DECKS[id].fav=!SAVED_DECKS[id].fav; await saveDecksToStorage(); renderMyDecks();
+}
+function mdExport(){
+  const d=mdCur(); if(!d){ alert('Select a deck first.'); return; }
+  const code=deckCodeEncode(d);
+  const body=document.createElement('div');
+  body.innerHTML=`<div style="font-size:11px;color:#9ca3af;margin-bottom:8px">Share this code — anyone can import it from My Decks ⇩.</div><textarea readonly style="width:100%;height:110px;background:#0a0a1e;color:#e9e4ff;border:1px solid #3a2a6a;border-radius:8px;padding:8px;font-family:'Share Tech Mono',monospace;font-size:10px;word-break:break-all">${code}</textarea>`;
+  const b=document.createElement('button'); b.className='btn-primary btn-sm'; b.style.cssText='width:100%;margin-top:8px'; b.textContent='📋 Copy code';
+  b.onclick=()=>{ try{ navigator.clipboard.writeText(code); b.textContent='✓ Copied'; }catch(e){ body.querySelector('textarea').select(); document.execCommand('copy'); b.textContent='✓ Copied'; } };
+  body.appendChild(b); showModalEl('⇧ Deck Code · '+d.name,body);
+}
+async function mdImport(){
+  const code=prompt('Paste a deck code (starts with LOC1.):'); if(!code) return;
+  const d=deckCodeDecode(code); if(!d||!d.cards.length){ alert('That is not a valid deck code.'); return; }
+  const nid='deck_'+Date.now();
+  SAVED_DECKS[nid]={name:d.name,cards:d.cards,foils:d.foils,cover:d.cover,updatedAt:new Date().toISOString()};
+  await saveDecksToStorage(); _md.sel=nid; renderMyDecks();
+  alert('✓ Imported "'+d.name+'" ('+d.cards.length+' cards). Cards you do not own still count — check it in the builder.');
+}
+function bldExportCurrent(){
+  const cards=[],foils=[]; builderDeck.forEach(e=>{ for(let i=0;i<e.count;i++){ cards.push(e.cid); foils.push(e.variant||'none'); } });
+  if(!cards.length){ alert('Deck is empty.'); return; }
+  _md.sel=null; const tmp={name:(document.getElementById('deck-name-input')?.value||'Deck').trim()||'Deck',cards,foils,cover:builderDeck._cover};
+  const code=deckCodeEncode(tmp);
+  try{ navigator.clipboard.writeText(code); }catch(e){}
+  const body=document.createElement('div'); body.innerHTML=`<textarea readonly style="width:100%;height:110px;background:#0a0a1e;color:#e9e4ff;border:1px solid #3a2a6a;border-radius:8px;padding:8px;font-family:'Share Tech Mono',monospace;font-size:10px;word-break:break-all">${code}</textarea><div style="font-size:10px;color:#22c55e;margin-top:6px">Copied to clipboard.</div>`;
+  showModalEl('⇧ Deck Code',body);
+}
+
+// ═══ DECK BUILDER ═══
+let _bPage=0, _bColors=[], _bPreview=null, _bPerPage=6, _bLastList=[];
+function bldPerPage(){ const w=window.innerWidth; return w<=760?6:(w<=1180?8:6); }
+function bldInitChrome(){
+  const pips=document.getElementById('bld-pips');
+  if(pips&&!pips.children.length){
+    pips.innerHTML=Object.entries(COLOR_DEFS).map(([k,v])=>`<button class="bld-cpip" data-c="${k}" title="${v.label}" onclick="bldToggleColor('${k}')"><i style="background:${v.hex}"></i></button>`).join('');
+  }
+  const types=document.getElementById('bld-types');
+  if(types&&!types.children.length){
+    types.innerHTML=DK_TYPE_CHIPS.map(([k,l])=>`<span class="dk-pill${k==='all'?' on':''}" data-t="${k}" onclick="bldSetType('${k}')">${l}</span>`).join('');
+  }
+  const ss=document.getElementById('builder-set-filter');
+  if(ss){
+    const cur=ss.value; const sets=(typeof _cardSets!=='undefined'&&_cardSets.length)?_cardSets:[{id:'base_set',name:'Base Set'},{id:'promo',name:'Promo'}];
+    ss.innerHTML='<option value="all">SET · ALL</option>'+sets.map(s=>`<option value="${dkEsc(s.id)}">SET · ${dkEsc(s.name).toUpperCase()}</option>`).join('')+'<option value="">SET · UNASSIGNED</option>';
+    if([...ss.options].some(o=>o.value===cur)) ss.value=cur;
+  }
+  ['builder-set-filter','builder-rarity-filter','builder-holo-filter','builder-sort'].forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.toggle('on',el.value!=='all'&&!(id==='builder-sort'&&el.value==='set')); });
+}
+function bldSetType(t){ const f=document.getElementById('builder-filter'); if(f) f.value=t; document.querySelectorAll('#bld-types .dk-pill').forEach(p=>p.classList.toggle('on',p.dataset.t===t)); _bPage=0; renderBuilderCards(); }
+function bldToggleColor(c){ const i=_bColors.indexOf(c); if(i>=0)_bColors.splice(i,1); else _bColors.push(c); document.querySelectorAll('#bld-pips .bld-cpip').forEach(p=>p.classList.toggle('on',_bColors.includes(p.dataset.c))); _bPage=0; renderBuilderCards(); }
+function bldPage(d){ _bPage=Math.max(0,_bPage+d); renderBuilderCards(); }
+function builderPhoneTab(which){ const s=document.getElementById('builder-screen'); if(!s) return; s.classList.toggle('show-deck',which==='deck'); document.querySelectorAll('#builder-phone-tabs .bpt').forEach((b,i)=>b.classList.toggle('on',(i===1)===(which==='deck'))); }
+function bldSetOrder(cid){ const s=typeof getCardSet==='function'?getCardSet(cid):(DB[cid]?.setId||''); const sets=(typeof _cardSets!=='undefined')?_cardSets:[]; const i=sets.findIndex(x=>x.id===s); return i<0?999:i; }
+function bldVariantsFor(cid,holoFilter){
+  let variants=VARIANT_ORDER.filter(v=>variantCount(cid,v)>0);
+  if(adminHasUnlimitedCards()) variants=['none',...VARIANT_ORDER.filter(v=>v!=='none'&&variantCount(cid,v)>0)];
+  if(holoFilter==='normal') variants=variants.filter(v=>v==='none');
+  else if(holoFilter==='any') variants=variants.filter(v=>v!=='none');
+  else if(holoFilter&&holoFilter!=='all') variants=variants.filter(v=>v===holoFilter);
+  return variants;
+}
+function bldInDeck(cid){ return builderDeck.filter(e=>e.cid===cid).reduce((s,e)=>s+e.count,0); }
+function bldOwned(cid){ return adminHasUnlimitedCards()?Infinity:VARIANT_ORDER.reduce((s,v)=>s+variantCount(cid,v),0); }
+function renderBuilderCards(){
+  const pool=document.getElementById('bld-pool'); if(!pool) return;
+  bldInitChrome();
+  const filter=document.getElementById('builder-filter')?.value||'all';
+  const rarityFilter=document.getElementById('builder-rarity-filter')?.value||'all';
+  const holoFilter=document.getElementById('builder-holo-filter')?.value||'all';
+  const setSel=document.getElementById('builder-set-filter'); const setFilter=setSel?setSel.value:'all';
+  const sort=document.getElementById('builder-sort')?.value||'set';
+  const search=(document.getElementById('builder-search')?.value||'').toLowerCase();
+  let list=Object.values(DB).filter(c=>{
+    if(c.isToken||c.type==='token'||c.type==='system') return false;
+    if(!isCardPlayable(c.id)) return false;
+    if(filter==='transform'){ if(!c.transformOnly) return false; }
+    else if(filter==='char'){ if(c.type!=='char'||c.transformOnly) return false; }
+    else if(filter!=='all'&&c.type!==filter) return false;
+    if(_bColors.length){ const cc=typeof cardColors==='function'?cardColors(c):[c.color]; if(!cc.some(x=>_bColors.includes(x))) return false; }
+    if(rarityFilter!=='all'&&getRarity(c.id)!==rarityFilter) return false;
+    if(setFilter!=='all'){ const s=typeof getCardSet==='function'?getCardSet(c.id):(c.setId||''); if(s!==setFilter) return false; }
+    if(search&&!c.name.toLowerCase().includes(search)&&!(c.color||'').includes(search)&&!(c.keywords||[]).some(k=>k.includes(search))&&!(c.subtypes||[]).some(k=>String(k).toLowerCase().includes(search))) return false;
+    // owned only (players): at least one copy of a matching finish
+    return bldVariantsFor(c.id,holoFilter).length>0;
+  });
+  const rk=c=>RARITY_ORDER.indexOf(getRarity(c.id));
+  list.sort((a,b)=>{
+    if(sort==='name') return a.name.localeCompare(b.name);
+    if(sort==='cost') return (a.cost||0)-(b.cost||0)||a.name.localeCompare(b.name);
+    if(sort==='rarity') return rk(b)-rk(a)||a.name.localeCompare(b.name);
+    if(sort==='atk') return (b.atk||0)-(a.atk||0)||a.name.localeCompare(b.name);
+    if(sort==='owned') return bldOwned(b.id)-bldOwned(a.id)||a.name.localeCompare(b.name);
+    return bldSetOrder(a.id)-bldSetOrder(b.id)||(a.cost||0)-(b.cost||0)||a.name.localeCompare(b.name);
+  });
+  _bLastList=list;
+  _bPerPage=bldPerPage();
+  const pages=Math.max(1,Math.ceil(list.length/_bPerPage)); if(_bPage>pages-1) _bPage=pages-1;
+  const slice=list.slice(_bPage*_bPerPage,(_bPage+1)*_bPerPage);
+  pool.style.gridTemplateColumns=`repeat(${_bPerPage===6&&window.innerWidth>1180?6:Math.max(3,Math.round(_bPerPage/2))},minmax(0,1fr))`;
+  pool.innerHTML=slice.map(c=>{
+    const variants=bldVariantsFor(c.id,holoFilter);
+    const inDeck=bldInDeck(c.id), cap=c.type==='herald'?1:4, own=bldOwned(c.id);
+    const maxed=inDeck>=cap||inDeck>=own;
+    const fins=variants.filter(v=>v!=='none').map(v=>`<i style="background:${VARIANT_META[v]?.accent||'#fff'}" title="${VARIANT_META[v]?.label}"></i>`).join('');
+    const firstV=variants[0]||'none';
+    return `<div class="bld-card${maxed?' max':''}${fins?' holo':''}${_bPreview&&_bPreview.cid===c.id?' pv':''}" onclick="bldPreview('${c.id}','${firstV}')" oncontextmenu="event.preventDefault();showFullCard('${c.id}',null,'${firstV}')" title="${dkEsc(c.name)} — click to preview, right-click to zoom">
+      ${dkImgOrSym(c.id,'')}
+      <div class="own">OWN ×${own===Infinity?'∞':own}</div>
+      <div class="indeck${inDeck?'':' zero'}">${inDeck}/${cap}</div>
+      <div class="fin">${fins}</div>
+      <button class="add" onclick="event.stopPropagation();bldAdd('${c.id}')" title="Add a copy">+</button>
+    </div>`;
+  }).join('')||'<div class="dk-empty" style="grid-column:1/-1">No cards match these filters.<br><span style="font-size:10px">Players only see cards they own — open packs or trade to grow the pool.</span></div>';
+  const pi=document.getElementById('bld-pageinfo'); if(pi) pi.textContent=`PAGE ${_bPage+1} / ${pages} · ${list.length} CARD${list.length===1?'':'S'} · CLICK = PREVIEW · + = ADD · RIGHT-CLICK = ZOOM`;
+  const pv=document.getElementById('bld-prev'), nx=document.getElementById('bld-next'); if(pv) pv.disabled=_bPage<=0; if(nx) nx.disabled=_bPage>=pages-1;
+  const total=builderDeck.reduce((s,e)=>s+e.count,0); ['deck-count-display','deck-count-display-m','deck-count-display-p'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=total; });
+}
+// Add the best available copy: the finish chosen in the preview if this is the previewed card, else regular, else first owned finish.
+function bldAdd(cid){
+  let v='none';
+  if(_bPreview&&_bPreview.cid===cid) v=_bPreview.variant||'none';
+  const vs=bldVariantsFor(cid,'all');
+  if(!vs.includes(v)) v=vs[0]||'none';
+  if(v!=='none'&&!adminHasUnlimitedCards()){
+    const owned=variantCount(cid,v), inV=(builderDeck.find(e=>e.cid===cid&&e.variant===v)?.count)||0;
+    if(inV>=owned){ const alt=vs.find(x=>{ const o=adminHasUnlimitedCards()?Infinity:variantCount(cid,x); const iv=(builderDeck.find(e=>e.cid===cid&&e.variant===x)?.count)||0; return iv<o; }); if(alt) v=alt; }
+  }
+  addCardToBuilder(cid,v);
+  if(_bPreview&&_bPreview.cid===cid) bldPreview(cid,_bPreview.variant);
+}
+function bldPreview(cid,variant){
+  const c=DB[cid]; const box=document.getElementById('bld-preview'); if(!c||!box) return;
+  const vs=bldVariantsFor(cid,'all'); if(!vs.includes(variant)) variant=vs[0]||'none';
+  _bPreview={cid,variant};
+  document.querySelectorAll('#bld-pool .bld-card').forEach(el=>el.classList.toggle('pv',el.getAttribute('onclick').includes(`'${cid}'`)));
+  const col=(typeof cardColors==='function'?cardColors(c):[c.color]).filter(Boolean);
+  const rar=getRarity(cid); const inDeck=bldInDeck(cid), cap=c.type==='herald'?1:4;
+  const owned=adminHasUnlimitedCards()?'∞':VARIANT_ORDER.filter(v=>variantCount(cid,v)>0).map(v=>variantCount(cid,v)+' '+(VARIANT_META[v]?.label||v).replace(' Holo','').toLowerCase()).join(' · ')||'0';
+  const abil=(c.abilities||[]).map(a=>`<div class="ab"><b>${dkEsc(a.label)}<em>${dkEsc(String(a.type||'').toUpperCase())}${a.cost?' · '+a.cost+'⚡':''}${a.limit?' · '+String(a.limit).replace(/_/g,' ').toUpperCase():''}</em></b>${dkEsc(a.text||'')}</div>`).join('');
+  const kws=(c.keywords||[]).map(k=>typeof KEYWORDS!=='undefined'&&KEYWORDS[k]?`<span class="kw-badge ${KEYWORDS[k].cls}">${KEYWORDS[k].label}</span>`:'').join('');
+  const tf=(c.transforms||[]).map(t=>DB[t]?.name).filter(Boolean);
+  const setName=typeof setLabel==='function'&&typeof getCardSet==='function'?setLabel(getCardSet(cid)):'';
+  const finSel=vs.length>1?`<select onchange="bldPreview('${cid}',this.value)">${vs.map(v=>`<option value="${v}"${v===variant?' selected':''}>${(VARIANT_META[v]?.label||v)}${adminHasUnlimitedCards()?'':' ×'+variantCount(cid,v)}</option>`).join('')}</select>`:`<span>${VARIANT_META[variant]?.label||'Regular'}</span>`;
+  const isCover=builderDeck._cover===cid;
+  box.innerHTML=`
+    <div class="big" onclick="showFullCard('${cid}',null,'${variant}')" title="Click to zoom">${dkImgOrSym(cid,'')}${variant!=='none'?`<div class="holo-thumb-glow holo-thumb-${variant}"></div>`:''}</div>
+    <div class="nm">${dkEsc(c.name)}</div>
+    <div class="tl">${col.map(x=>`<span style="color:${COLOR_DEFS[x]?.hex||'#9d93c4'}">● ${(COLOR_DEFS[x]?.label||x).toUpperCase()}</span>`).join(' ')} · ${dkEsc(String(c.type||'').replace('_',' ').toUpperCase())}${c.transformOnly?' · 🔒 TRANSFORM ONLY':''} · <span style="color:${RARITY_DEFS[rar]?.hex||'#9d93c4'}">${RARITY_DEFS[rar]?.label||''}</span>${setName?' · '+dkEsc(setName).toUpperCase():''}</div>
+    <div class="st">${c.atk>0||c.hp>0?`<span style="color:#fca5a5">⚔ ${c.atk||0}</span><span style="color:#86efac">♥ ${c.hp||0}</span>`:''}<span style="color:#f0d58a">⚡ ${c.cost||0}</span>${c.race?`<span style="color:#9d93c4;font-family:'Share Tech Mono',monospace;font-weight:400;font-size:10px">${dkEsc(c.race)}</span>`:''}</div>
+    ${kws?`<div>${kws}</div>`:''}
+    <div class="abs">${abil||'<div class="ab" style="color:#6b6b8a">No abilities.</div>'}</div>
+    <div class="kv"><span>IN DECK</span><span>${inDeck} / ${cap}</span></div>
+    <div class="kv"><span>OWNED</span><span>${owned}</span></div>
+    <div class="kv"><span>FINISH FOR NEXT COPY</span>${finSel}</div>
+    <div style="display:flex;gap:6px;margin-top:2px">
+      <button class="dk-btn" style="flex:1;padding:9px 6px;text-align:center" onclick="removeCardFromBuilder('${cid}','${variant}');bldPreview('${cid}','${variant}')" ${inDeck?'':'disabled'}>− REMOVE</button>
+      <button class="dk-btn gold" style="flex:1;padding:9px 6px;font-size:12px;text-align:center" onclick="bldAdd('${cid}')" ${inDeck>=cap?'disabled':''}>+ ADD</button>
+    </div>
+    <button class="dk-btn${isCover?' teal':''}" style="padding:9px;text-align:center;font-size:11px" onclick="bldSetCover('${cid}')">${isCover?'★ DECK COVER':'☆ SET AS DECK COVER'}</button>
+    ${tf.length?`<div style="font-size:9px;letter-spacing:1px;color:#6b6b8a;text-align:center">TRANSFORMS → ${dkEsc(tf.join(' → '))}</div>`:''}`;
+}
+function bldSetCover(cid){
+  if(!bldInDeck(cid)){ if(!confirm(DB[cid].name+' is not in this deck yet — add a copy and use it as the cover?')) return; bldAdd(cid); if(!bldInDeck(cid)) return; }
+  builderDeck._cover=cid; renderBuilderDeck(); if(_bPreview) bldPreview(_bPreview.cid,_bPreview.variant);
+}
+function renderBuilderDeck(){
+  const list=document.getElementById('builder-deck-list'); if(!list) return;
+  const total=builderDeck.reduce((s,e)=>s+e.count,0);
+  ['deck-count-display','deck-count-display-m','deck-count-display-p'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent=total; });
+  // deck bar
+  const cnt=document.getElementById('bld-cnt'); if(cnt){ cnt.innerHTML=`${total}<small>/60</small>`; cnt.className='cnt'+(total===60?' ok':total>60?' over':''); }
+  const sub=document.getElementById('bld-cnt-sub'); if(sub) sub.textContent=total===0?'EMPTY':total===60?'READY TO PLAY':total>60?(total-60)+' OVER THE LIMIT':'NEEDS '+(60-total)+' MORE';
+  const cards=[]; builderDeck.forEach(e=>{ for(let i=0;i<e.count;i++) cards.push(e.cid); });
+  const heraldCid=dkHeraldCid(cards);
+  if(builderDeck._cover&&!cards.includes(builderDeck._cover)) builderDeck._cover=null;
+  const coverCid=builderDeck._cover||heraldCid||cards[0]||null;
+  const cv=document.getElementById('bld-cover'); if(cv) cv.innerHTML=coverCid?dkImgOrSym(coverCid,''):'';
+  const hl=document.getElementById('bld-herald'); if(hl) hl.textContent=heraldCid?'👑 '+DB[heraldCid].name:'— none yet';
+  const cols=document.getElementById('bld-colors'); if(cols) cols.innerHTML=dkColors(cards).map(c=>`<span title="${COLOR_DEFS[c]?.label}" style="width:14px;height:14px;border-radius:50%;background:${COLOR_DEFS[c]?.hex||'#6b7280'};display:inline-block;border:1px solid rgba(0,0,0,.6)"></span>`).join('')||'<span style="font-size:10px;color:#6b6b8a">—</span>';
+  const curve=document.getElementById('bld-curve');
+  if(curve){ const bins=[0,0,0,0,0,0,0,0]; cards.forEach(cid=>{ const c=DB[cid]; if(!c||c.type==='energy_card'||c.type==='herald') return; bins[Math.min(7,c.cost||0)]++; }); const mx=Math.max(1,...bins); curve.innerHTML=bins.map((n,i)=>`<i data-c="${i===7?'7+':i}" style="height:${Math.max(2,Math.round(n/mx*24))}px" title="${n} card${n===1?'':'s'} at cost ${i}"></i>`).join(''); }
+  // stacks
+  if(!builderDeck.length){ list.innerHTML='<div class="dk-empty" style="grid-column:1/-1">Your deck is empty. Click + on a card above to add it.<br><span style="font-size:10px">60 cards · 1 Herald · max 4 copies of a card</span></div>'; return; }
+  let html='';
+  DK_TYPE_ORDER.forEach(type=>{
+    const entries=builderDeck.filter(e=>DB[e.cid]?.type===type); if(!entries.length) return;
+    entries.sort((a,b)=>(DB[a.cid].cost||0)-(DB[b.cid].cost||0)||DB[a.cid].name.localeCompare(DB[b.cid].name)||VARIANT_ORDER.indexOf(a.variant)-VARIANT_ORDER.indexOf(b.variant));
+    const n=entries.reduce((s,e)=>s+e.count,0);
+    html+=`<div class="bld-col"><div class="hd"><span>${DK_TYPE_LABEL[type]||type.toUpperCase()}</span><b>${n}</b></div>`;
+    entries.forEach(e=>{
+      const c=DB[e.cid]; const v=e.variant&&e.variant!=='none'?e.variant:'';
+      html+=`<div class="bld-strip${v?' f-'+v:''}" onclick="bldPreview('${e.cid}','${e.variant||'none'}')" oncontextmenu="event.preventDefault();showFullCard('${e.cid}',null,'${e.variant||'none'}')" title="${dkEsc(c.name)}${v?' · '+VARIANT_META[v].label:''}">
+        ${dkImgOrSym(e.cid,'')}
+        <div class="bar"><span class="cost">${type==='herald'?'H':(c.cost||0)}</span><span class="n">${dkEsc(c.name)}${v?' ✦':''}</span></div>
+        <div class="ctl"><button style="background:#374151" onclick="event.stopPropagation();removeCardFromBuilder('${e.cid}','${e.variant||'none'}')">−</button><button style="background:#7c3aed" onclick="event.stopPropagation();addCardToBuilder('${e.cid}','${e.variant||'none'}')">+</button></div>
+        <div class="x">×${e.count}</div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  list.innerHTML=html;
+  if(_bPreview) { const el=document.getElementById('bld-preview'); if(el&&el.querySelector('.kv')) bldPreview(_bPreview.cid,_bPreview.variant); }
+}
+function loadDeckIntoBuilder(deckId){
+  const deck=SAVED_DECKS[deckId]; if(!deck) return;
+  document.getElementById('deck-name-input').value=deck.name;
+  builderDeck=[];
+  const cards=deck.cards||[], foils=deck.foils||[];
+  cards.forEach((cid,i)=>{ const variant=foils[i]||'none'; const ex=builderDeck.find(e=>e.cid===cid&&e.variant===variant); if(ex) ex.count++; else builderDeck.push({cid,variant,count:1}); });
+  builderDeck._editId=deckId; builderDeck._cover=deck.cover||null; _bPage=0; _bPreview=null;
+  const pv=document.getElementById('bld-preview'); if(pv) pv.innerHTML='<div class="empty">CLICK A CARD<br>TO PREVIEW IT HERE</div>';
+  renderBuilderCards(); renderBuilderDeck();
+}
+function clearBuilder(){ builderDeck=[]; builderDeck._cover=null; const i=document.getElementById('deck-name-input'); if(i) i.value=''; _bPreview=null; const pv=document.getElementById('bld-preview'); if(pv) pv.innerHTML='<div class="empty">CLICK A CARD<br>TO PREVIEW IT HERE</div>'; renderBuilderCards(); renderBuilderDeck(); }
+async function saveDeck(andClose){
+  const name=(document.getElementById('deck-name-input').value||'').trim();
+  if(!name){ alert('Enter a deck name.'); document.getElementById('deck-name-input').focus(); return; }
+  const total=builderDeck.reduce((s,e)=>s+e.count,0);
+  if(total<1){ alert('Deck is empty.'); return; }
+  if(total>60){ alert(`${total} cards — max 60.`); return; }
+  const cards=[],foils=[]; builderDeck.forEach(e=>{ for(let i=0;i<e.count;i++){ cards.push(e.cid); foils.push(e.variant||'none'); } });
+  const id=builderDeck._editId||('deck_'+Date.now());
+  const prev=SAVED_DECKS[id]||{};
+  SAVED_DECKS[id]={name,cards,foils,cover:builderDeck._cover||undefined,fav:!!prev.fav,updatedAt:new Date().toISOString()};
+  builderDeck._editId=id;
+  const st=document.getElementById('deck-save-status'); if(st){ st.textContent='Saving…'; st.style.color='#fbbf24'; }
+  const saved=await saveDecksToStorage();
+  if(st){ st.textContent=saved?'✓ Saved to your profile':'⚠ Saved locally (not logged in)'; st.style.color=saved?'#22c55e':'#f59e0b'; setTimeout(()=>st.textContent='',4000); }
+  if(typeof renderDeckSelectOptions==='function'&&document.getElementById('deck-select-screen')?.classList.contains('active')) renderDeckSelectOptions();
+  if(cards.length>=60&&typeof checkAchievements==='function') setTimeout(()=>checkAchievements(),500);
+  if(andClose){ _md.sel=id; openMyDecks(); }
+  else if(typeof showToast==='function') showToast(`✓ "${name}" saved (${cards.length} cards)`); else if(!andClose) { /* quiet */ }
+}
+
+// ═══ CHOOSE DECK (pre-match) ═══
+let _dsWho=1;
+function ds2Who(p){ _dsWho=p; document.getElementById('ds2-who-1')?.classList.toggle('on',p===1); document.getElementById('ds2-who-2')?.classList.toggle('on',p===2); const l=document.getElementById('ds2-shelf-lbl'); if(l) l.textContent=p===1?'YOUR DECKS · PICK ONE':'PLAYER 2 · PICK A DECK'; renderDeckSelectOptions(); }
+async function goToDeckSelect(mode){
+  if(typeof mmRemember==='function') mmRemember(mode);
+  pendingMode=mode; pendingP1Deck=null; pendingP2Deck=(mode==='ai')?'__random__':null; _dsWho=1;
+  const t=document.getElementById('deck-select-title'); if(t) t.textContent=mode==='pvp'?'LOCAL PVP · CHOOSE DECKS':'VS AI · CHOOSE YOUR DECK';
+  const who=document.getElementById('ds2-who'); if(who) who.style.display=mode==='pvp'?'flex':'none';
+  ds2Who(1);
+  const lbl=document.getElementById('p2-deck-label'); if(lbl) lbl.textContent=mode==='pvp'?'PLAYER 2':'OPPONENT';
+  const av=document.getElementById('ds2-opp-av'); if(av) av.textContent=mode==='pvp'?'🧑‍🤝‍🧑':'🤖';
+  const btn=document.getElementById('start-game-btn'); if(btn) btn.disabled=true;
+  showScreen('deck-select-screen');
+  await loadDecksFromStorage();
+  renderDeckSelectOptions();
+  // remember the last deck played
+  try{ const q=mmQuickState(); if(q.deck&&(SAVED_DECKS[q.deck]||(typeof PRESET_DECKS!=='undefined'&&PRESET_DECKS[q.deck]))&&!pendingP1Deck) selectDeck(1,q.deck); }catch(e){}
+}
+function ds2Hero(){
+  const box=document.getElementById('ds2-hero-box'), st=document.getElementById('ds2-hero-stats'); if(!box||!st) return;
+  const id=pendingP1Deck;
+  if(!id){ box.innerHTML=`<div class="dk-box rand" style="width:200px"><div style="font-size:40px">🃏</div><div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:#c4b5fd;font-weight:700">NO DECK</div><div style="font-size:10px;color:#6b6b8a">pick one from the shelf</div></div>`; st.innerHTML='<div class="ds2-lbl">PLAYER 1 · DECK</div><div class="ds2-name" style="color:#6b6b8a">—</div>'; return; }
+  if(id==='__random__'){ box.innerHTML=`<div class="dk-box rand sel" style="width:200px"><div style="font-size:40px">🎲</div><div style="font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;color:#c4b5fd;font-weight:700">RANDOM</div><div style="font-size:10px;color:#6b6b8a">60 cards from your collection</div></div>`; st.innerHTML='<div class="ds2-lbl">PLAYER 1 · DECK</div><div class="ds2-name">Random Deck</div><div class="kv"><span>CARDS</span><span>60 / 60</span></div><div class="kv"><span>HERALD</span><span>random</span></div>'; return; }
+  const d=SAVED_DECKS[id]||(typeof PRESET_DECKS!=='undefined'?PRESET_DECKS[id]:null); if(!d) return;
+  box.innerHTML=dkBoxHtml(id,d,{sel:true});
+  const h=dkHeraldCid(d.cards); const cols=dkColors(d.cards).map(c=>COLOR_DEFS[c]?.label||c).join(' · ')||'—';
+  st.innerHTML=`<div class="ds2-lbl">PLAYER 1 · DECK</div><div class="ds2-name">${dkEsc(d.name)}</div>
+    <div class="kv"><span>HERALD</span><span>${h?dkEsc(DB[h].name):'none'}</span></div>
+    <div class="kv"><span>CARDS</span><span style="color:${d.preset||d.cards.length===60?'#4ade80':'#f59e0b'}">${d.cards.length} / 60</span></div>
+    <div class="kv"><span>COLOURS</span><span>${dkEsc(cols)}</span></div>
+    ${d.updatedAt?`<div class="kv"><span>UPDATED</span><span>${new Date(d.updatedAt).toLocaleDateString()}</span></div>`:''}
+    <div style="flex:1"></div>
+    ${SAVED_DECKS[id]?`<button class="dk-btn" style="margin-top:10px;text-align:center" onclick="loadDeckIntoBuilder('${id}');showScreen('builder-screen')">✎ EDIT DECK</button>`:''}`;
+}
+function ds2Opp(){
+  const el=document.getElementById('p2-chosen-display'); if(!el) return;
+  const id=pendingP2Deck;
+  if(!id){ el.textContent=pendingMode==='pvp'?'No deck selected — use PLAYER 2 above or ⊕ Pick deck':'—'; return; }
+  if(id==='__random__'){ el.textContent=(pendingMode==='pvp'?'Player 2':'AI')+' · random deck'; return; }
+  const d=SAVED_DECKS[id]||(typeof PRESET_DECKS!=='undefined'?PRESET_DECKS[id]:null);
+  el.textContent=d?`${pendingMode==='pvp'?'Player 2':'AI'} · ${d.name} (${d.cards.length}/60)`:'—';
+}
+function renderDeckSelectOptions(){
+  const shelf=document.getElementById('ds2-shelf'); if(!shelf) return;
+  const who=_dsWho, cur=who===1?pendingP1Deck:pendingP2Deck;
+  let html=`<div class="dk-box rand${cur==='__random__'?' sel':''}" onclick="selectDeck(${who},'__random__')"><div style="font-size:30px">🎲</div><div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:#c4b5fd;font-weight:700">RANDOM</div><div style="font-size:9px;color:#6b6b8a">60 cards from your collection</div></div>`;
+  const list=dkAllDecks().sort((a,b)=>{ if(!!b.deck.fav!==!!a.deck.fav) return b.deck.fav?1:-1; if(!!a.deck.preset!==!!b.deck.preset) return a.deck.preset?1:-1; return String(b.deck.updatedAt||'').localeCompare(String(a.deck.updatedAt||'')); });
+  list.forEach(x=>{ html+=dkBoxHtml(x.id,x.deck,{sel:cur===x.id,onclick:`selectDeck(${who},'${x.id}')`}); });
+  shelf.innerHTML=html;
+  ds2Hero(); ds2Opp();
+  const can=pendingP1Deck!==null&&pendingP2Deck!==null;
+  const btn=document.getElementById('start-game-btn'); if(btn) btn.disabled=!can;
+  const status=document.getElementById('deck-select-status'); if(status) status.textContent=can?'✓ Ready — START MATCH when you are':(pendingMode==='pvp'?'Pick a deck for each player':'Pick your deck');
+}
+function selectDeck(player,deckId){
+  if(player===1) pendingP1Deck=deckId; else pendingP2Deck=deckId;
+  if(deckId!=='__random__'&&!SAVED_DECKS[deckId]&&!(typeof PRESET_DECKS!=='undefined'&&PRESET_DECKS[deckId])){ if(player===1) pendingP1Deck=null; else pendingP2Deck=null; }
+  if(player===1&&pendingMode==='pvp'&&pendingP2Deck===null) ds2Who(2); else renderDeckSelectOptions();
+}
+</script>
 
 </body>
 </html>
