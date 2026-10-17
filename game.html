@@ -6334,7 +6334,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 <body>
 
 <!-- AUTH HUD -->
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 7.7 · menu v2</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 7.8 · menu v2</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -16410,6 +16410,7 @@ const COS_SETS=[
   { id:'set_king_courts_halloween', name:'King Of Courts: Halloween Set', items:['back_king_courts_halloween','mat_king_courts_halloween'], price:4000 },
   { id:'set_time_splitting_chimp', name:'Time Splitting Chimp Set', items:['back_time_splitting_chimp','mat_time_splitting_chimp'], price:4000 },
   { id:'set_bender_havens', name:'The Bender Of The Havens Set', items:['back_bender_havens','mat_bender_havens'], price:4000 },
+  { id:'set_virora', name:'Virora Set', items:['back_virora','mat_virora'], price:4000 },
 ];
 const COS_TIERS={ default:{label:'STANDARD',hex:'#9ca3af',price:0}, common:{label:'COMMON',hex:'#9ca3af',price:300}, rare:{label:'RARE',hex:'#60a5fa',price:900}, legendary:{label:'LEGENDARY',hex:'#fbbf24',price:2500}, exclusive:{label:'EXCLUSIVE',hex:'#e8c570',price:0} };
 const COS_DEFAULT_EQUIP={ back:'back_default', mat:'mat_default', frame:'frame_none', plate:'plate_none', title:'title_none', entrance:'ent_royal' };
@@ -16442,6 +16443,7 @@ const COS_BUILTIN=[
   { id:'back_halloween_death_race', type:'back', name:'Halloween Death Race', tier:'exclusive', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Lord%20of%20Courts_%20Gilded%20Apocalypse%20999%20juice%20card%20back.png', unlock:{kind:'pending'}, desc:'Gilded apocalypse on burning roads.' },
   { id:'back_gamma_breaker', type:'back', set:'set_gamma_breaker', name:'Gamma Breaker', tier:'legendary', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Neon%20SMASH%20Breakout%20_%20Lord%20Of%20COurts%20card%20back%20HULK.png', desc:'Neon green smash breakout.' },
   { id:'back_bender_havens', type:'back', set:'set_bender_havens', name:'The Bender Of The Havens', tier:'legendary', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/Pavi%20Card%20Back%20Avatar%20seven%20haveens%20card%20back.png', desc:'Elements of the Seven Havens bend to one hand.' },
+  { id:'back_virora', type:'back', set:'set_virora', name:'Virora', tier:'legendary', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Card%20BACKS/LORD%20OF%20COURTS_%20Virora.png', desc:'Virora framed in magenta crystal and silver filigree.' },
   // playmats
   { id:'mat_default', type:'mat', name:'Court Arena', tier:'default', free:true, desc:'The standard arena floor.' },
   { id:'mat_blue_court', type:'mat', name:'Blue Court Hall', tier:'common', mat:_cosMat('0,212,255','#0a1230','#060a1c','lines'), accent:'#00d4ff', desc:'Cool stone and cyan light.' },
@@ -16451,6 +16453,7 @@ const COS_BUILTIN=[
   { id:'mat_king_courts_halloween', type:'mat', set:'set_king_courts_halloween', name:'King Of Courts: Halloween Edition', tier:'legendary', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Playing%20Matts/Halloween%20Universe%20theme.png', mat:'linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),url("https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Playing%20Matts/Halloween%20Universe%20theme.png")', accent:'#ff8a1f', desc:'A pumpkin sun orbited by grinning moons.' },
   { id:'mat_time_splitting_chimp', type:'mat', set:'set_time_splitting_chimp', name:'Time Splitting Chimp', tier:'legendary', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Playing%20Matts/Monkey%20Splitter%20of%20Time.png', mat:'linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),url("https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Playing%20Matts/Monkey%20Splitter%20of%20Time.png")', accent:'#3b9cff', desc:'The chrome chimp guards the time-split vault.' },
   { id:'mat_bender_havens', type:'mat', set:'set_bender_havens', name:'The Bender Of The Havens', tier:'legendary', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Playing%20Matts/Pavi%20Avatar%20of%20Havens.png', mat:'linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),url("https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Playing%20Matts/Pavi%20Avatar%20of%20Havens.png")', accent:'#e8c570', desc:'Pavi bends water and fire across the Havens.' },
+  { id:'mat_virora', type:'mat', set:'set_virora', name:'Virora', tier:'legendary', img:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Playing%20Matts/Magenta%20Crest%20Fantasy%20Battle%20Mat.png', mat:'linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),url("https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Playing%20Matts/Magenta%20Crest%20Fantasy%20Battle%20Mat.png")', accent:'#ff4fa3', desc:'Magenta crest over the crystal city of Virora.' },
   { id:'mat_abyss', type:'mat', name:'Abyss Rift', tier:'legendary', mat:_cosMat('168,85,247','#1a0630','#06020f','rings'), accent:'#a855f7', desc:'Rings of the rift spread beneath your field.' },
   // avatar frames
   { id:'frame_none', type:'frame', name:'No Frame', tier:'default', free:true, desc:'Plain portrait.' },
