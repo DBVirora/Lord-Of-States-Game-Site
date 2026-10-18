@@ -6505,7 +6505,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 <body>
 
 <!-- AUTH HUD -->
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.1 · decks v2</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.2 · decks v2</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -7478,6 +7478,32 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 // ═══════════════════════════════════════════════════
 const GH='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/';
 const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/56eb82b484c699b4fef38652ea51daf4f4fb52fe/';
+// ═══════════════════════════════════════════════════════════════════════
+// GODOT_SYNC — change log for the Godot port. One entry per web build, newest first.
+// The Godot chat fetches this file from GitHub, reads this block, and ports every
+// entry newer than the last build it imported. Keep entries machine-readable:
+//   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
+//   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
+// ═══════════════════════════════════════════════════════════════════════
+const GODOT_SYNC=[
+  { build:'8.2', date:'2026-10-18',
+    cards:[ { id:'geo_radar_bse', name:'Geo Radar', set:'base_set', number:'026/150', rarity:'uncommon', color:'green', type:'equipment', cost:2, persistent:true,
+              scan:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/026-150%20(Geo%20Radar%20Equipment).png',
+              newAbilities:['Terrain Scan (passive: equipped character can attack Locations — hasTerrainScan(fc))','Deep Ping (activated, free: look at top card of opponent\'s deck, put it on the bottom)'] } ],
+    abilities:['resolveLocationAttack + AI attack options now also allow hasTerrainScan(afc)'], screens:[], data:[] },
+  { build:'8.1', date:'2026-10-17',
+    cards:[ { id:'magnus_ssb_bse', name:'Magnus (SSB)', set:'base_set', number:'025/150', rarity:'mythic', color:'blue', cost:10, atk:7, hp:10,
+              scan:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/025-150%20(Magnus%20SSB).png',
+              transformFrom:['magnus_ssg_bse'], newAbilities:['God Ki Mandate','Kinetic Bind','Court Sight (SSB variant: look at top 4, take a character, rest to bottom)'] } ],
+    abilities:['magnus_ssg_bse.nextForms now [\'ssb\'] (god line Base → SSG → SSB)','isAbilitySealed() also true while fc._kb (Kinetic Bind) is set','endTurnFx restores Kinetic Bind -3 ATK when G.turn >= _kb.until'],
+    screens:[], data:[] },
+  { build:'8.0', date:'2026-10-17', cards:[], abilities:[],
+    screens:['My Decks screen (#decks-screen) — deck-box grid, deck codes, fav/cover','Deck Builder rebuilt Arena-style (#builder-screen)','Choose Deck rebuilt (#deck-select-screen)','Locker tab: new "My Decks" card (id mydecks)'],
+    data:['saved deck gains optional cover (cid) and fav (bool)','deck code format LOC1.<base64url json {n,c,f,v}>','spec: VCU_Decks_Rework_Guide_for_Godot.md'] },
+  { build:'7.9', date:'2026-10-17', cards:[], abilities:[], screens:[], data:['ACHIEVEMENTS.tutorial_complete.img = First Steps #6 emblem'] },
+  { build:'7.8', date:'2026-10-17', cards:[], abilities:[], screens:[],
+    data:['cosmetics: back_virora, mat_virora (legendary) + COS_SETS set_virora (4000)'] },
+];
 const DEFAULTS={
   cardback:    GH2+'Copilot_20260610_090350.png',
   virora:      GH2+'virora_base.png',
@@ -7530,6 +7556,7 @@ const DEFAULTS={
   mort_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Dreamworks/Mort%20%231%20(Regular%20Character%20Promo).png',
   void_crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/072-150%20(Void%20Crystal%20Equiptment).png',
   space_crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/073-150%20(Space%20Crystal%20Equiptment).png',
+  geo_radar_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/026-150%20(Geo%20Radar%20Equipment).png',
   tyler_ssbe_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/021-150%20(Tyler%20SSBE).png',
   tyler_ssbe_sr_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/152-150%20(Tyler%20SSBE)%20(Secret%20Rare).png',
   scorched_titan_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/046-150%20(The%20Scorched%20Titan).png',
@@ -7921,6 +7948,11 @@ const DB={
   // ── SPACE CRYSTAL — BSE Equipment. BLUE (control/reactive). 073/150 Rare.
   space_crystal_bse:{id:'space_crystal_bse',rarity:'rare',color:'blue',name:'Space Crystal',charName:'Space Crystal',subtypes:['Relic','Equipment'],type:'equipment',persistent:true,race:'Relic',cost:5,atk:0,hp:0,sym:'🔮',setId:'base_set',cardNumber:'073/150',
     abilities:[{label:'Spacial Frequency',type:'triggered',cost:0,text:'After you attach this card to a character you may search for 1 Location card in your deck and add it into your hand.'},{label:'The Shift of Space',type:'activated',cost:0,limit:'once_per_turn',text:'Flip a coin. If tails, you may swap a character card from your hand with 1 from your field.'}],transforms:[]},
+  // ── GEO RADAR — BSE equipment (Veelden tech). GREEN. 026/150 Uncommon.
+  geo_radar_bse:{id:'geo_radar_bse',rarity:'uncommon',color:'green',name:'Geo Radar',charName:'Geo Radar',subtypes:['Tech','Equipment'],type:'equipment',persistent:true,race:'Equipment',cost:2,atk:0,hp:0,sym:'📡',setId:'base_set',cardNumber:'026/150',
+    quote:'Standard issue from the Veelden Watch.',
+    abilities:[{label:'Terrain Scan',type:'passive',cost:0,text:'Equipped character can attack Locations.'},
+      {label:'Deep Ping',type:'activated',cost:0,text:"Look at the top card of target opponent's deck. Put it back on the bottom of their deck."}],transforms:[]},
   // ── INSTANT ──
   saiyan_blood:{id:'saiyan_blood',rarity:'rare',color:'red',name:'Saiyan Blood',charName:'Saiyan Blood',subtypes:['Instant','Saiyan'],type:'instant',race:'Instant',cost:2,atk:0,hp:0,sym:'🩸',
     abilities:[{label:'Saiyan Fortify',type:'activated',cost:0,text:'Attach to a Fighter: +2 DEF. If Fighter is Saiyan (any subtype): +3 DEF instead. Can be used as attachment for Lazarus transform cost reduction.'}],transforms:[]},
@@ -8782,6 +8814,8 @@ function hasAbilityLabel(fc,label){
 // that just dealt it loses 2 Health (permanent stat reduction, can kill).
 // Called from every spot in executeCombatDamage where combat damage changes hands.
 // ── WCA OVERDRIVE CHAMPION BELT helpers ──
+// GEO RADAR: Terrain Scan — the equipped character may attack Locations (negated while hexed).
+function hasTerrainScan(fc){ return !!(fc&&Array.isArray(fc.attachments)&&fc.attachments.includes('geo_radar_bse')&&!(typeof isEquipHexed==='function'&&isEquipHexed(fc,'geo_radar_bse'))); }
 function hasBelt(fc){ return !!(fc&&Array.isArray(fc.attachments)&&fc.attachments.includes('wca_overdrive_belt_promo')&&!(typeof isEquipHexed==='function'&&isEquipHexed(fc,'wca_overdrive_belt_promo'))); }
 // TITLE DEFENSE: belted defender is attacked → attacker -2 ATK until the end of its controller's NEXT turn
 // (2 turn-ends of the attacker's controller: this one and the next). Does not stack per attacker.
@@ -11412,7 +11446,7 @@ function resolveLocationAttack(ap,auid,dp,duid){
   const afc=G.players[ap].field.find(f=>f.uid===auid);
   const dfc=G.players[dp].field.find(f=>f.uid===duid);
   if(!afc||!dfc)return;
-  if(!(DB[afc.cid]?.canAttackLocations || afc.canAttackLocations)){log(`${DB[afc.cid]?.name} cannot attack Locations.`,'dmg');return;}
+  if(!(DB[afc.cid]?.canAttackLocations || afc.canAttackLocations || hasTerrainScan(afc))){log(`${DB[afc.cid]?.name} cannot attack Locations.`,'dmg');return;}
   log(`⚔ ${DB[afc.cid].name}(${afc.currentATK}) → ${DB[dfc.cid].name}(Toughness:${dfc.currentHP})`,'info');
   dealDamage(dp,dfc.uid,afc.currentATK);
   // LANDMARK PRICE (Lady Loki): draw 1 card when she destroys a Location this way.
@@ -13716,6 +13750,21 @@ function runAbilityEffect(fc, abl, pl){
     else { const found=P.deck.find(cid=>filt(DB[cid])); const i=P.deck.indexOf(found); if(i>-1)P.deck.splice(i,1); done(found); }
     return;
   }
+  // ── GEO RADAR: Deep Ping — look at the top card of the opponent's deck, then put it on the bottom.
+  if(label==='Deep Ping'){
+    const ap=G.activePlayer; const oppNum=ap===1?2:1; const O=G.players[oppNum];
+    if(!O||!O.deck||!O.deck.length){ log('Deep Ping: the opponent\'s deck is empty.','info'); renderAll(); return; }
+    const cid=O.deck.shift(); O.deck.push(cid);
+    const nm=DB[cid]?.name||cid;
+    log(`Deep Ping: ${pname(ap)} looks at ${pname(oppNum)}'s top card — ${nm} — and sends it to the bottom.`,'info');
+    const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(ap) : (ap===1);
+    if(_human&&!G._aiAuto){
+      const body=document.createElement('div'); const url=getImg(cid);
+      body.innerHTML=`<div style="display:flex;gap:14px;align-items:center"><div style="width:120px;height:168px;border-radius:8px;overflow:hidden;border:1px solid #3a2a6a;background:#000;flex:none">${url?`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`:''}</div><div><div style="font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:#e8c570">${nm}</div><div style="font-size:11px;color:#9ca3af;margin-top:6px">was on top of ${pname(oppNum)}'s deck.<br>It has been put on the bottom.</div></div></div>`;
+      showModalEl('📡 Deep Ping',body);
+    }
+    renderAll(); return;
+  }
   // ── MAGNUS (SSB): Kinetic Bind — target enemy -3 ATK and no activated abilities until end of their following turn.
   if(label==='Kinetic Bind'){
     const ap=G.activePlayer; const oppNum=ap===1?2:1;
@@ -15118,7 +15167,7 @@ function aiAttackOptionsFor(p, afc){
     let s=power*.5+(breaks?34:6)-(dies?8+atkVal*.9:0)-ret*.3;
     opts.push({score:s,kind:'herald',p:e,uid:null,name:DB[oh.cid]?.name});
   }); }
-  if((DB[afc.cid]?.canAttackLocations||afc.canAttackLocations)&&!aiTried('locatk:'+afc.uid)){
+  if((DB[afc.cid]?.canAttackLocations||afc.canAttackLocations||hasTerrainScan(afc))&&!aiTried('locatk:'+afc.uid)){
     aiEnemyPlayersOf(p).forEach(e=>{ (G.players[e]?.field||[]).filter(f=>isLoc(DB[f.cid])).forEach(l=>{
       const kills=power>=(l.currentHP||0); let s=(kills?10+(DB[l.cid]?.cost||0)*1.5+((DB[l.cid]?.abilities||[]).length)*2:power*.3); if(l.cid==='time_chamber'&&kills) s+=6;
       if(hasAbilityLabel(afc,'Landmark Price')&&kills) s+=5;
