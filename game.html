@@ -6505,7 +6505,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 <body>
 
 <!-- AUTH HUD -->
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.2 · decks v2</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.3 · decks v2</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -7485,7 +7485,11 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
+const GAME_BUILD='8.3'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'8.3', date:'2026-10-18', cards:[],
+    abilities:['Court Sight (SSB) and Deep Ping now use the real TOP of the deck (end of the array; drawCard pops) and put cards on the real bottom (index 0)','Court Sight (SSB) removes the chosen copy from the top-4 region, not the deepest duplicate'],
+    screens:[], data:['GAME_BUILD constant; online handshake: player_joined and match_started carry rules_version; host/guest refuse a mismatch (rulesVersionOk/rulesMismatch)'] },
   { build:'8.2', date:'2026-10-18',
     cards:[ { id:'geo_radar_bse', name:'Geo Radar', set:'base_set', number:'026/150', rarity:'uncommon', color:'green', type:'equipment', cost:2, persistent:true,
               scan:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/026-150%20(Geo%20Radar%20Equipment).png',
@@ -13736,25 +13740,31 @@ function runAbilityEffect(fc, abl, pl){
   // ── MAGNUS (SSB): Court Sight — look at the top 4, take one character, rest to the bottom.
   if(label==='Court Sight' && fc.cid==='magnus_ssb_bse'){
     const ap=G.activePlayer; const P=G.players[ap];
-    const top=(P.deck||[]).slice(0,4);
+    const top=(P.deck||[]).slice(-4).reverse();   // TOP of the deck is the END of the array (drawCard uses pop)
     const isCh=(cc)=>cc&&(cc.type==='char'||cc.type==='base_char'||cc.type==='team')&&!cc.isToken;
     if(!top.length){ log('Court Sight: your deck is empty.','info'); renderAll(); return; }
     log(`Court Sight: ${pname(ap)} looks at the top ${top.length}: ${top.map(c=>DB[c]?.name||c).join(', ')}.`,'info');
-    const restToBottom=()=>{ const n=Math.min(top.length-(top._took?1:0),P.deck.length); const rest=P.deck.splice(0,n); P.deck.push(...rest); if(rest.length) log(`Court Sight: ${rest.length} card${rest.length===1?'':'s'} go to the bottom.`,'info'); renderAll(); };
+    const restToBottom=()=>{ const n=Math.min(top.length-(top._took?1:0),P.deck.length); const rest=P.deck.splice(P.deck.length-n,n); P.deck.unshift(...rest); if(rest.length) log(`Court Sight: ${rest.length} card${rest.length===1?'':'s'} go to the bottom.`,'info'); renderAll(); };
     if(!top.some(c=>isCh(DB[c]))){ log('Court Sight: no character among them.','info'); restToBottom(); return; }
     const topSet=top.slice();
     const done=(cid)=>{ top._took=true; const f=newFC(cid); if(f) P.hand.push(f); log(`Court Sight: ${pname(ap)} takes ${DB[cid].name}.`,'gain'); if(ap!==1&&typeof showCardReveal==='function')try{showCardReveal(cid);}catch(e){} restToBottom(); };
     const filt=(cc)=>cc&&isCh(cc)&&topSet.includes(cc.id);
     const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(ap) : (ap===1);
-    if(_human||G._aiAuto){ openDeckSearch('Court Sight','Top 4 of your deck — choose ONE character to put into your hand. The rest go to the bottom.',filt,done); }
-    else { const found=P.deck.find(cid=>filt(DB[cid])); const i=P.deck.indexOf(found); if(i>-1)P.deck.splice(i,1); done(found); }
+    // openDeckSearch removes the FIRST matching copy (= deepest, since TOP is the end). If that copy was below the
+    // top 4, put it back and remove the copy that is actually in the top 4 instead.
+    const origLen=P.deck.length; const firstIdx={}; topSet.forEach(c=>{ if(firstIdx[c]===undefined) firstIdx[c]=P.deck.indexOf(c); });
+    const doneTop=(cid)=>{
+      if(firstIdx[cid]!==undefined && firstIdx[cid]<origLen-4){ P.deck.splice(firstIdx[cid],0,cid); const t=P.deck.lastIndexOf(cid); if(t>-1) P.deck.splice(t,1); }
+      done(cid); };
+    if(_human||G._aiAuto){ openDeckSearch('Court Sight','Top 4 of your deck — choose ONE character to put into your hand. The rest go to the bottom.',filt,doneTop); }
+    else { const found=top.find(cid=>filt(DB[cid])); const i=P.deck.lastIndexOf(found); if(i>-1)P.deck.splice(i,1); done(found); }
     return;
   }
   // ── GEO RADAR: Deep Ping — look at the top card of the opponent's deck, then put it on the bottom.
   if(label==='Deep Ping'){
     const ap=G.activePlayer; const oppNum=ap===1?2:1; const O=G.players[oppNum];
     if(!O||!O.deck||!O.deck.length){ log('Deep Ping: the opponent\'s deck is empty.','info'); renderAll(); return; }
-    const cid=O.deck.shift(); O.deck.push(cid);
+    const cid=O.deck.pop(); O.deck.unshift(cid);   // TOP is the end of the array (drawCard uses pop); bottom is index 0
     const nm=DB[cid]?.name||cid;
     log(`Deep Ping: ${pname(ap)} looks at ${pname(oppNum)}'s top card — ${nm} — and sends it to the bottom.`,'info');
     const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(ap) : (ap===1);
@@ -21843,6 +21853,7 @@ function subscribeToRoom(code){
       console.log('[ROOM] player_joined received:',payload.payload);
       if(_onlineRole==='host'){
         const {guest_name,guest_id,guest_deck,guest_avatar,guest_deck_cards,guest_deck_foils}=payload.payload;
+        if(!rulesVersionOk(payload.payload.rules_version)){ rulesMismatch(payload.payload.rules_version,guest_name); return; }
         if(guest_avatar)_onlineOpponentAvatar=guest_avatar;
         if(guest_name)window._onlineOpponentName=guest_name;
         _onlineRoom={..._onlineRoom,guest_id,guest_name,guest_deck,status:'ready'};
@@ -21867,6 +21878,7 @@ function subscribeToRoom(code){
       if(payload.payload&&payload.payload.host_name)window._onlineOpponentName=payload.payload.host_name;
       if(_onlineRole==='guest'){
         const room=payload.payload;
+        if(!rulesVersionOk(room.rules_version)){ rulesMismatch(room.rules_version,room.host_name); return; }
         _onlineRoom={..._onlineRoom,...room};
         if(room.is_2v2||room.game_mode==='2v2'){ enterOnlineGame2v2(_onlineRoom); }
         else { enterOnlineGame(_onlineRoom); }
@@ -21925,6 +21937,7 @@ function subscribeToRoom(code){
           const myName=document.getElementById('hud-username')?.textContent||'Player';
           setTimeout(()=>{
             _onlineChannel.send({type:'broadcast',event:'player_joined',payload:{
+              rules_version:GAME_BUILD,
               guest_id:_celUserId,guest_name:myName,guest_deck:_onlineDeckId,
               guest_deck_cards:((typeof PRESET_DECKS!=='undefined'&&PRESET_DECKS[_onlineDeckId]?.cards)||SAVED_DECKS[_onlineDeckId]?.cards||null),
               guest_deck_foils:(getDeckFoils(_onlineDeckId)||null),
@@ -21939,6 +21952,15 @@ function subscribeToRoom(code){
     });
 }
 
+// ── RULES VERSION HANDSHAKE — web and PC clients must run the same build to play each other.
+function rulesVersionOk(v){ return String(v||'')===GAME_BUILD; }
+function rulesMismatch(theirs,who){
+  const msg=theirs?`${who||'The other player'} is on build ${theirs}; you are on ${GAME_BUILD}. Both players need the same version — update the older client and try again.`
+                  :`${who||'The other player'} is on an older client that does not report its version. They need to update before you can play.`;
+  log('⚠ '+msg,'dmg');
+  try{ showModal('Version mismatch',msg); }catch(e){ alert(msg); }
+  const startBtn=document.getElementById('lobby-start-btn'); if(startBtn){ startBtn.disabled=true; startBtn.textContent='VERSION MISMATCH'; }
+}
 // onRoomUpdate now handled via broadcast events in subscribeToRoom
 function onRoomUpdate(room){_onlineRoom=room;}
 
@@ -21948,7 +21970,7 @@ async function startOnlineMatch(){
   // 2v2 match: host runs all four boards authoritatively.
   if(_onlineRoom.is_2v2||_onlineRoom.game_mode==='2v2'){
     const teamLife=_onlineRoom.team_life||((typeof _v2Setup!=='undefined'&&_v2Setup.teamLife)?_v2Setup.teamLife:130);
-    const roomData={..._onlineRoom,status:'playing',game_mode:'2v2',is_2v2:true,team_life:teamLife,host_avatar:(window._playerAvatarUrl||null)};
+    const roomData={..._onlineRoom,status:'playing',game_mode:'2v2',is_2v2:true,team_life:teamLife,host_avatar:(window._playerAvatarUrl||null),rules_version:GAME_BUILD};
     try{ await sb.from('online_rooms').update({status:'playing',game_mode:'2v2'}).eq('code',_onlineRoom.code); }catch(e){}
     if(_onlineChannel){ await _onlineChannel.send({type:'broadcast',event:'match_started',payload:roomData}); }
     setTimeout(()=>enterOnlineGame2v2(roomData),300);
@@ -21957,7 +21979,7 @@ async function startOnlineMatch(){
   const gameMode=document.getElementById('lobby-game-mode')?.value||'prize';
   const prizeCount=parseInt(document.getElementById('lobby-prize-count')?.value||'6');
   const lfHp=parseInt(document.getElementById('lobby-lf-hp')?.value||'100');
-  const roomData={..._onlineRoom,status:'playing',game_mode:gameMode,prize_count:prizeCount,lf_hp:lfHp,host_avatar:(window._playerAvatarUrl||null)};
+  const roomData={..._onlineRoom,status:'playing',game_mode:gameMode,prize_count:prizeCount,lf_hp:lfHp,host_avatar:(window._playerAvatarUrl||null),rules_version:GAME_BUILD};
   // Update DB
   await sb.from('online_rooms').update({status:'playing',game_mode:gameMode,prize_count:prizeCount,lf_hp:lfHp}).eq('code',_onlineRoom.code);
   // Broadcast to guest via channel
