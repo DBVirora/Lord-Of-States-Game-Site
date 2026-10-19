@@ -6505,7 +6505,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 <body>
 
 <!-- AUTH HUD -->
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.3 · decks v2</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.4 · decks v2</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -7485,8 +7485,12 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='8.3'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='8.4'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'8.4', date:'2026-10-19',
+    cards:[ { id:'vuruna_base_bse', name:'Vuruna', set:'base_set', number:'031/150', rarity:'uncommon', color:'black', type:'base_char', cost:4, atk:4, hp:4,
+              scan:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/031-150%20(Vuruna).png', newAbilities:['Flash Step (passive = burst_speed keyword: can attack the turn it enters)'] } ],
+    abilities:['KEYWORD_PASSIVES gains Flash Step → burst_speed'], screens:[], data:[] },
   { build:'8.3', date:'2026-10-18', cards:[],
     abilities:['Court Sight (SSB) and Deep Ping now use the real TOP of the deck (end of the array; drawCard pops) and put cards on the real bottom (index 0)','Court Sight (SSB) removes the chosen copy from the top-4 region, not the deepest duplicate'],
     screens:[], data:['GAME_BUILD constant; online handshake: player_joined and match_started carry rules_version; host/guest refuse a mismatch (rulesVersionOk/rulesMismatch)'] },
@@ -7561,6 +7565,7 @@ const DEFAULTS={
   void_crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/072-150%20(Void%20Crystal%20Equiptment).png',
   space_crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/073-150%20(Space%20Crystal%20Equiptment).png',
   geo_radar_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/026-150%20(Geo%20Radar%20Equipment).png',
+  vuruna_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/031-150%20(Vuruna).png',
   tyler_ssbe_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/021-150%20(Tyler%20SSBE).png',
   tyler_ssbe_sr_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/152-150%20(Tyler%20SSBE)%20(Secret%20Rare).png',
   scorched_titan_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/046-150%20(The%20Scorched%20Titan).png',
@@ -7766,6 +7771,9 @@ const DB={
     abilities:[{label:'God Ki Mandate',type:'passive',cost:0,text:'Characters you control enter with +1/+1 while this card is on the field.'},
       {label:'Court Sight',type:'activated',cost:2,energyColor:'purple',limit:'once_per_turn',text:'Look at the top 4 cards of your deck. Put one character into your hand. Put the rest on the bottom in any order. Cost: 2 Purple Energy, once per turn.'},
       {label:'Kinetic Bind',type:'activated',cost:2,limit:'once_per_turn',text:"Target opposing character gets -3 Attack and can't use activated abilities until end of their following turn. Cost: 2 Energy, once per turn."}],transforms:[]},
+  // ── VURUNA — BSE base character (Royal • Saiyan). BLACK. 031/150 Uncommon.
+  vuruna_base_bse:{id:'vuruna_base_bse',rarity:'uncommon',name:'Vuruna',color:'black',charName:'Vuruna',charLine:'vuruna',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:4,atk:4,hp:4,sym:'VUR',setId:'base_set',cardNumber:'031/150',keywords:['burst_speed'],nextForms:[],
+    abilities:[{label:'Flash Step',type:'passive',cost:0,keyword:'burst_speed',text:'This card can attack the turn it enters.'}],transforms:[]},
   // ── RAPTURE OF THE VORTEX — BSE regular character (Titan • Beast). GREEN/PURPLE (endurance + trickery). 049/150 Rare.
   rapture_vortex_bse:{id:'rapture_vortex_bse',rarity:'rare',name:'Rapture of the Vortex',color:'green',colors:['green','purple'],charName:'Rapture of the Vortex',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:7,atk:6,hp:8,sym:'RVORTEX',setId:'base_set',cardNumber:'049/150',nextForms:[],
     abilities:[{label:'Vortex Shield',type:'passive',cost:0,text:'This card cannot have any status effects applied to it.'},{label:'The Reckoning',type:'activated',cost:0,text:'Choose 1 Character on your opponent\'s field. Flip a coin. If heads, that character is now under Confusion.'}],transforms:[]},
@@ -15389,7 +15397,7 @@ const KEYWORDS = {
 };
 function hasKW(fc, kw){ if(DB[fc.cid]?.keywords?.includes(kw))return true; return Array.isArray(fc&&fc.gainedKeywords)&&fc.gainedKeywords.includes(kw); }
 // Passive abilities that are really a keyword in disguise — stealing one grants the keyword.
-const KEYWORD_PASSIVES={'Rage of Sparta':'burst_speed'};
+const KEYWORD_PASSIVES={'Rage of Sparta':'burst_speed','Flash Step':'burst_speed'};
 function renderKeywordBadges(fc){
   const kws=DB[fc.cid]?.keywords; if(!kws||!kws.length) return '';
   return kws.map(kw=>{ const k=KEYWORDS[kw]; if(!k) return ''; return '<span class="kw-badge '+k.cls+'" title="'+k.desc+'">'+k.label+'</span>'; }).join('');
