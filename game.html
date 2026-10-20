@@ -6585,6 +6585,13 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 .gc-suggest div{padding:6px 10px;font-size:11px;cursor:pointer;color:#d6d0f0}
 .gc-suggest div:hover{background:rgba(232,197,112,.1)}
 
+/* playtest exclusive badge (8.8) */
+.pte-badge{display:flex;flex-direction:column;align-items:center;gap:2px;margin:6px 0;padding:6px 10px;border-radius:10px;text-align:center;
+  background:linear-gradient(#050208,#050208) padding-box,linear-gradient(90deg,#e8c570,#fff3c4 22%,#c9a24a 40%,#e9e9f2 60%,#a9a9b8 78%,#e8c570) border-box;border:1.5px solid transparent;
+  box-shadow:0 0 12px rgba(255,63,180,.35),inset 0 0 10px rgba(255,63,180,.15)}
+.pte-badge b{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:#ff4fbf;text-shadow:0 0 6px #ff4fbf,0 0 14px rgba(255,63,180,.7)}
+.pte-badge span{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1.5px;color:#e9e9f2}
+.pte-badge.sm{display:inline-flex;flex-direction:row;margin:0;padding:2px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;color:#ff4fbf;text-shadow:0 0 6px rgba(255,63,180,.8)}
 /* menu shortcuts (8.6) */
 #menu-screen .mm-nameplate{ cursor:pointer; position:relative; transition:border-color .15s, box-shadow .15s; }
 #menu-screen .mm-nameplate:hover,#menu-screen .mm-nameplate:focus-visible{ border-color:#e8c570; box-shadow:0 0 14px rgba(232,197,112,.3); outline:none; }
@@ -6626,7 +6633,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 <body>
 
 <!-- AUTH HUD -->
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.7 · battle music</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.8 · playtest card</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -7607,8 +7614,20 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='8.7'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='8.8'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'8.8', date:'2026-10-20',
+    cards:[ { id:'virora_surface_pt', name:'Virora (Surface Technique)', set:'promo', number:'PT-001', rarity:'legend', exclusive:'playtest', color:'purple', type:'char', cost:9, atk:5, hp:11,
+              scan:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Virora/Virora%20(Surface%20Technique)%20Playtest.png',
+              newAbilities:['Pink Horizon (passive: when dealt combat damage, attacker -2 ATK until end of its next turn; fc._ph {atk,until}, restored in endTurnFx; hooked via triggerReceipt)',
+                            'Surface Rasengan (3⚡ once/turn: 3 dmg to target opposing char; if destroyed, Freeze another opposing char)',
+                            'Sadala Roll Call (free → taps: d3, on 2 search deck for a Saiyan char, reveal, add to hand, shuffle)'] } ],
+    abilities:[],
+    screens:['Playtest Exclusive badge (.pte-badge: black, neon pink text, gold/silver trim) under the card name in hover preview, mobile sheet, full-card view, builder preview, registry tags, gift picker tile'],
+    data:['DB flag exclusive:"playtest" — cardHiddenFor(cid) = exclusive && !admin && not owned. isCardPlayable/registryEligible respect it; getCardPool, pack pool and random decks always exclude exclusives. Only obtainable as an admin gift (Gift Center / redeem code). charLine is its own (virora_surface_pt) so Virora SSB Form Swap can\'t reach it.',
+          'Playtest preset + VIRORA-PLAYTEST code now include 1× virora_surface_pt',
+          'Stats/achievements ownership: new helpers localSeat(), matchCountsStats(), isMe(p), isEnemyOfMe(p). First Transformation, transformations, abilities_used, cards_played, unique-character missions, heralds_broken, chars_killed/chars_destroyed + kill XP, damage dealt/taken now only count the local signed-in player\'s own actions — never the AI, AI teammates, local-PvP player 2 or remote opponents; admin test + local PvP matches count nothing (tutorial still counts)',
+          'Surface Rasengan freeze follow-up resolves synchronously while the AI is acting'] },
   { build:'8.7', date:'2026-10-20', cards:[],
     abilities:['The Reckoning (Rapture of the Vortex): now TAPS Rapture on use whether the coin is heads or tails (once per turn); targets prefer opponent characters not already Confused (and not another Rapture — Vortex Shield); AI won\'t use it when nothing is left worth confusing. Card text gains "(Taps)"'],
     screens:[],
@@ -7703,6 +7722,7 @@ const DEFAULTS={
   void_crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/072-150%20(Void%20Crystal%20Equiptment).png',
   space_crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/073-150%20(Space%20Crystal%20Equiptment).png',
   geo_radar_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/026-150%20(Geo%20Radar%20Equipment).png',
+  virora_surface_pt: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Virora/Virora%20(Surface%20Technique)%20Playtest.png',
   vuruna_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/031-150%20(Vuruna).png',
   tyler_ssbe_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/021-150%20(Tyler%20SSBE).png',
   tyler_ssbe_sr_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/152-150%20(Tyler%20SSBE)%20(Secret%20Rare).png',
@@ -7910,6 +7930,14 @@ const DB={
       {label:'Court Sight',type:'activated',cost:2,energyColor:'purple',limit:'once_per_turn',text:'Look at the top 4 cards of your deck. Put one character into your hand. Put the rest on the bottom in any order. Cost: 2 Purple Energy, once per turn.'},
       {label:'Kinetic Bind',type:'activated',cost:2,limit:'once_per_turn',text:"Target opposing character gets -3 Attack and can't use activated abilities until end of their following turn. Cost: 2 Energy, once per turn."}],transforms:[]},
   // ── VURUNA — BSE base character (Royal • Saiyan). YELLOW (speed). 031/150 Uncommon.
+  // ── VIRORA (SURFACE TECHNIQUE) — PLAYTEST EXCLUSIVE promo. Only obtainable as an admin gift.
+  //    exclusive:'playtest' → hidden from packs, shop, registry, rules grid, random/AI decks and every
+  //    card list unless the viewer is an admin or owns a copy (see cardHiddenFor / isCardPlayable).
+  virora_surface_pt:{id:'virora_surface_pt',rarity:'legend',exclusive:'playtest',name:'Virora (Surface Technique)',color:'purple',charName:'Virora',charLine:'virora_surface_pt',subtypes:['Celestial','Saiyan'],type:'char',race:'Celestial Saiyan',cost:9,atk:5,hp:11,sym:'VST',setId:'promo',cardNumber:'PT-001',nextForms:[],
+    flavor:"I usually respect all my opponents but ive been itching to get my hands on you for a long time now.",
+    abilities:[{label:'Pink Horizon',type:'passive',cost:0,text:'When this card is dealt combat damage, the attacker gets -2 Attack until end of their next turn.'},
+      {label:'Surface Rasengan',type:'activated',cost:3,limit:'once_per_turn',text:'Deal 3 damage to target opposing character. If this destroys it, Freeze another opposing character. Cost: 3 Energy'},
+      {label:'Sadala Roll Call',type:'activated',cost:0,text:'Roll a 3-sided die. If it lands on 2, search your deck for a Saiyan character card, reveal it, and put it into your hand. Shuffle your deck after.'}],transforms:[]},
   vuruna_base_bse:{id:'vuruna_base_bse',rarity:'uncommon',name:'Vuruna',color:'yellow',charName:'Vuruna',charLine:'vuruna',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:4,atk:4,hp:4,sym:'VUR',setId:'base_set',cardNumber:'031/150',keywords:['burst_speed'],nextForms:[],
     abilities:[{label:'Flash Step',type:'passive',cost:0,keyword:'burst_speed',text:'This card can attack the turn it enters.'}],transforms:[]},
   // ── RAPTURE OF THE VORTEX — BSE regular character (Titan • Beast). GREEN/PURPLE (endurance + trickery). 049/150 Rare.
@@ -8408,7 +8436,7 @@ function generateRandomDeck(){
   const heraldIds=Object.keys(DB).filter(id=>DB[id].type==='herald'&&!DB[id].isToken&&isCardPlayable(id));
   const charIds=Object.keys(DB).filter(id=>
     ['base_char','char','team'].includes(DB[id].type)&&
-    !DB[id].transformOnly&&!DB[id].isToken&&isCardPlayable(id)
+    !DB[id].transformOnly&&!DB[id].isToken&&!DB[id].exclusive&&isCardPlayable(id)
   );
   const otherIds=Object.keys(DB).filter(id=>
     !['base_char','char','team','herald','token'].includes(DB[id].type)&&
@@ -9000,6 +9028,7 @@ function tickFlameSpiral(p){
   (G.players[p]?.field||[]).forEach(f=>{ const t=f._flame; if(!t) return; t.ends--; if(t.ends<=0){ f.currentATK=Math.max(0,(f.currentATK||0)-t.amt); f.atkBonus=(f.atkBonus||0)-t.amt; f._flame=null; log(`${DB[f.cid]?.name}'s Flame Spiral fades.`,'info'); } });
 }
 function triggerReceipt(victimFc, dmg, attackerFc, attackerP){
+  triggerPinkHorizon(victimFc, dmg, attackerFc, attackerP);
   if(dmg<=0 || !hasAbilityLabel(victimFc,'Receipt'))return;
   if(!G.players[attackerP]||!G.players[attackerP].field.some(f=>f.uid===attackerFc.uid))return;
   attackerFc.hpBonus=(attackerFc.hpBonus||0)-2; attackerFc.currentHP-=2;
@@ -9007,6 +9036,19 @@ function triggerReceipt(victimFc, dmg, attackerFc, attackerP){
   if(attackerFc.currentHP<=0 && G.players[attackerP].field.some(f=>f.uid===attackerFc.uid)){ killCard(attackerP,attackerFc); }
 }
 
+// PINK HORIZON (Virora Surface Technique PT): when she is dealt combat damage, the
+// character that dealt it gets -2 Attack until the end of ITS controller's next turn.
+// Doesn't stack — a second hit just extends the timer. Restored in endTurnFx.
+function triggerPinkHorizon(victimFc, dmg, attackerFc, attackerP){
+  if(dmg<=0 || !victimFc || !attackerFc || !hasAbilityLabel(victimFc,'Pink Horizon')) return;
+  if(!G.players[attackerP]||!G.players[attackerP].field.some(f=>f.uid===attackerFc.uid)) return;
+  const until=G.turn+(G.activePlayer===attackerP?2:1);
+  if(attackerFc._ph){ attackerFc._ph.until=Math.max(attackerFc._ph.until,until); log(`Pink Horizon: ${DB[attackerFc.cid]?.name}'s -2 Attack is extended.`,'dmg'); return; }
+  const cut=Math.min(2,Math.max(0,attackerFc.currentATK||0));
+  attackerFc.currentATK=(attackerFc.currentATK||0)-cut; attackerFc.atkBonus=(attackerFc.atkBonus||0)-cut;
+  attackerFc._ph={atk:cut,until};
+  log(`🌸 Pink Horizon: ${DB[attackerFc.cid]?.name} gets -2 Attack until the end of its next turn!`,'dmg');
+}
 // OLYMPIAN BLOOD (Kratos): whenever `sourceFc` deals combat damage (attacking OR
 // retaliating), it permanently gains +1 Attack. Called from every spot in
 // executeCombatDamage where combat damage changes hands.
@@ -9232,6 +9274,14 @@ function startGame(mode,deck1,deck2,foils1,foils2){
 const TEAM_START_LIFE = 130;
 
 function teamOf(p){ return (p===1||p===3) ? 'A' : 'B'; }
+// ── STAT / ACHIEVEMENT OWNERSHIP ──
+// Only the signed-in player's OWN actions feed achievements, profile stats, mission
+// progress and kill XP. AI seats, AI teammates, the second player in local PvP and
+// remote opponents never count. Admin test matches don't count at all.
+function localSeat(){ return (G&&G.is2v2&&G.onlineMode2v2)?(G.mySeat||1):1; }
+function matchCountsStats(){ if(!G) return true; if(G.adminTestMode) return false; if(G.tutorialMode) return true; return !(typeof _isLocalPvPMatch==='function'&&_isLocalPvPMatch()); }
+function isMe(p){ return p===localSeat() && matchCountsStats(); }
+function isEnemyOfMe(p){ if(!G) return false; return G.is2v2 ? teamOf(p)!==teamOf(localSeat()) : p!==localSeat(); }
 // DEFENSIVE BOND (Najeela SSB): a player's characters can't be returned to hand/deck
 // by opponent effects. Any future bounce/return effect should gate on this first.
 function hasReturnProtection(playerNum){
@@ -9732,9 +9782,9 @@ function dealDamage(tp,tuid,amt){
     log(`Furious Burst: ${c.name} gains +1 ATK (now ${fc.currentATK}).`,'gain');
   }
   // Profile stats (local human = player 1): damage to opponent = dealt; damage to us = taken.
-  if(dmg>0 && typeof bumpStat==='function'){
-    if(tp===2)bumpStat('damage_dealt',dmg);
-    else if(tp===1)bumpStat('damage_taken',dmg);
+  if(dmg>0 && typeof bumpStat==='function' && matchCountsStats()){
+    if(tp===localSeat())bumpStat('damage_taken',dmg);
+    else if(isEnemyOfMe(tp)&&(G.is2v2?G.activePlayer===localSeat()||G.activePlayer===tp:true))bumpStat('damage_dealt',dmg);
   }
   log(`${c.name} -${dmg}HP → ${fc.currentHP}/${fc.baseHP+fc.hpBonus}HP`,'dmg');
   const drainAtk=G.selectedAttacker?G.players[G.activePlayer]?.field.find(f=>f.uid===G.selectedAttacker):null;
@@ -9815,8 +9865,8 @@ function killCard(p,fc){
     } else if((G.gameMode==='lifeforce'||G.gameMode==='combined')&&typeof damageLifeForce==='function'){
       damageLifeForce(p,2,'character destroyed');
     }
-    // Achievement tracking + XP: count enemy characters YOU (player 1) destroy
-    if(k===1){
+    // Achievement tracking + XP: count enemy characters YOU destroy (never AI-vs-AI, teammates or local P2)
+    if(isEnemyOfMe(p)&&matchCountsStats()&&(G.is2v2?(G.activePlayer===localSeat()||G.activePlayer===p):true)){
       _achData.chars_destroyed = (_achData.chars_destroyed||0) + 1;
       if(typeof checkAchievements==='function') checkAchievements();
       // Persist kill progress mid-match (debounced) so leaving before match end
@@ -10918,7 +10968,7 @@ function breakHerald(ownerP, byP, source){
   if(G.is2v2){ damageTeamLife(teamOf(ownerP), HERALD_RULES.breakLife, 'Herald broken'); }
   else if(G.gameMode==='lifeforce'){ damageLifeForce(ownerP, HERALD_RULES.breakLife, 'Herald broken'); }
   else { claimPrizesFrom(ownerP, byP, HERALD_RULES.breakPrizes); }
-  if(byP===1&&typeof bumpStat==='function') bumpStat('heralds_broken',1);
+  if(isMe(byP)&&typeof bumpStat==='function') bumpStat('heralds_broken',1);
   if(typeof showTurnBanner==='function') showTurnBanner(byP===1||(G.is2v2&&isHumanPlayer(byP)), `${name.toUpperCase()} BROKEN`, byP===1?'your-turn':'opp-turn');
   renderAll();
 }
@@ -11697,7 +11747,7 @@ function onHandClick(p,uid,fc){
     if(G.tutorialMode&&p===1&&isChar(c)&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('play');
     if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
     // Mission tracking: unique characters (only for local player)
-    if(p===1&&typeof trackUniqueCharacter==='function'&&['base_char','char','team'].includes(c.type)){
+    if(isMe(p)&&typeof trackUniqueCharacter==='function'&&['base_char','char','team'].includes(c.type)){
       trackUniqueCharacter(c.charName||c.id||fco.cid);
     }
   } else if(isLoc(c)){
@@ -12518,8 +12568,9 @@ function executePrismShift(targetFc,volarisFc,newCid){
   // Mark Volaris Prism's once-per-game flag
   volarisFc.abilityUsed=volarisFc.abilityUsed||{};
   volarisFc.abilityUsed.prism_shift=true;
-  // Trigger achievement
-  if(!_achData.has_transformed){
+  // Trigger achievement — only if Volaris belongs to you
+  const _vOwner=[1,2,3,4].find(pp=>G.players[pp]&&G.players[pp].field&&G.players[pp].field.includes(volarisFc));
+  if(isMe(_vOwner)&&!_achData.has_transformed){
     _achData.has_transformed=true;
     setTimeout(()=>checkAchievements(),600);
   }
@@ -12664,13 +12715,14 @@ function doTransform(fieldUid,newCid,handUid,cost,ownerOverride){
     // Carry EQUIPMENT STATS across the transformation: re-apply each carried-over
     // equipment's bonus to the new form so its ATK/HP (and effects) persist.
     fc.attachments.forEach(eqId=>{ const eq=DB[eqId]; if(eq && typeof applyEquip==='function') applyEquip(fc,eq); });
-    // Flag for First Transformation achievement
-    if(!_achData.has_transformed){
-      _achData.has_transformed=true;
-      setTimeout(()=>checkAchievements(),600);
+    // First Transformation achievement + lifetime stat — only when YOU transform (not the AI / P2).
+    if(isMe(owner)){
+      if(!_achData.has_transformed){
+        _achData.has_transformed=true;
+        setTimeout(()=>checkAchievements(),600);
+      }
+      if(typeof bumpStat==='function') bumpStat('transformations',1);
     }
-    // Profile stat: lifetime transformations.
-    if(typeof bumpStat==='function') bumpStat('transformations',1);
     renderAll();
     // Online: broadcast the new form
     if(G.onlineMode && typeof broadcastGameState==='function')broadcastGameState();
@@ -12795,7 +12847,7 @@ function activateAbility(fc,abl){
       // Don't spend energy or mark used until target chosen — handled inside flow
       // But we DO close the abilities modal so the picker can show
       G.players[G.activePlayer].usedAbilityThisTurn=true;
-      if(G.activePlayer===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+      if(isMe(G.activePlayer) && typeof bumpStat==='function') bumpStat('abilities_used',1);
       if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; }
       closeAllModals();
       volarisPrismShift(fc.uid);
@@ -12809,7 +12861,7 @@ function activateAbility(fc,abl){
         return;
       }
       G.players[G.activePlayer].usedAbilityThisTurn=true;
-      if(G.activePlayer===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+      if(isMe(G.activePlayer) && typeof bumpStat==='function') bumpStat('abilities_used',1);
       if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; }
       closeAllModals();
       volarisEnergyFracture(fc.uid);
@@ -12828,7 +12880,7 @@ function activateAbility(fc,abl){
     spendEnergyAbility(G.activePlayer,5,DB[fc.cid]?.color||null);
     fc.abilityUsed['Prowess Cancel']=true;
     G.players[G.activePlayer].usedAbilityThisTurn=true;
-    if(G.activePlayer===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(G.activePlayer) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     let removed=0;
     // 1) standalone Location / Equipment cards on the opponent's field
@@ -12854,7 +12906,7 @@ function activateAbility(fc,abl){
     fc.abilityUsed.sensory_play_turn=G.turn;
     const ap=G.activePlayer; const oppNum=ap===1?2:1;
     G.players[ap].usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     flipCoinFor({title:'Sensory Play', desc:"Flip a coin. Heads = view your opponent's hand."}, (heads)=>{
       if(!heads){ log('Sensory Play: TAILS — no peek this time.','dmg'); renderAll(); return; }
@@ -12874,7 +12926,7 @@ function activateAbility(fc,abl){
     if(pl.energy<2){ log('Not enough energy (need 2⚡).','dmg'); return; }
     if(!spendEnergyAbility(ap,2,DB[fc.cid]?.color||null)) return;
     fc.abilityUsed.water_whip_turn=G.turn; pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     const whip=(uid)=>{ const tfc=G.players[oppNum].field.find(f=>f.uid===uid); if(tfc){ tfc.tapped=true; tfc.waterWhipped=G.turn; log(`🌊 Water Whip: ${DB[tfc.cid].name} is tapped — it can't attack this turn.`,'gain'); if(typeof SFX!=='undefined')SFX.freeze(); } renderAll(); };
     openEnemyTargetPicker(enemies,whip,{sourcePlayer:ap,title:'Water Whip',desc:"Choose an opposing character to tap — it can't attack this turn."});
@@ -12891,7 +12943,7 @@ function activateAbility(fc,abl){
     if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; } // 0-cost free ability taps
     fc.abilityUsed.combat_control_turn=G.turn;
     G.players[G.activePlayer].usedAbilityThisTurn=true;
-    if(G.activePlayer===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(G.activePlayer) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     openEnemyTargetPicker(enemies,(uid)=>{
       const tfc=G.players[oppNum].field.find(f=>f.uid===uid);
@@ -12910,7 +12962,7 @@ function activateAbility(fc,abl){
     if(!enemies.length){ log('Spirit of Smash: no opponent characters to target.','dmg'); return; }
     fc.spiritSmashTurn=G.turn;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     const oppN=oppNum;
     closeAllModals();
     openEnemyTargetPicker(enemies,(uid)=>{
@@ -12937,7 +12989,7 @@ function activateAbility(fc,abl){
     if(fc.kingsChargeUsed){ log("The King's Charge: already used (once per game).",'dmg'); return; }
     fc.kingsChargeUsed=true;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     const resolve=(heads)=>{
       if(heads){
         let n=0; pl.field.forEach(f=>{ if(isSaiyanChar(DB[f.cid])){ f.currentATK=(f.currentATK||0)+2; f.atkBonus=(f.atkBonus||0)+2; f.hpBonus=(f.hpBonus||0)+2; f.currentHP=(f.currentHP||0)+2; n++; } });
@@ -12956,7 +13008,7 @@ function activateAbility(fc,abl){
     if(fc.contOnslaughtTurn===G.turn){ log('Continuous Onslaught: already used this turn.','dmg'); return; }
     fc.contOnslaughtTurn=G.turn;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     const resolve=(heads)=>{
       if(heads){ fc.hpBonus=(fc.hpBonus||0)+2; fc.currentHP=(fc.currentHP||0)+2; log(`Continuous Onslaught: HEADS — ${DB[fc.cid].name} gains +2 Health.`,'gain'); }
       else { log('Continuous Onslaught: tails — no effect.','dmg'); }
@@ -12973,7 +13025,7 @@ function activateAbility(fc,abl){
     const ap=G.activePlayer; const pl=G.players[ap];
     if(fc.giftOfGodsTurn===G.turn){ log("The Gift of the God's: already used this turn.",'dmg'); return; }
     closeAllModals();
-    const commit=()=>{ fc.giftOfGodsTurn=G.turn; pl.usedAbilityThisTurn=true; if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1); };
+    const commit=()=>{ fc.giftOfGodsTurn=G.turn; pl.usedAbilityThisTurn=true; if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1); };
     const doHeal=()=>{
       const chars=pl.field.filter(f=>isChar(DB[f.cid]) && f.uid!==fc.uid);
       if(!chars.length){ log("The Gift of the God's: no other character to heal.",'info'); return false; }
@@ -13016,7 +13068,7 @@ function activateAbility(fc,abl){
     const ap=G.activePlayer; const pl=G.players[ap];
     if(pl.energy<4){ log('Etheric Strike: need 4⚡.','dmg'); return; }
     spendEnergyAbility(ap,4,DB[fc.cid]?.color||null);
-    pl.usedAbilityThisTurn=true; if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    pl.usedAbilityThisTurn=true; if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     const resolve=(heads)=>{
       if(!heads){ // TAILS — heal + buff your whole field
         pl.field.filter(f=>isChar(DB[f.cid])).forEach(f=>{
@@ -13049,7 +13101,7 @@ function activateAbility(fc,abl){
     if(!fc.abilityUsed)fc.abilityUsed={};
     fc.abilityUsed['Soul Cage']=true;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     const doCage=(tuid)=>{
       const tfc=opp.field.find(f=>f.uid===tuid); if(!tfc)return;
@@ -13076,7 +13128,7 @@ function activateAbility(fc,abl){
     spendEnergyAbility(ap,4,'purple');
     fc.abilityUsed['Equipment Hex']=true;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     const doHex=(tuid)=>{
       const tfc=opp.field.find(f=>f.uid===tuid); if(!tfc)return;
@@ -13100,7 +13152,7 @@ function activateAbility(fc,abl){
     if(!fc.attachments || !fc.attachments.length){ log(`Silent Search: no equipment attached to ${DB[fc.cid].name}.`,'dmg'); return; }
     fc.abilityUsed['Silent Search']=true;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     const filt=(cc)=>cc && cc.transformOnly===true;
     const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(ap) : (ap===1);
@@ -13124,7 +13176,7 @@ function activateAbility(fc,abl){
     spendEnergyAbility(ap,5,DB[fc.cid]?.color||null);
     fc.abilityUsed['Blistering Blast']=true;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     const strike=(uid)=>{
       const tfc=G.players[oppNum].field.find(f=>f.uid===uid); if(!tfc)return;
@@ -13155,7 +13207,7 @@ function activateAbility(fc,abl){
     spendEnergyAbility(ap,4,DB[fc.cid]?.color||null);
     fc.abilityUsed['Scorched Earth']=true;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     const mark=(uid)=>{
       const lf=G.players[oppNum].field.find(f=>f.uid===uid); if(!lf)return;
@@ -13177,7 +13229,7 @@ function activateAbility(fc,abl){
     if(!fc.abilityUsed)fc.abilityUsed={};
     fc.abilityUsed['Ancient God Rasengan']=true;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     const oppN=oppNum;
     closeAllModals();
     openEnemyTargetPicker(targets,(uid)=>{
@@ -13211,7 +13263,7 @@ function activateAbility(fc,abl){
     if(!fc.abilityUsed)fc.abilityUsed={};
     fc.abilityUsed['Surface Depletion']=true;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     const oppN=oppNum;
     closeAllModals();
     openEnemyTargetPicker(enemies,(uid)=>{
@@ -13248,7 +13300,7 @@ function activateAbility(fc,abl){
     spendEnergyAbility(ap,5,DB[fc.cid]?.color||null);
     fc.imperfectStrikeTurn=G.turn;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     const oppNum=ap===1?2:1;
     const r1=1+Math.floor(Math.random()*5), r2=1+Math.floor(Math.random()*5);
     const odds=[r1,r2].filter(n=>n%2===1);
@@ -13294,7 +13346,7 @@ function activateAbility(fc,abl){
     if(!enemies.length){ log('Ravager Strike: no opponent characters to target.','dmg'); return; }
     fc.ravagerStrikeTurn=G.turn;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     const heads=coin(); const oppN=oppNum;
     closeAllModals();
     showCoinFlip(heads, ()=>{
@@ -13331,7 +13383,7 @@ function activateAbility(fc,abl){
     if(!charsInDiscard.length){ log('Darkness Overturn: no character cards in your Discard pile.','dmg'); return; }
     spendEnergyAbility(ap,7,DB[fc.cid]?.color||null);
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     const body=document.createElement('div');
     body.innerHTML='<div style="font-size:11px;color:#fca5a5;margin-bottom:8px">🜂 Choose a CHARACTER from your Discard pile to return to your hand.</div>';
@@ -13356,7 +13408,7 @@ function activateAbility(fc,abl){
     fc.abilityUsed['Healing Hands']=true;
     pl.usedAbilityThisTurn=true;
     if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; } // "(Card Taps)"
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     if(!coin()){ // TAILS = success
       const heal=(target)=>{ const mx=(target.baseHP||0)+(target.hpBonus||0)+(target.passiveHp||0); target.currentHP=Math.min(mx,(target.currentHP||0)+2); log(`Healing Hands: TAILS — ${DB[target.cid].name} heals +2 HP (now ${target.currentHP}).`,'gain'); renderAll(); };
@@ -13393,7 +13445,7 @@ function activateAbility(fc,abl){
     fc.abilityUsed['Full Moon Awakening']=true;
     pl.usedAbilityThisTurn=true;
     if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; }
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     if(coin()){
       const body=document.createElement('div');
@@ -13429,7 +13481,7 @@ function activateAbility(fc,abl){
     fc.abilityUsed['Unbroken Hook']=true;
     G.players[G.activePlayer].usedAbilityThisTurn=true;
     if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; }
-    if(G.activePlayer===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(G.activePlayer) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     const oppN=oppNum, myDef=fc.currentHP;
     closeAllModals();
     openEnemyTargetPicker(enemies,(uid)=>{
@@ -13456,7 +13508,7 @@ function activateAbility(fc,abl){
     if(!enemies.length){ log('Godly Restriction: no opponent characters to target.','dmg'); return; }
     fc.abilityUsed['Godly Restriction']=true;
     G.players[G.activePlayer].usedAbilityThisTurn=true;
-    if(G.activePlayer===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(G.activePlayer) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     flipCoinFor({title:'Godly Restriction', desc:'Flip a coin. Heads = lock down an opponent character.'}, (heads)=>{
       if(!heads){ log('Godly Restriction: TAILS — no effect.','dmg'); renderAll(); return; }
@@ -13483,7 +13535,7 @@ function activateAbility(fc,abl){
     if(fc.abilityUsed['The Fist of God']){ log('The Fist of God: already used this turn.','dmg'); return; }
     fc.abilityUsed['The Fist of God']=true;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     openEnemyTargetPicker(enemies,(uid)=>{
       const tfc=G.players[oppNum].field.find(f=>f.uid===uid);
@@ -13510,7 +13562,7 @@ function activateAbility(fc,abl){
     if(fc._lordsPrayerUsed){ log("The Lord's Prayer: already used this game.",'dmg'); return; }
     fc._lordsPrayerUsed=true;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     flipCoinFor({title:"The Lord's Prayer", desc:'Flip a coin. Heads = tutor a character costing 5 or more.'}, (heads)=>{
       if(!heads){ log("The Lord's Prayer: TAILS — no effect.",'dmg'); renderAll(); return; }
@@ -13527,7 +13579,7 @@ function activateAbility(fc,abl){
     spendEnergyAbility(ap,6,DB[fc.cid]?.color||null);
     fc.abilityUsed=fc.abilityUsed||{}; fc.abilityUsed['Divine Collector']=true;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     const roll=1+Math.floor(Math.random()*3);
     let kind, filt;
     if(roll===1){ kind='Location'; filt=(cc)=>cc&&cc.type==='location'; }
@@ -13555,7 +13607,7 @@ function activateAbility(fc,abl){
     const locs=G.players[oppNum].field.filter(f=>isLoc(DB[f.cid]));
     if(!locs.length){ log('Frozen Domain: opponent has no Locations in play.','dmg'); return; }
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     const freeze=(locUid)=>{
       fc._frozenLocUid=locUid;
       const lf=locs.find(l=>l.uid===locUid);
@@ -13590,7 +13642,7 @@ function activateAbility(fc,abl){
     if(fc.abilityUsed['Veeldens Future']){ log('Veeldens Future: already used this turn.','dmg'); return; }
     fc.abilityUsed['Veeldens Future']=true;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     rollDiceFor({sides:6,count:1,title:'Veeldens Future',desc:'Roll a d6 — even = search your deck for a Base Character.'},(roll)=>{
       const val=Array.isArray(roll)?roll[0]:roll;
@@ -13616,7 +13668,7 @@ function activateAbility(fc,abl){
     if(fc.tapped){ log('Controlled Sorcery: this card is already tapped.','dmg'); return; }
     fc.tapped=true;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     flipCoinFor({title:'Controlled Sorcery',desc:'Tails = search your deck for a Transformation card.'},(heads)=>{
       if(heads){ log('Controlled Sorcery: HEADS — no search.','dmg'); renderAll(); return; }
@@ -13646,7 +13698,7 @@ function activateAbility(fc,abl){
     // Taps on use — win or lose the flip, Rapture is done for the turn.
     fc.tapped=true; fc.abilityUsed=fc.abilityUsed||{}; fc.abilityUsed['The Reckoning']=true;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     openEnemyTargetPicker(enemies,(uid)=>{
       const tfc=G.players[oppNum].field.find(f=>f.uid===uid);
@@ -13670,7 +13722,7 @@ function activateAbility(fc,abl){
     fc.abilityUsed=fc.abilityUsed||{};
     fc.tapped=true;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     rollDiceFor({sides:4,count:1,title:'Scorched Strike',desc:'Roll a 4-sided dye. On a 1, deal 2 damage.'},(roll)=>{
       const val=Array.isArray(roll)?roll[0]:roll;
@@ -13699,7 +13751,7 @@ function activateAbility(fc,abl){
     fc.abilityUsed=fc.abilityUsed||{}; fc.abilityUsed['Buster Purge']=true;
     pl.usedAbilityThisTurn=true;
     fc.tapped=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     openEnemyTargetPicker(enemies,(uid)=>{
       const tfc=G.players[oppNum].field.find(f=>f.uid===uid);
@@ -13723,7 +13775,7 @@ function activateAbility(fc,abl){
     if(fc.abilityUsed['The Shift of Space']){ log('The Shift of Space: already used this turn.','dmg'); return; }
     fc.abilityUsed['The Shift of Space']=true;
     pl.usedAbilityThisTurn=true;
-    if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     flipCoinFor({title:'The Shift of Space', desc:'Flip a coin. Tails = you may swap a hand character with a field character.'}, (heads)=>{
       if(heads){ log('The Shift of Space: HEADS — no effect.','dmg'); renderAll(); return; }
@@ -13774,7 +13826,7 @@ function activateAbility(fc,abl){
     fc.abilityUsed['Exiled Hook']=true;
     G.players[G.activePlayer].usedAbilityThisTurn=true;
     if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; }
-    if(G.activePlayer===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(G.activePlayer) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     const oppN=oppNum;
     closeAllModals();
     openEnemyTargetPicker(enemies,(uid)=>{
@@ -13812,7 +13864,7 @@ function activateAbility(fc,abl){
     fc.abilityUsed['Godly Kamui']=true;
     G.players[G.activePlayer].usedAbilityThisTurn=true;
     if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; }
-    if(G.activePlayer===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    if(isMe(G.activePlayer) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     const ap=G.activePlayer;
     closeAllModals();
     openEnemyTargetPicker(enemies,(uid)=>{
@@ -13855,7 +13907,7 @@ function activateAbility(fc,abl){
   // - Using ANY activated ability forfeits the +2 "skip attack" energy bonus this turn.
   pl.usedAbilityThisTurn = true;
   // Profile stat: lifetime activated abilities used (local player only).
-  if(G.activePlayer===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
+  if(isMe(G.activePlayer) && typeof bumpStat==='function') bumpStat('abilities_used',1);
   // - A FREE (0-energy) ability TAPS the card (turns it sideways → can't attack or
   //   use more abilities this turn). A PAID (1+ energy) ability does NOT tap it.
   //   A per-card override (DB[cid].noTapOnAbility) keeps it untapped even when free.
@@ -13926,6 +13978,46 @@ function runAbilityEffect(fc, abl, pl){
       showModalEl('📡 Deep Ping',body);
     }
     renderAll(); return;
+  }
+  // ── VIRORA (SURFACE TECHNIQUE) PT: Surface Rasengan — 3 damage to a target; if it dies, Freeze another opposing character.
+  if(label==='Surface Rasengan'){
+    const ap=G.activePlayer; const oppNum=ap===1?2:1;
+    const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
+    if(!enemies.length){ log('Surface Rasengan: no opposing characters to target.','dmg'); renderAll(); return; }
+    openEnemyTargetPicker(enemies,(uid)=>{
+      const t=G.players[oppNum].field.find(f=>f.uid===uid); if(!t){ renderAll(); return; }
+      log(`🌀 Surface Rasengan hits ${DB[t.cid].name} for 3!`,'dmg');
+      if(typeof showDmgPopup==='function') showDmgPopup(oppNum,'-3',t.uid);
+      dealDamage(oppNum,uid,3);
+      const destroyed=!G.players[oppNum].field.some(f=>f.uid===uid);
+      if(!destroyed){ if(typeof recalcPassives==='function')recalcPassives(); closeAllModals(); renderAll(); return; }
+      const others=G.players[oppNum].field.filter(f=>isChar(DB[f.cid])&&!statusActive(f,'freeze'));
+      if(!others.length){ log('Surface Rasengan: target destroyed — no other character to Freeze.','info'); closeAllModals(); renderAll(); return; }
+      log('Surface Rasengan: target destroyed — Freeze another opposing character!','gain');
+      const _go=()=>openEnemyTargetPicker(others,(fuid)=>{
+        const ft=G.players[oppNum].field.find(f=>f.uid===fuid);
+        if(ft) applyStatus(ft,'freeze',(STATUS_META.freeze&&STATUS_META.freeze.dur)||1);
+        if(typeof recalcPassives==='function')recalcPassives(); closeAllModals(); renderAll();
+      },{sourcePlayer:ap,title:'Surface Rasengan — Freeze',desc:'Choose another opposing character to Freeze.'});
+      if(G._aiAuto) _go(); else setTimeout(_go,350);
+    },{sourcePlayer:ap,title:'Surface Rasengan',desc:'Choose an opposing character to deal 3 damage to.'});
+    return;
+  }
+  // ── VIRORA (SURFACE TECHNIQUE) PT: Sadala Roll Call — d3; on a 2, search for a Saiyan character, reveal, shuffle.
+  if(label==='Sadala Roll Call'){
+    const ap=G.activePlayer; const P=G.players[ap];
+    rollDiceFor({sides:3,count:1,title:'Sadala Roll Call',desc:'Roll a 3-sided die — on a 2, search your deck for a Saiyan character.'},(roll)=>{
+      const val=Array.isArray(roll)?roll[0]:roll;
+      if(val!==2){ log(`Sadala Roll Call: rolled ${val} — no search.`,'dmg'); renderAll(); return; }
+      log('Sadala Roll Call: rolled 2 — search for a Saiyan!','gain');
+      const filt=(cc)=>cc&&(cc.type==='char'||cc.type==='base_char')&&!cc.isToken&&(cc.subtypes||[]).some(x=>/saiyan/i.test(x));
+      const done=(cid)=>{ const f=newFC(cid); if(f) P.hand.push(f); shuffle(P.deck); log(`Sadala Roll Call: ${pname(ap)} reveals ${DB[cid].name} and adds it to their hand. Deck shuffled.`,'gain');
+        if(typeof showRevealOverlay==='function'&&ap!==1) try{ showRevealOverlay(cid); }catch(e){}
+        renderAll(); };
+      if(!(P.deck||[]).some(cid=>filt(DB[cid]))){ shuffle(P.deck); log('Sadala Roll Call: no Saiyan characters in deck. Deck shuffled.','info'); renderAll(); return; }
+      openDeckSearch('Sadala Roll Call','Rolled a 2 — choose a Saiyan character to reveal and add to your hand.',filt,done);
+    });
+    return;
   }
   // ── MAGNUS (SSB): Kinetic Bind — target enemy -3 ATK and no activated abilities until end of their following turn.
   if(label==='Kinetic Bind'){
@@ -14786,6 +14878,7 @@ function endTurnFx(p){
     if(f.surfacerHpDebuff){ f.hpBonus=(f.hpBonus||0)+f.surfacerHpDebuff; f.currentHP=(f.currentHP||0)+f.surfacerHpDebuff; f.surfacerHpDebuff=0; }
     if(f.krhAtk||f.krhHp){ f.currentATK=Math.max(0,(f.currentATK||0)-(f.krhAtk||0)); f.atkBonus=(f.atkBonus||0)-(f.krhAtk||0); f.hpBonus=(f.hpBonus||0)-(f.krhHp||0); f.currentHP=Math.max(1,(f.currentHP||0)-(f.krhHp||0)); f.krhAtk=0; f.krhHp=0; } // King's Right Hand +1/+3 ends
     if(f.ssbAtkBuff){ f.currentATK=(f.currentATK||0)-f.ssbAtkBuff; f.atkBonus=(f.atkBonus||0)-f.ssbAtkBuff; f.ssbAtkBuff=0; }
+    if(f._ph&&G.turn>=f._ph.until){ f.currentATK=(f.currentATK||0)+f._ph.atk; f.atkBonus=(f.atkBonus||0)+f._ph.atk; delete f._ph; log(`Pink Horizon on ${DB[f.cid]?.name} wears off.`,'info'); } // Pink Horizon expires
     if(f._kb&&G.turn>=f._kb.until){ f.currentATK=(f.currentATK||0)+f._kb.atk; f.atkBonus=(f.atkBonus||0)+f._kb.atk; delete f._kb; log(`Kinetic Bind on ${DB[f.cid]?.name} ends.`,'info'); } // Kinetic Bind (Magnus SSB) expires // Etheric Strike +1 ATK was "until end of turn"
   }); });
   // Snapshot "attacked last turn" for the player whose turn is ending (used by
@@ -16379,7 +16472,7 @@ function saveRegistry(){
   clearTimeout(_registrySaveTimer);
   _registrySaveTimer=setTimeout(async()=>{ try{ const {error}=await _celSB.from('profiles').update({registry:_registry}).eq('id',_celUserId); if(error){ _registryColumnOK=false; console.warn('[Registry] save failed:',error.message); } }catch(e){} },1200);
 }
-function registryEligible(cid){ const c=DB[cid]; return !!(c&&!c.isToken&&c.type!=='token'&&c.type!=='system'); }
+function registryEligible(cid){ const c=DB[cid]; return !!(c&&!c.isToken&&c.type!=='token'&&c.type!=='system'&&!(typeof cardHiddenFor==='function'&&cardHiddenFor(cid))); }
 function markSighted(cid){
   if(!registryEligible(cid)||_registry.sighted[cid]) return;
   _registry.sighted[cid]=Date.now(); saveRegistry(); updateRegistryBadge();
@@ -16511,7 +16604,7 @@ function registrySelect(cid,quiet){
   const head=document.getElementById('reg-head');
   head.innerHTML=`<div class="reg-no"><span>${m.number?'No. '+m.number:(c.type==='herald'?'HERALD':'UNNUMBERED')}</span><span>·</span><span>${(setLabel(getCardSet(cid))||'NO SET').toUpperCase()}</span></div>
     <div class="reg-name${st==='unregistered'?' unreg':''}">${st==='unregistered'?'UNREGISTERED':m.name}</div>
-    <div class="reg-tags"><span class="reg-tag rar" style="background:${rd.hex}">${rd.label}</span>${c.type==='herald'?'<span class="reg-tag">👑 HERALD</span>':''}${st!=='unregistered'?`<span class="reg-tag">${(c.transformOnly?'TRANSFORMATION':(c.type||'').replace('_',' ')).toUpperCase()}</span>${c.race?`<span class="reg-tag">${c.race.toUpperCase()}</span>`:''}${col?`<span class="reg-tag" style="border-color:${col.hex};color:${col.hex}">${col.pip} ${col.label.toUpperCase()}</span>`:''}`:''}</div>`;
+    <div class="reg-tags"><span class="reg-tag rar" style="background:${rd.hex}">${rd.label}</span>${pteBadge(cid,true)}${c.type==='herald'?'<span class="reg-tag">👑 HERALD</span>':''}${st!=='unregistered'?`<span class="reg-tag">${(c.transformOnly?'TRANSFORMATION':(c.type||'').replace('_',' ')).toUpperCase()}</span>${c.race?`<span class="reg-tag">${c.race.toUpperCase()}</span>`:''}${col?`<span class="reg-tag" style="border-color:${col.hex};color:${col.hex}">${col.pip} ${col.label.toUpperCase()}</span>`:''}`:''}</div>`;
   const body=document.getElementById('reg-body'); let h='';
   if(st==='unregistered'){
     h+=`<div class="reg-sealed">This card has not been sighted.<br><br>FOUND IN: ${(setLabel(getCardSet(cid))||'Promo').toUpperCase()} PACKS<br>Play against it or pull it to add it to the Registry.</div>`;
@@ -17625,7 +17718,7 @@ function showMobileCardSheet(cardId){
     html+='<img src="'+url+'" style="width:120px;border-radius:10px;border:2px solid rgba(200,164,74,.4);flex-shrink:0"/>';
   }
   html+='<div style="flex:1;min-width:0">';
-  html+='<div style="font-family:\'Cinzel\',serif;font-size:16px;color:#e8c570;margin-bottom:4px">'+c.name+'</div>';
+  html+='<div style="font-family:\'Cinzel\',serif;font-size:16px;color:#e8c570;margin-bottom:4px">'+c.name+'</div>'+pteBadge(cardId);
   html+='<div style="font-size:11px;color:#a5b4fc;margin-bottom:6px">';
   if(colDef)html+='<span style="color:'+colDef.hex+'">●</span> '+colDef.label+' · ';
   html+=(c.type||'').replace('_',' ').toUpperCase();
@@ -17684,7 +17777,7 @@ function showHoverPreview(cardId){
   if(url){
     html+='<img src="'+url+'" class="hover-preview-img" alt=""/>';
   }
-  html+='<div class="hover-preview-name">'+c.name+'</div>';
+  html+='<div class="hover-preview-name">'+c.name+'</div>'+pteBadge(cardId);
   html+='<div class="hover-preview-meta">';
   if(colDef)html+='<span style="color:'+colDef.hex+'">●</span> '+colDef.label+' · ';
   html+=(c.type||'').replace('_',' ').toUpperCase();
@@ -17905,7 +17998,7 @@ function showFullCard(cid,fc,holoOverride){
         <span style="width:7px;height:7px;border-radius:50%;background:${d.hex};display:inline-block"></span>
         ${d.label.toUpperCase()} — ${d.identity}</span>`;}).join('')+'<br>'
     : '';
-  meta.innerHTML=`<div style="font-weight:900;font-size:15px;color:#c8a0ff;margin-bottom:2px">${c.name}</div>
+  meta.innerHTML=`<div style="font-weight:900;font-size:15px;color:#c8a0ff;margin-bottom:2px">${c.name}</div>${pteBadge(cid)}
     <div style="font-size:10px;color:#6b7280;margin-bottom:4px">${c.race}·${c.type.replace('_',' ').toUpperCase()}·${(c.subtypes||[]).join(', ')}</div>
     ${fcColorBadge}`;
   wrap.appendChild(meta);
@@ -18978,7 +19071,7 @@ function bumpCount(mapKey,id,n){
 // never reach onEntry. Tokens and energy are excluded. Favorite Card =
 // non-character & non-energy; Favorite Character = character cards.
 function trackCardPlayed(p,c){
-  if(p!==1 || !c || c.isToken)return;
+  if(!isMe(p) || !c || c.isToken)return;
   if(typeof bumpStat!=='function')return;
   bumpStat('cards_played',1);
   if(c.color)bumpCount('color_counts',c.color,1);
@@ -19736,6 +19829,7 @@ const RARITY_ORDER=['common','uncommon','rare','legend','mythic','secret'];
 function getCardPool(){
   return Object.keys(DB).filter(id=>{
     const c=DB[id];
+    if(c&&c.exclusive) return false; // gift-only cards never enter packs / shop / grant-all
     if(!c||c.isToken||c.transformOnly||c.type==='token'||c.type==='system')return false;
     // Disabled cards: hidden from non-admins (admin sees everything)
     if(!isCardPlayable(id))return false;
@@ -20079,8 +20173,12 @@ async function saveNewsEditor(){
 // Check if a card is playable for the CURRENT user
 // Admin: everything is playable
 // Non-admin: blocked if in _disabledCards
+// PLAYTEST EXCLUSIVES: invisible to anyone who isn't an admin and doesn't own a copy.
+function cardHiddenFor(cid){ const c=DB[cid]; if(!c||!c.exclusive) return false; if(typeof isAdmin==='function'&&isAdmin()) return false; return !((typeof _collection!=='undefined'&&_collection[cid])>0); }
+function pteBadge(cid,compact){ const c=DB[cid]; if(!c||c.exclusive!=='playtest') return ''; return compact?'<span class="pte-badge sm">★ PLAYTEST EXCLUSIVE</span>':'<div class="pte-badge"><b>★ PLAYTEST EXCLUSIVE ★</b><span>SUPER ULTRA RARE · ONLY GIVEN TO PLAYTESTERS</span></div>'; }
 function isCardPlayable(cardId){
   if(isAdmin()) return true;
+  if(cardHiddenFor(cardId)) return false;
   return !_disabledCards[cardId];
 }
 
@@ -20325,6 +20423,7 @@ function _packPool(setId){
     if(!c||c.isToken||c.type==='token'||c.type==='system') return false;
     if(c.type==='energy_card'||c.type==='herald') return false;
     if(!isCardPlayable(id)) return false; // disabled gate (admin sees all)
+    if(c.exclusive) return false; // gift-only
     const cset = (typeof getCardSet==='function') ? getCardSet(id) : (c.setId||'');
     if(cset==='promo') return false;
     if(setId && cset!==setId) return false;  // scope to this pack's set
@@ -26716,7 +26815,7 @@ function bldPreview(cid,variant){
   const isCover=builderDeck._cover===cid;
   box.innerHTML=`
     <div class="big" onclick="showFullCard('${cid}',null,'${variant}')" title="Click to zoom">${dkImgOrSym(cid,'')}${variant!=='none'?`<div class="holo-thumb-glow holo-thumb-${variant}"></div>`:''}</div>
-    <div class="nm">${dkEsc(c.name)}</div>
+    <div class="nm">${dkEsc(c.name)}</div>${pteBadge(cid)}
     <div class="tl">${col.map(x=>`<span style="color:${COLOR_DEFS[x]?.hex||'#9d93c4'}">● ${(COLOR_DEFS[x]?.label||x).toUpperCase()}</span>`).join(' ')} · ${dkEsc(String(c.type||'').replace('_',' ').toUpperCase())}${c.transformOnly?' · 🔒 TRANSFORM ONLY':''} · <span style="color:${RARITY_DEFS[rar]?.hex||'#9d93c4'}">${RARITY_DEFS[rar]?.label||''}</span>${setName?' · '+dkEsc(setName).toUpperCase():''}</div>
     <div class="st">${c.atk>0||c.hp>0?`<span style="color:#fca5a5">⚔ ${c.atk||0}</span><span style="color:#86efac">♥ ${c.hp||0}</span>`:''}<span style="color:#f0d58a">⚡ ${c.cost||0}</span>${c.race?`<span style="color:#9d93c4;font-family:'Share Tech Mono',monospace;font-weight:400;font-size:10px">${dkEsc(c.race)}</span>`:''}</div>
     ${kws?`<div>${kws}</div>`:''}
@@ -26877,7 +26976,7 @@ let _mail={inbox:[],sent:[],tab:'inbox',sel:null,loaded:false,names:{},popQueue:
 const PLAYTEST_PRESET={
   subject:'Welcome to the Playtest',
   body:"Hey, it's Virora.\n\nYou're one of the very first people to step into the Courts — thank you for being here. This is a pre-alpha build, so expect rough edges, missing pieces and the occasional bug.\n\nThese rewards and your Founding Playtester title are yours to keep. Go open some packs, build a deck and show me what you've got.\n\n— Virora",
-  rewards:{celestium:2000,packs:[{kind:'pack',type:'basic',setId:'base_set',qty:3},{kind:'pack',type:'premium',setId:'base_set',qty:2}],cosmetics:['title_founding_playtester']},
+  rewards:{celestium:2000,packs:[{kind:'pack',type:'basic',setId:'base_set',qty:3},{kind:'pack',type:'premium',setId:'base_set',qty:2}],cards:[{cid:'virora_surface_pt',foil:'none',qty:1}],cosmetics:['title_founding_playtester']},
   popup:true
 };
 function mlEsc(s){ return (typeof escapeHtml==='function')?escapeHtml(s):String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
@@ -27163,7 +27262,7 @@ function gcRenderCompose(ctx){
     ${ctx==='code'?`<div class="gc-row"><input class="ml-in" id="gc-${P}-code" placeholder="CODE e.g. VIRORA-PT2" style="text-transform:uppercase;letter-spacing:2px" value="${mlEsc(S.code)}" oninput="gcState('${P}').code=this.value">
       <input class="ml-in" id="gc-${P}-max" type="number" min="1" placeholder="Max uses (blank = unlimited)" value="${mlEsc(S.max)}" oninput="gcState('${P}').max=this.value">
       <input class="ml-in" id="gc-${P}-exp" type="date" title="Expires (optional)" value="${mlEsc(S.expires)}" oninput="gcState('${P}').expires=this.value"></div>`:''}
-    <div class="gc-row"><select class="ml-sel" onchange="gcPreset('${P}',this.value);this.value=''"><option value="">Load a preset…</option><option value="playtest">Playtest Welcome (2,000 💠 · 3 Basic · 2 Premium · title)</option><option value="blank">Blank</option></select></div>
+    <div class="gc-row"><select class="ml-sel" onchange="gcPreset('${P}',this.value);this.value=''"><option value="">Load a preset…</option><option value="playtest">Playtest Welcome (2,000 💠 · 3 Basic · 2 Premium · Virora PT card · title)</option><option value="blank">Blank</option></select></div>
     <label class="ml-note" for="gc-${P}-subj">SUBJECT</label>
     <input class="ml-in" id="gc-${P}-subj" maxlength="80" value="${mlEsc(S.subject)}" oninput="gcState('${P}').subject=this.value">
     <label class="ml-note" for="gc-${P}-body">MESSAGE</label>
@@ -27226,7 +27325,7 @@ function gcpRender(){
   grid.innerHTML=list.map(c=>{ const n=gcpInGift(c.id), dis=typeof _disabledCards!=='undefined'&&_disabledCards[c.id];
     return `<div class="gcp-card${_gcp.sel===c.id?' sel':''}" data-cid="${c.id}" tabindex="0" onclick="gcpSelect('${c.id}')" ondblclick="gcpSelect('${c.id}');gcpAdd()" onkeydown="if(event.key==='Enter')gcpSelect('${c.id}')">
       <img loading="lazy" src="${getImg(c.id)}" alt="${mlEsc(c.name)}">
-      ${dis?'<span class="tag" style="border-color:#f87171;color:#fca5a5">DISABLED</span>':(c.formTier&&c.formTier!=='base'?`<span class="tag">${mlEsc(c.formTier.toUpperCase())}</span>`:'')}
+      ${dis?'<span class="tag" style="border-color:#f87171;color:#fca5a5">DISABLED</span>':c.exclusive?'<span class="tag" style="border-color:#ff3fb4;color:#ff8fd0;background:#050208">★ PLAYTEST</span>':(c.formTier&&c.formTier!=='base'?`<span class="tag">${mlEsc(c.formTier.toUpperCase())}</span>`:'')}
       ${n?`<span class="cnt">×${n}</span>`:''}
       <div class="n">${mlEsc(c.name)}</div><div class="m">${mlEsc(gcpMeta(c.id)||c.id)}</div></div>`; }).join('')||'<div class="ml-empty">No cards match.</div>';
 }
