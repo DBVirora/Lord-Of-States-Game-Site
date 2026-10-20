@@ -6585,6 +6585,23 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 .gc-suggest div{padding:6px 10px;font-size:11px;cursor:pointer;color:#d6d0f0}
 .gc-suggest div:hover{background:rgba(232,197,112,.1)}
 
+/* codes upgrade (8.9) */
+.gc-code{border:1px solid #2d2d4e;border-radius:10px;background:#140f2a;padding:10px 12px;margin-bottom:8px;display:flex;flex-direction:column;gap:5px}
+.gc-code.editing{border-color:#e8c570;box-shadow:0 0 12px rgba(232,197,112,.25)}
+.gc-code-top{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.gc-code-top b{letter-spacing:2px;color:#f0d58a;font-weight:400;font-family:'Orbitron',sans-serif;font-size:13px}
+.gc-code-ev{font-family:'Cinzel',serif;font-size:12px;color:#ff8fd0;letter-spacing:1px}
+.gc-code-act{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}.gc-code-act .dk-btn{padding:5px 10px;font-size:10px}
+.gc-pill.sch{border-color:#38bdf8;color:#7dd3fc}
+.gc-quick .dk-pill{padding:5px 9px;font-size:9px}
+.gc-editing{font-size:11px;color:#f0d58a;padding:7px 10px;border:1px dashed #e8c570;border-radius:8px;margin-bottom:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ml-feat-h{font-family:'Cinzel',serif;color:#f0d58a;letter-spacing:3px;font-size:12px;margin-bottom:8px}
+.ml-feat{border-radius:12px;padding:12px 14px;margin-bottom:10px;background:linear-gradient(#0d0b22,#0d0b22) padding-box,linear-gradient(135deg,#e8c570,#ff3fb4 50%,#d9d9e6) border-box;border:1.5px solid transparent}
+.ml-feat.done{opacity:.6}
+.ml-feat .ev{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:#ff8fd0}
+.ml-feat .top{display:flex;align-items:center;gap:10px}.ml-feat .top b{font-family:'Orbitron',sans-serif;letter-spacing:2px;color:#f0d58a;font-size:15px}
+.ml-feat .left{margin-left:auto;font-size:10px;color:#fbbf24}
+.ml-feat .sub{font-size:12px;color:#d6d0f0;margin:4px 0 8px}
+.dk-pill.ml-dot{position:relative}.dk-pill.ml-dot::after{content:'';position:absolute;top:-3px;right:-3px;width:8px;height:8px;border-radius:50%;background:#ff3fb4;box-shadow:0 0 6px #ff3fb4}
 /* playtest exclusive badge (8.8) */
 .pte-badge{display:flex;flex-direction:column;align-items:center;gap:2px;margin:6px 0;padding:6px 10px;border-radius:10px;text-align:center;
   background:linear-gradient(#050208,#050208) padding-box,linear-gradient(90deg,#e8c570,#fff3c4 22%,#c9a24a 40%,#e9e9f2 60%,#a9a9b8 78%,#e8c570) border-box;border:1.5px solid transparent;
@@ -6633,7 +6650,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 <body>
 
 <!-- AUTH HUD -->
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.8 · playtest card</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.9 · codes</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -7614,8 +7631,12 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='8.8'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='8.9'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'8.9', date:'2026-10-20', cards:[], abilities:[],
+    screens:['Gift Center → Codes: create OR edit codes; start + end date/time (datetime-local), quick "lasts" buttons (24h/3d/1w/2w/30d/90d season/no limit), event/season name, who-can-claim (everyone / new players ≤N days / longtime players ≥N days), max claims, ★ featured toggle, popup, rewards builder; list shows status LIVE/SCHEDULED/EXPIRED/FULL/OFF, window + time left, audience, EDIT, COPY CODE, COPY POST (ready-made Discord/Instagram text), TURN OFF/ON, delete (warns)',
+             'Mailbox → Redeem Code: "★ LIVE CODES" list of featured codes (event, code, time left, rewards, audience) with a CLAIM button / CLAIMED; unclaimed eligible featured codes add to the ✉ badge and put a pink dot on the Redeem tab; toast when a new featured code goes live'],
+    data:['Supabase VCU_Codes_Upgrade.sql: redeem_codes gains starts_at, event_name, audience (all|new|veteran), audience_days, featured, updated_at (+ trigger uppercases code); redeem_code checks start time + audience (auth.users.created_at); new RPC featured_codes() → code, subject, event_name, rewards, starts_at, expires_at, audience, audience_days, claimed, eligible'] },
   { build:'8.8', date:'2026-10-20',
     cards:[ { id:'virora_surface_pt', name:'Virora (Surface Technique)', set:'promo', number:'PT-001', rarity:'legend', exclusive:'playtest', color:'purple', type:'char', cost:9, atk:5, hp:11,
               scan:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Virora/Virora%20(Surface%20Technique)%20Playtest.png',
@@ -25625,7 +25646,7 @@ window.addEventListener('load',async()=>{
         <div class="ml-note">Messages are delivered even if the player is offline — they'll see them next time they log in.</div>
       </div>
     </div>
-    <div id="ml-view-redeem" style="display:none;max-width:520px">
+    <div id="ml-view-redeem" style="display:none;max-width:640px">
       <div class="ml-form">
         <label for="ml-code">REDEEM A CODE</label>
         <input class="ml-in" id="ml-code" placeholder="e.g. VIRORA-XXXX" style="text-transform:uppercase;letter-spacing:2px" onkeydown="if(event.key==='Enter')mlRedeem()">
@@ -25635,6 +25656,7 @@ window.addEventListener('load',async()=>{
         </div>
         <div class="ml-note">Rewards arrive as a gift in your inbox.</div>
       </div>
+      <div id="ml-featured" style="margin-top:14px"></div>
     </div>
   </div>
 </div>
@@ -27042,10 +27064,12 @@ async function mlLoad(){
   if(ids.length){ try{ const {data}=await _celSB.from('profiles').select('id,username').in('id',ids); (data||[]).forEach(p=>_mail.names[p.id]=p.username||'Player'); }catch(e){} }
 }
 function mlUnread(){ return _mail.inbox.filter(m=>!m.read_at||(mlHasRewards(m.attachments)&&!m.claimed_at)).length; }
-function mlBadge(){ const b=document.getElementById('hud-mail-badge'); if(!b) return; const n=mlUnread(); b.textContent=n>99?'99+':n; b.classList.toggle('on',n>0); }
+function mlBadge(){ const rp=document.querySelector('#mail-screen .dk-pill[data-t="redeem"]'); if(rp) rp.classList.toggle('ml-dot',(_mail.featuredOpen||0)>0); const b=document.getElementById('hud-mail-badge'); if(!b) return; const n=mlUnread()+(_mail.featuredOpen||0); b.textContent=n>99?'99+':n; b.classList.toggle('on',n>0); }
 async function mlRefresh(force){
   const before=new Set(_mail.inbox.map(m=>m.id)), wasLoaded=_mail.loaded;
-  await mlLoad(); mlBadge();
+  const hadFeat=new Set((_mail.featured||[]).map(c=>c.code));
+  await mlLoad(); try{ await mlLoadFeatured(); }catch(e){} mlBadge();
+  if(wasLoaded&&!force){ const nf=(_mail.featured||[]).filter(c=>!hadFeat.has(c.code)&&!c.claimed&&c.eligible); if(nf.length) mlToast('★ New code live: <b>'+mlEsc(nf[0].code)+'</b>'+(nf[0].event_name?' — '+mlEsc(nf[0].event_name):'')+' · click to claim'); }
   if(document.getElementById('mail-screen')?.classList.contains('active')) mlRender();
   // queue popups (unread popup mail), oldest first
   _mail.inbox.filter(m=>m.popup&&!m.read_at&&!_mail.popQueue.includes(m.id)).reverse().forEach(m=>_mail.popQueue.push(m.id));
@@ -27096,6 +27120,7 @@ function mlTab(t){
   document.getElementById('ml-view-redeem').style.display=t==='redeem'?'':'none';
   document.getElementById('mail-screen').classList.remove('reading');
   if(t==='write') mlRenderWrite();
+  if(t==='redeem'){ mlRenderFeatured(); mlLoadFeatured().then(()=>{ mlRenderFeatured(); mlBadge(); }); }
   if(t==='inbox'||t==='sent'){ _mail.sel=null; mlRender(); }
 }
 function mlRender(){
@@ -27191,25 +27216,71 @@ async function mlSend(){
   document.getElementById('ml-subj').value=''; document.getElementById('ml-body').value=''; _mail.to=null;
   mlLoad();
 }
-async function mlRedeem(){
+async function mlLoadFeatured(){
+  if(!_celSB||!_celUserId) return;
+  const {data,error}=await _celSB.rpc('featured_codes');
+  _mail.featured=error?[]:(data||[]);
+  _mail.featuredOpen=_mail.featured.filter(c=>!c.claimed&&c.eligible).length;
+}
+function mlRenderFeatured(){
+  const el=document.getElementById('ml-featured'); if(!el) return;
+  const list=_mail.featured||[];
+  if(!list.length){ el.innerHTML=''; return; }
+  el.innerHTML='<div class="ml-feat-h">★ LIVE CODES</div>'+list.map(c=>`<div class="ml-feat${c.claimed?' done':''}">
+    ${c.event_name?`<div class="ev">${mlEsc(c.event_name)}</div>`:''}
+    <div class="top"><b>${mlEsc(c.code)}</b>${c.expires_at?`<span class="left">⏳ ${gcLeft(c.expires_at)} left</span>`:''}</div>
+    <div class="sub">${mlEsc(c.subject||'')}</div>
+    <div class="ml-rw">${mlRewardLines(c.rewards).map(l=>`<span>${mlEsc(l)}</span>`).join('')}</div>
+    ${c.audience&&c.audience!=='all'?`<div class="ml-note">👥 ${mlEsc(gcAudienceText(c.audience,c.audience_days))}</div>`:''}
+    <div style="margin-top:8px">${c.claimed?'<span class="ml-ok">✓ CLAIMED</span>':c.eligible?`<button class="dk-btn gold" onclick="this.disabled=true;mlRedeem('${mlEsc(c.code)}')">🎁 CLAIM</button>`:'<span class="ml-note">Not available for your account</span>'}</div></div>`).join('');
+}
+async function mlRedeem(fromCode){
   const inp=document.getElementById('ml-code'), st=document.getElementById('ml-redeem-status');
-  const code=inp.value.trim(); if(!code){ st.textContent='Enter a code.'; st.className='ml-err'; return; }
+  const code=(typeof fromCode==='string'?fromCode:inp.value).trim(); if(!code){ st.textContent='Enter a code.'; st.className='ml-err'; return; }
   st.textContent='Checking…'; st.className='ml-note';
   const {data,error}=await _celSB.rpc('redeem_code',{p_code:code});
   if(error){ st.textContent=/function|does not exist|schema cache/i.test(error.message)?'Codes aren\'t switched on yet.':error.message; st.className='ml-err'; return; }
   if(!data||!data.ok){ st.textContent=(data&&data.error)||'That code didn\'t work.'; st.className='ml-err'; return; }
-  st.textContent='✓ Code redeemed — check your inbox!'; st.className='ml-ok'; inp.value='';
-  await mlRefresh(true);
+  st.textContent='✓ Code redeemed — check your inbox!'; st.className='ml-ok'; if(typeof fromCode!=='string') inp.value='';
+  await mlRefresh(true); await mlLoadFeatured(); mlRenderFeatured(); mlBadge();
 }
 
 // ═══ GIFT CENTER (admin) ═══
 let _gc={players:[],sel:new Set(),tab:'send',r:null,cr:null,codes:[]};
 function gcBlankRewards(){ return {celestium:0,xp:0,packs:[],cards:[],cosmetics:[]}; }
+function gcBlankCode(){ return {editing:null,code:'',max:'',starts:'',ends:'',event:'',audience:'all',audDays:'7',featured:false,subject:'',body:'',popup:true,rewards:gcBlankRewards()}; }
+// datetime-local <-> ISO helpers (local time in the input, UTC in the database)
+function gcToLocalInput(iso){ if(!iso) return ''; const d=new Date(iso); if(isNaN(d)) return ''; const z=n=>String(n).padStart(2,'0'); return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())+'T'+z(d.getHours())+':'+z(d.getMinutes()); }
+function gcFromLocalInput(v){ if(!v) return null; const d=new Date(v); return isNaN(d)?null:d.toISOString(); }
+function gcFmt(iso){ if(!iso) return ''; return new Date(iso).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}); }
+function gcLeft(iso){ const ms=new Date(iso)-Date.now(); if(ms<=0) return 'ended'; const m=Math.floor(ms/60000), h=Math.floor(m/60), d=Math.floor(h/24); return d?d+'d '+(h%24)+'h':h?h+'h '+(m%60)+'m':m+'m'; }
+function gcCodeStatus(c){ const now=Date.now();
+  if(!c.active) return ['OFF',''];
+  if(c.starts_at&&new Date(c.starts_at)>now) return ['SCHEDULED','sch'];
+  if(c.expires_at&&new Date(c.expires_at)<now) return ['EXPIRED',''];
+  if(c.max_uses&&c.uses>=c.max_uses) return ['FULL',''];
+  return ['LIVE','pt']; }
+function gcAudienceText(a,d){ return a==='new'?'New players only (account under '+(d||'?')+' days)':a==='veteran'?'Longtime players only (account '+(d||'?')+'+ days)':'Everyone'; }
+function gcDuration(hours){ const S=_gc.cr; const start=S.starts?new Date(S.starts):new Date(); if(!S.starts) S.starts=gcToLocalInput(start.toISOString()); S.ends=gcToLocalInput(new Date(start.getTime()+hours*3600000).toISOString()); gcRenderCompose('code'); }
+function gcCopy(text,btn){ const done=()=>{ if(btn){ const t=btn.textContent; btn.textContent='✓ COPIED'; setTimeout(()=>btn.textContent=t,1400); } };
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done,()=>{ prompt('Copy this:',text); });
+  else { prompt('Copy this:',text); } }
+function gcPromoText(c){
+  const rw=mlRewardLines(c.rewards).map(l=>l.replace(/^\S+\s/,'')).join(', ');
+  const parts=[];
+  parts.push('🎁 '+(c.event_name?c.event_name+' — ':'')+'Redeem code '+c.code+' in Lord of Courts'+(rw?' for '+rw:'')+'!');
+  parts.push('How: open ✉ Mailbox → Redeem Code.');
+  if(c.starts_at&&new Date(c.starts_at)>Date.now()) parts.push('Goes live '+gcFmt(c.starts_at)+'.');
+  if(c.expires_at) parts.push('Ends '+gcFmt(c.expires_at)+'.');
+  if(c.max_uses) parts.push('Only '+c.max_uses+' claims — first come, first served.');
+  if(c.audience&&c.audience!=='all') parts.push(gcAudienceText(c.audience,c.audience_days)+'.');
+  return parts.join(' ');
+}
 async function openGiftCenter(){
   if(!isAdmin()) return;
   showScreen('gift-center-screen');
   if(!_gc.r) _gc.r={subject:'',body:'',popup:false,rewards:gcBlankRewards()};
-  if(!_gc.cr) _gc.cr={code:'',max:'',expires:'',subject:'',body:'',popup:true,rewards:gcBlankRewards()};
+  if(!_gc.cr) _gc.cr=gcBlankCode();
   gcTab(_gc.tab);
   const {data,error}=await _celSB.rpc('admin_list_players');
   if(error){ document.getElementById('gc-players').innerHTML=`<tr><td colspan="6" class="ml-empty">${/function|does not exist|schema cache/i.test(error.message)?'Run VCU_Mailbox_Setup.sql in Supabase first.':mlEsc(error.message)}</td></tr>`; return; }
@@ -27258,10 +27329,23 @@ function gcRenderCompose(ctx){
   R.packs.forEach((p,i)=>items.push(`<div class="gc-item">${p.kind==='box'?'📦':'🎴'} <b>${p.qty}×</b> ${mlEsc(packDisplayName(p.kind,p.type,p.setId))}<button onclick="gcState('${P}').rewards.packs.splice(${i},1);gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`));
   R.cards.forEach((c,i)=>items.push(`<div class="gc-item"><img class="th" src="${getImg(c.cid)}" alt=""> <b>${c.qty}×</b> ${mlEsc(DB[c.cid]?.name||c.cid)} <span style="color:#6b6b8a">${mlEsc(gcpMeta(c.cid))}</span> ${c.foil!=='none'?`· <span style="color:${(VARIANT_META[c.foil]||{}).accent}">${mlEsc((VARIANT_META[c.foil]||{}).label||c.foil)}</span>`:''}<button onclick="gcState('${P}').rewards.cards.splice(${i},1);gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`));
   R.cosmetics.forEach((id,i)=>{ const it=cosItem(id); items.push(`<div class="gc-item">${(COS_TYPES[it?.type]||{}).icon||'✨'} ${mlEsc(it?it.name:id)}<button onclick="gcState('${P}').rewards.cosmetics.splice(${i},1);gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`); });
-  host.innerHTML=`<h4>${ctx==='code'?'CREATE A CODE':'MESSAGE & REWARDS'}</h4>
-    ${ctx==='code'?`<div class="gc-row"><input class="ml-in" id="gc-${P}-code" placeholder="CODE e.g. VIRORA-PT2" style="text-transform:uppercase;letter-spacing:2px" value="${mlEsc(S.code)}" oninput="gcState('${P}').code=this.value">
-      <input class="ml-in" id="gc-${P}-max" type="number" min="1" placeholder="Max uses (blank = unlimited)" value="${mlEsc(S.max)}" oninput="gcState('${P}').max=this.value">
-      <input class="ml-in" id="gc-${P}-exp" type="date" title="Expires (optional)" value="${mlEsc(S.expires)}" oninput="gcState('${P}').expires=this.value"></div>`:''}
+  host.innerHTML=`<h4>${ctx==='code'?(S.editing?'EDIT CODE':'CREATE A CODE'):'MESSAGE & REWARDS'}</h4>
+    ${ctx==='code'?`${S.editing?`<div class="gc-editing">✎ EDITING <b>${mlEsc(S.editing)}</b> — changes apply to anyone who hasn't redeemed it yet <button class="dk-btn" style="padding:4px 10px;font-size:10px" onclick="_gc.cr=gcBlankCode();gcRenderCompose('code')">CANCEL</button></div>`:''}
+      <label class="ml-note" for="gc-code-code">CODE</label>
+      <div class="gc-row"><input class="ml-in" id="gc-code-code" placeholder="e.g. LAUNCH-WEEK" style="text-transform:uppercase;letter-spacing:2px" value="${mlEsc(S.code)}" ${S.editing?'disabled':''} oninput="_gc.cr.code=this.value">
+        <input class="ml-in" id="gc-code-event" placeholder="Event / season name (optional)" value="${mlEsc(S.event)}" oninput="_gc.cr.event=this.value"></div>
+      <label class="ml-note">WHEN IT'S LIVE <span style="color:#6b6b8a">— leave Start blank to go live now, End blank to never expire</span></label>
+      <div class="gc-row"><span class="ml-note" style="min-width:38px">START</span><input class="ml-in" type="datetime-local" id="gc-code-start" value="${mlEsc(S.starts)}" oninput="_gc.cr.starts=this.value">
+        <span class="ml-note" style="min-width:30px">END</span><input class="ml-in" type="datetime-local" id="gc-code-end" value="${mlEsc(S.ends)}" oninput="_gc.cr.ends=this.value"></div>
+      <div class="gc-row gc-quick"><span class="ml-note">LASTS</span>${[['24 HRS',24],['3 DAYS',72],['1 WEEK',168],['2 WEEKS',336],['30 DAYS',720],['90 DAYS · SEASON',2160]].map(([l,h])=>`<button class="dk-pill" onclick="gcDuration(${h})">${l}</button>`).join('')}<button class="dk-pill" onclick="_gc.cr.starts='';_gc.cr.ends='';gcRenderCompose('code')">NO LIMIT</button></div>
+      <label class="ml-note">WHO CAN CLAIM</label>
+      <div class="gc-row"><select class="ml-sel" id="gc-code-aud" onchange="_gc.cr.audience=this.value;gcRenderCompose('code')">
+          <option value="all"${S.audience==='all'?' selected':''}>Everyone</option>
+          <option value="new"${S.audience==='new'?' selected':''}>New players only</option>
+          <option value="veteran"${S.audience==='veteran'?' selected':''}>Longtime players only</option></select>
+        ${S.audience!=='all'?`<input class="ml-in" type="number" min="1" style="max-width:90px" id="gc-code-days" value="${mlEsc(S.audDays)}" oninput="_gc.cr.audDays=this.value" aria-label="Days"><span class="ml-note">${S.audience==='new'?'days old or newer':'days old or more'}</span>`:''}
+        <input class="ml-in" id="gc-code-max" type="number" min="1" placeholder="Max claims (blank = ∞)" value="${mlEsc(S.max)}" oninput="_gc.cr.max=this.value"></div>
+      <label class="gc-row" style="font-size:11px;color:#e9e4ff;cursor:pointer"><input type="checkbox" ${S.featured?'checked':''} onchange="_gc.cr.featured=this.checked"> ★ Feature it — show this code to every player in Mailbox → Redeem Code with a Claim button</label>`:''}
     <div class="gc-row"><select class="ml-sel" onchange="gcPreset('${P}',this.value);this.value=''"><option value="">Load a preset…</option><option value="playtest">Playtest Welcome (2,000 💠 · 3 Basic · 2 Premium · Virora PT card · title)</option><option value="blank">Blank</option></select></div>
     <label class="ml-note" for="gc-${P}-subj">SUBJECT</label>
     <input class="ml-in" id="gc-${P}-subj" maxlength="80" value="${mlEsc(S.subject)}" oninput="gcState('${P}').subject=this.value">
@@ -27280,7 +27364,7 @@ function gcRenderCompose(ctx){
     <div class="gc-row"><select class="ml-sel" id="gc-${P}-cos">${gcCosOpts()}</select><button class="dk-btn" style="padding:8px 12px" onclick="gcAddCos('${P}')">+ ✨</button></div>
     <div class="gc-list">${items.join('')||'<span class="ml-note">No rewards attached — this will be a plain message.</span>'}</div>
     <div class="gc-row" style="margin-top:8px">
-      ${ctx==='code'?`<button class="dk-btn gold" onclick="gcCreateCode()">🎟 CREATE CODE</button>`:`<button class="dk-btn gold" id="gc-send-btn" onclick="gcSend()">🎁 SEND TO ${_gc.sel.size} PLAYER${_gc.sel.size===1?'':'S'}</button>`}
+      ${ctx==='code'?`<button class="dk-btn gold" onclick="gcCreateCode()">${S.editing?'💾 SAVE CHANGES':'🎟 CREATE CODE'}</button>`:`<button class="dk-btn gold" id="gc-send-btn" onclick="gcSend()">🎁 SEND TO ${_gc.sel.size} PLAYER${_gc.sel.size===1?'':'S'}</button>`}
       <span class="ml-note" id="gc-${P}-status"></span></div>`;
 }
 function gcPreset(ctx,v){ const S=gcState(ctx); if(v==='playtest'){ S.subject=PLAYTEST_PRESET.subject; S.body=PLAYTEST_PRESET.body; S.popup=true; S.rewards=JSON.parse(JSON.stringify(Object.assign(gcBlankRewards(),PLAYTEST_PRESET.rewards))); } else if(v==='blank'){ S.subject=''; S.body=''; S.rewards=gcBlankRewards(); } gcRenderCompose(ctx); }
@@ -27384,30 +27468,56 @@ async function gcLoadCodes(){
   const el=document.getElementById('gc-codes-list'); el.innerHTML='<div class="ml-empty">Loading…</div>';
   const {data,error}=await _celSB.from('redeem_codes').select('*').order('created_at',{ascending:false});
   if(error){ el.innerHTML='<div class="ml-empty">'+mlEsc(error.message)+'</div>'; return; }
-  _gc.codes=data||[];
-  el.innerHTML=_gc.codes.map(c=>`<div class="gc-item" style="align-items:flex-start;flex-direction:column;gap:4px">
-      <div style="display:flex;gap:8px;align-items:center;width:100%"><b style="letter-spacing:2px">${mlEsc(c.code)}</b>
-        <span class="gc-pill${c.active?' pt':''}">${c.active?'ACTIVE':'OFF'}</span>
-        <span class="gc-pill">${c.uses}${c.max_uses?' / '+c.max_uses:''} used</span>
-        ${c.expires_at?`<span class="gc-pill">expires ${new Date(c.expires_at).toLocaleDateString()}</span>`:''}
-        <span style="flex:1"></span>
-        <button style="color:#e8c570;margin-left:0" onclick="gcCodeActive('${mlEsc(c.code)}',${!c.active})">${c.active?'TURN OFF':'TURN ON'}</button>
-        <button onclick="gcCodeDelete('${mlEsc(c.code)}')" aria-label="Delete code">✕</button></div>
-      <div style="color:#9d93c4">${mlEsc(c.subject||'')}</div>
-      <div class="ml-rw">${mlRewardLines(c.rewards).map(l=>`<span>${mlEsc(l)}</span>`).join('')||'<span>no rewards</span>'}</div></div>`).join('')||'<div class="ml-empty">No codes yet.</div>';
+  _gc.codes=data||[]; _gc.upgraded=!_gc.codes.length||('starts_at' in _gc.codes[0]);
+  el.innerHTML=(_gc.upgraded?'':'<div class="ml-err" style="margin-bottom:8px">Run VCU_Codes_Upgrade.sql in Supabase to turn on start times, events, who-can-claim and featured codes.</div>')+(_gc.codes.map((c,i)=>{ const [st,cls]=gcCodeStatus(c);
+    const win=(c.starts_at||c.expires_at)?`${c.starts_at?gcFmt(c.starts_at):'now'} → ${c.expires_at?gcFmt(c.expires_at):'no end'}${st==='LIVE'&&c.expires_at?' · '+gcLeft(c.expires_at)+' left':''}${st==='SCHEDULED'?' · starts in '+gcLeft(c.starts_at):''}`:'No time limit';
+    return `<div class="gc-code${_gc.cr&&_gc.cr.editing===c.code?' editing':''}">
+      <div class="gc-code-top"><b>${mlEsc(c.code)}</b><span class="gc-pill ${cls}">${st}</span>${c.featured?'<span class="gc-pill pt">★ FEATURED</span>':''}
+        <span class="gc-pill">${c.uses}${c.max_uses?' / '+c.max_uses:''} claimed</span></div>
+      ${c.event_name?`<div class="gc-code-ev">${mlEsc(c.event_name)}</div>`:''}
+      <div class="ml-note">🕒 ${mlEsc(win)} · 👥 ${mlEsc(gcAudienceText(c.audience||'all',c.audience_days))}</div>
+      <div style="color:#9d93c4;font-size:11px">✉ ${mlEsc(c.subject||'')}</div>
+      <div class="ml-rw">${mlRewardLines(c.rewards).map(l=>`<span>${mlEsc(l)}</span>`).join('')||'<span>no rewards</span>'}</div>
+      <div class="gc-code-act">
+        <button class="dk-btn" onclick="gcEditCode(${i})">✎ EDIT</button>
+        <button class="dk-btn" onclick="gcCopy(_gc.codes[${i}].code,this)">⧉ COPY CODE</button>
+        <button class="dk-btn" onclick="gcCopy(gcPromoText(_gc.codes[${i}]),this)" title="Copy a ready-made post for Discord / Instagram">📣 COPY POST</button>
+        <button class="dk-btn" onclick="gcCodeActive('${mlEsc(c.code)}',${!c.active})">${c.active?'⏸ TURN OFF':'▶ TURN ON'}</button>
+        <button class="dk-btn" style="color:#f87171" onclick="gcCodeDelete('${mlEsc(c.code)}')" aria-label="Delete code">🗑</button></div></div>`; }).join('')||'<div class="ml-empty">No codes yet.</div>');
+}
+function gcEditCode(i){
+  const c=_gc.codes[i]; if(!c) return;
+  const R=Object.assign(gcBlankRewards(),JSON.parse(JSON.stringify(c.rewards||{})));
+  ['packs','cards','cosmetics'].forEach(k=>{ if(!Array.isArray(R[k])) R[k]=[]; });
+  _gc.cr={editing:c.code,code:c.code,max:c.max_uses||'',starts:gcToLocalInput(c.starts_at),ends:gcToLocalInput(c.expires_at),event:c.event_name||'',audience:c.audience||'all',audDays:String(c.audience_days||7),featured:!!c.featured,subject:c.subject||'',body:c.body||'',popup:c.popup!==false,rewards:R};
+  gcRenderCompose('code'); gcLoadCodes();
+  document.getElementById('gc-code-compose')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
 async function gcCreateCode(){
   const S=_gc.cr, st=document.getElementById('gc-code-status');
-  const code=(S.code||'').trim().toUpperCase().replace(/\s+/g,'-');
-  if(!/^[A-Z0-9-]{3,32}$/.test(code)){ st.textContent='Code: 3–32 letters, numbers or dashes.'; st.className='ml-err'; return; }
+  const say=(t,ok)=>{ st.textContent=t; st.className=ok?'ml-ok':'ml-err'; };
+  const code=(S.editing||(S.code||'').trim().toUpperCase().replace(/\s+/g,'-'));
+  if(!/^[A-Z0-9-]{3,32}$/.test(code)){ say('Code: 3–32 letters, numbers or dashes.'); return; }
+  const starts=gcFromLocalInput(S.starts), ends=gcFromLocalInput(S.ends);
+  if(starts&&ends&&new Date(ends)<=new Date(starts)){ say('The end time has to be after the start time.'); return; }
+  if(ends&&new Date(ends)<Date.now()&&!confirm('The end time is already in the past, so nobody will be able to claim this. Save anyway?')) return;
+  const days=parseInt(S.audDays); if(S.audience!=='all'&&!(days>0)){ say('Set how many days for who-can-claim.'); return; }
   const att=gcPayload(S.rewards);
-  const row={code,subject:S.subject||'Code reward',body:S.body||null,rewards:att||{},popup:!!S.popup,max_uses:S.max?Math.max(1,parseInt(S.max)):null,expires_at:S.expires?new Date(S.expires+'T23:59:59').toISOString():null,active:true};
-  const {error}=await _celSB.from('redeem_codes').insert(row);
-  if(error){ st.textContent=/duplicate/i.test(error.message)?'That code already exists.':error.message; st.className='ml-err'; return; }
-  st.textContent='✓ Created '+code; st.className='ml-ok'; S.code=''; gcLoadCodes(); gcRenderCompose('code');
+  if(att&&(att.cards||[]).some(c=>DB[c.cid]&&DB[c.cid].exclusive)&&!confirm('This code includes a PLAYTEST EXCLUSIVE card. Codes can be shared with anyone — anyone who gets the code can claim it. Continue?')) return;
+  const row={subject:S.subject||'Code reward',body:S.body||null,rewards:att||{},popup:!!S.popup,max_uses:S.max?Math.max(1,parseInt(S.max)):null,expires_at:ends};
+  const extra={starts_at:starts,event_name:(S.event||'').trim()||null,audience:S.audience,audience_days:S.audience==='all'?null:days,featured:!!S.featured};
+  const usesExtra=_gc.upgraded!==false;
+  const full=usesExtra?Object.assign({},row,extra):row;
+  let error;
+  if(S.editing){ ({error}=await _celSB.from('redeem_codes').update(full).eq('code',S.editing)); }
+  else { ({error}=await _celSB.from('redeem_codes').insert(Object.assign({code,active:true},full))); }
+  if(error){ say(/duplicate/i.test(error.message)?'That code already exists — pick another name or edit it.':/column|schema cache/i.test(error.message)?'Run VCU_Codes_Upgrade.sql in Supabase first, then try again.':error.message); return; }
+  say(S.editing?'✓ Saved '+code:'✓ Created '+code,true);
+  _gc.cr=gcBlankCode(); gcRenderCompose('code'); gcLoadCodes();
+  const s2=document.getElementById('gc-code-status'); if(s2){ s2.textContent=S.editing?'✓ Saved '+code:'✓ Created '+code+' — use 📣 COPY POST to share it'; s2.className='ml-ok'; }
 }
 async function gcCodeActive(code,on){ await _celSB.from('redeem_codes').update({active:on}).eq('code',code); gcLoadCodes(); }
-async function gcCodeDelete(code){ if(!confirm('Delete code '+code+'? Players who already redeemed it keep their rewards.')) return; await _celSB.from('redeem_codes').delete().eq('code',code); gcLoadCodes(); }
+async function gcCodeDelete(code){ if(!confirm('Delete code '+code+'?\n\nPlayers who already redeemed it keep their rewards, but the record of who redeemed it is erased — if you ever re-create a code with this name they could claim it again. Turning it OFF is usually safer.')) return; await _celSB.from('redeem_codes').delete().eq('code',code); gcLoadCodes(); }
 async function gcLoadLog(){
   const el=document.getElementById('gc-log'); el.innerHTML='<tr><td colspan="5" class="ml-empty">Loading…</td></tr>';
   const {data,error}=await _celSB.from('mail').select('id,recipient_id,kind,subject,attachments,created_at,read_at,claimed_at').in('kind',['gift','announcement']).order('created_at',{ascending:false}).limit(300);
