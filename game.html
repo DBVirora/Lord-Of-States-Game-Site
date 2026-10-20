@@ -6584,12 +6584,49 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 .gc-suggest{max-height:160px;overflow:auto;border:1px solid #2d2d4e;border-radius:8px;background:#0a0a1e;display:none}
 .gc-suggest div{padding:6px 10px;font-size:11px;cursor:pointer;color:#d6d0f0}
 .gc-suggest div:hover{background:rgba(232,197,112,.1)}
+
+/* menu shortcuts (8.6) */
+#menu-screen .mm-nameplate{ cursor:pointer; position:relative; transition:border-color .15s, box-shadow .15s; }
+#menu-screen .mm-nameplate:hover,#menu-screen .mm-nameplate:focus-visible{ border-color:#e8c570; box-shadow:0 0 14px rgba(232,197,112,.3); outline:none; }
+#menu-screen .mm-nameplate .mm-np-go{ display:block; font-family:'Share Tech Mono',monospace; font-size:8px; letter-spacing:2px; color:rgba(232,197,112,.55); margin-top:4px; transition:color .15s; }
+#menu-screen .mm-nameplate:hover .mm-np-go{ color:#f0d58a; }
+#menu-screen .mm-fr .mm-ml{ width:24px; height:22px; flex:none; border-radius:5px; border:1px solid var(--mm-line); background:none; color:#ff8fd0; cursor:pointer; font-size:12px; line-height:1; padding:0; }
+#menu-screen .mm-fr .mm-ch.mm-ch-i{ width:24px; height:22px; padding:0; font-size:12px; line-height:1; flex:none; }
+#menu-screen .mm-fr .mm-ml:hover{ border-color:#ff3fb4; box-shadow:0 0 8px rgba(255,63,180,.4); }
+/* gift center card picker */
+.gcp{position:fixed;inset:0;z-index:100002;background:rgba(6,4,18,.97);display:flex;flex-direction:column;padding:18px 20px;gap:12px;animation:mlFade .2s ease}
+.gcp-head{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.gcp-head h3{font-family:'Cinzel',serif;color:#f0d58a;letter-spacing:3px;margin:0;font-size:18px}
+.gcp-head .ml-in,.gcp-head .ml-sel{width:auto;flex:0 1 220px}
+.gcp-types{display:flex;gap:6px;flex-wrap:wrap}
+.gcp-body{flex:1;min-height:0;display:grid;grid-template-columns:1fr 300px;gap:14px}
+.gcp-grid{overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:12px;align-content:start;padding:2px 6px 10px 2px}
+.gcp-card{cursor:pointer;border-radius:10px;padding:6px;background:#0d0b22;border:1px solid #2d2d4e;transition:transform .12s,border-color .12s,box-shadow .12s;position:relative}
+.gcp-card:hover{transform:translateY(-3px);border-color:#7c3aed}
+.gcp-card.sel{border-color:#e8c570;box-shadow:0 0 0 1px #e8c570,0 0 16px rgba(232,197,112,.35)}
+.gcp-card img{width:100%;aspect-ratio:63/88;object-fit:cover;border-radius:6px;display:block;background:#140f2a}
+.gcp-card .n{font-family:'Cinzel',serif;font-size:11px;color:#e9e4ff;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gcp-card .m{font-family:'Share Tech Mono',monospace;font-size:9px;color:#9d93c4;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gcp-card .tag{position:absolute;top:10px;left:10px;font-size:8px;letter-spacing:1px;padding:2px 6px;border-radius:8px;background:rgba(8,6,20,.85);border:1px solid #3a2a6a;color:#c4b5fd}
+.gcp-card .cnt{position:absolute;top:10px;right:10px;font-family:'Orbitron',sans-serif;font-size:10px;padding:2px 7px;border-radius:9px;background:#e8c570;color:#1a1030;font-weight:700}
+.gcp-side{border:1px solid #2d2d4e;border-radius:12px;background:#0d0b22;padding:14px;overflow:auto;display:flex;flex-direction:column;gap:10px}
+.gcp-side img.big{width:100%;border-radius:10px;cursor:zoom-in;transition:box-shadow .2s}
+.gcp-side h4{font-family:'Cinzel',serif;color:#f0d58a;margin:0;font-size:15px;letter-spacing:1px}
+.gcp-fin{display:flex;flex-wrap:wrap;gap:6px}
+.gcp-fin button{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;padding:6px 9px;border-radius:14px;background:#140f2a;border:1px solid #3a2a6a;color:#d6d0f0;cursor:pointer}
+.gcp-fin button.on{border-color:var(--acc);color:#fff;box-shadow:0 0 10px var(--acc)}
+.gcp-qty{display:flex;align-items:center;gap:8px}
+.gcp-qty button{width:32px;height:32px;border-radius:8px;border:1px solid #3a2a6a;background:#140f2a;color:#f0d58a;font-size:16px;cursor:pointer}
+.gcp-qty b{font-family:'Orbitron',sans-serif;color:#f0d58a;min-width:30px;text-align:center}
+.gcp-added{display:flex;flex-direction:column;gap:4px}
+.gc-item img.th{width:24px;height:33px;object-fit:cover;border-radius:3px;flex:none}
+@media (max-width:820px){ .gcp{padding:12px} .gcp-body{grid-template-columns:1fr;grid-template-rows:1fr auto} .gcp-side{max-height:50vh} .gcp-side img.big{max-width:150px;align-self:center} .gcp-grid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))} }
 </style>
 </head>
 <body>
 
 <!-- AUTH HUD -->
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.5 · mailbox</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.6 · mailbox</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -6767,7 +6804,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
         <div class="mm-herald" id="mm-herald" onclick="mmCycleHerald()" title="Tap to change your display Herald"></div>
         <div class="mm-ring"></div>
         <div class="mm-info" style="width:100%;display:flex;flex-direction:column;gap:8px;align-items:center">
-          <div class="mm-nameplate"><b id="mm-name">—</b><small id="mm-title"></small></div>
+          <div class="mm-nameplate" role="button" tabindex="0" title="Open your profile" onclick="mmOpenProfile()" onkeydown="if(event.key==='Enter')mmOpenProfile()"><b id="mm-name">—</b><small id="mm-title"></small><span class="mm-np-go" aria-hidden="true">PROFILE ›</span></div>
           <div class="mm-xp"><i id="mm-xp"></i></div>
           <div class="mm-stat"><div>WINS<b id="mm-wins">0</b></div><div>LOSSES<b id="mm-losses">0</b></div><div>WIN RATE<b id="mm-wr">—</b></div><div>REGISTRY<b id="mm-reg">0%</b></div></div>
           <div class="mm-sub" id="mm-herald-sub" onclick="mmHeraldPick()" style="cursor:pointer">HERALD · — · TAP TO CHANGE</div>
@@ -7570,8 +7607,12 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='8.5'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='8.6'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'8.6', date:'2026-10-20', cards:[], abilities:[],
+    screens:['Main menu: player nameplate (name + title) is clickable → Profile screen, with a small "PROFILE ›" hint; friends panel rows get a ✉ button (online and offline) that opens Mailbox → Write to that friend',
+             'Gift Center: card reward is now a full-screen visual picker (#gcp) — search, set filter, type chips, card grid showing art + form tier + card number + set; side panel with big preview, finish chips (VARIANT_META accents), copies stepper, ADD TO GIFT, and the list already in the gift'],
+    data:[] },
   { build:'8.5', date:'2026-10-20', cards:[], abilities:[],
     screens:['MAILBOX screen #mail-screen (Inbox / Sent / Write / Redeem Code) — HUD ✉ button with pink unread badge, Court-tab card "Mailbox", ✉ button on friend rows',
              'Popup letter (.ml-pop/.ml-letter) for unread popup mail on login, one at a time, never during a match',
@@ -16701,9 +16742,10 @@ function mmRenderLoadout(){
 function mmRenderFriends(){
   const el=document.getElementById('mm-friends'); if(!el)return; const list=(typeof _friendsList!=='undefined')?_friendsList.slice():[];
   list.sort((a,b)=>(isUserOnline(b.last_active)?1:0)-(isUserOnline(a.last_active)?1:0)); const on=list.filter(f=>isUserOnline(f.last_active)).length;
-  const rows=list.slice(0,6).map(f=>{ const o=isUserOnline(f.last_active); return `<div class="mm-fr"><span class="mm-st${o?'':' off'}"></span><span class="mm-av">${escapeHtml((f.username||'?')[0].toUpperCase())}</span><b>${escapeHtml(f.username||'Unknown')}</b><small>${o?'ONLINE':mmAgo(f.last_active)}</small>${o?`<button class="mm-ch" onclick="inviteFriendToMatch('${f.user_id}','${escapeHtml(f.username||'')}')">CHALLENGE</button>`:''}</div>`; }).join('');
+  const rows=list.slice(0,6).map(f=>{ const o=isUserOnline(f.last_active); return `<div class="mm-fr"><span class="mm-st${o?'':' off'}"></span><span class="mm-av">${escapeHtml((f.username||'?')[0].toUpperCase())}</span><b>${escapeHtml(f.username||'Unknown')}</b>${o?'':`<small>${mmAgo(f.last_active)}</small>`}<button class="mm-ml" title="Message ${escapeHtml(f.username||'')}" aria-label="Message ${escapeHtml(f.username||'')}" onclick="event.stopPropagation();mlMessageFriend('${f.user_id}','${escapeHtml(f.username||'').replace(/'/g,'')}')">✉</button>${o?`<button class="mm-ch mm-ch-i" title="Challenge ${escapeHtml(f.username||'')}" aria-label="Challenge ${escapeHtml(f.username||'')}" onclick="inviteFriendToMatch('${f.user_id}','${escapeHtml(f.username||'')}')">⚔</button>`:''}</div>`; }).join('');
   el.innerHTML=`<h3 class="mm-h3" style="cursor:pointer" onclick="showScreen('friends-screen');openFriends()">FRIENDS · ${on} ONLINE</h3>`+(rows||'<div class="mm-sub">No friends yet — add some from the Court tab.</div>');
 }
+function mmOpenProfile(){ showScreen('profile-screen'); if(typeof refreshProfileScreen==='function') refreshProfileScreen(); }
 function mmAgo(ts){ if(!ts)return '—'; const m=Math.round((Date.now()-new Date(ts).getTime())/60000); if(m<60)return m+'M AGO'; const h=Math.round(m/60); if(h<24)return h+'H AGO'; const d=Math.round(h/24); return d<2?'YESTERDAY':d+'D AGO'; }
 function mmTogPanel(k,on){ const sc=document.getElementById('menu-screen'); sc.toggleAttribute('data-hide-'+k,!on); try{ localStorage.setItem('loc_menu_panels',JSON.stringify({quick:!sc.hasAttribute('data-hide-quick'),ledger:!sc.hasAttribute('data-hide-ledger'),loadout:!sc.hasAttribute('data-hide-loadout')})); }catch(e){} }
 function mmWire(){
@@ -27075,9 +27117,8 @@ function gcRenderCompose(ctx){
   if(R.celestium) items.push(`<div class="gc-item">💠 <b>${Number(R.celestium).toLocaleString()}</b> Celestium<button onclick="gcState('${P}').rewards.celestium=0;gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`);
   if(R.xp) items.push(`<div class="gc-item">⭐ <b>${Number(R.xp).toLocaleString()}</b> XP<button onclick="gcState('${P}').rewards.xp=0;gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`);
   R.packs.forEach((p,i)=>items.push(`<div class="gc-item">${p.kind==='box'?'📦':'🎴'} <b>${p.qty}×</b> ${mlEsc(packDisplayName(p.kind,p.type,p.setId))}<button onclick="gcState('${P}').rewards.packs.splice(${i},1);gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`));
-  R.cards.forEach((c,i)=>items.push(`<div class="gc-item">🃏 <b>${c.qty}×</b> ${mlEsc(DB[c.cid]?.name||c.cid)} ${c.foil!=='none'?'· '+mlEsc((VARIANT_META[c.foil]||{}).label||c.foil):''}<button onclick="gcState('${P}').rewards.cards.splice(${i},1);gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`));
+  R.cards.forEach((c,i)=>items.push(`<div class="gc-item"><img class="th" src="${getImg(c.cid)}" alt=""> <b>${c.qty}×</b> ${mlEsc(DB[c.cid]?.name||c.cid)} <span style="color:#6b6b8a">${mlEsc(gcpMeta(c.cid))}</span> ${c.foil!=='none'?`· <span style="color:${(VARIANT_META[c.foil]||{}).accent}">${mlEsc((VARIANT_META[c.foil]||{}).label||c.foil)}</span>`:''}<button onclick="gcState('${P}').rewards.cards.splice(${i},1);gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`));
   R.cosmetics.forEach((id,i)=>{ const it=cosItem(id); items.push(`<div class="gc-item">${(COS_TYPES[it?.type]||{}).icon||'✨'} ${mlEsc(it?it.name:id)}<button onclick="gcState('${P}').rewards.cosmetics.splice(${i},1);gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`); });
-  const finOpts=VARIANT_ORDER.map(v=>`<option value="${v}">${mlEsc((VARIANT_META[v]||{}).label||v)}</option>`).join('');
   host.innerHTML=`<h4>${ctx==='code'?'CREATE A CODE':'MESSAGE & REWARDS'}</h4>
     ${ctx==='code'?`<div class="gc-row"><input class="ml-in" id="gc-${P}-code" placeholder="CODE e.g. VIRORA-PT2" style="text-transform:uppercase;letter-spacing:2px" value="${mlEsc(S.code)}" oninput="gcState('${P}').code=this.value">
       <input class="ml-in" id="gc-${P}-max" type="number" min="1" placeholder="Max uses (blank = unlimited)" value="${mlEsc(S.max)}" oninput="gcState('${P}').max=this.value">
@@ -27096,11 +27137,7 @@ function gcRenderCompose(ctx){
       <select class="ml-sel" id="gc-${P}-ps">${gcSetsOpts()}</select>
       <input class="ml-in" type="number" min="1" value="1" id="gc-${P}-pq" style="max-width:70px" aria-label="Pack quantity">
       <button class="dk-btn" style="padding:8px 12px" onclick="gcAddPack('${P}')">+ 🎴</button></div>
-    <div class="gc-row"><input class="ml-in" id="gc-${P}-card" placeholder="Card name…" autocomplete="off" oninput="gcCardSuggest('${P}')">
-      <select class="ml-sel" id="gc-${P}-cf">${finOpts}</select>
-      <input class="ml-in" type="number" min="1" value="1" id="gc-${P}-cq" style="max-width:70px" aria-label="Card quantity">
-      <button class="dk-btn" style="padding:8px 12px" onclick="gcAddCard('${P}')">+ 🃏</button></div>
-    <div class="gc-suggest" id="gc-${P}-card-sug"></div>
+    <div class="gc-row"><button class="dk-btn" style="flex:1;padding:10px 12px" onclick="gcOpenCardPicker('${P}')">🃏 PICK CARDS TO GIFT…</button></div>
     <div class="gc-row"><select class="ml-sel" id="gc-${P}-cos">${gcCosOpts()}</select><button class="dk-btn" style="padding:8px 12px" onclick="gcAddCos('${P}')">+ ✨</button></div>
     <div class="gc-list">${items.join('')||'<span class="ml-note">No rewards attached — this will be a plain message.</span>'}</div>
     <div class="gc-row" style="margin-top:8px">
@@ -27110,6 +27147,70 @@ function gcRenderCompose(ctx){
 function gcPreset(ctx,v){ const S=gcState(ctx); if(v==='playtest'){ S.subject=PLAYTEST_PRESET.subject; S.body=PLAYTEST_PRESET.body; S.popup=true; S.rewards=JSON.parse(JSON.stringify(Object.assign(gcBlankRewards(),PLAYTEST_PRESET.rewards))); } else if(v==='blank'){ S.subject=''; S.body=''; S.rewards=gcBlankRewards(); } gcRenderCompose(ctx); }
 function gcAddNum(ctx,key){ const el=document.getElementById('gc-'+ctx+'-'+(key==='celestium'?'cel':'xp')); const n=Math.floor(Number(el.value)||0); if(n<=0) return; gcState(ctx).rewards[key]=(gcState(ctx).rewards[key]||0)+n; gcRenderCompose(ctx); }
 function gcAddPack(ctx){ const g=id=>document.getElementById('gc-'+ctx+'-'+id).value; const p={kind:g('pk'),type:g('pt'),setId:g('ps'),qty:Math.max(1,Math.floor(Number(g('pq'))||1))}; const R=gcState(ctx).rewards; const ex=R.packs.find(x=>x.kind===p.kind&&x.type===p.type&&x.setId===p.setId); if(ex) ex.qty+=p.qty; else R.packs.push(p); gcRenderCompose(ctx); }
+
+// ── Gift Center: visual card picker (8.6) ──
+const GCP_TYPES=[['all','ALL'],['herald','👑 HERALDS'],['base_char','BASE'],['char','CHARACTERS'],['transform','TRANSFORMS'],['team','TEAM'],['location','LOCATIONS'],['equipment','EQUIPMENT'],['instant','INSTANTS'],['energy_card','⚡ ENERGY']];
+let _gcp={ctx:'send',q:'',set:'all',type:'all',sel:null,foil:'none',qty:1};
+function gcpMeta(cid){ const c=DB[cid]; if(!c) return ''; const tier=(c.formTier&&c.formTier!=='base')?c.formTier.toUpperCase():''; const st=getCardSet(cid); return [tier,c.cardNumber||'',st?setLabel(st):(c.promo||/promo/.test(cid)?'Promo':'')].filter(Boolean).join(' · '); }
+function gcpType(c){ if(c.type==='char'&&c.transformOnly) return 'transform'; return c.type; }
+function gcpList(){
+  const q=_gcp.q.trim().toLowerCase();
+  return Object.values(DB).filter(c=>{
+    if(!c||c.isToken||c.type==='token'||c.type==='system') return false;
+    if(_gcp.type!=='all'&&gcpType(c)!==_gcp.type) return false;
+    const st=getCardSet(c.id);
+    if(_gcp.set==='__none__'){ if(st) return false; } else if(_gcp.set!=='all'&&st!==_gcp.set) return false;
+    if(q&&!(c.name.toLowerCase().includes(q)||c.id.includes(q)||(c.cardNumber||'').includes(q)||(c.charName||'').toLowerCase().includes(q))) return false;
+    return true;
+  }).sort((a,b)=>(getCardSet(a.id)||'~').localeCompare(getCardSet(b.id)||'~')||String(a.cardNumber||'999').localeCompare(String(b.cardNumber||'999'))||a.name.localeCompare(b.name));
+}
+function gcOpenCardPicker(ctx){
+  _gcp.ctx=ctx; document.getElementById('gcp')?.remove();
+  const sets=(typeof _cardSets!=='undefined'?_cardSets:[]);
+  const ov=document.createElement('div'); ov.className='gcp'; ov.id='gcp'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-label','Pick cards to gift');
+  ov.innerHTML=`<div class="gcp-head"><h3>PICK CARDS</h3>
+      <input class="ml-in" id="gcp-q" placeholder="Search name, number…" value="${mlEsc(_gcp.q)}" oninput="_gcp.q=this.value;gcpRender()">
+      <select class="ml-sel" id="gcp-set" onchange="_gcp.set=this.value;gcpRender()"><option value="all">All sets</option>${sets.map(s=>`<option value="${mlEsc(s.id)}"${_gcp.set===s.id?' selected':''}>${mlEsc(s.name)}</option>`).join('')}<option value="__none__"${_gcp.set==='__none__'?' selected':''}>No set / promos</option></select>
+      <span class="ml-note" id="gcp-count"></span><span style="flex:1"></span>
+      <button class="dk-btn gold" onclick="gcpClose()">DONE</button></div>
+    <div class="gcp-types">${GCP_TYPES.map(([k,l])=>`<span class="dk-pill${_gcp.type===k?' on':''}" data-k="${k}" onclick="_gcp.type='${k}';document.querySelectorAll('#gcp .gcp-types .dk-pill').forEach(p=>p.classList.toggle('on',p.dataset.k==='${k}'));gcpRender()">${l}</span>`).join('')}</div>
+    <div class="gcp-body"><div class="gcp-grid" id="gcp-grid"></div><div class="gcp-side" id="gcp-side"></div></div>`;
+  ov.addEventListener('keydown',e=>{ if(e.key==='Escape') gcpClose(); });
+  document.body.appendChild(ov); gcpRender(); gcpSide(); setTimeout(()=>document.getElementById('gcp-q')?.focus(),50);
+}
+function gcpClose(){ document.getElementById('gcp')?.remove(); gcRenderCompose(_gcp.ctx); }
+function gcpInGift(cid){ return gcState(_gcp.ctx).rewards.cards.filter(c=>c.cid===cid).reduce((n,c)=>n+c.qty,0); }
+function gcpRender(){
+  const grid=document.getElementById('gcp-grid'); if(!grid) return;
+  const list=gcpList(); document.getElementById('gcp-count').textContent=list.length+' CARDS';
+  grid.innerHTML=list.map(c=>{ const n=gcpInGift(c.id), dis=typeof _disabledCards!=='undefined'&&_disabledCards[c.id];
+    return `<div class="gcp-card${_gcp.sel===c.id?' sel':''}" data-cid="${c.id}" tabindex="0" onclick="gcpSelect('${c.id}')" ondblclick="gcpSelect('${c.id}');gcpAdd()" onkeydown="if(event.key==='Enter')gcpSelect('${c.id}')">
+      <img loading="lazy" src="${getImg(c.id)}" alt="${mlEsc(c.name)}">
+      ${dis?'<span class="tag" style="border-color:#f87171;color:#fca5a5">DISABLED</span>':(c.formTier&&c.formTier!=='base'?`<span class="tag">${mlEsc(c.formTier.toUpperCase())}</span>`:'')}
+      ${n?`<span class="cnt">×${n}</span>`:''}
+      <div class="n">${mlEsc(c.name)}</div><div class="m">${mlEsc(gcpMeta(c.id)||c.id)}</div></div>`; }).join('')||'<div class="ml-empty">No cards match.</div>';
+}
+function gcpSelect(cid){ _gcp.sel=cid; _gcp.qty=1; document.querySelectorAll('#gcp-grid .gcp-card').forEach(el=>el.classList.toggle('sel',el.dataset.cid===cid)); gcpSide(); }
+function gcpSide(){
+  const side=document.getElementById('gcp-side'); if(!side) return;
+  const c=DB[_gcp.sel]; const R=gcState(_gcp.ctx).rewards;
+  const added=R.cards.map((x,i)=>`<div class="gc-item"><img class="th" src="${getImg(x.cid)}" alt=""> <b>${x.qty}×</b> ${mlEsc(DB[x.cid]?.name||x.cid)} ${x.foil!=='none'?`<span style="color:${(VARIANT_META[x.foil]||{}).accent}">${mlEsc((VARIANT_META[x.foil]||{}).label)}</span>`:''}<button onclick="gcState('${_gcp.ctx}').rewards.cards.splice(${i},1);gcpRender();gcpSide()" aria-label="Remove">✕</button></div>`).join('');
+  if(!c){ side.innerHTML=`<div class="ml-empty" style="padding:24px 8px">Click a card to preview it.<br><br>Double-click adds one regular copy.</div>${added?`<h4 style="font-size:12px">IN THIS GIFT</h4><div class="gcp-added">${added}</div>`:''}`; return; }
+  const acc=(VARIANT_META[_gcp.foil]||{}).accent||'#9ca3af';
+  side.innerHTML=`<img class="big" src="${getImg(c.id)}" alt="${mlEsc(c.name)}" style="${_gcp.foil!=='none'?`box-shadow:0 0 0 2px ${acc},0 0 22px ${acc}`:''}" onclick="showFullCard('${c.id}',null,'${_gcp.foil}')">
+    <h4>${mlEsc(c.name)}</h4><div class="ml-note" style="margin-top:-6px">${mlEsc(gcpMeta(c.id))} · ${mlEsc((c.rarity||'').toUpperCase())} · ${mlEsc(c.id)}</div>
+    <div class="ml-note">FINISH</div>
+    <div class="gcp-fin">${VARIANT_ORDER.map(v=>`<button class="${_gcp.foil===v?'on':''}" style="--acc:${(VARIANT_META[v]||{}).accent}" onclick="_gcp.foil='${v}';gcpSide()">${mlEsc((VARIANT_META[v]||{}).label||v)}</button>`).join('')}</div>
+    <div class="gcp-qty"><span class="ml-note">COPIES</span><button onclick="_gcp.qty=Math.max(1,_gcp.qty-1);gcpSide()" aria-label="Fewer">−</button><b>${_gcp.qty}</b><button onclick="_gcp.qty=Math.min(99,_gcp.qty+1);gcpSide()" aria-label="More">+</button></div>
+    <button class="dk-btn gold" onclick="gcpAdd()">+ ADD TO GIFT</button>
+    ${added?`<h4 style="font-size:12px;margin-top:6px">IN THIS GIFT</h4><div class="gcp-added">${added}</div>`:''}`;
+}
+function gcpAdd(){
+  const cid=_gcp.sel; if(!DB[cid]) return;
+  const R=gcState(_gcp.ctx).rewards; const ex=R.cards.find(c=>c.cid===cid&&c.foil===_gcp.foil);
+  if(ex) ex.qty+=_gcp.qty; else R.cards.push({cid,foil:_gcp.foil,qty:_gcp.qty});
+  gcpRender(); gcpSide();
+}
 function gcCardSuggest(ctx){
   const q=document.getElementById('gc-'+ctx+'-card').value.trim().toLowerCase(), box=document.getElementById('gc-'+ctx+'-card-sug');
   if(q.length<2){ box.style.display='none'; return; }
