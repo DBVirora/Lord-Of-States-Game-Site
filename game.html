@@ -6626,7 +6626,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 <body>
 
 <!-- AUTH HUD -->
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.6 · mailbox</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.7 · battle music</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -7607,8 +7607,12 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='8.6'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='8.7'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'8.7', date:'2026-10-20', cards:[],
+    abilities:['The Reckoning (Rapture of the Vortex): now TAPS Rapture on use whether the coin is heads or tails (once per turn); targets prefer opponent characters not already Confused (and not another Rapture — Vortex Shield); AI won\'t use it when nothing is left worth confusing. Card text gains "(Taps)"'],
+    screens:[],
+    data:['Battle music: BATTLE_MUSIC_URLS = music/A Quiet World.mp3 and music/Frost World Flip.mp3 in the Scans repo. Plays on #game-screen / #game-screen-2v2 (all match types), stops on menus and during cutscenes, uses the same Music on/off + Music volume settings as menu music. Each new match starts on the next track; tracks alternate when one ends. Menu music unchanged.'] },
   { build:'8.6', date:'2026-10-20', cards:[], abilities:[],
     screens:['Main menu: player nameplate (name + title) is clickable → Profile screen, with a small "PROFILE ›" hint; friends panel rows get a ✉ button (online and offline) that opens Mailbox → Write to that friend',
              'Gift Center: card reward is now a full-screen visual picker (#gcp) — search, set filter, type chips, card grid showing art + form tier + card number + set; side panel with big preview, finish chips (VARIANT_META accents), copies stepper, ADD TO GIFT, and the list already in the gift'],
@@ -7910,7 +7914,7 @@ const DB={
     abilities:[{label:'Flash Step',type:'passive',cost:0,keyword:'burst_speed',text:'This card can attack the turn it enters.'}],transforms:[]},
   // ── RAPTURE OF THE VORTEX — BSE regular character (Titan • Beast). GREEN/PURPLE (endurance + trickery). 049/150 Rare.
   rapture_vortex_bse:{id:'rapture_vortex_bse',rarity:'rare',name:'Rapture of the Vortex',color:'green',colors:['green','purple'],charName:'Rapture of the Vortex',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:7,atk:6,hp:8,sym:'RVORTEX',setId:'base_set',cardNumber:'049/150',nextForms:[],
-    abilities:[{label:'Vortex Shield',type:'passive',cost:0,text:'This card cannot have any status effects applied to it.'},{label:'The Reckoning',type:'activated',cost:0,text:'Choose 1 Character on your opponent\'s field. Flip a coin. If heads, that character is now under Confusion.'}],transforms:[]},
+    abilities:[{label:'Vortex Shield',type:'passive',cost:0,text:'This card cannot have any status effects applied to it.'},{label:'The Reckoning',type:'activated',cost:0,text:'Choose 1 Character on your opponent\'s field. Flip a coin. If heads, that character is now under Confusion. (Taps)'}],transforms:[]},
   // ── ROYAL MATCHA — BSE Instant (Consumable). GREEN (healing). 078/150 Uncommon.
   royal_matcha_bse:{id:'royal_matcha_bse',rarity:'uncommon',name:'Royal Matcha',color:'green',charName:'Royal Matcha',subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:2,atk:0,hp:0,sym:'🍵',setId:'base_set',cardNumber:'078/150',nextForms:[],
     abilities:[{label:'Royal Matcha',type:'instant',cost:0,text:'Heal a chosen character for +2 HP and cure its Confusion status effect.'}],transforms:[]},
@@ -13633,8 +13637,14 @@ function activateAbility(fc,abl){
   //    flip a coin; heads = that character is Confused.
   if(abl.label==='The Reckoning'){
     const ap=G.activePlayer; const pl=G.players[ap]; const oppNum=ap===1?2:1;
-    const enemies=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
-    if(!enemies.length){ log('The Reckoning: no opponent characters to target.','dmg'); return; }
+    if(fc.tapped||(fc.abilityUsed&&fc.abilityUsed['The Reckoning'])){ log('The Reckoning: Rapture is already tapped this turn.','dmg'); return; }
+    const all=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
+    if(!all.length){ log('The Reckoning: no opponent characters to target.','dmg'); return; }
+    // Prefer characters that aren't already Confused and can actually take a status.
+    const fresh=all.filter(f=>!statusActive(f,'confuse')&&f.cid!=='rapture_vortex_bse');
+    const enemies=fresh.length?fresh:all;
+    // Taps on use — win or lose the flip, Rapture is done for the turn.
+    fc.tapped=true; fc.abilityUsed=fc.abilityUsed||{}; fc.abilityUsed['The Reckoning']=true;
     pl.usedAbilityThisTurn=true;
     if(ap===1 && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
@@ -14872,6 +14882,33 @@ function setBoardLook(look){
 // URL and push — no rebuild needed.
 const MENU_MUSIC_URL = 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/music/Black%20Candle%20Hall%20V1.mp3';
 
+// BATTLE MUSIC — plays during matches (1v1, 2v2, campaign, online). Each match
+// starts on the next track in the list, then the tracks keep alternating.
+const BATTLE_MUSIC_URLS = [
+  'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/music/A%20Quiet%20World.mp3',
+  'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/music/Frost%20World%20Flip.mp3'
+];
+let _battleAudio = null, _battleIdx = Math.floor(Math.random()*BATTLE_MUSIC_URLS.length), _battleWasOn = false;
+function _battleMusicWanted(){
+  if(typeof _gameSettings!=='undefined' && _gameSettings.music===false) return false;
+  if(_cutsceneActive || !BATTLE_MUSIC_URLS.length) return false;
+  return !!document.querySelector('#game-screen.active,#game-screen-2v2.active');
+}
+function _battleTrack(i){
+  if(!_battleAudio){ _battleAudio=new Audio(); _battleAudio.preload='auto';
+    _battleAudio.addEventListener('ended',()=>{ _battleIdx=(_battleIdx+1)%BATTLE_MUSIC_URLS.length; _battleTrack(_battleIdx); if(_battleMusicWanted()&&_musicUnlocked) _battleAudio.play().catch(()=>{}); }); }
+  _battleAudio.src=BATTLE_MUSIC_URLS[i%BATTLE_MUSIC_URLS.length];
+}
+function updateBattleMusic(){
+  const want=_battleMusicWanted();
+  if(want&&!_battleWasOn){ _battleIdx=(_battleIdx+1)%BATTLE_MUSIC_URLS.length; _battleTrack(_battleIdx); } // new match → next track
+  _battleWasOn=want;
+  if(!_battleAudio) return;
+  _battleAudio.volume=(typeof _gameSettings!=='undefined' ? _gameSettings.musicVolume : 0.4);
+  if(want&&_musicUnlocked){ if(_battleAudio.paused) _battleAudio.play().catch(()=>{}); }
+  else if(!_battleAudio.paused){ _battleAudio.pause(); }
+}
+
 let _menuAudio = null;
 let _cutsceneActive = false;   // true while a campaign cutscene video is playing
 let _musicUnlocked = false;    // becomes true after the first user interaction
@@ -14907,6 +14944,7 @@ function updateMenuMusic(){
   } else {
     if(!a.paused) a.pause();
   }
+  updateBattleMusic();
 }
 
 function stopMenuMusic(){ if(_menuAudio && !_menuAudio.paused) _menuAudio.pause(); }
@@ -14989,6 +15027,7 @@ function setSfxVolume(val){
 function setMusicVolume(val){
   _gameSettings.musicVolume = val/100;
   if(_menuAudio) _menuAudio.volume = _gameSettings.musicVolume;
+  if(_battleAudio) _battleAudio.volume = _gameSettings.musicVolume;
   if(typeof updateMenuMusic==='function')updateMenuMusic();
   saveGameSettings();
 }
@@ -15139,6 +15178,7 @@ function aiScoreAbility(p, fc, abl, src){
   if(aiTried('abl:'+fc.uid+':'+abl.label)) return -1;
   if(abl.ai&&abl.ai.when==='never') return -1;
   if(AIB.noop.has(abl.label)) return -1; // learned: this ability has no coded effect
+  if(abl.label==='The Reckoning'&&(fc.tapped||!aiEnemyChars(p).some(e=>!statusActive(e.fc,'confuse')&&e.fc.cid!=='rapture_vortex_bse'))) return -1; // nothing left worth confusing
   const text=((abl.text||'')+' '+(abl.label||'')).toLowerCase();
   const enemies=aiEnemyChars(p); const allies=pl.field.filter(f=>isChar(DB[f.cid]));
   const wounded=allies.filter(f=>f.currentHP<aiMaxHP(f)*.7);
