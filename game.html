@@ -6501,11 +6501,95 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 .ds2-go{display:flex;justify-content:flex-end;align-items:center;gap:14px;flex-wrap:wrap}
 @media (max-width:760px){ .ds2-hero{width:100%} .ds2-hero .dk-box{width:150px} }
 </style>
+<style id="mailbox-css">
+/* ═══════════════════ MAILBOX · GIFT CENTER (build 8.5) ═══════════════════ */
+.hud-mail{position:relative;width:36px;height:36px;border-radius:50%;border:1px solid rgba(200,164,74,.45);background:rgba(10,8,30,.75);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:#e8c570;transition:all .15s;flex:none}
+.hud-mail:hover{border-color:#e8c570;box-shadow:0 0 12px rgba(232,197,112,.35)}
+.hud-mail .badge{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:#ff3fb4;color:#fff;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;display:none;align-items:center;justify-content:center;box-shadow:0 0 8px rgba(255,63,180,.7)}
+.hud-mail .badge.on{display:flex}
+@media (max-width:480px){ .hud-mail{width:30px;height:30px;font-size:13px} }
+.ml-wrap{max-width:1200px;margin:0 auto}
+.ml-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.ml-grid{display:grid;grid-template-columns:minmax(260px,380px) 1fr;gap:14px;align-items:start}
+@media (max-width:820px){ .ml-grid{grid-template-columns:1fr} #mail-screen.reading .ml-list{display:none} #mail-screen:not(.reading) .ml-read{display:none} }
+.ml-list{border:1px solid #2d2d4e;border-radius:12px;background:#0d0b22;overflow:hidden;max-height:70vh;overflow-y:auto}
+.ml-row{display:flex;gap:10px;padding:11px 12px;border-bottom:1px solid #1f1b3a;cursor:pointer;transition:background .12s;align-items:flex-start}
+.ml-row:hover{background:rgba(124,58,237,.08)}
+.ml-row.sel{background:rgba(232,197,112,.08);box-shadow:inset 3px 0 0 #e8c570}
+.ml-row .ic{width:34px;height:34px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:15px;background:#1a1236;border:1px solid #3a2a6a}
+.ml-row.gift .ic{background:linear-gradient(135deg,#2a1036,#120a22);border-color:#ff3fb4;box-shadow:0 0 8px rgba(255,63,180,.35)}
+.ml-row .mid{flex:1;min-width:0}
+.ml-row .from{font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:#e9e4ff;display:flex;gap:6px;align-items:center}
+.ml-row .sub{font-size:11px;color:#c4b5fd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.ml-row .pre{font-size:10px;color:#6b6b8a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.ml-row .when{font-size:9px;color:#6b6b8a;white-space:nowrap}
+.ml-row.unread .from::after{content:'';width:7px;height:7px;border-radius:50%;background:#ff3fb4;box-shadow:0 0 6px #ff3fb4}
+.ml-chip{font-size:8px;letter-spacing:1px;padding:2px 6px;border-radius:8px;border:1px solid #ff3fb4;color:#ff8fd0}
+.ml-chip.done{border-color:#2d2d4e;color:#6b6b8a}
+.ml-read{border:1px solid #2d2d4e;border-radius:12px;background:#0d0b22;padding:18px;min-height:280px}
+.ml-read h3{font-family:'Cinzel',serif;color:#f0d58a;font-size:18px;margin:0 0 4px;letter-spacing:1px}
+.ml-read .meta{font-size:10px;letter-spacing:1px;color:#6b6b8a;margin-bottom:14px}
+.ml-read .body{font-size:13px;line-height:1.65;color:#d6d0f0;white-space:pre-wrap;word-wrap:break-word}
+.ml-rewards{margin-top:16px;padding:12px;border-radius:10px;border:1px solid rgba(255,63,180,.45);background:linear-gradient(135deg,rgba(255,63,180,.07),rgba(232,197,112,.05))}
+.ml-rewards .t{font-size:9px;letter-spacing:2px;color:#ff8fd0;margin-bottom:8px}
+.ml-rw{display:flex;flex-wrap:wrap;gap:6px}
+.ml-rw span{font-size:11px;padding:5px 10px;border-radius:14px;background:#140f2a;border:1px solid #3a2a6a;color:#e9e4ff}
+.ml-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.ml-empty{padding:40px 16px;text-align:center;color:#6b6b8a;font-size:12px;letter-spacing:1px}
+.ml-form{display:flex;flex-direction:column;gap:10px;border:1px solid #2d2d4e;border-radius:12px;background:#0d0b22;padding:16px}
+.ml-form label{font-size:9px;letter-spacing:2px;color:#9d93c4}
+.ml-in,.ml-ta,.ml-sel{width:100%;box-sizing:border-box;background:#0a0a1e;color:#e9e4ff;border:1px solid #3a2a6a;border-radius:8px;padding:9px 11px;font-family:'Share Tech Mono',monospace;font-size:12px;outline:none}
+.ml-in:focus,.ml-ta:focus,.ml-sel:focus{border-color:#e8c570}
+.ml-ta{min-height:150px;resize:vertical;line-height:1.5}
+.ml-note{font-size:10px;color:#6b6b8a;line-height:1.5}
+.ml-ok{font-size:11px;color:#4ade80}.ml-err{font-size:11px;color:#f87171}
+/* popup letter */
+.ml-pop{position:fixed;inset:0;z-index:100000;background:rgba(4,3,14,.82);display:flex;align-items:center;justify-content:center;padding:16px;animation:mlFade .25s ease}
+@keyframes mlFade{from{opacity:0}to{opacity:1}}
+.ml-letter{max-width:540px;width:100%;max-height:88vh;overflow:auto;border-radius:16px;padding:26px 24px 20px;position:relative;
+  background:linear-gradient(#0b0614,#0b0614) padding-box,linear-gradient(135deg,#e8c570,#ff3fb4 35%,#d9d9e6 65%,#e8c570) border-box;border:2px solid transparent;
+  box-shadow:0 0 40px rgba(255,63,180,.35),0 20px 60px rgba(0,0,0,.6);animation:mlRise .35s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes mlRise{from{transform:translateY(20px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+.ml-letter .seal{width:58px;height:58px;margin:-4px auto 10px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;
+  background:radial-gradient(circle at 35% 30%,#ff7ccd,#a3005c 70%);border:2px solid #e8c570;box-shadow:0 0 18px rgba(255,63,180,.6)}
+.ml-letter h2{font-family:'Cinzel',serif;text-align:center;color:#ff8fd0;font-size:20px;letter-spacing:2px;margin:0 0 4px;text-shadow:0 0 12px rgba(255,63,180,.55)}
+.ml-letter .from{text-align:center;font-size:10px;letter-spacing:3px;color:#d9d9e6;margin-bottom:14px}
+.ml-letter .body{font-size:13px;line-height:1.7;color:#ece6ff;white-space:pre-wrap}
+/* Founding Playtester title — black + neon pink, gold & silver trim */
+.ttl-fx-playtest,.cos-prev .ttl.ttl-fx-playtest{display:inline-block;padding:3px 12px !important;border-radius:20px;
+  color:#ff4fbf !important;font-weight:700;letter-spacing:2px;
+  text-shadow:0 0 4px #ff4fbf,0 0 10px rgba(255,63,180,.9),0 0 20px rgba(255,63,180,.6) !important;
+  background:linear-gradient(#050208,#050208) padding-box,linear-gradient(90deg,#e8c570,#fff3c4 22%,#c9a24a 40%,#e9e9f2 60%,#a9a9b8 78%,#e8c570) border-box !important;
+  border:1.5px solid transparent !important;box-shadow:0 0 12px rgba(255,63,180,.35),inset 0 0 8px rgba(255,63,180,.18);animation:ttlPtPulse 2.6s ease-in-out infinite}
+@keyframes ttlPtPulse{0%,100%{box-shadow:0 0 10px rgba(255,63,180,.3),inset 0 0 8px rgba(255,63,180,.15)}50%{box-shadow:0 0 18px rgba(255,63,180,.55),inset 0 0 10px rgba(255,63,180,.28)}}
+/* gift center */
+.gc-grid{display:grid;grid-template-columns:minmax(320px,1.1fr) 1fr;gap:14px;align-items:start}
+@media (max-width:980px){ .gc-grid{grid-template-columns:1fr} }
+.gc-box{border:1px solid #2d2d4e;border-radius:12px;background:#0d0b22;padding:14px}
+.gc-box h4{font-family:'Cinzel',serif;color:#f0d58a;font-size:13px;letter-spacing:2px;margin:0 0 10px}
+.gc-table{width:100%;border-collapse:collapse;font-size:11px}
+.gc-table th{text-align:left;font-size:9px;letter-spacing:1px;color:#6b6b8a;padding:6px 6px;border-bottom:1px solid #2d2d4e;position:sticky;top:0;background:#0d0b22}
+.gc-table td{padding:7px 6px;border-bottom:1px solid #1a1733;color:#d6d0f0;vertical-align:top}
+.gc-table tr:hover td{background:rgba(124,58,237,.06)}
+.gc-table tr.sel td{background:rgba(232,197,112,.08)}
+.gc-scroll{max-height:56vh;overflow:auto;border:1px solid #1f1b3a;border-radius:8px}
+.gc-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.gc-row .ml-in,.gc-row .ml-sel{width:auto;flex:1;min-width:80px}
+.gc-list{display:flex;flex-direction:column;gap:4px;margin:6px 0}
+.gc-item{display:flex;align-items:center;gap:8px;font-size:11px;padding:5px 8px;border-radius:8px;background:#140f2a;border:1px solid #2d2d4e}
+.gc-item b{color:#f0d58a;font-weight:400}
+.gc-item button{margin-left:auto;background:none;border:0;color:#f87171;cursor:pointer;font-size:13px}
+.gc-pill{font-size:9px;padding:2px 7px;border-radius:10px;border:1px solid #3a2a6a;color:#9d93c4;white-space:nowrap}
+.gc-pill.pt{border-color:#ff3fb4;color:#ff8fd0}
+.gc-suggest{max-height:160px;overflow:auto;border:1px solid #2d2d4e;border-radius:8px;background:#0a0a1e;display:none}
+.gc-suggest div{padding:6px 10px;font-size:11px;cursor:pointer;color:#d6d0f0}
+.gc-suggest div:hover{background:rgba(232,197,112,.1)}
+</style>
 </head>
 <body>
 
 <!-- AUTH HUD -->
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.4 · decks v2</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.5 · mailbox</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -6524,6 +6608,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
         <div class="xp-bar-track"><div class="xp-bar-fill" id="hud-xp-fill" style="width:0%"></div></div>
       </div>
     </div>
+    <div class="hud-mail" id="hud-mail" onclick="openMailbox()" title="Mailbox — messages, gifts and codes" role="button" aria-label="Mailbox">✉<span class="badge" id="hud-mail-badge"></span></div>
     <div class="cel-badge" id="hud-celestium" onclick="showScreen('profile-screen');refreshProfileScreen()" title="Celestium — click to view profile" style="cursor:pointer">
       <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" class="cel-icon" alt="C"/>
       <span class="cel-amount" id="hud-cel-amount">—</span>
@@ -7485,8 +7570,16 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='8.4'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='8.5'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'8.5', date:'2026-10-20', cards:[], abilities:[],
+    screens:['MAILBOX screen #mail-screen (Inbox / Sent / Write / Redeem Code) — HUD ✉ button with pink unread badge, Court-tab card "Mailbox", ✉ button on friend rows',
+             'Popup letter (.ml-pop/.ml-letter) for unread popup mail on login, one at a time, never during a match',
+             'Admin GIFT CENTER #gift-center-screen (Admin → Quick Actions): player list with email/login/codes, multi-select, compose + reward builder, Codes tab, Sent Log'],
+    data:['Supabase: VCU_Mailbox_Setup.sql — tables mail, mail_blocks, redeem_codes, code_redemptions; RPCs mail_mark_read, mail_delete, mail_claim, redeem_code, admin_list_players',
+          'Rewards attachment JSON: {celestium, xp, packs:[{kind,type,setId,qty}], cards:[{cid,foil,qty}], cosmetics:[id]} — claim via rpc mail_claim (returns attachments once), then grant locally',
+          'Realtime: broadcast event "mail" on channel invites:<recipient uuid> = refresh inbox',
+          'New exclusive title title_founding_playtester (fx:"playtest" → black pill, neon pink #ff4fbf text, gold/silver trim); code VIRORA-PLAYTEST'] },
   { build:'8.4', date:'2026-10-19',
     cards:[ { id:'vuruna_base_bse', name:'Vuruna', set:'base_set', number:'031/150', rarity:'uncommon', color:'yellow', type:'base_char', cost:4, atk:4, hp:4,
               scan:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/031-150%20(Vuruna).png', newAbilities:['Flash Step (passive = burst_speed keyword: can attack the turn it enters)'] } ],
@@ -16373,7 +16466,7 @@ const MENU_ART={};
 const MENU_FALLBACK_CARD={ campaign:'darkseid_herald', match:'kratos_promo', ai:'deerhaunter_promo', room:'lady_loki_promo', team:'magnus_virora', pvp:'ivan_wca_promo',
   packs:'destroyers_gift', singles:'aquatic_hearth', cosmetics:'back', events:'volaris_prism',
   mydecks:'surfacer_herald', builder:'magnus_base_bse', loadout:'back', herald:'peleus_herald', images:'volaris_prism',
-  registry:'virora_base_bse', rulebook:'nature_focus', pass:'virora_ssg', profile:'virora', friends:'najeela_ssg_bse', trade:'void_crystal_bse',
+  registry:'virora_base_bse', rulebook:'nature_focus', pass:'virora_ssg', profile:'virora', friends:'najeela_ssg_bse', mailbox:'virora_ssg', trade:'void_crystal_bse',
   tutorial:'billy_ssj1_bse', settings:'eklif_frost_bse', rules:'raven_promo', credits:'wca_overdrive_belt_promo', menuart:'volaris_prism' };
 const MENU_TABS=[
  {id:'play',label:'PLAY',icon:'⚔',plate:'PLAY',sub:'CHOOSE YOUR BATTLE',items:[
@@ -16403,6 +16496,7 @@ const MENU_TABS=[
   {id:'pass',t:'Battle Pass',s:'SEASON',d:'Tiers, XP and rewards.',go:()=>openBattlePassIfEnabled()},
   {id:'profile',t:'Profile',s:'STATS & ACHIEVEMENTS',d:'Your record, achievements, packs and Celestium log.',go:()=>{showScreen('profile-screen');refreshProfileScreen();}},
   {id:'friends',t:'Friends',s:'',d:'Friends list, invites and challenges.',go:()=>{showScreen('friends-screen');openFriends();}},
+  {id:'mailbox',t:'Mailbox',s:'MESSAGES & GIFTS',d:'Messages from friends and players, gifts and redeem codes.',go:()=>openMailbox()},
   {id:'trade',t:'Trade',s:'CARD FOR CARD',d:'Trade cards with other players.',go:()=>openTradeScreen()},
  ]},
  {id:'options',label:'OPTIONS',icon:'⚙',plate:'HELP & OPTIONS',sub:'LEARN · TUNE · SUPPORT',items:[
@@ -16590,7 +16684,7 @@ function mmRenderPlinth(){
   const h=mmDisplayHerald(); const el=document.getElementById('mm-herald'); if(el){ const u=h?getImg(h):null; el.innerHTML=u?`<img src="${u}" alt="">`:'<div style="display:grid;place-items:center;height:100%;font-size:40px">👑</div>'; if(u&&typeof applyScanTrim==='function')applyScanTrim(el.querySelector('img')); }
   const sub=document.getElementById('mm-herald-sub'); if(sub) sub.textContent='HERALD · '+(h?DB[h].name.toUpperCase():'—')+' · TAP TO CHANGE';
   const nm=document.getElementById('mm-name'); if(nm) { let n=(window._playerName||document.getElementById('hud-username')?.textContent||'').trim(); if(!n||/loading/i.test(n)) n='PLAYER'; nm.textContent=n.toUpperCase(); }
-  const ti=document.getElementById('mm-title'); if(ti){ const t=(typeof cosItem==='function')?cosItem(cosEquipped('title',1)):null; ti.textContent=(t&&t.id!=='title_none')?(t.text||t.name):''; ti.style.color=(t&&t.color)||'#00d4ff'; }
+  const ti=document.getElementById('mm-title'); if(ti){ const t=(typeof cosItem==='function')?cosItem(cosEquipped('title',1)):null; ti.textContent=(t&&t.id!=='title_none')?(t.text||t.name):''; ti.style.color=(t&&t.color)||'#00d4ff'; ti.classList.toggle('ttl-fx-playtest',!!(t&&t.fx==='playtest')); }
   const w=_celData.wins||0, l=_celData.losses||0; const W=document.getElementById('mm-wins'); if(W)W.textContent=w; const L=document.getElementById('mm-losses'); if(L)L.textContent=l; const R=document.getElementById('mm-wr'); if(R)R.textContent=(w+l)?Math.round(w/(w+l)*100)+'%':'—';
   const rg=document.getElementById('mm-reg'); if(rg&&typeof registryEligible==='function'){ const all=Object.keys(DB).filter(registryEligible); const reg=all.filter(cid=>registryState(cid)==='registered').length; rg.textContent=all.length?Math.round(reg/all.length*100)+'%':'0%'; }
   const xp=document.getElementById('mm-xp'); if(xp){ let pct=0; try{ const t=document.getElementById('hud-xp-text')||document.querySelector('[id*="xp"]'); const m=t&&/(\d+)\s*\/\s*(\d+)/.exec(t.textContent||''); if(m&&+m[2])pct=Math.min(100,+m[1]/+m[2]*100); }catch(e){} xp.style.width=pct+'%'; }
@@ -16725,6 +16819,7 @@ const COS_BUILTIN=[
   { id:'title_lord_blue', type:'title', name:'Lord of the Blue Court', tier:'common', text:'LORD OF THE BLUE COURT', color:'#00d4ff', desc:'Shown under your name in matches.' },
   { id:'title_lord_crimson', type:'title', name:'Lord of the Crimson Court', tier:'common', text:'LORD OF THE CRIMSON COURT', color:'#f87171', desc:'Shown under your name in matches.' },
   { id:'title_void_walker', type:'title', name:'Void Walker', tier:'rare', text:'VOID WALKER', color:'#a855f7', desc:'Shown under your name in matches.' },
+  { id:'title_founding_playtester', type:'title', name:'Founding Playtester', tier:'exclusive', text:'FOUNDING PLAYTESTER', color:'#ff4fbf', fx:'playtest', unlock:{kind:'playtest'}, desc:'Given to the very first playtesters of Lord of Courts. Black and neon pink with gold and silver trim — Virora\'s colours.' },
   { id:'title_herald_breaker', type:'title', name:'Herald Breaker', tier:'legendary', text:'HERALD BREAKER', color:'#fbbf24', desc:'For those who bring Heralds down.' },
   // herald entrances
   { id:'ent_royal', type:'entrance', name:'Royal Decree', tier:'default', free:true, fx:'royal', c:'#e8c570', glow:'rgba(232,197,112,.55)', icon:'👑', desc:'Golden rays and a fanfare.' },
@@ -16808,7 +16903,7 @@ async function buyCosmetic(id){
 }
 function cosUnlockText(it){
   const u=it.unlock||{}; if(u.kind==='registry_set') return 'Registry: complete '+((typeof setLabel==='function'&&setLabel(u.set))||u.set);
-  if(u.kind==='pass') return 'Battle Pass'; if(u.kind==='achievement') return 'Achievement: '+(u.id||''); if(u.kind==='event') return 'Event reward';
+  if(u.kind==='pass') return 'Battle Pass'; if(u.kind==='achievement') return 'Achievement: '+(u.id||''); if(u.kind==='event') return 'Event reward'; if(u.kind==='playtest') return 'Founding Playtesters only';
   if(u.kind==='pending') return 'Coming soon';
   if(u.kind==='starter') return 'Finish the tutorial';
   return it.tier==='exclusive'?'Exclusive reward':'Shop';
@@ -16880,7 +16975,7 @@ function applyIdentCos(p){
   if(av){ av.classList.remove('cos-framed','cos-ring'); av.style.removeProperty('--frame-img'); av.style.removeProperty('--ring1'); av.style.removeProperty('--ring2');
     if(fr&&fr.id!=='frame_none'){ if(fr.img){ av.classList.add('cos-framed'); av.style.setProperty('--frame-img',`url("${fr.img}")`); } else if(fr.ring){ av.classList.add('cos-ring'); av.style.setProperty('--ring1',fr.ring[0]); av.style.setProperty('--ring2',fr.ring[1]); } } }
   if(top){ top.classList.toggle('cos-plate',!!(pl&&pl.id!=='plate_none')); if(pl&&pl.id!=='plate_none'){ top.style.setProperty('--plate-bg',pl.img?`url("${pl.img}")`:pl.bg); top.style.setProperty('--plate-line',pl.line||'rgba(232,197,112,.3)'); } else { top.style.removeProperty('--plate-bg'); } }
-  if(ttl){ const txt=(ti&&ti.id!=='title_none')?(ti.text||ti.name):''; ttl.textContent=isAI&&!txt?'':txt; ttl.style.setProperty('--title-c',(ti&&ti.color)||'#e8c570'); ttl.style.setProperty('--title-glow',(ti&&ti.color)?ti.color+'88':'transparent'); }
+  if(ttl){ const txt=(ti&&ti.id!=='title_none')?(ti.text||ti.name):''; ttl.textContent=isAI&&!txt?'':txt; ttl.style.setProperty('--title-c',(ti&&ti.color)||'#e8c570'); ttl.style.setProperty('--title-glow',(ti&&ti.color)?ti.color+'88':'transparent'); ttl.classList.toggle('ttl-fx-playtest',!!(ti&&ti.fx==='playtest'&&txt)); }
 }
 const AI_COS={ entrance:'ent_abyss' };
 function cosHelloSend(){ if(!G||!G.onlineMode||typeof sendGameAction!=='function') return; const eq={}; Object.keys(COS_TYPES).forEach(t=>eq[t]=cosEquipped(t,1)); let n=0; const iv=setInterval(()=>{ sendGameAction('cos_hello',{cos:eq}); if(++n>=4) clearInterval(iv); },400); }
@@ -16941,7 +17036,7 @@ function cosPreviewHtml(it){
     case 'mat': { const bg=_cosMatBg(it.id)||'linear-gradient(180deg,#1a1230,#0c0b22)'; return `<div class="mat" style="background:${bg.replace(/"/g,'&quot;')}"></div>`; }
     case 'frame': { if(it.img) return `<div class="av cos-framed" style="--frame-img:url('${it.img}')">👤</div>`; if(it.ring) return `<div class="av cos-ring" style="--ring1:${it.ring[0]};--ring2:${it.ring[1]}">👤</div>`; return '<div class="av">👤</div>'; }
     case 'plate': { const bg=it.img?`url('${it.img}')`:(it.bg||'rgba(0,0,0,.3)'); return `<div class="plate" style="--plate-bg:${bg};--plate-line:${it.line||'rgba(232,197,112,.3)'}">${escapeHtml((window._playerName||'PLAYER').toUpperCase())}</div>`; }
-    case 'title': return `<div class="ttl" style="--title-c:${it.color||'#e8c570'};--title-glow:${(it.color||'#e8c570')+'88'}">${escapeHtml(it.text||'—')}</div>`;
+    case 'title': return `<div class="ttl${it.fx==='playtest'?' ttl-fx-playtest':''}" style="--title-c:${it.color||'#e8c570'};--title-glow:${(it.color||'#e8c570')+'88'}">${escapeHtml(it.text||'—')}</div>`;
     case 'entrance': return `<div class="ent" style="--c:${it.c||'#e8c570'};--c2:${it.glow||'rgba(232,197,112,.5)'}">${it.icon||'👑'}</div>`;
   }
   return '';
@@ -21348,6 +21443,7 @@ function renderFriendsList(){
       +'<div class="friend-info"><div class="friend-name">'+f.username+'</div><div class="friend-meta">'+(online?'<span style="color:#22c55e">● ONLINE</span>':'OFFLINE')+'</div></div>'
       +'<div class="friend-actions">'
       +'<button class="friend-btn accept" onclick="inviteFriendToMatch(\''+f.user_id+'\',\''+f.username+'\')" title="Invite to Online Match">⚔ INVITE</button>'
+      +'<button class="friend-btn" onclick="mlMessageFriend(\''+f.user_id+'\',\''+(f.username||'').replace(/[\\\\\']/g,'')+'\')" title="Send a message">✉</button>'
       +'<button class="friend-btn danger" onclick="removeFriend(\''+f.id+'\',\''+(f.username||'').replace(/[\\\\\']/g,'')+'\')">✕</button>'
       +'</div>';
     el.appendChild(row);
@@ -22869,6 +22965,7 @@ function startInviteListener(){
     .on('broadcast',{event:'friend_invite'},(payload)=>{
       showInviteNotification(payload.payload);
     })
+    .on('broadcast',{event:'mail'},()=>{ if(typeof mlRefresh==='function') mlRefresh(false); })
     .subscribe();
   console.log('[INVITE] Listening for invites on channel: invites:'+_celUserId);
 }
@@ -24759,6 +24856,7 @@ window.addEventListener('load',async()=>{
       await loadFriends();
       startPresenceHeartbeat();
       startInviteListener();
+      if(typeof mlInit==='function') mlInit().catch(e=>console.warn('[MAIL] init',e));
       await loadCampaign();
       await loadBattlePass();
       if(typeof updateXpHud==='function')updateXpHud();
@@ -25251,6 +25349,7 @@ window.addEventListener('load',async()=>{
     <button class="admin-action-btn" onclick="adminUnlockAllAchievements()">+ UNLOCK ALL ACHIEVEMENTS</button>
     <button class="admin-action-btn" onclick="adminGrantAllCards()">+ GRANT ALL CARDS (4 OF EACH)</button>
     <button class="admin-action-btn danger" onclick="adminResetCollection()">⚠ RESET MY CARD COLLECTION</button>
+    <button class="admin-action-btn" onclick="openGiftCenter()" style="border-color:rgba(255,63,180,.6);color:#ff8fd0">🎁 GIFT CENTER · SEND REWARDS & MESSAGES</button>
     <button class="admin-action-btn" onclick="openCardManager()" style="border-color:rgba(232,197,112,.5);color:#fbbf24">🎴 OPEN CARD MANAGER</button>
     <button class="admin-action-btn" onclick="startAdminTestMatch()" style="border-color:rgba(167,139,250,.6);color:#c4b5fd">🧪 AI ADMIN TESTING MODE</button>
     <button class="admin-action-btn" onclick="startTutorial()" style="border-color:rgba(56,189,248,.6);color:#7dd3fc">🎓 TEST TUTORIAL</button>
@@ -25309,6 +25408,94 @@ window.addEventListener('load',async()=>{
 </div>
 
 <!-- FRIENDS SCREEN -->
+<!-- ═══ MAILBOX (build 8.5) ═══ -->
+<div id="mail-screen" class="screen" style="padding:62px 24px 20px">
+  <div class="ml-wrap">
+    <div class="dk-head">
+      <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
+      <div><div class="dk-title">MAILBOX</div><div class="dk-sub" id="ml-sub">—</div></div>
+      <div style="flex:1"></div>
+      <button class="dk-btn" onclick="mlRefresh(true)" title="Refresh">⟳</button>
+    </div>
+    <div class="ml-tabs">
+      <span class="dk-pill on" data-t="inbox" onclick="mlTab('inbox')">📥 INBOX</span>
+      <span class="dk-pill" data-t="sent" onclick="mlTab('sent')">📤 SENT</span>
+      <span class="dk-pill" data-t="write" onclick="mlTab('write')">✎ WRITE</span>
+      <span class="dk-pill" data-t="redeem" onclick="mlTab('redeem')">🎟 REDEEM CODE</span>
+    </div>
+    <div id="ml-view-list" class="ml-grid">
+      <div class="ml-list" id="ml-list"></div>
+      <div class="ml-read" id="ml-read"><div class="ml-empty">Select a message to read it.</div></div>
+    </div>
+    <div id="ml-view-write" style="display:none;max-width:640px">
+      <div class="ml-form">
+        <label for="ml-to">TO</label>
+        <input class="ml-in" id="ml-to" placeholder="Type a username, or pick a friend below" autocomplete="off" oninput="mlToSuggest()">
+        <div class="gc-suggest" id="ml-to-suggest"></div>
+        <div id="ml-friend-chips" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+        <label for="ml-subj">SUBJECT</label>
+        <input class="ml-in" id="ml-subj" maxlength="80" placeholder="Subject">
+        <label for="ml-body">MESSAGE</label>
+        <textarea class="ml-ta" id="ml-body" maxlength="2000" placeholder="Write your message…"></textarea>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <button class="dk-btn gold" onclick="mlSend()">✉ SEND</button>
+          <span id="ml-send-status" class="ml-note"></span>
+        </div>
+        <div class="ml-note">Messages are delivered even if the player is offline — they'll see them next time they log in.</div>
+      </div>
+    </div>
+    <div id="ml-view-redeem" style="display:none;max-width:520px">
+      <div class="ml-form">
+        <label for="ml-code">REDEEM A CODE</label>
+        <input class="ml-in" id="ml-code" placeholder="e.g. VIRORA-XXXX" style="text-transform:uppercase;letter-spacing:2px" onkeydown="if(event.key==='Enter')mlRedeem()">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <button class="dk-btn gold" onclick="mlRedeem()">🎟 REDEEM</button>
+          <span id="ml-redeem-status" class="ml-note"></span>
+        </div>
+        <div class="ml-note">Rewards arrive as a gift in your inbox.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ GIFT CENTER (admin, build 8.5) ═══ -->
+<div id="gift-center-screen" class="screen" style="padding:62px 24px 20px">
+  <div class="ml-wrap" style="max-width:1400px">
+    <div class="dk-head">
+      <button class="btn-gray btn-sm" onclick="showScreen('admin-screen')">← Admin</button>
+      <div><div class="dk-title">GIFT CENTER</div><div class="dk-sub">SEND MESSAGES & REWARDS · REDEEM CODES · ADMIN ONLY</div></div>
+    </div>
+    <div class="ml-tabs">
+      <span class="dk-pill on" data-g="send" onclick="gcTab('send')">🎁 SEND</span>
+      <span class="dk-pill" data-g="codes" onclick="gcTab('codes')">🎟 CODES</span>
+      <span class="dk-pill" data-g="log" onclick="gcTab('log')">📜 SENT LOG</span>
+    </div>
+    <div id="gc-view-send" class="gc-grid">
+      <div class="gc-box">
+        <h4>PLAYERS <span id="gc-count" style="color:#6b6b8a;font-size:10px"></span></h4>
+        <div class="gc-row">
+          <input class="ml-in" id="gc-search" placeholder="Search name or email…" oninput="gcRenderPlayers()">
+          <select class="ml-sel" id="gc-filter" onchange="gcRenderPlayers()" style="flex:0 0 auto">
+            <option value="all">All players</option><option value="pt">Playtesters (redeemed a code)</option><option value="online">Online now</option>
+          </select>
+        </div>
+        <div class="gc-row" style="font-size:10px;color:#9d93c4">
+          <button class="dk-btn" style="padding:6px 10px;font-size:10px" onclick="gcSelectAll(true)">SELECT ALL SHOWN</button>
+          <button class="dk-btn" style="padding:6px 10px;font-size:10px" onclick="gcSelectAll(false)">CLEAR</button>
+          <span id="gc-selcount">0 selected</span>
+        </div>
+        <div class="gc-scroll"><table class="gc-table"><thead><tr><th></th><th>PLAYER</th><th>EMAIL</th><th>LOGIN</th><th>JOINED</th><th>LAST ON</th></tr></thead><tbody id="gc-players"><tr><td colspan="6" class="ml-empty">Loading…</td></tr></tbody></table></div>
+      </div>
+      <div class="gc-box" id="gc-compose"></div>
+    </div>
+    <div id="gc-view-codes" style="display:none" class="gc-grid">
+      <div class="gc-box"><h4>CODES</h4><div id="gc-codes-list"></div></div>
+      <div class="gc-box" id="gc-code-compose"></div>
+    </div>
+    <div id="gc-view-log" style="display:none"><div class="gc-box"><h4>SENT BY ADMINS</h4><div class="gc-scroll"><table class="gc-table"><thead><tr><th>WHEN</th><th>TO</th><th>SUBJECT</th><th>REWARDS</th><th>STATUS</th></tr></thead><tbody id="gc-log"></tbody></table></div></div></div>
+  </div>
+</div>
+
 <div id="friends-screen" class="screen" style="padding:62px 32px 24px;max-width:1200px;margin:0 auto">
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
     <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
@@ -26593,6 +26780,402 @@ function selectDeck(player,deckId){
   if(player===1) pendingP1Deck=deckId; else pendingP2Deck=deckId;
   if(deckId!=='__random__'&&!SAVED_DECKS[deckId]&&!(typeof PRESET_DECKS!=='undefined'&&PRESET_DECKS[deckId])){ if(player===1) pendingP1Deck=null; else pendingP2Deck=null; }
   if(player===1&&pendingMode==='pvp'&&pendingP2Deck===null) ds2Who(2); else renderDeckSelectOptions();
+}
+</script>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+// MAILBOX · GIFTS · REDEEM CODES (build 8.5)
+// Supabase: public.mail, mail_blocks, redeem_codes, code_redemptions + RPCs
+// mail_mark_read / mail_delete / mail_claim / redeem_code / admin_list_players
+// (see VCU_Mailbox_Setup.sql). Rewards attachment shape:
+//   { celestium, xp, packs:[{kind,type,setId,qty}], cards:[{cid,foil,qty}], cosmetics:[id] }
+// ═══════════════════════════════════════════════════════════════════════
+let _mail={inbox:[],sent:[],tab:'inbox',sel:null,loaded:false,names:{},popQueue:[],popShowing:false,to:null,pollT:null,missingTable:false};
+const PLAYTEST_PRESET={
+  subject:'Welcome to the Playtest',
+  body:"Hey, it's Virora.\n\nYou're one of the very first people to step into the Courts — thank you for being here. This is a pre-alpha build, so expect rough edges, missing pieces and the occasional bug.\n\nThese rewards and your Founding Playtester title are yours to keep. Go open some packs, build a deck and show me what you've got.\n\n— Virora",
+  rewards:{celestium:2000,packs:[{kind:'pack',type:'basic',setId:'base_set',qty:3},{kind:'pack',type:'premium',setId:'base_set',qty:2}],cosmetics:['title_founding_playtester']},
+  popup:true
+};
+function mlEsc(s){ return (typeof escapeHtml==='function')?escapeHtml(s):String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function mlWhen(ts){ if(!ts) return ''; const d=new Date(ts), now=Date.now(), s=(now-d)/1000; if(s<60) return 'just now'; if(s<3600) return Math.floor(s/60)+'m ago'; if(s<86400) return Math.floor(s/3600)+'h ago'; if(s<604800) return Math.floor(s/86400)+'d ago'; return d.toLocaleDateString(); }
+function mlToast(msg){ let t=document.getElementById('ml-toast'); if(!t){ t=document.createElement('div'); t.id='ml-toast'; t.style.cssText='position:fixed;right:18px;bottom:18px;z-index:100001;max-width:320px;padding:12px 16px;border-radius:12px;background:#120a22;border:1px solid #ff3fb4;color:#ffd6ef;font-family:Share Tech Mono,monospace;font-size:12px;box-shadow:0 0 20px rgba(255,63,180,.4);cursor:pointer;transition:opacity .3s'; t.onclick=()=>{ t.style.opacity='0'; openMailbox(); }; document.body.appendChild(t); } t.innerHTML=msg; t.style.opacity='1'; clearTimeout(t._h); t._h=setTimeout(()=>{ t.style.opacity='0'; },6000); }
+
+// ── reward helpers ──
+function mlRewardLines(att){
+  if(!att) return [];
+  const out=[];
+  if(att.celestium) out.push('💠 '+Number(att.celestium).toLocaleString()+' Celestium');
+  if(att.xp) out.push('⭐ '+Number(att.xp).toLocaleString()+' XP');
+  (att.packs||[]).forEach(p=>out.push('🎴 '+(p.qty||1)+'× '+(typeof packDisplayName==='function'?packDisplayName(p.kind||'pack',p.type||'basic',p.setId||'base_set'):(p.type+' pack'))));
+  (att.cards||[]).forEach(c=>{ const v=(c.foil&&c.foil!=='none')?((VARIANT_META[c.foil]||{}).label||c.foil)+' ':''; out.push('🃏 '+(c.qty||1)+'× '+v+(DB[c.cid]?.name||c.cid)); });
+  (att.cosmetics||[]).forEach(id=>{ const it=(typeof cosItem==='function')?cosItem(id):null; out.push(((COS_TYPES[it?.type]||{}).icon||'✨')+' '+(it?it.name:id)+(it?' ('+((COS_TYPES[it.type]||{}).label||it.type).replace(/S$/,'').toLowerCase()+')':'')); });
+  return out;
+}
+function mlHasRewards(att){ return !!(att&&(att.celestium||att.xp||(att.packs||[]).length||(att.cards||[]).length||(att.cosmetics||[]).length)); }
+async function mlApplyRewards(att,source){
+  const items=[]; source=source||'Gift';
+  if(att.celestium){ const n=Math.floor(Number(att.celestium)||0); if(n){ _celData.celestium=(_celData.celestium||0)+n; try{ _celLog.unshift({amount:n,reason:source,ts:new Date().toISOString()}); }catch(e){} if(n>0&&typeof bumpStat==='function') bumpStat('celestium_earned',n); if(typeof updateCelDisplay==='function') updateCelDisplay(); await saveCelestium(); items.push({icon:'💠',amount:'+'+n.toLocaleString(),label:'Celestium'}); } }
+  if(att.xp&&typeof awardBPXp==='function'){ const n=Math.floor(Number(att.xp)||0); if(n){ await awardBPXp(n,source); items.push({icon:'⭐',amount:'+'+n.toLocaleString(),label:'XP'}); } }
+  if((att.packs||[]).length){ att.packs.forEach(p=>{ grantPack(p.kind||'pack',p.type||'basic',p.setId||'base_set',Math.max(1,Number(p.qty)||1)); items.push({icon:p.kind==='box'?'📦':'🎴',amount:'×'+(p.qty||1),label:packDisplayName(p.kind||'pack',p.type||'basic',p.setId||'base_set')}); }); await savePackInventory(); if(typeof renderPackInventory==='function') try{renderPackInventory();}catch(e){} if(typeof updatePackBadge==='function') try{updatePackBadge();}catch(e){} }
+  if((att.cards||[]).length){ att.cards.forEach(c=>{ if(!DB[c.cid]) return; const q=Math.max(1,Number(c.qty)||1); for(let i=0;i<q;i++) addCardToCollection(c.cid,c.foil||'none'); const v=(c.foil&&c.foil!=='none')?((VARIANT_META[c.foil]||{}).label||c.foil):''; items.push({img:getImg(c.cid),amount:'×'+q,label:DB[c.cid].name+(v?' · '+v:'')}); }); try{ await saveCollection(); saveHoloOwned(); saveCollectionFoil(); }catch(e){ console.warn('[MAIL] card save',e); } }
+  (att.cosmetics||[]).forEach(id=>{ const it=cosItem(id); if(!it) return; grantCosmetic(id,source,false); items.push({icon:(COS_TYPES[it.type]||{}).icon||'✨',label:it.name}); });
+  if(typeof applyCosmetics==='function') try{ applyCosmetics(); }catch(e){}
+  if(typeof renderMainMenu==='function'&&document.getElementById('menu-screen')?.classList.contains('active')) try{ renderMainMenu(); }catch(e){}
+  return items;
+}
+function mlPendingKey(){ return 'vcu_pending_rewards_'+(_celUserId||'x'); }
+async function mlFlushPending(){ // re-apply rewards that were claimed but not saved (e.g. tab closed mid-claim)
+  let list=[]; try{ list=JSON.parse(localStorage.getItem(mlPendingKey())||'[]'); }catch(e){}
+  if(!list.length) return;
+  for(const p of list){ try{ await mlApplyRewards(p.att,p.src); }catch(e){} }
+  try{ localStorage.removeItem(mlPendingKey()); }catch(e){}
+}
+async function mlClaim(id){
+  const m=_mail.inbox.find(x=>x.id===id); if(!m||m.claimed_at) return false;
+  const {data,error}=await _celSB.rpc('mail_claim',{p_id:id});
+  if(error){ alert('Could not claim: '+error.message); return false; }
+  if(!data){ m.claimed_at=new Date().toISOString(); mlRender(); return false; }
+  const src='Gift from '+(m.sender_name||'Virora');
+  let list=[]; try{ list=JSON.parse(localStorage.getItem(mlPendingKey())||'[]'); }catch(e){}
+  list.push({id,att:data,src}); try{ localStorage.setItem(mlPendingKey(),JSON.stringify(list)); }catch(e){}
+  const items=await mlApplyRewards(data,src);
+  try{ localStorage.setItem(mlPendingKey(),JSON.stringify(list.filter(x=>x.id!==id))); }catch(e){}
+  m.claimed_at=new Date().toISOString(); m.read_at=m.read_at||m.claimed_at;
+  if(items.length&&typeof showRewardsCelebration==='function'){ showRewardsCelebration(items); const t=document.querySelector('#rc-overlay .rc-title'), st=document.querySelector('#rc-overlay .rc-sub'); if(t) t.textContent='GIFT CLAIMED'; if(st) st.textContent=src; }
+  mlRender(); mlBadge();
+  return true;
+}
+
+// ── load / badge / popups ──
+async function mlLoad(){
+  if(!_celSB||!_celUserId) return;
+  const [inb,snt]=await Promise.all([
+    _celSB.from('mail').select('*').eq('recipient_id',_celUserId).eq('recipient_deleted',false).order('created_at',{ascending:false}).limit(200),
+    _celSB.from('mail').select('id,recipient_id,kind,subject,body,attachments,created_at,read_at,claimed_at').eq('sender_id',_celUserId).eq('sender_deleted',false).order('created_at',{ascending:false}).limit(100)
+  ]);
+  if(inb.error){ _mail.missingTable=/relation|does not exist|schema cache/i.test(inb.error.message||''); console.warn('[MAIL] load',inb.error.message); return; }
+  _mail.missingTable=false; _mail.inbox=inb.data||[]; _mail.sent=snt.data||[]; _mail.loaded=true;
+  const ids=[...new Set(_mail.sent.map(m=>m.recipient_id).filter(id=>!_mail.names[id]))];
+  if(ids.length){ try{ const {data}=await _celSB.from('profiles').select('id,username').in('id',ids); (data||[]).forEach(p=>_mail.names[p.id]=p.username||'Player'); }catch(e){} }
+}
+function mlUnread(){ return _mail.inbox.filter(m=>!m.read_at||(mlHasRewards(m.attachments)&&!m.claimed_at)).length; }
+function mlBadge(){ const b=document.getElementById('hud-mail-badge'); if(!b) return; const n=mlUnread(); b.textContent=n>99?'99+':n; b.classList.toggle('on',n>0); }
+async function mlRefresh(force){
+  const before=new Set(_mail.inbox.map(m=>m.id)), wasLoaded=_mail.loaded;
+  await mlLoad(); mlBadge();
+  if(document.getElementById('mail-screen')?.classList.contains('active')) mlRender();
+  // queue popups (unread popup mail), oldest first
+  _mail.inbox.filter(m=>m.popup&&!m.read_at&&!_mail.popQueue.includes(m.id)).reverse().forEach(m=>_mail.popQueue.push(m.id));
+  mlNextPopup();
+  if(!force&&wasLoaded){ const fresh=_mail.inbox.filter(m=>!before.has(m.id)&&!m.popup); if(fresh.length) mlToast('✉ New mail from <b>'+mlEsc(fresh[0].sender_name||'a player')+'</b> — click to open'); }
+}
+function mlNextPopup(){
+  if(_mail.popShowing||!_mail.popQueue.length) return;
+  if(document.querySelector('#game-screen.active,#game-screen-2v2.active')) return; // never interrupt a match
+  const m=_mail.inbox.find(x=>x.id===_mail.popQueue[0]); if(!m){ _mail.popQueue.shift(); return mlNextPopup(); }
+  _mail.popShowing=true;
+  const has=mlHasRewards(m.attachments)&&!m.claimed_at;
+  const ov=document.createElement('div'); ov.className='ml-pop'; ov.id='ml-pop';
+  ov.innerHTML=`<div class="ml-letter" role="dialog" aria-label="${mlEsc(m.subject||'Message')}">
+    <div class="seal">${m.kind==='gift'?'🎁':'✉'}</div>
+    <h2>${mlEsc(m.subject||'A message for you')}</h2>
+    <div class="from">FROM ${mlEsc((m.sender_name||'VIRORA').toUpperCase())}</div>
+    <div class="body">${mlEsc(m.body||'')}</div>
+    ${mlHasRewards(m.attachments)?`<div class="ml-rewards"><div class="t">${m.claimed_at?'REWARDS CLAIMED':'YOUR REWARDS'}</div><div class="ml-rw">${mlRewardLines(m.attachments).map(l=>`<span>${mlEsc(l)}</span>`).join('')}</div></div>`:''}
+    <div class="ml-actions" style="justify-content:center">${has?'<button class="dk-btn gold" id="ml-pop-claim">🎁 CLAIM REWARDS</button>':'<button class="dk-btn gold" id="ml-pop-close">CLOSE</button>'}</div>
+  </div>`;
+  document.body.appendChild(ov);
+  const done=async()=>{ ov.remove(); _mail.popQueue.shift(); _mail.popShowing=false; if(!m.read_at){ m.read_at=new Date().toISOString(); try{ await _celSB.rpc('mail_mark_read',{p_ids:[m.id]}); }catch(e){} } mlBadge(); setTimeout(mlNextPopup,400); };
+  const c=ov.querySelector('#ml-pop-claim'); if(c) c.onclick=async()=>{ c.disabled=true; c.textContent='CLAIMING…'; await mlClaim(m.id); done(); };
+  const x=ov.querySelector('#ml-pop-close'); if(x) x.onclick=done;
+}
+async function mlInit(){ // called after login
+  await mlFlushPending();
+  await mlRefresh(true);
+  clearInterval(_mail.pollT); _mail.pollT=setInterval(()=>mlRefresh(false),90000);
+}
+function mlPing(recipientId){ // nudge an online player's client to refresh its inbox
+  if(!recipientId||recipientId===_celUserId) return;
+  try{ const sb=getOnlineSB(); const ch=sb.channel('invites:'+recipientId); ch.subscribe(st=>{ if(st==='SUBSCRIBED'){ ch.send({type:'broadcast',event:'mail',payload:{from:window._playerName||''}}); setTimeout(()=>{ try{ sb.removeChannel(ch); }catch(e){} },1500); } }); }catch(e){}
+}
+
+// ── screen ──
+async function openMailbox(){
+  showScreen('mail-screen');
+  const l=document.getElementById('ml-list'); if(l&&!_mail.loaded) l.innerHTML='<div class="ml-empty">Loading…</div>';
+  await mlLoad(); mlBadge(); mlTab(_mail.tab==='write'||_mail.tab==='redeem'?'inbox':_mail.tab);
+}
+function mlTab(t){
+  _mail.tab=t;
+  document.querySelectorAll('#mail-screen .dk-pill[data-t]').forEach(p=>p.classList.toggle('on',p.dataset.t===t));
+  document.getElementById('ml-view-list').style.display=(t==='inbox'||t==='sent')?'':'none';
+  document.getElementById('ml-view-write').style.display=t==='write'?'':'none';
+  document.getElementById('ml-view-redeem').style.display=t==='redeem'?'':'none';
+  document.getElementById('mail-screen').classList.remove('reading');
+  if(t==='write') mlRenderWrite();
+  if(t==='inbox'||t==='sent'){ _mail.sel=null; mlRender(); }
+}
+function mlRender(){
+  const sub=document.getElementById('ml-sub'); if(sub) sub.textContent=_mail.missingTable?'MAILBOX NOT SET UP YET':(mlUnread()+' UNREAD · '+_mail.inbox.length+' IN INBOX');
+  const list=document.getElementById('ml-list'); if(!list) return;
+  if(_mail.missingTable){ list.innerHTML='<div class="ml-empty">The mailbox isn\'t switched on yet.'+(isAdmin()?'<br><br>Admin: run VCU_Mailbox_Setup.sql in Supabase.':'')+'</div>'; return; }
+  const rows=_mail.tab==='sent'?_mail.sent:_mail.inbox;
+  if(!rows.length){ list.innerHTML=`<div class="ml-empty">${_mail.tab==='sent'?'You haven\'t sent anything yet.':'Your inbox is empty.'}</div>`; mlRenderRead(); return; }
+  list.innerHTML=rows.map(m=>{
+    const gift=mlHasRewards(m.attachments), unread=_mail.tab==='inbox'&&!m.read_at;
+    const who=_mail.tab==='sent'?('To '+(_mail.names[m.recipient_id]||'Player')):(m.sender_name||'Player');
+    const chip=gift?`<span class="ml-chip${m.claimed_at?' done':''}">${m.claimed_at?'CLAIMED':'GIFT'}</span>`:'';
+    return `<div class="ml-row${gift?' gift':''}${unread?' unread':''}${_mail.sel===m.id?' sel':''}" onclick="mlOpen('${m.id}')">
+      <div class="ic">${gift?'🎁':(m.kind==='announcement'?'📣':'✉')}</div>
+      <div class="mid"><div class="from">${mlEsc(who)} ${chip}</div><div class="sub">${mlEsc(m.subject||'(no subject)')}</div><div class="pre">${mlEsc((m.body||'').slice(0,90))}</div></div>
+      <div class="when">${mlWhen(m.created_at)}</div></div>`;
+  }).join('');
+  mlRenderRead();
+}
+async function mlOpen(id){
+  _mail.sel=id; document.getElementById('mail-screen').classList.add('reading');
+  const m=(_mail.tab==='sent'?_mail.sent:_mail.inbox).find(x=>x.id===id);
+  if(m&&_mail.tab==='inbox'&&!m.read_at){ m.read_at=new Date().toISOString(); try{ await _celSB.rpc('mail_mark_read',{p_ids:[id]}); }catch(e){} mlBadge(); }
+  mlRender();
+}
+function mlRenderRead(){
+  const r=document.getElementById('ml-read'); if(!r) return;
+  const sent=_mail.tab==='sent'; const m=(sent?_mail.sent:_mail.inbox).find(x=>x.id===_mail.sel);
+  if(!m){ r.innerHTML='<div class="ml-empty">Select a message to read it.</div>'; return; }
+  const gift=mlHasRewards(m.attachments);
+  r.innerHTML=`<button class="btn-gray btn-sm" style="margin-bottom:10px" onclick="document.getElementById('mail-screen').classList.remove('reading')">← Back</button>
+    <h3>${mlEsc(m.subject||'(no subject)')}</h3>
+    <div class="meta">${sent?'TO '+mlEsc((_mail.names[m.recipient_id]||'PLAYER').toUpperCase()):'FROM '+mlEsc((m.sender_name||'PLAYER').toUpperCase())} · ${new Date(m.created_at).toLocaleString()}${sent?(m.read_at?' · READ':' · NOT READ YET'):''}</div>
+    <div class="body">${mlEsc(m.body||'')}</div>
+    ${gift?`<div class="ml-rewards"><div class="t">${m.claimed_at?'REWARDS CLAIMED':'ATTACHED REWARDS'}</div><div class="ml-rw">${mlRewardLines(m.attachments).map(l=>`<span>${mlEsc(l)}</span>`).join('')}</div></div>`:''}
+    <div class="ml-actions">
+      ${!sent&&gift&&!m.claimed_at?`<button class="dk-btn gold" onclick="this.disabled=true;mlClaim('${m.id}')">🎁 CLAIM REWARDS</button>`:''}
+      ${!sent&&m.sender_id&&m.sender_id!==_celUserId&&m.kind==='message'?`<button class="dk-btn" onclick="mlReply('${m.id}')">↩ REPLY</button><button class="dk-btn" onclick="mlBlock('${m.sender_id}','${mlEsc(m.sender_name||'')}')">⛔ BLOCK</button>`:''}
+      <button class="dk-btn" onclick="mlDelete('${m.id}')">🗑 DELETE</button>
+    </div>`;
+}
+function mlReply(id){
+  const m=_mail.inbox.find(x=>x.id===id); if(!m) return;
+  _mail.to={id:m.sender_id,username:m.sender_name};
+  mlTab('write');
+  document.getElementById('ml-to').value=m.sender_name||'';
+  document.getElementById('ml-subj').value=(/^re:/i.test(m.subject||'')?'':'Re: ')+(m.subject||'');
+  document.getElementById('ml-body').focus();
+}
+async function mlDelete(id){
+  const m=_mail.inbox.find(x=>x.id===id);
+  if(m&&mlHasRewards(m.attachments)&&!m.claimed_at&&!confirm('This gift has unclaimed rewards. Delete it anyway?')) return;
+  if(!confirm('Delete this message?')) return;
+  const {error}=await _celSB.rpc('mail_delete',{p_id:id}); if(error){ alert(error.message); return; }
+  _mail.inbox=_mail.inbox.filter(x=>x.id!==id); _mail.sent=_mail.sent.filter(x=>x.id!==id); _mail.sel=null; mlBadge(); mlRender();
+}
+async function mlBlock(uid,name){
+  if(!confirm('Block '+(name||'this player')+'? They won\'t be able to send you messages.')) return;
+  const {error}=await _celSB.from('mail_blocks').insert({user_id:_celUserId,blocked_id:uid});
+  if(error&&!/duplicate/i.test(error.message)){ alert(error.message); return; }
+  mlToast('⛔ '+mlEsc(name||'Player')+' blocked.');
+}
+function mlRenderWrite(){
+  const chips=document.getElementById('ml-friend-chips'); if(!chips) return;
+  const fl=(typeof _friendsList!=='undefined'?_friendsList:[]);
+  chips.innerHTML=fl.length?fl.slice(0,20).map(f=>`<span class="dk-pill" onclick="mlPickTo('${f.user_id}','${mlEsc(f.username).replace(/'/g,'&#39;')}')">${isUserOnline(f.last_active)?'🟢':'⚪'} ${mlEsc(f.username)}</span>`).join(''):'<span class="ml-note">Add friends to pick them here — or type any username.</span>';
+}
+async function mlMessageFriend(id,username){ await openMailbox(); mlTab('write'); mlPickTo(id,username); document.getElementById('ml-subj').focus(); }
+function mlPickTo(id,username){ _mail.to={id,username}; const i=document.getElementById('ml-to'); i.value=username; document.getElementById('ml-to-suggest').style.display='none'; }
+let _mlSugT=null;
+function mlToSuggest(){
+  _mail.to=null; clearTimeout(_mlSugT);
+  const q=document.getElementById('ml-to').value.trim(); const box=document.getElementById('ml-to-suggest');
+  if(q.length<2){ box.style.display='none'; return; }
+  _mlSugT=setTimeout(async()=>{
+    const {data}=await _celSB.from('profiles').select('id,username').ilike('username',q+'%').limit(8);
+    const res=(data||[]).filter(p=>p.id!==_celUserId);
+    box.innerHTML=res.map(p=>`<div onclick="mlPickTo('${p.id}','${mlEsc(p.username).replace(/'/g,'&#39;')}')">${mlEsc(p.username)}</div>`).join('');
+    box.style.display=res.length?'block':'none';
+  },250);
+}
+async function mlSend(){
+  const st=document.getElementById('ml-send-status'); const set=(t,ok)=>{ st.textContent=t; st.className=ok?'ml-ok':'ml-err'; };
+  const name=document.getElementById('ml-to').value.trim(), subject=document.getElementById('ml-subj').value.trim(), body=document.getElementById('ml-body').value.trim();
+  if(!name){ set('Who is this for?'); return; } if(!body){ set('Write a message first.'); return; }
+  let to=_mail.to;
+  if(!to||to.username!==name){ const {data}=await _celSB.from('profiles').select('id,username').ilike('username',name).limit(2); if(!data||!data.length){ set('No player called "'+name+'".'); return; } to={id:data[0].id,username:data[0].username}; }
+  if(to.id===_celUserId){ set("You can't message yourself."); return; }
+  set('Sending…',true);
+  const {error}=await _celSB.from('mail').insert({sender_id:_celUserId,recipient_id:to.id,kind:'message',subject:subject||'(no subject)',body});
+  if(error){ set(/row-level security/i.test(error.message)?"This player isn't accepting messages from you.":error.message); return; }
+  mlPing(to.id); set('✓ Sent to '+to.username,true);
+  document.getElementById('ml-subj').value=''; document.getElementById('ml-body').value=''; _mail.to=null;
+  mlLoad();
+}
+async function mlRedeem(){
+  const inp=document.getElementById('ml-code'), st=document.getElementById('ml-redeem-status');
+  const code=inp.value.trim(); if(!code){ st.textContent='Enter a code.'; st.className='ml-err'; return; }
+  st.textContent='Checking…'; st.className='ml-note';
+  const {data,error}=await _celSB.rpc('redeem_code',{p_code:code});
+  if(error){ st.textContent=/function|does not exist|schema cache/i.test(error.message)?'Codes aren\'t switched on yet.':error.message; st.className='ml-err'; return; }
+  if(!data||!data.ok){ st.textContent=(data&&data.error)||'That code didn\'t work.'; st.className='ml-err'; return; }
+  st.textContent='✓ Code redeemed — check your inbox!'; st.className='ml-ok'; inp.value='';
+  await mlRefresh(true);
+}
+
+// ═══ GIFT CENTER (admin) ═══
+let _gc={players:[],sel:new Set(),tab:'send',r:null,cr:null,codes:[]};
+function gcBlankRewards(){ return {celestium:0,xp:0,packs:[],cards:[],cosmetics:[]}; }
+async function openGiftCenter(){
+  if(!isAdmin()) return;
+  showScreen('gift-center-screen');
+  if(!_gc.r) _gc.r={subject:'',body:'',popup:false,rewards:gcBlankRewards()};
+  if(!_gc.cr) _gc.cr={code:'',max:'',expires:'',subject:'',body:'',popup:true,rewards:gcBlankRewards()};
+  gcTab(_gc.tab);
+  const {data,error}=await _celSB.rpc('admin_list_players');
+  if(error){ document.getElementById('gc-players').innerHTML=`<tr><td colspan="6" class="ml-empty">${/function|does not exist|schema cache/i.test(error.message)?'Run VCU_Mailbox_Setup.sql in Supabase first.':mlEsc(error.message)}</td></tr>`; return; }
+  _gc.players=data||[]; gcRenderPlayers();
+}
+function gcTab(t){
+  _gc.tab=t;
+  document.querySelectorAll('#gift-center-screen .dk-pill[data-g]').forEach(p=>p.classList.toggle('on',p.dataset.g===t));
+  ['send','codes','log'].forEach(v=>{ const el=document.getElementById('gc-view-'+v); if(el) el.style.display=v===t?'':'none'; });
+  if(t==='send') gcRenderCompose('send');
+  if(t==='codes'){ gcRenderCompose('code'); gcLoadCodes(); }
+  if(t==='log') gcLoadLog();
+}
+function gcRenderPlayers(){
+  const q=(document.getElementById('gc-search')?.value||'').toLowerCase(), f=document.getElementById('gc-filter')?.value||'all';
+  const list=_gc.players.filter(p=>{
+    if(q&&!((p.username||'').toLowerCase().includes(q)||(p.email||'').toLowerCase().includes(q))) return false;
+    if(f==='pt'&&!(p.codes||[]).length) return false;
+    if(f==='online'&&!(typeof isUserOnline==='function'&&isUserOnline(p.last_active))) return false;
+    return true;
+  });
+  _gc.shown=list.map(p=>p.id);
+  document.getElementById('gc-count').textContent='('+_gc.players.length+' total)';
+  document.getElementById('gc-players').innerHTML=list.map(p=>{
+    const on=typeof isUserOnline==='function'&&isUserOnline(p.last_active);
+    return `<tr class="${_gc.sel.has(p.id)?'sel':''}" onclick="gcToggle('${p.id}')" style="cursor:pointer">
+      <td><input type="checkbox" ${_gc.sel.has(p.id)?'checked':''} onclick="event.stopPropagation();gcToggle('${p.id}')" aria-label="Select ${mlEsc(p.username||'player')}"></td>
+      <td>${on?'🟢 ':''}<b style="color:#f0d58a;font-weight:400">${mlEsc(p.username||'(no name yet)')}</b>${(p.codes||[]).map(c=>` <span class="gc-pill pt">${mlEsc(c)}</span>`).join('')}</td>
+      <td style="color:#9d93c4">${mlEsc(p.email||'')}</td><td>${mlEsc(p.provider||'')}</td>
+      <td style="white-space:nowrap">${p.joined_at?new Date(p.joined_at).toLocaleDateString():''}</td><td style="white-space:nowrap">${p.last_active?mlWhen(p.last_active):'never'}</td></tr>`;
+  }).join('')||'<tr><td colspan="6" class="ml-empty">No players match.</td></tr>';
+  document.getElementById('gc-selcount').textContent=_gc.sel.size+' selected';
+  if(_gc.tab==='send'){ const b=document.getElementById('gc-send-btn'); if(b) b.textContent='🎁 SEND TO '+_gc.sel.size+' PLAYER'+(_gc.sel.size===1?'':'S'); }
+}
+function gcToggle(id){ if(_gc.sel.has(id)) _gc.sel.delete(id); else _gc.sel.add(id); gcRenderPlayers(); }
+function gcSelectAll(on){ if(on) (_gc.shown||[]).forEach(id=>_gc.sel.add(id)); else _gc.sel.clear(); gcRenderPlayers(); }
+function gcState(ctx){ return ctx==='code'?_gc.cr:_gc.r; }
+function gcSetsOpts(){ const sets=(typeof _cardSets!=='undefined'&&_cardSets.length)?_cardSets:[{id:'base_set',name:'Base Set'}]; return sets.map(s=>`<option value="${mlEsc(s.id)}">${mlEsc(s.name)}</option>`).join(''); }
+function gcCosOpts(){ const by={}; cosCatalog().forEach(it=>{ if(it.tier==='default') return; (by[it.type]=by[it.type]||[]).push(it); }); return Object.entries(by).map(([t,arr])=>`<optgroup label="${mlEsc((COS_TYPES[t]||{}).label||t)}">${arr.map(it=>`<option value="${mlEsc(it.id)}">${mlEsc(it.name)} · ${mlEsc((it.tier||'').toUpperCase())}</option>`).join('')}</optgroup>`).join(''); }
+function gcRenderCompose(ctx){
+  const S=gcState(ctx), R=S.rewards, P=ctx;
+  const host=document.getElementById(ctx==='code'?'gc-code-compose':'gc-compose'); if(!host) return;
+  const items=[];
+  if(R.celestium) items.push(`<div class="gc-item">💠 <b>${Number(R.celestium).toLocaleString()}</b> Celestium<button onclick="gcState('${P}').rewards.celestium=0;gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`);
+  if(R.xp) items.push(`<div class="gc-item">⭐ <b>${Number(R.xp).toLocaleString()}</b> XP<button onclick="gcState('${P}').rewards.xp=0;gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`);
+  R.packs.forEach((p,i)=>items.push(`<div class="gc-item">${p.kind==='box'?'📦':'🎴'} <b>${p.qty}×</b> ${mlEsc(packDisplayName(p.kind,p.type,p.setId))}<button onclick="gcState('${P}').rewards.packs.splice(${i},1);gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`));
+  R.cards.forEach((c,i)=>items.push(`<div class="gc-item">🃏 <b>${c.qty}×</b> ${mlEsc(DB[c.cid]?.name||c.cid)} ${c.foil!=='none'?'· '+mlEsc((VARIANT_META[c.foil]||{}).label||c.foil):''}<button onclick="gcState('${P}').rewards.cards.splice(${i},1);gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`));
+  R.cosmetics.forEach((id,i)=>{ const it=cosItem(id); items.push(`<div class="gc-item">${(COS_TYPES[it?.type]||{}).icon||'✨'} ${mlEsc(it?it.name:id)}<button onclick="gcState('${P}').rewards.cosmetics.splice(${i},1);gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`); });
+  const finOpts=VARIANT_ORDER.map(v=>`<option value="${v}">${mlEsc((VARIANT_META[v]||{}).label||v)}</option>`).join('');
+  host.innerHTML=`<h4>${ctx==='code'?'CREATE A CODE':'MESSAGE & REWARDS'}</h4>
+    ${ctx==='code'?`<div class="gc-row"><input class="ml-in" id="gc-${P}-code" placeholder="CODE e.g. VIRORA-PT2" style="text-transform:uppercase;letter-spacing:2px" value="${mlEsc(S.code)}" oninput="gcState('${P}').code=this.value">
+      <input class="ml-in" id="gc-${P}-max" type="number" min="1" placeholder="Max uses (blank = unlimited)" value="${mlEsc(S.max)}" oninput="gcState('${P}').max=this.value">
+      <input class="ml-in" id="gc-${P}-exp" type="date" title="Expires (optional)" value="${mlEsc(S.expires)}" oninput="gcState('${P}').expires=this.value"></div>`:''}
+    <div class="gc-row"><select class="ml-sel" onchange="gcPreset('${P}',this.value);this.value=''"><option value="">Load a preset…</option><option value="playtest">Playtest Welcome (2,000 💠 · 3 Basic · 2 Premium · title)</option><option value="blank">Blank</option></select></div>
+    <label class="ml-note" for="gc-${P}-subj">SUBJECT</label>
+    <input class="ml-in" id="gc-${P}-subj" maxlength="80" value="${mlEsc(S.subject)}" oninput="gcState('${P}').subject=this.value">
+    <label class="ml-note" for="gc-${P}-body">MESSAGE</label>
+    <textarea class="ml-ta" id="gc-${P}-body" maxlength="4000" oninput="gcState('${P}').body=this.value">${mlEsc(S.body)}</textarea>
+    <label class="gc-row" style="font-size:11px;color:#e9e4ff;cursor:pointer"><input type="checkbox" ${S.popup?'checked':''} onchange="gcState('${P}').popup=this.checked"> Show as a popup when they log in</label>
+    <h4 style="margin-top:12px">ATTACH REWARDS</h4>
+    <div class="gc-row"><input class="ml-in" type="number" min="0" placeholder="Celestium" id="gc-${P}-cel"><button class="dk-btn" style="padding:8px 12px" onclick="gcAddNum('${P}','celestium')">+ 💠</button>
+      <input class="ml-in" type="number" min="0" placeholder="XP" id="gc-${P}-xp"><button class="dk-btn" style="padding:8px 12px" onclick="gcAddNum('${P}','xp')">+ ⭐</button></div>
+    <div class="gc-row"><select class="ml-sel" id="gc-${P}-pk"><option value="pack">Pack</option><option value="box">Booster Box</option></select>
+      <select class="ml-sel" id="gc-${P}-pt"><option value="basic">Basic</option><option value="premium">Premium</option><option value="event">Event</option></select>
+      <select class="ml-sel" id="gc-${P}-ps">${gcSetsOpts()}</select>
+      <input class="ml-in" type="number" min="1" value="1" id="gc-${P}-pq" style="max-width:70px" aria-label="Pack quantity">
+      <button class="dk-btn" style="padding:8px 12px" onclick="gcAddPack('${P}')">+ 🎴</button></div>
+    <div class="gc-row"><input class="ml-in" id="gc-${P}-card" placeholder="Card name…" autocomplete="off" oninput="gcCardSuggest('${P}')">
+      <select class="ml-sel" id="gc-${P}-cf">${finOpts}</select>
+      <input class="ml-in" type="number" min="1" value="1" id="gc-${P}-cq" style="max-width:70px" aria-label="Card quantity">
+      <button class="dk-btn" style="padding:8px 12px" onclick="gcAddCard('${P}')">+ 🃏</button></div>
+    <div class="gc-suggest" id="gc-${P}-card-sug"></div>
+    <div class="gc-row"><select class="ml-sel" id="gc-${P}-cos">${gcCosOpts()}</select><button class="dk-btn" style="padding:8px 12px" onclick="gcAddCos('${P}')">+ ✨</button></div>
+    <div class="gc-list">${items.join('')||'<span class="ml-note">No rewards attached — this will be a plain message.</span>'}</div>
+    <div class="gc-row" style="margin-top:8px">
+      ${ctx==='code'?`<button class="dk-btn gold" onclick="gcCreateCode()">🎟 CREATE CODE</button>`:`<button class="dk-btn gold" id="gc-send-btn" onclick="gcSend()">🎁 SEND TO ${_gc.sel.size} PLAYER${_gc.sel.size===1?'':'S'}</button>`}
+      <span class="ml-note" id="gc-${P}-status"></span></div>`;
+}
+function gcPreset(ctx,v){ const S=gcState(ctx); if(v==='playtest'){ S.subject=PLAYTEST_PRESET.subject; S.body=PLAYTEST_PRESET.body; S.popup=true; S.rewards=JSON.parse(JSON.stringify(Object.assign(gcBlankRewards(),PLAYTEST_PRESET.rewards))); } else if(v==='blank'){ S.subject=''; S.body=''; S.rewards=gcBlankRewards(); } gcRenderCompose(ctx); }
+function gcAddNum(ctx,key){ const el=document.getElementById('gc-'+ctx+'-'+(key==='celestium'?'cel':'xp')); const n=Math.floor(Number(el.value)||0); if(n<=0) return; gcState(ctx).rewards[key]=(gcState(ctx).rewards[key]||0)+n; gcRenderCompose(ctx); }
+function gcAddPack(ctx){ const g=id=>document.getElementById('gc-'+ctx+'-'+id).value; const p={kind:g('pk'),type:g('pt'),setId:g('ps'),qty:Math.max(1,Math.floor(Number(g('pq'))||1))}; const R=gcState(ctx).rewards; const ex=R.packs.find(x=>x.kind===p.kind&&x.type===p.type&&x.setId===p.setId); if(ex) ex.qty+=p.qty; else R.packs.push(p); gcRenderCompose(ctx); }
+function gcCardSuggest(ctx){
+  const q=document.getElementById('gc-'+ctx+'-card').value.trim().toLowerCase(), box=document.getElementById('gc-'+ctx+'-card-sug');
+  if(q.length<2){ box.style.display='none'; return; }
+  const res=Object.values(DB).filter(c=>!c.isToken&&c.type!=='token'&&c.type!=='system'&&(c.name.toLowerCase().includes(q)||c.id.includes(q))).slice(0,12);
+  box.innerHTML=res.map(c=>`<div onclick="document.getElementById('gc-${ctx}-card').value='${c.id}';document.getElementById('gc-${ctx}-card-sug').style.display='none'">${mlEsc(c.name)} <span style="color:#6b6b8a">· ${mlEsc(c.cardNumber||c.id)}</span></div>`).join('');
+  box.style.display=res.length?'block':'none';
+}
+function gcAddCard(ctx){
+  const v=document.getElementById('gc-'+ctx+'-card').value.trim(); let cid=DB[v]?v:null;
+  if(!cid){ const m=Object.values(DB).find(c=>c.name.toLowerCase()===v.toLowerCase()&&!c.isToken); if(m) cid=m.id; }
+  if(!cid){ alert('Pick a card from the suggestions.'); return; }
+  const foil=document.getElementById('gc-'+ctx+'-cf').value, qty=Math.max(1,Math.floor(Number(document.getElementById('gc-'+ctx+'-cq').value)||1));
+  const R=gcState(ctx).rewards; const ex=R.cards.find(c=>c.cid===cid&&c.foil===foil); if(ex) ex.qty+=qty; else R.cards.push({cid,foil,qty}); gcRenderCompose(ctx);
+}
+function gcAddCos(ctx){ const id=document.getElementById('gc-'+ctx+'-cos').value; const R=gcState(ctx).rewards; if(id&&!R.cosmetics.includes(id)) R.cosmetics.push(id); gcRenderCompose(ctx); }
+function gcPayload(R){ const o={}; if(R.celestium) o.celestium=R.celestium; if(R.xp) o.xp=R.xp; if(R.packs.length) o.packs=R.packs; if(R.cards.length) o.cards=R.cards; if(R.cosmetics.length) o.cosmetics=R.cosmetics; return Object.keys(o).length?o:null; }
+async function gcSend(){
+  const S=_gc.r, st=document.getElementById('gc-send-status');
+  if(!_gc.sel.size){ st.textContent='Pick at least one player.'; st.className='ml-err'; return; }
+  const att=gcPayload(S.rewards);
+  if(!S.body.trim()&&!att){ st.textContent='Write a message or attach a reward.'; st.className='ml-err'; return; }
+  if(!confirm('Send "'+(S.subject||'(no subject)')+'" to '+_gc.sel.size+' player(s)?'+(att?'\n\nRewards: '+mlRewardLines(att).join(', '):''))) return;
+  st.textContent='Sending…'; st.className='ml-note';
+  const rows=[..._gc.sel].map(rid=>({sender_id:_celUserId,recipient_id:rid,kind:att?'gift':'announcement',subject:S.subject||(att?'A gift for you':'A message from Virora'),body:S.body||'',attachments:att,popup:!!S.popup}));
+  const {error}=await _celSB.from('mail').insert(rows);
+  if(error){ st.textContent=error.message; st.className='ml-err'; return; }
+  rows.forEach(r=>mlPing(r.recipient_id));
+  st.textContent='✓ Sent to '+rows.length+' player'+(rows.length===1?'':'s'); st.className='ml-ok';
+  if(_gc.sel.has(_celUserId)) mlRefresh(true);
+}
+async function gcLoadCodes(){
+  const el=document.getElementById('gc-codes-list'); el.innerHTML='<div class="ml-empty">Loading…</div>';
+  const {data,error}=await _celSB.from('redeem_codes').select('*').order('created_at',{ascending:false});
+  if(error){ el.innerHTML='<div class="ml-empty">'+mlEsc(error.message)+'</div>'; return; }
+  _gc.codes=data||[];
+  el.innerHTML=_gc.codes.map(c=>`<div class="gc-item" style="align-items:flex-start;flex-direction:column;gap:4px">
+      <div style="display:flex;gap:8px;align-items:center;width:100%"><b style="letter-spacing:2px">${mlEsc(c.code)}</b>
+        <span class="gc-pill${c.active?' pt':''}">${c.active?'ACTIVE':'OFF'}</span>
+        <span class="gc-pill">${c.uses}${c.max_uses?' / '+c.max_uses:''} used</span>
+        ${c.expires_at?`<span class="gc-pill">expires ${new Date(c.expires_at).toLocaleDateString()}</span>`:''}
+        <span style="flex:1"></span>
+        <button style="color:#e8c570;margin-left:0" onclick="gcCodeActive('${mlEsc(c.code)}',${!c.active})">${c.active?'TURN OFF':'TURN ON'}</button>
+        <button onclick="gcCodeDelete('${mlEsc(c.code)}')" aria-label="Delete code">✕</button></div>
+      <div style="color:#9d93c4">${mlEsc(c.subject||'')}</div>
+      <div class="ml-rw">${mlRewardLines(c.rewards).map(l=>`<span>${mlEsc(l)}</span>`).join('')||'<span>no rewards</span>'}</div></div>`).join('')||'<div class="ml-empty">No codes yet.</div>';
+}
+async function gcCreateCode(){
+  const S=_gc.cr, st=document.getElementById('gc-code-status');
+  const code=(S.code||'').trim().toUpperCase().replace(/\s+/g,'-');
+  if(!/^[A-Z0-9-]{3,32}$/.test(code)){ st.textContent='Code: 3–32 letters, numbers or dashes.'; st.className='ml-err'; return; }
+  const att=gcPayload(S.rewards);
+  const row={code,subject:S.subject||'Code reward',body:S.body||null,rewards:att||{},popup:!!S.popup,max_uses:S.max?Math.max(1,parseInt(S.max)):null,expires_at:S.expires?new Date(S.expires+'T23:59:59').toISOString():null,active:true};
+  const {error}=await _celSB.from('redeem_codes').insert(row);
+  if(error){ st.textContent=/duplicate/i.test(error.message)?'That code already exists.':error.message; st.className='ml-err'; return; }
+  st.textContent='✓ Created '+code; st.className='ml-ok'; S.code=''; gcLoadCodes(); gcRenderCompose('code');
+}
+async function gcCodeActive(code,on){ await _celSB.from('redeem_codes').update({active:on}).eq('code',code); gcLoadCodes(); }
+async function gcCodeDelete(code){ if(!confirm('Delete code '+code+'? Players who already redeemed it keep their rewards.')) return; await _celSB.from('redeem_codes').delete().eq('code',code); gcLoadCodes(); }
+async function gcLoadLog(){
+  const el=document.getElementById('gc-log'); el.innerHTML='<tr><td colspan="5" class="ml-empty">Loading…</td></tr>';
+  const {data,error}=await _celSB.from('mail').select('id,recipient_id,kind,subject,attachments,created_at,read_at,claimed_at').in('kind',['gift','announcement']).order('created_at',{ascending:false}).limit(300);
+  if(error){ el.innerHTML='<tr><td colspan="5" class="ml-empty">'+mlEsc(error.message)+'</td></tr>'; return; }
+  const nm={}; _gc.players.forEach(p=>nm[p.id]=p.username||p.email);
+  el.innerHTML=(data||[]).map(m=>`<tr><td style="white-space:nowrap">${mlWhen(m.created_at)}</td><td>${mlEsc(nm[m.recipient_id]||m.recipient_id.slice(0,8))}</td><td>${mlEsc(m.subject||'')}</td>
+    <td style="color:#9d93c4">${mlEsc(mlRewardLines(m.attachments).join(' · ')||'—')}</td>
+    <td>${m.attachments?(m.claimed_at?'<span style="color:#4ade80">CLAIMED</span>':'<span style="color:#f59e0b">NOT CLAIMED</span>'):(m.read_at?'READ':'UNREAD')}</td></tr>`).join('')||'<tr><td colspan="5" class="ml-empty">Nothing sent yet.</td></tr>';
 }
 </script>
 
