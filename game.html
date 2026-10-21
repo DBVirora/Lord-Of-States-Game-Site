@@ -16141,7 +16141,7 @@ function renderHeraldSlot(p, targetId){
   }
   const hc=DB[hfc.cid];if(!hc)return;
   if(hfc.broken){
-    const bd=document.createElement('div'); bd.className='herald-slot herald-broken';
+    const bd=document.createElement('div'); bd.className='herald-slot herald-broken'; bd.setAttribute('data-herald',p);
     const back=(typeof cardBackFor==='function')?cardBackFor(p):getImg('cardback');
     bd.innerHTML=(back?`<img src="${back}" style="width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(1) brightness(.45)">`:'')+`<div class="herald-broken-tag">💔 BROKEN</div>`;
     bd.onclick=()=>showFullCard(hfc.origCid||hfc.cid,hfc);
@@ -16155,6 +16155,7 @@ function renderHeraldSlot(p, targetId){
 
   const div=document.createElement('div');
   div.className='herald-slot'+(hfc.isFlipped?' final-form':'')+(canFlip?' can-flip':'');
+  div.setAttribute('data-herald',p);
 
   // Art
   const artWrap=document.createElement('div');artWrap.className='card-art-area';artWrap.style.height='84px';
@@ -18891,6 +18892,16 @@ function fitFields(){
     f.style.setProperty('--fit',Math.max(.4,Math.min(1,fit)).toFixed(3));
   });
 }
+// RIGHT-CLICK TO INSPECT — any card on the board (characters, locations, heralds, both sides)
+// opens the full card view. Hand cards keep their own handler.
+document.addEventListener('contextmenu',e=>{
+  const gs=e.target.closest&&e.target.closest('#game-screen,#game-screen-2v2'); if(!gs||typeof G==='undefined'||!G||!G.players) return;
+  if(e.target.closest('.hand-card')) return;
+  const slot=e.target.closest('.card-slot[data-uid]');
+  if(slot){ const uid=slot.getAttribute('data-uid'); for(const pp of [1,2,3,4]){ const fc=G.players[pp]&&G.players[pp].field&&G.players[pp].field.find(f=>String(f.uid)===uid); if(fc){ e.preventDefault(); showFullCard(fc.cid,fc); return; } } }
+  const hs=e.target.closest('.herald-slot[data-herald]');
+  if(hs){ const h=G.players[+hs.getAttribute('data-herald')]?.herald; if(h){ e.preventDefault(); showFullCard(h.origCid||h.cid,h); } }
+});
 // Arena 3D: the hovered card leans toward the cursor (event delegation, no per-card listeners).
 (function(){
   const sel='.card-slot,.herald-slot,.hand-card';
