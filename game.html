@@ -7707,7 +7707,7 @@ const GODOT_SYNC=[
       'Omega Swap (Dynadrax) — now an ACTIVATED once-per-turn ability (needs any Omega in play; Dynadrax is one): heads = swap a hand character onto your field free (field card returns to hand); tails = choose an opponent character to lose 4 HP. (Was: never triggered; heads was a placeholder)',
       'Shared swapHandFieldFlow({ap,title,outFc,onDone}) used by The Shift of Space, Omega Swap, Mastery of the Light Arts — human 2-step picker with "Don\'t swap"; AI auto-decides. Shift of Space no longer shows the human picker during the AI\'s turn',
       'Ability kills from Spirit of Smash, Blistering Blast, Imperfect Strike, Ravager Strike now go through killCard (prize/energy/achievements) instead of silently removing the card'],
-    screens:[], data:[] },
+    screens:['Right-click any card on the board (your/opponent characters, locations, heralds — 1v1 and 2v2) opens the full card view, same as right-clicking a hand card (delegated contextmenu listener; herald slots carry data-herald)'], data:[] },
   { build:'9.0', date:'2026-10-21', cards:[],
     // 9.0 patch: Daredevil (Fist of God) herald — The Fist of God now rolls its 2× d5 through rollDiceFor (visible dice, +4 dmg per even after the roll)
     abilities:['Every coin/dice ability now shows on screen. Blocking rolls (flipCoinFor/rollDiceFor/showCoinFlip) go through ONE queue: your rolls → animate then CONTINUE (auto after 6s); AI/opponent rolls → animate, show result, auto-close after 1.5s. The AI scheduler waits while a roll is on screen. Previously closeAllModals() wiped the roll popup and the callback never fired (AI effects were lost).',
