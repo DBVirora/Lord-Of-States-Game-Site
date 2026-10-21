@@ -14393,7 +14393,7 @@ function onHandClick(p,uid,fc){
   if(typeof fxCtx==='function') fxCtx(c.id, c.name, fco.uid); // effects from this play are credited to this card
   // TUTORIAL: restrict which card can be played during a guided step.
   if(G.tutorialMode && p===1 && _tutPlayMode!=='free'){
-    if(_tutPlayMode==='none'){ log("Follow Virora's step first — she'll tell you what to play.",'dmg'); showFullCard(fco.cid,null); return; }
+    if(_tutPlayMode==='none'){ log("Follow Virora's step first. She'll tell you what to play.",'dmg'); showFullCard(fco.cid,null); return; }
     if(fco.cid!==_tutPlayMode){ log('For this step, play the highlighted card: '+(DB[_tutPlayMode]?.name||'')+'.','dmg'); showFullCard(fco.cid,null); return; }
   }
   // Energy cards can always be played on your turn during/after main phase
@@ -17200,7 +17200,7 @@ function getPrevForm(cid){
 function endTurnNow(){
   if(typeof fxCtx==='function') fxCtx(null,'Turn',null,{turn:true});
   if(G.gameOver)return;
-  if(G.tutorialMode && _tutPlayMode!=='free' && _tutPendingAction!=='endturn'){ log("Follow Virora's step — she'll tell you when to end your turn.",'dmg'); return; }
+  if(G.tutorialMode && _tutPlayMode!=='free' && _tutPendingAction!=='endturn'){ log("Follow Virora's step. She'll tell you when to end your turn.",'dmg'); return; }
   if(G.tutorialMode&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('endturn');
   // In 2v2 the human controls BOTH boards on Team A (players 1 & 3), so allow
   // ending the turn on whichever human board is currently active. Online: only
@@ -19543,7 +19543,7 @@ const MENU_TABS=[
   {id:'trade',t:'Trade',s:'CARD FOR CARD',d:'Trade cards with other players.',go:()=>openTradeScreen()},
  ]},
  {id:'options',label:'OPTIONS',icon:'⚙',plate:'HELP & OPTIONS',sub:'LEARN · TUNE · SUPPORT',items:[
-  {id:'tutorial',t:'Tutorial',s:'THE ROYAL TRIAL',d:'Virora teaches the whole game in one guided match — card types, colors, combos, both transformation paths and a Herald duel.',go:()=>startTutorial()},
+  {id:'tutorial',t:'Tutorial',s:'THE ROYAL TRIAL',d:'Virora teaches the whole game in one guided match: card types, colors, combos, both transformation paths and a Herald duel.',go:()=>startTutorial()},
   {id:'settings',t:'Settings',s:'AUDIO · BOARD · CPU',d:'Sound, board look, CPU pacing, Herald entrances.',go:()=>openGameSettings()},
   {id:'rules',t:'Rules',s:'QUICK REFERENCE',d:'The one-screen rules summary. The full book is under COURT → Rulebook.',go:()=>showRulesScreen()},
   {id:'menuart',t:'Menu Art',s:'ADMIN',d:'Set the illustration shown on each menu card (paste a GitHub link).',admin:true,go:()=>mmArtManage()},
@@ -20640,13 +20640,13 @@ function tutorialWatch(){
   if(narrationActive()) return;
   if(G.activePlayer===1 && G.phase==='main' && !G.tut.shown.main){
     tutStep('main',[
-      "This is your turn. At the start of each turn you gain Energy — the number by your avatar.",
+      "This is your turn. At the start of each turn you gain Energy: the number by your avatar.",
       "Spend Energy to play cards from your hand. Tap one of your characters to bring it onto the field!",
       "Tip: if you draw a Transformation card matching a character you control, you can evolve them into a stronger form."
     ]);
   } else if(G.activePlayer===1 && G.phase==='attack' && !G.tut.shown.attack){
     tutStep('attack',[
-      "Now the fun part — attacking! Move to your Attack phase, select one of your characters, then choose an enemy to strike.",
+      "Now the fun part: attacking! Move to your Attack phase, select one of your characters, then choose an enemy to strike.",
       "Knock out their characters to start claiming their Prize cards. That's how you win."
     ]);
   }
@@ -24226,7 +24226,7 @@ function _tutTypesHtml(){
   return _tutCx([
     {img:_tutImg('surfacer_herald'),t:'Herald',d:'Leads your deck. Starts in play, never drawn.'},
     {img:_tutImg('virora_base_bse'),t:'Base Character',d:'A fighter that can transform.',hot:true},
-    {img:_tutImg('virora_ssj1_bse'),t:'Transformation',d:'🔒 A higher form — played on top of its base.'},
+    {img:_tutImg('virora_ssj1_bse'),t:'Transformation',d:'🔒 A higher form, played on top of its base.'},
     {img:_tutImg('saiyan_heavy_warrior_bse'),t:'Character',d:'A standard fighter.'},
     {img:_tutImg('virora_team_hq_bse'),t:'Location',d:'Permanent. +1 Energy every turn + its effect.'},
     {img:_tutImg('void_crystal_bse'),t:'Equipment',d:'Attaches to one of your characters.'},
@@ -24235,7 +24235,7 @@ function _tutTypesHtml(){
   ],'types');
 }
 function _tutColorsHtml(){
-  const C=[['red','RED','Aggression','Raw power, burns, early pressure.'],['blue','BLUE','Control','Freeze, search, slow the board.'],['purple','PURPLE','Trickery','Transformations & tricks — that\'s me.'],['black','BLACK','Sacrifice','Pay a price for big power.'],['yellow','YELLOW','Speed & Ramp','Burst Speed, extra Energy.'],['green','GREEN','Endurance','Healing, fruits, outlasting.'],['white','WHITE','Universal','Fits any deck.']];
+  const C=[['red','RED','Aggression','Raw power, burns, early pressure.'],['blue','BLUE','Control','Freeze, search, slow the board.'],['purple','PURPLE','Trickery','Transformations & tricks. That\'s me.'],['black','BLACK','Sacrifice','Pay a price for big power.'],['yellow','YELLOW','Speed & Ramp','Burst Speed, extra Energy.'],['green','GREEN','Endurance','Healing, fruits, outlasting.'],['white','WHITE','Universal','Fits any deck.']];
   return _tutCx(C.map(c=>({gem:_tutHex(c[0]),tag:c[1],t:c[2],d:c[3],hot:c[0]==='purple'})),'colors');
 }
 function _tutEnergyHtml(){
@@ -24243,7 +24243,7 @@ function _tutEnergyHtml(){
     {img:_tutImg('energy_2_purple'),tag:'BASIC',t:'1 · 2 · 3 Energy',d:'Adds that much Energy of its color.'},
     {img:_tutImg('energy_1_choice'),tag:'CHOICE',t:'Your Choice',d:'+1 Energy of any color you name.'},
     {img:_tutImg('rainbow_energy'),tag:'RAINBOW',t:'Rainbow',d:'+1 that always counts as on-color.'},
-    {img:_tutImg('surge_energy'),tag:'SURGE',t:'Surge',d:'+4 now — but you skip your next draw.'},
+    {img:_tutImg('surge_energy'),tag:'SURGE',t:'Surge',d:'+4 now, but you skip your next draw.'},
     {gem:'#e8c570',tag:'ALWAYS',t:'Other sources',d:'+1 each Draw · +1 per Location · +2 Power Up · +1 per kill.'},
   ],'energy');
 }
@@ -24252,32 +24252,32 @@ function _tutRetaliationHtml(){
   return '<div class="tut-codex retal">'
     +step('⚔️','1 · The attack','The attacker deals its ATK to the defender.')
     +step('💀','2a · Defender destroyed','A destroyed card can\'t hit back. A clean kill = <b>no retaliation</b>.')
-    +step('↩️','2b · Defender survives','It hits back <b>right away</b> with its <b>full ATK</b>. Automatic — the attacker can\'t refuse it.',true)
+    +step('↩️','2b · Defender survives','It hits back <b>right away</b> with its <b>full ATK</b>. It\'s automatic: the attacker can\'t refuse it.',true)
     +step('🛡️','Exceptions','A Herald hits back for <b>half</b> its ATK. Locations never hit back. A <b>Frozen</b> defender can\'t hit back.')
     +'</div>'
     +'<div class="tut-retal-ex"><div class="rx-h">WHAT JUST HAPPENED</div>'
-    +'<div class="rx-row"><span class="rx-card"><img src="'+_tutImg('saiyan_heavy_warrior_bse')+'" alt=""><b>Heavy Warrior</b><i>5 ATK · 3 DEF</i></span><span class="rx-arrow">⚔ 5 ➜</span><span class="rx-card"><img src="'+_tutImg('virora_base_bse')+'" alt=""><b>Virora</b><i>8 left → 3 left</i></span><span class="rx-arrow back">↩ 8</span><span class="rx-res">I <b>survived</b>, so I hit back with my full <b>8 ATK</b> into its <b>3 DEF</b> → <b>destroyed</b>. Their attack cost them their attacker — and gave <em>you</em> a Prize.</span></div></div>'
+    +'<div class="rx-row"><span class="rx-card"><img src="'+_tutImg('saiyan_heavy_warrior_bse')+'" alt=""><b>Heavy Warrior</b><i>5 ATK · 3 DEF</i></span><span class="rx-arrow">⚔ 5 ➜</span><span class="rx-card"><img src="'+_tutImg('virora_base_bse')+'" alt=""><b>Virora</b><i>8 left → 3 left</i></span><span class="rx-arrow back">↩ 8</span><span class="rx-res">I <b>survived</b>, so I hit back with my full <b>8 ATK</b> into its <b>3 DEF</b> → <b>destroyed</b>. Their attack cost them their attacker and gave <em>you</em> a Prize.</span></div></div>'
     +'<div class="tut-retal-why"><div class="rx-h">WHY IT EXISTS</div>'
-    +'Without it, you could poke any card for free every turn, and fights would simply go to whoever has more attackers. Retaliation makes <b>every attack a trade</b>: you put your attacker\'s DEF on the line against the defender\'s ATK. It rewards smart attacks — and makes strong defenders worth playing.</div>'
-    +'<div class="tut-rules" style="grid-template-columns:repeat(3,minmax(0,1fr))"><div><b>✓ Good attack</b>You destroy the defender — nothing hits back.</div><div><b>✓ Good attack</b>It survives, but its ATK is far below your DEF.</div><div><b>✗ Bad attack</b>It survives AND its ATK is at least your DEF — you lose your attacker.</div></div>';
+    +'Without it, you could poke any card for free every turn, and fights would simply go to whoever has more attackers. Retaliation makes <b>every attack a trade</b>: you put your attacker\'s DEF on the line against the defender\'s ATK. It rewards smart attacks and makes strong defenders worth playing.</div>'
+    +'<div class="tut-rules" style="grid-template-columns:repeat(3,minmax(0,1fr))"><div><b>✓ Good attack</b>You destroy the defender, so nothing hits back.</div><div><b>✓ Good attack</b>It survives, but its ATK is far below your DEF.</div><div><b>✗ Bad attack</b>It survives AND its ATK is at least your DEF, so you lose your attacker.</div></div>';
 }
 function _tutTreeHtml(){
   const card=(cid,label)=>'<div class="tr-card"><img src="'+_tutImg(cid)+'" alt="">'+label+'</div>';
   const fut=(label)=>'<div class="tr-card future"><div class="tr-sil">?</div>'+label+'</div>';
   return '<div class="tut-tree">'
-    +'<div class="tr-line" style="--lc:#fbbf24"><h4>SAIYAN PATH</h4><div class="tr-row">'+card('virora_ssj1_bse','Virora (SSJ)')+'<span class="tr-arrow">➜</span>'+fut('SSJ 2')+'<span class="tr-arrow">➜</span>'+fut('SSJ 3…')+'</div><div class="tr-note">The warrior\'s line — power and burst damage.</div></div>'
+    +'<div class="tr-line" style="--lc:#fbbf24"><h4>SAIYAN PATH</h4><div class="tr-row">'+card('virora_ssj1_bse','Virora (SSJ)')+'<span class="tr-arrow">➜</span>'+fut('SSJ 2')+'<span class="tr-arrow">➜</span>'+fut('SSJ 3…')+'</div><div class="tr-note">The warrior\'s line: power and burst damage.</div></div>'
     +'<div class="tr-base"><img src="'+_tutImg('virora_base_bse')+'" alt=""><div class="tr-note" style="text-align:center"><b style="color:#fde68a">Virora</b><br>Base Character</div></div>'
-    +'<div class="tr-line" style="--lc:#7cb0f0"><h4>GOD PATH</h4><div class="tr-row">'+card('virora_ssg_bse','Virora (SSG)')+'<span class="tr-arrow">➜</span>'+fut('SSB…')+'</div><div class="tr-note">The divine line — speed, evasion and card draw.</div></div>'
+    +'<div class="tr-line" style="--lc:#7cb0f0"><h4>GOD PATH</h4><div class="tr-row">'+card('virora_ssg_bse','Virora (SSG)')+'<span class="tr-arrow">➜</span>'+fut('SSB…')+'</div><div class="tr-note">The divine line: speed, evasion and card draw.</div></div>'
     +'</div>'
-    +'<div class="tut-rules"><div><b>The form card</b>Must be in your hand — draw it like any other card.</div><div><b>The cost</b>Pay the form\'s cost (6 here)… or just 3 with Calm Clarity.</div><div><b>The reward</b>Full heal, every status cleansed, equipment kept.</div><div><b>No waiting</b>A transformed fighter is never summoning-sick.</div></div>'
+    +'<div class="tut-rules"><div><b>The form card</b>Must be in your hand. Draw it like any other card.</div><div><b>The cost</b>Pay the form\'s cost (6 here)… or just 3 with Calm Clarity.</div><div><b>The reward</b>Full heal, every status cleansed, equipment kept.</div><div><b>No waiting</b>A transformed fighter is never summoning-sick.</div></div>'
     +'<div class="tr-note" style="margin-top:8px;text-align:center;color:#fde68a"><b>Paths never cross.</b> Once a fighter goes SSJ it only climbs SSJ forms; once it goes SSG it only climbs God forms.</div>'
-    +'<div class="tr-note" style="margin-top:4px;text-align:center"><b style="color:#d8b4fe">Every line is its own.</b> Not every fighter has every form — one may stop at SSJ, another may never reach SSB. Some have a single path, other kinds of characters have paths of their own, and many never transform at all. I&#39;m just the example — read each card.</div>'
+    +'<div class="tr-note" style="margin-top:4px;text-align:center"><b style="color:#d8b4fe">Every line is its own.</b> Not every fighter has every form. One may stop at SSJ, another may never reach SSB. Some have a single path, other kinds of characters have paths of their own, and many never transform at all. I&#39;m just the example, so read each card.</div>'
     +'<div class="tr-note" style="margin-top:8px;text-align:center">Other lines in the Base Set: <b style="color:#fde68a">Magnus</b> → SSJ, or SSG → SSB · <b style="color:#fde68a">Najeela</b> → SSJ → SSJ2, or SSG → SSB · <b style="color:#fde68a">Tyler</b> → SSG → SSB → SSBE</div>';
 }
 function _tutPathsHtml(){
   return '<div class="tut-paths">'
-    +'<button class="tut-path" style="--pc:#fbbf24;--pos:50% 30%" onclick="_tutChoosePath(\'ssj\')"><div class="tp-art" style="background-image:url(&quot;'+TUT_ART.ssj+'&quot;)"></div><img class="tp-card" src="'+_tutImg('virora_ssj1_bse')+'" alt=""><div class="tp-body"><div class="tp-tag">Saiyan Path · Warrior</div><div class="tp-name">Virora (SSJ)</div><div class="tp-stats">5 / 6 → 9 ATK / 12 DEF with your Court</div><ul><li><b>Light Sphere</b> — flip a coin: heads deals 4 damage to any enemy.</li><li><b>Blinding Power</b> — hurt last turn? search an Energy card.</li><li>Fights alongside a partner: you\'ll call in <b>Vuruna</b>.</li></ul><span class="tp-pick">CHOOSE THE WARRIOR ▸</span></div></button>'
-    +'<button class="tut-path" style="--pc:#7cb0f0;--pos:50% 40%" onclick="_tutChoosePath(\'ssg\')"><div class="tp-art" style="background-image:url(&quot;'+TUT_ART.ssg+'&quot;)"></div><img class="tp-card" src="'+_tutImg('virora_ssg_bse')+'" alt=""><div class="tp-body"><div class="tp-tag">God Path · Divine</div><div class="tp-name">Virora (SSG)</div><div class="tp-stats">3 / 9 → 7 ATK / 15 DEF with your Court</div><ul><li><b>Godly Blitz</b> — attacks TWICE each turn and draws on every hit.</li><li><b>Godly Evasion</b> — enemies must pay 2 Energy just to target her.</li><li>Fights alone — and doesn\'t need help.</li></ul><span class="tp-pick">CHOOSE THE GOD ▸</span></div></button>'
+    +'<button class="tut-path" style="--pc:#fbbf24;--pos:50% 30%" onclick="_tutChoosePath(\'ssj\')"><div class="tp-art" style="background-image:url(&quot;'+TUT_ART.ssj+'&quot;)"></div><img class="tp-card" src="'+_tutImg('virora_ssj1_bse')+'" alt=""><div class="tp-body"><div class="tp-tag">Saiyan Path · Warrior</div><div class="tp-name">Virora (SSJ)</div><div class="tp-stats">5 / 6 → 9 ATK / 12 DEF with your Court</div><ul><li><b>Light Sphere:</b> flip a coin, and heads deals 4 damage to any enemy.</li><li><b>Blinding Power:</b> hurt last turn? Search an Energy card.</li><li>Fights alongside a partner: you\'ll call in <b>Vuruna</b>.</li></ul><span class="tp-pick">CHOOSE THE WARRIOR ▸</span></div></button>'
+    +'<button class="tut-path" style="--pc:#7cb0f0;--pos:50% 40%" onclick="_tutChoosePath(\'ssg\')"><div class="tp-art" style="background-image:url(&quot;'+TUT_ART.ssg+'&quot;)"></div><img class="tp-card" src="'+_tutImg('virora_ssg_bse')+'" alt=""><div class="tp-body"><div class="tp-tag">God Path · Divine</div><div class="tp-name">Virora (SSG)</div><div class="tp-stats">3 / 9 → 7 ATK / 15 DEF with your Court</div><ul><li><b>Godly Blitz:</b> attacks TWICE each turn and draws on every hit.</li><li><b>Godly Evasion:</b> enemies must pay 2 Energy just to target her.</li><li>Fights alone and doesn\'t need help.</li></ul><span class="tp-pick">CHOOSE THE GOD ▸</span></div></button>'
     +'</div>';
 }
 // ── board ──────────────────────────────────────────────────────────────────────
@@ -24354,15 +24354,15 @@ function _tutBindingText(){
 }
 // ── the script ─────────────────────────────────────────────────────────────────
 const TUT_CH={
-  welcome:{n:0,kicker:'WELCOME, CHALLENGER',title:'Lord of Courts',sub:'A royal trial — guided by Virora.',art:TUT_ART.main,pos:'50% 40%',hold:3200},
+  welcome:{n:0,kicker:'WELCOME, CHALLENGER',title:'Lord of Courts',sub:'A royal trial, guided by Virora.',art:TUT_ART.main,pos:'50% 40%',hold:3200},
   court:{n:1,roman:'I',title:'The Court',sub:'Know your battlefield before you fight on it.',chips:['PRIZES','YOUR HERALD','YOUR HAND','THE TURN'],art:TUT_ART.main,pos:'50% 45%'},
-  energy:{n:2,roman:'II',title:'Energy & Colors',sub:'Fuel every move — and find your style.',chips:['ONE POOL','ENERGY CARDS','7 COLORS','PLAY STYLES'],glyph:'⚡'},
-  champ:{n:3,roman:'III',title:'Your Champion',sub:'Card types, characters — and me.',chips:['CARD TYPES','ATK & DEF','PASSIVES','SUMMONING'],art:TUT_ART.portrait,pos:'50% 18%'},
-  royal:{n:4,roman:'IV',title:'The Royal Court',sub:'Locations, equipment — and your first combo.',chips:['LOCATIONS','COMBOS','EQUIPMENT','ATTACKING'],art:TUT_ART.tower,pos:'50% 40%'},
-  ascend:{n:5,roman:'V',title:'Ascension',sub:'Transformation lines — and the path you choose.',chips:['FORM LINES','CALM CLARITY','FULL HEAL','YOUR CHOICE'],art:TUT_ART.ssj,pos:'50% 30%'},
-  ssj:{n:6,roman:'VI',title:'The Warrior Path',sub:'Raw power, a lucky coin — and a partner.',chips:['ABILITIES','HERALD POWER','BURST SPEED','TEAMWORK'],art:TUT_ART.ssj,pos:'60% 25%'},
+  energy:{n:2,roman:'II',title:'Energy & Colors',sub:'Fuel every move and find your style.',chips:['ONE POOL','ENERGY CARDS','7 COLORS','PLAY STYLES'],glyph:'⚡'},
+  champ:{n:3,roman:'III',title:'Your Champion',sub:'Card types, characters, and me.',chips:['CARD TYPES','ATK & DEF','PASSIVES','SUMMONING'],art:TUT_ART.portrait,pos:'50% 18%'},
+  royal:{n:4,roman:'IV',title:'The Royal Court',sub:'Locations, equipment, and your first combo.',chips:['LOCATIONS','COMBOS','EQUIPMENT','ATTACKING'],art:TUT_ART.tower,pos:'50% 40%'},
+  ascend:{n:5,roman:'V',title:'Ascension',sub:'Transformation lines and the path you choose.',chips:['FORM LINES','CALM CLARITY','FULL HEAL','YOUR CHOICE'],art:TUT_ART.ssj,pos:'50% 30%'},
+  ssj:{n:6,roman:'VI',title:'The Warrior Path',sub:'Raw power, a lucky coin, and a partner.',chips:['ABILITIES','HERALD POWER','BURST SPEED','TEAMWORK'],art:TUT_ART.ssj,pos:'60% 25%'},
   ssg:{n:6,roman:'VI',title:'The God Path',sub:'Strike twice. Draw twice. Untouchable.',chips:['HERALD POWER','GODLY BLITZ','DOUBLE ATTACK','GODLY EVASION'],art:TUT_ART.ssg,pos:'45% 35%'},
-  heralds:{n:7,roman:'VII',title:'Clash of Heralds',sub:'Round 4 — the Heralds enter the fight.',chips:['HERALD DUEL','½ RETALIATION','BROKEN','TWO PRIZES'],art:TUT_ART.main,pos:'50% 60%'},
+  heralds:{n:7,roman:'VII',title:'Clash of Heralds',sub:'Round 4: the Heralds enter the fight.',chips:['HERALD DUEL','½ RETALIATION','BROKEN','TWO PRIZES'],art:TUT_ART.main,pos:'50% 60%'},
 };
 const _onAiTurn=(n)=>()=>G&&G.activePlayer===2&&G.tut&&G.tut.aiTurn===n;
 const _onMyTurn=()=>G&&G.activePlayer===1;
@@ -24372,73 +24372,73 @@ function buildTutorialSteps(){
   return [
     // ── PROLOGUE ──
     {chapter:TUT_CH.welcome, narration:[
-      "Welcome to the Courts, challenger. I'm Virora — Royal Saiyan, your guide… and today, your star card.",
+      "Hi, I'm a Royal Saiyan named Virora! Welcome to the Courts, challenger. I'll be your guide today… and your star card.",
       "Every match is a duel of two 60-card decks, each led by a Herald. Break your rival's board, claim their Prizes, take the crown.",
-      "I built you a deck around me — the Royal Court. Follow my lead: by the end you'll be transforming, combo-ing and dueling Heralds."
+      "I built you a deck around me, called the Royal Court. Follow my lead, and by the end you'll be transforming, combo-ing and dueling Heralds."
     ]},
     // ── I · THE COURT ──
-    {chapter:TUT_CH.court, target:'#p2-prizes', text:"This is a <b>Prize Battle</b>. Your rival has <b>6 face-down Prize cards</b>. Every enemy character you destroy lets you take one — take them all and <b>you win</b>."},
+    {chapter:TUT_CH.court, target:'#p2-prizes', text:"This is a <b>Prize Battle</b>. Your rival has <b>6 face-down Prize cards</b>. Every enemy character you destroy lets you take one. Take them all and <b>you win</b>."},
     {target:'#p1-prizes', text:"These are <b>your</b> Prizes. Lose characters and your rival takes these instead. Protect them."},
-    {target:TS.herald(1), text:"Your <b>Herald — The Surfacer</b>. A Herald leads your deck: it starts in play and is never drawn. Its passive shapes the whole match — his taxes your rival <em>every single turn</em>."},
+    {target:TS.herald(1), text:"Your <b>Herald: The Surfacer</b>. A Herald leads your deck: it starts in play and is never drawn. Its passive shapes the whole match. His taxes your rival <em>every single turn</em>."},
     {target:TS.herald(2), text:"Their Herald: <b>Daredevil (Fist of God)</b>. Heralds don't fight characters… but remember him. You'll settle things with him personally."},
-    {target:'#hand-dock', text:"Your hand. <b>Right-click</b> any card — or tap it when it isn't your Main phase — to read it in full. The card text is the rules."},
+    {target:'#hand-dock', text:"Your hand. <b>Right-click</b> any card (or tap it when it isn't your Main phase) to read it in full. The card text is the rules."},
     {target:'#ph-draw', act:'draw', doHint:'Tap DRAW', text:"Every turn flows <b>Draw → Main → Attack → End</b>. Begin: tap <b>Draw</b> to draw a card and bank <b>+1 Energy</b>."},
     // ── II · ENERGY & COLORS ──
-    {chapter:TUT_CH.energy, target:TS.energy, text:"This is your <b>Energy</b> — the one resource in the game. It <b>carries over</b> between turns, so nothing is ever wasted. You started with 5 and just banked 1 more."},
-    {target:'#ph-main', act:'main', doHint:'Tap MAIN', text:"Enter your <b>Main phase</b> — where you play cards, transform and use abilities."},
+    {chapter:TUT_CH.energy, target:TS.energy, text:"This is your <b>Energy</b>, the one resource in the game. It <b>carries over</b> between turns, so nothing is ever wasted. You started with 5 and just banked 1 more."},
+    {target:'#ph-main', act:'main', doHint:'Tap MAIN', text:"Enter your <b>Main phase</b>, where you play cards, transform and use abilities."},
     {target:()=>TS.hand('energy_2_purple'), act:'play_energy', allow:'energy_2_purple', doHint:'Play 2 Purple Energy', text:"You may play <b>ONE Energy card per turn</b>. Play this <em>2 Purple Energy</em>."},
     {wide:true, text:"Every card has a <b>color</b>, and every color plays differently. Your deck's colors are its personality:", html:_tutColorsHtml()},
-    {target:TS.energy, text:"Colored Energy is still part of your <b>one pool</b> — it's just <b>spent first on matching cards</b>. A few big abilities demand a specific color. Tap this panel any time to see your bank."},
-    {wide:true, text:"Energy cards come in a few styles — you'll use three of them today:", html:_tutEnergyHtml()},
+    {target:TS.energy, text:"Colored Energy is still part of your <b>one pool</b>. It's just <b>spent first on matching cards</b>. A few big abilities demand a specific color. Tap this panel any time to see your bank."},
+    {wide:true, text:"Energy cards come in a few styles. You'll use three of them today:", html:_tutEnergyHtml()},
     // ── III · YOUR CHAMPION ──
     {chapter:TUT_CH.champ, wide:true, text:"Every kind of card you'll see today. The type is printed on each card's frame:", html:_tutTypesHtml()},
-    {target:()=>TS.hand(V), act:'play', allow:V, doHint:'Play Virora', text:"Enough talk — summon your champion. Play <b>me: Virora</b> for 3 Energy."},
-    {target:()=>TS.mine(V), text:"Read a character like this: <b>cost 3</b> · <b>4 ATK</b> (damage I deal) · <b>4 DEF</b> (damage I can take). My subtypes read <em>Royal • Saiyan</em> — that makes me a <b>Royal Saiyan</b>. Remember it: it's our combo."},
-    {target:()=>TS.mine(V), text:"My passive, <b>Calm Clarity</b>: while I'm on the field, every transformation you make costs just <b>3 Energy</b>. My forms normally cost 6 — this is how we evolve fast."},
-    {target:()=>TS.mine(V), text:"One rule: a character <b>can't attack the turn it's summoned</b>. Keywords like <em>Burst Speed</em> break that rule — you'll meet one later."},
-    {target:'#ph-end', act:'endturn', doHint:'Tap END TURN', text:"Nothing to attack yet — and that's fine. End a turn <b>without attacking or using abilities</b> and you <b>Power Up: +2 Energy</b>. End your turn."},
+    {target:()=>TS.hand(V), act:'play', allow:V, doHint:'Play Virora', text:"Enough talk. Summon your champion! Play <b>me: Virora</b> for 3 Energy."},
+    {target:()=>TS.mine(V), text:"Read a character like this: <b>cost 3</b> · <b>4 ATK</b> (damage I deal) · <b>4 DEF</b> (damage I can take). My subtypes read <em>Royal • Saiyan</em>, and that makes me a <b>Royal Saiyan</b>. Remember it: it's our combo."},
+    {target:()=>TS.mine(V), text:"My passive, <b>Calm Clarity</b>: while I'm on the field, every transformation you make costs just <b>3 Energy</b>. My forms normally cost 6, so this is how we evolve fast."},
+    {target:()=>TS.mine(V), text:"One rule: a character <b>can't attack the turn it's summoned</b>. Keywords like <em>Burst Speed</em> break that rule. You'll meet one later."},
+    {target:'#ph-end', act:'endturn', doHint:'Tap END TURN', text:"Nothing to attack yet, and that's fine. End a turn <b>without attacking or using abilities</b> and you <b>Power Up: +2 Energy</b>. End your turn."},
     // enemy turn 1
-    {tag:ENEMY, watch:true, waitBefore:_onAiTurn(1), target:()=>_tutBindingTarget(), text:()=>"Their turn — and your Herald strikes first. <b>Surfacer Binding</b>: at the start of each of their turns they must discard a card or lose 2 Energy. "+_tutBindingText()},
+    {tag:ENEMY, watch:true, waitBefore:_onAiTurn(1), target:()=>_tutBindingTarget(), text:()=>"Their turn, and your Herald strikes first. <b>Surfacer Binding</b>: at the start of each of their turns they must discard a card or lose 2 Energy. "+_tutBindingText()},
     {tag:ENEMY, watch:true, before:()=>TUTAI.play('saiyan_heavy_warrior_bse'), target:()=>TS.foe('saiyan_heavy_warrior_bse'), text:"They summon a <b>Saiyan Heavy Warrior</b>. Its Battle Hardened gave it <b>+2 ATK</b>: a 5-ATK hitter… with only 3 DEF."},
     {tag:ENEMY, watch:true, before:()=>TUTAI.play('female_saiyan_citizen_bse'), target:()=>TS.foe('female_saiyan_citizen_bse'), text:"Plus a cheap <b>Saiyan Citizen</b>. Rivals love to flood the board early.", after:()=>TUTAI.endTurn()},
     // ── IV · THE ROYAL COURT ──
-    {chapter:TUT_CH.royal, waitBefore:_onMyTurn, target:'#ph-draw', act:'draw', doHint:'Tap DRAW', text:"Your turn. <b>Draw</b> — and watch the Energy: +1 for the turn, on top of last turn's +2 Power Up."},
+    {chapter:TUT_CH.royal, waitBefore:_onMyTurn, target:'#ph-draw', act:'draw', doHint:'Tap DRAW', text:"Your turn. <b>Draw</b>, and watch the Energy: +1 for the turn, on top of last turn's +2 Power Up."},
     {target:'#ph-main', act:'main', doHint:'Tap MAIN', text:"Into the <b>Main phase</b>."},
-    {target:()=>TS.hand('energy_3_purple'), act:'play_energy', allow:'energy_3_purple', doHint:'Play 3 Purple Energy', text:"You drew a <em>3 Purple Energy</em> — big fuel for a big turn. Play it."},
+    {target:()=>TS.hand('energy_3_purple'), act:'play_energy', allow:'energy_3_purple', doHint:'Play 3 Purple Energy', text:"You drew a <em>3 Purple Energy</em>: big fuel for a big turn. Play it."},
     {target:()=>TS.hand('virora_team_hq_bse'), act:'play_location', allow:'virora_team_hq_bse', doHint:"Play Virora's Team Headquarters", text:"<b>Locations</b> are permanent: <b>+1 Energy every turn</b>, plus their own effect. Play <b>Virora's Team Headquarters</b>. It's <em>White</em>, so it fits any deck."},
-    {target:()=>[TS.mine('virora_team_hq_bse'),TS.mine(V)], text:"<b>COMBO!</b> Royal Meeting gives a Saiyan <b>+3 DEF</b> — but a <em>Royal</em> Saiyan gets the bigger Royal bonus <b>instead</b>: <b>+4 DEF and +2 ATK</b>. I'm a Royal Saiyan, so <b>4/4 just became 6/8</b>."},
-    {target:()=>TS.mine(V), text:"That's deck-building in one move: pick cards whose <b>subtypes and effects feed each other</b>. And a Royal Saiyan is still a <b>Saiyan</b> — any card that boosts Saiyans boosts me too. This card just picks one tier or the other."},
-    {target:()=>TS.hand('void_crystal_bse'), act:'equip', allow:'void_crystal_bse', tgt:V, doHint:'Play Void Crystal → equip Virora', text:"<b>Equipment</b> attaches to one of your characters and stays — even through transformations. Play <b>Void Crystal</b> on me: <b>+2/+2</b>."},
-    {target:()=>TS.mine(V), text:"<b>8 ATK / 10 DEF.</b> Void Crystal is <em>Black</em> — off-color cards work fine, they just draw from your shared pool. (Its Soul Find returns a fallen character from your discard — none yet.)"},
-    {target:()=>TS.mine(V), text:"Tip: <b>click any character</b> — yours or theirs — to inspect it. You'll see its <b>attached cards</b> (tap one to read it) and every <b>active effect</b> on it, with the card causing it. Try me: Royal Meeting and Void Crystal are both at work. A green <b>▲</b> on the board means buffed, a red <b>▼</b> means weakened."},
+    {target:()=>[TS.mine('virora_team_hq_bse'),TS.mine(V)], text:"<b>COMBO!</b> Royal Meeting gives a Saiyan <b>+3 DEF</b>, but a <em>Royal</em> Saiyan gets the bigger Royal bonus <b>instead</b>: <b>+4 DEF and +2 ATK</b>. I'm a Royal Saiyan, so <b>4/4 just became 6/8</b>."},
+    {target:()=>TS.mine(V), text:"That's deck-building in one move: pick cards whose <b>subtypes and effects feed each other</b>. And a Royal Saiyan is still a <b>Saiyan</b>, so any card that boosts Saiyans boosts me too. This card just picks one tier or the other."},
+    {target:()=>TS.hand('void_crystal_bse'), act:'equip', allow:'void_crystal_bse', tgt:V, doHint:'Play Void Crystal → equip Virora', text:"<b>Equipment</b> attaches to one of your characters and stays, even through transformations. Play <b>Void Crystal</b> on me: <b>+2/+2</b>."},
+    {target:()=>TS.mine(V), text:"<b>8 ATK / 10 DEF.</b> Void Crystal is <em>Black</em>. Off-color cards work fine, they just draw from your shared pool. (Its Soul Find returns a fallen character from your discard. None yet.)"},
+    {target:()=>TS.mine(V), text:"Tip: <b>click any character</b>, yours or theirs, to inspect it. You'll see its <b>attached cards</b> (tap one to read it) and every <b>active effect</b> on it, with the card causing it. Try me: Royal Meeting and Void Crystal are both at work. A green <b>▲</b> on the board means buffed, a red <b>▼</b> means weakened."},
     {target:'#ph-attack', act:'attack_phase', doHint:'Tap ATTACK', text:"Time to fight. Enter the <b>Attack phase</b>."},
-    {target:()=>[TS.mine(V),TS.foe('female_saiyan_citizen_bse')], act:'attack', attacker:V, foe:'female_saiyan_citizen_bse', doHint:'Tap Virora → tap their Citizen', text:"Only <b>one character attacks per turn</b>. Tap <b>me</b>, then their <b>Saiyan Citizen</b>. (Leave the Warrior — I want to show you something on their turn.)"},
-    {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=1&&!_tutPicking(), doHint:'Pick a glowing Prize', waitBefore:()=>_tutPicking()||_tutPrizesTaken()>=1, text:"Destroyed — and a destroyed defender <b>can't hit back</b>. Claim your reward: pick any glowing <b>Prize</b>. Claiming is mandatory before your turn can end."},
+    {target:()=>[TS.mine(V),TS.foe('female_saiyan_citizen_bse')], act:'attack', attacker:V, foe:'female_saiyan_citizen_bse', doHint:'Tap Virora → tap their Citizen', text:"Only <b>one character attacks per turn</b>. Tap <b>me</b>, then their <b>Saiyan Citizen</b>. (Leave the Warrior. I want to show you something on their turn.)"},
+    {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=1&&!_tutPicking(), doHint:'Pick a glowing Prize', waitBefore:()=>_tutPicking()||_tutPrizesTaken()>=1, text:"Destroyed! A destroyed defender <b>can't hit back</b>. Claim your reward: pick any glowing <b>Prize</b>. Claiming is mandatory before your turn can end."},
     {target:'#p2-prizes', text:"One down, five to go. Every kill also pays you <b>+1 Energy</b>, and the Prize card itself joins your hand."},
-    {target:'#ph-end', act:'endturn', doHint:'Tap END TURN', text:"End your turn — and watch what happens when they attack <b>me</b>."},
+    {target:'#ph-end', act:'endturn', doHint:'Tap END TURN', text:"End your turn, and watch what happens when they attack <b>me</b>."},
     // enemy turn 2
     {tag:ENEMY, watch:true, waitBefore:_onAiTurn(2), target:()=>_tutBindingTarget(), text:()=>"Surfacer Binding again. "+_tutBindingText()+" Your Herald never stops working."},
-    {tag:ENEMY, watch:true, before:()=>TUTAI.play('blade_of_udun_bse'), target:()=>_tutViroraSel(), text:"<b>Blade of Udun</b> — an <em>Instant</em>: a one-shot effect played from hand. 2 damage <b>and Burn</b>. Burn hurts me at the start of each of my turns until it fades."},
-    {tag:ENEMY, watch:true, before:()=>{ const v=_tutVirora(); if(v) TUTAI.attack('saiyan_heavy_warrior_bse', v.uid); }, waitBefore:()=>!(typeof _presentBusy==='function'&&_presentBusy()), target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=2&&!_tutPicking(), doHint:'Pick a glowing Prize', text:"Their Warrior hit me for 5 — but I <b>survived</b>, so I hit back with my full ATK: <b>RETALIATION</b>. It's destroyed, and you claim a Prize — even on their turn!"},
-    {tag:ENEMY, watch:true, wide:true, text:"That hit-back is called <b>RETALIATION</b> — the most important rule in combat. Here's exactly how it works, and why it exists:", html:_tutRetaliationHtml()},
-    {tag:ENEMY, watch:true, before:()=>TUTAI.play('rapture_vortex_bse'), target:()=>TS.foe('rapture_vortex_bse'), text:"Now their big gun: <b>Rapture of the Vortex</b> — 6 ATK / 8 DEF. Too tough to take head-on… for now."},
-    {tag:ENEMY, watch:true, before:()=>{ _tutRig.coin=[false]; TUTAI.play('aoliath_base_bse'); }, waitBefore:()=>!(typeof _presentBusy==='function'&&_presentBusy()), target:()=>TS.foe('aoliath_base_bse'), text:"Plus <b>Aoliath</b>, a cheap <em>Red</em> fighter. That coin was its entry ability, <b>Demolition</b> — <b>tails</b>, so it can now attack <b>Locations</b>, like our Royal Meeting. Two targets. Next turn we answer both — <b>it's time to ascend.</b>", after:()=>TUTAI.endTurn()},
+    {tag:ENEMY, watch:true, before:()=>TUTAI.play('blade_of_udun_bse'), target:()=>_tutViroraSel(), text:"<b>Blade of Udun</b> is an <em>Instant</em>: a one-shot effect played from hand. 2 damage <b>and Burn</b>. Burn hurts me at the start of each of my turns until it fades."},
+    {tag:ENEMY, watch:true, before:()=>{ const v=_tutVirora(); if(v) TUTAI.attack('saiyan_heavy_warrior_bse', v.uid); }, waitBefore:()=>!(typeof _presentBusy==='function'&&_presentBusy()), target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=2&&!_tutPicking(), doHint:'Pick a glowing Prize', text:"Their Warrior hit me for 5, but I <b>survived</b>, so I hit back with my full ATK: <b>RETALIATION</b>. It's destroyed, and you claim a Prize, even on their turn!"},
+    {tag:ENEMY, watch:true, wide:true, text:"That hit-back is called <b>RETALIATION</b>, the most important rule in combat. Here's exactly how it works, and why it exists:", html:_tutRetaliationHtml()},
+    {tag:ENEMY, watch:true, before:()=>TUTAI.play('rapture_vortex_bse'), target:()=>TS.foe('rapture_vortex_bse'), text:"Now their big gun: <b>Rapture of the Vortex</b>: 6 ATK / 8 DEF. Too tough to take head-on… for now."},
+    {tag:ENEMY, watch:true, before:()=>{ _tutRig.coin=[false]; TUTAI.play('aoliath_base_bse'); }, waitBefore:()=>!(typeof _presentBusy==='function'&&_presentBusy()), target:()=>TS.foe('aoliath_base_bse'), text:"Plus <b>Aoliath</b>, a cheap <em>Red</em> fighter. That coin was its entry ability, <b>Demolition</b>. It landed <b>tails</b>, so it can now attack <b>Locations</b>, like our Royal Meeting. Two targets. Next turn we answer both. <b>It's time to ascend.</b>", after:()=>TUTAI.endTurn()},
     // ── V · ASCENSION ──
-    {chapter:TUT_CH.ascend, waitBefore:_onMyTurn, target:()=>_tutViroraSel(), text:"My turn begins and the <b>Burn</b> ticks: −1. Statuses linger until they fade — or until something <b>cleanses</b> them. Watch this."},
+    {chapter:TUT_CH.ascend, waitBefore:_onMyTurn, target:()=>_tutViroraSel(), text:"My turn begins and the <b>Burn</b> ticks: −1. Statuses linger until they fade, or until something <b>cleanses</b> them. Watch this."},
     {target:'#ph-draw', act:'draw', doHint:'Tap DRAW', text:"<b>Draw</b>. Your Headquarters adds +1 Energy now too."},
     {target:'#ph-main', act:'main', doHint:'Tap MAIN', text:"<b>Main phase.</b>"},
-    {target:()=>TS.hand('surge_energy'), act:'play_energy', allow:'surge_energy', doHint:'Play Surge Energy', text:"<b>Surge Energy</b>: <b>+4 right now</b>, but you <b>skip your next draw</b>. A trade — and today, worth it. Play it."},
-    {wide:true, text:"The heart of the Courts: <b>transformation lines</b>. A Base Character can evolve into higher forms — and some lines <b>branch</b>.", html:_tutTreeHtml()},
-    {wide:true, choice:true, text:"You're holding <b>both</b> of my forms, but only one can happen — and whichever you pick, I stay on that path. <b>Choose your path:</b>", html:_tutPathsHtml()},
+    {target:()=>TS.hand('surge_energy'), act:'play_energy', allow:'surge_energy', doHint:'Play Surge Energy', text:"<b>Surge Energy</b>: <b>+4 right now</b>, but you <b>skip your next draw</b>. It's a trade, and today it's worth it. Play it."},
+    {wide:true, text:"The heart of the Courts: <b>transformation lines</b>. A Base Character can evolve into higher forms, and some lines <b>branch</b>.", html:_tutTreeHtml()},
+    {wide:true, choice:true, text:"You're holding <b>both</b> of my forms, but only one can happen, and whichever you pick, I stay on that path. <b>Choose your path:</b>", html:_tutPathsHtml()},
     // the chosen path's steps are spliced in right here by _tutChoosePath()
     // ── VII · CLASH OF HERALDS ──
-    {chapter:TUT_CH.heralds, waitBefore:_onMyTurn, target:'#ph-draw', act:'draw', doHint:'Tap DRAW', text:"<b>Draw</b> — or rather, don't: Surge skips this draw. You still bank your Energy."},
-    {target:()=>[TS.herald(1),TS.herald(2)], text:"<b>Round 4.</b> Heralds never attack characters — but from now on, once per turn, your Herald may <b>duel</b> theirs. A Herald that survives hits back for <b>half</b> its ATK."},
+    {chapter:TUT_CH.heralds, waitBefore:_onMyTurn, target:'#ph-draw', act:'draw', doHint:'Tap DRAW', text:"<b>Draw</b>... or rather, don't: Surge skips this draw. You still bank your Energy."},
+    {target:()=>[TS.herald(1),TS.herald(2)], text:"<b>Round 4.</b> Heralds never attack characters, but from now on, once per turn, your Herald may <b>duel</b> theirs. A Herald that survives hits back for <b>half</b> its ATK."},
     {target:()=>TS.herald(2), text:"A Herald at 0 DEF is <b>BROKEN</b>: every ability gone for good, and its breaker takes <b>TWO Prizes</b>. The Surfacer has <b>13 ATK</b>. Daredevil has <b>10 DEF</b>…"},
-    {target:'#ph-attack', act:'attack_phase', doHint:'Tap ATTACK', text:"No need for the Main phase — go straight to <b>Attack</b>."},
+    {target:'#ph-attack', act:'attack_phase', doHint:'Tap ATTACK', text:"No need for the Main phase. Go straight to <b>Attack</b>."},
     {target:()=>TS.herald(1), act:'herald_ready', doHint:'Tap ⚔ATK on your Herald', text:"Tap <b>⚔ATK</b> on The Surfacer."},
     {target:()=>TS.herald(2), act:'herald_duel', doHint:'Tap their Herald', text:"Now tap <b>Daredevil</b>. End this."},
-    {target:TS.prizesClaim, waitFor:()=>G&&G.gameOver, waitBefore:()=>_tutPicking()||(G&&G.gameOver), doHint:'Pick your last two Prizes', text:"<b>DAREDEVIL IS BROKEN!</b> Take your two Prizes — and the crown."},
+    {target:TS.prizesClaim, waitFor:()=>G&&G.gameOver, waitBefore:()=>_tutPicking()||(G&&G.gameOver), doHint:'Pick your last two Prizes', text:"<b>DAREDEVIL IS BROKEN!</b> Take your two Prizes and the crown!"},
   ];
 }
 // The two transformation paths (spliced in after the choice).
@@ -24448,33 +24448,33 @@ function _tutBuildPath(path){
   const R='rapture_vortex_bse', A='aoliath_base_bse';
   const ENEMY='ENEMY TURN · WATCH';
   const steps=[
-    {target:'#action-tf-btn', act:'transform', tf:F, doHint:'Tap ⬆ → choose '+FN, text:"Tap the <b>⬆ Transform</b> button and choose <b>"+FN+"</b>. It normally costs 6 Energy — with Calm Clarity, just <b>3</b>."},
-    {target:()=>TS.mine(F), text:(ssj?"<b>ASCENDED.</b> Full health, Burn <b>cleansed</b>, Void Crystal still attached — and my SSJ form is still a <em>Royal Saiyan</em>, so the Court's Royal bonus re-applies: <b>9 ATK / 12 DEF</b>.":"<b>ASCENDED.</b> Full health, Burn <b>cleansed</b>, Void Crystal still attached — and my SSG form is still a <em>Royal Saiyan</em>, so the Court's Royal bonus re-applies: <b>7 ATK / 15 DEF</b>.")+" Bonuses always follow the <b>current form's subtypes</b>."},
+    {target:'#action-tf-btn', act:'transform', tf:F, doHint:'Tap ⬆ → choose '+FN, text:"Tap the <b>⬆ Transform</b> button and choose <b>"+FN+"</b>. It normally costs 6 Energy, but with Calm Clarity it's just <b>3</b>."},
+    {target:()=>TS.mine(F), text:(ssj?"<b>ASCENDED.</b> Full health, Burn <b>cleansed</b>, Void Crystal still attached, and my SSJ form is still a <em>Royal Saiyan</em>, so the Court's Royal bonus re-applies: <b>9 ATK / 12 DEF</b>.":"<b>ASCENDED.</b> Full health, Burn <b>cleansed</b>, Void Crystal still attached, and my SSG form is still a <em>Royal Saiyan</em>, so the Court's Royal bonus re-applies: <b>7 ATK / 15 DEF</b>.")+" Bonuses always follow the <b>current form's subtypes</b>."},
     {chapter:TUT_CH[path], target:'.action-tool-btn.ab', ability:'Surface Depletion', foe:R, waitFor:()=>{ const r=_tutFc(2,R); return !r || (r.surfacerHpDebuff||0)>0; }, doHint:'Tap ✨ → Surface Depletion → Rapture', text:"Heralds have <b>abilities</b> too. Open <b>✨ Abilities</b> and use The Surfacer's <b>Surface Depletion</b> on Rapture: −2 ATK / −2 DEF this turn, and if it dies this turn you <b>draw a card</b>."},
-    {target:()=>TS.foe(R), text:"Rapture drops to <b>4 / 6</b>. Weaken first, strike second — that's a combo too. (A <b>free</b> ability taps whoever uses it, so The Surfacer rests until your next turn.)"},
+    {target:()=>TS.foe(R), text:"Rapture drops to <b>4 / 6</b>. Weaken first, strike second: that's a combo too. (A <b>free</b> ability taps whoever uses it, so The Surfacer rests until your next turn.)"},
   ];
   if(ssj){
     steps.push(
-      {target:'.action-tool-btn.ab', ability:'Light Sphere', foe:A, onShow:()=>{ _tutRig.coin=[true]; }, waitFor:()=>!_tutFc(2,A), doHint:'Tap ✨ → Light Sphere → Aoliath', text:"Now the Warrior's power: <b>Light Sphere</b>. Open ✨ Abilities and use it — flip a coin, and on heads deal <b>4 damage</b>. Aim at <b>Aoliath</b>."},
-      {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=3&&!_tutPicking(), doHint:'Pick a glowing Prize', text:"<b>HEADS</b> — Aoliath is gone! (I'll admit it: today the coin was on our side. In a real match it's a true 50/50.) Claim your Prize."},
-      {target:()=>TS.mine(F), text:"Notice I'm <b>tapped</b> now: a <b>free</b> ability (0 Energy) taps the card that uses it, so I <b>can't attack</b> this turn. Paid abilities don't — unless the card says so. Good thing I brought backup…"},
-      {target:()=>TS.hand('vuruna_base_bse'), act:'play', allow:'vuruna_base_bse', doHint:'Play Vuruna', text:"Meet <b>Vuruna</b>. <em>Yellow</em> means speed: <b>Burst Speed</b> lets her attack the turn she arrives. She's a Royal Saiyan too — the Court makes her <b>6 / 8</b>. Play her."},
+      {target:'.action-tool-btn.ab', ability:'Light Sphere', foe:A, onShow:()=>{ _tutRig.coin=[true]; }, waitFor:()=>!_tutFc(2,A), doHint:'Tap ✨ → Light Sphere → Aoliath', text:"Now the Warrior's power: <b>Light Sphere</b>. Open ✨ Abilities and use it: flip a coin, and on heads deal <b>4 damage</b>. Aim at <b>Aoliath</b>."},
+      {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=3&&!_tutPicking(), doHint:'Pick a glowing Prize', text:"<b>HEADS</b>! Aoliath is gone! (I'll admit it: today the coin was on our side. In a real match it's a true 50/50.) Claim your Prize."},
+      {target:()=>TS.mine(F), text:"Notice I'm <b>tapped</b> now: a <b>free</b> ability (0 Energy) taps the card that uses it, so I <b>can't attack</b> this turn. Paid abilities don't, unless the card says so. Good thing I brought backup…"},
+      {target:()=>TS.hand('vuruna_base_bse'), act:'play', allow:'vuruna_base_bse', doHint:'Play Vuruna', text:"Meet <b>Vuruna</b>. <em>Yellow</em> means speed: <b>Burst Speed</b> lets her attack the turn she arrives. She's a Royal Saiyan too, so the Court makes her <b>6 / 8</b>. Play her."},
       {target:'#ph-attack', act:'attack_phase', doHint:'Tap ATTACK', text:"Enter the <b>Attack phase</b>."},
       {target:()=>[TS.mine('vuruna_base_bse'),TS.foe(R)], act:'attack', attacker:'vuruna_base_bse', foe:R, doHint:'Tap Vuruna → tap Rapture', text:"Tap <b>Vuruna</b>, then <b>Rapture</b>. 6 damage into 6 DEF."},
-      {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=4&&!_tutPicking(), waitBefore:()=>_tutPicking()||_tutPrizesTaken()>=4, doHint:'Pick a glowing Prize', text:"Burst Speed + Depletion + the Court: their biggest threat, gone the moment she arrived — and Depletion drew you a card. Claim your Prize."},
+      {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=4&&!_tutPicking(), waitBefore:()=>_tutPicking()||_tutPrizesTaken()>=4, doHint:'Pick a glowing Prize', text:"Burst Speed + Depletion + the Court: their biggest threat, gone the moment she arrived, and Depletion drew you a card. Claim your Prize."},
     );
   } else {
     steps.push(
-      {target:()=>TS.mine(F), text:"The God's power: <b>Godly Blitz</b> — I attack <b>twice</b> each turn and draw a card every time I deal combat damage. And <b>Godly Evasion</b>: they must pay 2 Energy just to target me."},
+      {target:()=>TS.mine(F), text:"The God's power: <b>Godly Blitz</b>: I attack <b>twice</b> each turn and draw a card every time I deal combat damage. And <b>Godly Evasion</b>: they must pay 2 Energy just to target me."},
       {target:'#ph-attack', act:'attack_phase', doHint:'Tap ATTACK', text:"Enter the <b>Attack phase</b>."},
       {target:()=>[TS.mine(F),TS.foe(R)], act:'attack', attacker:F, foe:R, doHint:'Tap Virora → tap Rapture', text:"First strike: tap <b>me</b>, then <b>Rapture</b>. 7 damage into 6 DEF."},
-      {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=3&&!_tutPicking(), waitBefore:()=>_tutPicking()||_tutPrizesTaken()>=3, doHint:'Pick a glowing Prize', text:"Destroyed — no retaliation, plus a <b>Godly Blitz</b> draw and a Surface Depletion draw. Claim your Prize."},
-      {target:()=>[TS.mine(F),TS.foe(A)], act:'attack', attacker:F, foe:A, doHint:'Tap Virora → tap Aoliath', text:"I'm not done. <b>Second attack</b> — tap me again, then <b>Aoliath</b>."},
+      {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=3&&!_tutPicking(), waitBefore:()=>_tutPicking()||_tutPrizesTaken()>=3, doHint:'Pick a glowing Prize', text:"Destroyed with no retaliation, plus a <b>Godly Blitz</b> draw and a Surface Depletion draw. Claim your Prize."},
+      {target:()=>[TS.mine(F),TS.foe(A)], act:'attack', attacker:F, foe:A, doHint:'Tap Virora → tap Aoliath', text:"I'm not done. <b>Second attack</b>: tap me again, then <b>Aoliath</b>."},
       {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=4&&!_tutPicking(), waitBefore:()=>_tutPicking()||_tutPrizesTaken()>=4, doHint:'Pick a glowing Prize', text:"Two attacks, two Prizes, two cards. <b>That's</b> the God Path."},
     );
   }
   steps.push(
-    {target:'#p2-prizes', text:"<b>Four Prizes down</b> — only two left. Their board is empty… but they still have their Herald. And so do you."},
+    {target:'#p2-prizes', text:"<b>Four Prizes down</b>, only two left. Their board is empty… but they still have their Herald. And so do you."},
     {target:'#ph-end', act:'endturn', doHint:'Tap END TURN', text:"End your turn."},
     {tag:ENEMY, watch:true, waitBefore:_onAiTurn(3), target:()=>_tutBindingTarget(), text:()=>"Binding, one more time. "+_tutBindingText()},
     {tag:ENEMY, watch:true, before:()=>TUTAI.play('male_saiyan_citizen_bse'), target:()=>TS.foe('male_saiyan_citizen_bse'), text:"All they can muster is a lone <b>Saiyan Citizen</b>. A character can only strike a Herald when the enemy board is <b>empty</b>, so he's their shield now… or so they think.", after:()=>TUTAI.endTurn()},
@@ -24531,13 +24531,13 @@ async function onTutorialFinished(p){
     {img:_PACK_IMG, amount:'×2', label:'Base Set Booster Packs'},
     (_achImg?{img:_achImg, label:'Achievement: First Steps'}:{icon:'🎓', label:'Achievement: First Steps'}),
     {img:TUT_RAW+'Card%20BACKS/Lord%20Of%20States%20Default%20Back%20(BLUE).png', label:'Card Back: Lord Of Courts Blue'}
-  ]:[{icon:'👑', label:'Trial complete — '+pathName}];
+  ]:[{icon:'👑', label:'Trial complete: '+pathName}];
   showRewardsCelebration(items, ()=>{
     const lines=firstTime?[
-      "You did it — the Royal Trial is yours. Those packs are waiting in your collection.",
+      "You did it! The Royal Trial is yours. Those packs are waiting in your collection.",
       "From here: open your packs, build a deck in the Deck Builder, and take on the AI, Story mode or real rivals online.",
-      "You can replay this lesson any time from OPTIONS → Tutorial. Now go — the Courts are waiting."
-    ]:["Still sharp, I see. The Courts are waiting — go make your name."];
+      "You can replay this lesson any time from OPTIONS → Tutorial. Now go, the Courts are waiting."
+    ]:["Still sharp, I see. The Courts are waiting. Go make your name."];
     showNarration(lines, ()=>{
       window._tutFirstRun=false;
       if(G) G.tutorialMode=false;
