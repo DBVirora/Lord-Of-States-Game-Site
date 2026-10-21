@@ -512,6 +512,18 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .tut-codex.types{grid-template-columns:repeat(4,minmax(0,1fr))}
 .tut-codex.colors{grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
 .tut-codex.energy{grid-template-columns:repeat(5,minmax(0,1fr))}
+.tut-codex.retal{grid-template-columns:repeat(4,minmax(0,1fr))}
+.tut-cx .cx-ico{font-size:26px;line-height:1;filter:drop-shadow(0 0 8px rgba(232,197,112,.45))}
+.tut-retal-ex,.tut-retal-why{margin-top:10px;padding:10px 12px;border-radius:11px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);font-size:12.5px;line-height:1.5;color:#dfe2ec}
+.tut-retal-why{border-color:rgba(168,85,247,.35);background:rgba(168,85,247,.07)}
+.tut-retal-ex .rx-h,.tut-retal-why .rx-h{font-family:'Share Tech Mono',monospace;font-size:9.5px;letter-spacing:2px;color:#c4b5fd;margin-bottom:6px}
+.tut-retal-ex .rx-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tut-retal-ex .rx-card{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;color:#e5e7f0}
+.tut-retal-ex .rx-card img{width:56px;aspect-ratio:5/7;object-fit:cover;border-radius:5px;box-shadow:0 4px 12px rgba(0,0,0,.5)}
+.tut-retal-ex .rx-card i{font-style:normal;color:#9ca3af;font-size:9.5px}
+.tut-retal-ex .rx-arrow{font-family:'Share Tech Mono',monospace;font-size:12px;color:#fca5a5;font-weight:700}
+.tut-retal-ex .rx-arrow.back{color:#fde68a}
+.tut-retal-ex .rx-res{flex:1;min-width:200px}
 .tut-cx{min-width:0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:8px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;opacity:0;animation:tut-cx-in .4s ease-out forwards}
 @keyframes tut-cx-in{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
 .tut-cx img{width:100%;max-width:120px;aspect-ratio:5/7;object-fit:cover;border-radius:7px;box-shadow:0 6px 16px rgba(0,0,0,.55)}
@@ -594,6 +606,7 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
   .tut-codex.types{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
   .tut-codex.colors{grid-template-columns:repeat(4,minmax(0,1fr))}
   .tut-codex.energy{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .tut-codex.retal{grid-template-columns:repeat(2,minmax(0,1fr))}
   .tut-cx{padding:6px 4px}
   .tut-cx .cx-t{font-size:10px}
   .tut-cx .cx-d{font-size:9.5px}
@@ -9843,6 +9856,8 @@ const GODOT_SYNC=[
       'Blade of Udun: shows the Burn status FX when the target survives.'],
     screens:['TUTORIAL v2 "The Royal Trial" — full rewrite, Virora is the guide AND the star card. Full script, board, AI script and engine rules are in the Project doc claude/VCU_Tutorial_v2_Script.md — port from that.',
       'Chapters (full-screen chapter cards with art): Prologue · I The Court · II Energy & Colors · III Your Champion · IV The Royal Court · V Ascension · VI Warrior Path / God Path (player CHOOSES SSJ or SSG) · VII Clash of Heralds (round-4 Herald duel breaks Daredevil for the last 2 Prizes).',
+      'After the Heavy Warrior attacks Virora (enemy turn 2) a wide RETALIATION panel explains it: 1 attack → 2a destroyed = no hit back / 2b survives = hits back with FULL ATK, automatic / exceptions (Herald half, Location never, Frozen never); the fight as a worked example (Warrior 5 ATK → Virora 8 left → 3, she hits back 8 into its 3 DEF → destroyed); WHY it exists (no free pokes, every attack is a trade of your DEF vs their ATK); good vs bad attacks.',
+      'Demolition (Aoliath, on entry) now flips with the FULL roll panel (coinFlipShow), not the small toast — both players watch the coin land; online it mirrors via roll_show (non-quick). Tutorial rigs it TAILS and explains it on the Aoliath step',
       'Coach engine: spotlight ring FOLLOWS its target every 120ms, never smaller than 44px, bubble auto-places above/below/right/left without covering the target, words fade in (no layout jitter); while any picker/modal/coin roll/zoom/transform cinematic/turn banner is open the dim lifts and the bubble docks into a small "👆 do this" pill at the top; wide Codex panels (card types, 7 colors, energy styles, transformation lines tree, path choice); chapter progress pill (7 segments); Enter/Space = Next; Skip asks for confirmation.',
       'Locks during guided steps: only the named hand card can be played, only the named attacker can attack, enemy targets/transform form/ability rows/equip targets are 🔒 except the one Virora names; End Turn, Sacrifice and Herald attack are refused until their step.',
       'NEW PLAYERS: a boot veil covers the main menu at load (skipped if this browser already knows the account: localStorage loc_known_<uid>). After login data loads: brand-new account (never watched/skipped the tutorial, no First Steps achievement, 0 matches/wins/losses) → the tutorial starts immediately and the menu is never shown; everyone else → veil fades to the menu. 15s safety timeout.',
@@ -14547,7 +14562,9 @@ function onEntry(p,fc){
   // ── AOLIATH (base): Demolition — on entry, flip a coin. Tails → this character
   // can attack Location cards for the rest of its time in play.
   if(c.id==='aoliath_base_bse'){
-    if(!coinShow('Demolition','Tails = can attack Locations')){
+    // Full on-screen flip (not the small toast) so BOTH players see it happen — online it's
+    // mirrored to the opponent via roll_show. The result is applied immediately.
+    if(!coinFlipShow('Demolition — '+(c.name||'Aoliath'),'Tails = can attack Location cards until discarded')){
       fc.canAttackLocations=true;
       log('Demolition: TAILS — Aoliath can now attack Location cards until discarded!','gain');
     } else {
@@ -18644,6 +18661,7 @@ function _beatTick(){
 //   • AI / opponent rolls: animate, show the result, then close by themselves.
 //   • coinShow(): instant coin effects that resolve on the spot (combat triggers, status checks)
 //     — the result is applied immediately and a small toast shows the flip without blocking play.
+//   • coinFlipShow(): also resolves on the spot, but shows the FULL panel to both players (on-entry flips).
 // The AI scheduler (aiLater) waits while a blocking roll is on screen.
 let _rollQ=[], _rollCur=null, _rollTimers=[];
 function _rollBusy(){ return !!_rollCur || _rollQ.length>0; }
@@ -18747,6 +18765,16 @@ function showCoinFlip(heads, onDone, opts){
 function coinShow(title, desc){
   const heads=Math.random()<0.5;
   _rollToast({kind:'coin',title,desc,heads});
+  return heads;
+}
+// coinFlipShow(title, desc) — flips NOW (returns true = heads) and shows the FULL roll panel
+// (big 3D coin, result, who flipped) to BOTH players: the roller gets CONTINUE, the opponent
+// (AI or online) sees it play and auto-close. Use for moments both sides should watch, like
+// on-entry flips. Tutorial rigging (_tutRig.coin) is respected.
+function coinFlipShow(title, desc){
+  const heads=(G&&G.tutorialMode&&typeof _tutRig!=='undefined'&&_tutRig.coin.length)?!!_tutRig.coin.shift():Math.random()<0.5;
+  log('🪙 '+(title||'Coin')+': '+(heads?'HEADS':'TAILS'), heads?'gain':'dmg');
+  _rollPush({kind:'coin',title,desc,heads,callback:null,auto:!_rollIsMine(),who:_rollWho()});
   return heads;
 }
 // coinsShow(title, n) — n flips at once, returns number of heads; toast shows each coin.
@@ -23850,6 +23878,20 @@ function _tutEnergyHtml(){
     {gem:'#e8c570',tag:'ALWAYS',t:'Other sources',d:'+1 each Draw · +1 per Location · +2 Power Up · +1 per kill.'},
   ],'energy');
 }
+function _tutRetaliationHtml(){
+  const step=(ico,t,d,hot)=>'<div class="tut-cx'+(hot?' hot':'')+'"><div class="cx-ico">'+ico+'</div><div class="cx-t">'+t+'</div><div class="cx-d">'+d+'</div></div>';
+  return '<div class="tut-codex retal">'
+    +step('⚔️','1 · The attack','The attacker deals its ATK to the defender.')
+    +step('💀','2a · Defender destroyed','A destroyed card can\'t hit back. A clean kill = <b>no retaliation</b>.')
+    +step('↩️','2b · Defender survives','It hits back <b>right away</b> with its <b>full ATK</b>. Automatic — the attacker can\'t refuse it.',true)
+    +step('🛡️','Exceptions','A Herald hits back for <b>half</b> its ATK. Locations never hit back. A <b>Frozen</b> defender can\'t hit back.')
+    +'</div>'
+    +'<div class="tut-retal-ex"><div class="rx-h">WHAT JUST HAPPENED</div>'
+    +'<div class="rx-row"><span class="rx-card"><img src="'+_tutImg('saiyan_heavy_warrior_bse')+'" alt=""><b>Heavy Warrior</b><i>5 ATK · 3 DEF</i></span><span class="rx-arrow">⚔ 5 ➜</span><span class="rx-card"><img src="'+_tutImg('virora_base_bse')+'" alt=""><b>Virora</b><i>8 left → 3 left</i></span><span class="rx-arrow back">↩ 8</span><span class="rx-res">I <b>survived</b>, so I hit back with my full <b>8 ATK</b> into its <b>3 DEF</b> → <b>destroyed</b>. Their attack cost them their attacker — and gave <em>you</em> a Prize.</span></div></div>'
+    +'<div class="tut-retal-why"><div class="rx-h">WHY IT EXISTS</div>'
+    +'Without it, you could poke any card for free every turn, and fights would simply go to whoever has more attackers. Retaliation makes <b>every attack a trade</b>: you put your attacker\'s DEF on the line against the defender\'s ATK. It rewards smart attacks — and makes strong defenders worth playing.</div>'
+    +'<div class="tut-rules" style="grid-template-columns:repeat(3,minmax(0,1fr))"><div><b>✓ Good attack</b>You destroy the defender — nothing hits back.</div><div><b>✓ Good attack</b>It survives, but its ATK is far below your DEF.</div><div><b>✗ Bad attack</b>It survives AND its ATK is at least your DEF — you lose your attacker.</div></div>';
+}
 function _tutTreeHtml(){
   const card=(cid,label)=>'<div class="tr-card"><img src="'+_tutImg(cid)+'" alt="">'+label+'</div>';
   const fut=(label)=>'<div class="tr-card future"><div class="tr-sil">?</div>'+label+'</div>';
@@ -24008,9 +24050,9 @@ function buildTutorialSteps(){
     {tag:ENEMY, watch:true, waitBefore:_onAiTurn(2), target:()=>_tutBindingTarget(), text:()=>"Surfacer Binding again. "+_tutBindingText()+" Your Herald never stops working."},
     {tag:ENEMY, watch:true, before:()=>TUTAI.play('blade_of_udun_bse'), target:()=>_tutViroraSel(), text:"<b>Blade of Udun</b> — an <em>Instant</em>: a one-shot effect played from hand. 2 damage <b>and Burn</b>. Burn hurts me at the start of each of my turns until it fades."},
     {tag:ENEMY, watch:true, before:()=>{ const v=_tutVirora(); if(v) TUTAI.attack('saiyan_heavy_warrior_bse', v.uid); }, waitBefore:()=>!(typeof _presentBusy==='function'&&_presentBusy()), target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=2&&!_tutPicking(), doHint:'Pick a glowing Prize', text:"Their Warrior hit me for 5 — but I <b>survived</b>, so I hit back with my full ATK: <b>RETALIATION</b>. It's destroyed, and you claim a Prize — even on their turn!"},
-    {tag:ENEMY, watch:true, target:()=>_tutViroraSel(), text:"Rule of thumb: <b>every attack is a trade</b>. Strike what you can destroy, or what can't hurt you back — never swing into a defender that will survive and hit back for your whole DEF."},
+    {tag:ENEMY, watch:true, wide:true, text:"That hit-back is called <b>RETALIATION</b> — the most important rule in combat. Here's exactly how it works, and why it exists:", html:_tutRetaliationHtml()},
     {tag:ENEMY, watch:true, before:()=>TUTAI.play('rapture_vortex_bse'), target:()=>TS.foe('rapture_vortex_bse'), text:"Now their big gun: <b>Rapture of the Vortex</b> — 6 ATK / 8 DEF. Too tough to take head-on… for now."},
-    {tag:ENEMY, watch:true, before:()=>TUTAI.play('aoliath_base_bse'), target:()=>TS.foe('aoliath_base_bse'), text:"Plus <b>Aoliath</b>, a cheap <em>Red</em> fighter. Two targets. Next turn we answer both — <b>it's time to ascend.</b>", after:()=>TUTAI.endTurn()},
+    {tag:ENEMY, watch:true, before:()=>{ _tutRig.coin=[false]; TUTAI.play('aoliath_base_bse'); }, waitBefore:()=>!(typeof _presentBusy==='function'&&_presentBusy()), target:()=>TS.foe('aoliath_base_bse'), text:"Plus <b>Aoliath</b>, a cheap <em>Red</em> fighter. That coin was its entry ability, <b>Demolition</b> — <b>tails</b>, so it can now attack <b>Locations</b>, like our Royal Meeting. Two targets. Next turn we answer both — <b>it's time to ascend.</b>", after:()=>TUTAI.endTurn()},
     // ── V · ASCENSION ──
     {chapter:TUT_CH.ascend, waitBefore:_onMyTurn, target:()=>_tutViroraSel(), text:"My turn begins and the <b>Burn</b> ticks: −1. Statuses linger until they fade — or until something <b>cleanses</b> them. Watch this."},
     {target:'#ph-draw', act:'draw', doHint:'Tap DRAW', text:"<b>Draw</b>. Your Headquarters adds +1 Energy now too."},
