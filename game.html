@@ -6590,6 +6590,65 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 .gc-suggest div{padding:6px 10px;font-size:11px;cursor:pointer;color:#d6d0f0}
 .gc-suggest div:hover{background:rgba(232,197,112,.1)}
 
+/* ═══ BATTLE FX (build 9.3) ═══ */
+#fx-layer{position:fixed;inset:0;z-index:8600;pointer-events:none;overflow:hidden}
+.fx{position:absolute;pointer-events:none;transform:translate(-50%,-50%)}
+.fx-ghost{position:absolute;border-radius:8px;overflow:hidden;pointer-events:none;will-change:transform,opacity;box-shadow:0 12px 30px rgba(0,0,0,.55),0 0 0 2px var(--c,#e8c570),0 0 22px var(--c,#e8c570);background:#0d0b22;transform-origin:50% 50%}
+.fx-ghost img{width:100%;height:100%;object-fit:cover;display:block}
+.fx-ghost.trail{box-shadow:none;filter:blur(2px) saturate(1.4);mix-blend-mode:screen}
+.fx-ghost.card{border-radius:10px}
+.fx-ghost.glow{box-shadow:0 0 0 2px var(--c,#e8c570),0 0 30px var(--c,#e8c570),0 14px 34px rgba(0,0,0,.6)}
+.fx-ghost.death{box-shadow:none}
+.fx-ghost.death.l{clip-path:polygon(0 0,52% 0,44% 30%,56% 55%,46% 78%,52% 100%,0 100%)}
+.fx-ghost.death.r{clip-path:polygon(52% 0,100% 0,100% 100%,52% 100%,46% 78%,56% 55%,44% 30%)}
+.fx-ghost.rift{box-shadow:0 0 0 2px #a855f7,0 0 30px #a855f7}
+.fx-ring{width:var(--s);height:var(--s);border-radius:50%;border:3px solid var(--c);box-shadow:0 0 18px var(--c),inset 0 0 14px var(--c);animation:fxRing .6s cubic-bezier(.2,.7,.3,1) forwards;opacity:.9}
+.fx-ring.thin{border-width:1.5px;box-shadow:0 0 10px var(--c)}
+.fx-ring.ground{height:calc(var(--s) * .32);border-width:2px}
+.fx-ring.soft{border-width:0;background:radial-gradient(circle,var(--c) 0%,transparent 65%);opacity:.6;box-shadow:none}
+.fx-ring.rune{border-style:dashed;animation-name:fxRuneRing}
+@keyframes fxRing{from{transform:translate(-50%,-50%) scale(.15);opacity:1}to{transform:translate(-50%,-50%) scale(1);opacity:0}}
+@keyframes fxRuneRing{from{transform:translate(-50%,-50%) scale(.2) rotate(0);opacity:1}to{transform:translate(-50%,-50%) scale(1) rotate(160deg);opacity:0}}
+.fx-spark{width:6px;height:6px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c),0 0 2px #fff;animation:fxSpark .6s ease-out forwards}
+@keyframes fxSpark{from{transform:translate(-50%,-50%) scale(1);opacity:1}to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.2);opacity:0}}
+.fx-slash{width:180px;height:4px;border-radius:4px;background:linear-gradient(90deg,transparent,var(--c),#fff,var(--c),transparent);box-shadow:0 0 14px var(--c);animation:fxSlash .45s cubic-bezier(.2,.8,.3,1) both}
+.fx-slash.big{width:240px;height:6px}
+@keyframes fxSlash{0%{transform:translate(-50%,-50%) rotate(var(--a)) scaleX(0);opacity:1}55%{transform:translate(-50%,-50%) rotate(var(--a)) scaleX(1);opacity:1}100%{transform:translate(-50%,-50%) rotate(var(--a)) scaleX(1.1);opacity:0}}
+@keyframes fxHit{0%{filter:brightness(2.6) saturate(.4);transform:translateX(0)}20%{transform:translateX(-7px) rotate(-2deg)}40%{transform:translateX(6px) rotate(1.5deg)}60%{transform:translateX(-4px)}100%{filter:none;transform:none}}
+.fx-hit-el{animation:fxHit .42s ease-out}
+.fx-shake{animation:fxShake .3s ease-out}
+@keyframes fxShake{0%,100%{translate:0 0}20%{translate:-4px 2px}40%{translate:4px -2px}60%{translate:-3px 1px}80%{translate:2px -1px}}
+/* landings */
+.fx-land{animation:fxLand .62s cubic-bezier(.25,.8,.35,1.15) both}
+@keyframes fxLand{0%{transform:translateY(-46px) scale(1.28);opacity:0;filter:brightness(1.8)}55%{transform:translateY(4px) scale(.96);opacity:1;filter:brightness(1.25)}75%{transform:translateY(-2px) scale(1.02)}100%{transform:none;opacity:1;filter:none}}
+.fx-land-loc{animation:fxLandLoc .9s cubic-bezier(.3,.7,.35,1.1) both}
+@keyframes fxLandLoc{0%{transform:translateY(-70px) scale(1.4) rotateX(35deg);opacity:0;filter:brightness(2)}45%{transform:translateY(6px) scale(.94);opacity:1;filter:brightness(1.4) drop-shadow(0 0 18px #86efac)}65%{transform:translateY(-3px) scale(1.03)}100%{transform:none;opacity:1;filter:none}}
+.fx-sweep{width:var(--w);height:var(--h);transform:translate(0,-50%);background:linear-gradient(90deg,transparent,rgba(134,239,172,.0) 20%,rgba(134,239,172,.35) 48%,rgba(232,197,112,.45) 52%,rgba(134,239,172,0) 80%,transparent);background-size:220% 100%;mix-blend-mode:screen;animation:fxSweep 1s ease-out forwards;border-radius:20px}
+@keyframes fxSweep{from{background-position:120% 0;opacity:0}20%{opacity:1}to{background-position:-60% 0;opacity:0}}
+.fx-rubble{width:7px;height:5px;border-radius:2px;background:#a3a38a;box-shadow:0 0 4px rgba(0,0,0,.6);animation:fxRubble .7s ease-out forwards}
+@keyframes fxRubble{from{transform:translate(-50%,-50%);opacity:1}50%{transform:translate(calc(-50% + var(--dx) * .5),calc(-50% - 26px)) rotate(120deg)}to{transform:translate(calc(-50% + var(--dx)),calc(-50% + 6px)) rotate(240deg);opacity:0}}
+/* equipment / heal */
+.fx-glyph{font-size:30px;filter:drop-shadow(0 0 10px #f5d77a);animation:fxGlyph .9s ease-out forwards}
+@keyframes fxGlyph{0%{transform:translate(-50%,-30%) scale(.4);opacity:0}30%{transform:translate(-50%,-60%) scale(1.25);opacity:1}100%{transform:translate(-50%,-140%) scale(1);opacity:0}}
+@keyframes fxEquipPulse{0%{filter:brightness(2) drop-shadow(0 0 16px #f5d77a)}100%{filter:none}}
+.fx-plus{color:#4ade80;font:700 18px 'Orbitron',sans-serif;text-shadow:0 0 8px #22c55e;animation:fxPlus 1s ease-out both}
+@keyframes fxPlus{from{transform:translate(-50%,-50%) scale(.6);opacity:0}25%{opacity:1}to{transform:translate(-50%,-260%) scale(1.1);opacity:0}}
+@keyframes fxHealPulse{0%{filter:brightness(1.6) drop-shadow(0 0 14px #4ade80)}100%{filter:none}}
+/* energy */
+.fx-orb{width:12px;height:12px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff,var(--c) 60%);box-shadow:0 0 12px var(--c),0 0 24px var(--c)}
+.fx-energy-pop{animation:fxEnergyPop .55s cubic-bezier(.2,.9,.3,1.4)}
+@keyframes fxEnergyPop{0%{transform:scale(1)}40%{transform:scale(1.45);filter:brightness(1.8) drop-shadow(0 0 10px #fbbf24)}100%{transform:scale(1);filter:none}}
+/* death / rift */
+.fx-crack{width:var(--w);height:var(--h);background:linear-gradient(115deg,transparent 46%,#fff 49%,#fca5a5 50%,transparent 53%),linear-gradient(65deg,transparent 47%,rgba(255,255,255,.8) 50%,transparent 52%);mix-blend-mode:screen;animation:fxCrack .5s ease-out forwards}
+@keyframes fxCrack{0%{opacity:0;transform:translate(-50%,-50%) scale(.9)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.05)}}
+.fx-ash{width:5px;height:5px;border-radius:50%;background:#9ca3af;box-shadow:0 0 6px #ef4444;animation:fxAsh 1.2s ease-out both}
+@keyframes fxAsh{from{transform:translate(-50%,-50%);opacity:0}15%{opacity:.9}to{transform:translate(calc(-50% + 14px),calc(-50% - 70px)) scale(.3);opacity:0}}
+.fx-wisp{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,#fff,#94a3b8 50%,transparent 70%);box-shadow:0 0 16px #cbd5e1}
+.fx-wisp.rift{background:radial-gradient(circle,#fff,#a855f7 50%,transparent 70%);box-shadow:0 0 18px #a855f7}
+.fx-pile-pop{animation:fxEnergyPop .5s ease-out}
+.fx-vortex{width:var(--s);height:var(--s);border-radius:50%;background:conic-gradient(from 0deg,#1e0b3a,#a855f7,#3b0764,#c084fc,#1e0b3a,#7c3aed,#1e0b3a);-webkit-mask:radial-gradient(circle,transparent 18%,#000 22%,#000 60%,transparent 70%);mask:radial-gradient(circle,transparent 18%,#000 22%,#000 60%,transparent 70%);filter:drop-shadow(0 0 18px #a855f7);animation:fxVortex 1.45s ease-in-out forwards}
+@keyframes fxVortex{0%{transform:translate(-50%,-50%) scale(0) rotate(0);opacity:0}20%{transform:translate(-50%,-50%) scale(1) rotate(-140deg);opacity:1}75%{transform:translate(-50%,-50%) scale(1) rotate(-620deg);opacity:1}100%{transform:translate(-50%,-50%) scale(0) rotate(-820deg);opacity:0}}
+
 /* pacing shield — blocks board clicks while an on-screen moment plays (see PACING BEATS) */
 #beat-shield{position:fixed;inset:0;z-index:95;display:none;cursor:progress;background:transparent}
 #beat-shield.on{display:block}
@@ -6728,7 +6787,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 <body>
 
 <!-- AUTH HUD -->
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 9.2 · pacing</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 9.3 · fx</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -7699,8 +7758,20 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='9.2'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='9.3'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'9.3', date:'2026-10-21', cards:[], abilities:[],
+    screens:['BATTLE FX (all drawn in a top #fx-layer with ghost copies of cards, colour = attacker\'s card colour, each holds a pacing beat):',
+      'ATTACK (char→char, char→location, char→herald, herald duel, life/2v2 blocks): wind-up tilt, dash ~78% toward the target with 2 motion trails, IMPACT at ~430ms = shockwave ring + white ring + two slash streaks + 14 sparks + target hit-flash/shake + small board shake, then recoil. Damage resolves at impact.',
+      'CARD PLAYED: existing big zoom, then the card drops onto its slot (from -46px, scale 1.28 → squash → settle) with a gold ground ring + sparks',
+      'LOCATION PLACED: zoom, a green/gold light sweep across that player\'s side, the location slams down (from -70px, tilted) with board shake, two ground rings, rubble and sparks',
+      'EQUIPMENT: the card flies from the owner\'s hand in an arc onto the character, shrinks into it; dashed rune ring + 🛡 glyph rises + gold pulse',
+      'INSTANTS: Blade of Udun = double slash + sparks on the target; fruits/matchas = green glow, rising + signs, heal pulse; targeted instants now show the card zoom too',
+      'ENERGY CARD: card pops in the middle, bursts into glowing orbs (energy colour) that stream into that player\'s energy counter, which pops',
+      'DESTROYED: the card cracks (white/red fissure), splits into two halves that tilt apart and fall, ash rises, a wisp flies to the discard pile which pops',
+      'RIFT: a violet vortex opens over the card, the card spins (540°) and shrinks into it, the vortex collapses, a violet wisp streaks to the Rift pile',
+      'All off when Settings → Animations is off or reduced-motion is on'],
+    data:['card slots carry data-cid; herald slots carry data-uid + data-herald'] },
   { build:'9.2', date:'2026-10-21', cards:[], abilities:[],
     screens:['PACING BEATS: while an on-screen moment plays, nobody acts. Moments + hold: card-play zoom ~1s, ability/instant reveal (auto-closes after 2s, holds ≥1.2s), coin/dice roll panel (until it closes), coin toast 1.5s, draw 0.45s, damage number 0.6s, status effect 0.7s, turn banner 1.1s, transformation animation, Herald entrance. The AI scheduler waits for the moment to finish; a transparent full-screen shield (z-index 95, below modal pickers/roll panel/prize picks so those stay clickable) blocks board clicks for the human.'],
     data:['holdBeat(ms), _presentBusy(), _beatTick(); aiLater() polls _presentBusy() every 150ms before running the AI\'s next step'] },
@@ -9822,38 +9893,139 @@ function toggleSfx(){
 // ATTACK LUNGE ANIMATION
 // Animates the attacker card lunging toward its target.
 // ═══════════════════════════════════════════════════
-function animateAttack(attackerUid, targetUid, callback){
-  const atkEl=document.querySelector(`[data-uid="${attackerUid}"]`);
-  const tgtEl=document.querySelector(`[data-uid="${targetUid}"]`);
-  if(!atkEl||!tgtEl){ if(callback)callback(); return; }
+// ═══════════════════════════════════════════════════════════════════════
+// BATTLE FX (build 9.3) — attacks, card landings, locations, equipment, instants,
+// energy, heals, deaths and the Rift. Everything is drawn in #fx-layer with "ghost"
+// copies of the cards, so a board re-render mid-animation can't cut it off. Real cards
+// are hidden/flashed with temporary uid-keyed CSS rules. Every effect holds a pacing beat.
+// Off when Settings → Animations is off or the OS asks for reduced motion.
+// ═══════════════════════════════════════════════════════════════════════
+function fxOn(){ try{ if(typeof _gameSettings!=='undefined'&&_gameSettings.animations===false) return false; if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches) return false; }catch(e){} return true; }
+function fxLayer(){ let l=document.getElementById('fx-layer'); if(!l){ l=document.createElement('div'); l.id='fx-layer'; document.body.appendChild(l); } return l; }
+function fxBoard(){ return document.querySelector('#game-screen.active,#game-screen-2v2.active'); }
+function fxElUid(uid){ const b=fxBoard(); if(!b||uid==null) return null; return b.querySelector(`[data-uid="${uid}"]`); }
+function fxHeraldEl(p){ const b=fxBoard(); return b?b.querySelector(`[data-herald="${p}"]`):null; }
+function fxRect(el){ const r=el.getBoundingClientRect(); return {x:r.left,y:r.top,w:r.width,h:r.height,cx:r.left+r.width/2,cy:r.top+r.height/2}; }
+function fxColor(cid){ const c=DB[cid]; const col=c&&(c.color||(c.colors&&c.colors[0])); return (typeof COLOR_DEFS!=='undefined'&&COLOR_DEFS[col]&&COLOR_DEFS[col].hex)||'#e8c570'; }
+// temporary CSS rules keyed by uid (survive re-renders)
+let _fxRuleN=0;
+function fxRule(css,ms){ const st=document.createElement('style'); st.dataset.fx=++_fxRuleN; st.textContent=css; document.head.appendChild(st); setTimeout(()=>st.remove(),ms); return st; }
+function fxHide(uid,ms){ return fxRule(`[data-uid="${uid}"]{visibility:hidden !important}`,ms); }
+function fxSpawn(cls,x,y,style,life){ const d=document.createElement('div'); d.className='fx '+cls; d.style.left=x+'px'; d.style.top=y+'px'; if(style) d.style.cssText+=';'+style; fxLayer().appendChild(d); setTimeout(()=>d.remove(),life||1000); return d; }
+function fxRing(cx,cy,color,size,ms,extra){ return fxSpawn('fx-ring'+(extra?' '+extra:''),cx,cy,`--c:${color};--s:${size||120}px;animation-duration:${ms||600}ms`,(ms||600)+50); }
+function fxSparks(cx,cy,color,n,dist,ms){ for(let i=0;i<(n||10);i++){ const a=Math.random()*Math.PI*2, d=(dist||70)*(.5+Math.random()*.7); fxSpawn('fx-spark',cx,cy,`--c:${color};--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d}px;animation-duration:${(ms||650)*(.7+Math.random()*.5)}ms`,(ms||650)*1.3); } }
+function fxShake(ms){ const b=fxBoard(); if(!b) return; b.classList.remove('fx-shake'); void b.offsetWidth; b.classList.add('fx-shake'); setTimeout(()=>b.classList.remove('fx-shake'),ms||320); }
+function fxGhost(el,r){ const g=document.createElement('div'); g.className='fx-ghost'; g.style.left=r.x+'px'; g.style.top=r.y+'px'; g.style.width=r.w+'px'; g.style.height=r.h+'px';
+  const img=el.querySelector('img'); if(img){ const i=document.createElement('img'); i.src=img.src; i.draggable=false; g.appendChild(i); } else { g.textContent=el.textContent.slice(0,24); }
+  fxLayer().appendChild(g); return g; }
+function fxCardGhost(cid,r){ const g=document.createElement('div'); g.className='fx-ghost card'; g.style.left=r.x+'px'; g.style.top=r.y+'px'; g.style.width=r.w+'px'; g.style.height=r.h+'px'; const url=getImg(cid); if(url){ const i=document.createElement('img'); i.src=url; i.draggable=false; g.appendChild(i); } else g.textContent=DB[cid]?.sym||'?'; fxLayer().appendChild(g); return g; }
 
-  const aR=atkEl.getBoundingClientRect();
-  const tR=tgtEl.getBoundingClientRect();
-  // Direction vector from attacker to target
-  const dx=(tR.left+tR.width/2)-(aR.left+aR.width/2);
-  const dy=(tR.top+tR.height/2)-(aR.top+aR.height/2);
-  // Lunge ~60% of the way toward target
-  const lungeX=dx*0.5;
-  const lungeY=dy*0.5;
-
-  atkEl.style.transition='transform .18s cubic-bezier(.5,0,.7,1)';
-  atkEl.style.zIndex='100';
-  atkEl.style.transform=`translate(${lungeX}px,${lungeY}px) scale(1.08)`;
-
+// ── ATTACK: wind-up, dash with trail, impact (shockwave + slash + sparks + shake), recoil.
+// Returns the ms until impact. Visual only — callers resolve damage themselves.
+function fxStrike(atkEl,tgtEl,opts){
+  opts=opts||{};
+  if(!fxOn()||!atkEl||!tgtEl) return 0;
+  const a=fxRect(atkEl), t=fxRect(tgtEl); const color=opts.color||'#e8c570';
+  const dx=(t.cx-a.cx)*.78, dy=(t.cy-a.cy)*.78; const ang=Math.atan2(t.cy-a.cy,t.cx-a.cx)*180/Math.PI;
+  const auid=atkEl.getAttribute('data-uid'); if(auid) fxHide(auid,820);
+  const g=fxGhost(atkEl,a); g.style.setProperty('--c',color);
+  const trails=[1,2].map(k=>{ const tg=fxGhost(atkEl,a); tg.classList.add('trail'); tg.style.opacity='0'; return tg; });
+  g.animate([{transform:'translate(0,0) scale(1) rotate(0)'},{transform:`translate(${-dx*.06}px,${-dy*.06}px) scale(1.07) rotate(${dx>0?-4:4}deg)`,offset:.3},{transform:`translate(${dx}px,${dy}px) scale(1.12) rotate(0)`,offset:.55},{transform:`translate(${dx*.92}px,${dy*.92}px) scale(1.05)`,offset:.62},{transform:'translate(0,0) scale(1)'}],{duration:780,easing:'cubic-bezier(.45,0,.35,1)',fill:'forwards'});
+  trails.forEach((tg,k)=>tg.animate([{opacity:0,transform:'translate(0,0)'},{opacity:0,transform:'translate(0,0)',offset:.3},{opacity:.35-k*.12,transform:`translate(${dx*(.55-k*.18)}px,${dy*(.55-k*.18)}px) scale(1.06)`,offset:.52},{opacity:0,transform:`translate(${dx*.7}px,${dy*.7}px)`,offset:.66},{opacity:0}],{duration:780,fill:'forwards'}));
+  setTimeout(()=>{ g.remove(); trails.forEach(x=>x.remove()); },800);
+  const IMPACT=430;
   setTimeout(()=>{
-    // Impact moment — flash the target
-    tgtEl.classList.add('card-hit');
-    // Recoil back
-    atkEl.style.transition='transform .25s ease-out';
-    atkEl.style.transform='translate(0,0) scale(1)';
-    setTimeout(()=>{
-      atkEl.style.zIndex='';
-      atkEl.style.transition='';
-      tgtEl.classList.remove('card-hit');
-      if(callback)callback();
-    },250);
-  },180);
+    fxRing(t.cx,t.cy,color,Math.max(t.w,t.h)*1.5,520);
+    fxRing(t.cx,t.cy,'#ffffff',Math.max(t.w,t.h)*.9,380,'thin');
+    fxSpawn('fx-slash',t.cx,t.cy,`--c:${color};--a:${ang+90}deg`,520);
+    fxSpawn('fx-slash',t.cx,t.cy,`--c:#fff;--a:${ang+60}deg;animation-delay:60ms`,580);
+    fxSparks(t.cx,t.cy,color,14,Math.max(t.w,t.h)*.8,600);
+    const tuid=tgtEl.getAttribute('data-uid'); if(tuid) fxRule(`[data-uid="${tuid}"]{animation:fxHit .42s ease-out !important}`,450);
+    else { tgtEl.classList.remove('fx-hit-el'); void tgtEl.offsetWidth; tgtEl.classList.add('fx-hit-el'); setTimeout(()=>tgtEl.classList.remove('fx-hit-el'),450); }
+    fxShake(300);
+  },IMPACT);
+  if(typeof holdBeat==='function') holdBeat(1000);
+  return IMPACT;
 }
+// Lunge-then-resolve wrapper used by the board (callback runs at the moment of impact).
+function animateAttack(attackerUid, targetUid, callback){
+  const atkEl=fxElUid(attackerUid), tgtEl=fxElUid(targetUid);
+  const fc=[1,2,3,4].map(p=>G.players[p]&&G.players[p].field&&G.players[p].field.find(f=>f.uid===attackerUid)).find(Boolean);
+  const delay=fxStrike(atkEl,tgtEl,{color:fc?fxColor(fc.cid):undefined});
+  if(callback){ if(delay) setTimeout(callback,delay); else callback(); }
+}
+// Visual-only strike between any two board things (uids or {herald:p}).
+function fxStrikeAt(atk,tgt,cid){ try{ const ae=(atk&&atk.herald)?fxHeraldEl(atk.herald):fxElUid(atk); const te=(tgt&&tgt.herald)?fxHeraldEl(tgt.herald):fxElUid(tgt); fxStrike(ae,te,{color:cid?fxColor(cid):undefined}); }catch(e){} }
+
+// ── LANDING: a newly played card drops onto the board. Re-renders keep the animation going.
+const _fxLand={};
+function fxMarkLand(uid,kind){ if(!fxOn()) return; _fxLand[uid]={t:Date.now(),kind:kind||'char'}; setTimeout(()=>{ const el=fxElUid(uid); if(!el) return; const r=fxRect(el); const k=kind||'char';
+    if(k==='loc'){ fxLocationFx(el,r); }
+    else { setTimeout(()=>{ fxRing(r.cx,r.y+r.h*.9,'#e8c570',r.w*1.6,560,'ground'); fxSparks(r.cx,r.y+r.h*.85,'#f5d77a',8,r.w*.7,500); },230); }
+  },0); if(typeof holdBeat==='function') holdBeat(kind==='loc'?1300:700); }
+function fxApplyLand(div,uid){ const e=_fxLand[uid]; if(!e) return; const age=Date.now()-e.t, dur=e.kind==='loc'?900:620; if(age>dur){ delete _fxLand[uid]; return; } div.classList.add(e.kind==='loc'?'fx-land-loc':'fx-land'); div.style.animationDelay=(-age)+'ms'; }
+function fxLocationFx(el,r){
+  const side=el.closest('.side,.player-area,.v2-board')||el.parentElement; const sr=side?fxRect(side):r;
+  fxSpawn('fx-sweep',sr.x,sr.cy,`--w:${sr.w}px;--h:${Math.min(sr.h,220)}px`,1100);
+  setTimeout(()=>{ fxShake(260); fxRing(r.cx,r.y+r.h*.92,'#86efac',r.w*2.2,800,'ground'); fxRing(r.cx,r.y+r.h*.92,'#e8c570',r.w*1.5,650,'ground'); fxSparks(r.cx,r.y+r.h*.8,'#bbf7d0',12,r.w,700);
+    for(let i=0;i<6;i++) fxSpawn('fx-rubble',r.x+r.w*(.15+Math.random()*.7),r.y+r.h*.9,`--dx:${(Math.random()-.5)*r.w}px;animation-delay:${i*25}ms`,800); },380);
+}
+
+// ── EQUIPMENT: the card flies from its owner's hand onto the character and fuses in.
+function fxHandRect(p){ const b=fxBoard(); const el=(p===1||p===3)?(document.getElementById('hand-dock')||b):(document.getElementById('p'+p+'-hand-display')||b); if(!el) return {x:innerWidth/2-40,y:innerHeight-140,w:80,h:112,cx:innerWidth/2,cy:innerHeight-84}; const r=fxRect(el); const w=Math.min(110,r.w*.2), h=w/.7; return {x:r.cx-w/2,y:r.cy-h/2,w,h,cx:r.cx,cy:r.cy}; }
+function fxEquip(eqCid,targetUid,p){
+  if(!fxOn()) return; const tgt=fxElUid(targetUid); if(!tgt) return; const t=fxRect(tgt); const from=fxHandRect(p); const color=fxColor(eqCid);
+  const g=fxCardGhost(eqCid,from); g.classList.add('glow'); g.style.setProperty('--c',color);
+  const sc=Math.min(1,t.w*.7/from.w);
+  g.animate([{transform:'translate(0,0) rotate(0) scale(1)',opacity:1},{transform:`translate(${(t.cx-from.cx)*.5}px,${(t.cy-from.cy)*.5-60}px) rotate(-8deg) scale(1.15)`,offset:.45,opacity:1},{transform:`translate(${t.cx-from.cx}px,${t.cy-from.cy}px) rotate(0) scale(${sc*.5})`,opacity:.15}],{duration:700,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'});
+  setTimeout(()=>g.remove(),720);
+  setTimeout(()=>{ fxRing(t.cx,t.cy,color,t.w*1.7,600,'rune'); fxRing(t.cx,t.cy,'#fff3c4',t.w*1.1,420,'thin'); fxSparks(t.cx,t.cy,'#f5d77a',10,t.w*.8,600); fxSpawn('fx-glyph',t.cx,t.y+t.h*.2,'',900).textContent='🛡'; fxRule(`[data-uid="${targetUid}"]{animation:fxEquipPulse .7s ease-out !important}`,720); },660);
+  if(typeof holdBeat==='function') holdBeat(1200);
+}
+// ── INSTANT / HEAL / SLASH target effects
+function fxHeal(uid,amt){ if(!fxOn()) return; const el=fxElUid(uid); if(!el) return; const r=fxRect(el); fxRing(r.cx,r.cy,'#4ade80',r.w*1.5,700,'soft'); for(let i=0;i<10;i++) fxSpawn('fx-plus',r.x+r.w*(.15+Math.random()*.7),r.y+r.h*(.4+Math.random()*.5),`animation-delay:${i*45}ms`,1100).textContent='+'; fxRule(`[data-uid="${uid}"]{animation:fxHealPulse .8s ease-out !important}`,820); if(typeof holdBeat==='function') holdBeat(900); }
+function fxSlash(uid,color){ if(!fxOn()) return; const el=fxElUid(uid); if(!el) return; const r=fxRect(el); color=color||'#f87171'; fxSpawn('fx-slash big',r.cx,r.cy,`--c:${color};--a:-35deg`,560); fxSpawn('fx-slash big',r.cx,r.cy,`--c:#fff;--a:35deg;animation-delay:90ms`,640); fxSparks(r.cx,r.cy,color,12,r.w*.8,600); fxRule(`[data-uid="${uid}"]{animation:fxHit .42s ease-out !important}`,450); fxShake(240); if(typeof holdBeat==='function') holdBeat(900); }
+// ── ENERGY: the card pops, bursts into orbs that stream into the owner's energy counter.
+function fxEnergy(cid,p,gained,colorKey){
+  if(!fxOn()) return; const color=(colorKey&&COLOR_DEFS[colorKey]?COLOR_DEFS[colorKey].hex:fxColor(cid));
+  const from=fxHandRect(p); const w=Math.min(150,innerWidth*.28), h=w/.7; const r={x:innerWidth/2-w/2,y:innerHeight*.45-h/2,w,h,cx:innerWidth/2,cy:innerHeight*.45};
+  const g=fxCardGhost(cid,r); g.classList.add('glow'); g.style.setProperty('--c',color);
+  g.animate([{transform:`translate(${from.cx-r.cx}px,${from.cy-r.cy}px) scale(.4)`,opacity:0},{transform:'translate(0,0) scale(1.05)',opacity:1,offset:.35},{transform:'translate(0,0) scale(1)',opacity:1,offset:.6},{transform:'translate(0,0) scale(1.25)',opacity:0,filter:'brightness(2.4)'}],{duration:820,easing:'ease-out',fill:'forwards'});
+  setTimeout(()=>g.remove(),840);
+  const tgtEl=document.getElementById('p'+p+'-energy'); const t=tgtEl?fxRect(tgtEl):{cx:innerWidth-80,cy:p===1?innerHeight-80:80};
+  setTimeout(()=>{ fxRing(r.cx,r.cy,color,w*1.4,500,'soft'); const n=Math.min(10,Math.max(4,(gained||1)*3));
+    for(let i=0;i<n;i++){ const o=fxSpawn('fx-orb',r.cx+(Math.random()-.5)*w*.6,r.cy+(Math.random()-.5)*h*.5,`--c:${color}`,1000);
+      const ox=parseFloat(o.style.left), oy=parseFloat(o.style.top); o.animate([{transform:'translate(-50%,-50%) scale(.6)',opacity:1},{transform:`translate(calc(-50% + ${(t.cx-ox)*.4+(Math.random()-.5)*80}px),calc(-50% + ${(t.cy-oy)*.4-40}px)) scale(1.1)`,opacity:1,offset:.45},{transform:`translate(calc(-50% + ${t.cx-ox}px),calc(-50% + ${t.cy-oy}px)) scale(.4)`,opacity:.2}],{duration:620+i*35,easing:'cubic-bezier(.5,0,.6,1)',fill:'forwards'}); }
+    setTimeout(()=>{ if(tgtEl){ tgtEl.classList.remove('fx-energy-pop'); void tgtEl.offsetWidth; tgtEl.classList.add('fx-energy-pop'); setTimeout(()=>tgtEl.classList.remove('fx-energy-pop'),600); } fxRing(t.cx,t.cy,color,70,420,'thin'); },720);
+  },520);
+  if(typeof holdBeat==='function') holdBeat(1300);
+}
+// ── DEATH: the card cracks, splits and falls apart; a wisp drifts to the discard pile.
+function fxDeath(uid,p){
+  if(!fxOn()) return; const el=fxElUid(uid); if(!el) return; const r=fxRect(el); fxHide(uid,1400);
+  const halves=['l','r'].map(side=>{ const g=fxGhost(el,r); g.classList.add('death',side); return g; });
+  fxSpawn('fx-crack',r.cx,r.cy,`--w:${r.w}px;--h:${r.h}px`,500);
+  fxRing(r.cx,r.cy,'#ef4444',r.w*1.4,500,'thin'); fxSparks(r.cx,r.cy,'#fca5a5',12,r.w*.7,700);
+  halves.forEach((g,i)=>{ const dir=i?1:-1; g.animate([{transform:'translate(0,0) rotate(0)',filter:'grayscale(0) brightness(1)',opacity:1},{transform:'translate(0,0) rotate(0)',filter:'grayscale(1) brightness(1.8)',opacity:1,offset:.22},{transform:`translate(${dir*r.w*.22}px,${r.h*.05}px) rotate(${dir*8}deg)`,filter:'grayscale(1) brightness(.8)',opacity:1,offset:.5},{transform:`translate(${dir*r.w*.4}px,${r.h*.7}px) rotate(${dir*22}deg)`,filter:'grayscale(1) brightness(.4)',opacity:0}],{duration:1050,easing:'cubic-bezier(.45,0,.75,.6)',fill:'forwards'}); setTimeout(()=>g.remove(),1080); });
+  for(let i=0;i<8;i++) fxSpawn('fx-ash',r.x+Math.random()*r.w,r.y+r.h*(.3+Math.random()*.6),`animation-delay:${200+i*40}ms`,1400);
+  const pile=document.getElementById('p'+p+'-discard-pile'); if(pile){ const pr=fxRect(pile); setTimeout(()=>{ const w=fxSpawn('fx-wisp',r.cx,r.cy,'',1000); w.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:.9},{transform:`translate(calc(-50% + ${pr.cx-r.cx}px),calc(-50% + ${pr.cy-r.cy}px)) scale(.4)`,opacity:.2}],{duration:700,easing:'ease-in',fill:'forwards'}); setTimeout(()=>{ pile.classList.remove('fx-pile-pop'); void pile.offsetWidth; pile.classList.add('fx-pile-pop'); },700); },550); }
+  if(typeof SFX!=='undefined'&&SFX.death) try{ SFX.death(); }catch(e){}
+  if(typeof holdBeat==='function') holdBeat(1300);
+}
+// ── RIFT: a violet vortex opens, the card spirals into it, then it seals and streaks to the Rift pile.
+function fxRift(el,p){
+  if(!fxOn()||!el) return; const r=fxRect(el); const uid=el.getAttribute('data-uid'); if(uid) fxHide(uid,1500);
+  const v=fxSpawn('fx-vortex',r.cx,r.cy,`--s:${Math.max(r.w,r.h)*1.5}px`,1500);
+  const g=fxGhost(el,r); g.classList.add('rift');
+  g.animate([{transform:'rotate(0) scale(1)',filter:'hue-rotate(0) brightness(1)',opacity:1},{transform:'rotate(40deg) scale(.95)',filter:'hue-rotate(40deg) brightness(1.3)',opacity:1,offset:.25},{transform:'rotate(540deg) scale(.05)',filter:'hue-rotate(90deg) brightness(2)',opacity:0}],{duration:1100,easing:'cubic-bezier(.5,0,.9,.6)',fill:'forwards'});
+  setTimeout(()=>g.remove(),1120);
+  setTimeout(()=>{ fxRing(r.cx,r.cy,'#a855f7',r.w*1.8,500); fxSparks(r.cx,r.cy,'#c084fc',14,r.w,700);
+    const pile=document.getElementById('p'+p+'-rift-wrap'); if(pile){ const pr=fxRect(pile); const s=fxSpawn('fx-wisp rift',r.cx,r.cy,'',900); s.animate([{transform:'translate(-50%,-50%)',opacity:1},{transform:`translate(calc(-50% + ${pr.cx-r.cx}px),calc(-50% + ${pr.cy-r.cy}px)) scale(.5)`,opacity:.3}],{duration:600,easing:'ease-in',fill:'forwards'}); setTimeout(()=>{ pile.classList.remove('fx-pile-pop'); void pile.offsetWidth; pile.classList.add('fx-pile-pop'); },600); }
+  },1050);
+  if(typeof holdBeat==='function') holdBeat(1700);
+}
+// find the on-board element of a card that was just removed from p's field (for the Rift)
+function fxFindRemoved(p,cid){ const b=fxBoard(); if(!b) return null; const els=[...b.querySelectorAll(`[data-player="${p}"][data-cid="${cid}"]`)]; const live=new Set((G.players[p]&&G.players[p].field||[]).map(f=>String(f.uid))); return els.find(e=>!live.has(e.getAttribute('data-uid')))||null; }
 
 
 function dealDamage(tp,tuid,amt){
@@ -9914,6 +10086,7 @@ function dealDamage(tp,tuid,amt){
 
 function killCard(p,fc){
   const c=DB[fc.cid];if(!c)return;
+  if(typeof fxDeath==='function') fxDeath(fc.uid,p);
   // SURFACE DEPLETION (The Surfacer): if a depleted character dies this turn, its
   // marker's owner draws 1 card.
   if(fc.surfacerDrawMark===G.turn && fc.surfacerDrawFor && typeof drawCard==='function'){
@@ -11094,6 +11267,7 @@ function resolveCharVsHerald(ap, auid, dp){
   if(isHeraldBroken(h)){ log('That Herald is already broken.','dmg'); return false; }
   if(!enemyBoardEmpty(ap)){ log('You can only attack the enemy Herald when their field has no characters.','dmg'); return false; }
   if(!canCharacterAttack(ap,afc)){ log("That character can't attack right now.",'dmg'); return false; }
+  if(typeof fxStrikeAt==='function') fxStrikeAt(afc.uid,{herald:dp},afc.cid);
   afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc);
   if(hasAbilityLabel(afc,'Bloodline Rise')){ afc.hpBonus=(afc.hpBonus||0)+2; afc.currentHP=(afc.currentHP||0)+2; log(`Bloodline Rise: ${DB[afc.cid]?.name} gains +2 Health (now ${afc.currentHP}).`,'gain'); }
   const dmg=effPower(afc); const retaliate=Math.floor((h.currentATK||0)*HERALD_RULES.charRetaliation);
@@ -11140,6 +11314,7 @@ function resolveHeraldAttackTarget(targetP, targetHfc){
     log(`Bloodline Rise: ${DB[afc.cid]?.name} gains +2 Health (now ${afc.currentHP}).`,'gain');
   }
   if(targetHfc&&isHeraldBroken(targetHfc)){ log('That Herald is already broken.','dmg'); G.heraldAttacking=false; renderAll(); return; }
+  if(targetHfc&&typeof fxStrikeAt==='function') fxStrikeAt({herald:G.activePlayer},{herald:targetP},afc.cid);
   if(targetHfc){
     // HERALD DUEL — Guardians don't interfere; the defender retaliates if it survives.
     const defSnap=Math.floor((targetHfc.currentATK||0)*HERALD_RULES.duelRetaliation);
@@ -11352,6 +11527,7 @@ function declareLifeAttack(attackerPlayer, attackerUid){
 // Resolve a Life attack with the spec order (damage → death → counter → trample).
 function resolveLifeAttack(attackerPlayer, afc, blocker){
   const defenderPlayer = attackerPlayer===1?2:1;
+  if(afc&&typeof fxStrikeAt==='function') fxStrikeAt(afc.uid, blocker?blocker.uid:{herald:defenderPlayer}, afc.cid);
   const power=effPower(afc);
   if(!blocker){
     if(typeof damageLifeForce==='function') damageLifeForce(defenderPlayer, power, 'direct attack');
@@ -11585,6 +11761,7 @@ function showCaptainBlockPrompt(aiPlayer, afc, humanTeam){
 }
 function resolveAITeamAttack(aiPlayer, afc, blocker, humanTeam){
   const power=effPower(afc);
+  if(typeof fxStrikeAt==='function') fxStrikeAt(afc.uid, blocker?blocker.uid:{herald:(teamPlayers(humanTeam)||[])[0]||1}, afc.cid);
   if(!blocker){ damageTeamLife(humanTeam, power, 'direct attack'); renderAll(); return; }
   // SKINLESS THRASH (The DeerHaunter): the blocker gets -1/-1 the moment it blocks.
   if(hasAbilityLabel(afc,'Skinless Thrash')){
@@ -11858,7 +12035,7 @@ function onHandClick(p,uid,fc){
     const totalField=pl.field.filter(f=>!isLoc(DB[f.cid])).length;
     if(isChar(DB[fco.cid])&&!DB[fco.cid]?.isToken&&namedFighters>=MAX_FIELD){log('Fighter zone full! (max 8 named fighters).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     if(!isChar(DB[fco.cid])&&otherCards>=MAX_OTHER){log('Field full! (max 5 other cards on field).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
-    pl.field.push(fco);log(`${pname(p)} plays ${c.name}.`,'info');playCardZoom(fco.cid,fco.variant);if(typeof SFX!=='undefined')SFX.cardPlay();if(p===1)sendGameAction('card_play',{cardId:fco.cid,variant:fco.variant});onEntry(p,fco);
+    pl.field.push(fco);log(`${pname(p)} plays ${c.name}.`,'info');playCardZoom(fco.cid,fco.variant);if(typeof fxMarkLand==='function')fxMarkLand(fco.uid,'char');if(typeof SFX!=='undefined')SFX.cardPlay();if(p===1)sendGameAction('card_play',{cardId:fco.cid,variant:fco.variant});onEntry(p,fco);
     if(G.tutorialMode&&p===1&&isChar(c)&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('play');
     if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
     // Mission tracking: unique characters (only for local player)
@@ -11868,7 +12045,7 @@ function onHandClick(p,uid,fc){
   } else if(isLoc(c)){
     const locCount=pl.field.filter(f=>isLoc(DB[f.cid])).length;
     if(locCount>=MAX_LOC){log(`Location zone full! (max ${MAX_LOC}).`,'dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
-    pl.field.push(fco);log(`${pname(p)} places ${c.name}.`,'info');playCardZoom(fco.cid,fco.variant);
+    pl.field.push(fco);log(`${pname(p)} places ${c.name}.`,'info');playCardZoom(fco.cid,fco.variant);if(typeof fxMarkLand==='function')fxMarkLand(fco.uid,'loc');if(typeof SFX!=='undefined'&&SFX.heraldSlam)try{SFX.heraldSlam();}catch(e){}
     if(G.tutorialMode&&p===1&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('play_location');
     if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
     if(c.id==='time_chamber'){pl.energy+=5;log('Time Chamber: +5⚡!','gain');}
@@ -11890,6 +12067,7 @@ function onHandClick(p,uid,fc){
       if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
       if(typeof SFX!=='undefined')SFX.instant();
       if(p===1)sendGameAction('instant_reveal',{cardId:c.id});
+      playCardZoom(c.id,fco.variant);
       log(`${pname(p)} plays ${c.name}!`,'info');
       const healAmt = c.id==='vermynth_fruit_bse'?4:3;
       const atkAmt  = c.id==='vermynth_fruit_bse'?2:0;
@@ -11903,11 +12081,13 @@ function onHandClick(p,uid,fc){
       if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
       if(typeof SFX!=='undefined')SFX.instant();
       if(p===1)sendGameAction('instant_reveal',{cardId:c.id});
+      playCardZoom(c.id,fco.variant);
       log(`${pname(p)} plays ${c.name}!`,'info');
       const strike=(tuid)=>{
         const tf=G.players[o].field.find(f=>f.uid===tuid);
         if(!tf){ return; }
         pl.discard.push(c.id);
+        if(typeof fxSlash==='function') fxSlash(tf.uid,'#f87171');
         tf.currentHP-=2;
         log(`🗡️ ${c.name}: ${DB[tf.cid]?.name} takes 2 damage!`,'dmg');
         if(typeof showDmgPopup==='function')showDmgPopup(o,'-2',tf.uid);
@@ -11925,6 +12105,7 @@ function onHandClick(p,uid,fc){
       if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
       if(typeof SFX!=='undefined')SFX.instant();
       if(p===1)sendGameAction('instant_reveal',{cardId:c.id});
+      playCardZoom(c.id,fco.variant);
       log(`${pname(p)} plays ${c.name}!`,'info');
       const healAmt = c.id==='virora_matcha_bse'?4:2;
       const cureMode = c.id==='virora_matcha_bse'?'all':'confuse';
@@ -11991,6 +12172,7 @@ function openEnemyTargetPicker(targets, callback, opts){
 function openFruitHealPicker(p, fco, chars, healAmt, atkAmt, cureMode){
   const c=DB[fco.cid]; const pl=G.players[p];
   const apply=(target)=>{
+    if(typeof fxHeal==='function') setTimeout(()=>fxHeal(target.uid),0);
     const mx=(target.baseHP||0)+(target.hpBonus||0)+(target.passiveHp||0);
     target.currentHP=Math.min(mx,(target.currentHP||0)+healAmt);
     let msg=`${c.name}: ${DB[target.cid].name} heals +${healAmt} HP (now ${target.currentHP})`;
@@ -12091,6 +12273,7 @@ function applyEquipToTarget(efc,tfc){
   applyEquip(tfc,ec);
   if(ec.persistent===false){G.players[G.activePlayer].discard.push(ec.id);log(`${ec.name} used & discarded.`,'info');}
   else{if(!tfc.attachments)tfc.attachments=[];tfc.attachments.push(ec.id);log(`${ec.name} → ${DB[tfc.cid].name}.`,'info');}
+  if(typeof fxEquip==='function') setTimeout(()=>fxEquip(ec.id,tfc.uid,G.activePlayer),0);
   if(G.tutorialMode&&G.activePlayer===1&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('equip');
   // SOUL FIND (Void Crystal): after attaching, may search your discard for a character
   // and return it to hand. (You equip your own field character, so owner = active player.)
@@ -12174,7 +12357,7 @@ function swapHandFieldFlow(opts){
     pl.hand=pl.hand.filter(x=>x.uid!==hf.uid);
     pl.field=pl.field.filter(x=>x.uid!==ff.uid);
     (ff.attachments||[]).forEach(eqId=>pl.discard.push(eqId));
-    const inField=newFC(hf.cid); if(inField){ inField.variant=hf.variant||'none'; inField.turnPlayed=G.turn; pl.field.push(inField); }
+    const inField=newFC(hf.cid); if(inField){ inField.variant=hf.variant||'none'; inField.turnPlayed=G.turn; pl.field.push(inField); if(typeof fxMarkLand==='function') fxMarkLand(inField.uid,'char'); }
     const inHand=newFC(ff.cid); if(inHand){ inHand.variant=ff.variant||'none'; pl.hand.push(inHand); }
     log(`${title}: ${DB[hf.cid].name} swapped onto the field for ${DB[ff.cid].name} (free).`,'gain');
     done(true);
@@ -16061,10 +16244,11 @@ function _finishEnergyCard(p, cid, gained, chosenColor){
   log(c.name+': +'+gained+'⚡ (total: '+pl.energy+'⚡)','gain');
   if(chosenColor&&COLOR_DEFS[chosenColor])log(COLOR_DEFS[chosenColor].label+' energy added!','gain');
   if(c.downside) c.downside(pl,G);
-  playCardZoom(cid);
+  const _fx=(typeof fxOn==='function'&&fxOn());
+  if(_fx) fxEnergy(cid,p,gained,chosenColor); else playCardZoom(cid);
   if(typeof SFX!=='undefined')SFX.energy();
   renderAll();
-  if(p===1)spawnEnergyParticles(Math.max(3,gained+1));
+  if(p===1&&!_fx)spawnEnergyParticles(Math.max(3,gained+1));
   if(p===1)sendGameAction('card_play',{cardId:cid});
   if(G.tutorialMode&&p===1&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('play_energy');
 }
@@ -16165,7 +16349,7 @@ function renderHeraldSlot(p, targetId){
 
   const div=document.createElement('div');
   div.className='herald-slot'+(hfc.isFlipped?' final-form':'')+(canFlip?' can-flip':'');
-  div.setAttribute('data-herald',p);
+  div.setAttribute('data-herald',p); div.setAttribute('data-uid',hfc.uid);
 
   // Art
   const artWrap=document.createElement('div');artWrap.className='card-art-area';artWrap.style.height='84px';
@@ -18412,6 +18596,7 @@ function sendToRift(p, cid, sourceName){
   if(!G||!G.players[p])return;
   if(!G.players[p].rift)G.players[p].rift=[];
   G.players[p].rift.push(cid);
+  try{ const _el=(typeof fxFindRemoved==='function')?fxFindRemoved(p,cid):null; if(_el) fxRift(_el,p); }catch(e){}
   log(`🌀 ${DB[cid]?.name||cid} is sent to the Rift Zone by ${sourceName||'an effect'}! (Permanent)`, 'dmg');
   renderAll();
 }
@@ -18771,7 +18956,8 @@ function renderField(p, targetId){
   G.players[p].field.filter(f=>isChar(DB[f.cid])).forEach(fc=>{
     const c=DB[fc.cid];if(!c)return;
     const div=document.createElement('div');div.className='card-slot';
-    div.setAttribute('data-uid',fc.uid);div.setAttribute('data-player',p);
+    div.setAttribute('data-uid',fc.uid);div.setAttribute('data-player',p);div.setAttribute('data-cid',fc.cid);
+    if(typeof fxApplyLand==='function') fxApplyLand(div,fc.uid);
     if(c.isToken)div.classList.add('token-card');
     if(fc.tapped)div.classList.add('tapped');
     if(statusActive(fc,'freeze'))div.classList.add('frozen');else if(statusActive(fc,'paralyze'))div.classList.add('paralyzed');
@@ -18805,7 +18991,8 @@ function renderLocZone(p, targetId){
   G.players[p].field.filter(f=>isLoc(DB[f.cid])).forEach(fc=>{
     const c=DB[fc.cid];if(!c)return;
     const div=document.createElement('div');div.className='card-slot';
-    div.setAttribute('data-uid',fc.uid);div.setAttribute('data-player',p);
+    div.setAttribute('data-uid',fc.uid);div.setAttribute('data-player',p);div.setAttribute('data-cid',fc.cid);
+    if(typeof fxApplyLand==='function') fxApplyLand(div,fc.uid);
     if(G.selectedAttacker&&isEnemyBoard(p)&&isLoc(c))div.classList.add('loc-targetable');
     const pct=Math.max(0,Math.min(100,fc.currentHP/(c.hp||6)*100));const hpCol=pct>60?'#22c55e':pct>30?'#f59e0b':'#ef4444';
     div.appendChild(makeArtEl(fc.cid,108,fc));
