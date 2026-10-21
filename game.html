@@ -6866,6 +6866,35 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 #beat-shield{position:fixed;inset:0;z-index:95;display:none;cursor:progress;background:transparent}
 #beat-shield.on{display:block}
 /* ═══ COIN & DICE (build 9.0) ═══ */
+/* ═══ ABILITY BANNER / USE-SKIP (build 9.5) ═══ */
+.trig-ov{position:fixed;inset:0;z-index:10450;display:none;align-items:center;justify-content:center;padding:16px;background:radial-gradient(ellipse at center,rgba(20,12,40,.28),rgba(3,2,10,.52))}
+.trig-ov.ask{background:radial-gradient(ellipse at center,rgba(20,12,40,.5),rgba(3,2,10,.78))}
+.trig-ov.open{display:flex;animation:rollFade .16s ease}
+.trig-card{width:min(440px,100%);box-sizing:border-box;padding:14px 16px 12px;border-radius:16px;position:relative;cursor:pointer;
+  background:linear-gradient(180deg,#171030,#0c0820) padding-box,linear-gradient(160deg,#e8c570,#6b4fb0 45%,#c9a24a) border-box;border:1.5px solid transparent;
+  box-shadow:0 18px 50px rgba(0,0,0,.65),0 0 30px rgba(200,164,74,.18);animation:rollRise .26s cubic-bezier(.2,.9,.3,1.15)}
+.trig-ov.ask .trig-card{cursor:default}
+.trig-kicker{display:flex;align-items:center;gap:8px;font-family:'Share Tech Mono',monospace;font-size:9.5px;letter-spacing:3px;color:#9d93c4;margin-bottom:10px}
+.trig-who{padding:2px 8px;border-radius:10px;border:1px solid #3a2a6a;color:#c4b5fd;letter-spacing:2px;margin-left:auto;max-width:50%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trig-body{display:flex;gap:14px;align-items:flex-start}
+.trig-art{flex:none;width:78px;aspect-ratio:5/7;border-radius:7px;overflow:hidden;background:#1e1e3a;display:flex;align-items:center;justify-content:center;color:#c4b5fd;font-size:22px;box-shadow:0 4px 14px rgba(0,0,0,.6),0 0 0 1px rgba(232,197,112,.35)}
+.trig-art img{width:100%;height:100%;object-fit:cover;display:block}
+.trig-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.trig-card-name{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1.5px;color:#a9a0cc;text-transform:uppercase}
+.trig-label{font-family:'Cinzel',serif;font-weight:700;font-size:20px;letter-spacing:1px;color:#f0d58a;line-height:1.15;text-shadow:0 0 14px rgba(240,213,138,.25)}
+.trig-text{font-size:12.5px;line-height:1.5;color:#d6d0f0}
+.trig-out{margin-top:4px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;color:#86efac;text-transform:uppercase}
+.trig-btns{display:flex;gap:8px;margin-top:12px}
+.trig-use,.trig-skip{flex:1;padding:10px 12px;border-radius:10px;font-family:'Cinzel',serif;font-weight:700;letter-spacing:2px;font-size:12px;cursor:pointer}
+.trig-use{border:1px solid #c9a24a;background:linear-gradient(180deg,#f0d58a,#c9a24a);color:#1a1030;box-shadow:0 0 14px rgba(232,197,112,.35)}
+.trig-skip{flex:0 0 32%;border:1px solid #4a3a7a;background:rgba(40,28,70,.6);color:#c4b5fd}
+.trig-use:hover,.trig-skip:hover{filter:brightness(1.1)}
+.trig-use:focus-visible,.trig-skip:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.trig-timer{height:2px;margin-top:12px;border-radius:2px;background:rgba(255,255,255,.06);overflow:hidden}.trig-timer i{display:block;height:100%;width:0;background:linear-gradient(90deg,#c9a24a,#f0d58a)}
+#card-play-zoom.playing.fast{animation-duration:.55s}
+#card-play-zoom.playing.fast .card-play-zoom-img-wrap{animation-duration:.55s}
+@media (max-width:600px){ .trig-art{width:62px} .trig-label{font-size:17px} .trig-text{font-size:12px} }
+@media (prefers-reduced-motion:reduce){ .trig-card{animation:none} }
 .roll-ov{position:fixed;inset:0;z-index:10500;display:none;align-items:center;justify-content:center;padding:16px;background:radial-gradient(ellipse at center,rgba(20,12,40,.55),rgba(3,2,10,.82));backdrop-filter:blur(3px)}
 .roll-ov.open{display:flex;animation:rollFade .18s ease}
 @keyframes rollFade{from{opacity:0}to{opacity:1}}
@@ -7006,7 +7035,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 </script>
 
 <!-- AUTH HUD -->
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 9.4 · tutorial</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 9.5 · smooth play</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -9907,8 +9936,17 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='9.4'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='9.5'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'9.5', date:'2026-10-21', cards:[],
+    abilities:['"YOU MAY" RULE (designer ruling): any ability that says "you may" lets its controller choose. A person gets an ability panel with USE / SKIP; the AI uses it. Wired: Demolition (Aoliath, entry), Battle Hardened (entry), Warrior\'s Honor (entry), Soul Find + Spacial Frequency (on attach), Godly Radar + Saiyan Spirit + Saiyan God Healing (start of turn), Zone Out (when destroyed — now you also choose WHICH equipment returns), Godly Blitz (combat: draw is optional). Abilities you activate yourself were already optional (their pickers/searches have Cancel / Skip)',
+      'Saiyan Spirit (Billy SSJ): its +2 ATK now really applies (it only raised the max, not current ATK)',
+      'Saiyan God Healing (Billy SSG): on heads a person chooses which wounded character heals (was always the most wounded); the flip uses the full coin panel'],
+    screens:['ACTION SEQUENCER: everything happens one at a time in on-screen order. A step starts only when the screen is idle (no card zoom, coin/dice panel, ability banner, transform, turn banner or open choice). Card played → zoom → lands → its ENTRY ABILITY banner (or Use/Skip) → the ability resolves (coin, picker…) → next. onEntry now runs AFTER the card lands (seqEntry), restoring the acting player/phase/AI flag it was played under. AI and tutorial wait for the queue (_presentBusy)',
+      'ABILITY BANNER (#trig-ov): kicker (ENTRY ABILITY / START OF TURN / COMBAT / WHEN DESTROYED / ON ATTACH) + who (YOU / opponent / AI), card art, card name, ability name (Cinzel gold), ability text, timer bar; click to skip. Ask mode adds USE <ABILITY> / SKIP and waits. Online: the actor sends trig_show {cardId,label,text,kind,outcome}; the other client queues the same banner',
+      'GAME SPEED (Settings): Normal (card zoom .95s, banner 1.3s, your coin/dice auto-continue 3s, AI 1.2s) · Fast (.55s, .65s, 1.5s, .8s, faster coin spin) · Instant (no zoom/banners, coin flips as the small toast; "you may" choices still ask). Plain card ≈1.4s on Normal; entry ability +1.3s; a coin +~2.5s',
+      'Coin/dice panels wait for an open ability banner instead of overlapping it'],
+    data:['_gameSettings.speed: normal | fast | instant. SEQ queue: seqPush(fn(done)), seqBusy(), seqReset() on new match / abandon. seqAbility(p,cid,label,text,{kind,optional,useLabel,canUse},run(use,cant)). seqIsLocalHuman(p) decides who gets the Use/Skip panel. fc._mayNo = the skipped entry ability label while onEntry runs'] },
   { build:'9.4', date:'2026-10-21', cards:[],
     abilities:['TRANSFORMATION PATHS (designer rule): a Base Character may branch onto the Saiyan path (SSJ → SSJ2 → SSJ3 → SSJ4 → SSJ5…) or the God path (SSG → SSB → SSBE/SSBM…); once on a path it only climbs that path. Enforced in getTransformTargets via formPathOf(card) (formTier ssj*/ssg|ssb* → saiyan/god; base_char → base; else card.path). Exception flag: crossPath:true on the source card. Data: Magnus (SSJ) nextForms [\'ssg\'] → [\'ssj2\'] (no SSJ2 card yet, so Magnus SSJ is the end of that line for now). Rulebook 8.7 gained a Transformation paths paragraph. Any explicit card.path value is a path of its own (so other styles of character keep their own lines); lines vary in depth per character and many characters never transform.',
       'TAP RULE (designer ruling): a FREE (0⚡) activated ability taps the card that used it (character / Location / Herald / the Equipment holder); a PAID ability does not tap — unless the card text says otherwise ("This card is tapped afterwards", "(Taps)" → taps; "does not tap" or noTapOnAbility → never). Enforced once, in an activateAbility() wrapper (abilityTapRule) around every ability branch. Now tap (were not): The King\'s Charge, Continuous Onslaught, The Gift of the God\'s, Sensory Play, Silent Search, Frozen Domain, Godly Restriction, Spirit of Smash, Veeldens Future (HQ), The Shift of Space (holder), and the Herald abilities Ravager Strike, Surface Depletion, The Fist of God, The Lord\'s Prayer (a tapped Herald cannot duel that turn). Now untapped (paid, card says nothing): Unbroken Hook, Full Moon Awakening, Godly Kamui. Buster Purge still taps (its text says so). Rulebook 2.2 / 8.2 / 13.1 rewritten to match.',
@@ -11746,6 +11784,7 @@ function startGame(mode,deck1,deck2,foils1,foils2){
   if(typeof loadGameSettings==="function")loadGameSettings();
   try{ clearHoverPreview(true); }catch(e){}
   gameMode=mode;us=0;
+  if(typeof seqReset==='function') seqReset();
   // Per-copy finish pools (built from the original deck order before shuffle/herald strip).
   const _fp1=buildFoilPool(deck1,foils1), _fp2=buildFoilPool(deck2,foils2);
   const gMode=pendingGameMode||'prize';
@@ -12491,15 +12530,20 @@ function killCard(p,fc){
       log(`Trigon's Shadow: ${c.name} freezes ${pname(oppNum)}'s entire field!`,'dmg');
     }
   }
-  // ZONE OUT (Tyler SSG): if destroyed with equipment attached, return the best one to hand.
+  // ZONE OUT (Tyler SSG): if destroyed with equipment attached, its controller MAY return one of
+  // those equipment cards to hand (they go to the discard first; the chosen one comes back).
   if(hasAbilityLabel(fc,'Zone Out') && Array.isArray(fc.attachments) && fc.attachments.length){
-    const equips=fc.attachments.filter(eq=>DB[eq]&&DB[eq].type==='equipment');
-    if(equips.length){
-      equips.sort((a,b)=>(DB[b].cost||0)-(DB[a].cost||0));
-      const keep=equips[0];
-      const ki=fc.attachments.indexOf(keep); if(ki>-1) fc.attachments.splice(ki,1);
-      const _f=(typeof newFC==='function')?newFC(keep):null; if(_f) G.players[p].hand.push(_f);
-      log(`Zone Out: ${DB[keep].name} returned to ${pname(p)}'s hand.`,'gain');
+    const _zeq=fc.attachments.filter(eq=>DB[eq]&&DB[eq].type==='equipment');
+    if(_zeq.length && typeof seqAbility==='function'){
+      const _zp=p;
+      seqAbility(p, fc.cid, 'Zone Out', null, {kind:'WHEN DESTROYED', optional:true, useLabel:'RETURN EQUIPMENT'}, (use)=>{
+        if(!use) return;
+        const P=G.players[_zp]; const avail=_zeq.filter(id=>(P.discard||[]).includes(id));
+        if(!avail.length) return;
+        const give=(id)=>{ const i=P.discard.lastIndexOf(id); if(i>-1)P.discard.splice(i,1); const f=(typeof newFC==='function')?newFC(id):null; if(f) P.hand.push(f); log(`Zone Out: ${DB[id].name} returned to ${pname(_zp)}'s hand.`,'gain'); renderAll(); };
+        if(seqIsLocalHuman(_zp) && avail.length>1) seqChoose('Zone Out','Choose an equipment card to return to your hand.', avail.map(id=>({label:DB[id].name, sub:'cost '+(DB[id].cost||0), val:id})), give);
+        else give(avail.slice().sort((a,b)=>(DB[b].cost||0)-(DB[a].cost||0))[0]);
+      });
     }
   }
   G.players[p].field=G.players[p].field.filter(f=>f.uid!==fc.uid);
@@ -13444,8 +13488,10 @@ function executeCombatDamage(ap,auid,dp,duid){
   // GODLY BLITZ (Virora SSG / BSE): on dealing combat damage to an enemy
   // character, the attacker's controller may draw 1 card.
   if(hasAbilityLabel(afc,'Godly Blitz')&&atkDmg>0){
-    drawCard(ap);
-    log(`Godly Blitz: ${ac.name} dealt combat damage — draw 1 card!`,'gain');
+    const _gp=ap, _gn=ac.name;
+    seqAbility(ap, afc.cid, 'Godly Blitz', null, {kind:'COMBAT', optional:true, useLabel:'DRAW 1'}, (use)=>{
+      if(use){ drawCard(_gp); log(`Godly Blitz: ${_gn} dealt combat damage — draw 1 card!`,'gain'); }
+    });
   }
 
   triggerShowdownHype(afc, ap, dp, dfc.uid);
@@ -14413,7 +14459,7 @@ function onHandClick(p,uid,fc){
     const totalField=pl.field.filter(f=>!isLoc(DB[f.cid])).length;
     if(isChar(DB[fco.cid])&&!DB[fco.cid]?.isToken&&namedFighters>=MAX_FIELD){log('Fighter zone full! (max 8 named fighters).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     if(!isChar(DB[fco.cid])&&otherCards>=MAX_OTHER){log('Field full! (max 5 other cards on field).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
-    pl.field.push(fco);log(`${pname(p)} plays ${c.name}.`,'info');playCardZoom(fco.cid,fco.variant);if(typeof fxMarkLand==='function')fxMarkLand(fco.uid,'char');if(typeof SFX!=='undefined')SFX.cardPlay();if(p===1)sendGameAction('card_play',{cardId:fco.cid,variant:fco.variant});onEntry(p,fco);
+    pl.field.push(fco);log(`${pname(p)} plays ${c.name}.`,'info');playCardZoom(fco.cid,fco.variant);if(typeof fxMarkLand==='function')fxMarkLand(fco.uid,'char');if(typeof SFX!=='undefined')SFX.cardPlay();if(p===1)sendGameAction('card_play',{cardId:fco.cid,variant:fco.variant});seqEntry(p,fco);
     if(G.tutorialMode&&p===1&&isChar(c)&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('play');
     if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
     // Mission tracking: unique characters (only for local player)
@@ -14654,34 +14700,37 @@ function applyEquipToTarget(efc,tfc){
   else{if(!tfc.attachments)tfc.attachments=[];tfc.attachments.push(ec.id);log(`${ec.name} → ${DB[tfc.cid].name}.`,'info');}
   if(typeof fxEquip==='function') setTimeout(()=>fxEquip(ec.id,tfc.uid,G.activePlayer),0);
   if(G.tutorialMode&&G.activePlayer===1&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('equip');
-  // SOUL FIND (Void Crystal): after attaching, may search your discard for a character
-  // and return it to hand. (You equip your own field character, so owner = active player.)
+  // SOUL FIND (Void Crystal) / SPACIAL FREQUENCY (Space Crystal): after attaching, the holder's
+  // controller MAY search — shown as an ability banner (Use / Skip for a person), then resolved.
   if((ec.abilities||[]).some(a=>a.label==='Soul Find')){
-    const p = G.activePlayer;
-    const pl=G.players[p];
+    const p = G.activePlayer, pl=G.players[p];
     const filt=(cc)=>cc&&(cc.type==='char'||cc.type==='base_char')&&!cc.transformOnly;
-    const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(p) : (p===1);
-    if(_human){
-      if(!(pl.discard||[]).some(cid=>filt(DB[cid]))){ log('Soul Find: no character cards in your discard pile to return.','info'); }
-      else openDiscardSearch('Soul Find','You may search your discard pile for a character card to add to your hand.',filt,(cid)=>{ const f=newFC(cid); if(f) pl.hand.push(f); log(`Soul Find: ${DB[cid].name} returned to hand.`,'gain'); renderAll(); });
-    } else {
-      const found=(pl.discard||[]).find(cid=>filt(DB[cid]));
-      if(found){ const i=pl.discard.indexOf(found); if(i>-1)pl.discard.splice(i,1); const f=newFC(found); if(f) pl.hand.push(f); log(`Soul Find: ${pname(p)} returns ${DB[found].name} to hand.`,'gain'); }
-    }
+    seqAbility(p, ec.id, 'Soul Find', null, {kind:'ON ATTACH', optional:true, useLabel:'SEARCH DISCARD',
+      canUse:()=>(pl.discard||[]).some(cid=>filt(DB[cid]))}, (use,cant)=>{
+      if(cant){ log('Soul Find: no character cards in the discard pile to return.','info'); return; }
+      if(!use) return;
+      if(seqIsLocalHuman(p)){
+        openDiscardSearch('Soul Find','Choose a character card from your discard pile to add to your hand.',filt,(cid)=>{ const f=newFC(cid); if(f) pl.hand.push(f); log(`Soul Find: ${DB[cid].name} returned to hand.`,'gain'); renderAll(); });
+      } else {
+        const found=(pl.discard||[]).filter(cid=>filt(DB[cid])).sort((a,b)=>(DB[b].cost||0)-(DB[a].cost||0))[0];
+        if(found){ const i=pl.discard.indexOf(found); if(i>-1)pl.discard.splice(i,1); const f=newFC(found); if(f) pl.hand.push(f); log(`Soul Find: ${pname(p)} returns ${DB[found].name} to hand.`,'gain'); }
+      }
+    });
   }
-  // SPACIAL FREQUENCY (Space Crystal): after attaching, may search your deck for a
-  // Location card and return it to hand.
   if((ec.abilities||[]).some(a=>a.label==='Spacial Frequency')){
-    const p2 = G.activePlayer;
-    const pl2=G.players[p2];
+    const p2 = G.activePlayer, pl2=G.players[p2];
     const filt2=(cc)=>cc&&cc.type==='location';
-    const _human2 = G.is2v2 ? (G.humanPlayers||[1]).includes(p2) : (p2===1);
-    if(_human2){
-      openDeckSearch('Spacial Frequency','You may search your deck for a Location card to add to your hand.',filt2,(cid)=>{ const f=newFC(cid); if(f) pl2.hand.push(f); log(`Spacial Frequency: ${DB[cid].name} added to your hand.`,'gain'); renderAll(); });
-    } else {
-      const found2=(pl2.deck||[]).find(cid=>filt2(DB[cid]));
-      if(found2){ const i=pl2.deck.indexOf(found2); if(i>-1)pl2.deck.splice(i,1); const f=newFC(found2); if(f) pl2.hand.push(f); log(`Spacial Frequency: ${pname(p2)} searches a Location.`,'gain'); }
-    }
+    seqAbility(p2, ec.id, 'Spacial Frequency', null, {kind:'ON ATTACH', optional:true, useLabel:'SEARCH DECK',
+      canUse:()=>(pl2.deck||[]).some(cid=>filt2(DB[cid]))}, (use,cant)=>{
+      if(cant){ log('Spacial Frequency: no Location cards left in the deck.','info'); return; }
+      if(!use) return;
+      if(seqIsLocalHuman(p2)){
+        openDeckSearch('Spacial Frequency','Choose a Location card from your deck to add to your hand.',filt2,(cid)=>{ const f=newFC(cid); if(f) pl2.hand.push(f); log(`Spacial Frequency: ${DB[cid].name} added to your hand.`,'gain'); renderAll(); });
+      } else {
+        const found2=(pl2.deck||[]).find(cid=>filt2(DB[cid]));
+        if(found2){ const i=pl2.deck.indexOf(found2); if(i>-1)pl2.deck.splice(i,1); const f=newFC(found2); if(f) pl2.hand.push(f); log(`Spacial Frequency: ${pname(p2)} searches a Location.`,'gain'); }
+      }
+    });
   }
   renderAll();
 }
@@ -14696,6 +14745,7 @@ function playCardZoom(cardId, variant){
   const c = DB[cardId];
   if(!c) return;
   if(typeof _gameSettings!=='undefined' && !_gameSettings.animations) return;
+  if(typeof gameSpeed==='function' && gameSpeed()==='instant') return;
   const overlay = document.getElementById('card-play-zoom');
   const img = document.getElementById('card-play-zoom-img');
   if(!overlay || !img) return;
@@ -14716,10 +14766,12 @@ function playCardZoom(cardId, variant){
   // Restart animation
   overlay.classList.remove('playing');
   void overlay.offsetWidth; // force reflow
+  const _zms=(typeof spd==='function')?spd('zoom'):950;
+  overlay.classList.toggle('fast', _zms<900);
   overlay.classList.add('playing');
-  if(typeof holdBeat==='function') holdBeat(1000);
+  if(typeof holdBeat==='function') holdBeat(_zms+50);
   // Clean up after animation
-  setTimeout(() => { overlay.classList.remove('playing'); }, 950);
+  setTimeout(() => { overlay.classList.remove('playing','fast'); }, _zms);
 }
 
 
@@ -14831,7 +14883,7 @@ function onEntry(p,fc){
   }
   // ── AOLIATH (base): Demolition — on entry, flip a coin. Tails → this character
   // can attack Location cards for the rest of its time in play.
-  if(c.id==='aoliath_base_bse'){
+  if(c.id==='aoliath_base_bse' && fc._mayNo!=='Demolition'){
     // Full on-screen flip (not the small toast) so BOTH players see it happen — online it's
     // mirrored to the opponent via roll_show. The result is applied immediately.
     if(!coinFlipShow('Demolition — '+(c.name||'Aoliath'),'Tails = can attack Location cards until discarded')){
@@ -14844,7 +14896,7 @@ function onEntry(p,fc){
 
   if(c.id==='volaris'){drawCard(p);drawCard(p);log('Volaris: draw 2!','gain');}
   // ── SAIYAN HEAVY WARRIOR: Battle Hardened — on entry, give a friendly character +2 ATK (permanent). Optional, once. ──
-  if(c.id==='saiyan_heavy_warrior_bse'){
+  if(c.id==='saiyan_heavy_warrior_bse' && fc._mayNo!=='Battle Hardened'){
     const pl=G.players[p];
     const chars=pl.field.filter(f=>isChar(DB[f.cid]));
     const applyBuff=(t)=>{ t.atkBonus=(t.atkBonus||0)+2; t.currentATK=(t.currentATK||0)+2; log(`Battle Hardened: ${DB[t.cid].name} gains +2 ATK (now ${t.currentATK}).`,'gain'); if(typeof renderAll==='function')renderAll(); };
@@ -14980,7 +15032,7 @@ function onEntry(p,fc){
   }
   // WARRIOR'S HONOR (Najeela SSJ): upon entry you may attach an equipment from
   // your hand to a character on your field, free of cost.
-  if(c.id==='najeela_ssj1_bse'){
+  if(c.id==='najeela_ssj1_bse' && fc._mayNo!=="Warrior's Honor"){
     const equips=G.players[p].hand.filter(h=>DB[h.cid]&&DB[h.cid].type==='equipment');
     const chars=G.players[p].field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
     if(equips.length && chars.length){
@@ -17596,36 +17648,52 @@ function startTurnFx(player){
         if((fc.currentHP||0)<mx){ fc.currentHP=Math.min(mx,(fc.currentHP||0)+2); log(`Heart of a Saiyan God: ${c.name} heals +2 HP.`,'gain'); }
       }
     }
-    // ── DAREDEVIL (Herald): Godly Radar — every 2 of your turns, tutor an energy card.
+    // ── DAREDEVIL (Herald): Godly Radar — every 2 of your turns, MAY tutor an energy card.
     if(hasAbilityLabel(fc,'Godly Radar')){
       fc._radarTurns=(fc._radarTurns||0)+1;
       if(fc._radarTurns>=2){
         fc._radarTurns=0;
-        const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(player) : (player===1);
-        if(_human){
-          openDeckSearch('Godly Radar','You may search your deck for an energy card to add to your hand.',(cc)=>cc.type==='energy_card',(cid)=>{ const f=newFC(cid); if(f) pl.hand.push(f); log(`Godly Radar: ${DB[cid].name} added to your hand.`,'gain'); renderAll(); });
-        } else {
-          const eid=(pl.deck||[]).find(cid=>DB[cid]&&DB[cid].type==='energy_card');
-          if(eid){ const i=pl.deck.indexOf(eid); if(i>-1)pl.deck.splice(i,1); const f=newFC(eid); if(f) pl.hand.push(f); log(`Godly Radar: ${pname(player)} searches an energy card.`,'gain'); }
-        }
+        const _pl=pl, _pp=player;
+        seqAbility(player, fc.cid, 'Godly Radar', null, {kind:'START OF TURN', optional:true, useLabel:'SEARCH DECK',
+          canUse:()=>(_pl.deck||[]).some(cid=>DB[cid]&&DB[cid].type==='energy_card')}, (use,cant)=>{
+          if(cant||!use) return;
+          if(seqIsLocalHuman(_pp)){
+            openDeckSearch('Godly Radar','Choose an energy card from your deck to add to your hand.',(cc)=>cc.type==='energy_card',(cid)=>{ const f=newFC(cid); if(f) _pl.hand.push(f); log(`Godly Radar: ${DB[cid].name} added to your hand.`,'gain'); renderAll(); });
+          } else {
+            const eid=(_pl.deck||[]).find(cid=>DB[cid]&&DB[cid].type==='energy_card');
+            if(eid){ const i=_pl.deck.indexOf(eid); if(i>-1)_pl.deck.splice(i,1); const f=newFC(eid); if(f) _pl.hand.push(f); log(`Godly Radar: ${pname(_pp)} searches an energy card.`,'gain'); }
+          }
+        });
       }
     }
-    // ── BILLY (SSJ): Saiyan Spirit — if it attacked last turn, +2 ATK and draw 1.
+    // ── BILLY (SSJ): Saiyan Spirit — if it attacked last turn, +2 ATK and MAY draw 1.
     if(hasAbilityLabel(fc,'Saiyan Spirit') && fc.attackedLastTurn){
-      fc.atkBonus=(fc.atkBonus||0)+2;
-      log(`Saiyan Spirit: ${c.name} gains +2 ATK for attacking last turn!`,'gain');
-      if(typeof drawCard==='function'){ drawCard(player); log(`Saiyan Spirit: ${pname(player)} draws 1.`,'gain'); }
+      const _fc=fc, _pp=player;
+      seqAbility(player, fc.cid, 'Saiyan Spirit', null, {kind:'START OF TURN', optional:true, useLabel:'+2 ATK & DRAW 1'}, (use)=>{
+        if(!(G.players[_pp].field.some(f=>f.uid===_fc.uid))) return;
+        _fc.atkBonus=(_fc.atkBonus||0)+2; _fc.currentATK=(_fc.currentATK||0)+2;
+        log(`Saiyan Spirit: ${DB[_fc.cid].name} gains +2 ATK for attacking last turn!`,'gain');
+        if(use && typeof drawCard==='function'){ drawCard(_pp); log(`Saiyan Spirit: ${pname(_pp)} draws 1.`,'gain'); }
+      });
     }
-    // ── BILLY (SSG): Saiyan God Healing — each of your turns, flip a coin; on
-    // heads heal your most-wounded character +2 (auto-targets the most damaged).
-    if(fc.cid==='billy_ssg_bse'){
-      if(coinShow('Saiyan God Healing','Heads = heal +2')){
-        const wounded=pl.field.filter(f=>isChar(DB[f.cid]))
-          .map(f=>{const mx=(f.baseHP||0)+(f.hpBonus||0)+(f.passiveHp||0);return {f,mx,missing:mx-(f.currentHP||0)};})
-          .filter(x=>x.missing>0).sort((a,b)=>b.missing-a.missing)[0];
-        if(wounded){ wounded.f.currentHP=Math.min(wounded.mx,(wounded.f.currentHP||0)+2); log(`Saiyan God Healing: HEADS — ${DB[wounded.f.cid].name} regains +2 HP.`,'gain'); }
-        else log('Saiyan God Healing: HEADS — no wounded ally to heal.','info');
-      } else log('Saiyan God Healing: TAILS — no heal this turn.','dmg');
+    // ── BILLY (SSG): Saiyan God Healing — each of your turns you MAY flip a coin; on heads
+    // you MAY heal one of your characters +2 (a person picks; the AI heals the most wounded).
+    if(fc.cid==='billy_ssg_bse' || hasAbilityLabel(fc,'Saiyan God Healing')){
+      const _pl=pl, _pp=player;
+      seqAbility(player, fc.cid, 'Saiyan God Healing', null, {kind:'START OF TURN', optional:true, useLabel:'FLIP A COIN'}, (use)=>{
+        if(!use) return;
+        flipCoinFor({title:'Saiyan God Healing', desc:'Heads = heal one of your characters +2'}, (heads)=>{
+          if(!heads){ log('Saiyan God Healing: TAILS — no heal this turn.','dmg'); renderAll(); return; }
+          const wounded=_pl.field.filter(f=>isChar(DB[f.cid]))
+            .map(f=>{const mx=(f.baseHP||0)+(f.hpBonus||0)+(f.passiveHp||0);return {f,mx,missing:mx-(f.currentHP||0)};})
+            .filter(x=>x.missing>0).sort((a,b)=>b.missing-a.missing);
+          if(!wounded.length){ log('Saiyan God Healing: HEADS — no wounded ally to heal.','info'); renderAll(); return; }
+          const heal=(x)=>{ x.f.currentHP=Math.min(x.mx,(x.f.currentHP||0)+2); log(`Saiyan God Healing: HEADS — ${DB[x.f.cid].name} regains +2 HP.`,'gain'); if(typeof fxHeal==='function') fxHeal(x.f.uid,2); renderAll(); };
+          if(seqIsLocalHuman(_pp) && wounded.length>1){
+            seqChoose('Saiyan God Healing','Heads! Choose one of your characters to regain +2 Health.', wounded.map(x=>({label:DB[x.f.cid].name, sub:'♥'+(x.f.currentHP||0)+' / '+x.mx, val:x})), heal);
+          } else heal(wounded[0]);
+        });
+      });
     }
     // ── AOLIATH (SSJ): Silent Killer — at the start of your turn, every enemy
     // character takes (1 + the number of Saiyans you control) damage.
@@ -17726,8 +17794,15 @@ let _gameSettings = {
   banners: true,
   boardLook: '3d',
   aiPace: 'human',   // 'human' = 1–3s between CPU moves (watchable) · 'fast' = snappy
+  speed: 'normal',   // Game Speed: 'normal' · 'fast' · 'instant' (card zoom, ability banners, coin/dice panels)
   entrances: true    // Herald entrance cinematic before the coin toss
 };
+function setGameSpeed(v){
+  _gameSettings.speed=(v==='fast'||v==='instant')?v:'normal';
+  document.querySelectorAll('.settings-speed-btn').forEach(b=>b.classList.toggle('active', b.dataset.speed===_gameSettings.speed));
+  if(typeof SFX!=='undefined')SFX.click();
+  saveGameSettings();
+}
 function setAiPace(v){
   _gameSettings.aiPace=(v==='fast')?'fast':'human';
   document.querySelectorAll('.settings-pace-btn').forEach(b=>b.classList.toggle('active', b.dataset.pace===_gameSettings.aiPace));
@@ -17858,6 +17933,7 @@ function syncSettingsUI(){
   });
   document.querySelectorAll('.settings-look-btn').forEach(b=>b.classList.toggle('active', b.dataset.look===(_gameSettings.boardLook||'3d')));
   document.querySelectorAll('.settings-pace-btn').forEach(b=>b.classList.toggle('active', b.dataset.pace===(_gameSettings.aiPace||'human')));
+  document.querySelectorAll('.settings-speed-btn').forEach(b=>b.classList.toggle('active', b.dataset.speed===(_gameSettings.speed||'normal')));
   document.querySelectorAll('.settings-ent-btn').forEach(b=>b.classList.toggle('active', (b.dataset.ent==='on')===(_gameSettings.entrances!==false)));
 }
 
@@ -17983,6 +18059,7 @@ let _matchSession=0;
 function aiLater(fn,ms){ const s=_matchSession; let waits=0; const run=()=>{ if(s!==_matchSession) return; if(typeof G!=='undefined'&&G&&G._abandoned) return; if(typeof _presentBusy==='function'&&_presentBusy()&&waits++<160){ setTimeout(run,150); return; } fn(); }; return setTimeout(run,ms); }
 function abandonMatch(){
   _matchSession++;
+  try{ if(typeof seqReset==='function') seqReset(); }catch(e){}
   if(typeof G!=='undefined'&&G&&G.players){ if(!G.gameOver){ G.gameOver=true; G._abandoned=true; } G._aiTurn=false; G._aiAuto=false; G._v2AIRunning=false; }
   try{ aiThinking(false); }catch(e){}
   try{ if(typeof _rollReset==='function') _rollReset(); }catch(e){}
@@ -18922,7 +18999,8 @@ function _presentBusy(){
   if(Date.now()<_beatUntil) return true;
   if(typeof _rollBusy==='function'&&_rollBusy()) return true;
   if(typeof _tfAnimating!=='undefined'&&_tfAnimating) return true;
-  return !!document.querySelector('#instant-reveal-overlay.open,#card-play-zoom.playing,#herald-entrance.open');
+  if(typeof seqBusy==='function'&&seqBusy()) return true;
+  return !!document.querySelector('#instant-reveal-overlay.open,#card-play-zoom.playing,#herald-entrance.open,#trig-ov.open');
 }
 function _beatTick(){
   let sh=document.getElementById('beat-shield');
@@ -18966,8 +19044,13 @@ function _rollEnsure(){
   ov.querySelector('#roll-btn').onclick=()=>_rollFinish();
   return ov;
 }
-function _rollPush(e){ _rollQ.push(e); _rollSend(e); if(!_rollCur) _rollNext(); }
+function _rollPush(e){
+  // Game Speed → Instant: coin flips show as the small toast and resolve right away.
+  if(typeof gameSpeed==='function'&&gameSpeed()==='instant'&&e.kind==='coin'&&!e.remote){ _rollToast(Object.assign({},e)); if(e.callback){ const cb=e.callback; setTimeout(()=>{ try{ cb(e.heads); }catch(err){ console.error('[roll callback]',err); } },0); } return; }
+  _rollQ.push(e); _rollSend(e); if(!_rollCur) _rollNext();
+}
 function _rollNext(){
+  if(!_rollCur && _rollQ.length && document.querySelector('#trig-ov.open')){ setTimeout(()=>{ if(!_rollCur) _rollNext(); },120); return; }
   _rollCur=_rollQ.shift()||null; if(!_rollCur){ document.getElementById('roll-ov')?.classList.remove('open'); return; }
   const e=_rollCur, ov=_rollEnsure();
   const $=id=>document.getElementById(id);
@@ -18982,7 +19065,7 @@ function _rollNext(){
   if(e.kind==='coin'){
     const flips=e.flips||[e.heads];
     stage.innerHTML=flips.map((h,i)=>coinHtml(flips.length>1?'sm':'')).join('');
-    [...stage.querySelectorAll('.lc-coin')].forEach((c,i)=>{ const h=flips[i]; c.style.setProperty('--end',(1800+(h?0:180))+'deg'); c.style.animationDelay=(i*0.18)+'s'; c.querySelector('.lc-spin').style.animationDelay=(i*0.18)+'s'; c.classList.add('go'); });
+    [...stage.querySelectorAll('.lc-coin')].forEach((c,i)=>{ const h=flips[i]; c.style.setProperty('--end',(1800+(h?0:180))+'deg'); c.style.animationDelay=(i*0.18)+'s'; c.querySelector('.lc-spin').style.animationDelay=(i*0.18)+'s'; c.classList.add('go'); if(typeof spd==='function'&&spd('coinFast')) c.classList.add('fast'); });
     try{ if(typeof SFX!=='undefined'&&SFX.cardFlip) SFX.cardFlip(); }catch(err){}
   } else {
     stage.innerHTML=e.results.map(()=>`<div class="lc-diewrap"><div class="lc-die"><div class="lc-die-face">${_pipFace(1)}</div></div><span class="lc-die-tag">d${e.sides}</span></div>`).join('');
@@ -18992,7 +19075,7 @@ function _rollNext(){
     _rollTimers.push(setTimeout(()=>clearInterval(iv),1200));
   }
   ov.classList.add('open'); _beatTick();
-  const settle=e.kind==='coin'?1350+((e.flips||[1]).length-1)*180:1000;
+  const settle=e.kind==='coin'?((typeof spd==='function'&&spd('coinFast'))?1050:1350)+((e.flips||[1]).length-1)*180:1000;
   _rollTimers.push(setTimeout(()=>{
     if(_rollCur!==e) return;
     if(e.kind==='coin'){
@@ -19007,7 +19090,7 @@ function _rollNext(){
     res.classList.add('show');
     if(e.onResult) try{ e.onResult(); }catch(err){ console.warn('[roll]',err); }
     btn.style.visibility='visible';
-    const wait=e.auto?1500:6000;
+    const wait=(typeof spd==='function')?(e.auto?spd('aiRoll'):spd('ownRoll')):(e.auto?1500:6000);
     requestAnimationFrame(()=>{ bar.style.transition='width '+wait+'ms linear'; bar.style.width='100%'; });
     _rollTimers.push(setTimeout(()=>{ if(_rollCur===e) _rollFinish(); },wait));
   },settle));
@@ -19021,6 +19104,175 @@ function _rollFinish(){
   if(_rollQ.length) setTimeout(_rollNext,120);
 }
 function closeAbilityRoll(){ _rollFinish(); } // legacy name
+
+// ═══════════════════════════════════════════════════
+// ACTION SEQUENCER + ABILITY BANNERS (build 9.5)
+// Things happen one at a time, in the order you can see them:
+//   card zooms in → lands on the board → its ability banner shows (or asks "Use / Skip"
+//   for a "you may" ability) → the ability resolves (coin flip, picker, damage…) → next.
+// seqPush(fn(done)) queues a step; a step starts only when the screen is idle (no card
+// zoom, roll panel, banner, transform or open choice). The AI scheduler and the tutorial
+// already wait on _presentBusy(), which now includes the queue.
+// Game Speed (Settings): Normal / Fast / Instant scales banners, the card zoom and roll panels.
+// ═══════════════════════════════════════════════════
+const SPEED_PRESETS={
+  normal:{zoom:950, banner:1300, ownRoll:3000, aiRoll:1200, coinFast:false},
+  fast:  {zoom:550, banner:650,  ownRoll:1500, aiRoll:800,  coinFast:true},
+  instant:{zoom:0,  banner:0,    ownRoll:900,  aiRoll:500,  coinFast:true}
+};
+function gameSpeed(){ const s=(typeof _gameSettings!=='undefined'&&_gameSettings&&_gameSettings.speed)||'normal'; return SPEED_PRESETS[s]?s:'normal'; }
+function spd(k){ return SPEED_PRESETS[gameSpeed()][k]; }
+
+const SEQ={q:[],running:false,gen:0,t:null};
+function seqBusy(){ return SEQ.running||SEQ.q.length>0; }
+function seqReset(){ SEQ.q=[]; SEQ.running=false; SEQ.gen++; clearTimeout(SEQ.t); try{ trigHide(); }catch(e){} }
+function _seqIdle(){
+  if(typeof _beatUntil!=='undefined'&&Date.now()<_beatUntil) return false;
+  if(typeof _rollBusy==='function'&&_rollBusy()) return false;
+  if(typeof _tfAnimating!=='undefined'&&_tfAnimating) return false;
+  if(document.querySelector('#card-play-zoom.playing,#instant-reveal-overlay.open,#trig-ov.open,#transform-overlay.active,#herald-entrance.open,#turn-banner.show')) return false;
+  if([...document.querySelectorAll('.modal-overlay.open')].some(m=>m.id!=='fullcard-modal')) return false; // a choice is still open
+  return true;
+}
+function seqPush(fn){ SEQ.q.push({fn,gen:SEQ.gen}); if(typeof _beatTick==='function') _beatTick(); _seqPump(); }
+function _seqPump(){
+  if(SEQ.running||!SEQ.q.length) return;
+  if(!_seqIdle()){ clearTimeout(SEQ.t); SEQ.t=setTimeout(_seqPump,80); return; }
+  const st=SEQ.q.shift();
+  if(st.gen!==SEQ.gen){ _seqPump(); return; }
+  SEQ.running=true; let done=false;
+  const finish=()=>{ if(done) return; done=true; SEQ.running=false; if(typeof _beatTick==='function') _beatTick(); setTimeout(_seqPump,40); };
+  try{ st.fn(finish); }catch(e){ console.error('[seq]',e); finish(); }
+}
+// Is player p controlled by a person at THIS screen (gets the Use / Skip choice)?
+function seqIsLocalHuman(p){
+  if(!G) return false;
+  if(G.is2v2) return G.onlineMode2v2 ? p===G.mySeat : (typeof isHumanPlayer==='function'&&isHumanPlayer(p));
+  if(typeof gameMode!=='undefined'&&gameMode==='pvp'&&!G.onlineMode) return true; // local hot-seat: both players are people
+  return p===1;
+}
+function _ablText(cid,label){ const a=(DB[cid]?.abilities||[]).find(x=>x&&x.label===label); return a?(a.text||''):''; }
+
+// ── the banner / Use-Skip panel ──
+let _trig=null;
+function _trigEnsure(){
+  let ov=document.getElementById('trig-ov'); if(ov) return ov;
+  ov=document.createElement('div'); ov.id='trig-ov'; ov.className='trig-ov'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-live','polite');
+  ov.innerHTML='<div class="trig-card" id="trig-card"><div class="trig-kicker"><span id="trig-kind"></span><span class="trig-who" id="trig-who"></span></div>'
+    +'<div class="trig-body"><div class="trig-art" id="trig-art"></div><div class="trig-main"><div class="trig-card-name" id="trig-cname"></div><div class="trig-label" id="trig-label"></div><div class="trig-text" id="trig-text"></div><div class="trig-out" id="trig-out"></div></div></div>'
+    +'<div class="trig-btns" id="trig-btns"><button type="button" class="trig-use" id="trig-use">USE</button><button type="button" class="trig-skip" id="trig-skip">SKIP</button></div>'
+    +'<div class="trig-timer" id="trig-timer"><i id="trig-bar"></i></div></div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click',e=>{ if(_trig&&!_trig.ask&&!e.target.closest('.trig-btns')) _trigClose(); });
+  ov.querySelector('#trig-use').onclick=(e)=>{ e.stopPropagation(); _trigChoose(true); };
+  ov.querySelector('#trig-skip').onclick=(e)=>{ e.stopPropagation(); _trigChoose(false); };
+  return ov;
+}
+// o: {cid, p, label, text, kind, ask, useLabel, ms, outcome, who, onDone(choice)}
+function trigShow(o){
+  const ov=_trigEnsure(); const $=id=>document.getElementById(id);
+  if(_trig&&_trig.timer) clearTimeout(_trig.timer);
+  _trig=Object.assign({},o);
+  const c=DB[o.cid]||{};
+  $('trig-kind').textContent=o.kind||'ABILITY';
+  const who=o.who!=null?o.who:(seqIsLocalHuman(o.p)?'YOU':(typeof pname==='function'?pname(o.p):'Opponent'));
+  $('trig-who').textContent=who; $('trig-who').style.display=who?'':'none';
+  const url=(typeof getImg==='function')?getImg(o.cid):null;
+  $('trig-art').innerHTML=url?'<img src="'+url+'" alt="">':'<span>'+((typeof escapeHtml==='function'?escapeHtml:String)(c.sym||'?'))+'</span>';
+  $('trig-cname').textContent=c.name||'';
+  $('trig-label').textContent=o.label||'';
+  $('trig-text').textContent=o.text||'';
+  const out=$('trig-out'); out.textContent=o.outcome||''; out.style.display=o.outcome?'':'none';
+  const btns=$('trig-btns'); btns.style.display=o.ask?'':'none';
+  $('trig-use').textContent=(o.useLabel||('USE '+(o.label||''))).toUpperCase();
+  $('trig-skip').textContent='SKIP';
+  const bar=$('trig-bar'), tm=$('trig-timer'); tm.style.display=o.ask?'none':'';
+  bar.style.transition='none'; bar.style.width='0%';
+  ov.classList.toggle('ask',!!o.ask);
+  ov.classList.add('open');
+  if(typeof _beatTick==='function') _beatTick();
+  try{ if(typeof SFX!=='undefined'&&SFX.instant) SFX.instant(); }catch(e){}
+  if(!o.ask){
+    const ms=Math.max(250,o.ms||spd('banner')||600);
+    requestAnimationFrame(()=>{ bar.style.transition='width '+ms+'ms linear'; bar.style.width='100%'; });
+    _trig.timer=setTimeout(_trigClose,ms);
+  } else {
+    setTimeout(()=>{ try{ $('trig-use').focus(); }catch(e){} },60);
+  }
+}
+function _trigChoose(use){ if(!_trig||!_trig.ask) return; const t=_trig; _trig=null; trigHide(); if(t.onDone) try{ t.onDone(use); }catch(e){ console.error('[trig]',e); } }
+function _trigClose(){ if(!_trig) return; const t=_trig; _trig=null; if(t.timer) clearTimeout(t.timer); trigHide(); if(t.onDone) try{ t.onDone(true); }catch(e){ console.error('[trig]',e); } }
+function trigHide(){ const ov=document.getElementById('trig-ov'); if(ov) ov.classList.remove('open','ask'); if(typeof _beatTick==='function') _beatTick(); }
+function _trigSend(o){ try{ if(G&&G.onlineMode&&seqIsLocalHuman(o.p)&&typeof sendGameAction==='function') sendGameAction('trig_show',{cardId:o.cid,label:o.label,text:o.text,kind:o.kind,outcome:o.outcome||''}); }catch(e){} }
+function trigShowRemote(d){
+  if(!d||!d.cardId) return;
+  seqPush(done=>{ if(spd('banner')<=0){ done(); return; } trigShow({cid:d.cardId,p:2,label:d.label,text:d.text,kind:d.kind,outcome:d.outcome,who:(typeof pname==='function'?pname(2):'Opponent'),ask:false,ms:spd('banner'),onDone:()=>done()}); });
+}
+
+// seqAbility — show an ability, ask "you may" abilities, then resolve it, in order.
+//   opts: {kind, optional, useLabel, canUse()}
+//   run(use): resolves the ability (use=false when the player skipped it).
+function seqAbility(p, cid, label, text, opts, run){
+  opts=opts||{};
+  const human=seqIsLocalHuman(p);
+  seqPush(done=>{
+    if(!G||G.gameOver){ done(); return; }
+    if(opts.canUse && !opts.canUse()){ try{ run(false,true); }catch(e){ console.error('[seqAbility]',e); } done(); return; }
+    const base={cid,p,label,text:text||_ablText(cid,label),kind:opts.kind||'ABILITY'};
+    const finishRun=(use)=>{ try{ run(use); }catch(e){ console.error('[seqAbility]',e); } if(typeof renderAll==='function') renderAll(); done(); };
+    if(opts.optional && human){
+      trigShow(Object.assign({},base,{ask:true,useLabel:opts.useLabel,onDone:(use)=>{ _trigSend(Object.assign({},base,{outcome:use?'Used':'Skipped'})); if(!use) log(`${label}: skipped.`,'info'); finishRun(use); }}));
+      return;
+    }
+    _trigSend(base);
+    const ms=spd('banner');
+    if(ms<=0){ finishRun(true); return; }
+    trigShow(Object.assign({},base,{ask:false,ms,onDone:()=>finishRun(true)}));
+  });
+}
+// The entering card's own "upon entry" ability (if it has one).
+function _entryAbility(c){
+  return (c&&c.abilities||[]).find(a=>a&&a.type==='triggered'&&/upon entry|upon entering|on entry|on play|enters the field|when (?:this card|it) enters|when played/i.test(a.text||''))||null;
+}
+const ENTRY_CAN_USE={
+  "Warrior's Honor":(p,fc)=>G.players[p].hand.some(h=>DB[h.cid]?.type==='equipment')&&G.players[p].field.some(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken),
+  'Battle Hardened':(p,fc)=>G.players[p].field.some(f=>isChar(DB[f.cid]))
+};
+// Card entered the field: wait for it to land, show its entry ability, then resolve onEntry.
+function seqEntry(p, fc){
+  const c=DB[fc.cid]; if(!c) return;
+  const ctx={aiAuto:G._aiAuto, ap:G.activePlayer, phase:G.phase};
+  const abl=_entryAbility(c);
+  const runEntry=(use)=>{
+    if(!G||G.gameOver) return;
+    if(!(G.players[p]&&G.players[p].field.some(f=>f.uid===fc.uid))) return; // it already left play
+    const sv={aiAuto:G._aiAuto, ap:G.activePlayer, phase:G.phase};
+    G._aiAuto=ctx.aiAuto; G.activePlayer=ctx.ap; G.phase=ctx.phase;
+    fc._mayNo=(use===false&&abl)?abl.label:null;
+    try{ onEntry(p,fc); } catch(e){ console.error('[onEntry]',e); }
+    finally{ G._aiAuto=sv.aiAuto; G.activePlayer=sv.ap; G.phase=sv.phase; fc._mayNo=null; }
+    if(typeof recalcPassives==='function') recalcPassives();
+  };
+  if(!abl){ seqPush(done=>{ runEntry(true); if(typeof renderAll==='function') renderAll(); done(); }); return; }
+  const can=ENTRY_CAN_USE[abl.label];
+  seqAbility(p, fc.cid, abl.label, abl.text, {kind:'ENTRY ABILITY', optional:/\bmay\b/i.test(abl.text||''), useLabel:'USE '+abl.label,
+    canUse: can?()=>can(p,fc):null}, (use,cant)=>runEntry(cant?false:use));
+}
+
+// A small "choose one" list for a person (AI/remote callers pick for themselves).
+function seqChoose(title, desc, items, onPick, onSkip){
+  const body=document.createElement('div');
+  body.innerHTML='<div style="font-size:11px;color:#9ca3af;margin-bottom:8px"></div>'; body.firstChild.textContent=desc||'';
+  const list=document.createElement('div'); list.style.cssText='display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto';
+  items.forEach(it=>{ const b=document.createElement('button'); b.className='btn-gray btn-sm'; b.style.cssText='display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;text-align:left;width:100%';
+    const a=document.createElement('span'); a.style.cssText='font-weight:700;color:#e2e8f0'; a.textContent=it.label; b.appendChild(a);
+    if(it.sub){ const z=document.createElement('span'); z.style.cssText='font-size:10px;color:#fbbf24'; z.textContent=it.sub; b.appendChild(z); }
+    b.onclick=()=>{ closeAllModals(); onPick(it.val); renderAll(); }; list.appendChild(b); });
+  body.appendChild(list);
+  const sk=document.createElement('button'); sk.className='btn-gray'; sk.style.cssText='margin-top:10px;width:100%;padding:8px;opacity:.8'; sk.textContent='Skip';
+  sk.onclick=()=>{ closeAllModals(); if(onSkip) onSkip(); renderAll(); }; body.appendChild(sk);
+  showModalEl(title, body, {forceHuman:true});
+}
 
 // rollDiceFor(opts, callback) — opts {title, desc, sides, count} → callback(results[])
 function rollDiceFor(opts, callback){
@@ -20403,7 +20655,7 @@ function _ensureSpotDom(){
 }
 // Anything on screen the player must see/use un-dimmed (pickers, rolls, reveals…)
 function _tutUIBlocking(){
-  return !!document.querySelector('.modal-overlay.open,#roll-ov.open,#transform-overlay.active,#prize-reveal-overlay.open,#instant-reveal-overlay.open,#card-play-zoom.playing,#tut-narrator.on,#rc-overlay.on,#tut-chapter.on,.tut-confirm.on,#turn-banner.show');
+  return !!document.querySelector('.modal-overlay.open,#roll-ov.open,#trig-ov.open,#transform-overlay.active,#prize-reveal-overlay.open,#instant-reveal-overlay.open,#card-play-zoom.playing,#tut-narrator.on,#rc-overlay.on,#tut-chapter.on,.tut-confirm.on,#turn-banner.show');
 }
 function _tutResolveTargets(cfg){
   let t=cfg&&cfg.target; if(typeof t==='function'){ try{ t=t(); }catch(e){ t=null; } }
@@ -25740,6 +25992,9 @@ function onReceiveGameAction(payload){
     case 'roll_show':
       if(typeof rollShowRemote==='function') rollShowRemote(d);
       break;
+    case 'trig_show':
+      if(typeof trigShowRemote==='function') trigShowRemote(d);
+      break;
     case 'card_play':
       if(d.cardId) playCardZoom(d.cardId,d.variant);
       if(typeof SFX!=='undefined') SFX.cardPlay();
@@ -29811,6 +30066,17 @@ window.addEventListener('load',async()=>{
         <div class="settings-size-btns">
           <button class="settings-size-btn settings-look-btn active" data-look="3d" onclick="setBoardLook('3d')">Arena 3D</button>
           <button class="settings-size-btn settings-look-btn" data-look="flat" onclick="setBoardLook('flat')">Flat</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Game Speed</div>
+          <div class="settings-label-desc">Normal: every card and ability is shown in order. Fast: about twice as quick. Instant: no zoom or ability banners (you still choose "you may" abilities). Click any moment to speed it up.</div>
+        </div>
+        <div class="settings-size-btns">
+          <button class="settings-size-btn settings-speed-btn active" data-speed="normal" onclick="setGameSpeed('normal')">Normal</button>
+          <button class="settings-size-btn settings-speed-btn" data-speed="fast" onclick="setGameSpeed('fast')">Fast</button>
+          <button class="settings-size-btn settings-speed-btn" data-speed="instant" onclick="setGameSpeed('instant')">Instant</button>
         </div>
       </div>
       <div class="settings-row">
