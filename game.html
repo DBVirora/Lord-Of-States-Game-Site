@@ -382,6 +382,71 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .ability-activated{background:#0f0f1e;border-left:3px solid #7c3aed;color:#c4b5fd}
 .ability-type-tag{font-size:8px;font-weight:700;opacity:.7;margin-bottom:2px}
 /* attached cards panel */
+/* ═══ CARD VIEW: attached cards + active effects (build 9.4) ═══ */
+body:has(#fullcard-modal.open) #tut-bubble.docked{opacity:0!important;pointer-events:none!important}
+.fc-jump{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;width:100%;margin:0 0 10px;padding:7px 10px;border-radius:12px;border:1px solid rgba(196,181,253,.35);background:rgba(124,58,237,.12);color:#d6d0e2;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.5px;cursor:pointer}
+.fc-jump b{color:#fcd34d}.fc-jump i{font-style:normal;color:#c4b5fd}
+.fc-jump:hover{background:rgba(124,58,237,.22);border-color:#c4b5fd}
+.fc-back{display:flex;align-items:center;gap:6px;width:100%;margin:0 0 10px;padding:9px 12px;border-radius:10px;border:1px solid rgba(200,164,74,.45);background:linear-gradient(180deg,rgba(40,30,12,.85),rgba(20,14,6,.9));color:#e8c570;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;cursor:pointer;text-align:left}
+.fc-back b{color:#fff;font-weight:700}
+.fc-back:hover{border-color:#e8c570;box-shadow:0 0 14px rgba(232,197,112,.25)}
+.attp,.fxp{margin-top:10px;border-radius:12px;padding:10px;background:linear-gradient(180deg,rgba(18,14,34,.92),rgba(8,8,20,.95));border:1px solid rgba(124,58,237,.35)}
+.attp{border-color:rgba(200,164,74,.38)}
+.attp-h,.fxp-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:0 2px 8px;font-family:'Cinzel',serif;font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#e8c570}
+.fxp-h{color:#c4b5fd}
+.attp-h em{font-style:normal;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0;color:#0a0a12;background:#e8c570;border-radius:8px;padding:0 6px;margin-left:4px;vertical-align:2px}
+.attp-hint{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:none;color:#8a8099;font-weight:400}
+.fxp-sum{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.5px;text-transform:none;color:#9a92ad;font-weight:400}
+.fxp-sum b{color:#fff}
+.attp-item{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;padding:8px;margin:0 0 6px;border-radius:10px;border:1px solid rgba(200,164,74,.22);background:rgba(255,255,255,.025);color:#d6d0e2;cursor:pointer;font:inherit;transition:border-color .15s,background .15s,transform .15s}
+.attp-item:last-child{margin-bottom:0}
+.attp-item:hover{border-color:rgba(232,197,112,.7);background:rgba(232,197,112,.06);transform:translateY(-1px)}
+.attp-item.hexed{opacity:.75;border-style:dashed}
+.attp-art{flex:none;width:58px;height:81px;border-radius:6px;overflow:hidden;background:#1e1e3a;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 3px 10px rgba(0,0,0,.5)}
+.attp-art img{width:100%;height:100%;object-fit:cover;display:block}
+.attp-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.attp-name{font-family:'Cinzel',serif;font-weight:700;font-size:14px;color:#fcd34d;line-height:1.15}
+.attp-meta{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:#8a8099;display:flex;align-items:center;gap:4px}
+.attp-meta i{display:inline-block;width:7px;height:7px;border-radius:50%}
+.attp-give{font-size:11px;color:#86efac}
+.attp-give b{color:#bbf7d0}
+.attp-give.neg{color:#fca5a5}
+.attp-txt{font-size:11px;line-height:1.45;color:#c9c2d6}
+.attp-txt b{color:#fff}
+.attp-go{flex:none;align-self:center;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:#e8c570;border:1px solid rgba(200,164,74,.45);border-radius:999px;padding:4px 8px;white-space:nowrap}
+.fxp-row{display:flex;align-items:flex-start;gap:9px;width:100%;text-align:left;padding:7px 8px;margin:0 0 5px;border-radius:9px;border:1px solid rgba(255,255,255,.07);border-left:3px solid #64748b;background:rgba(255,255,255,.025);color:#d6d0e2;font:inherit}
+.fxp-row:last-child{margin-bottom:0}
+.fxp-row.link{cursor:pointer;transition:background .15s,border-color .15s}
+.fxp-row.link:hover{background:rgba(196,181,253,.07);border-color:rgba(196,181,253,.35)}
+.fxp-row.up{border-left-color:#22c55e}.fxp-row.down{border-left-color:#ef4444}.fxp-row.mixed{border-left-color:#f59e0b}
+.fxp-row.status{border-left-color:#f97316}.fxp-row.cond{border-left-color:#a78bfa}
+.fxp-ico{flex:none;width:18px;text-align:center;font-size:13px;line-height:18px}
+.fxp-row.up .fxp-ico{color:#4ade80}.fxp-row.down .fxp-ico{color:#f87171}.fxp-row.mixed .fxp-ico{color:#fbbf24}.fxp-row.cond .fxp-ico{color:#c4b5fd}
+.fxp-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.fxp-t{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:12px}
+.fxp-t b{color:#fff}
+.fxp-d{font-family:'Share Tech Mono',monospace;font-size:11px;font-weight:700;white-space:nowrap}
+.fxp-row.up .fxp-d{color:#4ade80}.fxp-row.down .fxp-d{color:#f87171}.fxp-row.mixed .fxp-d{color:#fbbf24}.fxp-row.status .fxp-d,.fxp-row.cond .fxp-d{color:#cbd5e1}
+.fxp-desc{font-size:11px;line-height:1.4;color:#b8b0c8}
+.fxp-s{font-size:10.5px;line-height:1.5;color:#8a8099}
+.fxp-s img{width:16px;height:22px;object-fit:cover;border-radius:2px;vertical-align:-6px;margin:0 4px 0 2px;box-shadow:0 1px 3px rgba(0,0,0,.6)}
+.fxp-s b{color:#e2dcef;font-weight:600}
+.fxp-tw{color:#8a8099}
+.fxp-go{flex:none;align-self:center;color:#c4b5fd;font-size:18px;line-height:1}
+.stat-atk.fx-buffed{color:#4ade80!important}.stat-atk.fx-debuffed{color:#f87171!important}
+.status-icons .fx-up{color:#4ade80;font-weight:900}.status-icons .fx-dn{color:#f87171;font-weight:900}
+.hvx-now{margin:8px 0 4px;text-align:center;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:#8a8099}
+.hvx-now b{margin-left:6px;font-size:12px}.hvx-now b.a{color:#fbbf24}.hvx-now b.h{color:#22c55e}
+.hvx-att{margin:6px 0;font-size:11px;color:#fcd34d;line-height:1.5}
+.hvx-att a{color:#fcd34d;text-decoration:underline;text-underline-offset:2px}
+.hvx{margin-top:8px;padding:7px 8px;border-radius:8px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.3)}
+.hvx-h{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:#c4b5fd;margin-bottom:4px}
+.hvx-r{display:flex;gap:6px;font-size:10.5px;line-height:1.45;color:#d6d0e2}
+.hvx-r b{color:#fff}.hvx-r i{color:#8a8099;font-style:normal}
+.hvx-i{flex:none;width:12px;text-align:center}
+.hvx-r.up .hvx-i{color:#4ade80}.hvx-r.down .hvx-i{color:#f87171}.hvx-r.mixed .hvx-i{color:#fbbf24}.hvx-r.cond .hvx-i{color:#c4b5fd}
+.hvx-tip{margin-top:4px;font-size:9px;color:#6b6b8a;letter-spacing:1px}
+@media (max-width:600px){ .attp-art{width:48px;height:67px} .attp-name{font-size:13px} .attp-go{display:none} .fxp-t{font-size:11.5px} }
 .attached-panel{background:#0a0a18;border:1px solid #2a2a4a;border-radius:8px;padding:8px;margin-top:8px}
 .attached-panel h4{color:#fcd34d;font-size:11px;margin-bottom:6px}
 .attached-item{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #1e1e38;font-size:11px}
@@ -9853,16 +9918,22 @@ const GODOT_SYNC=[
       'Surface Depletion (Surfacer herald): if the -2 HP kills the target it now goes through killCard → death FX, Prize, and the Depletion draw (was a silent removal with no Prize).',
       'Void Crystal Soul Find: no longer opens an empty discard search when you have no character cards in your discard (just logs).',
       'Surfacer Binding vs the AI: when the AI must discard, it discards its least valuable card (energy first) instead of a random one.',
+      'Surfacer Ignition (Magnus & Virora) revert now resets passiveAtk/passiveHp too, so Location/aura anthems re-apply to the reverted form (was silently lost).',
       'Blade of Udun: shows the Burn status FX when the target survives.'],
     screens:['TUTORIAL v2 "The Royal Trial" — full rewrite, Virora is the guide AND the star card. Full script, board, AI script and engine rules are in the Project doc claude/VCU_Tutorial_v2_Script.md — port from that.',
       'Chapters (full-screen chapter cards with art): Prologue · I The Court · II Energy & Colors · III Your Champion · IV The Royal Court · V Ascension · VI Warrior Path / God Path (player CHOOSES SSJ or SSG) · VII Clash of Heralds (round-4 Herald duel breaks Daredevil for the last 2 Prizes).',
       'After the Heavy Warrior attacks Virora (enemy turn 2) a wide RETALIATION panel explains it: 1 attack → 2a destroyed = no hit back / 2b survives = hits back with FULL ATK, automatic / exceptions (Herald half, Location never, Frozen never); the fight as a worked example (Warrior 5 ATK → Virora 8 left → 3, she hits back 8 into its 3 DEF → destroyed); WHY it exists (no free pokes, every attack is a trade of your DEF vs their ATK); good vs bad attacks.',
       'Demolition (Aoliath, on entry) now flips with the FULL roll panel (coinFlipShow), not the small toast — both players watch the coin land; online it mirrors via roll_show (non-quick). Tutorial rigs it TAILS and explains it on the Aoliath step',
+      'CARD VIEW (click any character, yours or theirs): ATTACHED CARDS are full tiles — art, name, colour · type, "Giving: +2 ATK · +2 DEF" (or "Negated by Equipment Hex"), full ability text, VIEW › — tap one to open that card; a "← Back to <card>" button returns (nested stack, cleared on Return/close)',
+      'CARD VIEW: ACTIVE EFFECTS panel — header "Printed A / D → now A / D", then one row per effect: ▲ green buff / ▼ red debuff / amber mixed / status (icon, turns left, what it does) / condition (Demolition, Soul Cage, Kinetic Bind, Equipment Hex, Omega Judgment, Nullify N, Must attack, Cost ±N, +N next attack, Frost Rune, Water Whip, Anti-Life, Scorched Earth, gained keywords, Frozen Domain, Broken). Each row names its SOURCE card ("from [art] Virora\'s Team Headquarters · your Location · while it stays on the field") — tap it to open that card. An "Other effects" row keeps the numbers honest if something can\'t be traced',
+      'BOARD: a character\'s ATK turns green when above its printed value, red when below; status line shows ▲ (buffed) / ▼ (weakened). Max DEF and the HP bar now include aura bonuses (was base + bonus only). PC: hovering a card adds ON THE BOARD stats, attached cards (clickable) and a compact ACTIVE EFFECTS list to the Card Info sidebar',
+      'Tutorial: new tip step right after Void Crystal — "click any character … attached cards … every active effect, with the card causing it … ▲ / ▼". The coach pill hides while a card view is open',
       'Coach engine: spotlight ring FOLLOWS its target every 120ms, never smaller than 44px, bubble auto-places above/below/right/left without covering the target, words fade in (no layout jitter); while any picker/modal/coin roll/zoom/transform cinematic/turn banner is open the dim lifts and the bubble docks into a small "👆 do this" pill at the top; wide Codex panels (card types, 7 colors, energy styles, transformation lines tree, path choice); chapter progress pill (7 segments); Enter/Space = Next; Skip asks for confirmation.',
       'Locks during guided steps: only the named hand card can be played, only the named attacker can attack, enemy targets/transform form/ability rows/equip targets are 🔒 except the one Virora names; End Turn, Sacrifice and Herald attack are refused until their step.',
       'NEW PLAYERS: a boot veil covers the main menu at load (skipped if this browser already knows the account: localStorage loc_known_<uid>). After login data loads: brand-new account (never watched/skipped the tutorial, no First Steps achievement, 0 matches/wins/losses) → the tutorial starts immediately and the menu is never shown; everyone else → veil fades to the menu. 15s safety timeout.',
       'Rewards on completion (first time only, gated by the First Steps achievement): 2 Base Set Boosters, First Steps (+200 Celestium), Lord Of Courts Blue card back. Replays from OPTIONS → Tutorial show "Rewards already claimed". Achievement toasts earned during the lesson are queued and shown after the rewards screen.'],
-    data:['tutorial board: P1 herald surfacer_herald, P2 herald daredevil_fog_herald, prize mode, 6 prizes each, P1 starts 5 energy; exact hands/decks/prizes in the doc','hand cards now carry data-cid / data-uid'] },
+    data:['EFFECT SOURCES (bookkeeping only, no rule changes; all on the field card so it syncs online): fc.fxl = ledger [{k,cid,uid,label,atk,hp}] of every change to atkBonus/hpBonus, credited to the resolving action (ability activation, card played from hand, onEntry, instant, equipment, combat, turn) and to the ability named in the log line that reports it ("Label: …" → the card that has that ability: affected card → acting card → board → attachments → discard/Rift → any card); turn-boundary give-backs and "wears off / ends / recovers" lines cancel the matching entry; a form change (transform, Prism Shift, revert, Herald flip) starts a fresh ledger. fc.passiveSrc = [{cid,label,atk,hp,uid}] rebuilt by recalcPassives (Royal Meeting, Saiyan Banner, Crescent Light, Tag Division, own passives). fc.statusSrc[type] = {cid,uid,label} set by applyStatus, cleared by cure / cleanse',
+      'tutorial board: P1 herald surfacer_herald, P2 herald daredevil_fog_herald, prize mode, 6 prizes each, P1 starts 5 energy; exact hands/decks/prizes in the doc','hand cards now carry data-cid / data-uid'] },
   { build:'9.3', date:'2026-10-21', cards:[], abilities:[],
     screens:['BATTLE FX (all drawn in a top #fx-layer with ghost copies of cards, colour = attacker\'s card colour, each holds a pacing beat):',
       'ATTACK (char→char, char→location, char→herald, herald duel, life/2v2 blocks): wind-up tilt, dash ~78% toward the target with 2 motion trails, IMPACT at ~430ms = shockwave ring + white ring + two slash streaks + 14 sparks + target hit-flash/shake + small board shake, then recoil. Damage resolves at impact.',
@@ -11291,6 +11362,7 @@ function triggerTitleDefense(defFc, atkFc, atkP){
   return amt;
 }
 function tickTitleDefense(p){
+  if(typeof fxCtx==='function') fxCtx(null,'Turn',null,{turn:true});
   [1,2,3,4].forEach(pp=>{ const P=G.players[pp]; if(!P||!P.field)return; P.field.forEach(f=>{
     const t=f._titleDef; if(!t||t.owner!==p) return;
     t.ends--; if(t.ends<=0){ f.currentATK=(f.currentATK||0)+t.amt; f.atkBonus=(f.atkBonus||0)+t.amt; f._titleDef=null; log(`${DB[f.cid]?.name} recovers from Title Defense.`,'info'); }
@@ -11310,6 +11382,7 @@ function triggerFlameSpiral(afc){
   log(`🔥 Flame Spiral: ${DB[afc.cid]?.name} +2 Attack until end of next turn!`,'gain');
 }
 function tickFlameSpiral(p){
+  if(typeof fxCtx==='function') fxCtx(null,'Turn',null,{turn:true});
   (G.players[p]?.field||[]).forEach(f=>{ const t=f._flame; if(!t) return; t.ends--; if(t.ends<=0){ f.currentATK=Math.max(0,(f.currentATK||0)-t.amt); f.atkBonus=(f.atkBonus||0)-t.amt; f._flame=null; log(`${DB[f.cid]?.name}'s Flame Spiral fades.`,'info'); } });
 }
 function triggerReceipt(victimFc, dmg, attackerFc, attackerP){
@@ -11405,6 +11478,191 @@ function isAbilitySealed(fc){
 }
 
 // ═══════════════════════════════════════════════════
+// EFFECT SOURCES (build 9.4) — "what is changing this card, and why?"
+// Bookkeeping only: nothing here changes game math. It watches every card's permanent
+// bonus layer (atkBonus / hpBonus) and records WHO caused each change, so the card view can
+// list every effect with its source card:
+//   • fc.fxl        — ledger of stat changes [{k,cid,uid,label,atk,hp}] (abilities, equipment,
+//                     instants, combat triggers, debuffs). Changes are attributed to the action
+//                     that is resolving (_fxCtx) and to the ability named in the log line that
+//                     reports them ("Surface Depletion: …"). Turn-boundary give-backs cancel
+//                     the matching entry, so expired effects drop off by themselves.
+//   • fc.passiveSrc — continuous auras rebuilt by recalcPassives() (Locations, anthems, own passives).
+//   • fc.statusSrc  — which card inflicted each status (Burn, Freeze, …).
+// Everything lives on the field card, so online it travels with the game state.
+// ═══════════════════════════════════════════════════
+let _fxCtx=null, _fxLastLabel=null, _fxLastAt=0;
+function _fxBoard(){
+  const out=[]; if(!G||!G.players) return out;
+  Object.keys(G.players).forEach(k=>{ const pl=G.players[k]; if(!pl) return;
+    (pl.field||[]).forEach(f=>{ if(f&&f.cid) out.push({fc:f,p:+k}); });
+    if(pl.herald&&pl.herald.cid) out.push({fc:pl.herald,p:+k,herald:true}); });
+  return out;
+}
+function _fxDbHas(cid,L){ const d=DB[cid]; return !!(d&&L&&(d.name===L||(d.abilities||[]).some(a=>a&&a.label===L))); }
+function _fxFcHas(fc,L){ return !!(fc&&(_fxDbHas(fc.cid,L)||(Array.isArray(fc.gainedAbilities)&&fc.gainedAbilities.some(a=>a&&a.label===L)))); }
+// "🌸 Pink Horizon: Rapture gets -2…" → "Pink Horizon"
+function _fxLabelOf(m){
+  if(typeof m!=='string') return null;
+  const s=m.replace(/<[^>]+>/g,'').replace(/^[^A-Za-z0-9']+/,'');
+  const i=s.indexOf(':'); if(i<2||i>48) return null;
+  const L=s.slice(0,i).split(' — ')[0].split(' - ')[0].trim();
+  return /^[A-Za-z0-9']/.test(L)?L:null;
+}
+// Which card does the ability/card name L belong to? (affected card itself → the action's card → board → equipment)
+function _fxResolve(L,aff){
+  if(!L) return null;
+  if(aff&&_fxFcHas(aff,L)) return {cid:aff.cid,uid:aff.uid,label:L,self:true};
+  if(_fxCtx&&_fxCtx.cid&&_fxDbHas(_fxCtx.cid,L)) return {cid:_fxCtx.cid,uid:_fxCtx.uid||null,label:L};
+  const b=_fxBoard();
+  for(const x of b){ if(_fxFcHas(x.fc,L)) return {cid:x.fc.cid,uid:x.fc.uid,label:L}; }
+  for(const x of b){ for(const eq of (x.fc.attachments||[])){ if(_fxDbHas(eq,L)) return {cid:eq,uid:null,host:x.fc.uid,label:L}; } }
+  // the source already left play (destroyed this fight, an Instant that resolved…): discard / Rift, then any card with that ability
+  for(const k of Object.keys(G.players||{})){ const pl=G.players[k]; if(!pl) continue;
+    for(const id of [].concat(pl.discard||[],pl.rift||[])){ const cid=typeof id==='string'?id:(id&&id.cid); if(cid&&_fxDbHas(cid,L)) return {cid,uid:null,label:L}; } }
+  if(!_fxLabelIdx){ _fxLabelIdx={}; Object.keys(DB).forEach(id=>{ (DB[id].abilities||[]).forEach(a=>{ if(a&&a.label&&!_fxLabelIdx[a.label]) _fxLabelIdx[a.label]=id; }); }); }
+  if(_fxLabelIdx[L]) return {cid:_fxLabelIdx[L],uid:null,label:L};
+  return null;
+}
+let _fxLabelIdx=null;
+function fxObserve(m){
+  if(!G||!G.players) return;
+  const L=_fxLabelOf(m);
+  if(L&&_fxResolve(L,null)){ _fxLastLabel=L; _fxLastAt=(G.log||[]).length; }
+  for(const x of _fxBoard()){
+    const fc=x.fc, a=fc.atkBonus||0, h=fc.hpBonus||0;
+    if(fc._fxA===undefined){ fc._fxCid=fc.cid; fc._fxA=a; fc._fxH=h; continue; } // first sight: history unknown
+    if(fc._fxCid!==fc.cid){
+      // it changed form (transform, Prism Shift, Herald flip, revert): the old form's bonuses are gone —
+      // start a fresh ledger and credit whatever the new form already has to the effect that did it
+      fc.fxl=[]; fc._fxCid=fc.cid; fc._fxA=0; fc._fxH=0;
+    }
+    const dA=a-fc._fxA, dH=h-fc._fxH; if(!dA&&!dH) continue;
+    fc._fxA=a; fc._fxH=h;
+    _fxAttribute(fc,dA,dH,L,m);
+  }
+}
+function _fxAttribute(fc,dA,dH,L,m){
+  const list=Array.isArray(fc.fxl)?fc.fxl:(fc.fxl=[]);
+  let src=(L&&_fxResolve(L,fc))||null;
+  const expMsg=/wears? off|\bends\b|recover|fades?|expire|restored|no longer|cleans/i.test(m||'');
+  const expiring=expMsg||(!src&&_fxCtx&&_fxCtx.turn);
+  if(expiring){
+    // an effect ran out: cancel the entry it created (exact match first, then greedy per stat)
+    const i=list.findIndex(e=>e.atk===-dA&&e.hp===-dH); if(i>=0){ list.splice(i,1); return; }
+    let ra=dA, rh=dH;
+    list.forEach(e=>{
+      if(ra&&e.atk&&Math.sign(e.atk)!==Math.sign(ra)){ const t=Math.sign(ra)*Math.min(Math.abs(ra),Math.abs(e.atk)); e.atk+=t; ra-=t; }
+      if(rh&&e.hp&&Math.sign(e.hp)!==Math.sign(rh)){ const t=Math.sign(rh)*Math.min(Math.abs(rh),Math.abs(e.hp)); e.hp+=t; rh-=t; }
+    });
+    for(let j=list.length-1;j>=0;j--) if(!list[j].atk&&!list[j].hp) list.splice(j,1);
+    if(!ra&&!rh) return; dA=ra; dH=rh; src=null;
+  } else if(!src){
+    if(_fxLastLabel&&((G.log||[]).length-_fxLastAt)<=3) src=_fxResolve(_fxLastLabel,fc);
+    if(!src&&_fxCtx&&_fxCtx.cid) src={cid:_fxCtx.cid,uid:_fxCtx.uid||null,label:_fxCtx.label||DB[_fxCtx.cid]?.name||'Effect'};
+    if(!src&&_fxCtx&&_fxCtx.combat) src={cid:null,uid:null,label:'Combat effect'};
+  }
+  const label=src?src.label:'Other effects', cid=src?src.cid:null;
+  const k=(cid||'')+'|'+label;
+  let e=list.find(x=>x.k===k);
+  if(!e){ e={k,cid,uid:src?(src.uid||null):null,label,atk:0,hp:0}; list.push(e); }
+  e.atk+=dA; e.hp+=dH;
+  if(!e.atk&&!e.hp) list.splice(list.indexOf(e),1);
+}
+// Set the action that is resolving now (flushes anything pending to the previous action first).
+function fxCtx(cid,label,uid,flags){ try{ fxObserve(null); }catch(e){} _fxLastLabel=null; _fxCtx=Object.assign({cid:cid||null,label:label||(cid&&DB[cid]?.name)||null,uid:uid||null},flags||{}); }
+function fxPush(cid,label,uid,flags){ const prev=_fxCtx; fxCtx(cid,label,uid,flags); return prev; }
+function fxPop(prev){ try{ fxObserve(null); }catch(e){} _fxCtx=prev||null; _fxLastLabel=null; }
+function _fxEntryLabel(c){ const ab=(c&&c.abilities)||[]; const t=ab.find(a=>a&&a.type==='triggered'&&/entry|enters|played/i.test(a.text||''))||ab.find(a=>a&&a.type==='triggered'); return t?t.label:(c&&c.name)||null; }
+// Who inflicted a status right now? (the ability named in the log, else the resolving action)
+function fxStatusSource(){
+  const r=(_fxLastLabel&&((G.log||[]).length-_fxLastAt)<=3)?_fxResolve(_fxLastLabel,null):null; if(r) return {cid:r.cid,uid:r.uid||null,label:r.label};
+  if(_fxCtx&&_fxCtx.cid) return {cid:_fxCtx.cid,uid:_fxCtx.uid||null,label:_fxCtx.label||null};
+  return null;
+}
+function fxFindFc(uid){ if(uid==null) return null; for(const x of _fxBoard()) if(String(x.fc.uid)===String(uid)) return x.fc; return null; }
+function fxOwnerOf(fc){ for(const x of _fxBoard()) if(x.fc===fc||(fc&&x.fc.uid===fc.uid)) return x.p; return null; }
+
+const FX_STATUS_INFO={
+  burn:'Takes 1 damage at the start of each of its turns (2 on the last one).',
+  poison:'Takes 1, then 2, then 3 damage at the start of its turns.',
+  freeze:"Can't attack.",
+  paralyze:'Flips a coin when it attacks — tails, the attack fizzles.',
+  confuse:'Flips a coin when it attacks — tails, it hits itself.'
+};
+const FX_DURATION={
+  'Surface Depletion':'until end of turn',
+  'Pink Horizon':'until the end of its next turn',
+  'Title Defense':'until the end of its next turn',
+  'Flame Spiral':'until the end of its next turn',
+  'Kinetic Bind':'until its next turn ends',
+  "King's Right Hand":'until end of turn',
+  'Omega Judgment':'until after its next attack'
+};
+// Every effect on a card, ready to display. Rows: {kind:'up'|'down'|'status'|'cond', title, delta, desc, src:{cid,uid,label}, dur}
+function fxEffectsOf(fc){
+  const rows=[]; if(!fc||!fc.cid) return rows;
+  const c=DB[fc.cid]||{};
+  if(fc.broken){ rows.push({kind:'cond',icon:'💔',title:'Broken',desc:'This Herald is broken — its passives and abilities are gone for the rest of the match.',src:null}); return rows; }
+  const fmt=(a,h)=>[a?((a>0?'+':'−')+Math.abs(a)+' ATK'):'',h?((h>0?'+':'−')+Math.abs(h)+' DEF'):''].filter(Boolean).join(' · ');
+  const kindOf=(a,h)=>((a||0)+(h||0))>=0&&(a||0)>=0&&(h||0)>=0?'up':(((a||0)<=0&&(h||0)<=0)?'down':'mixed');
+  // continuous auras
+  (Array.isArray(fc.passiveSrc)?fc.passiveSrc:[]).forEach(s=>{
+    if(!s||(!s.atk&&!s.hp)) return;
+    const self=s.cid===fc.cid&&(!s.uid||s.uid===fc.uid);
+    rows.push({kind:kindOf(s.atk,s.hp),title:s.label,delta:fmt(s.atk,s.hp),src:self?null:{cid:s.cid,uid:s.uid||null},
+      dur:self?'its own ability · always on':'while it stays on the field'});
+  });
+  // ledger (abilities, equipment, instants, combat)
+  let la=0, lh=0;
+  (Array.isArray(fc.fxl)?fc.fxl:[]).forEach(e=>{
+    if(!e||(!e.atk&&!e.hp)) return; la+=e.atk; lh+=e.hp;
+    const self=e.cid===fc.cid&&(!e.uid||e.uid===fc.uid);
+    const isEq=e.cid&&DB[e.cid]&&DB[e.cid].type==='equipment';
+    rows.push({kind:kindOf(e.atk,e.hp),title:e.label,delta:fmt(e.atk,e.hp),src:(e.cid&&!self)?{cid:e.cid,uid:e.uid||null}:null,
+      dur:FX_DURATION[e.label]||(isEq?'while it stays attached':(self?'its own ability':''))});
+  });
+  // anything we couldn't attribute (keeps the numbers honest)
+  const ra=(fc.atkBonus||0)-la, rh=(fc.hpBonus||0)-lh;
+  const rA2=(fc.currentATK||0)-((fc.baseATK||0)+(fc.atkBonus||0)+(fc.passiveAtk||0));
+  if(ra||rh||rA2) rows.push({kind:kindOf(ra+rA2,rh),title:'Other effects',delta:fmt(ra+rA2,rh),desc:'Not traced to a single card.',src:null,dur:''});
+  // statuses
+  const st=fc.statuses||{};
+  Object.keys(STATUS_META).forEach(t=>{ if(!(st[t]>0)) return; const m=STATUS_META[t]; const s=fc.statusSrc&&fc.statusSrc[t];
+    rows.push({kind:'status',icon:m.icon,color:m.color,title:m.label,delta:st[t]+' turn'+(st[t]>1?'s':'')+' left',desc:FX_STATUS_INFO[t]||'',src:s&&s.cid?{cid:s.cid,uid:s.uid||null,label:s.label}:null}); });
+  // conditions
+  const cond=(icon,title,desc,src)=>rows.push({kind:'cond',icon,title,desc,src:src||null});
+  const byLabel=(L)=>{ const r=_fxResolve(L,null); return r?{cid:r.cid,uid:r.uid||null}:null; };
+  const byUid=(uid)=>{ const f=fxFindFc(uid); return f?{cid:f.cid,uid:f.uid}:null; };
+  if(fc.canAttackLocations) cond('🏚','Demolition','Tails on entry — it can attack Location cards until it leaves play.',null);
+  if(typeof hasTerrainScan==='function'&&hasTerrainScan(fc)) cond('📡','Terrain Scan','It may attack Location cards.',{cid:'geo_radar_bse',uid:null});
+  if(fc._soulCage&&typeof isAbilitySealed==='function'&&isAbilitySealed(fc)) cond('🔒','Soul Cage',"It can't use activated abilities while its jailer stays on the field.",byUid(fc._soulCage.sourceUid));
+  if(fc._kb) cond('🧲','Kinetic Bind',"Its abilities are sealed until its next turn ends.",byLabel('Kinetic Bind'));
+  if(fc._equipHex&&typeof isEquipHexed==='function'&&isEquipHexed(fc,fc._equipHex.eqId)) cond('🪄','Equipment Hex',(DB[fc._equipHex.eqId]?.name||'Its equipment')+' is negated — it gives nothing while the Hex holds.',byUid(fc._equipHex.sourceUid));
+  if(fc.omegaJudged&&fc.omegaPenalty) cond('⚖️','Omega Judgment','−'+fc.omegaPenalty+' ATK until after its next attack.',byLabel('Omega Judgment'));
+  if(fc.nullify>0) cond('🛡','Nullify '+fc.nullify,'Reduces incoming damage by '+fc.nullify+'.',null);
+  if(fc.mustAttack) cond('📣','Must attack','It must attack on its next turn if able.',byLabel('Combat Control'));
+  if(fc.costMod) cond('💠','Cost '+(fc.costMod>0?'+':'−')+Math.abs(fc.costMod),'Its cost is changed by '+fc.costMod+'.',null);
+  if(fc.nextAttackBonus>0) cond('💥','+'+fc.nextAttackBonus+' next attack','Its next attack deals +'+fc.nextAttackBonus+' damage.',null);
+  if(fc._frostRune&&fc._frostRune.turns>0) cond('❄️','Frost Rune','It Freezes when it attacks ('+fc._frostRune.turns+' turn'+(fc._frostRune.turns>1?'s':'')+' left).',byLabel('Frost Rune'));
+  if(G&&fc.waterWhipped===G.turn) cond('🌊','Water Whip',"Tapped — it can't attack this turn.",byLabel('Water Whip'));
+  if(G&&fc.antiLife&&fc.antiLife>G.turn) cond('🌑','Anti-Life Equation',"Locked — it can't attack.",byLabel('Anti-Life Equation'));
+  if(fc._scorchedTurns>0&&fc._scorchedLocUid){ const lf=fxFindFc(fc._scorchedLocUid); cond('🔥','Scorched Earth',(lf?DB[lf.cid]?.name:'A Location')+' is destroyed in '+fc._scorchedTurns+' turn'+(fc._scorchedTurns>1?'s':'')+' unless this card is destroyed first.',lf?{cid:lf.cid,uid:lf.uid}:null); }
+  (Array.isArray(fc.gainedKeywords)?fc.gainedKeywords:[]).forEach(k=>cond('✦','Gained '+String(k).replace(/_/g,' '),'Granted by another effect.',null));
+  if(c.type==='location'&&typeof isLocationFrozen==='function'&&isLocationFrozen(fc)){ const fr=_fxBoard().find(x=>x.fc._frozenLocUid===fc.uid&&hasAbilityLabel(x.fc,'Frozen Domain')); cond('❄️','Frozen Domain','Its abilities and effects are switched off.',fr?{cid:fr.fc.cid,uid:fr.fc.uid}:null); }
+  // a Location marked for Scorched Earth
+  _fxBoard().forEach(x=>{ if(x.fc._scorchedTurns>0&&x.fc._scorchedLocUid===fc.uid) cond('🔥','Scorched Earth','Destroyed in '+x.fc._scorchedTurns+' turn'+(x.fc._scorchedTurns>1?'s':'')+' unless '+(DB[x.fc.cid]?.name||'its source')+' is destroyed first.',{cid:x.fc.cid,uid:x.fc.uid}); });
+  return rows;
+}
+// What does each attached card give its holder? (from the ledger)
+function fxEquipGives(fc,eqId){ const e=(Array.isArray(fc&&fc.fxl)?fc.fxl:[]).filter(x=>x&&x.cid===eqId); return {atk:e.reduce((s,x)=>s+(x.atk||0),0),hp:e.reduce((s,x)=>s+(x.hp||0),0)}; }
+// Net direction vs the printed card (field-card ▲/▼ chip)
+function fxNet(fc){
+  const c=DB[fc&&fc.cid]; if(!c) return {a:0,h:0};
+  return {a:(fc.currentATK||0)-(c.atk||0), h:((fc.baseHP||0)+(fc.hpBonus||0)+(fc.passiveHp||0))-(c.hp||0)};
+}
+
+// ═══════════════════════════════════════════════════
 // CONTINUOUS PASSIVE RECALCULATION
 // Passive auras (SSB Synergy, Surfacer Bonus, Evolved Armor, Support Boost)
 // are recomputed fresh each render so they never drift when the board changes.
@@ -11420,39 +11678,41 @@ function recalcPassives(){
       const c=DB[fc.cid];if(!c||!isChar(c))return;
       // Remove previous passive contribution, then recompute
       const prevA=fc.passiveAtk||0, prevH=fc.passiveHp||0;
-      let addA=0, addH=0;
+      let addA=0, addH=0; const src=[];
+      const add=(a,h,cid,label,uid)=>{ addA+=a; addH+=h; if(a||h) src.push({cid,label,atk:a,hp:h,uid:uid||null}); };
       const abils=(c.abilities||[]).concat(Array.isArray(fc.gainedAbilities)?fc.gainedAbilities:[]); // stolen passives count too
 
       // SSB Synergy (Virora SSB): +4 ATK for each SSB-subtype char you control
       if(abils.some(a=>a.label==='SSB Synergy')){
         const ssbCount=pl.field.filter(f=>DB[f.cid]?.subtypes?.includes('SSB')).length;
-        addA += 4*ssbCount;
+        add(4*ssbCount,0,fc.cid,'SSB Synergy',fc.uid);
       }
       // Surfacer Bonus (Virora Surface): +3 ATK/+1 HP if a Surfacer card in hand
       if(abils.some(a=>a.label==='Surfacer Bonus')){
         const hasSurfacer=pl.hand.some(f=>{const d=DB[f.cid];return d&&(d.subtypes?.some(s=>/surfac/i.test(s))|| /surfac/i.test(d.name||''));});
-        if(hasSurfacer){ addA+=3; addH+=1; }
+        if(hasSurfacer){ add(3,1,fc.cid,'Surfacer Bonus',fc.uid); }
       }
       // Evolved Armor (Virora SSBE): +5 HP (DEF)
       if(abils.some(a=>a.label==='Evolved Armor')){
-        addH += 5;
+        add(0,5,fc.cid,'Evolved Armor',fc.uid);
       }
       // ROYAL AMENDS (Violet): this card gains +1 Health (DEF) for every Saiyan
       // character you control (Violet herself counts). Scales with your Saiyan board.
       if(abils.some(a=>a.label==='Royal Amends')){
-        addH += pl.field.filter(f=>isSaiyanChar(DB[f.cid])).length;
+        add(0,pl.field.filter(f=>isSaiyanChar(DB[f.cid])).length,fc.cid,'Royal Amends',fc.uid);
       }
       // VEELDEN KINGDOM (location anthem): your Saiyan characters get +1/+1 while
       // you control the Kingdom. Removing the location drops the buff automatically.
       if(isSaiyanChar(c) && pl.field.some(f=>f.cid==='veelden_kingdom_bse' && !isLocationFrozen(f))){
-        addA += 1; addH += 1;
+        const _k=pl.field.find(f=>f.cid==='veelden_kingdom_bse' && !isLocationFrozen(f)); add(1,1,'veelden_kingdom_bse','Saiyan Banner',_k&&_k.uid);
       }
       // VIRORA'S TEAM HEADQUARTERS (location anthem): a Saiyan gets +3 Def; a ROYAL Saiyan
       // gets +4 Def / +2 ATK INSTEAD (designer ruling: one or the other, never both).
       // Read from the CURRENT form's subtypes, so it is re-checked on every transform.
       // Auto-drops if the HQ leaves or is frozen.
       if(isSaiyanChar(c) && pl.field.some(f=>f.cid==='virora_team_hq_bse' && !isLocationFrozen(f))){
-        if(isRoyalSaiyan(c)){ addH += 4; addA += 2; } else { addH += 3; }
+        const _hq=pl.field.find(f=>f.cid==='virora_team_hq_bse' && !isLocationFrozen(f));
+        if(isRoyalSaiyan(c)){ add(2,4,'virora_team_hq_bse','Royal Meeting',_hq&&_hq.uid); } else { add(0,3,'virora_team_hq_bse','Royal Meeting',_hq&&_hq.uid); }
       }
       // Support Boost (Volaris SSB): +3 ATK/+4 HP to each char next to this on field
       // (handled per-neighbor below, after this loop)
@@ -11460,20 +11720,20 @@ function recalcPassives(){
       // LUMINA — Crescent Light: while a Lumina is on your field, ALL your
       // characters (including her) gain +2 ATK / +2 HP. Removing her drops it.
       if(pl.field.some(f=>hasAbilityLabel(f,'Crescent Light'))){
-        addA += 2; addH += 2;
+        const _lu=pl.field.find(f=>hasAbilityLabel(f,'Crescent Light')); add(2,2,_lu.cid,'Crescent Light',_lu.uid);
       }
       // IVAN (WCA) — Locker Room Law: Ivan himself gets +1 ATK for each OTHER
       // character on his controller's field. Scales up/down automatically.
       if(abils.some(a=>a.label==='Locker Room Law')){
-        addA += pl.field.filter(f=>isChar(DB[f.cid])&&f.uid!==fc.uid).length;
+        add(pl.field.filter(f=>isChar(DB[f.cid])&&f.uid!==fc.uid).length,0,fc.cid,'Locker Room Law',fc.uid);
       }
       // IVAN (WCA) — Tag Division: every OTHER character Ivan's controller owns
       // gets +1 ATK while Ivan is on the field. Removing Ivan drops it.
       // One +1 for each Tag Division source other than this character (Ivan, or a thief of his ability).
-      addA += pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'Tag Division')).length;
+      pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'Tag Division')).forEach(f=>add(1,0,f.cid,'Tag Division',f.uid));
       // Apply delta to current stats
       const deltaA=addA-prevA, deltaH=addH-prevH;
-      fc.passiveAtk=addA; fc.passiveHp=addH;
+      fc.passiveAtk=addA; fc.passiveHp=addH; fc.passiveSrc=src;
       fc.currentATK=Math.max(0,(fc.currentATK||0)+deltaA);
       fc.currentHP=Math.max(0,(fc.currentHP||0)+deltaH);
     });
@@ -12222,10 +12482,12 @@ function killCard(p,fc){
     const oppNum=p===1?2:1;
     const oppChars=G.players[oppNum].field.filter(f=>isChar(DB[f.cid]));
     if(oppChars.length){
+      const _fxp=(typeof fxPush==='function')?fxPush(fc.cid,"Trigon's Shadow",fc.uid):null;
       oppChars.forEach(ofc=>{
         if(typeof applyStatus==='function') applyStatus(ofc,'freeze',(STATUS_META.freeze&&STATUS_META.freeze.dur)||1);
         if(typeof showStatusFx==='function')showStatusFx(ofc.uid,'freeze');
       });
+      if(typeof fxPop==='function') fxPop(_fxp);
       log(`Trigon's Shadow: ${c.name} freezes ${pname(oppNum)}'s entire field!`,'dmg');
     }
   }
@@ -13367,6 +13629,7 @@ function breakHerald(ownerP, byP, source){
 }
 // A CHARACTER attacks the enemy Herald — only on an empty enemy board.
 function resolveCharVsHerald(ap, auid, dp){
+  if(typeof fxCtx==='function') fxCtx(null,'Combat',null,{combat:true});
   const afc=G.players[ap].field.find(f=>f.uid===auid); const h=G.players[dp]&&G.players[dp].herald;
   if(!afc||!h) return false;
   if(isHeraldBroken(h)){ log('That Herald is already broken.','dmg'); return false; }
@@ -13410,6 +13673,7 @@ function selectHeraldAsAttacker(p){
 }
 
 function resolveHeraldAttackTarget(targetP, targetHfc){
+  if(typeof fxCtx==='function') fxCtx(null,'Combat',null,{combat:true});
   if(!G.heraldAttacking)return;
   const afc=G.players[G.activePlayer].herald;if(!afc)return;
   const ac=DB[afc.cid];if(!ac)return;
@@ -13446,6 +13710,7 @@ function resolveHeraldAttackTarget(targetP, targetHfc){
 }
 
 function resolveHeraldVsField(targetP, targetFc){
+  if(typeof fxCtx==='function') fxCtx(null,'Combat',null,{combat:true});
   // Herald attacks a field character
   if(!G.heraldAttacking)return;
   const afc=G.players[G.activePlayer].herald;if(!afc)return;
@@ -13967,6 +14232,7 @@ function openHumanBlockPrompt(afc, done){
 }
 
 function resolveAttack(ap,auid,dp,duid){
+  if(typeof fxCtx==='function') fxCtx(null,'Combat',null,{combat:true});
   const afc=G.players[ap].field.find(f=>f.uid===auid);
   const dfc=G.players[dp].field.find(f=>f.uid===duid);
   if(!afc||!dfc)return;
@@ -14044,6 +14310,7 @@ function resolveAttack(ap,auid,dp,duid){
 }
 
 function resolveLocationAttack(ap,auid,dp,duid){
+  if(typeof fxCtx==='function') fxCtx(null,'Combat',null,{combat:true});
   const afc=G.players[ap].field.find(f=>f.uid===auid);
   const dfc=G.players[dp].field.find(f=>f.uid===duid);
   if(!afc||!dfc)return;
@@ -14066,6 +14333,7 @@ function resolveLocationAttack(ap,auid,dp,duid){
 // Called after the reveal popup shows.
 // ═══════════════════════════════════════════════════
 function executeInstantEffect(p, cardId){
+  if(typeof fxCtx==='function') fxCtx(cardId, DB[cardId]?.name, null);
   const pl = G.players[p];
   const c = DB[cardId];
   if(!c) return;
@@ -14122,6 +14390,7 @@ function onHandClick(p,uid,fc){
   const pl=G.players[p];
   const fco=pl.hand.find(f=>f.uid===uid);if(!fco)return;
   const c=DB[fco.cid];if(!c)return;
+  if(typeof fxCtx==='function') fxCtx(c.id, c.name, fco.uid); // effects from this play are credited to this card
   // TUTORIAL: restrict which card can be played during a guided step.
   if(G.tutorialMode && p===1 && _tutPlayMode!=='free'){
     if(_tutPlayMode==='none'){ log("Follow Virora's step first — she'll tell you what to play.",'dmg'); showFullCard(fco.cid,null); return; }
@@ -14500,6 +14769,7 @@ function swapHandFieldFlow(opts){
 }
 function onEntry(p,fc){
   const c=DB[fc.cid];if(!c)return;
+  if(typeof fxCtx==='function') fxCtx(fc.cid, _fxEntryLabel(c), fc.uid);
   // ── GOD KI MANDATE (Magnus SSB): your characters enter with +1/+1 while it is on the field.
   if(isChar(c) && G.players[p].field.some(m=>m.uid!==fc.uid && hasAbilityLabel(m,'God Ki Mandate'))){
     fc.currentATK=(fc.currentATK||0)+1; fc.atkBonus=(fc.atkBonus||0)+1; fc.currentHP=(fc.currentHP||0)+1; fc.hpBonus=(fc.hpBonus||0)+1;
@@ -14828,6 +15098,10 @@ function isLocationFrozen(locFc){
 }
 
 function applyEquip(fc,eq){
+  const _fxPrev=(typeof fxPush==='function'&&eq)?fxPush(eq.id,eq.name,null):null;
+  try{ return _applyEquipCore(fc,eq); } finally{ if(typeof fxPop==='function'&&eq) fxPop(_fxPrev); }
+}
+function _applyEquipCore(fc,eq){
   if(eq.id==='aquatic_hearth'){fc.currentHP+=5;fc.hpBonus+=5;log('Aquatic Hearth: +5 Defense (HP).','gain');}
   if(eq.id==='destroyers_gift'){fc.currentATK+=5;fc.atkBonus+=5;fc.currentHP+=12;fc.hpBonus+=12;log("+5ATK/+12HP!",'gain');}
   if(eq.id==='senzu_bean'){fc.currentHP=fc.baseHP+fc.hpBonus;fc.markedDamage=0;log('Senzu Bean: full HP!','gain');}
@@ -15328,6 +15602,7 @@ function abilityTapRule(fc, abl){
   return !((abl&&abl.cost)||0);
 }
 function activateAbility(fc,abl){
+  if(typeof fxCtx==='function') fxCtx(fc&&fc.cid, abl&&abl.label, fc&&fc.uid);
   const _pl=G&&G.players&&G.players[G.activePlayer]; const _prev=!!(_pl&&_pl.usedAbilityThisTurn); const _wasTapped=!!(fc&&fc.tapped);
   if(_pl) _pl.usedAbilityThisTurn=false;
   try{ return _activateAbilityCore(fc,abl); }
@@ -16881,7 +17156,7 @@ function runAbilityEffect(fc, abl, pl){
       btn.onclick=()=>{
         closeAllModals();
         const nc=DB[prev];
-        tf.cid=prev; tf.currentHP=nc.hp; tf.currentATK=nc.atk; tf.baseHP=nc.hp; tf.baseATK=nc.atk; tf.hpBonus=0; tf.atkBonus=0;
+        tf.cid=prev; tf.currentHP=nc.hp; tf.currentATK=nc.atk; tf.baseHP=nc.hp; tf.baseATK=nc.atk; tf.hpBonus=0; tf.atkBonus=0; tf.passiveAtk=0; tf.passiveHp=0; /* anthems re-apply to the reverted form */
         log(`Surfacer Ignition: reverted to ${nc.name}!`,'gain');
         renderAll();
       };
@@ -16923,6 +17198,7 @@ function getPrevForm(cid){
 // PHASES
 // ═══════════════════════════════════════════════════
 function endTurnNow(){
+  if(typeof fxCtx==='function') fxCtx(null,'Turn',null,{turn:true});
   if(G.gameOver)return;
   if(G.tutorialMode && _tutPlayMode!=='free' && _tutPendingAction!=='endturn'){ log("Follow Virora's step — she'll tell you when to end your turn.",'dmg'); return; }
   if(G.tutorialMode&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('endturn');
@@ -17185,6 +17461,7 @@ function applyStatus(fc,type,turns){
   if(!fc.statuses)fc.statuses={};
   if(fc.statuses[type]>0){ log(`${DB[fc.cid]?.name} is already ${STATUS_META[type].label}ed — it doesn't stack.`,'info'); return false; }
   fc.statuses[type]=turns||STATUS_META[type].dur;
+  try{ const _s=(typeof fxStatusSource==='function')?fxStatusSource():null; if(!fc.statusSrc||typeof fc.statusSrc!=='object') fc.statusSrc={}; fc.statusSrc[type]=_s; }catch(e){}
   const m=STATUS_META[type];
   if(typeof showStatusFx==='function')showStatusFx(fc.uid,type);
   log(`${m.icon} ${DB[fc.cid]?.name} is afflicted with ${m.label} (${fc.statuses[type]} turn${fc.statuses[type]>1?'s':''})!`,'dmg');
@@ -17192,13 +17469,13 @@ function applyStatus(fc,type,turns){
 }
 function cureStatus(fc,type){
   if(!fc||!fc.statuses||!fc.statuses[type])return false;
-  delete fc.statuses[type];
+  delete fc.statuses[type]; if(fc.statusSrc) delete fc.statusSrc[type];
   log(`${STATUS_META[type]?.icon||''} ${DB[fc.cid]?.name}'s ${STATUS_META[type]?.label||type} was cured.`,'gain');
   return true;
 }
 function cureAllStatuses(fc){
   if(!fc||!fc.statuses||!Object.keys(fc.statuses).length)return false;
-  fc.statuses={};
+  fc.statuses={}; fc.statusSrc={};
   log(`${DB[fc.cid]?.name} was cleansed of all status effects.`,'gain');
   return true;
 }
@@ -17232,7 +17509,7 @@ function tickFrostRunes(p){
         fc._frostRune.turns--;
         if(fc._frostRune.turns<=0){
           delete fc._frostRune;
-          if(typeof applyStatus==='function'){ applyStatus(fc,'freeze',(STATUS_META.freeze&&STATUS_META.freeze.dur)||1); if(typeof showStatusFx==='function')showStatusFx(fc.uid,'freeze'); }
+          if(typeof applyStatus==='function'){ const _fr=(typeof _fxResolve==='function')?_fxResolve('Frost Rune',null):null; const _fxp=(typeof fxPush==='function')?fxPush(_fr?_fr.cid:null,'Frost Rune',_fr?_fr.uid:null):null; applyStatus(fc,'freeze',(STATUS_META.freeze&&STATUS_META.freeze.dur)||1); if(typeof fxPop==='function') fxPop(_fxp); if(typeof showStatusFx==='function')showStatusFx(fc.uid,'freeze'); }
           log(`❄️ Frost Rune triggers — ${DB[fc.cid]?.name} is Frozen!`,'dmg');
         } else {
           log(`❄️ Frost Rune: ${DB[fc.cid]?.name} will freeze in ${fc._frostRune.turns} turn(s).`,'info');
@@ -17296,6 +17573,7 @@ function rollAttackStatuses(p, fc){
   return true;
 }
 function startTurnFx(player){
+  if(typeof fxCtx==='function') fxCtx(null,'Turn',null,{turn:true});
   if(typeof applyStatusDoT==='function') applyStatusDoT(player); // Burn/Poison chip at turn start
   const pl=G.players[player]; if(!pl) return;
   // ── SURFACER BINDING (The Surfacer Herald): if an OPPONENT has The Surfacer as
@@ -17370,6 +17648,7 @@ function startTurnFx(player){
 }
 
 function endTurnFx(p){
+  if(typeof fxCtx==='function') fxCtx(null,'Turn',null,{turn:true});
   const o=p===1?2:1;
   // SURFACE DEPLETION restore: the -2/-2 lasts "until end of turn" — give it back
   // to any surviving character at the end of the turn it was applied.
@@ -18572,6 +18851,7 @@ function renderHeraldSlot(p, targetId){
 
 
 function triggerHeraldFlipAbilities(p,cid){
+  if(typeof fxCtx==='function') fxCtx(cid, DB[cid]?.name, G.players[p]?.herald?.uid);
   const o=p===1?2:1;
   // Virora True Form: deal 10 to all opponent chars on flip
   if(cid==='virora_herald_final'){
@@ -20523,6 +20803,7 @@ function closeMobileCardSheet(){
 // ═══════════════════════════════════════════════════
 function showHoverPreview(cardId){
   const c=DB[cardId];
+  const _hfc=(window._hoverFc&&window._hoverFc.cid===cardId)?window._hoverFc:null; window._hoverFc=null;
   if(!c)return;
   // On mobile, route to the bottom sheet instead of the (hidden) right sidebar
   if(typeof isMobileView==='function' && isMobileView()){
@@ -20577,6 +20858,7 @@ function showHoverPreview(cardId){
     c.keywords.forEach(kw=>{ if(KEYWORDS[kw])html+='<span class="kw-badge '+KEYWORDS[kw].cls+'">'+KEYWORDS[kw].label+'</span>'; });
     html+='</div>';
   }
+  if(_hfc&&typeof fcHoverEffectsHtml==='function') try{ html+=fcHoverEffectsHtml(_hfc); }catch(e){}
   contentEl.innerHTML=html;
 }
 
@@ -20751,13 +21033,107 @@ function setHoloStyle(style){
 }
 
 
-function showFullCard(cid,fc,holoOverride){
+// ═══ CARD VIEW: attached cards + active effects (build 9.4) ═══
+// Clicking a character opens its card view. Attached cards are full, clickable tiles (tap → read
+// that card, "← Back" returns), and ACTIVE EFFECTS lists every buff, debuff, status and condition
+// on it with the card that causes it (tap the source to read that card too).
+let _fcStack=[], _fcCur=null;
+function fcBack(){ const prev=_fcStack.pop(); if(prev) showFullCard(prev.cid, prev.fc, undefined, 'back'); }
+function fcOpen(cid, uid){ const f=(uid!=null&&uid!==''&&typeof fxFindFc==='function')?fxFindFc(uid):null; showFullCard(cid, f||null, undefined, document.getElementById('fullcard-modal')?.classList.contains('open')?'push':undefined); }
+function _fcEsc(s){ return (typeof escapeHtml==='function'?escapeHtml:String)(s==null?'':s); }
+function _fcTypeWord(cid){ const d=DB[cid]; if(!d) return ''; return ({herald:'Herald',location:'Location',equipment:'Equipment',instant:'Instant',base_char:'Character',char:'Character',team:'Character',token:'Token'})[d.type]||''; }
+function _fcWhose(uid){
+  if(uid==null||typeof fxOwnerOf!=='function') return '';
+  const f=fxFindFc(uid); const o=f?fxOwnerOf(f):null; if(o==null) return '';
+  const me=(typeof localSeat==='function')?localSeat():1;
+  if(o===me) return 'your ';
+  if(G&&G.is2v2&&typeof teamOf==='function'&&teamOf(o)===teamOf(me)) return 'ally ';
+  return 'their ';
+}
+function _fcDelta(a,h){ return [a?((a>0?'+':'−')+Math.abs(a)+' ATK'):'',h?((h>0?'+':'−')+Math.abs(h)+' DEF'):''].filter(Boolean).join(' · '); }
+function fcAttachedPanel(wrap, fc){
+  const list=(fc&&fc.attachments||[]).filter(id=>DB[id]); if(!list.length) return;
+  const panel=document.createElement('div'); panel.className='attp';
+  panel.innerHTML='<div class="attp-h"><span>🛡 Attached Cards <em>'+list.length+'</em></span><span class="attp-hint">tap a card to read it</span></div>';
+  list.forEach(eqId=>{
+    const eq=DB[eqId]; const url=getImg(eqId); const col=(typeof COLOR_DEFS!=='undefined')&&COLOR_DEFS[eq.color];
+    const g=(typeof fxEquipGives==='function')?fxEquipGives(fc,eqId):{atk:0,hp:0};
+    const hexed=typeof isEquipHexed==='function'&&isEquipHexed(fc,eqId);
+    const gives=_fcDelta(g.atk,g.hp);
+    const row=document.createElement('button'); row.type='button'; row.className='attp-item'+(hexed?' hexed':'');
+    row.innerHTML='<span class="attp-art">'+(url?'<img src="'+url+'" alt="" loading="lazy">':_fcEsc(eq.sym||'?'))+'</span>'
+      +'<span class="attp-main"><span class="attp-name">'+_fcEsc(eq.name)+'</span>'
+      +'<span class="attp-meta">'+(col?'<i style="background:'+col.hex+'"></i>'+_fcEsc(col.label)+' · ':'')+_fcEsc(_fcTypeWord(eqId)||(eq.type||'').toUpperCase())+'</span>'
+      +(hexed?'<span class="attp-give neg">🪄 Negated by Equipment Hex — gives nothing right now</span>':(gives?'<span class="attp-give">Giving: <b>'+gives+'</b></span>':''))
+      +(eq.abilities||[]).map(a=>'<span class="attp-txt"><b>'+_fcEsc(a.label)+':</b> '+_fcEsc(a.text||'')+'</span>').join('')
+      +'</span><span class="attp-go">VIEW ›</span>';
+    row.onclick=(e)=>{ e.stopPropagation(); showFullCard(eqId,null,undefined,'push'); };
+    panel.appendChild(row);
+  });
+  wrap.appendChild(panel);
+}
+function fcEffectsPanel(wrap, fc, c){
+  const rows=(typeof fxEffectsOf==='function')?fxEffectsOf(fc):[];
+  if(!rows.length) return;
+  const panel=document.createElement('div'); panel.className='fxp';
+  let sum='';
+  if(c&&(isChar(c)||isHerald(c))){ const nowA=fc.currentATK||0, maxH=(fc.baseHP||0)+(fc.hpBonus||0)+(fc.passiveHp||0);
+    if(nowA!==(c.atk||0)||maxH!==(c.hp||0)) sum='<span class="fxp-sum">Printed <b>'+(c.atk||0)+' / '+(c.hp||0)+'</b> → now <b>'+nowA+' / '+maxH+'</b></span>'; }
+  panel.innerHTML='<div class="fxp-h"><span>✦ Active Effects</span>'+sum+'</div>';
+  rows.forEach(r=>{
+    const el=document.createElement(r.src?'button':'div'); if(r.src) el.type='button';
+    el.className='fxp-row '+r.kind+(r.src?' link':'');
+    const ico=r.icon||(r.kind==='up'?'▲':r.kind==='down'?'▼':'◆');
+    let srcHtml='';
+    if(r.src){ const img=getImg(r.src.cid); const tw=_fcTypeWord(r.src.cid);
+      srcHtml='from '+(img?'<img src="'+img+'" alt="">':'')+'<b>'+_fcEsc(DB[r.src.cid]?.name||'')+'</b>'+(tw?' <span class="fxp-tw">'+_fcWhose(r.src.uid)+tw+'</span>':''); }
+    const line=(srcHtml||r.dur)?'<span class="fxp-s">'+srcHtml+(r.dur?(srcHtml?' · ':'')+_fcEsc(r.dur):'')+'</span>':'';
+    el.innerHTML='<span class="fxp-ico"'+(r.color?' style="color:'+r.color+'"':'')+'>'+ico+'</span>'
+      +'<span class="fxp-main"><span class="fxp-t"><b>'+_fcEsc(r.title)+'</b>'+(r.delta?'<span class="fxp-d">'+_fcEsc(r.delta)+'</span>':'')+'</span>'
+      +(r.desc?'<span class="fxp-desc">'+_fcEsc(r.desc)+'</span>':'')+line+'</span>'
+      +(r.src?'<span class="fxp-go">›</span>':'');
+    if(r.src) el.onclick=(e)=>{ e.stopPropagation(); fcOpen(r.src.cid, r.src.uid); };
+    panel.appendChild(el);
+  });
+  wrap.appendChild(panel);
+}
+// Compact version for the desktop Card Info sidebar (hovering a card on the board).
+function fcHoverEffectsHtml(fc){
+  if(!fc) return '';
+  let h='';
+  const _c=DB[fc.cid];
+  if(_c&&(isChar(_c)||isHerald(_c))){ const mx=(fc.baseHP||0)+(fc.hpBonus||0)+(fc.passiveHp||0); h+='<div class="hvx-now">ON THE BOARD <b class="a">⚔ '+(fc.currentATK||0)+'</b> <b class="h">♥ '+(fc.currentHP||0)+' / '+mx+'</b></div>'; }
+  const att=(fc.attachments||[]).filter(id=>DB[id]);
+  if(att.length) h+='<div class="hvx-att">🛡 '+att.map(id=>'<a href="#" onclick="event.preventDefault();fcOpen(\''+id+'\',null)">'+_fcEsc(DB[id].name)+'</a>').join(', ')+'</div>';
+  const rows=(typeof fxEffectsOf==='function')?fxEffectsOf(fc):[];
+  if(rows.length){
+    h+='<div class="hvx"><div class="hvx-h">✦ ACTIVE EFFECTS</div>'+rows.map(r=>{
+      const ico=r.icon||(r.kind==='up'?'▲':r.kind==='down'?'▼':'◆');
+      return '<div class="hvx-r '+r.kind+'"><span class="hvx-i"'+(r.color?' style="color:'+r.color+'"':'')+'>'+ico+'</span><span><b>'+_fcEsc(r.title)+'</b>'+(r.delta?' '+_fcEsc(r.delta):'')+(r.src?' <i>· '+_fcEsc(DB[r.src.cid]?.name||'')+'</i>':'')+'</span></div>';
+    }).join('')+'<div class="hvx-tip">Click the card for details</div></div>';
+  }
+  return h;
+}
+
+function showFullCard(cid,fc,holoOverride,nav){
+  if(nav==='push'&&_fcCur) _fcStack.push(_fcCur); else if(nav!=='back') _fcStack=[];
+  _fcCur={cid,fc};
   // Clear any active hover state so the field card un-zooms behind the modal
   if(typeof clearHoverPreview==='function')clearHoverPreview();
   // Blur/remove focus so :hover doesn't keep the underlying card zoomed
   if(document.activeElement && document.activeElement.blur)document.activeElement.blur();
   const c=DB[cid];if(!c)return;
   const wrap=document.getElementById('fullcard-content');wrap.innerHTML='';
+  try{ const _m=document.querySelector('#fullcard-modal .modal'); if(_m) _m.scrollTop=0; }catch(e){}
+  if(_fcStack.length){ const pv=_fcStack[_fcStack.length-1]; const bb=document.createElement('button'); bb.type='button'; bb.className='fc-back'; bb.innerHTML='← Back to <b>'+_fcEsc(DB[pv.cid]?.name||'card')+'</b>'; bb.onclick=(e)=>{ e.stopPropagation(); fcBack(); }; wrap.appendChild(bb); }
+  // quick jump bar: this copy has attached cards / active effects — they're listed below the art
+  if(fc){ try{
+    const _na=(fc.attachments||[]).filter(id=>DB[id]).length, _nf=(typeof fxEffectsOf==='function')?fxEffectsOf(fc).length:0;
+    if(_na||_nf){ const jb=document.createElement('button'); jb.type='button'; jb.className='fc-jump';
+      jb.innerHTML=(_na?'<span>🛡 <b>'+_na+'</b> attached card'+(_na>1?'s':'')+'</span>':'')+(_nf?'<span>✦ <b>'+_nf+'</b> active effect'+(_nf>1?'s':'')+'</span>':'')+'<i>see below ↓</i>';
+      jb.onclick=(e)=>{ e.stopPropagation(); const t=wrap.querySelector('.attp')||wrap.querySelector('.fxp'); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); };
+      wrap.appendChild(jb); }
+  }catch(e){} }
   const imgWrap=document.createElement('div');imgWrap.className='fullcard-img-wrap';
   const url=getImg(cid);if(url){const img=document.createElement('img');img.src=url;imgWrap.appendChild(img);}else{imgWrap.style.height='80px';imgWrap.textContent=c.sym||'?';}
   wrap.appendChild(imgWrap);
@@ -20796,7 +21172,7 @@ function showFullCard(cid,fc,holoOverride){
     wrap.appendChild(holoPicker);
   }
   if(fc&&isChar(c)){
-    const maxHP=fc.baseHP+fc.hpBonus;const pct=Math.max(0,Math.min(100,fc.currentHP/maxHP*100));const hpCol=pct>60?'#22c55e':pct>30?'#f59e0b':'#ef4444';
+    const maxHP=fc.baseHP+fc.hpBonus+(fc.passiveHp||0);const pct=Math.max(0,Math.min(100,fc.currentHP/maxHP*100));const hpCol=pct>60?'#22c55e':pct>30?'#f59e0b':'#ef4444';
     const sd=document.createElement('div');
     sd.innerHTML=`<div class="fullcard-stat-row">
       <div class="fullcard-stat"><div class="fullcard-stat-val" style="color:#fbbf24">${fc.currentATK}</div><div class="fullcard-stat-lbl">ATK</div></div>
@@ -20804,25 +21180,15 @@ function showFullCard(cid,fc,holoOverride){
       <div class="fullcard-stat"><div class="fullcard-stat-val" style="color:#a78bfa">${c.cost}</div><div class="fullcard-stat-lbl">COST</div></div>
     </div>
     <div style="width:100%;height:5px;background:#1e293b;border-radius:3px;margin-bottom:7px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${hpCol};border-radius:3px"></div></div>
-    ${(()=>{const st=(fc&&fc.statuses)||{};const rows=Object.keys(STATUS_META).filter(t=>st[t]>0).map(t=>{const m=STATUS_META[t];return `<div style="color:${m.color};font-size:11px;margin-bottom:3px">${m.icon} ${m.label} — ${st[t]} turn${st[t]>1?'s':''} left</div>`;}).join('');return rows;})()}`;
+`;
     wrap.appendChild(sd);
-    // ATTACHED CARDS PANEL
-    if(fc.attachments&&fc.attachments.length>0){
-      const panel=document.createElement('div');panel.className='attached-panel';
-      panel.innerHTML='<h4>🛡 Attached Cards</h4>';
-      fc.attachments.forEach(eqId=>{
-        const eq=DB[eqId];if(!eq)return;
-        const row=document.createElement('div');row.className='attached-item';
-        const url2=getImg(eqId);
-        row.innerHTML=`<div style="width:26px;height:36px;background:#1e1e3a;border-radius:4px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px">${url2?`<img src="${url2}" style="width:100%;height:100%;object-fit:cover"/>`:(eq.sym||'?')}</div>
-          <div><div style="font-size:11px;font-weight:700;color:#fcd34d">${eq.name}</div><div style="font-size:10px;color:#9ca3af">${eq.abilities[0]?.text?.slice(0,60)||''}…</div></div>`;
-        panel.appendChild(row);
-      });
-      wrap.appendChild(panel);
-    }
+    // ATTACHED CARDS (tap to read) + ACTIVE EFFECTS (with sources)
+    fcAttachedPanel(wrap, fc);
+    fcEffectsPanel(wrap, fc, c);
   } else if(isLoc(c)&&fc){
     const sd=document.createElement('div');sd.innerHTML=`<div class="fullcard-stat-row"><div class="fullcard-stat"><div class="fullcard-stat-val" style="color:#34d399">${fc.currentHP}</div><div class="fullcard-stat-lbl">TOUGHNESS</div></div></div>`;
     wrap.appendChild(sd);
+    fcEffectsPanel(wrap, fc, c);
   } else if(c.atk>0){
     const sd=document.createElement('div');
     sd.innerHTML=`<div class="fullcard-stat-row">
@@ -20831,6 +21197,7 @@ function showFullCard(cid,fc,holoOverride){
       <div class="fullcard-stat"><div class="fullcard-stat-val" style="color:#a78bfa">${c.cost}</div><div class="fullcard-stat-lbl">COST</div></div>
     </div>`;wrap.appendChild(sd);
   }
+  if(fc&&!isChar(c)&&!isLoc(c)){ fcAttachedPanel(wrap, fc); fcEffectsPanel(wrap, fc, c); }
   if(c.abilities&&c.abilities.length){
     const tmap={passive:'passive',triggered:'triggered',activated:'activated'};
     const tlbl={passive:'PASSIVE',triggered:'TRIGGERED',activated:'ACTIVATED'};
@@ -20860,7 +21227,7 @@ function showFullCard(cid,fc,holoOverride){
   }
   document.getElementById('fullcard-modal').classList.add('open');
 }
-function closeFullCard(){document.getElementById('fullcard-modal').classList.remove('open');}
+function closeFullCard(){ _fcStack=[]; _fcCur=null; document.getElementById('fullcard-modal').classList.remove('open');}
 
 // ═══════════════════════════════════════════════════
 // DISCARD VIEWER
@@ -21077,6 +21444,7 @@ function renderAll(){
   if(G&&!G._aiTurn&&G._aiAuto) G._aiAuto=false;
   if(typeof registryScanBoard==='function') try{ registryScanBoard(); }catch(e){}
   if(!G||!G.players)return;
+  if(typeof fxObserve==='function') try{ fxObserve(null); }catch(e){}
   if(typeof syncAdminTester==='function') syncAdminTester();
   if(typeof tutorialWatch==='function') tutorialWatch();
   if(G.is2v2){ renderAll2v2(); return; }
@@ -21271,7 +21639,7 @@ function renderV2HandFor(hp){
     // Only the active board's cards are clickable to play; both right-click to zoom.
     if(isActive) div.onclick=()=>onHandClick(hp,fc.uid,fc);
     div.oncontextmenu=e=>{e.preventDefault();showFullCard(fc.cid,null);};
-    div.onmouseenter=()=>showHoverPreview(fc.cid);
+    div.onmouseenter=()=>{ window._hoverFc=fc; showHoverPreview(fc.cid); };
     div.onmouseleave=()=>clearHoverPreview();
     el.appendChild(div);
   });
@@ -21354,16 +21722,17 @@ function renderField(p, targetId){
       if(_oppGuardian&&!hasKW(fc,'guardian')){}
       else div.classList.add('targetable');
     }
-    const maxHP=fc.baseHP+fc.hpBonus;const pct=Math.max(0,Math.min(100,fc.currentHP/maxHP*100));const hpCol=pct>60?'#22c55e':pct>30?'#f59e0b':'#ef4444';
+    const maxHP=fc.baseHP+fc.hpBonus+(fc.passiveHp||0);const pct=Math.max(0,Math.min(100,fc.currentHP/maxHP*100));const hpCol=pct>60?'#22c55e':pct>30?'#f59e0b':'#ef4444';
+    const _net=(typeof fxNet==='function')?fxNet(fc):{a:0,h:0};
     div.appendChild(makeArtEl(fc.cid,108,fc));
     const info=document.createElement('div');info.className='card-info field-card-info';
     info.innerHTML=`<div class="card-name-sm">${c.name}</div>
-      <div class="card-stats-row"><span class="stat-atk">⚔${fc.currentATK}</span><span style="color:${hpCol};font-weight:700">♥${fc.currentHP}</span></div>
+      <div class="card-stats-row"><span class="stat-atk${_net.a>0?' fx-buffed':_net.a<0?' fx-debuffed':''}">⚔${fc.currentATK}</span><span style="color:${hpCol};font-weight:700">♥${fc.currentHP}</span></div>
       <div class="hp-bar-wrap"><div class="hp-bar-fill" style="width:${pct}%;background:${hpCol}"></div></div>
-      ${(()=>{const st=fc.statuses||{};const si=Object.keys(STATUS_META).filter(t=>st[t]>0).map(t=>STATUS_META[t].icon).join('');const ex=`${fc.attachments&&fc.attachments.length?'🛡':''}${c.isToken?'⭐':''}`;return (si||ex)?`<div class="status-icons">${si}${ex}</div>`:'';})()}`;
+      ${(()=>{const st=fc.statuses||{};const si=Object.keys(STATUS_META).filter(t=>st[t]>0).map(t=>STATUS_META[t].icon).join('');const fx=((_net.a>0||_net.h>0)?'<b class="fx-up" title="Buffed — click the card to see why">▲</b>':'')+((_net.a<0||_net.h<0)?'<b class="fx-dn" title="Weakened — click the card to see why">▼</b>':'');const ex=`${fc.attachments&&fc.attachments.length?'🛡':''}${c.isToken?'⭐':''}`;return (si||ex||fx)?`<div class="status-icons">${fx}${si}${ex}</div>`:'';})()}`;
     div.appendChild(info);
     div.onclick=()=>onFieldClick(p,fc.uid,fc);
-    div.onmouseenter=()=>showHoverPreview(fc.cid);
+    div.onmouseenter=()=>{ window._hoverFc=fc; showHoverPreview(fc.cid); };
     div.onmouseleave=()=>clearHoverPreview();
     el.appendChild(div);
   });
@@ -21387,7 +21756,7 @@ function renderLocZone(p, targetId){
       <div class="hp-bar-wrap"><div class="hp-bar-fill" style="width:${pct}%;background:${hpCol}"></div></div>`;
     div.appendChild(info);
     div.onclick=()=>onFieldClick(p,fc.uid,fc);
-    div.onmouseenter=()=>showHoverPreview(fc.cid);
+    div.onmouseenter=()=>{ window._hoverFc=fc; showHoverPreview(fc.cid); };
     div.onmouseleave=()=>clearHoverPreview();
     el.appendChild(div);
   });
@@ -21462,7 +21831,7 @@ function renderHand(){
     div.dataset.cid=fc.cid; div.dataset.uid=fc.uid;
     div.onclick=()=>onHandClick(handP,fc.uid,fc);
     div.oncontextmenu=e=>{e.preventDefault();showFullCard(fc.cid,null);};
-    div.onmouseenter=()=>showHoverPreview(fc.cid);
+    div.onmouseenter=()=>{ window._hoverFc=fc; showHoverPreview(fc.cid); };
     div.onmouseleave=()=>clearHoverPreview();
     el.appendChild(div);
   });
@@ -21625,7 +21994,7 @@ function pname(p){
   return 'Player '+p;
 }
 
-function log(m,t=''){G.log.push({m,t});renderLog();}
+function log(m,t=''){ if(typeof fxObserve==='function'){ try{ fxObserve(m); }catch(e){} } G.log.push({m,t});renderLog();}
 
 // ═══════════════════════════════════════════════════
 // MODAL / SCREEN HELPERS
@@ -24041,6 +24410,7 @@ function buildTutorialSteps(){
     {target:()=>TS.mine(V), text:"That's deck-building in one move: pick cards whose <b>subtypes and effects feed each other</b>. And a Royal Saiyan is still a <b>Saiyan</b> — any card that boosts Saiyans boosts me too. This card just picks one tier or the other."},
     {target:()=>TS.hand('void_crystal_bse'), act:'equip', allow:'void_crystal_bse', tgt:V, doHint:'Play Void Crystal → equip Virora', text:"<b>Equipment</b> attaches to one of your characters and stays — even through transformations. Play <b>Void Crystal</b> on me: <b>+2/+2</b>."},
     {target:()=>TS.mine(V), text:"<b>8 ATK / 10 DEF.</b> Void Crystal is <em>Black</em> — off-color cards work fine, they just draw from your shared pool. (Its Soul Find returns a fallen character from your discard — none yet.)"},
+    {target:()=>TS.mine(V), text:"Tip: <b>click any character</b> — yours or theirs — to inspect it. You'll see its <b>attached cards</b> (tap one to read it) and every <b>active effect</b> on it, with the card causing it. Try me: Royal Meeting and Void Crystal are both at work. A green <b>▲</b> on the board means buffed, a red <b>▼</b> means weakened."},
     {target:'#ph-attack', act:'attack_phase', doHint:'Tap ATTACK', text:"Time to fight. Enter the <b>Attack phase</b>."},
     {target:()=>[TS.mine(V),TS.foe('female_saiyan_citizen_bse')], act:'attack', attacker:V, foe:'female_saiyan_citizen_bse', doHint:'Tap Virora → tap their Citizen', text:"Only <b>one character attacks per turn</b>. Tap <b>me</b>, then their <b>Saiyan Citizen</b>. (Leave the Warrior — I want to show you something on their turn.)"},
     {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=1&&!_tutPicking(), doHint:'Pick a glowing Prize', waitBefore:()=>_tutPicking()||_tutPrizesTaken()>=1, text:"Destroyed — and a destroyed defender <b>can't hit back</b>. Claim your reward: pick any glowing <b>Prize</b>. Claiming is mandatory before your turn can end."},
