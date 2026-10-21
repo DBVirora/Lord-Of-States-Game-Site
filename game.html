@@ -5912,6 +5912,11 @@ textarea{
 #coin-toss .ct-tails{ background:radial-gradient(circle at 35% 30%,#ffe9a8,#d9a93f 55%,#8a6218); color:#4a3308; transform:rotateX(180deg); }
 #coin-toss .ct-face .ct-ico{ font-size:40px; line-height:1; margin-bottom:2px; filter:drop-shadow(0 1px 0 rgba(255,255,255,.4)); }
 #coin-toss .ct-face .ct-lbl{ font-size:11px; }
+#coin-toss .ct-coin{ width:140px; height:140px; }
+#coin-toss .ct-face .ct-art{ position:absolute; inset:-2%; width:104%; height:104%; object-fit:contain; filter:drop-shadow(0 3px 6px rgba(0,0,0,.55)); }
+#coin-toss .ct-face:has(.ct-art){ background:none; border:0; box-shadow:none; }
+#coin-toss .ct-face:has(.ct-art) .ct-ico, #coin-toss .ct-face:has(.ct-art) .ct-lbl{ display:none; }
+#coin-toss .ct-btn img{ width:22px; height:22px; vertical-align:-6px; margin-right:6px; filter:drop-shadow(0 1px 2px rgba(0,0,0,.5)); }
 #coin-toss .ct-btns{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
 #coin-toss .ct-btn{ font-family:'Cinzel',serif; font-weight:700; letter-spacing:3px; font-size:13px; padding:12px 26px; border-radius:12px; cursor:pointer; border:1px solid rgba(200,164,74,.55); background:linear-gradient(180deg,rgba(60,44,20,.9),rgba(30,22,10,.95)); color:#f3dfa0; transition:transform .15s, box-shadow .15s; min-width:150px; }
 #coin-toss .ct-btn:hover{ transform:translateY(-2px); box-shadow:0 8px 24px rgba(232,197,112,.25); }
@@ -6585,6 +6590,76 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 .gc-suggest div{padding:6px 10px;font-size:11px;cursor:pointer;color:#d6d0f0}
 .gc-suggest div:hover{background:rgba(232,197,112,.1)}
 
+/* ═══ COIN & DICE (build 9.0) ═══ */
+.roll-ov{position:fixed;inset:0;z-index:10500;display:none;align-items:center;justify-content:center;padding:16px;background:radial-gradient(ellipse at center,rgba(20,12,40,.55),rgba(3,2,10,.82));backdrop-filter:blur(3px)}
+.roll-ov.open{display:flex;animation:rollFade .18s ease}
+@keyframes rollFade{from{opacity:0}to{opacity:1}}
+.roll-card{width:min(340px,100%);box-sizing:border-box;text-align:center;padding:18px 20px 14px;border-radius:16px;position:relative;
+  background:linear-gradient(180deg,#171030,#0c0820) padding-box,linear-gradient(160deg,#e8c570,#6b4fb0 45%,#c9a24a) border-box;border:1.5px solid transparent;
+  box-shadow:0 18px 50px rgba(0,0,0,.65),0 0 30px rgba(200,164,74,.18);animation:rollRise .28s cubic-bezier(.2,.9,.3,1.15)}
+@keyframes rollRise{from{transform:translateY(14px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+.roll-kicker{display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:3px;color:#9d93c4}
+.roll-who{padding:2px 8px;border-radius:10px;border:1px solid #3a2a6a;color:#c4b5fd;letter-spacing:2px}
+.roll-title{font-family:'Cinzel',serif;font-weight:700;font-size:19px;letter-spacing:1.5px;color:#f0d58a;margin:6px 0 2px;line-height:1.2}
+.roll-desc{font-size:11px;line-height:1.45;color:#a9a0cc;max-width:290px;margin:0 auto;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.roll-stage{height:150px;display:flex;align-items:center;justify-content:center;gap:12px;perspective:900px;margin:6px 0 2px}
+.roll-result{font-family:'Cinzel',serif;font-size:13px;color:#d6d0f0;min-height:30px;letter-spacing:1px;opacity:0;transform:translateY(4px);transition:opacity .25s,transform .25s}
+.roll-result.show{opacity:1;transform:none}
+.roll-result b{font-size:24px;letter-spacing:4px;font-weight:700}
+.roll-result b.h{color:#f5d77a;text-shadow:0 0 14px rgba(245,215,122,.55)}
+.roll-result b.t{color:#e4e6f0;text-shadow:0 0 14px rgba(220,224,240,.45)}
+.roll-result .sub{font-size:11px;color:#9d93c4;margin-left:6px}
+.roll-btn{margin-top:8px;width:100%;padding:10px;border-radius:10px;border:1px solid #c9a24a;background:linear-gradient(180deg,#f0d58a,#c9a24a);color:#1a1030;font-family:'Cinzel',serif;font-weight:700;letter-spacing:3px;font-size:12px;cursor:pointer;box-shadow:0 0 14px rgba(232,197,112,.35)}
+.roll-btn:hover{filter:brightness(1.08)}
+.roll-timer{height:2px;margin-top:8px;border-radius:2px;background:rgba(255,255,255,.06);overflow:hidden}.roll-timer i{display:block;height:100%;width:0;background:linear-gradient(90deg,#c9a24a,#f0d58a)}
+/* coin */
+.lc-coin{--sz:132px;--end:1800deg;width:var(--sz);height:var(--sz);position:relative}
+.lc-coin.sm{--sz:84px}.lc-coin.xs{--sz:40px}
+.lc-spin{position:absolute;inset:0;transform-style:preserve-3d}
+.lc-coin.go{animation:lcArc 1.3s cubic-bezier(.3,.55,.35,1) both}
+.lc-coin.go .lc-spin{animation:lcSpin 1.3s cubic-bezier(.2,.65,.25,1) both}
+.lc-coin.go.fast,.lc-coin.go.fast .lc-spin{animation-duration:1s}
+@keyframes lcSpin{from{transform:rotateY(0)}to{transform:rotateY(var(--end))}}
+@keyframes lcArc{0%{transform:translateY(0) scale(1)}45%{transform:translateY(-26px) scale(1.08)}80%{transform:translateY(2px) scale(.99)}100%{transform:none}}
+.lc-face{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 35% 30%,#f4f4f8,#9a9aa8 60%,#4a4a58);color:#2a2a38;font-family:'Cinzel',serif;font-weight:700;font-size:calc(var(--sz)*.12);letter-spacing:2px}
+.lc-face img{position:absolute;inset:-2%;width:104%;height:104%;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
+.lc-face span{position:relative;z-index:-1}
+.lc-face:has(img) {background:none}
+.lc-t{transform:rotateY(180deg)}
+.lc-shadow{position:absolute;left:18%;right:18%;bottom:-12%;height:10%;border-radius:50%;background:radial-gradient(rgba(0,0,0,.55),transparent 70%);filter:blur(2px)}
+.lc-coin.xs .lc-shadow{display:none}
+/* dice */
+.lc-die{width:74px;height:74px;position:relative;border-radius:16px;background:linear-gradient(145deg,#2d2158,#130d2b);border:2px solid #c9a24a;box-shadow:0 8px 18px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.12),0 0 16px rgba(200,164,74,.25);display:flex;align-items:center;justify-content:center}
+.roll-stage.dice:has(.lc-diewrap:nth-child(3)) .lc-die{width:62px;height:62px}
+.lc-die.go{animation:lcTumble .5s linear infinite}
+.lc-die.done{animation:lcLand .35s cubic-bezier(.2,.9,.3,1.3);border-color:#f5d77a;box-shadow:0 8px 18px rgba(0,0,0,.5),0 0 22px rgba(245,215,122,.45)}
+@keyframes lcTumble{0%{transform:rotate(0) translateY(0)}25%{transform:rotate(90deg) translateY(-8px)}50%{transform:rotate(180deg) translateY(0)}75%{transform:rotate(270deg) translateY(-6px)}100%{transform:rotate(360deg) translateY(0)}}
+@keyframes lcLand{from{transform:scale(1.18)}to{transform:none}}
+.lc-die-face{width:76%;height:76%;display:flex;align-items:center;justify-content:center}
+.lc-pips{width:100%;height:100%;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);gap:2px}
+.lc-pips i{border-radius:50%;margin:16%;background:transparent}
+.lc-pips i.on{background:radial-gradient(circle at 35% 30%,#fff3c4,#e8c570 60%,#9c7a2c);box-shadow:0 0 6px rgba(245,215,122,.6)}
+.lc-num{font-family:'Cinzel',serif;font-size:30px;color:#f5d77a}
+.lc-diewrap{display:flex;flex-direction:column;align-items:center;gap:8px}
+.lc-die-tag{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:#6b6b8a}
+/* quick toast (instant coin effects) */
+#roll-toasts{position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:10400;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:min(420px,calc(100vw - 24px))}
+.roll-toast{display:flex;align-items:center;gap:12px;padding:8px 14px 8px 10px;border-radius:40px;width:100%;box-sizing:border-box;
+  background:linear-gradient(90deg,rgba(23,16,48,.96),rgba(12,8,32,.96)) padding-box,linear-gradient(90deg,#e8c570,#6b4fb0 60%,#c9a24a) border-box;border:1px solid transparent;
+  box-shadow:0 10px 26px rgba(0,0,0,.55);animation:rtIn .25s cubic-bezier(.2,.9,.3,1.2);transition:opacity .35s,transform .35s}
+.roll-toast.out{opacity:0;transform:translateY(-8px)}
+@keyframes rtIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+.rt-coins{display:flex;gap:4px;flex:none}
+.rt-txt{min-width:0;flex:1}
+.rt-title{font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:#f0d58a;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rt-who{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:2px;color:#c4b5fd;border:1px solid #3a2a6a;border-radius:8px;padding:1px 6px;margin-left:4px;vertical-align:middle}
+.rt-res{font-family:'Share Tech Mono',monospace;font-size:11px;color:#9d93c4;letter-spacing:1px;margin-top:2px}
+.rt-res b{font-family:'Cinzel',serif;letter-spacing:2px}.rt-res b.h{color:#f5d77a}.rt-res b.t{color:#e4e6f0}
+.rt-desc{color:#a9a0cc}
+@media (max-width:600px){ .roll-stage{height:128px} .lc-coin{--sz:112px} .lc-coin.sm{--sz:72px} .lc-coin.xs{--sz:36px} .roll-title{font-size:17px} #roll-toasts{top:56px} }
+@media (prefers-reduced-motion:reduce){ .lc-coin.go,.lc-coin.go .lc-spin{animation-duration:.01s} .lc-die.go{animation:none} }
+
 /* codes upgrade (8.9) */
 .gc-code{border:1px solid #2d2d4e;border-radius:10px;background:#140f2a;padding:10px 12px;margin-bottom:8px;display:flex;flex-direction:column;gap:5px}
 .gc-code.editing{border-color:#e8c570;box-shadow:0 0 12px rgba(232,197,112,.25)}
@@ -6650,7 +6725,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 <body>
 
 <!-- AUTH HUD -->
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 8.9 · codes</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 9.0 · coins</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -7547,16 +7622,6 @@ body.he-shake{ animation:he-shake .45s linear 1; }
     <button class="btn-primary" style="width:100%;margin-top:14px;padding:12px;font-size:13px" onclick="closeFullCard()">↩ Return</button>
   </div>
 </div>
-<!-- Animated ability roll overlay (dice/coin) -->
-<div class="modal-overlay" id="ability-roll-overlay">
-  <div class="modal" style="text-align:center;max-width:300px">
-    <h2 id="ability-roll-title" style="font-size:16px;color:#e8c570">Rolling...</h2>
-    <div id="ability-roll-desc" style="font-size:11px;color:#9ca3af;margin-bottom:10px"></div>
-    <div id="ability-roll-dice" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0;min-height:64px;align-items:center"></div>
-    <div id="ability-roll-result" style="font-size:15px;font-weight:700;color:#c8a0ff;min-height:24px"></div>
-    <button class="btn-primary" id="ability-roll-done" style="width:100%;margin-top:14px;display:none" onclick="closeAbilityRoll()">Continue</button>
-  </div>
-</div>
 <div class="modal-overlay" id="coin-modal">
   <div class="modal" style="text-align:center;max-width:200px">
     <h2>Coin Flip</h2>
@@ -7589,8 +7654,8 @@ body.he-shake{ animation:he-shake .45s linear 1; }
     <div class="ct-sub" id="ct-sub"></div>
     <div class="ct-stage">
       <div class="ct-coin idle" id="ct-coin">
-        <div class="ct-face ct-heads"><div class="ct-ico">👑</div><div class="ct-lbl">HEADS</div></div>
-        <div class="ct-face ct-tails"><div class="ct-ico">⚔️</div><div class="ct-lbl">TAILS</div></div>
+        <div class="ct-face ct-heads"><img class="ct-art" src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/ASSETS/Coins/Heads.png" alt="Heads" draggable="false" onerror="this.remove()"><div class="ct-ico">👑</div><div class="ct-lbl">HEADS</div></div>
+        <div class="ct-face ct-tails"><img class="ct-art" src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/ASSETS/Coins/Tails.png" alt="Tails" draggable="false" onerror="this.remove()"><div class="ct-ico">⚔️</div><div class="ct-lbl">TAILS</div></div>
       </div>
     </div>
     <div class="ct-btns" id="ct-btns"></div>
@@ -7631,8 +7696,16 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='8.9'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='9.0'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'9.0', date:'2026-10-21', cards:[],
+    abilities:['Every coin/dice ability now shows on screen. Blocking rolls (flipCoinFor/rollDiceFor/showCoinFlip) go through ONE queue: your rolls → animate then CONTINUE (auto after 6s); AI/opponent rolls → animate, show result, auto-close after 1.5s. The AI scheduler waits while a roll is on screen. Previously closeAllModals() wiped the roll popup and the callback never fired (AI effects were lost).',
+               'Instant coin effects now flip with a non-blocking toast (coinShow/coinsShow): Primal Strike, Godly Reflexes, Godly Movement, Evolved State, Demolition, Rival Synergy, Energy Fracture, Blistering Blast, Healing Hands, Full Moon Awakening, Sorcery\'s Flash Break (3 coins), Saiyan God Healing, Paralyzed/Confused attack checks',
+               'Volaris (Prism): Energy Fracture and Prism Shift now work for whichever seat owns Volaris (were hard-wired to player 1); AI auto-picks the Prism Shift target'],
+    screens:['Battle Card Info preview is now STICKY: leaving a card no longer clears it — the last hovered card stays until another card is hovered (matches the PC build); reset only at match start',
+             'New roll panel #roll-ov (not a .modal-overlay): kicker COIN FLIP / DICE ROLL · dN + who (YOU/AI/opponent), title, desc, 3D coin or tumbling pip dice, result, gold CONTINUE + timer bar',
+             'Coin art from Scans repo ASSETS/Coins/Heads.png (gorilla) + Tails.png (star) — used for ability flips, toasts and the match-start coin toss (+ call buttons)'],
+    data:['COIN_IMG = {heads, tails} URLs; online: roll_show game_action mirrors the roller\'s coin/dice to the opponent'] },
   { build:'8.9', date:'2026-10-20', cards:[], abilities:[],
     screens:['Gift Center → Codes: create OR edit codes; start + end date/time (datetime-local), quick "lasts" buttons (24h/3d/1w/2w/30d/90d season/no limit), event/season name, who-can-claim (everyone / new players ≤N days / longtime players ≥N days), max claims, ★ featured toggle, popup, rewards builder; list shows status LIVE/SCHEDULED/EXPIRED/FULL/OFF, window + time left, audience, EDIT, COPY CODE, COPY POST (ready-made Discord/Instagram text), TURN OFF/ON, delete (warns)',
              'Mailbox → Redeem Code: "★ LIVE CODES" list of featured codes (event, code, time left, rewards, audience) with a CLAIM button / CLAIMED; unclaimed eligible featured codes add to the ✉ badge and put a pink dot on the Redeem tab; toast when a new featured code goes live'],
@@ -9219,6 +9292,7 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random
 
 function startGame(mode,deck1,deck2,foils1,foils2){
   if(typeof loadGameSettings==="function")loadGameSettings();
+  try{ clearHoverPreview(true); }catch(e){}
   gameMode=mode;us=0;
   // Per-copy finish pools (built from the original deck order before shuffle/herald strip).
   const _fp1=buildFoilPool(deck1,foils1), _fp2=buildFoilPool(deck2,foils2);
@@ -9369,6 +9443,7 @@ function triggerWin2v2(winningTeam, reason){
 // Build a 4-player game. decks = [dA1, dB1, dA2, dB2] (turn-order order).
 function startGame2v2(mode, decks, seatNames, teamLife, humanSeats){
   if(typeof loadGameSettings==="function")loadGameSettings();
+  try{ clearHoverPreview(true); }catch(e){}
   gameMode=mode; us=0;
   const startLife=(teamLife&&teamLife>0)?Math.round(teamLife):TEAM_START_LIFE;
   // Which seats a human controls. Default A1+A2 (hotseat); pass [1] for an AI teammate.
@@ -11618,19 +11693,19 @@ function resolveAttack(ap,auid,dp,duid){
   //    Generic (label-based) so any future card with the same ability text reuses it.
   let _primalBonus=0;
   if(hasAbilityLabel(afc,'Primal Strike')){
-    const _ph=coin();
+    const _ph=coinShow('Primal Strike','Heads = +3 damage');
     if(_ph){ _primalBonus=3; log('Primal Strike: HEADS — this attack does +3 damage!','gain'); }
     else { log('Primal Strike: TAILS — no bonus.','info'); }
   }
   const atkDmg=afc.currentATK+(afc.nextAttackBonus||0)+_primalBonus;
   log(`⚔ ${ac.name}(${atkDmg}) → ${dc.name}(${dfc.currentHP}HP)`,'info');
   // Pre-combat ability triggers
-  if(dfc.cid==='virora_ssg'){const h=coin();log(`Godly Reflexes: ${!h?'dodge! (tails)':'hit! (heads)'}`,!h?'gain':'dmg');if(!h){renderAll();return;}}
+  if(dfc.cid==='virora_ssg'){const h=coinShow('Godly Reflexes','Tails = dodged');log(`Godly Reflexes: ${!h?'dodge! (tails)':'hit! (heads)'}`,!h?'gain':'dmg');if(!h){renderAll();return;}}
   // GODLY MOVEMENT (Tyler SSG): the attacker flips a coin — heads = 0 damage to Tyler.
-  if(hasAbilityLabel(dfc,'Godly Movement')){const h=coin();log(`Godly Movement: ${h?'blocked! (heads)':'hit! (tails)'}`,h?'gain':'dmg');if(h){renderAll();return;}}
+  if(hasAbilityLabel(dfc,'Godly Movement')){const h=coinShow('Godly Movement','Heads = blocked');log(`Godly Movement: ${h?'blocked! (heads)':'hit! (tails)'}`,h?'gain':'dmg');if(h){renderAll();return;}}
   // Evolved State (Virora SSBE): flip coin when attacked — heads = attacker's next attack -4 dmg
   if(dfc.cid==='virora_ssbe'){
-    const h=coin();
+    const h=coinShow('Evolved State','Heads = attacker -4 next attack');
     if(h){ afc.nextAttackBonus=(afc.nextAttackBonus||0)-4; log('Evolved State: HEADS — attacker\'s next attack -4 damage!','gain'); }
     else { log('Evolved State: TAILS — no effect.','dmg'); }
   }
@@ -12129,7 +12204,7 @@ function onEntry(p,fc){
   // ── AOLIATH (base): Demolition — on entry, flip a coin. Tails → this character
   // can attack Location cards for the rest of its time in play.
   if(c.id==='aoliath_base_bse'){
-    if(!coin()){
+    if(!coinShow('Demolition','Tails = can attack Locations')){
       fc.canAttackLocations=true;
       log('Demolition: TAILS — Aoliath can now attack Location cards until discarded!','gain');
     } else {
@@ -12199,7 +12274,7 @@ function onEntry(p,fc){
   if(c.id==='goku_ue'){
     const rival=G.players[p].field.some(f=>{const d=DB[f.cid];return d&&f.uid!==fc.uid&&(/goku/i.test(d.charName||'')||/vegeta/i.test(d.charName||''));});
     if(rival){
-      const h=coin();
+      const h=coinShow('Rival Synergy','Heads = paralyze an enemy');
       if(h){
         const enemy=G.players[p===1?2:1].field.filter(f=>isChar(DB[f.cid]));
         if(enemy.length){ const tgt=enemy[0]; applyStatus(tgt,'paralyze',2); }
@@ -12509,10 +12584,12 @@ function openTransformModal(){
 // ═══════════════════════════════════════════════════
 // Prism Shift — once per game, transform a friendly char into its next form free.
 // That transformation gets +2/+2 immediately.
+// Which board owns this Volaris (any seat — the AI can run Volaris too).
+function _volarisOwner(uid){ return [1,2,3,4].find(pp=>G.players[pp]&&G.players[pp].field&&G.players[pp].field.some(f=>f.uid===uid))||G.activePlayer||1; }
 function volarisPrismShift(volarisUid){
   if(!G||!G.players)return;
   // Resolve the board that owns this Volaris (A1/A2 in 2v2, else player 1).
-  const owner=(typeof ownerOfCard==='function'&&G.is2v2)?(ownerOfCard(volarisUid)||1):1;
+  const owner=_volarisOwner(volarisUid);
   const pl=G.players[owner];
   const volaris=pl.field.find(f=>f.uid===volarisUid);
   if(!volaris||DB[volaris.cid]?.id!=='volaris_prism'){log('Volaris (Prism) not on field.','dmg');return;}
@@ -12525,6 +12602,8 @@ function volarisPrismShift(volarisUid){
     return c && (c.type==='base_char'||c.type==='char') && Array.isArray(c.transforms) && c.transforms.length>0;
   });
   if(candidates.length===0){log('No transformable characters on your field.','dmg');return;}
+  // AI: pick the candidate whose next form gains the most, no picker.
+  if(G._aiAuto||!isHumanPlayer(owner)){ const best=candidates.map(f=>({f,n:DB[f.cid].transforms[0]})).filter(x=>DB[x.n]).sort((a,b)=>((DB[b.n].atk||0)+(DB[b.n].hp||0))-((DB[a.n].atk||0)+(DB[a.n].hp||0)))[0]; if(best) executePrismShift(best.f,volaris,best.n); return; }
   // Show picker modal
   showPrismShiftPicker(candidates,volaris);
 }
@@ -12566,7 +12645,7 @@ function showPrismShiftPicker(candidates,volarisFc){
 }
 
 function executePrismShift(targetFc,volarisFc,newCid){
-  const pl=G.players[1];
+  const pl=G.players[_volarisOwner(volarisFc.uid)];
   const nc=DB[newCid];
   if(!nc)return;
   // Transform free of cost
@@ -12601,7 +12680,7 @@ function executePrismShift(targetFc,volarisFc,newCid){
 // Energy Fracture — once every 2 turns, flip a coin. Heads: gain 2 purple energy per char on your field.
 function volarisEnergyFracture(volarisUid){
   if(!G||!G.players)return;
-  const pl=G.players[1];
+  const pl=G.players[_volarisOwner(volarisUid)];
   const volaris=pl.field.find(f=>f.uid===volarisUid);
   if(!volaris||DB[volaris.cid]?.id!=='volaris_prism'){log('Volaris (Prism) not on field.','dmg');return;}
   volaris.abilityUsed=volaris.abilityUsed||{};
@@ -12611,7 +12690,7 @@ function volarisEnergyFracture(volarisUid){
     return;
   }
   // Coin flip via existing helper
-  const heads=(typeof coin==='function')?coin():(Math.random()<0.5);
+  const heads=coinShow('Energy Fracture');
   if(heads){
     const charCount=pl.field.filter(f=>{
       const c=DB[f.cid];
@@ -13019,7 +13098,7 @@ function activateAbility(fc,abl){
       if(typeof recalcPassives==='function')recalcPassives();
       renderAll();
     };
-    if(typeof showCoinFlip==='function'){ showCoinFlip(coin(), (heads)=>resolve(heads)); }
+    if(typeof showCoinFlip==='function'){ showCoinFlip(coin(), (heads)=>resolve(heads), {title:"The King's Charge",desc:'Heads = every Saiyan gains +2/+2'}); }
     else { resolve(coin()); }
     return;
   }
@@ -13036,7 +13115,7 @@ function activateAbility(fc,abl){
       if(typeof recalcPassives==='function')recalcPassives();
       renderAll();
     };
-    if(typeof showCoinFlip==='function'){ showCoinFlip(coin(), (heads)=>resolve(heads)); }
+    if(typeof showCoinFlip==='function'){ showCoinFlip(coin(), (heads)=>resolve(heads), {title:'Continuous Onslaught',desc:'Heads = +2 Health'}); }
     else { resolve(coin()); }
     return;
   }
@@ -13106,7 +13185,7 @@ function activateAbility(fc,abl){
       if(typeof recalcPassives==='function')recalcPassives();
       renderAll();
     };
-    if(typeof showCoinFlip==='function'){ showCoinFlip(coin(), resolve); } else { resolve(coin()); }
+    if(typeof showCoinFlip==='function'){ showCoinFlip(coin(), resolve, {title:'Etheric Strike'}); } else { resolve(coin()); }
     return;
   }
   // ── RAVEN: Soul Cage — 4⚡, once per game. Seal one enemy character — it can't
@@ -13201,7 +13280,7 @@ function activateAbility(fc,abl){
     closeAllModals();
     const strike=(uid)=>{
       const tfc=G.players[oppNum].field.find(f=>f.uid===uid); if(!tfc)return;
-      const h=coin();
+      const h=coinShow('Blistering Blast','Heads = 5 damage');
       if(h){
         tfc.currentHP-=5;
         if(typeof showDmgPopup==='function')showDmgPopup(oppNum,'-5',tfc.uid);
@@ -13370,6 +13449,7 @@ function activateAbility(fc,abl){
     if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     const heads=coin(); const oppN=oppNum;
     closeAllModals();
+    _nextCoinTitle={title:'Ravager Strike',desc:'Heads = 6 damage · Tails = banish to the Rift'};
     showCoinFlip(heads, ()=>{
     openEnemyTargetPicker(enemies,(uid)=>{
       const tfc=G.players[oppN].field.find(f=>f.uid===uid);
@@ -13431,7 +13511,7 @@ function activateAbility(fc,abl){
     if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; } // "(Card Taps)"
     if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
-    if(!coin()){ // TAILS = success
+    if(!coinShow('Healing Hands','Tails = heal +2')){ // TAILS = success
       const heal=(target)=>{ const mx=(target.baseHP||0)+(target.hpBonus||0)+(target.passiveHp||0); target.currentHP=Math.min(mx,(target.currentHP||0)+2); log(`Healing Hands: TAILS — ${DB[target.cid].name} heals +2 HP (now ${target.currentHP}).`,'gain'); renderAll(); };
       const chars=pl.field.filter(f=>isChar(DB[f.cid]));
       if(!chars.length){ log('Healing Hands: TAILS — no characters on your field to heal.','info'); renderAll(); return; }
@@ -13468,7 +13548,7 @@ function activateAbility(fc,abl){
     if(DB[fc.cid]?.noTapOnAbility!==true){ fc.tapped=true; }
     if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
-    if(coin()){
+    if(coinShow('Full Moon Awakening','Heads = return a card')){
       const body=document.createElement('div');
       body.innerHTML='<div style="font-size:11px;color:#86efac;margin-bottom:8px;line-height:1.5">🌕 HEADS! Choose a card from your Discard pile to return to your hand.</div>';
       const list=document.createElement('div'); list.style.cssText='display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto';
@@ -14380,7 +14460,7 @@ function runAbilityEffect(fc, abl, pl){
   // ── MAGNUS & VIRORA: Sorcery's Flash Break — 3 coin flips (draw 1 per heads) + 6 dmg ──
   if(cid==='magnus_virora' && label==="Sorcery's Flash Break"){
     let heads=0;
-    for(let i=0;i<3;i++){ if(coin())heads++; }
+    heads=coinsShow("Sorcery's Flash Break",3,'1 card per heads');
     for(let i=0;i<heads;i++) drawCard(G.activePlayer);
     log(`Sorcery's Flash Break: ${heads} heads → drew ${heads} card(s).`,'gain');
     const targets=opp.field.filter(f=>isChar(DB[f.cid]));
@@ -14800,12 +14880,12 @@ function decrementStatuses(p){
 // attack may proceed; false if it was consumed (fizzle or self-hit) — caller aborts.
 function rollAttackStatuses(p, fc){
   if(!fc||!fc.statuses) return true;
-  if(fc.statuses.paralyze>0 && !coin()){
+  if(fc.statuses.paralyze>0 && !coinShow('Paralyzed — '+(DB[fc.cid]?.name||''),'Tails = attack fizzles')){
     log(`⚡ ${DB[fc.cid]?.name} is paralyzed — its attack fizzled!`,'dmg');
     if(typeof showStatusFx==='function')showStatusFx(fc.uid,'paralyze');
     fc.tapped=true; fc.attacksThisTurn=(fc.attacksThisTurn||0)+1; return false;
   }
-  if(fc.statuses.confuse>0 && !coin()){
+  if(fc.statuses.confuse>0 && !coinShow('Confused — '+(DB[fc.cid]?.name||''),'Tails = hits itself')){
     log(`😵 ${DB[fc.cid]?.name} is confused — it hits itself for 2!`,'dmg');
     if(typeof showStatusFx==='function')showStatusFx(fc.uid,'confuse');
     fc.currentHP-=2;
@@ -14862,7 +14942,7 @@ function startTurnFx(player){
     // ── BILLY (SSG): Saiyan God Healing — each of your turns, flip a coin; on
     // heads heal your most-wounded character +2 (auto-targets the most damaged).
     if(fc.cid==='billy_ssg_bse'){
-      if(coin()){
+      if(coinShow('Saiyan God Healing','Heads = heal +2')){
         const wounded=pl.field.filter(f=>isChar(DB[f.cid]))
           .map(f=>{const mx=(f.baseHP||0)+(f.hpBonus||0)+(f.passiveHp||0);return {f,mx,missing:mx-(f.currentHP||0)};})
           .filter(x=>x.missing>0).sort((a,b)=>b.missing-a.missing)[0];
@@ -15222,11 +15302,12 @@ function aiSetAuto(on){ if(G) G._aiAuto=!!on; }
 // Match session: every CPU timer is tied to the match that scheduled it. Leaving the match
 // (quit to menu, new match) bumps the session so any pending AI step silently dies.
 let _matchSession=0;
-function aiLater(fn,ms){ const s=_matchSession; return setTimeout(()=>{ if(s!==_matchSession) return; if(typeof G!=='undefined'&&G&&G._abandoned) return; fn(); },ms); }
+function aiLater(fn,ms){ const s=_matchSession; let waits=0; const run=()=>{ if(s!==_matchSession) return; if(typeof G!=='undefined'&&G&&G._abandoned) return; if(typeof _rollBusy==='function'&&_rollBusy()&&waits++<120){ setTimeout(run,250); return; } fn(); }; return setTimeout(run,ms); }
 function abandonMatch(){
   _matchSession++;
   if(typeof G!=='undefined'&&G&&G.players){ if(!G.gameOver){ G.gameOver=true; G._abandoned=true; } G._aiTurn=false; G._aiAuto=false; G._v2AIRunning=false; }
   try{ aiThinking(false); }catch(e){}
+  try{ if(typeof _rollReset==='function') _rollReset(); }catch(e){}
   if(typeof _pendingBlockTimer!=='undefined'&&_pendingBlockTimer){ try{ clearTimeout(_pendingBlockTimer); }catch(e){} }
   // clear any in-match overlays the CPU's last action may have opened
   const cz=document.getElementById('card-play-zoom'); if(cz) cz.classList.remove('playing');
@@ -16134,114 +16215,161 @@ function aiCheckHeraldFlip(p){
 //   opts: {title, desc, sides, count}  → callback receives array of results
 // flipCoinFor(opts, callback) — animated coin, callback(isHeads)
 // ═══════════════════════════════════════════════════
-let _abilityRollPending = null;
+// ── Coin art (Scans repo → ASSETS/Coins). Swap these two URLs to restyle every coin in the game.
+const COIN_IMG = {
+  heads: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/ASSETS/Coins/Heads.png',
+  tails: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/ASSETS/Coins/Tails.png'
+};
+(function(){ try{ [COIN_IMG.heads,COIN_IMG.tails].forEach(u=>{ const i=new Image(); i.src=u; }); }catch(e){} })(); // preload so the first flip isn't blank
+function coinFacesHtml(){ return `<div class="lc-face lc-h"><img src="${COIN_IMG.heads}" alt="Heads" draggable="false" onerror="this.remove()"><span>HEADS</span></div><div class="lc-face lc-t"><img src="${COIN_IMG.tails}" alt="Tails" draggable="false" onerror="this.remove()"><span>TAILS</span></div>`; }
+function coinHtml(cls){ return `<div class="lc-coin ${cls||''}"><div class="lc-spin">${coinFacesHtml()}</div><div class="lc-shadow"></div></div>`; }
+function _pipFace(n){ const P={1:[5],2:[1,9],3:[1,5,9],4:[1,3,7,9],5:[1,3,5,7,9],6:[1,3,4,6,7,9]}; if(!P[n]) return `<b class="lc-num">${n}</b>`; return '<div class="lc-pips">'+[1,2,3,4,5,6,7,8,9].map(i=>`<i class="${P[n].includes(i)?'on':''}"></i>`).join('')+'</div>'; }
+function _diceFace(n){ const f={1:'⚀',2:'⚁',3:'⚂',4:'⚃',5:'⚄',6:'⚅'}; return f[n]||String(n); } // legacy helper (log text)
 
-function _diceFace(n){
-  const f={1:'⚀',2:'⚁',3:'⚂',4:'⚃',5:'⚄',6:'⚅'};
-  return f[n] || String(n);
+// ═══ ROLL QUEUE ═══
+// Every ability coin flip / dice roll goes through one queue so they show one at a time and
+// can never be wiped by closeAllModals() (the panel is NOT a .modal-overlay).
+//   • YOUR rolls: animate, then a CONTINUE button (auto-continues after a few seconds).
+//   • AI / opponent rolls: animate, show the result, then close by themselves.
+//   • coinShow(): instant coin effects that resolve on the spot (combat triggers, status checks)
+//     — the result is applied immediately and a small toast shows the flip without blocking play.
+// The AI scheduler (aiLater) waits while a blocking roll is on screen.
+let _rollQ=[], _rollCur=null, _rollTimers=[];
+function _rollBusy(){ return !!_rollCur || _rollQ.length>0; }
+function _rollActor(){ try{ return (typeof G!=='undefined'&&G&&G.activePlayer)||1; }catch(e){ return 1; } }
+function _rollIsMine(){ try{ if(!G||G._aiAuto) return false; if(typeof gameMode!=='undefined'&&gameMode==='pvp'&&!G.onlineMode) return true; return typeof iControlActive==='function' ? iControlActive() : G.activePlayer===1; }catch(e){ return true; } }
+function _rollWho(remote){ if(remote) return (typeof pname==='function'?pname(2):'Opponent'); try{ if(typeof gameMode!=='undefined'&&gameMode==='pvp'&&!G.onlineMode) return (typeof pname==='function'?pname(_rollActor()):''); return _rollIsMine()?'YOU':(typeof pname==='function'?pname(_rollActor()):'AI'); }catch(e){ return ''; } }
+function _rollSend(e){ try{ if(!e.remote&&G&&G.onlineMode&&_rollIsMine()&&typeof sendGameAction==='function') sendGameAction('roll_show',{kind:e.kind,title:e.title,desc:e.desc,heads:e.heads,flips:e.flips,results:e.results,sides:e.sides,quick:!!e.quick}); }catch(err){} }
+function _rollReset(){ _rollQ=[]; _rollCur=null; _rollTimers.forEach(t=>clearTimeout(t)); _rollTimers=[]; const ov=document.getElementById('roll-ov'); if(ov){ ov.classList.remove('open'); } }
+function _rollEnsure(){
+  let ov=document.getElementById('roll-ov'); if(ov) return ov;
+  ov=document.createElement('div'); ov.id='roll-ov'; ov.className='roll-ov'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-live','polite');
+  ov.innerHTML=`<div class="roll-card" id="roll-card">
+      <div class="roll-kicker"><span id="roll-kind">COIN FLIP</span><span class="roll-who" id="roll-who"></span></div>
+      <div class="roll-title" id="roll-title">Coin Flip</div>
+      <div class="roll-desc" id="roll-desc"></div>
+      <div class="roll-stage" id="roll-stage"></div>
+      <div class="roll-result" id="roll-result">&nbsp;</div>
+      <button class="roll-btn" id="roll-btn" type="button">CONTINUE</button>
+      <div class="roll-timer"><i id="roll-timer-bar"></i></div>
+    </div>`;
+  document.body.appendChild(ov);
+  ov.querySelector('#roll-btn').onclick=()=>_rollFinish();
+  return ov;
 }
-
-function rollDiceFor(opts, callback){
-  const sides = opts.sides || 6;
-  const count = opts.count || 1;
-  const overlay = document.getElementById('ability-roll-overlay');
-  const diceWrap = document.getElementById('ability-roll-dice');
-  const resultEl = document.getElementById('ability-roll-result');
-  const doneBtn = document.getElementById('ability-roll-done');
-  document.getElementById('ability-roll-title').textContent = opts.title || 'Rolling Dice';
-  document.getElementById('ability-roll-desc').textContent = opts.desc || '';
-  resultEl.textContent = '';
-  doneBtn.style.display = 'none';
-  diceWrap.innerHTML = '';
-  if(typeof SFX!=='undefined' && SFX.click)SFX.click();
-
-  // Create die elements
-  const dieEls = [];
-  for(let i=0;i<count;i++){
-    const d = document.createElement('div');
-    d.style.cssText = 'font-size:46px;width:56px;height:56px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#2a2050,#16162a);border:2px solid #c8a44a;border-radius:12px;box-shadow:0 0 14px rgba(200,164,74,.4)';
-    d.textContent = '🎲';
-    diceWrap.appendChild(d);
-    dieEls.push(d);
+function _rollPush(e){ _rollQ.push(e); _rollSend(e); if(!_rollCur) _rollNext(); }
+function _rollNext(){
+  _rollCur=_rollQ.shift()||null; if(!_rollCur){ document.getElementById('roll-ov')?.classList.remove('open'); return; }
+  const e=_rollCur, ov=_rollEnsure();
+  const $=id=>document.getElementById(id);
+  $('roll-kind').textContent = e.kind==='coin' ? (e.count>1?e.count+' COIN FLIPS':'COIN FLIP') : ('DICE ROLL · d'+e.sides+(e.results.length>1?' ×'+e.results.length:''));
+  $('roll-who').textContent = e.who||''; $('roll-who').style.display=e.who?'':'none';
+  $('roll-title').textContent = e.title||(e.kind==='coin'?'Coin Flip':'Dice Roll');
+  $('roll-desc').textContent = e.desc||''; $('roll-desc').style.display=e.desc?'':'none';
+  const res=$('roll-result'); res.innerHTML='&nbsp;'; res.className='roll-result';
+  const btn=$('roll-btn'); btn.style.visibility='hidden'; btn.textContent=e.auto?'OK':'CONTINUE';
+  const bar=$('roll-timer-bar'); bar.style.transition='none'; bar.style.width='0%';
+  const stage=$('roll-stage'); stage.className='roll-stage '+e.kind;
+  if(e.kind==='coin'){
+    const flips=e.flips||[e.heads];
+    stage.innerHTML=flips.map((h,i)=>coinHtml(flips.length>1?'sm':'')).join('');
+    [...stage.querySelectorAll('.lc-coin')].forEach((c,i)=>{ const h=flips[i]; c.style.setProperty('--end',(1800+(h?0:180))+'deg'); c.style.animationDelay=(i*0.18)+'s'; c.querySelector('.lc-spin').style.animationDelay=(i*0.18)+'s'; c.classList.add('go'); });
+    try{ if(typeof SFX!=='undefined'&&SFX.cardFlip) SFX.cardFlip(); }catch(err){}
+  } else {
+    stage.innerHTML=e.results.map(()=>`<div class="lc-diewrap"><div class="lc-die"><div class="lc-die-face">${_pipFace(1)}</div></div><span class="lc-die-tag">d${e.sides}</span></div>`).join('');
+    const dice=[...stage.querySelectorAll('.lc-die')];
+    dice.forEach(d=>d.classList.add('go'));
+    let t=0; const iv=setInterval(()=>{ t++; dice.forEach((d,i)=>{ if(t<11) d.querySelector('.lc-die-face').innerHTML=_pipFace(Math.floor(Math.random()*e.sides)+1); }); try{ if(typeof SFX!=='undefined'&&SFX.click) SFX.click(); }catch(err){} if(t>=11) clearInterval(iv); },85);
+    _rollTimers.push(setTimeout(()=>clearInterval(iv),1200));
   }
-  overlay.classList.add('open');
-
-  // Roll the actual results now
-  const results = [];
-  for(let i=0;i<count;i++) results.push(Math.floor(Math.random()*sides)+1);
-
-  // Animate: cycle faces, then settle
-  let ticks = 0;
-  const maxTicks = 12;
-  const interval = setInterval(()=>{
-    ticks++;
-    dieEls.forEach((d,i)=>{
-      if(ticks < maxTicks){
-        d.textContent = (sides<=6) ? _diceFace(Math.floor(Math.random()*sides)+1) : String(Math.floor(Math.random()*sides)+1);
-      } else {
-        d.textContent = (sides<=6) ? _diceFace(results[i]) : String(results[i]);
-        d.style.borderColor = '#fbbf24';
-        d.style.color = '#fbbf24';
-      }
-    });
-    if(typeof SFX!=='undefined' && SFX.click)SFX.click();
-    if(ticks >= maxTicks){
-      clearInterval(interval);
-      const total = results.reduce((a,b)=>a+b,0);
-      resultEl.innerHTML = count>1
-        ? 'Rolled: ' + results.map(r=>'<b style="color:#fbbf24">'+r+'</b>').join(', ') + ' (total ' + total + ')'
-        : 'Rolled a <b style="color:#fbbf24;font-size:20px">' + results[0] + '</b> (d' + sides + ')';
-      log('d'+sides+(count>1?'×'+count:'')+': '+results.join(', '), 'info');
-      doneBtn.style.display = '';
-      _abilityRollPending = { callback, results };
-    }
-  }, 70);
-}
-
-function flipCoinFor(opts, callback){
-  const overlay = document.getElementById('ability-roll-overlay');
-  const diceWrap = document.getElementById('ability-roll-dice');
-  const resultEl = document.getElementById('ability-roll-result');
-  const doneBtn = document.getElementById('ability-roll-done');
-  document.getElementById('ability-roll-title').textContent = opts.title || 'Coin Flip';
-  document.getElementById('ability-roll-desc').textContent = opts.desc || '';
-  resultEl.textContent = '';
-  doneBtn.style.display = 'none';
-  diceWrap.innerHTML = '<div id="ability-coin" style="font-size:54px;width:64px;height:64px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#2a2050,#16162a);border:2px solid #c8a44a;border-radius:50%;box-shadow:0 0 14px rgba(200,164,74,.4)">🪙</div>';
-  overlay.classList.add('open');
-  const coinEl = document.getElementById('ability-coin');
-
-  const isHeads = Math.random() < 0.5;
-  let ticks = 0;
-  const maxTicks = 12;
-  const interval = setInterval(()=>{
-    ticks++;
-    if(ticks < maxTicks){
-      coinEl.textContent = (ticks % 2 === 0) ? '🌕' : '🌑';
+  ov.classList.add('open');
+  const settle=e.kind==='coin'?1350+((e.flips||[1]).length-1)*180:1000;
+  _rollTimers.push(setTimeout(()=>{
+    if(_rollCur!==e) return;
+    if(e.kind==='coin'){
+      const flips=e.flips||[e.heads];
+      if(flips.length>1){ const n=flips.filter(Boolean).length; res.innerHTML=`<b class="h">${n} HEADS</b> · <b class="t">${flips.length-n} TAILS</b>`; }
+      else { res.innerHTML=e.heads?'<b class="h">HEADS</b>':'<b class="t">TAILS</b>'; }
     } else {
-      coinEl.textContent = isHeads ? '🌕' : '🌑';
-      coinEl.style.borderColor = isHeads ? '#22c55e' : '#ef4444';
+      stage.querySelectorAll('.lc-die').forEach((d,i)=>{ d.classList.remove('go'); d.classList.add('done'); d.querySelector('.lc-die-face').innerHTML=_pipFace(e.results[i]); });
+      const total=e.results.reduce((a,b)=>a+b,0);
+      res.innerHTML = e.results.length>1 ? 'Rolled <b class="h">'+e.results.join(' · ')+'</b> <span class="sub">total '+total+'</span>' : 'Rolled a <b class="h">'+e.results[0]+'</b>';
     }
-    if(typeof SFX!=='undefined' && SFX.click)SFX.click();
-    if(ticks >= maxTicks){
-      clearInterval(interval);
-      resultEl.innerHTML = isHeads ? '<b style="color:#22c55e;font-size:20px">HEADS</b>' : '<b style="color:#ef4444;font-size:20px">TAILS</b>';
-      log('Coin: '+(isHeads?'HEADS':'TAILS'), isHeads?'gain':'dmg');
-      doneBtn.style.display = '';
-      _abilityRollPending = { callback, isHeads };
-    }
-  }, 80);
+    res.classList.add('show');
+    if(e.onResult) try{ e.onResult(); }catch(err){ console.warn('[roll]',err); }
+    btn.style.visibility='visible';
+    const wait=e.auto?1500:6000;
+    requestAnimationFrame(()=>{ bar.style.transition='width '+wait+'ms linear'; bar.style.width='100%'; });
+    _rollTimers.push(setTimeout(()=>{ if(_rollCur===e) _rollFinish(); },wait));
+  },settle));
 }
+function _rollFinish(){
+  const e=_rollCur; if(!e) return;
+  _rollTimers.forEach(t=>clearTimeout(t)); _rollTimers=[];
+  _rollCur=null;
+  if(!_rollQ.length) document.getElementById('roll-ov')?.classList.remove('open');
+  if(e.callback){ try{ e.callback(e.kind==='coin'?e.heads:e.results); }catch(err){ console.error('[roll callback]',err); } }
+  if(_rollQ.length) setTimeout(_rollNext,120);
+}
+function closeAbilityRoll(){ _rollFinish(); } // legacy name
 
-function closeAbilityRoll(){
-  const overlay = document.getElementById('ability-roll-overlay');
-  if(overlay)overlay.classList.remove('open');
-  const p = _abilityRollPending;
-  _abilityRollPending = null;
-  if(p && p.callback){
-    if('isHeads' in p) p.callback(p.isHeads);
-    else p.callback(p.results);
-  }
+// rollDiceFor(opts, callback) — opts {title, desc, sides, count} → callback(results[])
+function rollDiceFor(opts, callback){
+  const sides=opts.sides||6, count=opts.count||1, results=[];
+  for(let i=0;i<count;i++) results.push(Math.floor(Math.random()*sides)+1);
+  log('🎲 '+(opts.title||'Dice')+': d'+sides+(count>1?'×'+count:'')+' → '+results.join(', '),'info');
+  _rollPush({kind:'dice',title:opts.title,desc:opts.desc,sides,results,callback,auto:!_rollIsMine(),who:_rollWho()});
+}
+// flipCoinFor(opts, callback) — callback(isHeads)
+function flipCoinFor(opts, callback){
+  const heads=Math.random()<0.5;
+  log('🪙 '+(opts.title||'Coin')+': '+(heads?'HEADS':'TAILS'), heads?'gain':'dmg');
+  _rollPush({kind:'coin',title:opts.title,desc:opts.desc,heads,callback,auto:!_rollIsMine(),who:_rollWho()});
+}
+// showCoinFlip(heads, onDone, opts) — a flip whose result was already decided; always auto-closes.
+let _nextCoinTitle=null;
+function showCoinFlip(heads, onDone, opts){
+  opts=opts||_nextCoinTitle||{}; _nextCoinTitle=null;
+  _rollPush({kind:'coin',title:opts.title||'Coin Flip',desc:opts.desc||'',heads:!!heads,callback:onDone?()=>onDone(!!heads):null,auto:true,who:_rollWho()});
+}
+// coinShow(title, desc) — flips NOW (returns true = heads) and shows a non-blocking toast.
+function coinShow(title, desc){
+  const heads=Math.random()<0.5;
+  _rollToast({kind:'coin',title,desc,heads});
+  return heads;
+}
+// coinsShow(title, n) — n flips at once, returns number of heads; toast shows each coin.
+function coinsShow(title, n, desc){
+  const flips=[]; for(let i=0;i<n;i++) flips.push(Math.random()<0.5);
+  _rollToast({kind:'coin',title,desc,flips,heads:flips[0]});
+  return flips.filter(Boolean).length;
+}
+function _rollToast(e, remote){
+  e.quick=true; if(!remote) _rollSend(e);
+  let wrap=document.getElementById('roll-toasts');
+  if(!wrap){ wrap=document.createElement('div'); wrap.id='roll-toasts'; wrap.setAttribute('aria-live','polite'); document.body.appendChild(wrap); }
+  const flips=e.flips||[e.heads];
+  const t=document.createElement('div'); t.className='roll-toast';
+  t.innerHTML=`<div class="rt-coins">${flips.map(()=>coinHtml('xs')).join('')}</div>
+    <div class="rt-txt"><div class="rt-title">${(typeof escapeHtml==='function'?escapeHtml:String)(e.title||'Coin Flip')}${e.who?` <span class="rt-who">${(typeof escapeHtml==='function'?escapeHtml:String)(e.who)}</span>`:''}</div>
+    <div class="rt-res">FLIPPING…</div></div>`;
+  wrap.appendChild(t);
+  [...t.querySelectorAll('.lc-coin')].forEach((c,i)=>{ c.style.setProperty('--end',(1440+(flips[i]?0:180))+'deg'); c.querySelector('.lc-spin').style.animationDelay=(i*0.12)+'s'; c.classList.add('go','fast'); });
+  try{ if(typeof SFX!=='undefined'&&SFX.cardFlip) SFX.cardFlip(); }catch(err){}
+  setTimeout(()=>{ const r=t.querySelector('.rt-res'); if(!r) return;
+    if(flips.length>1){ const n=flips.filter(Boolean).length; r.innerHTML=`<b class="h">${n} HEADS</b> · <b class="t">${flips.length-n} TAILS</b>`; }
+    else r.innerHTML=flips[0]?'<b class="h">HEADS</b>':'<b class="t">TAILS</b>';
+    if(e.desc) r.innerHTML+=` <span class="rt-desc">· ${(typeof escapeHtml==='function'?escapeHtml:String)(e.desc)}</span>`;
+  },1050+(flips.length-1)*120);
+  setTimeout(()=>{ t.classList.add('out'); setTimeout(()=>t.remove(),400); },3200+(flips.length-1)*120);
+}
+// Online: the other client shows rolls made by its opponent.
+function rollShowRemote(d){
+  if(!d) return;
+  const who=(typeof pname==='function'?pname(2):'Opponent');
+  if(d.quick){ _rollToast({kind:d.kind||'coin',title:d.title,desc:d.desc,heads:!!d.heads,flips:d.flips,who},true); return; }
+  _rollQ.push({kind:d.kind,title:d.title,desc:d.desc,heads:!!d.heads,results:d.results||[1],sides:d.sides||6,auto:true,who,remote:true});
+  if(!_rollCur) _rollNext();
 }
 
 
@@ -16298,7 +16426,7 @@ function startCoinToss(cfg){
   const me=CT.names.me, opp=CT.names.opp;
   if(CT.iCall){
     _ctSub(`<b>${me}</b> — call it. Get it right and you choose who goes first.`);
-    _ctBtns(`<button class="ct-btn" onclick="ctCall('heads')">👑 HEADS</button><button class="ct-btn" onclick="ctCall('tails')">⚔️ TAILS</button>`);
+    _ctBtns(`<button class="ct-btn" onclick="ctCall('heads')"><img src="${COIN_IMG.heads}" alt="">HEADS</button><button class="ct-btn" onclick="ctCall('tails')"><img src="${COIN_IMG.tails}" alt="">TAILS</button>`);
   } else {
     _ctSub(`<b>${opp}</b> is calling the toss…`);
     _ctBtns(`<div class="ct-wait">WAITING FOR THE CALL</div>`);
@@ -17420,38 +17548,6 @@ document.addEventListener('keydown',(e)=>{ const sc=document.getElementById('reg
 
 function coin(){return Math.random()<.5;}
 // Visual coin flip — spins a 3D coin, lands on the given result, then runs onDone.
-function showCoinFlip(heads, onDone){
-  let ov=document.getElementById('coinflip-overlay');
-  if(!ov){
-    ov=document.createElement('div'); ov.id='coinflip-overlay';
-    ov.style.cssText='position:fixed;inset:0;z-index:11000;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(2,6,20,.80);backdrop-filter:blur(3px)';
-    ov.innerHTML=`<style>
-      #coinflip-overlay .cf-stage{perspective:900px}
-      #coinflip-overlay .cf-coin{position:relative;width:120px;height:120px;transform-style:preserve-3d}
-      #coinflip-overlay .cf-face{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:800;letter-spacing:2px;font-size:17px;backface-visibility:hidden;border:5px solid #fde68a;box-shadow:0 0 34px rgba(251,191,36,.55)}
-      #coinflip-overlay .cf-heads{background:radial-gradient(circle at 35% 30%,#fde68a,#d97706);color:#7c2d12}
-      #coinflip-overlay .cf-tails{background:radial-gradient(circle at 35% 30%,#c4b5fd,#6d28d9);color:#2e1065;transform:rotateY(180deg)}
-      @keyframes cfSpin{from{transform:rotateY(0)}to{transform:rotateY(var(--cf-end,1980deg))}}
-    </style>
-    <div class="cf-stage"><div class="cf-coin" id="cf-coin">
-      <div class="cf-face cf-heads">HEADS</div>
-      <div class="cf-face cf-tails">TAILS</div>
-    </div></div>
-    <div id="cf-label" style="margin-top:28px;font-family:'Orbitron',sans-serif;letter-spacing:3px;font-size:15px;color:#e2e8f0;opacity:0;transition:opacity .3s">FLIPPING…</div>`;
-    document.body.appendChild(ov);
-  }
-  ov.style.display='flex';
-  const coinEl=document.getElementById('cf-coin');
-  const label=document.getElementById('cf-label');
-  label.style.opacity='0'; label.textContent='FLIPPING…';
-  coinEl.style.animation='none'; void coinEl.offsetWidth;
-  const endDeg = heads ? 0 : 180; const spins=5;
-  coinEl.style.setProperty('--cf-end', (spins*360+endDeg)+'deg');
-  coinEl.style.animation='cfSpin 1.3s cubic-bezier(.25,.7,.25,1) forwards';
-  try{ if(typeof SFX!=='undefined' && SFX.turnStart)SFX.turnStart(); }catch(e){}
-  setTimeout(()=>{ label.textContent = heads ? '🪙 HEADS!' : '🪙 TAILS!'; label.style.color = heads?'#fbbf24':'#c4b5fd'; label.style.opacity='1'; },1300);
-  setTimeout(()=>{ ov.style.display='none'; if(onDone)onDone(); },2050);
-}
 function flipCoin(){ flipCoinFor({title:'Coin Flip', desc:'A simple coin flip.'}, function(){}); }
 function openDiceModal(){document.getElementById('dice-modal').classList.add('open');}
 function rollDie(s){ document.getElementById('dice-modal').classList.remove('open'); rollDiceFor({title:'Roll d'+s, desc:'Manual dice roll.', sides:s, count:1}, function(){}); }
@@ -17834,7 +17930,11 @@ function showHoverPreview(cardId){
   contentEl.innerHTML=html;
 }
 
-function clearHoverPreview(){
+// STICKY PREVIEW: moving the mouse off a card no longer wipes the Card Info panel — the last
+// card you hovered stays there until you hover a different one (same as the PC build).
+// Only clearHoverPreview(true) (new match) resets it to the "Hover a card" placeholder.
+function clearHoverPreview(force){
+  if(force!==true) return;
   const placeholder=document.getElementById('hover-preview-placeholder');
   const contentEl=document.getElementById('hover-preview-content');
   if(contentEl){ contentEl.style.display='none'; contentEl.innerHTML=''; }
@@ -22397,6 +22497,9 @@ function onReceiveGameAction(payload){
       break;
     case 'ability_reveal':
       if(d.cardId) showAbilityReveal(d.cardId, 2, d.label, d.text);
+      break;
+    case 'roll_show':
+      if(typeof rollShowRemote==='function') rollShowRemote(d);
       break;
     case 'card_play':
       if(d.cardId) playCardZoom(d.cardId,d.variant);
