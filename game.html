@@ -6725,7 +6725,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 <body>
 
 <!-- AUTH HUD -->
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 9.0 · coins</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 9.1 · coins</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -7696,8 +7696,18 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='9.0'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='9.1'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'9.1', date:'2026-10-21', cards:[],
+    abilities:['Full audit of every coin/dice ability (41 on 34 cards) — all now go through the visible roll system',
+      'The Fist of God (Daredevil herald), Spirit of Smash (Ghost Hulk), Imperfect Strike (Peleus herald), Divine Collector (Tyler SSB): rolls were silent Math.random → now rollDiceFor (on-screen dice), effect applied after the roll',
+      'Mastery of the Light Arts (Virora SSBE) — matched to the printed card: roll d3; on 2 SSBE may switch out free (swap with a hand character, SSBE returns to hand) and if it does, draw 2. (Was: 5 damage.) AI only switches a badly hurt SSBE (HP ≤ 4)',
+      'Surface Technique (virora_st) — printed text: coin; heads = chosen opponent character -2 ATK; tails = +3 Energy and this card +2/+3. Once a turn. (Was: +2 Energy only)',
+      "Enhanced Nullify (73's Crystal) — printed text: 2 Energy, coin; heads = holder's Nullify becomes 3. Was matched by card id (never fired for equipment) and only set an unused flag",
+      'Omega Swap (Dynadrax) — now an ACTIVATED once-per-turn ability (needs any Omega in play; Dynadrax is one): heads = swap a hand character onto your field free (field card returns to hand); tails = choose an opponent character to lose 4 HP. (Was: never triggered; heads was a placeholder)',
+      'Shared swapHandFieldFlow({ap,title,outFc,onDone}) used by The Shift of Space, Omega Swap, Mastery of the Light Arts — human 2-step picker with "Don\'t swap"; AI auto-decides. Shift of Space no longer shows the human picker during the AI\'s turn',
+      'Ability kills from Spirit of Smash, Blistering Blast, Imperfect Strike, Ravager Strike now go through killCard (prize/energy/achievements) instead of silently removing the card'],
+    screens:[], data:[] },
   { build:'9.0', date:'2026-10-21', cards:[],
     // 9.0 patch: Daredevil (Fist of God) herald — The Fist of God now rolls its 2× d5 through rollDiceFor (visible dice, +4 dmg per even after the roll)
     abilities:['Every coin/dice ability now shows on screen. Blocking rolls (flipCoinFor/rollDiceFor/showCoinFlip) go through ONE queue: your rolls → animate then CONTINUE (auto after 6s); AI/opponent rolls → animate, show result, auto-close after 1.5s. The AI scheduler waits while a roll is on screen. Previously closeAllModals() wiped the roll popup and the callback never fired (AI effects were lost).',
@@ -8160,11 +8170,11 @@ const DB={
   virora_ssb:{id:'virora_ssb',rarity:'legend',name:'Virora (SSB S3)',color:'purple',charName:'Virora',charLine:'virora',formTier:'ssb',subtypes:['Saiyan','Celestial','God','SSB'],type:'char',race:'Celestial Saiyan God',cost:12,atk:13,hp:15,sym:'SSB',transformOnly:true,keywords:['pursuit'],nextForms:['ssbe'],
     abilities:[{label:'SSB Synergy',type:'passive',cost:0,text:'Any SSB char you control gives +4 ATK.'},{label:'Power Drain',type:'triggered',cost:0,text:'Opp char with higher ATK loses 2 HP/round.'},{label:'Form Swap',type:'activated',cost:0,limit:'every_2_turns',text:'Swap with any Virora form free.'}],transforms:['virora_ssbe'],path:'god'},
   virora_ssbe:{id:'virora_ssbe',rarity:'legend',color:'purple',name:'Virora (SSBE)',charName:'Virora',charLine:'virora',formTier:'ssbe',subtypes:['Saiyan','Celestial','God','SSB'],type:'char',race:'Celestial Saiyan God',cost:10,atk:13,hp:13,sym:'SSBE',transformOnly:true,nextForms:['ssbm'],
-    abilities:[{label:'Evolved Armor',type:'passive',cost:0,text:"If cost > opp last Virora SSBE: +5 DEF."},{label:'Evolved State',type:'triggered',cost:0,text:'Flip coin when attacked — Heads: opp next attack -4 dmg.'},{label:'Mastery of Light Arts',type:'activated',cost:0,limit:'once_per_turn',text:'Roll d3 — on 2: swap free + draw 2.'}],transforms:['virora_ssbm'],path:'god'},
+    abilities:[{label:'Evolved Armor',type:'passive',cost:0,text:"If cost > opp last Virora SSBE: +5 DEF."},{label:'Evolved State',type:'triggered',cost:0,text:'Flip coin when attacked — Heads: opp next attack -4 dmg.'},{label:'Mastery of Light Arts',type:'activated',cost:0,limit:'once_per_turn',text:'Roll a 3 die. If it lands on 2, Virora (SSBE) may switch out free of cost (swap with a character from your hand). If you do switch out, you may draw 2 cards.'}],transforms:['virora_ssbm'],path:'god'},
   virora_ssbm:{id:'virora_ssbm',rarity:'mythic',color:'purple',name:'Virora (SSBM)',charName:'Virora',charLine:'virora',formTier:'ssbm',subtypes:['Saiyan','Celestial','God','SSB'],type:'char',race:'Celestial Saiyan God',cost:10,atk:7,hp:17,sym:'SSBM',transformOnly:true,keywords:['resolve','regeneration'],regenAmount:4,nextForms:[],
     abilities:[{label:'Mastery Ramp',type:'triggered',cost:0,limit:'every_2_turns',text:'+2 ATK/+4 HP every 2 rounds.'},{label:'Pressure',type:'triggered',cost:0,text:'Opp draws 1 per field char.'},{label:'FROST BITE COLLISION',type:'activated',cost:0,limit:'once_per_game',text:'Freeze 1 opp char for 10 turns.'}],transforms:[],path:'god'},
   virora_st:{id:'virora_st',rarity:'mythic',name:'Virora (Surface)',color:'purple',charName:'Virora',subtypes:['Saiyan','Celestial'],type:'base_char',race:'Celestial Saiyan',cost:9,atk:7,hp:5,sym:'ST',
-    abilities:[{label:'Surfacer Bonus',type:'passive',cost:0,text:'Surfacer card in hand: +3 ATK/+1 HP.'},{label:'Location Control',type:'activated',cost:0,limit:'once_per_turn',text:'Return any Location to owner hand.'},{label:'Surface Technique',type:'activated',cost:0,limit:'once_per_turn',text:'Flip coin — Heads: opp char -2 ATK. Tails: +3 Mana +2/+3.'}],transforms:['virora_ssb'],path:'god'},
+    abilities:[{label:'Surfacer Bonus',type:'passive',cost:0,text:'Surfacer card in hand: +3 ATK/+1 HP.'},{label:'Location Control',type:'activated',cost:0,limit:'once_per_turn',text:'Return any Location to owner hand.'},{label:'Surface Technique',type:'activated',cost:0,limit:'once_per_turn',text:'Flip a coin. If heads, a character card your opponent has in play loses 2 Attack. If tails, you gain 3 Energy and this card gets +2/+3. (Once a turn)'}],transforms:['virora_ssb'],path:'god'},
   // ── VOLARIS LINE ──
   volaris:{id:'volaris',rarity:'common',name:'Volaris',color:'blue',charName:'Volaris',subtypes:['Royal Saiyan','Fighter'],type:'base_char',race:'Royal Saiyan',cost:2,atk:2,hp:3,sym:'VL',
     abilities:[{label:'Entry Draw',type:'triggered',cost:0,text:'When Volaris enters the field: draw 2 cards.'},{label:'Mindful Insight',type:'activated',cost:0,limit:'once_per_turn',text:'Flip coin — Heads: place a Location card from hand free of cost.'}],transforms:['volaris_ssj','volaris_ssg'],path:null},
@@ -8181,7 +8191,7 @@ const DB={
   archon:{id:'archon',rarity:'legend',name:'Archon',color:'white',charName:'Archon',subtypes:['Omega','Celestial'],type:'char',race:'Omega Celestial',cost:13,atk:12,hp:18,sym:'Ω',canAttackLocations:true,keywords:['guardian'],
     abilities:[{label:'Counter Charge',type:'triggered',cost:0,text:'Each turn attacked: +2 ATK.'},{label:'Tank',type:'activated',cost:0,text:'Redirect an attack on an ally to this card.'},{label:'Entry Draw',type:'triggered',cost:0,text:'Draw 2 on play. Samara/Surana on field: +5/+5.'},{label:'Stardust Death Fall',type:'activated',cost:0,text:'Split attack across 2 opp chars.'}],transforms:[],path:null},
   dynadrax:{id:'dynadrax',rarity:'legend',name:'Dynadrax',color:'black',charName:'Dynadrax',subtypes:['Omega','Celestial'],type:'char',race:'Omega Celestial',cost:11,atk:10,hp:15,sym:'DX',keywords:['drain'],
-    abilities:[{label:'Omega Swap',type:'triggered',cost:0,text:'Omega in play: flip — Heads swap; Tails opp -4 HP.'},{label:'Dark Draw',type:'passive',cost:0,text:'Draw 1 if hand = 5.'},{label:'Obscure Darkness',type:'activated',cost:0,text:'Roll d5×3 — each 2: +2 dmg. KO removes opp Location.'}],transforms:[],path:null},
+    abilities:[{label:'Omega Swap',type:'activated',cost:0,limit:'once_per_turn',text:'If any Omega is in play you may flip a coin. If heads, you may swap out any card on your field free of cost. If tails, choose one of your opponent\'s cards on the field to lose 4 HP.'},{label:'Dark Draw',type:'passive',cost:0,text:'Draw 1 if hand = 5.'},{label:'Obscure Darkness',type:'activated',cost:0,text:'Roll d5×3 — each 2: +2 dmg. KO removes opp Location.'}],transforms:[],path:null},
   goku_ue:{id:'goku_ue',rarity:'legend',name:'Goku (Ultra Ego)',color:'red',charName:'Goku',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:8,atk:10,hp:15,sym:'UE',keywords:['onslaught'],
     abilities:[{label:'Ultra Ego Growth',type:'triggered',cost:0,text:'+1 ATK/+1 HP at end of your turn.'},{label:'Rival Synergy',type:'triggered',cost:0,text:'Vegeta/Goku on field: flip — Heads paralyze 1 opp.'},{label:'Destroyer Kamehameha',type:'activated',cost:0,limit:'once_per_turn',text:'Roll d8 — 1 or 7: +8 dmg. Other: +3.'}],transforms:[],path:null},
   paradox:{id:'paradox',rarity:'legend',name:'Paradox',color:'purple',charName:'Paradox',subtypes:['Void','Celestial','Saiyan'],type:'base_char',race:'Void Celestial Saiyan',cost:9,atk:11,hp:17,sym:'PX',
@@ -8210,7 +8220,7 @@ const DB={
   senzu_bean:{id:'senzu_bean',rarity:'uncommon',color:'green',name:'Senzu Bean',charName:'Senzu Bean',subtypes:['Consumable'],type:'equipment',persistent:false,race:'Equipment',cost:0,atk:0,hp:0,sym:'🫘',
     abilities:[{label:'Full Restore',type:'activated',cost:0,text:'Restore full HP to one field character. Discard after.'}],transforms:[]},
   crystal_73:{id:'crystal_73',rarity:'uncommon',color:'blue',name:"73's Crystal",charName:"73's Crystal",subtypes:['Magician','Ability'],type:'equipment',persistent:true,race:'Magician–Ability',cost:5,atk:0,hp:0,sym:'🔮',
-    abilities:[{label:'Nullify',type:'passive',cost:0,text:'Nullify incoming attacks by -1 dmg.'},{label:'Enhanced Nullify',type:'activated',cost:2,text:'2 Mana: flip — Heads: nullify -3.'},{label:'Crystal Defense',type:'triggered',cost:0,text:'+5 HP for 3 rounds.'}],transforms:[]},
+    abilities:[{label:'Nullify',type:'passive',cost:0,text:'Nullify incoming attacks by -1 dmg.'},{label:'Enhanced Nullify',type:'activated',cost:2,text:'Cost 2 Energy: flip a coin. If heads, the Nullification is increased to 3 (attacks on this character deal -3 damage).'},{label:'Crystal Defense',type:'triggered',cost:0,text:'+5 HP for 3 rounds.'}],transforms:[]},
   move_out:{id:'move_out',rarity:'uncommon',color:'yellow',name:'Move Out The Way',charName:'Move Out The Way',subtypes:['Ability','Equipment'],type:'equipment',persistent:'until_used',race:'Ability',cost:1,atk:0,hp:0,sym:'💨',
     abilities:[{label:'Redirect',type:'triggered',cost:0,text:'When attached char is targeted: redirect damage to another field char. Discard after.'}],transforms:[]},
   aquatic_hearth:{id:'aquatic_hearth',rarity:'rare',color:'blue',name:'Aquatic Hearth',charName:'Aquatic Hearth',subtypes:['Relic','Equipment'],type:'equipment',persistent:true,race:'Relic',cost:5,atk:0,hp:0,sym:'💎',setId:'base_set',cardNumber:'071/150',
@@ -12141,6 +12151,50 @@ function playCardZoom(cardId, variant){
 }
 
 
+// SWAP FLOW — put a character from hand onto the field in place of a field character
+// (the field character returns to its owner's hand). Free of cost. Used by The Shift of
+// Space, Omega Swap and Mastery of the Light Arts. opts: {ap, title, outFc (fixed card to
+// swap out, optional), onDone(swapped)}. Humans pick in two steps; the AI decides itself.
+function swapHandFieldFlow(opts){
+  const ap=opts.ap, pl=G.players[ap], title=opts.title||'Swap';
+  const handChars=pl.hand.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.transformOnly&&!DB[f.cid]?.isToken);
+  const fieldChars=opts.outFc?[opts.outFc]:pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
+  const done=(sw)=>{ if(typeof recalcPassives==='function')recalcPassives(); renderAll(); if(opts.onDone) opts.onDone(sw); };
+  if(!handChars.length||!fieldChars.length){ log(`${title}: no valid swap (need a character in hand${opts.outFc?'':' and on the field'}).`,'info'); done(false); return; }
+  const doSwap=(hf,ff)=>{
+    pl.hand=pl.hand.filter(x=>x.uid!==hf.uid);
+    pl.field=pl.field.filter(x=>x.uid!==ff.uid);
+    (ff.attachments||[]).forEach(eqId=>pl.discard.push(eqId));
+    const inField=newFC(hf.cid); if(inField){ inField.variant=hf.variant||'none'; inField.turnPlayed=G.turn; pl.field.push(inField); }
+    const inHand=newFC(ff.cid); if(inHand){ inHand.variant=ff.variant||'none'; pl.hand.push(inHand); }
+    log(`${title}: ${DB[hf.cid].name} swapped onto the field for ${DB[ff.cid].name} (free).`,'gain');
+    done(true);
+  };
+  const human = !G._aiAuto && (G.is2v2 ? (G.humanPlayers||[1]).includes(ap) : (ap===1||(typeof gameMode!=='undefined'&&gameMode==='pvp')));
+  if(!human){
+    const val=f=>{ const c=DB[f.cid]||{}; const mx=(f.baseHP||c.hp||1)+(f.hpBonus||0); return aiCardValue(c)*Math.max(.15,Math.min(1,(f.currentHP||c.hp||1)/Math.max(1,mx))); };
+    const bestIn=handChars.slice().sort((a,b)=>aiCardValue(DB[b.cid])-aiCardValue(DB[a.cid]))[0];
+    const worstOut=fieldChars.slice().sort((a,b)=>val(a)-val(b))[0];
+    if(bestIn&&worstOut&&aiCardValue(DB[bestIn.cid])>val(worstOut)+2) doSwap(bestIn,worstOut);
+    else { log(`${title}: ${pname(ap)} keeps its field as is.`,'info'); done(false); }
+    return;
+  }
+  const pickOut=(hf)=>{
+    if(fieldChars.length===1&&opts.outFc){ closeAllModals(); doSwap(hf,fieldChars[0]); return; }
+    const body2=document.createElement('div');
+    body2.innerHTML='<div style="font-size:11px;color:#9ca3af;margin-bottom:8px">Choose a character on your FIELD to swap out (it goes back to your hand):</div>';
+    fieldChars.forEach(ff=>{ const fcard=DB[ff.cid]; const b=document.createElement('button'); b.className='btn-gray btn-sm'; b.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:7px 10px;display:flex;justify-content:space-between;align-items:center';
+      b.innerHTML=`<span>${fcard.name}</span><span style="color:#22c55e">♥${ff.currentHP}</span>`; b.onclick=()=>{ closeAllModals(); doSwap(hf,ff); }; body2.appendChild(b); });
+    showModalEl(title,body2);
+  };
+  const body1=document.createElement('div');
+  body1.innerHTML=`<div style="font-size:11px;color:#9ca3af;margin-bottom:8px">Choose a character from your HAND to swap onto your field${opts.outFc?' in place of '+DB[opts.outFc.cid].name:''}:</div>`;
+  handChars.forEach(hf=>{ const hc=DB[hf.cid]; const b=document.createElement('button'); b.className='btn-gray btn-sm'; b.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:7px 10px;display:flex;justify-content:space-between;align-items:center';
+    b.innerHTML=`<span>${hc.name}</span><span style="color:#22c55e">⚔${hc.atk}♥${hc.hp}</span>`; b.onclick=()=>pickOut(hf); body1.appendChild(b); });
+  const skip=document.createElement('button'); skip.className='btn-gray btn-sm'; skip.style.cssText='width:100%;margin-top:4px;opacity:.75'; skip.textContent="Don't swap";
+  skip.onclick=()=>{ closeAllModals(); log(`${title}: no swap.`,'info'); done(false); }; body1.appendChild(skip);
+  showModalEl(title,body1);
+}
 function onEntry(p,fc){
   const c=DB[fc.cid];if(!c)return;
   // ── GOD KI MANDATE (Magnus SSB): your characters enter with +1/+1 while it is on the field.
@@ -13066,8 +13120,8 @@ function activateAbility(fc,abl){
     if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     const oppN=oppNum;
     closeAllModals();
-    openEnemyTargetPicker(enemies,(uid)=>{
-      const roll=1+Math.floor(Math.random()*5);
+    openEnemyTargetPicker(enemies,(uid)=>{ rollDiceFor({sides:5,count:1,title:'Spirit of Smash',desc:'2 = +3 damage · 4 = +6 damage'},(rolls)=>{
+      const roll=rolls[0];
       let dmg=0; if(roll===2)dmg=3; else if(roll===4)dmg=6;
       log(`Spirit of Smash: rolled a ${roll} — ${dmg>0?('+'+dmg+' damage!'):'no bonus damage.'}`, dmg>0?'gain':'dmg');
       const tfc=G.players[oppN].field.find(f=>f.uid===uid);
@@ -13076,11 +13130,11 @@ function activateAbility(fc,abl){
         tfc.currentHP-=dmg;
         if(typeof showDmgPopup==='function')showDmgPopup(oppN,'-'+dmg,tfc.uid);
         log(`Spirit of Smash: ${tname} takes ${dmg} damage!`,'dmg');
-        if(tfc.currentHP<=0){ G.players[oppN].field=G.players[oppN].field.filter(x=>x.uid!==tfc.uid); (tfc.attachments||[]).forEach(eq=>G.players[oppN].discard.push(eq)); G.players[oppN].discard.push(tfc.cid); log(`${tname} is destroyed!`,'death'); }
+        if(tfc.currentHP<=0){ killCard(oppN,tfc); }
       }
       if(typeof recalcPassives==='function')recalcPassives();
       renderAll();
-    },{sourcePlayer:ap,title:'Spirit of Smash',desc:'Choose an opponent character, then roll a d5 (2 → +3 dmg, 4 → +6 dmg).'});
+    }); },{sourcePlayer:ap,title:'Spirit of Smash',desc:'Choose an opponent character, then roll a d5 (2 → +3 dmg, 4 → +6 dmg).'});
     return;
   }
   // ── NAJEELA SSJ: The King's Charge — once per GAME. Coin: heads → every Saiyan
@@ -13345,7 +13399,7 @@ function activateAbility(fc,abl){
           tfc.currentHP-=8;
           if(typeof showDmgPopup==='function')showDmgPopup(oppN,'-8',tfc.uid);
           log(`Ancient God Rasengan: ${tname} takes 8 damage!`,'dmg');
-          if(tfc.currentHP<=0){ G.players[oppN].field=G.players[oppN].field.filter(x=>x.uid!==tfc.uid); (tfc.attachments||[]).forEach(eq=>G.players[oppN].discard.push(eq)); G.players[oppN].discard.push(tfc.cid); log(`${tname} is destroyed!`,'death'); }
+          if(tfc.currentHP<=0){ killCard(oppN,tfc); }
         }
       }
       if(typeof recalcPassives==='function')recalcPassives();
@@ -13403,10 +13457,10 @@ function activateAbility(fc,abl){
     pl.usedAbilityThisTurn=true;
     if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     const oppNum=ap===1?2:1;
-    const r1=1+Math.floor(Math.random()*5), r2=1+Math.floor(Math.random()*5);
-    const odds=[r1,r2].filter(n=>n%2===1);
-    log(`Imperfect Strike: rolled ${r1} and ${r2}.`,'info');
     closeAllModals();
+    rollDiceFor({sides:5,count:2,title:'Imperfect Strike',desc:'Each ODD number = strike an opponent character for that much damage.'},(rolls)=>{
+    const [r1,r2]=rolls; const odds=rolls.filter(n=>n%2===1);
+    log(`Imperfect Strike: rolled ${r1} and ${r2}${odds.length?' — strike for '+odds.join(' and ')+'!':' — no odd numbers, no strike.'}`,odds.length?'gain':'info');
     const doHit=(idx)=>{
       if(idx>=odds.length){ if(typeof recalcPassives==='function')recalcPassives(); renderAll(); return; }
       const dmg=odds[idx];
@@ -13419,20 +13473,13 @@ function activateAbility(fc,abl){
           tfc.currentHP-=dmg;
           if(typeof showDmgPopup==='function')showDmgPopup(oppNum,'-'+dmg,tfc.uid);
           log(`Imperfect Strike: ${tname} takes ${dmg} damage (odd roll).`,'dmg');
-          if(tfc.currentHP<=0){ G.players[oppNum].field=G.players[oppNum].field.filter(x=>x.uid!==tfc.uid); (tfc.attachments||[]).forEach(eq=>G.players[oppNum].discard.push(eq)); G.players[oppNum].discard.push(tfc.cid); log(`${tname} is destroyed!`,'death'); }
+          if(tfc.currentHP<=0){ killCard(oppNum,tfc); }
         }
         doHit(idx+1);
       },{sourcePlayer:ap,title:`Imperfect Strike — ${dmg} dmg`,desc:`Odd roll of ${dmg}: choose an opponent character to take ${dmg} damage. (Close to skip.)`});
     };
-    const body=document.createElement('div');
-    body.innerHTML=`<div style="text-align:center;font-family:'Orbitron',sans-serif">
-      <div style="font-size:11px;color:#9ca3af;letter-spacing:2px;margin-bottom:12px">🎲 ROLLING A 5-DIE TWICE</div>
-      <div style="display:flex;gap:14px;justify-content:center;margin-bottom:14px">${[r1,r2].map(n=>`<div style="width:54px;height:54px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;border:3px solid ${n%2===1?'#ef4444':'#4b5563'};color:${n%2===1?'#fca5a5':'#6b7280'};background:rgba(20,20,35,.6)">${n}</div>`).join('')}</div>
-      <div style="font-size:11px;color:${odds.length?'#fca5a5':'#6b7280'}">${odds.length?`${odds.length} odd roll${odds.length>1?'s':''} — strike for ${odds.join(' and ')}!`:'No odd numbers — no strike this time.'}</div></div>`;
-    const cont=document.createElement('button'); cont.className=odds.length?'btn-red':'btn-gray'; cont.style.cssText='margin-top:14px;width:100%;padding:9px'; cont.textContent=odds.length?'⚔ Strike!':'Close';
-    cont.onclick=()=>{ closeAllModals(); if(odds.length)doHit(0); else renderAll(); };
-    body.appendChild(cont);
-    showModalEl('🎲 Imperfect Strike', body);
+    if(odds.length) doHit(0); else renderAll();
+    });
     return;
   }
   // ── GORIM (Herald): Ravager Strike — every 4 turns. Flip a coin; heads deals 6
@@ -13460,7 +13507,7 @@ function activateAbility(fc,abl){
           tfc.currentHP-=6;
           if(typeof showDmgPopup==='function')showDmgPopup(oppN,'-6',tfc.uid);
           log(`Ravager Strike: HEADS — ${tname} takes 6 damage!`,'dmg');
-          if(tfc.currentHP<=0){ G.players[oppN].field=G.players[oppN].field.filter(x=>x.uid!==tfc.uid); (tfc.attachments||[]).forEach(eq=>G.players[oppN].discard.push(eq)); G.players[oppN].discard.push(tfc.cid); log(`${tname} is destroyed!`,'death'); }
+          if(tfc.currentHP<=0){ killCard(oppN,tfc); }
         } else if(isRiftImmune(tfc)){
           log(`Ravager Strike: ${tname} cannot be sent to the Rift! (Power of Securement)`,'gain');
         } else {
@@ -13684,13 +13731,14 @@ function activateAbility(fc,abl){
     fc.abilityUsed=fc.abilityUsed||{}; fc.abilityUsed['Divine Collector']=true;
     pl.usedAbilityThisTurn=true;
     if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
-    const roll=1+Math.floor(Math.random()*3);
+    closeAllModals();
+    rollDiceFor({sides:3,count:1,title:'Divine Collector',desc:'1 = Location · 2 = Character · 3 = Instant or Equipment'},(rolls)=>{
+    const roll=rolls[0];
     let kind, filt;
     if(roll===1){ kind='Location'; filt=(cc)=>cc&&cc.type==='location'; }
     else if(roll===2){ kind='Character'; filt=(cc)=>cc&&(cc.type==='char'||cc.type==='base_char')&&!cc.transformOnly; }
     else { kind='Instant or Equipment'; filt=(cc)=>cc&&(cc.type==='instant'||cc.type==='equipment'); }
     log(`Divine Collector: rolled ${roll} → search for ${kind}.`,'gain');
-    closeAllModals();
     const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(ap) : (ap===1);
     if(_human){
       openDeckSearch('Divine Collector',`Rolled ${roll} — choose a ${kind} card to add to your hand.`,filt,(cid)=>{ const f=newFC(cid); if(f) pl.hand.push(f); log(`Divine Collector: ${DB[cid].name} added to your hand.`,'gain'); renderAll(); });
@@ -13700,6 +13748,7 @@ function activateAbility(fc,abl){
       else { log(`Divine Collector: no ${kind} found in deck.`,'info'); }
       renderAll();
     }
+    });
     return;
   }
 
@@ -13883,41 +13932,8 @@ function activateAbility(fc,abl){
     closeAllModals();
     flipCoinFor({title:'The Shift of Space', desc:'Flip a coin. Tails = you may swap a hand character with a field character.'}, (heads)=>{
       if(heads){ log('The Shift of Space: HEADS — no effect.','dmg'); renderAll(); return; }
-      const handChars=pl.hand.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.transformOnly);
-      const fieldChars=pl.field.filter(f=>isChar(DB[f.cid]));
-      if(!handChars.length||!fieldChars.length){ log('The Shift of Space: TAILS — no valid swap available.','info'); renderAll(); return; }
-      log('The Shift of Space: TAILS — choose a character from your hand to swap in.','gain');
-      const body1=document.createElement('div');
-      body1.innerHTML='<div style="font-size:11px;color:#9ca3af;margin-bottom:8px">Choose a character from your HAND to swap onto your field:</div>';
-      handChars.forEach(hf=>{
-        const hc=DB[hf.cid];
-        const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:7px 10px;display:flex;justify-content:space-between;align-items:center';
-        btn.innerHTML=`<span>${hc.name}</span><span style="color:#22c55e">⚔${hc.atk}♥${hc.hp}</span>`;
-        btn.onclick=()=>{
-          const body2=document.createElement('div');
-          body2.innerHTML='<div style="font-size:11px;color:#9ca3af;margin-bottom:8px">Choose a character on your FIELD to swap out:</div>';
-          fieldChars.forEach(ff=>{
-            const fcard=DB[ff.cid];
-            const btn2=document.createElement('button');btn2.className='btn-gray btn-sm';btn2.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:7px 10px;display:flex;justify-content:space-between;align-items:center';
-            btn2.innerHTML=`<span>${fcard.name}</span><span style="color:#22c55e">♥${ff.currentHP}</span>`;
-            btn2.onclick=()=>{
-              closeAllModals();
-              pl.hand=pl.hand.filter(x=>x.uid!==hf.uid);
-              pl.field=pl.field.filter(x=>x.uid!==ff.uid);
-              (ff.attachments||[]).forEach(eqId=>pl.discard.push(eqId));
-              const inField=newFC(hf.cid); if(inField){ inField.variant=hf.variant||'none'; pl.field.push(inField); }
-              const inHand=newFC(ff.cid); if(inHand){ inHand.variant=ff.variant||'none'; pl.hand.push(inHand); }
-              log(`The Shift of Space: ${hc.name} swapped onto the field for ${fcard.name}.`,'gain');
-              if(typeof recalcPassives==='function')recalcPassives();
-              renderAll();
-            };
-            body2.appendChild(btn2);
-          });
-          showModalEl('The Shift of Space',body2);
-        };
-        body1.appendChild(btn);
-      });
-      showModalEl('The Shift of Space',body1);
+      log('The Shift of Space: TAILS — you may swap a hand character with a field character.','gain');
+      swapHandFieldFlow({ap,title:'The Shift of Space'});
     });
     return;
   }
@@ -14249,17 +14265,15 @@ function runAbilityEffect(fc, abl, pl){
   }
 
   // ── DYNADRAX: Omega Swap — flip; heads swap positions, tails opp -4 HP ──
-  if(cid==='dynadrax' && label==='Omega Swap'){
-    flipCoinFor({title:'Omega Swap', desc:'Heads = swap; Tails = opponent character -4 HP.'}, (heads)=>{
-      const opp=G.players[G.activePlayer===1?2:1];
-      if(heads){
-        log('Omega Swap: HEADS — (swap effect placeholder).','gain');
-      } else {
-        const tgt=opp.field.find(f=>isChar(DB[f.cid]));
-        if(tgt){ tgt.currentHP=Math.max(0,tgt.currentHP-4); log(`Omega Swap: TAILS — ${DB[tgt.cid].name} takes 4 damage.`,'gain'); if(tgt.currentHP<=0)killCard(G.activePlayer===1?2:1,tgt); }
-        else log('Omega Swap: TAILS — no enemy character to damage.','dmg');
-      }
-      renderAll();
+  if(label==='Omega Swap'){
+    const ap=G.activePlayer; const oN=ap===1?2:1;
+    const omegaInPlay=[1,2,3,4].some(pp=>G.players[pp]&&G.players[pp].field&&G.players[pp].field.some(f=>(DB[f.cid]?.subtypes||[]).includes('Omega')||/omega/i.test(DB[f.cid]?.race||'')));
+    if(!omegaInPlay){ log('Omega Swap: no Omega in play.','dmg'); renderAll(); return; }
+    flipCoinFor({title:'Omega Swap', desc:'Heads = swap any card on your field free · Tails = an opponent card loses 4 HP'}, (heads)=>{
+      if(heads){ log('Omega Swap: HEADS — you may swap out a card on your field free of cost.','gain'); swapHandFieldFlow({ap,title:'Omega Swap'}); return; }
+      const enemies=G.players[oN].field.filter(f=>isChar(DB[f.cid]));
+      if(!enemies.length){ log('Omega Swap: TAILS — no opponent character to hit.','dmg'); renderAll(); return; }
+      openEnemyTargetPicker(enemies,(uid)=>{ const t=G.players[oN].field.find(f=>f.uid===uid); if(t){ t.currentHP-=4; if(typeof showDmgPopup==='function')showDmgPopup(oN,'-4',t.uid); log(`Omega Swap: TAILS — ${DB[t.cid].name} loses 4 HP.`,'dmg'); if(t.currentHP<=0) killCard(oN,t); } if(typeof recalcPassives==='function')recalcPassives(); renderAll(); },{sourcePlayer:ap,title:'Omega Swap',desc:'Choose an opponent character to lose 4 HP.'});
     });
     return;
   }
@@ -14365,15 +14379,27 @@ function runAbilityEffect(fc, abl, pl){
     log('Full Restore: healed to full HP!','gain'); renderAll(); return;
   }
   // ── 73's CRYSTAL (equip): Enhanced Nullify — negate next enemy ability (flag) ──
-  if(cid==='crystal_73' && label==='Enhanced Nullify'){
-    G.players[G.activePlayer].nullifyNextEnemyAbility=true;
-    log("Enhanced Nullify: the opponent's next ability will be negated.",'gain'); renderAll(); return;
+  if(label==='Enhanced Nullify'){
+    if((fc.nullify||0)>=3){ log(`Enhanced Nullify: ${DB[fc.cid]?.name} already nullifies 3.`,'info'); renderAll(); return; }
+    flipCoinFor({title:'Enhanced Nullify',desc:"Heads = this character's Nullify becomes 3 (attacks deal -3 damage)."},(heads)=>{
+      if(heads){ fc.nullify=Math.max(fc.nullify||0,3); log(`🔮 Enhanced Nullify: HEADS — ${DB[fc.cid]?.name} now nullifies 3 damage from attacks.`,'gain'); }
+      else log('Enhanced Nullify: TAILS — no change.','dmg');
+      renderAll();
+    });
+    return;
   }
   // ── VIRORA SSBE: Mastery of Light Arts — 5 dmg to one enemy ──
-  if(cid==='virora_ssbe' && label==='Mastery of Light Arts'){
-    const targets=opp.field.filter(f=>isChar(DB[f.cid]));
-    if(!targets.length){ log('Mastery of Light Arts: no targets.','dmg'); renderAll(); return; }
-    openEnemyTargetPicker(targets,(uid)=>{ dealDamage(oppNum,uid,5); log('Mastery of Light Arts: 5 damage!','dmg'); renderAll(); },{sourcePlayer:G.activePlayer,title:'Mastery of Light Arts',desc:'Deal 5 damage to a character.'});
+  if(label==='Mastery of Light Arts'){
+    const ap=G.activePlayer;
+    rollDiceFor({sides:3,count:1,title:'Mastery of the Light Arts',desc:'On a 2, Virora (SSBE) may switch out free — then draw 2.'},(rolls)=>{
+      if(rolls[0]!==2){ log(`Mastery of the Light Arts: rolled ${rolls[0]} — no switch.`,'dmg'); renderAll(); return; }
+      log('Mastery of the Light Arts: rolled 2 — Virora (SSBE) may switch out free!','gain');
+      const me=G.players[ap]; const still=me.field.find(f=>f.uid===fc.uid);
+      if(!still){ renderAll(); return; }
+      // AI keeps a healthy SSBE; only switches her out when she's badly hurt.
+      if(G._aiAuto && (still.currentHP||0)>4){ log(`Mastery of the Light Arts: ${pname(ap)} keeps Virora (SSBE) in.`,'info'); renderAll(); return; }
+      swapHandFieldFlow({ap,title:'Mastery of the Light Arts',outFc:still,onDone:(sw)=>{ if(sw){ drawCard(ap); drawCard(ap); log(`Mastery of the Light Arts: ${pname(ap)} draws 2.`,'gain'); renderAll(); } }});
+    });
     return;
   }
   // ── VIRORA SSBM: FROST BITE COLLISION — 4 dmg to all enemies + freeze one ──
@@ -14385,7 +14411,18 @@ function runAbilityEffect(fc, abl, pl){
   }
   // ── VIRORA (Surface): Surface Technique — gain +2 energy ──
   if(cid==='virora_st' && label==='Surface Technique'){
-    G.players[G.activePlayer].energy+=2; log('Surface Technique: +2⚡!','gain'); renderAll(); return;
+    const ap=G.activePlayer;
+    flipCoinFor({title:'Surface Technique',desc:'Heads = an opponent character loses 2 Attack · Tails = +3 Energy and this card +2/+3'},(heads)=>{
+      if(heads){
+        const enemies=opp.field.filter(f=>isChar(DB[f.cid]));
+        if(!enemies.length){ log('Surface Technique: HEADS — no opponent character in play.','info'); renderAll(); return; }
+        openEnemyTargetPicker(enemies,(uid)=>{ const t=opp.field.find(f=>f.uid===uid); if(t){ const cut=Math.min(2,Math.max(0,t.currentATK||0)); t.currentATK-=cut; t.atkBonus=(t.atkBonus||0)-cut; log(`Surface Technique: HEADS — ${DB[t.cid].name} loses 2 Attack.`,'gain'); } renderAll(); },{sourcePlayer:ap,title:'Surface Technique',desc:'Choose an opponent character to lose 2 Attack.'});
+      } else {
+        G.players[ap].energy+=3; fc.atkBonus=(fc.atkBonus||0)+2; fc.currentATK=(fc.currentATK||0)+2; fc.hpBonus=(fc.hpBonus||0)+3; fc.currentHP=(fc.currentHP||0)+3;
+        log(`Surface Technique: TAILS — +3⚡ and ${DB[fc.cid].name} gets +2/+3.`,'gain'); renderAll();
+      }
+    });
+    return;
   }
   // ── VOLARIS: Mindful Insight — flip coin; heads = play a Location from hand free ──
   if(cid==='volaris' && label==='Mindful Insight'){
