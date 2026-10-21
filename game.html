@@ -7699,6 +7699,7 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 const GAME_BUILD='9.0'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
   { build:'9.0', date:'2026-10-21', cards:[],
+    // 9.0 patch: Daredevil (Fist of God) herald — The Fist of God now rolls its 2× d5 through rollDiceFor (visible dice, +4 dmg per even after the roll)
     abilities:['Every coin/dice ability now shows on screen. Blocking rolls (flipCoinFor/rollDiceFor/showCoinFlip) go through ONE queue: your rolls → animate then CONTINUE (auto after 6s); AI/opponent rolls → animate, show result, auto-close after 1.5s. The AI scheduler waits while a roll is on screen. Previously closeAllModals() wiped the roll popup and the callback never fired (AI effects were lost).',
                'Instant coin effects now flip with a non-blocking toast (coinShow/coinsShow): Primal Strike, Godly Reflexes, Godly Movement, Evolved State, Demolition, Rival Synergy, Energy Fracture, Blistering Blast, Healing Hands, Full Moon Awakening, Sorcery\'s Flash Break (3 coins), Saiyan God Healing, Paralyzed/Confused attack checks',
                'Volaris (Prism): Energy Fracture and Prism Shift now work for whichever seat owns Volaris (were hard-wired to player 1); AI auto-picks the Prism Shift target'],
@@ -13641,18 +13642,20 @@ function activateAbility(fc,abl){
     openEnemyTargetPicker(enemies,(uid)=>{
       const tfc=G.players[oppNum].field.find(f=>f.uid===uid);
       if(!tfc){ renderAll(); return; }
-      const r1=1+Math.floor(Math.random()*5), r2=1+Math.floor(Math.random()*5);
-      const evens=[r1,r2].filter(n=>n%2===0).length;
-      const dmg=evens*4;
       const tname=DB[tfc.cid].name;
-      log(`The Fist of God: rolled ${r1} and ${r2} — ${evens} even → ${tname} takes ${dmg}.`, dmg>0?'dmg':'info');
-      if(dmg>0){
-        tfc.currentHP-=dmg;
-        if(typeof showDmgPopup==='function')showDmgPopup(oppNum,'-'+dmg,tfc.uid);
-        if(tfc.currentHP<=0){ killCard(oppNum,tfc); }
-      }
-      if(typeof recalcPassives==='function')recalcPassives();
-      closeAllModals(); renderAll();
+      rollDiceFor({sides:5,count:2,title:'The Fist of God',desc:'Target: '+tname+'. Each even number = +4 damage.'},(rolls)=>{
+        const [r1,r2]=rolls; const t=G.players[oppNum].field.find(f=>f.uid===uid);
+        const evens=rolls.filter(n=>n%2===0).length;
+        const dmg=evens*4;
+        log(`The Fist of God: rolled ${r1} and ${r2} — ${evens} even → ${tname} takes ${dmg}.`, dmg>0?'dmg':'info');
+        if(dmg>0&&t){
+          t.currentHP-=dmg;
+          if(typeof showDmgPopup==='function')showDmgPopup(oppNum,'-'+dmg,t.uid);
+          if(t.currentHP<=0){ killCard(oppNum,t); }
+        }
+        if(typeof recalcPassives==='function')recalcPassives();
+        renderAll();
+      });
     },{sourcePlayer:ap,title:'The Fist of God',desc:'Choose an opponent character. Roll d5 twice — +4 damage per even.'});
     return;
   }
@@ -13668,7 +13671,7 @@ function activateAbility(fc,abl){
     flipCoinFor({title:"The Lord's Prayer", desc:'Flip a coin. Heads = tutor a character costing 5 or more.'}, (heads)=>{
       if(!heads){ log("The Lord's Prayer: TAILS — no effect.",'dmg'); renderAll(); return; }
       log("The Lord's Prayer: HEADS — search for a character (cost 5+).",'gain');
-      openDeckSearch("The Lord's Prayer","Choose a character costing 5 or more to add to your hand.",(cc)=>(cc.type==='char'||cc.type==='base_char')&&!cc.transformOnly&&(cc.cost||0)>=5,(cid)=>{ const f=newFC(cid); if(f) pl.hand.push(f); log(`The Lord's Prayer: ${DB[cid].name} added to your hand.`,'gain'); renderAll(); });
+      openDeckSearch("The Lord's Prayer","Choose a character costing 5 or more to add to your hand.",(cc)=>(cc.type==='char'||cc.type==='base_char')&&!cc.transformOnly&&(cc.cost||0)>=5,(cid)=>{ const f=newFC(cid); if(f) pl.hand.push(f); log(`The Lord's Prayer: ${DB[cid].name} added to ${isHumanPlayer(ap)&&!G._aiAuto?'your':pname(ap)+"'s"} hand.`,'gain'); renderAll(); });
     });
     return;
   }
