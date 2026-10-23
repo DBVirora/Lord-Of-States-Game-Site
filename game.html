@@ -382,6 +382,188 @@ button{cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:1
 .ability-activated{background:#0f0f1e;border-left:3px solid #7c3aed;color:#c4b5fd}
 .ability-type-tag{font-size:8px;font-weight:700;opacity:.7;margin-bottom:2px}
 /* attached cards panel */
+/* ═══ TEXT SIZE (build 9.5 · Settings → Text Size, 90%–130%) ═══ */
+:root{--ui-scale:1}
+#profile-screen,#admin-screen,#shop-screen,#mail-screen,#gift-center-screen,#friends-screen,#trade-screen,#online-lobby-screen,#matchmaking-screen,
+#campaign-worlds-screen,#campaign-chapters-screen,#campaign-chapter-map-screen,#battle-pass-screen,#setup-2v2-screen,#bp-editor-screen,#campaign-editor-screen,#admin-card-manager-screen{zoom:var(--ui-scale)}
+#hover-preview-content,.log-box .log-entry{zoom:var(--ui-scale)}
+.modal-overlay .modal,#game-settings-modal .settings-panel,.energy-modal-card{zoom:var(--ui-scale)}
+.modal-overlay .modal{max-height:calc(92vh / var(--ui-scale)) !important;overflow-y:auto}
+#game-settings-modal .settings-panel{max-height:calc(88vh / var(--ui-scale))}
+
+/* ═══ PROFILE v2 (build 9.5) ═══ */
+#profile-screen.pf2{padding:62px 28px 48px;font-size:14px}
+.pf2 .pf-wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.pf2 .pf-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.pf2 .pf-top-title{font-family:'Cinzel',serif;font-weight:800;font-size:26px;letter-spacing:6px;color:#f0d58a;text-shadow:0 0 18px rgba(232,197,112,.3)}
+.pf2 .pf-top-cel{margin-left:auto;display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;border:1px solid rgba(251,191,36,.35);background:rgba(251,191,36,.08)}
+.pf2 .pf-top-cel img{width:26px;height:26px;border-radius:50%;object-fit:cover}
+.pf2 .pf-top-cel b{font-family:'Cinzel',serif;font-size:20px;color:#fbbf24}
+.pf2 .pf-top-cel span{font-size:11px;letter-spacing:2px;color:rgba(251,191,36,.75)}
+.pf2 .pf-hero{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:22px;align-items:center;padding:24px 26px;border-radius:18px;
+  background:linear-gradient(180deg,#171030,#0c0820) padding-box,linear-gradient(160deg,#e8c570,#6b4fb0 45%,#c9a24a) border-box;border:1.5px solid transparent;box-shadow:0 18px 50px rgba(0,0,0,.5)}
+.pf2 .pf-hero-art{position:absolute;top:0;right:0;bottom:0;width:52%;background-size:cover;background-position:center 18%;opacity:.2;pointer-events:none;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 55%);mask-image:linear-gradient(90deg,transparent,#000 55%)}
+.pf2 .pf-id{position:relative;display:flex;align-items:center;gap:20px;min-width:0}
+.pf2 .pf-avatar{flex:none;width:100px;height:100px;border-radius:50%;display:grid;place-items:center;font-size:42px;overflow:hidden;background:#0d0d2a;border:3px solid #e8c570;box-shadow:0 0 0 5px rgba(232,197,112,.13),0 0 26px rgba(232,197,112,.25)}
+.pf2 .pf-avatar img{width:100%;height:100%;object-fit:cover}
+.pf2 .pf-idtext{min-width:0;display:flex;flex-direction:column;gap:7px}
+.pf2 .pf-name-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pf2 .pf-name{margin:0;font-family:'Cinzel',serif;font-weight:800;font-size:34px;letter-spacing:1.5px;color:#fff;line-height:1.1;overflow-wrap:anywhere}
+.pf2 .pf-admin{display:inline-flex;align-items:center;gap:6px;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;color:#fca5a5;background:rgba(239,68,68,.14);border:1px solid rgba(239,68,68,.45);border-radius:999px;padding:6px 12px;cursor:pointer}
+.pf2 .pf-admin:hover{background:rgba(239,68,68,.25);color:#fff}
+.pf2 .pf-sub{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.pf2 .pf-title{font-size:14px;font-weight:700;letter-spacing:1px;color:#00d4ff}
+.pf2 .pf-prov{font-size:12.5px;letter-spacing:1px;color:#8f88a6}
+.pf2 .pf-level{display:flex;align-items:center;gap:12px;margin-top:4px}
+.pf2 .pf-lvl{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#8b5cf6,#4c1d95);border:2px solid #c4b5fd;color:#fff;box-shadow:0 0 14px rgba(139,92,246,.4)}
+.pf2 .pf-lvl small{font-size:9px;letter-spacing:2px;opacity:.85;line-height:1}
+.pf2 .pf-lvl b{font-family:'Cinzel',serif;font-size:20px;line-height:1.1}
+.pf2 .pf-xp{flex:1;min-width:0;max-width:360px;display:flex;flex-direction:column;gap:6px}
+.pf2 .pf-xpbar{height:10px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden}
+.pf2 .pf-xpbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8b5cf6,#e8c570);border-radius:6px}
+.pf2 .pf-xp span{font-size:13px;color:#b3abcf;letter-spacing:1px}
+.pf2 .pf-heads{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.pf2 .pf-head{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 8px;border-radius:12px;background:rgba(10,8,24,.7);border:1px solid rgba(200,164,74,.22)}
+.pf2 .pf-head b{font-family:'Cinzel',serif;font-size:32px;font-weight:800;color:#fff;line-height:1}
+.pf2 .pf-head.gold b{color:#f0d58a}
+.pf2 .pf-head span{font-size:11.5px;letter-spacing:2.5px;color:#a19ab6}
+.pf2 .pf-tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid rgba(200,164,74,.28)}
+.pf2 .pf-tabs button{font-family:'Cinzel',serif;font-weight:700;font-size:15px;letter-spacing:1.5px;color:#a9a0cc;background:transparent;border:1px solid transparent;border-bottom:none;border-radius:10px 10px 0 0;padding:11px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;margin-bottom:-1px}
+.pf2 .pf-tabs button:hover{color:#fff}
+.pf2 .pf-tabs button:focus-visible{outline:2px solid #f0d58a;outline-offset:-2px}
+.pf2 .pf-tabs button[aria-selected="true"]{color:#f0d58a;background:linear-gradient(180deg,rgba(232,197,112,.13),rgba(16,12,34,.95));border-color:rgba(200,164,74,.38);border-bottom:1px solid #120e24}
+.pf2 .pf-tabs em{font-style:normal;font-family:'Share Tech Mono',monospace;font-size:12px;padding:1px 8px;border-radius:999px;background:rgba(232,197,112,.14);color:#f0d58a;letter-spacing:0}
+.pf2 .pf-panel{animation:pfIn .18s ease}
+@keyframes pfIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.pf2 .pf-card{background:rgba(16,12,34,.88);border:1px solid rgba(200,164,74,.22);border-radius:14px;padding:20px 22px}
+.pf2 .pf-grid2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:start}
+.pf2 .pf-h{margin:0 0 12px;font-family:'Cinzel',serif;font-weight:700;font-size:18px;letter-spacing:2px;color:#f0d58a}
+.pf2 .pf-daily{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pf2 .pf-dtile{display:flex;flex-direction:column;align-items:center;gap:5px;padding:16px 10px;border-radius:12px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.25);text-align:center}
+.pf2 .pf-dname{font-size:13.5px;color:#fbbf24;font-weight:700}
+.pf2 .pf-dtile b{font-family:'Cinzel',serif;font-size:28px;color:#fbbf24;line-height:1.1}
+.pf2 .pf-dstat{font-size:12.5px}
+.pf2 .pf-prog{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.pf2 .pf-ptile{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border-radius:12px;background:rgba(10,8,24,.7);border:1px solid rgba(167,139,250,.25);color:inherit;font:inherit;cursor:pointer}
+.pf2 .pf-ptile:hover{border-color:#c4b5fd;background:rgba(124,58,237,.12)}
+.pf2 .pf-ptile b{font-family:'Cinzel',serif;font-size:22px;color:#fff;line-height:1.1}
+.pf2 .pf-ptile span{font-size:11.5px;letter-spacing:1.5px;color:#a19ab6;text-align:center}
+.pf2 .pf-log{display:flex;flex-direction:column;max-height:380px;overflow-y:auto}
+.pf2 .pf-logrow{display:grid;grid-template-columns:20px minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:9px 2px;border-bottom:1px solid rgba(255,255,255,.05);font-size:13.5px}
+.pf2 .pf-logrow img{width:20px;height:20px;border-radius:50%;object-fit:cover}
+.pf2 .pf-lr-r{color:#d6d0e2;min-width:0;overflow-wrap:anywhere}
+.pf2 .pf-logrow b{color:#fbbf24;font-weight:700}
+.pf2 .pf-logrow time{font-size:11.5px;color:#7d7693;white-space:nowrap}
+.pf2 .pf-empty{font-size:13.5px;color:#8f88a6;text-align:center;padding:20px;line-height:1.6}
+.pf2 .profile-stat-grid{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:22px}
+.pf2 .profile-stat-card{background:rgba(10,8,24,.7);border:1px solid rgba(200,164,74,.18);border-radius:12px;padding:16px 12px}
+.pf2 .profile-stat-val{font-family:'Cinzel',serif;font-size:28px;font-weight:800;color:#fff}
+.pf2 .profile-stat-val.gold{color:#fbbf24}
+.pf2 .profile-stat-lbl{font-size:11.5px;color:#a19ab6;letter-spacing:2px;margin-top:6px}
+.pf2 .profile-fav-grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:0}
+.pf2 .profile-fav-card{background:rgba(10,8,24,.7);border:1px solid rgba(200,164,74,.18);border-radius:12px;padding:14px}
+.pf2 .profile-fav-thumb{width:60px;height:84px}
+.pf2 .profile-fav-swatch{width:56px;height:56px}
+.pf2 .profile-fav-name{font-family:'Cinzel',serif;font-size:17px}
+.pf2 .pf-ach-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px}
+.pf2 .ach-card{padding:14px 16px}
+.pf2 .ach-card.locked{opacity:.78;filter:grayscale(.6)}
+.pf2 .ach-card-title{font-size:15px}
+.pf2 .ach-card-desc{font-size:12.5px;color:#a19ab6;line-height:1.45}
+.pf2 .ach-card-reward{font-size:12.5px}
+.pf2 .pf-pack-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.pf2 .pf-pack-list > .pf-empty,.pf2 .pf-pack-list > div[style]{grid-column:1/-1}
+.pf2 .mypack-row{padding:12px 14px}
+.pf2 .mypack-name{font-size:15px}
+.pf2 .mypack-sub{font-size:12.5px}
+.pf2 .pf-col-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;max-height:62vh;overflow-y:auto}
+.pf2 .col-card-mini{padding:8px 10px}
+.pf2 .col-card-img{width:46px;height:64px}
+.pf2 .col-card-name{font-size:13.5px}
+@media (max-width:900px){
+  .pf2 .pf-hero{grid-template-columns:1fr}
+  .pf2 .pf-hero-art{width:100%;opacity:.12}
+  .pf2 .pf-grid2{grid-template-columns:1fr}
+}
+@media (max-width:600px){
+  #profile-screen.pf2{padding:58px 14px 32px}
+  .pf2 .pf-top-title{font-size:20px;letter-spacing:4px}
+  .pf2 .pf-hero{padding:18px 16px}
+  .pf2 .pf-hero-art{display:none}
+  .pf2 .pf-avatar{width:72px;height:72px;font-size:30px}
+  .pf2 .pf-name{font-size:24px}
+  .pf2 .pf-heads{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pf2 .pf-head b{font-size:26px}
+  .pf2 .pf-prog{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pf2 .pf-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .pf2 .pf-tabs button{white-space:nowrap;padding:10px 13px;font-size:13.5px}
+  .pf2 .pf-card{padding:16px 14px}
+  .pf2 .pf-ach-list,.pf2 .pf-pack-list{grid-template-columns:1fr}
+  .pf2 .pf-col-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+}
+
+/* ═══ ADMIN v2 (build 9.5) ═══ */
+#admin-screen.adm2{padding:62px 28px 48px;font-size:14px}
+.adm2 .adm-wrap{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.adm2 .adm-top{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.adm2 .adm-title{font-family:'Cinzel',serif;font-weight:800;font-size:28px;letter-spacing:7px;color:#fca5a5;text-shadow:0 0 18px rgba(239,68,68,.35);line-height:1.1}
+.adm2 .adm-who{font-size:13px;color:#9a92ad;letter-spacing:.5px;margin-top:4px}
+.adm2 .adm-who b{color:#e2e8f0}
+.adm2 .adm-who span{color:#7dd3fc;font-size:12px;overflow-wrap:anywhere}
+.adm2 .adm-lock{margin-left:auto;font-size:11.5px;letter-spacing:2px;color:#fca5a5;padding:7px 14px;border-radius:999px;border:1px solid rgba(239,68,68,.4);background:rgba(239,68,68,.1)}
+.adm2 .adm-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+.adm2 .adm-col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.adm2 .adm-card{background:rgba(16,12,34,.88);border:1px solid rgba(200,164,74,.22);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.adm2 .adm-card.danger{grid-column:1/-1;border-color:rgba(239,68,68,.38);background:rgba(42,8,16,.55)}
+.adm2 .adm-h{margin:0 0 4px;font-family:'Cinzel',serif;font-size:19px;font-weight:700;letter-spacing:2px;color:#f0d58a;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.adm2 .adm-card.danger .adm-h{color:#fca5a5}
+.adm2 .adm-h span{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;color:#c48c95;font-weight:400}
+.adm2 .adm-note{margin:0 0 4px;font-size:13px;color:#a19ab6;line-height:1.6}
+.adm2 .adm-tag{font-style:normal;font-family:'Share Tech Mono',monospace;font-size:10.5px;letter-spacing:1.5px;padding:1px 7px;border-radius:999px;margin-left:6px;font-weight:400;white-space:nowrap}
+.adm2 .adm-note .adm-tag{margin:0 2px}
+.adm2 .adm-tag.g{color:#7dd3fc;border:1px solid rgba(125,211,252,.45)}
+.adm2 .adm-tag.a{color:#fcd34d;border:1px solid rgba(252,211,77,.45)}
+.adm2 .adm-sw{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;background:rgba(10,8,24,.62);border:1px solid rgba(255,255,255,.06);cursor:pointer;transition:border-color .15s}
+.adm2 .adm-sw:hover,.adm2 .adm-sw:focus-visible{border-color:rgba(200,164,74,.55);outline:none}
+.adm2 .adm-ico{flex:none;width:34px;height:34px;display:grid;place-items:center;font-size:18px;border-radius:9px;background:rgba(232,197,112,.09)}
+.adm2 .adm-swt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.adm2 .adm-swt b{font-size:15px;color:#f1eef9;font-weight:700}
+.adm2 .adm-swt span{font-size:13px;color:#a19ab6;line-height:1.45}
+.adm2 .admin-toggle-switch{width:48px;height:26px;flex:none;border-radius:14px}
+.adm2 .admin-toggle-knob{width:20px;height:20px;top:2px;left:2px}
+.adm2 .admin-toggle-switch.on .admin-toggle-knob{left:24px}
+.adm2 .adm-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.adm2 .adm-tile{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:12px;row-gap:3px;align-items:center;text-align:left;padding:13px 14px;border-radius:12px;background:rgba(10,8,24,.62);border:1px solid rgba(167,139,250,.26);color:inherit;font:inherit;cursor:pointer;transition:border-color .15s,background .15s}
+.adm2 .adm-tile .adm-ico{grid-row:1 / span 2}
+.adm2 .adm-tile b{font-size:15px;color:#f1eef9}
+.adm2 .adm-tile span:not(.adm-ico){font-size:12.5px;color:#a19ab6;line-height:1.4}
+.adm2 .adm-tile:hover,.adm2 .adm-tile:focus-visible{border-color:#c4b5fd;background:rgba(124,58,237,.13);outline:none}
+.adm2 .adm-tile.gold{border-color:rgba(251,191,36,.32)}
+.adm2 .adm-tile.gold b{color:#fbbf24}
+.adm2 .adm-holo{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 14px;border-radius:10px;background:rgba(10,8,24,.62);border:1px solid rgba(255,255,255,.06)}
+.adm2 .adm-seg{display:flex;gap:6px;flex-wrap:wrap}
+.adm2 .admin-holo-mode-btn{font-family:'Share Tech Mono',monospace;font-size:12.5px;letter-spacing:1px;padding:8px 13px;border-radius:8px}
+.adm2 .adm-rows{display:flex;flex-direction:column;gap:8px}
+.adm2 .adm-card.danger .adm-rows{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr))}
+.adm2 .adm-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 14px;border-radius:10px;background:rgba(10,8,24,.58);border:1px solid rgba(255,255,255,.06)}
+.adm2 .adm-btns{display:flex;gap:8px;flex-wrap:wrap}
+.adm2 .adm-btn{font-family:'Share Tech Mono',monospace;font-size:13px;letter-spacing:1px;padding:9px 14px;border-radius:8px;cursor:pointer;border:1px solid rgba(167,139,250,.48);background:rgba(124,58,237,.2);color:#ece7ff;white-space:nowrap}
+.adm2 .adm-btn:hover{filter:brightness(1.15)}
+.adm2 .adm-btn.warn{border-color:rgba(251,191,36,.48);background:rgba(251,191,36,.1);color:#fcd34d}
+.adm2 .adm-btn.bad{border-color:rgba(239,68,68,.55);background:rgba(239,68,68,.15);color:#fca5a5}
+@media (max-width:900px){ .adm2 .adm-grid{grid-template-columns:1fr} }
+@media (max-width:600px){
+  #admin-screen.adm2{padding:58px 14px 32px}
+  .adm2 .adm-title{font-size:22px;letter-spacing:5px}
+  .adm2 .adm-lock{margin-left:0}
+  .adm2 .adm-tiles{grid-template-columns:1fr}
+  .adm2 .adm-card{padding:16px 14px}
+  .adm2 .adm-card.danger .adm-rows{grid-template-columns:1fr}
+  .adm2 .adm-row{flex-direction:column;align-items:stretch}
+  .adm2 .adm-row .adm-swt{width:100%}
+}
+
 /* ═══ CARD VIEW: attached cards + active effects (build 9.4) ═══ */
 body:has(#fullcard-modal.open) #tut-bubble.docked{opacity:0!important;pointer-events:none!important}
 .fc-jump{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;width:100%;margin:0 0 10px;padding:7px 10px;border-radius:12px;border:1px solid rgba(196,181,253,.35);background:rgba(124,58,237,.12);color:#d6d0e2;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.5px;cursor:pointer}
@@ -2663,9 +2845,7 @@ input:focus,select:focus,textarea:focus,
 #battle-pass-screen,
 #bp-editor-screen,
 #deck-select-screen,
-#profile-screen,
 #shop-screen,
-#admin-screen,
 #friends-screen,
 #matchmaking-screen,
 #online-lobby-screen,
@@ -2682,9 +2862,7 @@ input:focus,select:focus,textarea:focus,
 #battle-pass-screen [style*="font-size:14px"]:not(.bp-season-name),
 #matchmaking-screen [style*="font-size:14px"],
 #friends-screen [style*="font-size:14px"],
-#profile-screen [style*="font-size:14px"],
 #shop-screen [style*="font-size:14px"],
-#admin-screen [style*="font-size:14px"],
 #deck-select-screen [style*="font-size:14px"]{
   font-size:22px !important;
 }
@@ -2696,9 +2874,7 @@ input:focus,select:focus,textarea:focus,
 #battle-pass-screen [style*="font-size:9px"],
 #matchmaking-screen [style*="font-size:9px"],
 #friends-screen [style*="font-size:9px"],
-#profile-screen [style*="font-size:9px"],
 #shop-screen [style*="font-size:9px"],
-#admin-screen [style*="font-size:9px"],
 #deck-select-screen [style*="font-size:9px"]{
   font-size:13px !important;
 }
@@ -2709,9 +2885,7 @@ input:focus,select:focus,textarea:focus,
 #battle-pass-screen [style*="font-size:10px"]:not(.bp-track-label):not(.bp-tier-page-header),
 #matchmaking-screen [style*="font-size:10px"],
 #friends-screen [style*="font-size:10px"],
-#profile-screen [style*="font-size:10px"],
 #shop-screen [style*="font-size:10px"],
-#admin-screen [style*="font-size:10px"],
 #deck-select-screen [style*="font-size:10px"]{
   font-size:14px !important;
 }
@@ -2723,9 +2897,7 @@ input:focus,select:focus,textarea:focus,
 #battle-pass-screen .btn-primary,
 #matchmaking-screen .btn-primary,
 #friends-screen .btn-primary,
-#profile-screen .btn-primary,
 #shop-screen .btn-primary,
-#admin-screen .btn-primary,
 #deck-select-screen .btn-primary,
 #online-lobby-screen .btn-primary{
   padding:14px 22px !important;
@@ -2995,7 +3167,6 @@ textarea{
 #campaign-chapter-map-screen button:not(.btn-gray):not(.admin-action-btn),
 #matchmaking-screen button:not(.btn-gray):not(.admin-action-btn),
 #friends-screen button:not(.btn-gray):not(.admin-action-btn):not(.friend-btn),
-#profile-screen button:not(.btn-gray):not(.admin-action-btn),
 #shop-screen button:not(.btn-gray):not(.admin-action-btn),
 #deck-select-screen button:not(.btn-gray):not(.admin-action-btn){
   font-size:13px !important;
@@ -7035,7 +7206,8 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 </script>
 
 <!-- AUTH HUD -->
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 9.5 · smooth play</div>
+<script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 9.5 · profile &amp; text size</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -17794,9 +17966,19 @@ let _gameSettings = {
   banners: true,
   boardLook: '3d',
   aiPace: 'human',   // 'human' = 1–3s between CPU moves (watchable) · 'fast' = snappy
+  textScale: 1,      // Text Size slider: 0.9 – 1.3
   speed: 'normal',   // Game Speed: 'normal' · 'fast' · 'instant' (card zoom, ability banners, coin/dice panels)
   entrances: true    // Herald entrance cinematic before the coin toss
 };
+// TEXT SIZE (build 9.6): scales menu pages, panels, card views and the match side rail (90%–130%).
+function applyTextScale(){
+  const v=Math.min(1.3,Math.max(0.9,+(_gameSettings.textScale||1)||1));
+  document.documentElement.style.setProperty('--ui-scale', String(v));
+  const r=document.getElementById('set-text-size'); if(r) r.value=Math.round(v*100);
+  const lab=document.getElementById('set-text-size-val'); if(lab) lab.textContent=Math.round(v*100)+'%';
+}
+function setTextScale(pct){ _gameSettings.textScale=Math.round(+pct)/100; applyTextScale(); }
+function saveTextScale(){ saveGameSettings(); }
 function setGameSpeed(v){
   _gameSettings.speed=(v==='fast'||v==='instant')?v:'normal';
   document.querySelectorAll('.settings-speed-btn').forEach(b=>b.classList.toggle('active', b.dataset.speed===_gameSettings.speed));
@@ -17934,6 +18116,7 @@ function syncSettingsUI(){
   document.querySelectorAll('.settings-look-btn').forEach(b=>b.classList.toggle('active', b.dataset.look===(_gameSettings.boardLook||'3d')));
   document.querySelectorAll('.settings-pace-btn').forEach(b=>b.classList.toggle('active', b.dataset.pace===(_gameSettings.aiPace||'human')));
   document.querySelectorAll('.settings-speed-btn').forEach(b=>b.classList.toggle('active', b.dataset.speed===(_gameSettings.speed||'normal')));
+  if(typeof applyTextScale==='function') applyTextScale();
   document.querySelectorAll('.settings-ent-btn').forEach(b=>b.classList.toggle('active', (b.dataset.ent==='on')===(_gameSettings.entrances!==false)));
 }
 
@@ -18007,6 +18190,7 @@ function loadGameSettings(){
       const s = JSON.parse(window._gameSettingsCache);
       Object.assign(_gameSettings, s);
       _sfxEnabled = _gameSettings.sfx;
+      if(typeof applyTextScale==='function') applyTextScale();
       // Apply card size + animations
       const screen = document.getElementById('game-screen');
       if(screen){
@@ -22290,6 +22474,7 @@ function closeAllModals(){document.querySelectorAll('.modal-overlay').forEach(m=
 }
 
 function showScreen(id){
+  if(id==='profile-screen'&&typeof _pfTab!=='undefined'&&!document.getElementById('profile-screen')?.classList.contains('active')) _pfTab='overview'; // profile opens on Overview
   if(id!=='game-screen'&&typeof tutorialStepsActive==='function'&&tutorialStepsActive()){ try{ _tutFinishRun(); }catch(e){} }
   if(id!=='game-screen'&&id!=='game-screen-2v2'&&document.querySelector('#game-screen.active,#game-screen-2v2.active')&&typeof abandonMatch==='function'){ try{ abandonMatch(); }catch(e){ console.warn('[abandon]',e); } }
   if(id!=='game-screen'&&id!=='game-screen-2v2'){ const _ct=document.getElementById('coin-toss'); if(_ct&&_ct.classList.contains('open')){ _ct.classList.remove('open'); if(typeof CT!=='undefined'&&CT){ if(CT._resend)clearInterval(CT._resend); if(CT._resend2)clearInterval(CT._resend2); } } }
@@ -22706,35 +22891,18 @@ function refreshProfileScreen(){
   const _unlocked=Object.keys(ACHIEVEMENTS).filter(id=>!!_achData['ach_'+id]).length;
   const _badge=document.getElementById('ach-count-badge');
   if(_badge)_badge.textContent=_unlocked+' / '+_total;
-  // Reset panel to closed when profile refreshes
-  const _panel=document.getElementById('ach-panel');
-  const _chev=document.getElementById('ach-chevron');
-  const _btn=document.getElementById('ach-toggle-btn');
-  if(_panel)_panel.style.display='none';
-  if(_chev)_chev.style.transform='rotate(0deg)';
-  if(_btn){_btn.style.borderRadius='12px';_btn.style.borderBottomColor='rgba(251,191,36,.25)';}
-  // Reset statistics panel to closed too
-  const _sp=document.getElementById('stats-panel');
-  const _sc=document.getElementById('stats-chevron');
-  const _sb=document.getElementById('stats-toggle-btn');
-  if(_sp)_sp.style.display='none';
-  if(_sc)_sc.style.transform='rotate(0deg)';
-  if(_sb)_sb.style.borderRadius='12px';
+  // Hero (level, title, win rate, Herald art) + keep the open tab
+  pfHeroRefresh(); pfTab(_pfTab||'overview');
   // Log
   const logEl=document.getElementById('cel-log');
   if(logEl){
     if(!_celLog.length){
-      logEl.innerHTML='<div style="font-size:11px;color:#4b5563;text-align:center;padding:10px">No earnings yet</div>';
+      logEl.innerHTML='<div class="pf-empty">No earnings yet. Win matches and finish achievements to earn Celestium.</div>';
     } else {
       logEl.innerHTML=_celLog.slice(0,15).map(e=>{
         const d=new Date(e.ts);
         const time=d.toLocaleDateString()+' '+d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
-        return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04)">'
-          +'<img src="'+CEL_IMG+'" style="width:14px;height:14px;border-radius:50%;object-fit:cover;flex-shrink:0"/>'
-          +'<div style="flex:1;font-size:10px;color:#9ca3af">'+e.reason+'</div>'
-          +'<div style="font-size:11px;font-weight:700;color:#fbbf24">+'+e.amount+'</div>'
-          +'<div style="font-size:9px;color:#4b5563;white-space:nowrap">'+time+'</div>'
-          +'</div>';
+        return '<div class="pf-logrow"><img src="'+CEL_IMG+'" alt=""/><span class="pf-lr-r">'+(typeof escapeHtml==='function'?escapeHtml(e.reason):e.reason)+'</span><b>+'+e.amount+'</b><time>'+time+'</time></div>';
       }).join('');
     }
   }
@@ -22944,7 +23112,53 @@ function showAchievementPopup(ach){
   setTimeout(()=>{if(popup.parentNode)popup.remove();},5200);
 }
 
-function toggleStats(){
+// ═══ PROFILE v2 tabs (build 9.6) — the old toggles now open their tab ═══
+var _pfTab='overview';
+function pfTab(t){
+  const map={overview:'pf-overview',stats:'stats-panel',ach:'ach-panel',packs:'packs-panel',col:'col-panel'};
+  if(!map[t]) t='overview'; _pfTab=t;
+  Object.keys(map).forEach(k=>{ const el=document.getElementById(map[k]); if(el) el.style.display=(k===t)?'block':'none'; });
+  document.querySelectorAll('#profile-screen .pf-tabs [data-pf]').forEach(b=>b.setAttribute('aria-selected', b.dataset.pf===t?'true':'false'));
+  try{
+    if(t==='stats') renderProfileStats();
+    if(t==='ach') renderAchievementsSection();
+    if(t==='packs') renderPackInventory();
+    if(t==='col') renderProfileCollection();
+  }catch(e){ console.warn('[profile tab]',e); }
+}
+function pfHeroRefresh(){
+  const $=id=>document.getElementById(id);
+  const w=_celData.wins||0, l=_celData.losses||0;
+  if($('pf-hero-wr')) $('pf-hero-wr').textContent=(w+l)?Math.round(w/(w+l)*100)+'%':'—';
+  try{
+    const tot=(_bpPlayerData&&_bpPlayerData.xp)||0;
+    const tier=(typeof bpCurrentTierFromXP==='function')?bpCurrentTierFromXP(tot):1;
+    const into=(typeof bpXpIntoCurrentTier==='function')?bpXpIntoCurrentTier(tot):0;
+    const need=(typeof bpXpRequiredForTier==='function')?bpXpRequiredForTier(tier):400;
+    if($('pf-lvl')) $('pf-lvl').textContent=tier;
+    if($('pf-xpfill')) $('pf-xpfill').style.width=Math.max(0,Math.min(100,into/(need||1)*100))+'%';
+    if($('pf-xptext')) $('pf-xptext').textContent=into+' / '+need+' XP';
+  }catch(e){}
+  try{
+    const t=(typeof cosItem==='function'&&typeof cosEquipped==='function')?cosItem(cosEquipped('title',1)):null;
+    const el=$('pf-title-txt'); if(el){ el.textContent=(t&&t.id!=='title_none')?(t.text||t.name):''; el.style.color=(t&&t.color)||''; el.style.display=el.textContent?'':'none'; }
+  }catch(e){}
+  try{
+    const h=(typeof mmDisplayHerald==='function')?mmDisplayHerald():null; const u=h?getImg(h):null;
+    const art=$('pf-hero-art'); if(art) art.style.backgroundImage=u?'url("'+u+'")':'';
+  }catch(e){}
+  try{
+    const tot=Object.keys(ACHIEVEMENTS).length, un=Object.keys(ACHIEVEMENTS).filter(id=>!!_achData['ach_'+id]).length;
+    if($('pf-ov-ach')) $('pf-ov-ach').textContent=un+' / '+tot;
+    if($('pf-ov-packs')) $('pf-ov-packs').textContent=(typeof totalUnopenedPacks==='function')?totalUnopenedPacks():0;
+    const _own=Object.values(_collection||{}).filter(n=>n>0).length;
+    if($('pf-ov-col')) $('pf-ov-col').textContent=_own;
+    const _cb=$('col-count-badge'); if(_cb&&typeof isCardPlayable==='function'){ const pool=Object.keys(DB).filter(id=>{const cc=DB[id];return cc&&!cc.isToken&&cc.type!=='token'&&cc.type!=='system'&&isCardPlayable(id);}).length; _cb.textContent=_own+' / '+pool; }
+    if($('pf-ov-reg')&&typeof registryEligible==='function'){ const all=Object.keys(DB).filter(registryEligible); const reg=all.filter(cid=>registryState(cid)==='registered').length; $('pf-ov-reg').textContent=all.length?Math.round(reg/all.length*100)+'%':'0%'; }
+  }catch(e){}
+}
+function toggleStats(){ pfTab('stats'); }
+function _oldToggleStats(){
   const panel=document.getElementById('stats-panel');
   const chevron=document.getElementById('stats-chevron');
   const btn=document.getElementById('stats-toggle-btn');
@@ -22956,7 +23170,8 @@ function toggleStats(){
   if(open)renderProfileStats();
 }
 
-function toggleAchievements(){
+function toggleAchievements(){ pfTab('ach'); }
+function _oldToggleAchievements(){
   const panel=document.getElementById('ach-panel');
   const chevron=document.getElementById('ach-chevron');
   const btn=document.getElementById('ach-toggle-btn');
@@ -23982,7 +24197,8 @@ function renderPackInventory(){
 function updatePackBadge(){
   const b=document.getElementById('packs-count-badge'); if(b)b.textContent=totalUnopenedPacks();
 }
-function togglePacks(){
+function togglePacks(){ pfTab('packs'); }
+function _oldTogglePacks(){
   const p=document.getElementById('packs-panel'); const ch=document.getElementById('packs-chevron'); if(!p)return;
   const open=(p.style.display==='none'||!p.style.display);
   p.style.display=open?'block':'none'; if(ch)ch.style.transform=open?'rotate(180deg)':'';
@@ -24294,7 +24510,8 @@ async function buySingleCard(cid,price){
 }
 
 // ── Profile Collection panel ──────────────────────
-function toggleCollection(){
+function toggleCollection(){ pfTab('col'); }
+function _oldToggleCollection(){
   const panel=document.getElementById('col-panel');
   const chev=document.getElementById('col-chevron');
   const btn=document.getElementById('col-toggle-btn');
@@ -28758,233 +28975,139 @@ window.addEventListener('load',async()=>{
 </div>
 
 <!-- PROFILE SCREEN -->
-<div id="profile-screen" class="screen" style="padding:62px 32px 24px;max-width:1280px;margin:0 auto">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
-    <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
-    <div style="font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:4px;color:var(--blue)">PROFILE</div>
-  </div>
-
-  <!-- Avatar + Username -->
-  <div style="display:flex;align-items:center;gap:16px;background:rgba(8,8,28,.7);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px">
-    <div id="profile-avatar" style="width:56px;height:56px;border-radius:50%;border:2px solid rgba(0,180,255,.4);background:#0d0d2a;display:flex;align-items:center;justify-content:center;font-size:24px;overflow:hidden;flex-shrink:0">?</div>
-    <div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <div style="font-size:18px;font-weight:700;color:#e2e8f0;font-family:'Orbitron',sans-serif" id="profile-username">—</div>
-        <button id="admin-badge-btn" onclick="showScreen('admin-screen');openAdminPanel()" style="display:none;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);border-radius:5px;padding:2px 8px;font-size:9px;letter-spacing:1px;color:#fca5a5;cursor:pointer;font-family:'Share Tech Mono',monospace">⚡ ADMIN</button>
+<div id="profile-screen" class="screen pf2">
+  <div class="pf-wrap">
+    <div class="pf-top">
+      <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
+      <div class="pf-top-title">PROFILE</div>
+      <div class="pf-top-cel" title="Celestium">
+        <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" alt=""/>
+        <b id="profile-cel-amount">—</b><span>CELESTIUM</span>
       </div>
-      <div style="font-size:10px;color:#4b5563;margin-top:3px;letter-spacing:1px" id="profile-provider">—</div>
     </div>
-    <div class="cel-badge" style="margin-left:auto;padding:6px 14px">
-      <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" style="width:22px;height:22px;border-radius:50%;object-fit:cover" alt="C"/>
-      <span style="font-size:16px;font-weight:700;color:#fbbf24;font-family:'Orbitron',sans-serif" id="profile-cel-amount">—</span>
-      <span style="font-size:9px;color:rgba(251,191,36,.5);margin-left:2px">CELESTIUM</span>
-    </div>
-  </div>
 
-  <!-- Stats grid: base record (always visible) -->
-  <div class="profile-stat-grid" style="margin-bottom:14px">
-    <div class="profile-stat-card">
-      <div class="profile-stat-val" id="profile-wins">—</div>
-      <div class="profile-stat-lbl">Wins</div>
-    </div>
-    <div class="profile-stat-card">
-      <div class="profile-stat-val" id="profile-losses">—</div>
-      <div class="profile-stat-lbl">Losses</div>
-    </div>
-    <div class="profile-stat-card">
-      <div class="profile-stat-val" id="profile-matches">—</div>
-      <div class="profile-stat-lbl">Matches</div>
-    </div>
-  </div>
-
-  <!-- Full statistics — collapsible -->
-  <div style="margin-bottom:16px">
-    <button onclick="toggleStats()" id="stats-toggle-btn"
-      style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(8,8,28,.7);border:1px solid var(--border-v);border-radius:12px;cursor:pointer;font-family:'Share Tech Mono',monospace;transition:all .2s">
-      <div style="display:flex;align-items:center;gap:8px">
-        <span style="font-size:16px">📊</span>
-        <span style="font-size:10px;font-weight:700;color:var(--violet2);letter-spacing:2px">STATISTICS</span>
-      </div>
-      <span id="stats-chevron" style="color:var(--violet2);font-size:14px;transition:transform .2s">▼</span>
-    </button>
-    <div id="stats-panel" style="display:none;background:rgba(8,8,28,.5);border:1px solid var(--border-v);border-top:none;border-radius:0 0 12px 12px;padding:14px">
-
-      <!-- RECORD (extended) -->
-      <div class="profile-stat-group-lbl" style="margin-top:0">⚔ Record</div>
-      <div class="profile-stat-grid">
-        <div class="profile-stat-card">
-          <div class="profile-stat-val" id="profile-winrate">—</div>
-          <div class="profile-stat-lbl">Win Rate</div>
-        </div>
-        <div class="profile-stat-card">
-          <div class="profile-stat-val" id="profile-wlratio">—</div>
-          <div class="profile-stat-lbl">W / L Ratio</div>
-        </div>
-        <div class="profile-stat-card">
-          <div class="profile-stat-val" id="profile-streak">—</div>
-          <div class="profile-stat-lbl">Win Streak</div>
-        </div>
-        <div class="profile-stat-card">
-          <div class="profile-stat-val" id="profile-beststreak">—</div>
-          <div class="profile-stat-lbl">Best Streak</div>
-        </div>
-      </div>
-
-      <!-- COMBAT -->
-      <div class="profile-stat-group-lbl">🗡 Combat</div>
-      <div class="profile-stat-grid">
-        <div class="profile-stat-card">
-          <div class="profile-stat-val" id="profile-kills">—</div>
-          <div class="profile-stat-lbl">Characters Killed</div>
-        </div>
-        <div class="profile-stat-card">
-          <div class="profile-stat-val" id="profile-dmgdealt">—</div>
-          <div class="profile-stat-lbl">Damage Dealt</div>
-        </div>
-        <div class="profile-stat-card">
-          <div class="profile-stat-val" id="profile-dmgtaken">—</div>
-          <div class="profile-stat-lbl">Damage Taken</div>
-        </div>
-      </div>
-
-      <!-- GAMEPLAY -->
-      <div class="profile-stat-group-lbl">✦ Gameplay</div>
-      <div class="profile-stat-grid">
-        <div class="profile-stat-card">
-          <div class="profile-stat-val" id="profile-transforms">—</div>
-          <div class="profile-stat-lbl">Transformations</div>
-        </div>
-        <div class="profile-stat-card">
-          <div class="profile-stat-val" id="profile-abilities">—</div>
-          <div class="profile-stat-lbl">Abilities Used</div>
-        </div>
-        <div class="profile-stat-card">
-          <div class="profile-stat-val" id="profile-cardsplayed">—</div>
-          <div class="profile-stat-lbl">Cards Played</div>
-        </div>
-      </div>
-
-      <!-- PROGRESSION -->
-      <div class="profile-stat-group-lbl">★ Progression</div>
-      <div class="profile-stat-grid">
-        <div class="profile-stat-card">
-          <div class="profile-stat-val" id="profile-celearned" style="color:#fbbf24">—</div>
-          <div class="profile-stat-lbl">Total Celestium Earned</div>
-        </div>
-        <div class="profile-stat-card">
-          <div class="profile-stat-val" id="profile-achunlocked">—</div>
-          <div class="profile-stat-lbl">Achievements</div>
-        </div>
-      </div>
-
-      <!-- FAVORITES -->
-      <div class="profile-stat-group-lbl">♥ Favorites</div>
-      <div class="profile-fav-grid">
-        <div class="profile-fav-card">
-          <div class="profile-fav-swatch" id="profile-favcolor-swatch"></div>
-          <div class="profile-fav-info">
-            <div class="profile-fav-name" id="profile-favcolor">—</div>
-            <div class="profile-stat-lbl">Favorite Color</div>
+    <!-- HERO: who you are -->
+    <section class="pf-hero">
+      <div class="pf-hero-art" id="pf-hero-art" aria-hidden="true"></div>
+      <div class="pf-id">
+        <div class="pf-avatar" id="profile-avatar">⚔️</div>
+        <div class="pf-idtext">
+          <div class="pf-name-row">
+            <h2 class="pf-name" id="profile-username">—</h2>
+            <button id="admin-badge-btn" class="pf-admin" onclick="showScreen('admin-screen');openAdminPanel()" style="display:none">⚡ ADMIN PANEL</button>
           </div>
-        </div>
-        <div class="profile-fav-card" id="profile-favcard-wrap">
-          <div class="profile-fav-thumb" id="profile-favcard-thumb">—</div>
-          <div class="profile-fav-info">
-            <div class="profile-fav-name" id="profile-favcard">—</div>
-            <div class="profile-stat-lbl">Favorite Card</div>
-          </div>
-        </div>
-        <div class="profile-fav-card" id="profile-favchar-wrap">
-          <div class="profile-fav-thumb" id="profile-favchar-thumb">—</div>
-          <div class="profile-fav-info">
-            <div class="profile-fav-name" id="profile-favchar">—</div>
-            <div class="profile-stat-lbl">Favorite Character</div>
+          <div class="pf-sub"><span class="pf-title" id="pf-title-txt"></span><span class="pf-prov" id="profile-provider">—</span></div>
+          <div class="pf-level">
+            <span class="pf-lvl"><small>LV</small><b id="pf-lvl">1</b></span>
+            <div class="pf-xp"><div class="pf-xpbar"><i id="pf-xpfill"></i></div><span id="pf-xptext">0 / 400 XP</span></div>
           </div>
         </div>
       </div>
+      <div class="pf-heads">
+        <div class="pf-head"><b id="profile-wins">—</b><span>WINS</span></div>
+        <div class="pf-head"><b id="profile-losses">—</b><span>LOSSES</span></div>
+        <div class="pf-head"><b id="profile-matches">—</b><span>MATCHES</span></div>
+        <div class="pf-head gold"><b id="pf-hero-wr">—</b><span>WIN RATE</span></div>
+      </div>
+    </section>
 
-    </div>
-  </div>
+    <!-- TABS -->
+    <nav class="pf-tabs" role="tablist" aria-label="Profile sections">
+      <button type="button" role="tab" data-pf="overview" onclick="pfTab('overview')">Overview</button>
+      <button type="button" role="tab" data-pf="stats" onclick="pfTab('stats')">Statistics</button>
+      <button type="button" role="tab" data-pf="ach" onclick="pfTab('ach')">Achievements <em id="ach-count-badge">0 / 0</em></button>
+      <button type="button" role="tab" data-pf="packs" onclick="pfTab('packs')">My Packs <em id="packs-count-badge">0</em></button>
+      <button type="button" role="tab" data-pf="col" onclick="pfTab('col')">Collection <em id="col-count-badge">0 / 0</em></button>
+    </nav>
 
-  <!-- Daily rewards status -->
-  <div style="background:rgba(8,8,28,.7);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px">
-    <div style="font-size:10px;font-weight:700;color:var(--violet2);letter-spacing:2px;margin-bottom:10px">⚡ DAILY REWARDS</div>
-    <div style="display:flex;gap:10px">
-      <div style="flex:1;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:10px;text-align:center">
-        <div style="font-size:11px;color:#fbbf24;font-weight:700">Daily Login</div>
-        <div style="font-size:18px;font-weight:700;color:#fbbf24;font-family:'Orbitron',sans-serif">+150</div>
-        <div style="font-size:9px;margin-top:4px" id="daily-login-status" style="color:#4b5563">—</div>
-      </div>
-      <div style="flex:1;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:10px;text-align:center">
-        <div style="font-size:11px;color:#fbbf24;font-weight:700">First Win</div>
-        <div style="font-size:18px;font-weight:700;color:#fbbf24;font-family:'Orbitron',sans-serif">+100</div>
-        <div style="font-size:9px;margin-top:4px" id="first-win-status">—</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Achievements — collapsible -->
-  <div id="ach-collapsible" style="margin-bottom:16px">
-    <button onclick="toggleAchievements()" id="ach-toggle-btn"
-      style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(8,8,28,.7);border:1px solid rgba(251,191,36,.25);border-radius:12px;cursor:pointer;font-family:'Share Tech Mono',monospace;transition:all .2s;">
-      <div style="display:flex;align-items:center;gap:8px">
-        <span style="font-size:16px">🏅</span>
-        <span style="font-size:10px;font-weight:700;color:#fbbf24;letter-spacing:2px">ACHIEVEMENTS</span>
-        <span id="ach-count-badge" style="background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);border-radius:10px;padding:1px 8px;font-size:9px;color:#fbbf24">0 / 4</span>
-      </div>
-      <span id="ach-chevron" style="color:#fbbf24;font-size:14px;transition:transform .2s">▼</span>
-    </button>
-    <div id="ach-panel" style="display:none;background:rgba(8,8,28,.5);border:1px solid rgba(251,191,36,.15);border-top:none;border-radius:0 0 12px 12px;padding:12px;display:none">
-      <div id="profile-achievements" style="display:flex;flex-direction:column;gap:8px">
-        <div style="font-size:11px;color:#4b5563;text-align:center;padding:10px">Loading...</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- My Packs (unopened) -->
-  <div style="margin-bottom:16px">
-    <button onclick="togglePacks()" id="packs-toggle-btn"
-      style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(8,8,28,.7);border:1px solid rgba(240,171,252,.3);border-radius:12px;cursor:pointer;font-family:'Share Tech Mono',monospace;transition:all .2s">
-      <div style="display:flex;align-items:center;gap:8px">
-        <span style="font-size:16px">🎁</span>
-        <span style="font-size:10px;font-weight:700;color:#f0abfc;letter-spacing:2px">MY PACKS</span>
-        <span id="packs-count-badge" style="background:rgba(240,171,252,.15);border:1px solid rgba(240,171,252,.35);border-radius:10px;padding:1px 8px;font-size:9px;color:#f0abfc">0</span>
-      </div>
-      <span id="packs-chevron" style="color:#f0abfc;font-size:14px;transition:transform .2s">▼</span>
-    </button>
-    <div id="packs-panel" style="display:none;background:rgba(8,8,28,.5);border:1px solid rgba(240,171,252,.18);border-top:none;border-radius:0 0 12px 12px;padding:12px">
-      <div id="profile-packs" style="display:flex;flex-direction:column;gap:8px"></div>
-    </div>
-  </div>
-
-  <!-- Collection summary -->
-  <div style="margin-bottom:16px">
-    <button onclick="toggleCollection()" id="col-toggle-btn"
-      style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:rgba(8,8,28,.7);border:1px solid var(--border-v);border-radius:12px;cursor:pointer;font-family:'Share Tech Mono',monospace;transition:all .2s">
-      <div style="display:flex;align-items:center;gap:8px">
-        <span style="font-size:16px">📚</span>
-        <span style="font-size:10px;font-weight:700;color:var(--violet2);letter-spacing:2px">CARD COLLECTION</span>
-        <span id="col-count-badge" style="background:rgba(124,58,237,.15);border:1px solid var(--border-v);border-radius:10px;padding:1px 8px;font-size:9px;color:#c4b5fd">0 / 0</span>
-      </div>
-      <span id="col-chevron" style="color:var(--violet2);font-size:14px;transition:transform .2s">▼</span>
-    </button>
-    <div id="col-panel" style="display:none;background:rgba(8,8,28,.5);border:1px solid var(--border-v);border-top:none;border-radius:0 0 12px 12px;padding:12px">
-      <button id="admin-reset-collection-btn" class="admin-action-btn danger" style="display:none;margin:0 0 10px;width:100%" onclick="adminResetCollection()">⚠ RESET MY CARD COLLECTION (zero out owned cards)</button>
-      <div id="profile-collection" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px;max-height:320px;overflow-y:auto">
-        <div style="font-size:11px;color:#4b5563;text-align:center;padding:10px;grid-column:1/-1">Loading...</div>
+    <!-- OVERVIEW -->
+    <div class="pf-panel" id="pf-overview" role="tabpanel">
+      <div class="pf-grid2">
+        <div class="pf-card">
+          <h3 class="pf-h">Daily Rewards</h3>
+          <div class="pf-daily">
+            <div class="pf-dtile"><span class="pf-dname">Daily Login</span><b>+150</b><span class="pf-dstat" id="daily-login-status">—</span></div>
+            <div class="pf-dtile"><span class="pf-dname">First Win of the Day</span><b>+100</b><span class="pf-dstat" id="first-win-status">—</span></div>
+          </div>
+          <h3 class="pf-h" style="margin-top:18px">Progress</h3>
+          <div class="pf-prog">
+            <button type="button" class="pf-ptile" onclick="pfTab('ach')"><b id="pf-ov-ach">0 / 0</b><span>Achievements</span></button>
+            <button type="button" class="pf-ptile" onclick="pfTab('packs')"><b id="pf-ov-packs">0</b><span>Packs to open</span></button>
+            <button type="button" class="pf-ptile" onclick="pfTab('col')"><b id="pf-ov-col">0</b><span>Cards owned</span></button>
+            <button type="button" class="pf-ptile" onclick="if(typeof openRegistry==='function')openRegistry()"><b id="pf-ov-reg">0%</b><span>Registry</span></button>
+          </div>
+        </div>
+        <div class="pf-card">
+          <h3 class="pf-h">Recent Earnings</h3>
+          <div id="cel-log" class="pf-log"><div class="pf-empty">No earnings yet</div></div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Celestium log -->
-  <div style="background:rgba(8,8,28,.7);border:1px solid var(--border);border-radius:12px;padding:14px">
-    <div style="font-size:10px;font-weight:700;color:var(--violet2);letter-spacing:2px;margin-bottom:10px">📋 RECENT EARNINGS</div>
-    <div id="cel-log" style="max-height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:4px">
-      <div style="font-size:11px;color:#4b5563;text-align:center;padding:10px">No earnings yet</div>
+    <!-- STATISTICS -->
+    <div class="pf-panel" id="stats-panel" role="tabpanel" style="display:none">
+      <div class="pf-card">
+        <h3 class="pf-h">Record</h3>
+        <div class="profile-stat-grid">
+          <div class="profile-stat-card"><div class="profile-stat-val" id="profile-winrate">—</div><div class="profile-stat-lbl">Win Rate</div></div>
+          <div class="profile-stat-card"><div class="profile-stat-val" id="profile-wlratio">—</div><div class="profile-stat-lbl">W / L Ratio</div></div>
+          <div class="profile-stat-card"><div class="profile-stat-val" id="profile-streak">—</div><div class="profile-stat-lbl">Win Streak</div></div>
+          <div class="profile-stat-card"><div class="profile-stat-val" id="profile-beststreak">—</div><div class="profile-stat-lbl">Best Streak</div></div>
+        </div>
+        <h3 class="pf-h">Combat</h3>
+        <div class="profile-stat-grid">
+          <div class="profile-stat-card"><div class="profile-stat-val" id="profile-kills">—</div><div class="profile-stat-lbl">Characters Destroyed</div></div>
+          <div class="profile-stat-card"><div class="profile-stat-val" id="profile-dmgdealt">—</div><div class="profile-stat-lbl">Damage Dealt</div></div>
+          <div class="profile-stat-card"><div class="profile-stat-val" id="profile-dmgtaken">—</div><div class="profile-stat-lbl">Damage Taken</div></div>
+        </div>
+        <h3 class="pf-h">Gameplay</h3>
+        <div class="profile-stat-grid">
+          <div class="profile-stat-card"><div class="profile-stat-val" id="profile-transforms">—</div><div class="profile-stat-lbl">Transformations</div></div>
+          <div class="profile-stat-card"><div class="profile-stat-val" id="profile-abilities">—</div><div class="profile-stat-lbl">Abilities Used</div></div>
+          <div class="profile-stat-card"><div class="profile-stat-val" id="profile-cardsplayed">—</div><div class="profile-stat-lbl">Cards Played</div></div>
+        </div>
+        <h3 class="pf-h">Progression</h3>
+        <div class="profile-stat-grid">
+          <div class="profile-stat-card"><div class="profile-stat-val gold" id="profile-celearned">—</div><div class="profile-stat-lbl">Total Celestium Earned</div></div>
+          <div class="profile-stat-card"><div class="profile-stat-val" id="profile-achunlocked">—</div><div class="profile-stat-lbl">Achievements</div></div>
+        </div>
+        <h3 class="pf-h">Favorites</h3>
+        <div class="profile-fav-grid">
+          <div class="profile-fav-card">
+            <div class="profile-fav-swatch" id="profile-favcolor-swatch"></div>
+            <div class="profile-fav-info"><div class="profile-fav-name" id="profile-favcolor">—</div><div class="profile-stat-lbl">Favorite Color</div></div>
+          </div>
+          <div class="profile-fav-card" id="profile-favcard-wrap">
+            <div class="profile-fav-thumb" id="profile-favcard-thumb">—</div>
+            <div class="profile-fav-info"><div class="profile-fav-name" id="profile-favcard">—</div><div class="profile-stat-lbl">Favorite Card</div></div>
+          </div>
+          <div class="profile-fav-card" id="profile-favchar-wrap">
+            <div class="profile-fav-thumb" id="profile-favchar-thumb">—</div>
+            <div class="profile-fav-info"><div class="profile-fav-name" id="profile-favchar">—</div><div class="profile-stat-lbl">Favorite Character</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACHIEVEMENTS -->
+    <div class="pf-panel" id="ach-panel" role="tabpanel" style="display:none">
+      <div class="pf-card"><div id="profile-achievements" class="pf-ach-list"><div class="pf-empty">Loading…</div></div></div>
+    </div>
+
+    <!-- MY PACKS -->
+    <div class="pf-panel" id="packs-panel" role="tabpanel" style="display:none">
+      <div class="pf-card"><div id="profile-packs" class="pf-pack-list"></div></div>
+    </div>
+
+    <!-- COLLECTION -->
+    <div class="pf-panel" id="col-panel" role="tabpanel" style="display:none">
+      <div class="pf-card">
+        <button id="admin-reset-collection-btn" class="admin-action-btn danger" style="display:none;margin:0 0 12px;width:100%" onclick="adminResetCollection()">⚠ RESET MY CARD COLLECTION (zero out owned cards)</button>
+        <div id="profile-collection" class="pf-col-grid"><div class="pf-empty" style="grid-column:1/-1">Loading…</div></div>
+      </div>
     </div>
   </div>
 </div>
-
 <!-- ENERGY DETAIL MODAL -->
 <div class="energy-modal" id="energy-modal" onclick="if(event.target===this)closeEnergyModal()">
   <div class="energy-modal-card">
@@ -29080,135 +29203,117 @@ window.addEventListener('load',async()=>{
 </div>
 
 <!-- ADMIN PANEL SCREEN (only accessible to admin users) -->
-<div id="admin-screen" class="screen" style="padding:62px 32px 24px;max-width:1280px;margin:0 auto">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
-    <button class="btn-gray btn-sm" onclick="showScreen('profile-screen');refreshProfileScreen()">← Back</button>
-    <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:#fca5a5;text-shadow:0 0 10px rgba(239,68,68,.5)">⚡ ADMIN PANEL</div>
-    <div style="margin-left:auto;font-size:9px;color:#fca5a5;letter-spacing:1px;padding:3px 10px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:10px">RESTRICTED</div>
-  </div>
-
-  <!-- SYSTEM TOGGLES -->
-  <div class="admin-section">
-    <div class="admin-section-title">⚙ SYSTEM TOGGLES</div>
-
-    <div style="font-size:9px;color:#fcd34d;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:6px;padding:8px 10px;margin-bottom:10px;letter-spacing:1px">⚠ GLOBAL: These toggles affect ALL players. You as admin always have access.</div>
-
-    <div class="admin-toggle" onclick="adminToggle('shop_enabled')">
+<div id="admin-screen" class="screen adm2">
+  <div class="adm-wrap">
+    <div class="adm-top">
+      <button class="btn-gray btn-sm" onclick="showScreen('profile-screen');refreshProfileScreen()">← Profile</button>
       <div>
-        <div class="admin-toggle-label">🏪 Shop System <span style="font-size:8px;color:#7dd3fc">GLOBAL</span></div>
-        <div class="admin-toggle-desc">Allow ALL players to access the shop (you always see it)</div>
+        <div class="adm-title">ADMIN</div>
+        <div class="adm-who">Signed in as <b id="admin-username">—</b> · <span id="admin-user-id">—</span></div>
       </div>
-      <div class="admin-toggle-switch" id="admin-tg-shop_enabled"><div class="admin-toggle-knob"></div></div>
+      <span class="adm-lock">RESTRICTED · ONLY YOU SEE THIS</span>
     </div>
 
-    <div class="admin-toggle" onclick="adminToggle('events_enabled')">
-      <div>
-        <div class="admin-toggle-label">🎉 Events Tab <span style="font-size:8px;color:#7dd3fc">GLOBAL</span></div>
-        <div class="admin-toggle-desc">Show seasonal events tab in shop</div>
+    <div class="adm-grid">
+      <div class="adm-col">
+      <!-- GLOBAL SWITCHES -->
+      <section class="adm-card">
+        <h3 class="adm-h">Game switches</h3>
+        <p class="adm-note"><b class="adm-tag g">GLOBAL</b> changes the game for every player. <b class="adm-tag a">ADMIN ONLY</b> only changes your account. You always have access either way.</p>
+        <div class="adm-sw" onclick="adminToggle('shop_enabled')" role="switch" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+          <span class="adm-ico">🏪</span><div class="adm-swt"><b>Shop <i class="adm-tag g">GLOBAL</i></b><span>Players can open the Shop.</span></div>
+          <div class="admin-toggle-switch" id="admin-tg-shop_enabled"><div class="admin-toggle-knob"></div></div>
+        </div>
+        <div class="adm-sw" onclick="adminToggle('events_enabled')" role="switch" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+          <span class="adm-ico">🎉</span><div class="adm-swt"><b>Events tab <i class="adm-tag g">GLOBAL</i></b><span>Shows the seasonal Events tab in the Shop.</span></div>
+          <div class="admin-toggle-switch" id="admin-tg-events_enabled"><div class="admin-toggle-knob"></div></div>
+        </div>
+        <div class="adm-sw" onclick="adminToggle('achievements_enabled')" role="switch" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+          <span class="adm-ico">🏅</span><div class="adm-swt"><b>Achievements <i class="adm-tag g">GLOBAL</i></b><span>Achievement tracking for everyone.</span></div>
+          <div class="admin-toggle-switch" id="admin-tg-achievements_enabled"><div class="admin-toggle-knob"></div></div>
+        </div>
+        <div class="adm-sw" onclick="adminToggle('battle_pass_enabled')" role="switch" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+          <span class="adm-ico">⚔</span><div class="adm-swt"><b>Battle Pass <i class="adm-tag g">GLOBAL</i></b><span>Shows the Battle Pass on the menu.</span></div>
+          <div class="admin-toggle-switch" id="admin-tg-battle_pass_enabled"><div class="admin-toggle-knob"></div></div>
+        </div>
+        <div class="adm-sw" onclick="adminToggle('campaign_enabled')" role="switch" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+          <span class="adm-ico">🗺</span><div class="adm-swt"><b>Campaign <i class="adm-tag g">GLOBAL</i></b><span>When off, players see a "coming soon" popup.</span></div>
+          <div class="admin-toggle-switch" id="admin-tg-campaign_enabled"><div class="admin-toggle-knob"></div></div>
+        </div>
+        <div class="adm-sw" onclick="adminToggle('admin_unlimited_cards')" role="switch" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+          <span class="adm-ico">🎴</span><div class="adm-swt"><b>Every card ×4 <i class="adm-tag a">ADMIN ONLY</i></b><span>You own 4 copies of every card. Nobody else is affected.</span></div>
+          <div class="admin-toggle-switch" id="admin-tg-admin_unlimited_cards"><div class="admin-toggle-knob"></div></div>
+        </div>
+      </section>
+      <!-- SEASONS -->
+      <section class="adm-card">
+        <h3 class="adm-h">Seasons</h3>
+        <div class="adm-rows">
+          <div class="adm-row"><div class="adm-swt"><b>Battle Pass season <i class="adm-tag g">GLOBAL</i></b><span>Start or end the current season for everyone.</span></div>
+            <div class="adm-btns"><button class="adm-btn" onclick="startBPSeasonNow()">▶ Start now</button><button class="adm-btn warn" onclick="endBPSeasonNow()">■ End now</button></div></div>
+          <div class="adm-row"><div class="adm-swt"><b>Battle Pass defaults <i class="adm-tag g">GLOBAL</i></b><span>Put the Battle Pass back to its default setup.</span></div>
+            <div class="adm-btns"><button class="adm-btn warn" onclick="resetBPToDefault()">Reset to default</button></div></div>
+          <div class="adm-row"><div class="adm-swt"><b>Campaign defaults <i class="adm-tag g">GLOBAL</i></b><span>Put the campaign back to its default chapters.</span></div>
+            <div class="adm-btns"><button class="adm-btn warn" onclick="resetCampaignToDefault()">Reset to default</button></div></div>
+        </div>
+      </section>
       </div>
-      <div class="admin-toggle-switch" id="admin-tg-events_enabled"><div class="admin-toggle-knob"></div></div>
-    </div>
-
-    <div class="admin-toggle" onclick="adminToggle('achievements_enabled')">
-      <div>
-        <div class="admin-toggle-label">🏅 Achievements <span style="font-size:8px;color:#7dd3fc">GLOBAL</span></div>
-        <div class="admin-toggle-desc">Enable achievement tracking for everyone</div>
+      <div class="adm-col">
+      <!-- CREATOR TOOLS -->
+      <section class="adm-card">
+        <h3 class="adm-h">Creator tools</h3>
+        <div class="adm-tiles">
+          <button type="button" class="adm-tile" onclick="openCardManager()"><span class="adm-ico">🎴</span><b>Card Manager</b><span>Add and edit cards, sets and images</span></button>
+          <button type="button" class="adm-tile" onclick="openGiftCenter()"><span class="adm-ico">🎁</span><b>Gift Center</b><span>Send rewards, messages and codes</span></button>
+          <button type="button" class="adm-tile" onclick="if(typeof openNewsEditor==='function')openNewsEditor()"><span class="adm-ico">📰</span><b>News</b><span>Edit the main menu news slides</span></button>
+          <button type="button" class="adm-tile" onclick="if(typeof mmArtManage==='function')mmArtManage()"><span class="adm-ico">🖼</span><b>Menu Art</b><span>Menu card art and backdrop</span></button>
+          <button type="button" class="adm-tile" onclick="openBPEditor()"><span class="adm-ico">⚔</span><b>Battle Pass Editor</b><span>Season, XP, costs and tier rewards</span></button>
+          <button type="button" class="adm-tile" onclick="openCampaignEditor()"><span class="adm-ico">🗺</span><b>Campaign Editor</b><span>Chapters, matches, portraits, rewards</span></button>
+        </div>
+      </section>
+      <!-- TESTING -->
+      <section class="adm-card">
+        <h3 class="adm-h">Testing</h3>
+        <div class="adm-tiles">
+          <button type="button" class="adm-tile" onclick="startAdminTestMatch()"><span class="adm-ico">🧪</span><b>AI Testing Mode</b><span>A match with the status tester</span></button>
+          <button type="button" class="adm-tile" onclick="startTutorial()"><span class="adm-ico">🎓</span><b>Play Tutorial</b><span>Run the Royal Trial</span></button>
+          <button type="button" class="adm-tile" onclick="adminResetTutorial()"><span class="adm-ico">🔁</span><b>Replay as New Player</b><span>Reset the tutorial for your account</span></button>
+          <button type="button" class="adm-tile" onclick="adminTestCutscene()"><span class="adm-ico">🎬</span><b>Cutscene Player</b><span>Preview a campaign cutscene</span></button>
+        </div>
+        <div class="adm-holo">
+          <div class="adm-swt"><b>Holo preview <i class="adm-tag a">ADMIN ONLY</i></b><span>When card views show the holo style picker.</span></div>
+          <div class="adm-seg">
+            <button class="admin-holo-mode-btn" data-mode="show" onclick="setAdminHoloMode('show')">Show picker</button>
+            <button class="admin-holo-mode-btn" data-mode="owned" onclick="setAdminHoloMode('owned')">Only if owned</button>
+            <button class="admin-holo-mode-btn" data-mode="hide" onclick="setAdminHoloMode('hide')">Hide</button>
+          </div>
+        </div>
+      </section>
+      <!-- YOUR ACCOUNT -->
+      <section class="adm-card">
+        <h3 class="adm-h">Your test account</h3>
+        <div class="adm-tiles">
+          <button type="button" class="adm-tile gold" onclick="adminGrantCelestium()"><span class="adm-ico">💎</span><b>+1,000 Celestium</b><span>Added to your balance</span></button>
+          <button type="button" class="adm-tile gold" onclick="adminGrantCelestium50k()"><span class="adm-ico">💎</span><b>+50,000 Celestium</b><span>Added to your balance</span></button>
+          <button type="button" class="adm-tile" onclick="adminUnlockAllAchievements()"><span class="adm-ico">🏅</span><b>Unlock All Achievements</b><span>Marks every achievement earned</span></button>
+          <button type="button" class="adm-tile" onclick="adminGrantAllCards()"><span class="adm-ico">🃏</span><b>Grant All Cards</b><span>4 copies of each card</span></button>
+        </div>
+      </section>
       </div>
-      <div class="admin-toggle-switch" id="admin-tg-achievements_enabled"><div class="admin-toggle-knob"></div></div>
-    </div>
-
-    <div class="admin-toggle" onclick="adminToggle('battle_pass_enabled')">
-      <div>
-        <div class="admin-toggle-label">⚔ Battle Pass <span style="font-size:8px;color:#7dd3fc">GLOBAL</span></div>
-        <div class="admin-toggle-desc">Show Battle Pass on menu for everyone (you always see it)</div>
-      </div>
-      <div class="admin-toggle-switch" id="admin-tg-battle_pass_enabled"><div class="admin-toggle-knob"></div></div>
-    </div>
-
-    <div class="admin-toggle" onclick="adminToggle('campaign_enabled')">
-      <div>
-        <div class="admin-toggle-label">🗺 Campaign <span style="font-size:8px;color:#7dd3fc">GLOBAL</span></div>
-        <div class="admin-toggle-desc">When OFF, players can still click Campaign but get a “coming soon” popup (you always have access)</div>
-      </div>
-      <div class="admin-toggle-switch" id="admin-tg-campaign_enabled"><div class="admin-toggle-knob"></div></div>
-    </div>
-
-    <div class="admin-toggle" onclick="adminToggle('admin_unlimited_cards')">
-      <div>
-        <div class="admin-toggle-label">🎴 Admin Card Override <span style="font-size:8px;color:#fca5a5">ADMIN ONLY</span></div>
-        <div class="admin-toggle-desc">YOU always have 4 copies of every card (does not affect others)</div>
-      </div>
-      <div class="admin-toggle-switch" id="admin-tg-admin_unlimited_cards"><div class="admin-toggle-knob"></div></div>
-    </div>
-  </div>
-
-  <!-- ADMIN ACTIONS -->
-  <div class="admin-section">
-    <div class="admin-section-title">⚡ QUICK ACTIONS</div>
-
-    <button class="admin-action-btn" onclick="adminGrantCelestium()">+ GRANT YOURSELF 1000 CELESTIUM</button>
-    <button class="admin-action-btn" onclick="adminGrantCelestium50k()">+ GRANT YOURSELF 50,000 CELESTIUM</button>
-    <button class="admin-action-btn" onclick="adminUnlockAllAchievements()">+ UNLOCK ALL ACHIEVEMENTS</button>
-    <button class="admin-action-btn" onclick="adminGrantAllCards()">+ GRANT ALL CARDS (4 OF EACH)</button>
-    <button class="admin-action-btn danger" onclick="adminResetCollection()">⚠ RESET MY CARD COLLECTION</button>
-    <button class="admin-action-btn" onclick="openGiftCenter()" style="border-color:rgba(255,63,180,.6);color:#ff8fd0">🎁 GIFT CENTER · SEND REWARDS & MESSAGES</button>
-    <button class="admin-action-btn" onclick="openCardManager()" style="border-color:rgba(232,197,112,.5);color:#fbbf24">🎴 OPEN CARD MANAGER</button>
-    <button class="admin-action-btn" onclick="startAdminTestMatch()" style="border-color:rgba(167,139,250,.6);color:#c4b5fd">🧪 AI ADMIN TESTING MODE</button>
-    <button class="admin-action-btn" onclick="startTutorial()" style="border-color:rgba(56,189,248,.6);color:#7dd3fc">🎓 TEST TUTORIAL</button>
-    <button class="admin-action-btn" onclick="adminResetTutorial()" style="border-color:rgba(56,189,248,.4);color:#7dd3fc">🎓 RESET TUTORIAL (new-player replay)</button>
-    <div class="admin-toggle" style="display:block;margin-top:8px">
-      <div style="margin-bottom:8px">
-        <div class="admin-toggle-label">✨ Holo Preview Mode <span style="font-size:8px;color:#fcd34d">ADMIN ONLY</span></div>
-        <div class="admin-toggle-desc">Controls when you see the holo style picker / effect in card previews</div>
-      </div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="admin-holo-mode-btn" data-mode="show" onclick="setAdminHoloMode('show')">SHOW PICKER</button>
-        <button class="admin-holo-mode-btn" data-mode="owned" onclick="setAdminHoloMode('owned')">ONLY IF OWNED</button>
-        <button class="admin-holo-mode-btn" data-mode="hide" onclick="setAdminHoloMode('hide')">HIDE</button>
-      </div>
-    </div>
-    <button class="admin-action-btn danger" onclick="adminResetProfile()">⚠ RESET MY PROFILE</button>
-  </div>
-
-  <!-- BATTLE PASS EDITOR -->
-  <div class="admin-section">
-    <div class="admin-section-title">⚔ BATTLE PASS EDITOR</div>
-    <div style="font-size:9px;color:#9ca3af;margin-bottom:10px;letter-spacing:1px;line-height:1.5">
-      Configure season name, start date, duration, XP rates, costs, and tier rewards.
-    </div>
-    <button class="admin-action-btn" onclick="openBPEditor()">📝 OPEN BP EDITOR</button>
-    <button class="admin-action-btn" onclick="startBPSeasonNow()" style="margin-top:6px">▶ START SEASON NOW</button>
-    <button class="admin-action-btn danger" onclick="endBPSeasonNow()" style="margin-top:6px">⏹ END SEASON NOW</button>
-    <button class="admin-action-btn" onclick="resetBPToDefault()" style="margin-top:6px">🔄 RESET BP TO DEFAULT</button>
-    <button class="admin-action-btn danger" onclick="resetMyBPProgress()" style="margin-top:6px">⚠ RESET MY BP PROGRESS</button>
-  </div>
-
-  <!-- CAMPAIGN EDITOR -->
-  <div class="admin-section">
-    <div class="admin-section-title">🗺️ CAMPAIGN EDITOR</div>
-    <div style="font-size:9px;color:#9ca3af;margin-bottom:10px;letter-spacing:1px;line-height:1.5">
-      Edit chapter names, match names, opponent portraits, and rewards. Changes save globally and apply to all players.
-    </div>
-    <button class="admin-action-btn" onclick="openCampaignEditor()">📝 OPEN CAMPAIGN EDITOR</button>
-    <button class="admin-action-btn" onclick="adminTestCutscene()" style="margin-top:6px">🎬 TEST CUTSCENE PLAYER</button>
-    <button class="admin-action-btn" onclick="resetCampaignToDefault()" style="margin-top:6px">🔄 RESET CAMPAIGN TO DEFAULT</button>
-    <button class="admin-action-btn danger" onclick="adminResetWatchedCutscenes()" style="margin-top:6px">🔁 RESET MY WATCHED CUTSCENES</button>
-    <button class="admin-action-btn danger" onclick="resetMyCampaignProgress()" style="margin-top:6px">⚠ RESET MY CAMPAIGN PROGRESS</button>
-  </div>
-
-  <!-- ADMIN INFO -->
-  <div class="admin-section" style="border-color:rgba(0,180,255,.2);background:rgba(0,180,255,.04)">
-    <div class="admin-section-title" style="color:#7dd3fc">ℹ INFO</div>
-    <div style="font-size:10px;color:#9ca3af;line-height:1.6">
-      <div>User ID: <span style="color:#7dd3fc;font-family:'Share Tech Mono',monospace" id="admin-user-id">—</span></div>
-      <div>Username: <span style="color:#7dd3fc" id="admin-username">—</span></div>
-      <div>GLOBAL toggles affect every player on the platform.</div>
-      <div>ADMIN ONLY toggles affect only your own session.</div>
-      <div style="margin-top:6px;color:#22c55e">✓ You as admin always have full access regardless of toggle state.</div>
+      <!-- DANGER ZONE -->
+      <section class="adm-card danger">
+        <h3 class="adm-h">Danger zone <span>these only affect your account and can't be undone</span></h3>
+        <div class="adm-rows">
+          <div class="adm-row"><div class="adm-swt"><b>Card collection</b><span>Removes every card you own. Your admin 4-of-each access stays.</span></div><div class="adm-btns"><button class="adm-btn bad" onclick="adminResetCollection()">Reset collection</button></div></div>
+          <div class="adm-row"><div class="adm-swt"><b>Profile</b><span>Resets your Celestium, achievements and collection.</span></div><div class="adm-btns"><button class="adm-btn bad" onclick="adminResetProfile()">Reset profile</button></div></div>
+          <div class="adm-row"><div class="adm-swt"><b>Battle Pass progress</b><span>Resets your Battle Pass progress.</span></div><div class="adm-btns"><button class="adm-btn bad" onclick="resetMyBPProgress()">Reset progress</button></div></div>
+          <div class="adm-row"><div class="adm-swt"><b>Campaign progress</b><span>Resets your campaign progress.</span></div><div class="adm-btns"><button class="adm-btn bad" onclick="resetMyCampaignProgress()">Reset progress</button></div></div>
+          <div class="adm-row"><div class="adm-swt"><b>Watched cutscenes</b><span>Cutscenes play again the next time.</span></div><div class="adm-btns"><button class="adm-btn bad" onclick="adminResetWatchedCutscenes()">Reset cutscenes</button></div></div>
+        </div>
+      </section>
     </div>
   </div>
 </div>
-
 <!-- FRIENDS SCREEN -->
 <!-- ═══ MAILBOX (build 8.5) ═══ -->
 <div id="mail-screen" class="screen" style="padding:62px 24px 20px">
@@ -30033,6 +30138,13 @@ window.addEventListener('load',async()=>{
 
     <div class="settings-section">
       <div class="settings-section-title">✨ Visuals</div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Text Size</div>
+          <div class="settings-label-desc">Menus, your profile, card views and the match side panel. <span id="set-text-size-val" style="color:#f0d58a">100%</span></div>
+        </div>
+        <input type="range" class="settings-slider" id="set-text-size" min="90" max="130" step="5" value="100" oninput="setTextScale(this.value)" onchange="saveTextScale()" aria-label="Text size"/>
+      </div>
       <div class="settings-row">
         <div>
           <div class="settings-label">Animations</div>
