@@ -7213,7 +7213,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 9.6 · stances, Guardian &amp; Pursuit</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 9.7 · Crystal &amp; Voraxis</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -8184,8 +8184,24 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='9.6'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='9.7'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'9.7', date:'2026-10-25',
+    cards:[{id:'crystal_bse', set:'base_set', number:'113/150', rarity:'common', scan:'Sets/BASE SET/113-150 (Crystal Base).png', newAbilities:['Prism Orb'],
+      note:"Crystal · Blue · Common · BASE CHARACTER (charLine 'crystal', formTier 'base', nextForms [] until her SSJ, slot 114, exists) · cost 2 · 2 ATK / 3 HP · subtype Saiyan · race 'Saiyan' · sym 'CRY'."},
+      {id:'voraxis_bse', set:'base_set', number:'140/150', rarity:'legend', scan:'Sets/BASE SET/140-150 (Voraxis).png', newAbilities:['Primal Roar','Braided Armor','Beast Bond'],
+      note:"Voraxis · Purple · Legend · Character · cost 9 · 7 ATK / 10 HP · subtypes Great Ape, Saiyan · race 'Great Ape Saiyan' · sym 'VRX' · keywords ['resolve'] · canAttackLocations true."}],
+    abilities:[
+      "TIMED −ATTACK (new shared helper, 13.7 'until end of your next turn'): applyTimedCut(srcP, target, label, amt) stores f._tcut[label]={amt, ends:2, owner}; tickTimedCuts(owner) (called once from endTurnFx) counts it down at each of the source owner's turn-ends and restores the ATK at 0. The SAME effect again restarts its timer and never stacks; DIFFERENT effects (Prism Orb + Primal Roar) add together. The cut is min(amt, current ATK).",
+      "PRIMAL ROAR (Voraxis, triggered on entry): EACH opposing character (2v2: both enemy boards) gets −2 Attack until the end of your next turn — applyTimedCut(p, f, 'Primal Roar', 2). Not targeted, so Drunken Stance and Godly Evasion don't stop it; tokens are included. Shows the normal entry banner.",
+      "BRAIDED ARMOR (Voraxis, passive): Resolve (keywords ['resolve']) and can attack Locations (canAttackLocations:true; resolveLocationAttack and the AI also accept hasAbilityLabel(afc,'Braided Armor') so a stolen copy works).",
+      "BEAST BOND (Voraxis, passive, in recalcPassives): while you control a Virora, this card gets +2/+2 and EACH Virora you control gets +2/+2 from each Beast Bond source (two Voraxis = +4/+4 on each Virora; each Voraxis only gets its own +2/+2). 'A Virora' = isViroraChar(c): a character with the word Virora in its name or charName (every Virora form, Darkspine Virora, Virora (Surface Technique), Magnus & Virora). Losing the Virora removes the bonus (19.23: a damaged Voraxis can die from losing +2 HP).",
+      "PRISM ORB (Crystal, triggered on entry, CHOOSE ONE — mandatory): (a) target opposing character gets −2 Attack until the end of YOUR next turn — applyTimedCut(p, t, 'Prism Orb', 2) — or (b) heal one of your characters for 3 (up to its max). Targets: opposing characters (2v2: either enemy board), Drunken Stance excluded, Godly Evasion costs the 2⚡ toll (openEnemyTargetPicker). If there's no opposing target, only (b) is offered. Leaving the field doesn't end (a): it lives on the target. AI (aiChoosePrismOrb): heal if an ally is missing ≥3 HP, else −2 on the highest-ATK enemy without Godly Evasion, else heal the most wounded.",
+      "2v2 FIX: execEnd2v2 ticked Title Defense and Flame Spiral a second time after endTurnFx already did, so in 2v2 those 'until end of next turn' effects ended a turn early. The extra ticks are removed."],
+    screens:[
+      "PRISM ORB CHOOSER (human): the two-choice ability banner (trigShow dual) — '💠 −2 Attack' / '💚 Heal 3'. −2 Attack then opens the enemy target picker; Heal 3 opens a list of your characters (♥ current / max). Closing a picker or Skip goes back to the choice (it's mandatory). The plain entry banner is skipped for this ability (the chooser is the banner). AI: a normal banner whose outcome line names the choice ('−2 Attack: Kratos' / 'Heal 3: Billy').",
+      "Build tag: 'build 9.7 · Crystal & Voraxis'."],
+    data:["GAME_BUILD '9.7' (new cards: web ↔ PC online needs both on 9.7).","Field-card field: _tcut {label: {amt, ends, owner}}. Helpers: applyTimedCut, tickTimedCuts, isViroraChar(c), prismOrbAsk(p,fc), applyPrismOrb(srcP,tfc), healPrismOrb(tfc), aiChoosePrismOrb(p), _orbEnemies(p)."] },
   { build:'9.6', date:'2026-10-24',
     cards:[{id:'pavi_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/Avatar TLAB/Pavi (Promo).png',
       newAbilities:["Avatar's Balance","Air Stance","Earth Stance"],
@@ -8409,6 +8425,8 @@ const DEFAULTS={
   lady_loki_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Lady%20Loki%20(Promo).png',
   lady_loki_vampire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Lady%20Loki%20Vampire%20(Promo).png',
   paradox_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/027-150%20(Paradox).png',
+  crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/113-150%20(Crystal%20Base).png',
+  voraxis_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/140-150%20(Voraxis).png',
   ivan_wca_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Wrestling/Ivan%20WCA%20(Promo%20Card).png',
   wca_overdrive_belt_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Wrestling/WCA%20OVERDRIVE%20CHAMPION%20BELT%20(PROMO%20EQUIPTMENT).png',
   korra_halloween_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Korra%20Halloween%20(Promo)%20(Secret%20Rare).png',
@@ -8606,6 +8624,15 @@ const DB={
     abilities:[{label:'Pink Horizon',type:'passive',cost:0,text:'When this card is dealt combat damage, the attacker gets -2 Attack until end of their next turn.'},
       {label:'Surface Rasengan',type:'activated',cost:3,limit:'once_per_turn',text:'Deal 3 damage to target opposing character. If this destroys it, Freeze another opposing character. Cost: 3 Energy'},
       {label:'Sadala Roll Call',type:'activated',cost:0,text:'Roll a 3-sided die. If it lands on 2, search your deck for a Saiyan character card, reveal it, and put it into your hand. Shuffle your deck after.'}],transforms:[]},
+  // ── CRYSTAL (BSE 113/150) — build 9.7. Base of the new Blue Saiyan line (114 = her SSJ, planned).
+  crystal_bse:{id:'crystal_bse',rarity:'common',name:'Crystal',color:'blue',charName:'Crystal',charLine:'crystal',formTier:'base',subtypes:['Saiyan'],type:'base_char',race:'Saiyan',cost:2,atk:2,hp:3,sym:'CRY',setId:'base_set',cardNumber:'113/150',keywords:[],nextForms:[],
+    abilities:[{label:'Prism Orb',type:'triggered',cost:0,text:'When this card enters your field, choose one: target opposing character gets −2 Attack until end of your next turn, or heal one of your characters for 3.'}]},
+  // ── VORAXIS (BSE 140/150) — build 9.7. Great Ape Saiyan. Primal Roar (entry, all enemies −2 ATK until end of your
+  //    next turn) · Braided Armor (Resolve + can attack Locations) · Beast Bond (with a Virora: it and each Virora +2/+2).
+  voraxis_bse:{id:'voraxis_bse',rarity:'legend',name:'Voraxis',color:'purple',charName:'Voraxis',subtypes:['Great Ape','Saiyan'],type:'char',race:'Great Ape Saiyan',cost:9,atk:7,hp:10,sym:'VRX',setId:'base_set',cardNumber:'140/150',keywords:['resolve'],canAttackLocations:true,nextForms:[],
+    abilities:[{label:'Primal Roar',type:'triggered',cost:0,text:'When this card enters your field, each opposing character gets −2 Attack until end of your next turn.'},
+      {label:'Braided Armor',type:'passive',cost:0,text:'Resolve. This card can attack Locations.'},
+      {label:'Beast Bond',type:'passive',cost:0,text:'While you control a Virora, this card and each Virora you control get +2/+2.'}]},
   vuruna_base_bse:{id:'vuruna_base_bse',rarity:'uncommon',name:'Vuruna',color:'yellow',charName:'Vuruna',charLine:'vuruna',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:4,atk:4,hp:4,sym:'VUR',setId:'base_set',cardNumber:'031/150',keywords:['burst_speed'],nextForms:[],
     abilities:[{label:'Flash Step',type:'passive',cost:0,keyword:'burst_speed',text:'This card can attack the turn it enters.'}],transforms:[]},
   // ── RAPTURE OF THE VORTEX — BSE regular character (Titan • Beast). GREEN/PURPLE (endurance + trickery). 049/150 Rare.
@@ -10051,6 +10078,14 @@ function recalcPassives(){
       // gets +1 ATK while Ivan is on the field. Removing Ivan drops it.
       // One +1 for each Tag Division source other than this character (Ivan, or a thief of his ability).
       pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'Tag Division')).forEach(f=>add(1,0,f.cid,'Tag Division',f.uid));
+      // BEAST BOND (Voraxis): while you control a Virora, this card and each Virora you control get +2/+2.
+      //   "a Virora" = a character with Virora in its name (every Virora form, Darkspine Virora, Virora (Surface
+      //   Technique), Magnus & Virora). Each Beast Bond source adds its own +2/+2 to every Virora.
+      { const _vir=pl.field.filter(f=>isViroraChar(DB[f.cid]));
+        if(_vir.length){
+          if(abils.some(a=>a.label==='Beast Bond') && _vir.some(f=>f.uid!==fc.uid)) add(2,2,fc.cid,'Beast Bond',fc.uid);
+          if(isViroraChar(c)) pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'Beast Bond')).forEach(f=>add(2,2,f.cid,'Beast Bond',f.uid));
+        } }
       // STANCES (Pavi): Air Stance +1 ATK · Earth Stance +4 HP (Defense), while that stance is active.
       if(stanceActive(fc,'air')) add(1,0,fc.cid,'Air Stance',fc.uid);
       if(stanceActive(fc,'earth')) add(0,4,fc.cid,'Earth Stance',fc.uid);
@@ -10288,10 +10323,8 @@ function startGame2v2(mode, decks, seatNames, teamLife, humanSeats){
 // per-board AI and the 4-board interactive UI are the next slices.)
 function execEnd2v2(p){
   G._aiTurn=false; G._aiAuto=false; if(typeof aiThinking==='function')aiThinking(false);
-  endTurnFx(p);
+  endTurnFx(p); // (ticks Title Defense, Flame Spiral and Prism Orb once — don't tick them again here)
   log((G.players[p]?.name||('P'+p))+' ends turn.','info');
-  if(typeof tickTitleDefense==='function') tickTitleDefense(p);
-  if(typeof tickFlameSpiral==='function') tickFlameSpiral(p);
   (G.players[p]?.field||[]).forEach(f=>{ if(f.krhAtk||f.krhHp){ f.currentATK=Math.max(0,(f.currentATK||0)-(f.krhAtk||0)); f.atkBonus=(f.atkBonus||0)-(f.krhAtk||0); f.hpBonus=(f.hpBonus||0)-(f.krhHp||0); f.currentHP=Math.max(1,(f.currentHP||0)-(f.krhHp||0)); f.krhAtk=0; f.krhHp=0; } });
   G.turnIndex=((G.turnIndex||0)+1)%G.turnOrder.length;
   const nx=G.turnOrder[G.turnIndex];
@@ -12679,7 +12712,7 @@ function resolveLocationAttack(ap,auid,dp,duid){
   const afc=G.players[ap].field.find(f=>f.uid===auid);
   const dfc=G.players[dp].field.find(f=>f.uid===duid);
   if(!afc||!dfc)return;
-  if(!(DB[afc.cid]?.canAttackLocations || afc.canAttackLocations || hasTerrainScan(afc))){log(`${DB[afc.cid]?.name} cannot attack Locations.`,'dmg');return;}
+  if(!(DB[afc.cid]?.canAttackLocations || afc.canAttackLocations || hasTerrainScan(afc) || hasAbilityLabel(afc,'Braided Armor'))){log(`${DB[afc.cid]?.name} cannot attack Locations.`,'dmg');return;}
   if(!canCharacterAttack(ap,afc)){ log(`${DB[afc.cid]?.name} can't attack again this turn.`,'dmg'); return; }
   // Attacking a Location uses the character's attack for the turn (Onslaught: one of its two).
   afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc);
@@ -13147,6 +13180,16 @@ function onEntry(p,fc){
   if(typeof fxCtx==='function') fxCtx(fc.cid, _fxEntryLabel(c), fc.uid);
   // ── AVATAR'S BALANCE (Pavi): choose Air or Earth as she enters (a re-entry starts with no stance).
   if(hasAbilityLabel(fc,"Avatar's Balance")){ fc.stance=null; fc._stanceAsk=false; stanceAsk(p,fc,'entry'); }
+  // ── PRISM ORB (Crystal): choose one as she enters — enemy −2 ATK until end of your next turn, or heal one of yours 3.
+  if(hasAbilityLabel(fc,'Prism Orb')) prismOrbAsk(p,fc);
+  // ── PRIMAL ROAR (Voraxis): EACH opposing character −2 ATK until end of your next turn (not targeted: Drunken
+  //    Stance / Godly Evasion don't stop it; both enemy boards in 2v2).
+  if(hasAbilityLabel(fc,'Primal Roar')){
+    const _opps=(G.is2v2&&typeof enemyTeamOf==='function')?teamPlayers(enemyTeamOf(p)):[p===1?2:1];
+    const _foes=[]; _opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) _foes.push(f); }));
+    if(_foes.length){ log(`🦍 Primal Roar: every opposing character gets −2 Attack until the end of ${pname(p)}'s next turn!`,'dmg'); _foes.forEach(f=>applyTimedCut(p,f,'Primal Roar',2,'🦍 ')); }
+    else log('Primal Roar: no opposing characters.','info');
+  }
   // ── GOD KI MANDATE (Magnus SSB): your characters enter with +1/+1 while it is on the field.
   if(isChar(c) && G.players[p].field.some(m=>m.uid!==fc.uid && hasAbilityLabel(m,'God Ki Mandate'))){
     fc.currentATK=(fc.currentATK||0)+1; fc.atkBonus=(fc.atkBonus||0)+1; fc.currentHP=(fc.currentHP||0)+1; fc.hpBonus=(fc.hpBonus||0)+1;
@@ -16072,6 +16115,7 @@ function endTurnFx(p){
   decrementStatuses(p); // count down statuses on the player whose turn just ended
   tickFrostRunes(p); // count down any Frost Rune timers this player set
   tickTitleDefense(p); // 🏆 WCA belt debuffs owned by this player
+  tickTimedCuts(p); // 💠 Prism Orb / 🦍 Primal Roar −2 Attack (until end of the source owner's next turn)
   tickFlameSpiral(p); // 🔥 Korra's Flame Spiral timers
   tickScorchedEarth(p); // count down any Scorched Earth timers this player set
   G.bonusAttackers=0; // reset ability-granted extra attackers each turn
@@ -16648,7 +16692,7 @@ function aiAttackOptionsFor(p, afc){
     let s=power*.5+(breaks?34:6)-(dies?8+atkVal*.9:0)-ret*.3;
     opts.push({score:s,kind:'herald',p:e,uid:null,name:DB[oh.cid]?.name});
   }); }
-  if((DB[afc.cid]?.canAttackLocations||afc.canAttackLocations||hasTerrainScan(afc))&&!aiTried('locatk:'+afc.uid)){
+  if((DB[afc.cid]?.canAttackLocations||afc.canAttackLocations||hasTerrainScan(afc)||hasAbilityLabel(afc,'Braided Armor'))&&!aiTried('locatk:'+afc.uid)){
     aiEnemyPlayersOf(p).forEach(e=>{ (G.players[e]?.field||[]).filter(f=>isLoc(DB[f.cid])).forEach(l=>{
       const kills=power>=(l.currentHP||0); let s=(kills?10+(DB[l.cid]?.cost||0)*1.5+((DB[l.cid]?.abilities||[]).length)*2:power*.3); if(l.cid==='time_chamber'&&kills) s+=6;
       if(hasAbilityLabel(afc,'Landmark Price')&&kills) s+=5;
@@ -17588,7 +17632,7 @@ function seqEntry(p, fc){
   const c=DB[fc.cid]; if(!c) return;
   const ctx={aiAuto:G._aiAuto, ap:G.activePlayer, phase:G.phase};
   let abl=_entryAbility(c);
-  if(abl && abl.label==="Avatar's Balance") abl=null; // the stance chooser is its own banner
+  if(abl && (abl.label==="Avatar's Balance"||abl.label==='Prism Orb')) abl=null; // these choosers are their own banner
   const runEntry=(use)=>{
     if(!G||G.gameOver) return;
     if(!(G.players[p]&&G.players[p].field.some(f=>f.uid===fc.uid))) return; // it already left play
@@ -17612,6 +17656,7 @@ function seqEntry(p, fc){
 //   Keyed on ability LABELS so stolen/copied abilities work. Choosing is a TRIGGERED choice, never an activated
 //   ability, so it never costs the Power Up. Online, the owner's own client asks (fc._stanceAsk marks it pending).
 // ═══════════════════════════════════════════════════
+function isViroraChar(c){ return !!c && isChar(c) && (/\bvirora\b/i.test(c.name||'') || /\bvirora\b/i.test(c.charName||'')); }
 var STANCE_META={air:{icon:'🌪',name:'Air',label:'Air Stance'},earth:{icon:'⛰',name:'Earth',label:'Earth Stance'}};
 function stanceActive(fc,s){ return !!fc && fc.stance===s && !!STANCE_META[s] && hasAbilityLabel(fc,STANCE_META[s].label); }
 function guardiansOf(players){ const out=[]; (players||[]).forEach(pp=>{ (G.players[pp]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])&&hasKW(f,'guardian')) out.push(f); }); }); return out; }
@@ -17701,6 +17746,100 @@ function stanceCheckPending(){
   const me=G.onlineMode2v2 ? G.mySeat : 1;
   if(G.activePlayer!==me) return;
   (G.players[me]?.field||[]).forEach(fc=>{ if(fc._stanceAsk && hasAbilityLabel(fc,"Avatar's Balance")){ fc._stanceAsk=false; stanceAsk(me,fc,'turn'); } });
+}
+
+// ═══════════════════════════════════════════════════
+// PRISM ORB (build 9.7 · Crystal, BSE 113): when she enters, CHOOSE ONE —
+//   (a) target opposing character gets −2 Attack until the end of your next turn
+//       (13.7 timing: {amt, ends:2, owner} ticked at the owner's turn-ends; re-applying restarts, never stacks), or
+//   (b) heal one of your characters for 3.
+// A person chooses on the two-choice banner; the AI decides. Mandatory: dismissing a picker goes back to the choice.
+// ═══════════════════════════════════════════════════
+function _orbEnemies(p){
+  const opps=(G.is2v2&&typeof enemyTeamOf==='function')?teamPlayers(enemyTeamOf(p)):[p===1?2:1];
+  const out=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])&&!hasDrunkenStance(f)) out.push({fc:f,p:op}); })); return out;
+}
+function _orbMax(f){ return (f.baseHP||0)+(f.hpBonus||0)+(f.passiveHp||0); }
+// TIMED −ATTACK "until end of your next turn" (13.7) — shared by Prism Orb (Crystal) and Primal Roar (Voraxis).
+//   tfc._tcut[label] = {amt, ends:2, owner}. The SAME effect again restarts its timer and never stacks;
+//   different effects add together. Ticked once per owner turn-end by tickTimedCuts(owner) (endTurnFx).
+function applyTimedCut(srcP, tfc, label, amt, icon){
+  const nm=DB[tfc.cid]?.name||''; if(!tfc._tcut) tfc._tcut={};
+  const cur=tfc._tcut[label];
+  if(cur){ cur.ends=2; cur.owner=srcP; log(`${icon||''}${label}: ${nm}'s −${amt} Attack is extended.`,'dmg'); return; }
+  const cut=Math.min(amt,Math.max(0,tfc.currentATK||0));
+  tfc.currentATK=(tfc.currentATK||0)-cut; tfc.atkBonus=(tfc.atkBonus||0)-cut;
+  tfc._tcut[label]={amt:cut, ends:2, owner:srcP};
+  log(`${icon||''}${label}: ${nm} gets −${amt} Attack until the end of ${pname(srcP)}'s next turn.`,'dmg');
+}
+function tickTimedCuts(p){
+  [1,2,3,4].forEach(pp=>{ const P=G.players[pp]; if(!P||!P.field) return; P.field.forEach(f=>{
+    if(!f._tcut) return;
+    Object.keys(f._tcut).forEach(k=>{ const t=f._tcut[k]; if(!t||t.owner!==p) return;
+      t.ends--; if(t.ends<=0){ f.currentATK=(f.currentATK||0)+t.amt; f.atkBonus=(f.atkBonus||0)+t.amt; delete f._tcut[k]; log(`${DB[f.cid]?.name}'s ${k} −Attack wears off.`,'info'); } });
+  }); });
+}
+function applyPrismOrb(srcP, tfc){ applyTimedCut(srcP, tfc, 'Prism Orb', 2, '💠 '); }
+function healPrismOrb(tfc){
+  const mx=_orbMax(tfc), before=tfc.currentHP||0;
+  tfc.currentHP=Math.min(mx,before+3);
+  if(typeof fxHeal==='function') try{ fxHeal(tfc.uid,3); }catch(e){}
+  log(`💠 Prism Orb: ${DB[tfc.cid]?.name} heals ${tfc.currentHP-before} (now ${tfc.currentHP}/${mx}).`,'gain');
+}
+function aiChoosePrismOrb(p){
+  const allies=(G.players[p]?.field||[]).filter(f=>isChar(DB[f.cid]));
+  const hurt=allies.map(f=>({f,miss:_orbMax(f)-(f.currentHP||0)})).sort((a,b)=>b.miss-a.miss)[0];
+  const foes=_orbEnemies(p).filter(e=>!hasGodlyEvasion(e.fc)&&(e.fc.currentATK||0)>0&&!(e.fc._tcut&&e.fc._tcut['Prism Orb'])).sort((a,b)=>(b.fc.currentATK||0)-(a.fc.currentATK||0));
+  if(hurt && hurt.miss>=3) return {mode:'heal', fc:hurt.f};
+  if(foes.length) return {mode:'atk', fc:foes[0].fc, p:foes[0].p};
+  if(hurt) return {mode:'heal', fc:hurt.f};
+  return null;
+}
+function prismOrbAsk(p, fc){
+  seqPush(done=>{
+    if(!G||G.gameOver||!G.players[p]){ done(); return; }
+    const base={cid:fc.cid, p, label:'Prism Orb', text:_ablText(fc.cid,'Prism Orb'), kind:'ENTRY ABILITY'};
+    let settled=false;
+    const finish=(fn, outcome)=>{ if(settled) return; settled=true; _pendingBlockDefault=null;
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Prism Orb',fc.uid):null;
+      try{ if(fn) fn(); }catch(e){ console.error('[Prism Orb]',e); }
+      if(typeof fxPop==='function') fxPop(_fx);
+      if(outcome && typeof _trigSend==='function') _trigSend(Object.assign({},base,{outcome}));
+      if(typeof renderAll==='function') renderAll(); done(); };
+    if(!seqIsLocalHuman(p)){
+      const ch=aiChoosePrismOrb(p);
+      const act=ch? (ch.mode==='atk'? ()=>applyPrismOrb(p,ch.fc) : ()=>healPrismOrb(ch.fc)) : null;
+      const out=ch? (ch.mode==='atk'? '−2 Attack: '+(DB[ch.fc.cid]?.name||'') : 'Heal 3: '+(DB[ch.fc.cid]?.name||'')) : 'No effect';
+      const ms=spd('banner'); if(ms<=0){ finish(act,null); return; }
+      trigShow(Object.assign({},base,{outcome:out, ask:false, ms, onDone:()=>finish(act,null)})); return;
+    }
+    const pickHeal=()=>{
+      const allies=(G.players[p]?.field||[]).filter(f=>isChar(DB[f.cid]));
+      if(!allies.length){ finish(null,'No effect'); return; }
+      _pendingBlockDefault=()=>{ if(!settled) choose(); };
+      seqChoose('Prism Orb · Heal 3','Choose one of your characters to heal for 3.',
+        allies.map(f=>({label:DB[f.cid]?.name||'', sub:'♥'+(f.currentHP||0)+' / '+_orbMax(f), val:f})),
+        (f)=>finish(()=>healPrismOrb(f),'Heal 3: '+(DB[f.cid]?.name||'')), ()=>{} /* Skip → the dismiss default goes back to the choice */);
+    };
+    const pickAtk=()=>{
+      const foes=_orbEnemies(p); if(!foes.length){ pickHeal(); return; }
+      _pendingBlockDefault=()=>{ if(!settled) choose(); };
+      openEnemyTargetPicker(foes.map(e=>e.fc), (uid)=>{
+        const e=foes.find(x=>x.fc.uid===uid); const t=e&&G.players[e.p]?.field.find(f=>f.uid===uid);
+        if(!t){ if(!settled) choose(); return; }
+        finish(()=>applyPrismOrb(p,t),'−2 Attack: '+(DB[t.cid]?.name||''));
+      }, {title:'Prism Orb · −2 Attack', desc:'Choose an opposing character. It gets −2 Attack until the end of your next turn.', sourcePlayer:p});
+    };
+    const choose=()=>{
+      _pendingBlockDefault=null;
+      const foes=_orbEnemies(p);
+      if(!foes.length){ pickHeal(); return; } // nothing to target: heal is the only choice
+      trigShow({cid:fc.cid, p, label:'Prism Orb', kind:'ENTRY ABILITY · CHOOSE ONE', ask:true, dual:true,
+        text:'Choose one:\n💠 An opposing character gets −2 Attack until the end of your next turn.\n💚 Heal one of your characters for 3.',
+        useLabel:'💠 −2 Attack', skipLabel:'💚 Heal 3', onDone:(atk)=>{ if(atk) pickAtk(); else pickHeal(); }});
+    };
+    choose();
+  });
 }
 
 // A small "choose one" list for a person (AI/remote callers pick for themselves).
