@@ -7213,7 +7213,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 9.8 · Surana (BSE 028)</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 9.9 · Doctor Doom &amp; Pavi (Vampire)</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -8184,8 +8184,23 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='9.8'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='9.9'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'9.9', date:'2026-10-25',
+    cards:[
+      {id:'doctor_doom_herald', set:'promo', number:'PROMO', rarity:'mythic', scan:'Characters/Series/Marvel/Doctor Doom (Herald) PROMO.png', newAbilities:['Latverian Armory','Mystic Bolt',"Doom's Design"],
+       note:"Doctor Doom · HERALD · Green · Mythic · 11 ATK / 14 HP · subtypes Sorcerer, Monarch · race 'Sorcerer Monarch' · keywords []."},
+      {id:'pavi_vampire_promo', set:'promo', number:'PROMO', rarity:'mythic', scan:'Characters/Series/Avatar TLAB/Pavi Vampire (Promo).png', newAbilities:['Crimson Gale','Bloodstone Skin'],
+       note:"Pavi (Vampire) · Black · Mythic · Character · cost 7 · 5 ATK / 8 HP · subtypes Vampire, Avatar · race 'Vampire Avatar' · charName 'Pavi' · keywords [] · also has Avatar's Balance (same text as Pavi). Separate card id → its own 4-copy limit."}],
+    abilities:[
+      "STANCE ENGINE GENERALISED: stance effects are now PER ABILITY, keyed on label in STANCE_ABILITIES: 'Air Stance' {air, onslaught, +1 ATK} · 'Crimson Gale' {air, onslaught} · 'Earth Stance' {earth, guardian, +4 HP, can't attack} · 'Bloodstone Skin' {earth, guardian, can't attack}. Helpers: stanceAbilitiesOf(fc,s), stanceActive(fc,s), stanceLabelActive(fc,label), stanceStat(fc,s,'atk'|'hp'), stanceNoAttack(fc), stanceGrantsKW(fc,kw). hasKW / canCharacterAttack / recalcPassives / stanceHpIfAir / AI air-ATK / the chooser text (built from the card's own stance abilities) / the stance chip tooltip all read them. Pavi (promo) plays exactly as before.",
+      "CRIMSON GALE (Pavi (Vampire), Air Stance only): Onslaught; whenever she destroys a character in combat (attack, retaliation, Power Struggle, Life-mode blocks — every triggerShowdownHype point), if she survives she heals 3 (up to max) and then gets +1/+1 permanently (atkBonus/hpBonus; stays if she switches stance, goes when she leaves the field). triggerCrimsonGale(killer, killerP, victimP, victimUid) runs at the top of triggerShowdownHype.",
+      "BLOODSTONE SKIN (Pavi (Vampire), Earth Stance only): Guardian, can't attack; whenever she is dealt combat damage, the character that dealt it is Poisoned (even if the hit destroys her; only if the dealer is a character still on the field). Hooked through the new combatDamageHooks(src, srcP, tgt, tgtP, dmg), which replaced every triggerOmegaVenom call site and runs triggerOmegaVenom + triggerBloodstoneSkin(tgt, tgtP, src, srcP, dmg). No +HP, so switching her out of Earth is never lethal.",
+      "LATVERIAN ARMORY (Doctor Doom Herald, passive): (1) Equipment you play costs 1 less — handCostMod(p,fc) = -1 for type 'equipment' while your Herald has the label; added to EVERY hand-cost check (play, hand playable glow 1v1 + 2v2, AI play, AI burst response). (2) Each of your characters with Equipment attached (hasEquipmentAttached: any attachment of type 'equipment', hexed or not) gets +1/+1 — a recalcPassives source labelled 'Latverian Armory'. A Broken Herald (cid 'herald_broken') loses both.",
+      "MYSTIC BOLT (Doctor Doom Herald, activated, free, once per turn — taps the Herald, so no duel that turn): deal 2 damage to target opposing character (2v2: either enemy board), or 3 if you control a character with Equipment attached when it resolves. openEnemyTargetPicker (Drunken Stance excluded, Godly Evasion toll). AI hint ai:{when:'enemy',weight:4}.",
+      "DOOM'S DESIGN (Doctor Doom Herald, activated, 2⚡, once every 2 turns): search your deck for an Equipment card, reveal, put into hand, shuffle (Court Sight pattern). Cooldown uses the SAME convention as Water Whip / Sensory Play: fc.abilityUsed.dooms_design_turn, usable again when G.turn − last ≥ 2 (checked before paying). AI skips it while cooling down or with no Equipment in the deck."],
+    screens:["Stance chooser text now lists the card's own stance abilities ('🌪 AIR: Crimson Gale: …' / '⛰ EARTH: Bloodstone Skin: …'); lethal-switch warning uses the actual Earth HP bonus. Build tag: 'build 9.9 · Doctor Doom & Pavi (Vampire)'."],
+    data:["GAME_BUILD '9.9'.","Helpers: STANCE_ABILITIES + stance helpers above, combatDamageHooks, triggerBloodstoneSkin, triggerCrimsonGale, hasEquipmentAttached, handCostMod, doomsDesignReady."] },
   { build:'9.8', date:'2026-10-25',
     cards:[{id:'surana_bse', set:'base_set', number:'028/150', rarity:'common', scan:'Sets/BASE SET/028-150 (Surana Base).png', newAbilities:['Omega Venom'],
       note:"Surana · Black · Common · BASE CHARACTER (charLine 'surana', formTier 'base', nextForms [] until her SSJ / SSJ2, slots 029–030, exist) · cost 2 · 1 ATK / 3 HP · subtypes Omega, Celestial, Saiyan · race 'Omega Celestial Saiyan' · sym 'SUR'."}],
@@ -8439,6 +8454,8 @@ const DEFAULTS={
   korra_halloween_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Korra%20Halloween%20(Promo)%20(Secret%20Rare).png',
   korra_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Korra%20(Promo).png',
   kratos_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/God%20Of%20War/Kratos%20(Promo).png',
+  pavi_vampire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Pavi%20Vampire%20(Promo).png',
+  doctor_doom_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Doctor%20Doom%20(Herald)%20PROMO.png',
   pavi_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Pavi%20(Promo).png',
   raven_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Raven%20(Promo%20Card).png',
   raven_vampire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Raven%20Vampire%20(Promo%20Card).png',
@@ -8707,6 +8724,12 @@ const DB={
     abilities:[{label:"Avatar's Balance",type:'triggered',cost:0,text:'When this card enters your field, and at the start of each of your turns, choose Air or Earth. This card stays in that stance until your next turn.'},
       {label:'Air Stance',type:'passive',cost:0,text:'Onslaught. This card can attack twice each turn and gets +1 Attack.'},
       {label:'Earth Stance',type:'passive',cost:0,text:"Guardian. This card gets +4 Defense and can't attack."}]},
+  // ── PAVI (VAMPIRE) (PROMO) — build 9.9. Variant of Pavi with her own stance abilities (Crimson Gale = Air,
+  //    Bloodstone Skin = Earth). Separate card id → its own 4-copy limit.
+  pavi_vampire_promo:{id:'pavi_vampire_promo',rarity:'mythic',name:'Pavi (Vampire)',color:'black',charName:'Pavi',subtypes:['Vampire','Avatar'],type:'char',race:'Vampire Avatar',cost:7,atk:5,hp:8,sym:'PAVIV',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
+    abilities:[{label:"Avatar's Balance",type:'triggered',cost:0,text:'When this card enters your field, and at the start of each of your turns, choose Air or Earth. This card stays in that stance until your next turn.'},
+      {label:'Crimson Gale',type:'passive',cost:0,text:'Air Stance: Onslaught. Whenever this card destroys a character, it heals 3 and gets +1/+1 until it leaves the field.'},
+      {label:'Bloodstone Skin',type:'passive',cost:0,text:"Earth Stance: Guardian. This card can't attack. Whenever it is dealt combat damage, the character that dealt it is Poisoned."}]},
   kratos_promo:{id:'kratos_promo',rarity:'legend',name:'Kratos',color:'red',charName:'Kratos',subtypes:['War','God'],type:'char',race:'War God',cost:7,atk:10,hp:7,sym:'KRTS',setId:'promo',cardNumber:'PROMO',keywords:['burst_speed'],nextForms:[],
     abilities:[{label:'Rage of Sparta',type:'passive',cost:0,text:'This card can attack the turn it enters.'},{label:'Olympian Blood',type:'triggered',cost:0,text:'When this card deals combat damage, it gains +1 Attack.'}]},
   // ── RAVEN — PROMO DC-series Mystic Sorceress. PURPLE (trickery/debuffs — seals an
@@ -8918,6 +8941,14 @@ const DB={
       {type:'passive',label:'Surfacer Binding',cost:0,text:"At the start of each opponent's turn, they must choose one: Discard 1 card or lose 2 Energy."}
     ],transforms:[]},
   // ── DAREDEVIL (FIST OF GOD) — PROMO Mythic Herald (Hero). WHITE (matches any).
+  // ── DOCTOR DOOM (PROMO HERALD) — build 9.9. Equipment Herald.
+  doctor_doom_herald:{id:'doctor_doom_herald',rarity:'mythic',name:'Doctor Doom',type:'herald',race:'Sorcerer Monarch',cost:0,atk:11,hp:14,sym:'👑',subtypes:['Sorcerer','Monarch'],color:'green',keywords:[],
+    heraldFlip:null,autoFlip:false,setId:'promo',cardNumber:'PROMO',
+    abilities:[
+      {type:'passive',label:'Latverian Armory',cost:0,text:'Equipment you play costs 1 less. Each of your characters with Equipment attached gets +1/+1.'},
+      {type:'activated',label:'Mystic Bolt',cost:0,limit:'once_per_turn',ai:{when:'enemy',weight:4},text:'Deal 2 damage to target opposing character, or 3 if you control a character with Equipment attached. (Free, taps, once per turn)'},
+      {type:'activated',label:"Doom's Design",cost:2,limit:'every_2_turns',ai:{when:'always',weight:2},text:'Search your deck for an Equipment card, reveal it, and put it into your hand. (Cost 2 Energy, once every 2 turns)'}
+    ],transforms:[]},
   daredevil_fog_herald:{id:'daredevil_fog_herald',rarity:'mythic',name:'Daredevil (Fist of God)',type:'herald',race:'Hero',cost:0,atk:12,hp:10,sym:'👑',subtypes:['Hero'],color:'white',keywords:[],
     heraldFlip:null,autoFlip:false,setId:'promo',
     abilities:[
@@ -9725,6 +9756,7 @@ function tickTitleDefense(p){
 }
 // SHOWDOWN HYPE: belted character destroys a character → its controller banks 3 Energy.
 function triggerShowdownHype(killerFc, killerP, victimP, victimUid){
+  if(typeof triggerCrimsonGale==='function') triggerCrimsonGale(killerFc, killerP, victimP, victimUid);
   if(!hasBelt(killerFc)) return;
   if(G.players[victimP]?.field.some(f=>f.uid===victimUid)) return; // victim survived
   G.players[killerP].energy+=3; log(`🏆 Showdown Hype: ${pname(killerP)} banks 3 Energy!`,'gain');
@@ -9766,6 +9798,37 @@ function triggerPinkHorizon(victimFc, dmg, attackerFc, attackerP){
 // OLYMPIAN BLOOD (Kratos): whenever `sourceFc` deals combat damage (attacking OR
 // retaliating), it permanently gains +1 Attack. Called from every spot in
 // executeCombatDamage where combat damage changes hands.
+// COMBAT-DAMAGE HOOKS (build 9.9): called wherever combat damage changes hands between two characters
+// (attack, retaliation, Power Struggle, Life-mode block damage and counters).
+function combatDamageHooks(srcFc, srcP, tgtFc, tgtP, dmg){
+  triggerOmegaVenom(srcFc, srcP, tgtFc, tgtP, dmg);
+  triggerBloodstoneSkin(tgtFc, tgtP, srcFc, srcP, dmg);
+}
+// BLOODSTONE SKIN (Pavi (Vampire), Earth Stance): whenever this card is dealt combat damage, the character that dealt
+// it is Poisoned (even if the hit destroys her). Only while she is in Earth Stance.
+function triggerBloodstoneSkin(victimFc, victimP, srcFc, srcP, dmg){
+  if(!(dmg>0) || !victimFc || !srcFc || !stanceLabelActive(victimFc,'Bloodstone Skin')) return;
+  if(!isChar(DB[srcFc.cid]) || !G.players[srcP] || !G.players[srcP].field.some(f=>f.uid===srcFc.uid)) return;
+  const _fx=(typeof fxPush==='function')?fxPush(victimFc.cid,'Bloodstone Skin',victimFc.uid):null;
+  log(`🩸 Bloodstone Skin: ${DB[srcFc.cid]?.name} is poisoned for hitting ${DB[victimFc.cid]?.name}.`,'dmg');
+  try{ applyStatus(srcFc,'poison'); }catch(e){ console.warn('[Bloodstone Skin]',e); }
+  if(typeof fxPop==='function') fxPop(_fx);
+}
+// CRIMSON GALE (Pavi (Vampire), Air Stance): whenever this card destroys a character (combat), it heals 3 and gets
+// +1/+1 until it leaves the field. Called from triggerShowdownHype, which runs at every combat kill point.
+function triggerCrimsonGale(killerFc, killerP, victimP, victimUid){
+  if(!killerFc || !stanceLabelActive(killerFc,'Crimson Gale')) return;
+  if(G.players[victimP]?.field.some(f=>f.uid===victimUid)) return;                       // victim survived
+  if(!G.players[killerP] || !G.players[killerP].field.some(f=>f.uid===killerFc.uid)) return; // she died too
+  const _fx=(typeof fxPush==='function')?fxPush(killerFc.cid,'Crimson Gale',killerFc.uid):null;
+  const mx=(killerFc.baseHP||0)+(killerFc.hpBonus||0)+(killerFc.passiveHp||0), before=killerFc.currentHP||0;
+  killerFc.currentHP=Math.min(mx,before+3);
+  killerFc.atkBonus=(killerFc.atkBonus||0)+1; killerFc.currentATK=(killerFc.currentATK||0)+1;
+  killerFc.hpBonus=(killerFc.hpBonus||0)+1; killerFc.currentHP=(killerFc.currentHP||0)+1;
+  if(typeof fxHeal==='function') try{ fxHeal(killerFc.uid,3); }catch(e){}
+  log(`🩸 Crimson Gale: ${DB[killerFc.cid]?.name} heals ${Math.min(3,mx-before)} and gets +1/+1 (now ${killerFc.currentATK}/${killerFc.currentHP}).`,'gain');
+  if(typeof fxPop==='function') fxPop(_fx);
+}
 // OMEGA VENOM (Surana, BSE 028): whenever this card deals combat damage to a CHARACTER (its attack, its
 // retaliation, winning a Power Struggle as defender, Life-mode block damage and block counters), that character is
 // Poisoned — if it's still on the field. Heralds aren't characters. Label-based, so a stolen copy works.
@@ -10109,8 +10172,9 @@ function recalcPassives(){
           if(isViroraChar(c)) pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'Beast Bond')).forEach(f=>add(2,2,f.cid,'Beast Bond',f.uid));
         } }
       // STANCES (Pavi): Air Stance +1 ATK · Earth Stance +4 HP (Defense), while that stance is active.
-      if(stanceActive(fc,'air')) add(1,0,fc.cid,'Air Stance',fc.uid);
-      if(stanceActive(fc,'earth')) add(0,4,fc.cid,'Earth Stance',fc.uid);
+      if(fc.stance) stanceAbilitiesOf(fc,fc.stance).forEach(l=>{ const d=STANCE_ABILITIES[l]; if(d.atk||d.hp) add(d.atk||0,d.hp||0,fc.cid,l,fc.uid); });
+      // LATVERIAN ARMORY (Doctor Doom Herald): each of your characters with Equipment attached gets +1/+1.
+      if(pl.herald && hasAbilityLabel(pl.herald,'Latverian Armory') && hasEquipmentAttached(fc)) add(1,1,pl.herald.cid,'Latverian Armory',pl.herald.uid);
       // Apply delta to current stats
       const deltaA=addA-prevA, deltaH=addH-prevH;
       fc.passiveAtk=addA; fc.passiveHp=addH; fc.passiveSrc=src;
@@ -11808,7 +11872,7 @@ function executeCombatDamage(ap,auid,dp,duid){
     triggerReceipt(afc, defenderATK, dfc, dp);
     // OLYMPIAN BLOOD (Kratos): dfc just dealt this combat damage.
     triggerOlympianBlood(dfc, dp, defenderATK);
-    triggerOmegaVenom(dfc, dp, afc, ap, defenderATK);
+    combatDamageHooks(dfc, dp, afc, ap, defenderATK);
     triggerShowdownHype(dfc, dp, ap, auid);
     renderAll();return;
   }
@@ -11826,7 +11890,7 @@ function executeCombatDamage(ap,auid,dp,duid){
   triggerReceipt(dfc, atkDmg, afc, ap, _pursuitKill);
   // OLYMPIAN BLOOD (Kratos): afc just dealt this combat damage.
   triggerOlympianBlood(afc, ap, atkDmg);
-  triggerOmegaVenom(afc, ap, dfc, dp, atkDmg);
+  combatDamageHooks(afc, ap, dfc, dp, atkDmg);
   // BLOOD TITHE (Lady Loki Vampire): drains -1/-1 from the character she hits, +1/+1 to herself.
   if(hasAbilityLabel(afc,'Blood Tithe') && atkDmg>0 && isChar(dc) && G.players[dp].field.some(f=>f.uid===dfc.uid)){
     dfc.atkBonus=(dfc.atkBonus||0)-1; dfc.currentATK=Math.max(0,(dfc.currentATK||0)-1);
@@ -11892,7 +11956,7 @@ function executeCombatDamage(ap,auid,dp,duid){
     triggerReceipt(afc, defenderATK, dfc, dp);
     // OLYMPIAN BLOOD (Kratos): dfc just dealt this retaliation combat damage.
     triggerOlympianBlood(dfc, dp, defenderATK);
-    triggerOmegaVenom(dfc, dp, afc, ap, defenderATK);
+    combatDamageHooks(dfc, dp, afc, ap, defenderATK);
     triggerShowdownHype(dfc, dp, ap, auid);
   } else if(!stillOnField&&hasKW(afc,'pursuit')){
     log('Pursuit: '+ac.name+' struck first — no retaliation!','gain');
@@ -12156,7 +12220,7 @@ function maxAttackersAllowed(){
 function canCharacterAttack(p, fc){
   if(!fc || !isChar(DB[fc.cid])) return false;
   if(fc.tapped) return false; // tapped cards (used a free ability) can't attack
-  if(stanceActive(fc,'earth')) return false; // Earth Stance (Pavi): "can't attack"
+  if(stanceNoAttack(fc)) return false; // Earth Stance / Bloodstone Skin: "can't attack"
   const usedAttacks = fc.attacksThisTurn||0;
   // Per-character attack cap: onslaught = 2, otherwise 1
   const perCharCap = hasKW(fc,'onslaught') ? 2 : 1;
@@ -12182,7 +12246,7 @@ function onFieldClick(p,uid,fc){
       if(statusActive(fc,'freeze')){log('❄️ Frozen — can\'t attack this turn!','dmg');return;}
       if(fc.antiLife&&fc.antiLife>G.turn){log(`${DB[fc.cid].name} is locked by Anti-Life Equation!`,'dmg');return;}
       if(fc.turnPlayed>=G.turn&&!hasKW(fc,'burst_speed')){log('Just played — wait 1 turn.','dmg');return;}
-      if(stanceActive(fc,'earth')){log(`${DB[fc.cid].name} is in Earth Stance and can't attack.`,'dmg');return;}
+      if(stanceNoAttack(fc)){log(`${DB[fc.cid].name} is in ${STANCE_META[fc.stance].label} and can't attack.`,'dmg');return;}
       // ENFORCE: only one character may attack per phase (unless ability grants more)
       if(!canCharacterAttack(p, fc)){
         if((fc.attacksThisTurn||0)>0){log(`${DB[fc.cid].name} already attacked this turn.`,'dmg');}
@@ -12331,14 +12395,14 @@ function resolveLifeAttack(attackerPlayer, afc, blocker){
   const excess=Math.max(0, incoming-bHPbefore);
   log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHPbefore}HP).`,'info');
   dealDamage(defenderPlayer, blocker.uid, incoming);            // Step 1-2: blocker damage + death
-  triggerOmegaVenom(afc, attackerPlayer, blocker, defenderPlayer, incoming);
+  combatDamageHooks(afc, attackerPlayer, blocker, defenderPlayer, incoming);
   triggerShowdownHype(afc, attackerPlayer, defenderPlayer, blocker.uid);
   if(bPow>power && pursuitBlockKill(afc, blocker)){ log(`Pursuit: ${DB[afc.cid].name} destroyed its blocker — no counter.`,'gain'); }
   else if(bPow>power){                                         // Step 3: counter (difference only)
     const counter=bPow-power;
     log(`Counter! ${DB[blocker.cid].name} deals ${counter} back.`,'dmg');
     dealDamage(attackerPlayer, afc.uid, counter);
-    triggerOmegaVenom(blocker, defenderPlayer, afc, attackerPlayer, counter);
+    combatDamageHooks(blocker, defenderPlayer, afc, attackerPlayer, counter);
     triggerShowdownHype(blocker, defenderPlayer, attackerPlayer, afc.uid);
   }
   if(excess>0){                                                // Step 4: trample to Life
@@ -12424,9 +12488,9 @@ function resolveTeamLifeAttack(attackerPlayer, afc, blocker, enemyTeam){
   }
   const bHP=blocker.currentHP||0, bPow=effPower(blocker), excess=Math.max(0,power-bHP);
   log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHP}HP).`,'info');
-  if(owner){ dealDamage(owner, blocker.uid, power); triggerOmegaVenom(afc, attackerPlayer, blocker, owner, power); triggerShowdownHype(afc, attackerPlayer, owner, blocker.uid); } // Step 1-2 (death → -2 team Life via killCard)
+  if(owner){ dealDamage(owner, blocker.uid, power); combatDamageHooks(afc, attackerPlayer, blocker, owner, power); triggerShowdownHype(afc, attackerPlayer, owner, blocker.uid); } // Step 1-2 (death → -2 team Life via killCard)
   if(bPow>power && pursuitBlockKill(afc, blocker)){ log(`Pursuit: ${DB[afc.cid].name} destroyed its blocker — no counter.`,'gain'); }
-  else if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(attackerPlayer, afc.uid, c); if(owner){ triggerOmegaVenom(blocker, owner, afc, attackerPlayer, c); triggerShowdownHype(blocker, owner, attackerPlayer, afc.uid); } } // Step 3
+  else if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(attackerPlayer, afc.uid, c); if(owner){ combatDamageHooks(blocker, owner, afc, attackerPlayer, c); triggerShowdownHype(blocker, owner, attackerPlayer, afc.uid); } } // Step 3
   if(excess>0){ log(`Trample! ${excess} excess to Team ${enemyTeam} Life.`,'dmg'); damageTeamLife(enemyTeam, excess, 'trample'); } // Step 4
   renderAll();
 }
@@ -12575,9 +12639,9 @@ function resolveAITeamAttack(aiPlayer, afc, blocker, humanTeam){
   const excess=Math.max(0,incoming-bHP);
   const owner=ownerOfCard(blocker.uid);
   log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHP}HP).`,'info');
-  if(owner){ dealDamage(owner, blocker.uid, incoming); triggerOmegaVenom(afc, aiPlayer, blocker, owner, incoming); triggerShowdownHype(afc, aiPlayer, owner, blocker.uid); }
+  if(owner){ dealDamage(owner, blocker.uid, incoming); combatDamageHooks(afc, aiPlayer, blocker, owner, incoming); triggerShowdownHype(afc, aiPlayer, owner, blocker.uid); }
   if(bPow>power && pursuitBlockKill(afc, blocker)){ log(`Pursuit: ${DB[afc.cid].name} destroyed its blocker — no counter.`,'gain'); }
-  else if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(aiPlayer, afc.uid, c); if(owner){ triggerOmegaVenom(blocker, owner, afc, aiPlayer, c); triggerShowdownHype(blocker, owner, aiPlayer, afc.uid); } }
+  else if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(aiPlayer, afc.uid, c); if(owner){ combatDamageHooks(blocker, owner, afc, aiPlayer, c); triggerShowdownHype(blocker, owner, aiPlayer, afc.uid); } }
   if(excess>0){ log(`Trample! ${excess} to Team ${humanTeam} Life.`,'dmg'); damageTeamLife(humanTeam, excess, 'trample'); }
   renderAll();
 }
@@ -12832,7 +12896,7 @@ function onHandClick(p,uid,fc){
     return;
   }
   if(c.transformOnly){log(`${c.name} — Transform Only (not playable from hand).`,'dmg');return;}
-  const effectiveCost=Math.max(0,c.cost+(fco.costMod||0));
+  const effectiveCost=Math.max(0,c.cost+(fco.costMod||0)+handCostMod(p,fco));
   if(pl.energy<effectiveCost){log(`Need ${effectiveCost}⚡.`,'dmg');return;}
   pl.hand=pl.hand.filter(f=>f.uid!==uid);spendEnergy(p,effectiveCost,c.color||null);fco.turnPlayed=G.turn;
   if(isChar(c)){
@@ -15099,6 +15163,7 @@ function _activateAbilityCore(fc,abl){
   // COLORED ABILITY COST (e.g. Magnus SSG Court Sight "Cost 2 Blue energy"): needs that much of the colour banked.
   if(abl.energyColor && _cost>0 && ((pl.colorEnergy||{})[abl.energyColor]||0)<_cost){ log(`${abl.label} needs ${_cost} ${abl.energyColor.toUpperCase()} Energy (you have ${(pl.colorEnergy||{})[abl.energyColor]||0}).`,'dmg'); return; }
   if(fc.abilityUsed&&fc.abilityUsed[abl.label]&&abl.limit==='once_per_turn'){ log(`${abl.label} already used this turn.`,'dmg'); return; }
+  if(abl.label==="Doom's Design"){ if(!doomsDesignReady(fc)){ log(`Doom's Design: wait ${2-(G.turn-fc.abilityUsed.dooms_design_turn)} more turn(s).`,'dmg'); return; } if(!fc.abilityUsed)fc.abilityUsed={}; fc.abilityUsed.dooms_design_turn=G.turn; }
   spendEnergyAbility(G.activePlayer, _cost, abl.energyColor||DB[fc.cid]?.color||null);fc.abilityUsed[abl.label]=true;
   // TAPPED SYSTEM:
   // - Using ANY activated ability forfeits the +2 "skip attack" energy bonus this turn.
@@ -15230,6 +15295,30 @@ function runAbilityEffect(fc, abl, pl){
     const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(ap) : (ap===1);
     if(_human&&!G._aiAuto){ openEnemyTargetPicker(enemies,bind,{sourcePlayer:ap,title:'Kinetic Bind',desc:'Choose an opponent character: -3 Attack and no activated abilities until the end of their following turn.'}); }
     else { const best=enemies.slice().sort((a,b)=>(b.currentATK||0)-(a.currentATK||0))[0]; bind(best.uid); }
+    return;
+  }
+  // ── DOCTOR DOOM (Herald): Mystic Bolt — 2 damage to target opposing character, 3 if you control a character
+  //    with Equipment attached (checked as it resolves). Free → taps the Herald (no duel this turn).
+  if(label==='Mystic Bolt'){
+    const ap=G.activePlayer;
+    const opps=(G.is2v2&&typeof enemyTeamOf==='function')?teamPlayers(enemyTeamOf(ap)):[ap===1?2:1];
+    const enemies=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) enemies.push(f); }));
+    if(!enemies.length){ log('Mystic Bolt: no opposing characters.','dmg'); renderAll(); return; }
+    const hit=(uid)=>{ const op=opps.find(o=>(G.players[o]?.field||[]).some(f=>f.uid===uid)); const t=op&&G.players[op].field.find(f=>f.uid===uid); if(!t) return;
+      const armed=G.players[ap].field.some(f=>isChar(DB[f.cid])&&hasEquipmentAttached(f)); const dmg=armed?3:2;
+      log(`⚡ Mystic Bolt: ${DB[t.cid].name} takes ${dmg}${armed?' (you control an equipped character)':''}.`,'dmg');
+      dealDamage(op,uid,dmg); renderAll(); };
+    openEnemyTargetPicker(enemies, hit, {sourcePlayer:ap, title:'Mystic Bolt', desc:'Deal 2 damage to an opposing character (3 if you control a character with Equipment attached).'});
+    return;
+  }
+  // ── DOCTOR DOOM (Herald): Doom's Design — search your deck for an Equipment card, reveal it, put it into hand.
+  if(label==="Doom's Design"){
+    const ap=G.activePlayer; const P=G.players[ap]; const filt=(cc)=>cc&&cc.type==='equipment';
+    const done=(cid)=>{ const f=newFC(cid); if(f) P.hand.push(f); shuffle(P.deck); log(`Doom's Design: ${pname(ap)} reveals ${DB[cid].name} and puts it into hand. Deck shuffled.`,'gain'); if(ap!==1&&typeof showCardReveal==='function')try{showCardReveal(cid);}catch(e){} renderAll(); };
+    if(!(P.deck||[]).some(cid=>filt(DB[cid]))){ shuffle(P.deck); log("Doom's Design: no Equipment in your deck. Deck shuffled.",'info'); renderAll(); return; }
+    const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(ap) : (ap===1);
+    if(_human||G._aiAuto){ openDeckSearch("Doom's Design",'Search your deck for an Equipment card and put it into your hand.',filt,done); }
+    else { const found=P.deck.find(cid=>filt(DB[cid])); const i=P.deck.indexOf(found); if(i>-1)P.deck.splice(i,1); done(found); }
     return;
   }
   // ── MAGNUS (SSG): Court Sight / Right Hand Reach — tutor a card to hand, shuffle.
@@ -16537,6 +16626,7 @@ function aiScoreAbility(p, fc, abl, src){
   if(fc.abilityUsed&&fc.abilityUsed[abl.label]) return -1;
   if(aiTried('abl:'+fc.uid+':'+abl.label)) return -1;
   if(abl.ai&&abl.ai.when==='never') return -1;
+  if(abl.label==="Doom's Design" && (!doomsDesignReady(fc) || !(pl.deck||[]).some(cid=>isEquip(DB[cid])))) return -1;
   if(AIB.noop.has(abl.label)) return -1; // learned: this ability has no coded effect
   if(abl.label==='The Reckoning'&&(fc.tapped||!aiEnemyChars(p).some(e=>!statusActive(e.fc,'confuse')&&e.fc.cid!=='rapture_vortex_bse'))) return -1; // nothing left worth confusing
   const text=((abl.text||'')+' '+(abl.label||'')).toLowerCase();
@@ -16615,7 +16705,7 @@ function aiEnumerateActions(p){
   // 3-6) Cards from hand
   pl.hand.forEach(fc=>{
     const c=DB[fc.cid]; if(!c||c.type==='energy_card'||c.transformOnly||c.isToken) return;
-    const cost=Math.max(0,(c.cost||0)+(fc.costMod||0)); if(pl.energy<cost) return;
+    const cost=Math.max(0,(c.cost||0)+(fc.costMod||0)+handCostMod(p,fc)); if(pl.energy<cost) return;
     if(aiTried('hand:'+fc.uid)) return;
     const base=()=>({run:()=>{ aiMark('hand:'+fc.uid); onHandClick(p,fc.uid,fc); }});
     if(isChar(c)){
@@ -16750,7 +16840,7 @@ function aiBurstResponse(ap, afc, dp, dfc){
   const pl=G.players[dp]; if(!pl||G.activePlayer===dp) return;
   const dmg=effPower(afc); if(dmg<(dfc.currentHP||0)) return; // survives anyway
   const hand=pl.hand.slice();
-  const tryPlay=(fc)=>{ const c=DB[fc.cid]; if(!c||pl.energy<Math.max(0,(c.cost||0)+(fc.costMod||0))) return false;
+  const tryPlay=(fc)=>{ const c=DB[fc.cid]; if(!c||pl.energy<Math.max(0,(c.cost||0)+(fc.costMod||0)+handCostMod(dp,fc))) return false;
     const was=G._aiAuto; G._aiAuto=true; const ph=G.phase, apl=G.activePlayer; G.phase='main'; G.activePlayer=dp;
     try{ onHandClick(dp,fc.uid,fc); } finally { G.phase=ph; G.activePlayer=apl; G._aiAuto=was; }
     log(`AI responds with ${c.name}!`,'info'); return true; };
@@ -16933,7 +17023,7 @@ const KEYWORDS = {
 };
 function hasKW(fc, kw){ if(DB[fc.cid]?.keywords?.includes(kw))return true; if(Array.isArray(fc&&fc.gainedKeywords)&&fc.gainedKeywords.includes(kw)) return true;
   // STANCES (Pavi): Air Stance grants Onslaught, Earth Stance grants Guardian — only while that stance is active.
-  if(fc&&fc.stance){ if(kw==='onslaught'&&stanceActive(fc,'air')) return true; if(kw==='guardian'&&stanceActive(fc,'earth')) return true; }
+  if(fc&&fc.stance&&(kw==='onslaught'||kw==='guardian')&&stanceGrantsKW(fc,kw)) return true;
   return false; }
 // Passive abilities that are really a keyword in disguise — stealing one grants the keyword.
 const KEYWORD_PASSIVES={'Rage of Sparta':'burst_speed','Flash Step':'burst_speed'};
@@ -17683,9 +17773,32 @@ function seqEntry(p, fc){
 //   Keyed on ability LABELS so stolen/copied abilities work. Choosing is a TRIGGERED choice, never an activated
 //   ability, so it never costs the Power Up. Online, the owner's own client asks (fc._stanceAsk marks it pending).
 // ═══════════════════════════════════════════════════
+function hasEquipmentAttached(fc){ return !!fc && Array.isArray(fc.attachments) && fc.attachments.some(a=>isEquip(DB[a])); }
+// LATVERIAN ARMORY (Doctor Doom Herald): Equipment you play costs 1 less. Used by every hand-cost check.
+function handCostMod(p, fc){
+  const c=DB[fc&&fc.cid]; const h=G&&G.players&&G.players[p]&&G.players[p].herald;
+  if(c && c.type==='equipment' && h && hasAbilityLabel(h,'Latverian Armory')) return -1;
+  return 0;
+}
+// DOOM'S DESIGN cooldown — same timed-limit convention as Water Whip / Sensory Play (G.turn difference ≥ 2).
+function doomsDesignReady(fc){ const last=fc&&fc.abilityUsed&&fc.abilityUsed.dooms_design_turn; return last==null || (G.turn-last)>=2; }
 function isViroraChar(c){ return !!c && isChar(c) && (/\bvirora\b/i.test(c.name||'') || /\bvirora\b/i.test(c.charName||'')); }
 var STANCE_META={air:{icon:'🌪',name:'Air',label:'Air Stance'},earth:{icon:'⛰',name:'Earth',label:'Earth Stance'}};
-function stanceActive(fc,s){ return !!fc && fc.stance===s && !!STANCE_META[s] && hasAbilityLabel(fc,STANCE_META[s].label); }
+// Abilities that only work while their stance is active (keyed on LABEL so stolen copies work).
+//   kw = keyword granted · atk/hp = stat bonus (a passive in recalcPassives) · noAttack = "can't attack".
+//   Crimson Gale's kill trigger and Bloodstone Skin's poison live in triggerCrimsonGale / triggerBloodstoneSkin.
+var STANCE_ABILITIES={
+  'Air Stance':      {stance:'air',   kw:'onslaught', atk:1, hp:0},
+  'Crimson Gale':    {stance:'air',   kw:'onslaught', atk:0, hp:0},
+  'Earth Stance':    {stance:'earth', kw:'guardian',  atk:0, hp:4, noAttack:true},
+  'Bloodstone Skin': {stance:'earth', kw:'guardian',  atk:0, hp:0, noAttack:true}
+};
+function stanceAbilitiesOf(fc,s){ return fc ? Object.keys(STANCE_ABILITIES).filter(l=>STANCE_ABILITIES[l].stance===s && hasAbilityLabel(fc,l)) : []; }
+function stanceActive(fc,s){ return !!fc && fc.stance===s && !!STANCE_META[s] && stanceAbilitiesOf(fc,s).length>0; }
+function stanceLabelActive(fc,label){ const d=STANCE_ABILITIES[label]; return !!d && !!fc && fc.stance===d.stance && hasAbilityLabel(fc,label); }
+function stanceStat(fc,s,key){ return stanceAbilitiesOf(fc,s).reduce((t,l)=>t+(STANCE_ABILITIES[l][key]||0),0); }
+function stanceNoAttack(fc){ return !!fc && !!fc.stance && stanceAbilitiesOf(fc,fc.stance).some(l=>STANCE_ABILITIES[l].noAttack); }
+function stanceGrantsKW(fc,kw){ return !!fc && !!fc.stance && stanceAbilitiesOf(fc,fc.stance).some(l=>STANCE_ABILITIES[l].kw===kw); }
 function guardiansOf(players){ const out=[]; (players||[]).forEach(pp=>{ (G.players[pp]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])&&hasKW(f,'guardian')) out.push(f); }); }); return out; }
 function pursuitBlockKill(afc, blocker){ return !!afc && hasKW(afc,'pursuit') && !!blocker && !ownerOfCard(blocker.uid); }
 function _stanceRemoteHuman(p){
@@ -17695,12 +17808,12 @@ function _stanceRemoteHuman(p){
   return false;
 }
 // Health she would have after switching to Air (Earth's +4 goes away).
-function stanceHpIfAir(fc){ return (fc.currentHP||0) - (stanceActive(fc,'earth')?4:0); }
+function stanceHpIfAir(fc){ return (fc.currentHP||0) - (fc.stance==='earth'?stanceStat(fc,'earth','hp'):0) + (fc.stance!=='air'?stanceStat(fc,'air','hp'):0); }
 function aiChooseStance(p, fc, when){
   if(stanceHpIfAir(fc)<=0) return 'earth';                                   // Air would destroy her
   if(when==='entry' && !hasKW(fc,'burst_speed')) return 'earth';             // can't attack this turn anyway
   if(statusActive(fc,'freeze') || fc.tapped) return 'earth';
-  const airAtk=(fc.currentATK||0)-(stanceActive(fc,'air')?1:0)+1, airHp=stanceHpIfAir(fc);
+  const airAtk=(fc.currentATK||0)-(fc.stance==='air'?stanceStat(fc,'air','atk'):0)+stanceStat(fc,'air','atk'), airHp=stanceHpIfAir(fc);
   const enemies=(typeof aiEnemyChars==='function')?aiEnemyChars(p):[];
   const gs=enemies.filter(e=>hasKW(e.fc,'guardian'));
   const pool=gs.length?gs:enemies;
@@ -17723,13 +17836,14 @@ function stanceSet(p, fc, s){
   const prev=fc.stance||null;
   fc.stance=s; fc._stanceAsk=false;
   log(`${STANCE_META[s].icon} ${DB[fc.cid]?.name} takes ${STANCE_META[s].label}${prev&&prev!==s?` (was ${STANCE_META[prev].name})`:prev===s?' again':''}.`,'gain');
-  if(typeof fxHeal==='function' && s==='earth' && prev!=='earth') try{ fxHeal(fc.uid,4); }catch(e){}
+  { const _gain=stanceStat(fc,s,'hp'); if(_gain>0 && prev!==s && typeof fxHeal==='function') try{ fxHeal(fc.uid,_gain); }catch(e){} }
   if(typeof recalcPassives==='function') recalcPassives(); // applies +1 ATK / +4 HP; losing Earth can destroy her
 }
 function _stanceText(fc, lethal){
-  let t='Choose a stance. It lasts until your next turn.\n🌪 AIR: Onslaught (attack twice) and +1 Attack.\n⛰ EARTH: Guardian and +4 Defense, but she can\'t attack.';
+  const desc=(s)=>stanceAbilitiesOf(fc,s).map(l=>{ const a=(DB[fc.cid]?.abilities||[]).concat(fc.gainedAbilities||[]).find(x=>x&&x.label===l); return (l===STANCE_META[s].label?'':l+': ')+String(a&&a.text||'').replace(/^(Air|Earth) Stance:\s*/i,''); }).join(' ');
+  let t='Choose a stance. It lasts until your next turn.\n🌪 AIR: '+desc('air')+'\n⛰ EARTH: '+desc('earth');
   if(fc.stance) t+='\nNow: '+STANCE_META[fc.stance].label+'.';
-  if(lethal) t+='\n⚠ Switching to Air removes Earth\'s +4 Defense. With '+(fc.currentHP||0)+' Health left, '+(DB[fc.cid]?.name||'she')+' would be destroyed.';
+  if(lethal) t+='\n⚠ Switching to Air removes Earth\'s +'+stanceStat(fc,'earth','hp')+' Defense. With '+(fc.currentHP||0)+' Health left, '+(DB[fc.cid]?.name||'she')+' would be destroyed.';
   return t;
 }
 function stanceOpenChooser(p, fc, when, finish){
@@ -17740,7 +17854,7 @@ function stanceOpenChooser(p, fc, when, finish){
     onDone:(air)=>{
       if(air && lethal){
         trigShow({cid:fc.cid, p, label:'Switch to Air?', kind:'WARNING', ask:true, dual:true,
-          text:'Losing Earth Stance takes away +4 Defense. '+(DB[fc.cid]?.name||'She')+' has '+(fc.currentHP||0)+' Health, so she will be destroyed, the same as any destroyed character.',
+          text:'Losing Earth Stance takes away +'+stanceStat(fc,'earth','hp')+' Defense. '+(DB[fc.cid]?.name||'She')+' has '+(fc.currentHP||0)+' Health, so she will be destroyed, the same as any destroyed character.',
           useLabel:'Yes, go Air', skipLabel:'Back',
           onDone:(yes)=>{ if(yes) finish('air'); else stanceOpenChooser(p,fc,when,finish); }});
         return;
@@ -20483,7 +20597,7 @@ function renderV2HandFor(hp){
   pl.hand.forEach(fc=>{
     const c=DB[fc.cid];if(!c)return;
     const div=document.createElement('div');
-    const effectiveCost=Math.max(0,c.cost+(fc.costMod||0));
+    const effectiveCost=Math.max(0,c.cost+(fc.costMod||0)+handCostMod(hp,fc));
     const playable=isActive&&!c.transformOnly&&G.phase==='main'&&pl.energy>=effectiveCost;
     div.className='hand-card '+(isInst(c)?'instant-card '+(playable?'playable':'not-playable'):playable?'playable':'not-playable');
     if(!isActive)div.style.opacity='0.5';
@@ -20587,7 +20701,7 @@ function renderField(p, targetId){
     const maxHP=fc.baseHP+fc.hpBonus+(fc.passiveHp||0);const pct=Math.max(0,Math.min(100,fc.currentHP/maxHP*100));const hpCol=pct>60?'#22c55e':pct>30?'#f59e0b':'#ef4444';
     const _net=(typeof fxNet==='function')?fxNet(fc):{a:0,h:0};
     div.appendChild(makeArtEl(fc.cid,108,fc));
-    if(fc.stance && STANCE_META[fc.stance] && hasAbilityLabel(fc,"Avatar's Balance")){ const _sc=document.createElement('div'); _sc.className='stance-chip '+fc.stance; _sc.title=STANCE_META[fc.stance].label+(fc.stance==='air'?': Onslaught, +1 Attack':': Guardian, +4 Defense, can\'t attack'); _sc.textContent=STANCE_META[fc.stance].icon+' '+STANCE_META[fc.stance].name.toUpperCase(); div.appendChild(_sc); }
+    if(fc.stance && STANCE_META[fc.stance] && hasAbilityLabel(fc,"Avatar's Balance")){ const _sc=document.createElement('div'); _sc.className='stance-chip '+fc.stance; _sc.title=STANCE_META[fc.stance].label+' · '+stanceAbilitiesOf(fc,fc.stance).join(', '); _sc.textContent=STANCE_META[fc.stance].icon+' '+STANCE_META[fc.stance].name.toUpperCase(); div.appendChild(_sc); }
     const info=document.createElement('div');info.className='card-info field-card-info';
     info.innerHTML=`<div class="card-name-sm">${c.name}</div>
       <div class="card-stats-row"><span class="stat-atk${_net.a>0?' fx-buffed':_net.a<0?' fx-debuffed':''}">⚔${fc.currentATK}</span><span style="color:${hpCol};font-weight:700">♥${fc.currentHP}</span></div>
@@ -20675,7 +20789,7 @@ function renderHand(){
   pl.hand.forEach(fc=>{
     const c=DB[fc.cid];if(!c)return;
     const div=document.createElement('div');
-    const effectiveCost=Math.max(0,c.cost+(fc.costMod||0));
+    const effectiveCost=Math.max(0,c.cost+(fc.costMod||0)+handCostMod(handP,fc));
     const playable=!c.transformOnly&&G.activePlayer===handP&&G.phase==='main'&&pl.energy>=effectiveCost;
     div.className='hand-card '+(isInst(c)?'instant-card '+(playable?'playable':'not-playable'):playable?'playable':'not-playable');
     const artWrap=document.createElement('div');artWrap.className='hand-art-area';
