@@ -7213,7 +7213,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 9.7 · Crystal &amp; Voraxis</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 9.8 · Surana (BSE 028)</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -8184,8 +8184,14 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='9.7'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='9.8'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'9.8', date:'2026-10-25',
+    cards:[{id:'surana_bse', set:'base_set', number:'028/150', rarity:'common', scan:'Sets/BASE SET/028-150 (Surana Base).png', newAbilities:['Omega Venom'],
+      note:"Surana · Black · Common · BASE CHARACTER (charLine 'surana', formTier 'base', nextForms [] until her SSJ / SSJ2, slots 029–030, exist) · cost 2 · 1 ATK / 3 HP · subtypes Omega, Celestial, Saiyan · race 'Omega Celestial Saiyan' · sym 'SUR'."}],
+    abilities:["OMEGA VENOM (Surana, triggered): whenever this card deals combat damage to a CHARACTER, that character is Poisoned (applyStatus 'poison', normal 3-turn Poison 1/2/3; doesn't stack, Vortex Shield immune, transforming cleanses). triggerOmegaVenom(src, srcP, tgt, tgtP, dmg) is called next to triggerOlympianBlood at every combat-damage point: her attack, her retaliation, Power Struggle won as defender, and Life / Combined / 2v2 block damage and block counters. Only if the target is still on the field and dmg > 0. Heralds are not characters (no poison on a Herald hit). Label-based, so a stolen copy works."],
+    screens:["Log line '🧪 Omega Venom: Surana poisons X.' then the normal Poison status line; the card view's Effects panel lists Omega Venom as the Poison source. Build tag: 'build 9.8 · Surana (BSE 028)'."],
+    data:["GAME_BUILD '9.8' (new card: web ↔ PC online needs both on 9.8)."] },
   { build:'9.7', date:'2026-10-25',
     cards:[{id:'crystal_bse', set:'base_set', number:'113/150', rarity:'common', scan:'Sets/BASE SET/113-150 (Crystal Base).png', newAbilities:['Prism Orb'],
       note:"Crystal · Blue · Common · BASE CHARACTER (charLine 'crystal', formTier 'base', nextForms [] until her SSJ, slot 114, exists) · cost 2 · 2 ATK / 3 HP · subtype Saiyan · race 'Saiyan' · sym 'CRY'."},
@@ -8426,6 +8432,7 @@ const DEFAULTS={
   lady_loki_vampire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Lady%20Loki%20Vampire%20(Promo).png',
   paradox_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/027-150%20(Paradox).png',
   crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/113-150%20(Crystal%20Base).png',
+  surana_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/028-150%20(Surana%20Base).png',
   voraxis_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/140-150%20(Voraxis).png',
   ivan_wca_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Wrestling/Ivan%20WCA%20(Promo%20Card).png',
   wca_overdrive_belt_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Wrestling/WCA%20OVERDRIVE%20CHAMPION%20BELT%20(PROMO%20EQUIPTMENT).png',
@@ -8624,6 +8631,9 @@ const DB={
     abilities:[{label:'Pink Horizon',type:'passive',cost:0,text:'When this card is dealt combat damage, the attacker gets -2 Attack until end of their next turn.'},
       {label:'Surface Rasengan',type:'activated',cost:3,limit:'once_per_turn',text:'Deal 3 damage to target opposing character. If this destroys it, Freeze another opposing character. Cost: 3 Energy'},
       {label:'Sadala Roll Call',type:'activated',cost:0,text:'Roll a 3-sided die. If it lands on 2, search your deck for a Saiyan character card, reveal it, and put it into your hand. Shuffle your deck after.'}],transforms:[]},
+  // ── SURANA (BSE 028/150) — build 9.8. Base of the new Black Saiyan line (029 SSJ, 030 SSJ2 planned).
+  surana_bse:{id:'surana_bse',rarity:'common',name:'Surana',color:'black',charName:'Surana',charLine:'surana',formTier:'base',subtypes:['Omega','Celestial','Saiyan'],type:'base_char',race:'Omega Celestial Saiyan',cost:2,atk:1,hp:3,sym:'SUR',setId:'base_set',cardNumber:'028/150',keywords:[],nextForms:[],
+    abilities:[{label:'Omega Venom',type:'triggered',cost:0,text:'Whenever this card deals combat damage to a character, that character is Poisoned.'}]},
   // ── CRYSTAL (BSE 113/150) — build 9.7. Base of the new Blue Saiyan line (114 = her SSJ, planned).
   crystal_bse:{id:'crystal_bse',rarity:'common',name:'Crystal',color:'blue',charName:'Crystal',charLine:'crystal',formTier:'base',subtypes:['Saiyan'],type:'base_char',race:'Saiyan',cost:2,atk:2,hp:3,sym:'CRY',setId:'base_set',cardNumber:'113/150',keywords:[],nextForms:[],
     abilities:[{label:'Prism Orb',type:'triggered',cost:0,text:'When this card enters your field, choose one: target opposing character gets −2 Attack until end of your next turn, or heal one of your characters for 3.'}]},
@@ -9756,6 +9766,18 @@ function triggerPinkHorizon(victimFc, dmg, attackerFc, attackerP){
 // OLYMPIAN BLOOD (Kratos): whenever `sourceFc` deals combat damage (attacking OR
 // retaliating), it permanently gains +1 Attack. Called from every spot in
 // executeCombatDamage where combat damage changes hands.
+// OMEGA VENOM (Surana, BSE 028): whenever this card deals combat damage to a CHARACTER (its attack, its
+// retaliation, winning a Power Struggle as defender, Life-mode block damage and block counters), that character is
+// Poisoned — if it's still on the field. Heralds aren't characters. Label-based, so a stolen copy works.
+function triggerOmegaVenom(srcFc, srcP, tgtFc, tgtP, dmg){
+  if(!(dmg>0) || !srcFc || !tgtFc || !hasAbilityLabel(srcFc,'Omega Venom')) return;
+  if(!isChar(DB[tgtFc.cid])) return;
+  if(!G.players[tgtP] || !G.players[tgtP].field.some(f=>f.uid===tgtFc.uid)) return; // destroyed: nothing to poison
+  const _fx=(typeof fxPush==='function')?fxPush(srcFc.cid,'Omega Venom',srcFc.uid):null;
+  log(`🧪 Omega Venom: ${DB[srcFc.cid]?.name} poisons ${DB[tgtFc.cid]?.name}.`,'dmg');
+  try{ applyStatus(tgtFc,'poison'); }catch(e){ console.warn('[Omega Venom]',e); }
+  if(typeof fxPop==='function') fxPop(_fx);
+}
 function triggerOlympianBlood(sourceFc, sourceP, dmg){
   if(dmg<=0 || !hasAbilityLabel(sourceFc,'Olympian Blood'))return;
   if(!G.players[sourceP]||!G.players[sourceP].field.some(f=>f.uid===sourceFc.uid))return;
@@ -11786,6 +11808,7 @@ function executeCombatDamage(ap,auid,dp,duid){
     triggerReceipt(afc, defenderATK, dfc, dp);
     // OLYMPIAN BLOOD (Kratos): dfc just dealt this combat damage.
     triggerOlympianBlood(dfc, dp, defenderATK);
+    triggerOmegaVenom(dfc, dp, afc, ap, defenderATK);
     triggerShowdownHype(dfc, dp, ap, auid);
     renderAll();return;
   }
@@ -11803,6 +11826,7 @@ function executeCombatDamage(ap,auid,dp,duid){
   triggerReceipt(dfc, atkDmg, afc, ap, _pursuitKill);
   // OLYMPIAN BLOOD (Kratos): afc just dealt this combat damage.
   triggerOlympianBlood(afc, ap, atkDmg);
+  triggerOmegaVenom(afc, ap, dfc, dp, atkDmg);
   // BLOOD TITHE (Lady Loki Vampire): drains -1/-1 from the character she hits, +1/+1 to herself.
   if(hasAbilityLabel(afc,'Blood Tithe') && atkDmg>0 && isChar(dc) && G.players[dp].field.some(f=>f.uid===dfc.uid)){
     dfc.atkBonus=(dfc.atkBonus||0)-1; dfc.currentATK=Math.max(0,(dfc.currentATK||0)-1);
@@ -11868,6 +11892,7 @@ function executeCombatDamage(ap,auid,dp,duid){
     triggerReceipt(afc, defenderATK, dfc, dp);
     // OLYMPIAN BLOOD (Kratos): dfc just dealt this retaliation combat damage.
     triggerOlympianBlood(dfc, dp, defenderATK);
+    triggerOmegaVenom(dfc, dp, afc, ap, defenderATK);
     triggerShowdownHype(dfc, dp, ap, auid);
   } else if(!stillOnField&&hasKW(afc,'pursuit')){
     log('Pursuit: '+ac.name+' struck first — no retaliation!','gain');
@@ -12306,12 +12331,14 @@ function resolveLifeAttack(attackerPlayer, afc, blocker){
   const excess=Math.max(0, incoming-bHPbefore);
   log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHPbefore}HP).`,'info');
   dealDamage(defenderPlayer, blocker.uid, incoming);            // Step 1-2: blocker damage + death
+  triggerOmegaVenom(afc, attackerPlayer, blocker, defenderPlayer, incoming);
   triggerShowdownHype(afc, attackerPlayer, defenderPlayer, blocker.uid);
   if(bPow>power && pursuitBlockKill(afc, blocker)){ log(`Pursuit: ${DB[afc.cid].name} destroyed its blocker — no counter.`,'gain'); }
   else if(bPow>power){                                         // Step 3: counter (difference only)
     const counter=bPow-power;
     log(`Counter! ${DB[blocker.cid].name} deals ${counter} back.`,'dmg');
     dealDamage(attackerPlayer, afc.uid, counter);
+    triggerOmegaVenom(blocker, defenderPlayer, afc, attackerPlayer, counter);
     triggerShowdownHype(blocker, defenderPlayer, attackerPlayer, afc.uid);
   }
   if(excess>0){                                                // Step 4: trample to Life
@@ -12397,9 +12424,9 @@ function resolveTeamLifeAttack(attackerPlayer, afc, blocker, enemyTeam){
   }
   const bHP=blocker.currentHP||0, bPow=effPower(blocker), excess=Math.max(0,power-bHP);
   log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHP}HP).`,'info');
-  if(owner){ dealDamage(owner, blocker.uid, power); triggerShowdownHype(afc, attackerPlayer, owner, blocker.uid); } // Step 1-2 (death → -2 team Life via killCard)
+  if(owner){ dealDamage(owner, blocker.uid, power); triggerOmegaVenom(afc, attackerPlayer, blocker, owner, power); triggerShowdownHype(afc, attackerPlayer, owner, blocker.uid); } // Step 1-2 (death → -2 team Life via killCard)
   if(bPow>power && pursuitBlockKill(afc, blocker)){ log(`Pursuit: ${DB[afc.cid].name} destroyed its blocker — no counter.`,'gain'); }
-  else if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(attackerPlayer, afc.uid, c); if(owner) triggerShowdownHype(blocker, owner, attackerPlayer, afc.uid); } // Step 3
+  else if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(attackerPlayer, afc.uid, c); if(owner){ triggerOmegaVenom(blocker, owner, afc, attackerPlayer, c); triggerShowdownHype(blocker, owner, attackerPlayer, afc.uid); } } // Step 3
   if(excess>0){ log(`Trample! ${excess} excess to Team ${enemyTeam} Life.`,'dmg'); damageTeamLife(enemyTeam, excess, 'trample'); } // Step 4
   renderAll();
 }
@@ -12548,9 +12575,9 @@ function resolveAITeamAttack(aiPlayer, afc, blocker, humanTeam){
   const excess=Math.max(0,incoming-bHP);
   const owner=ownerOfCard(blocker.uid);
   log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHP}HP).`,'info');
-  if(owner){ dealDamage(owner, blocker.uid, incoming); triggerShowdownHype(afc, aiPlayer, owner, blocker.uid); }
+  if(owner){ dealDamage(owner, blocker.uid, incoming); triggerOmegaVenom(afc, aiPlayer, blocker, owner, incoming); triggerShowdownHype(afc, aiPlayer, owner, blocker.uid); }
   if(bPow>power && pursuitBlockKill(afc, blocker)){ log(`Pursuit: ${DB[afc.cid].name} destroyed its blocker — no counter.`,'gain'); }
-  else if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(aiPlayer, afc.uid, c); if(owner) triggerShowdownHype(blocker, owner, aiPlayer, afc.uid); }
+  else if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(aiPlayer, afc.uid, c); if(owner){ triggerOmegaVenom(blocker, owner, afc, aiPlayer, c); triggerShowdownHype(blocker, owner, aiPlayer, afc.uid); } }
   if(excess>0){ log(`Trample! ${excess} to Team ${humanTeam} Life.`,'dmg'); damageTeamLife(humanTeam, excess, 'trample'); }
   renderAll();
 }
