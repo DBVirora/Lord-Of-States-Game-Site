@@ -7221,7 +7221,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.4 · Cancel fix</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.5 · Crystora (SSBM)</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -8192,8 +8192,17 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.4'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.5'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.5', date:'2026-10-31',
+    cards:[{id:'crystora_ssbm_bse', set:'base_set', number:'142/150', rarity:'mythic', scan:'Sets/BASE SET/142-150 (Crystora SSBM) FUSION TRANSFORMATION.png', newAbilities:['Sapphire Nova','Diamond Calm'],
+      note:"Crystora (SSBM) · FUSION FORM, transformOnly (transforms from Crystora; no fusionMaterials) · Blue/Purple (pays Blue) · Mythic · cost 10 (its transform cost) · 10 ATK / 12 HP · subtypes Royal, Saiyan, God · race 'Royal Saiyan' · charLine 'crystora', formTier 'ssbm', path 'god'. crystora_bse.nextForms is now ['ssbm']."}],
+    abilities:[
+      "SAPPHIRE NOVA (Crystora SSBM, activated): 2 Energy, once per turn, does NOT tap: 3 damage (dealDamage) to target opposing character; if it survives, −2 Attack until the end of your next turn (applyTimedCut 'Sapphire Nova'); if it was destroyed, draw 1. Closing its picker refunds it (10.4 ability undo).",
+      "DIAMOND CALM (Crystora SSBM, passive): damage dealt to it is reduced by 2 — in dealDamage next to Nullify and Inferno Ward.",
+      "As a fusion form it pays its printed 10 (no Calm Clarity / Royal Clarity), keeps the Relic and Dance timer, and a split from it Fatigues the materials for 2 turns."],
+    screens:["Build tag: 'build 10.5 · Crystora (SSBM)'."],
+    data:["GAME_BUILD '10.5'."] },
   { build:'10.4', date:'2026-10-31',
     cards:[],
     abilities:[
@@ -8551,6 +8560,7 @@ const DEFAULTS={
   potara_earrings_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/101-150%20(Potara%20Earrings).png',
   art_of_fusion_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/104-150%20(Art%20of%20Fusion).png',
   crystora_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/141-150%20(Crystora)%20FUSION.png',
+  crystora_ssbm_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/142-150%20(Crystora%20SSBM)%20FUSION%20TRANSFORMATION.png',
   jalina_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/123-150%20(Jalina).png',
   alita_ssj_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/125-150%20(Alita%20SSJ).png',
   alita_ssj_sr_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/153-150%20(Alita%20SSJ)%20(Secret%20Rare).png',
@@ -8785,10 +8795,15 @@ const DB={
   art_of_fusion_bse:{id:'art_of_fusion_bse',rarity:'uncommon',name:'Art of Fusion',color:'white',charName:'Art of Fusion',subtypes:['Instant'],type:'instant',race:'Instant',cost:1,atk:0,hp:0,sym:'💫',setId:'base_set',cardNumber:'104/150',fusionMethodCard:'dance',nextForms:[],
     abilities:[{label:'Art of Fusion',type:'instant',cost:0,text:'Fuse two of your characters into a Fusion card from your hand that lists Dance, paying its cost −3. The Fusion lasts 3 of your turns, then splits.'}]},
   // ── CRYSTORA (BSE 141/150) — build 10.3. FUSION of Virora + Crystal, RELIC ONLY. BLUE/PURPLE (pays Blue).
-  crystora_bse:{id:'crystora_bse',rarity:'mythic',name:'Crystora',color:'blue',colors:['blue','purple'],charName:'Crystora',charLine:'crystora',formTier:'base',path:'base',subtypes:['Royal','Saiyan'],type:'char',fusion:true,race:'Royal Saiyan',cost:7,atk:6,hp:8,sym:'CRYS',setId:'base_set',cardNumber:'141/150',keywords:[],nextForms:['ssg'],
+  crystora_bse:{id:'crystora_bse',rarity:'mythic',name:'Crystora',color:'blue',colors:['blue','purple'],charName:'Crystora',charLine:'crystora',formTier:'base',path:'base',subtypes:['Royal','Saiyan'],type:'char',fusion:true,race:'Royal Saiyan',cost:7,atk:6,hp:8,sym:'CRYS',setId:'base_set',cardNumber:'141/150',keywords:[],nextForms:['ssbm'],
     fusionMaterials:[{name:'Virora'},{name:'Crystal'}],fusionMethods:['relic'],
     abilities:[{label:'Thunder Light Sphere',type:'activated',cost:0,limit:'once_per_turn',text:'Deal 3 damage to target opposing character. It gets −2 Attack until end of your next turn. (Free, taps, once per turn)'},
       {label:'Inferno Ward',type:'passive',cost:0,text:'Damage dealt to this card is reduced by 1.'}]},
+  // ── CRYSTORA (SSBM) (BSE 142/150) — build 10.5. FUSION FORM of Crystora, TRANSFORM-ONLY (no materials printed).
+  //    God path. The Relic stays on through the transformation; a split now Fatigues the materials for 2 turns.
+  crystora_ssbm_bse:{id:'crystora_ssbm_bse',rarity:'mythic',name:'Crystora (SSBM)',color:'blue',colors:['blue','purple'],charName:'Crystora',charLine:'crystora',formTier:'ssbm',path:'god',subtypes:['Royal','Saiyan','God'],type:'char',fusion:true,fusionForm:true,transformOnly:true,transformsFrom:'crystora_bse',race:'Royal Saiyan',cost:10,atk:10,hp:12,sym:'CRYSBM',setId:'base_set',cardNumber:'142/150',keywords:[],nextForms:[],
+    abilities:[{label:'Sapphire Nova',type:'activated',cost:2,limit:'once_per_turn',text:'Deal 3 damage to target opposing character. It gets −2 Attack until end of your next turn. If this destroys it, draw 1 card. (Cost 2 Energy, once per turn. Does not tap.)'},
+      {label:'Diamond Calm',type:'passive',cost:0,text:'Damage dealt to this card is reduced by 2.'}]},
   // ── JALINA (BSE 123/150) — build 10.2. Prime Saiyan. RED (direct damage). Heir's Shockwave: 2⚡ ping, once per turn, taps.
   jalina_bse:{id:'jalina_bse',rarity:'uncommon',name:'Jalina',color:'red',charName:'Jalina',subtypes:['Prime','Saiyan'],type:'char',race:'Prime Saiyan',cost:5,atk:5,hp:4,sym:'JAL',setId:'base_set',cardNumber:'123/150',keywords:[],nextForms:[],
     abilities:[{label:"Heir's Shockwave",type:'activated',cost:2,limit:'once_per_turn',text:'Deal 2 damage to target opposing character. (Cost 2 Energy, once per turn. This card is tapped afterwards.)'}]},
@@ -11040,7 +11055,7 @@ function dealDamage(tp,tuid,amt){
   if(amt<=0)return;
   const fc=G.players[tp].field.find(f=>f.uid===tuid);if(!fc)return;
   const c=DB[fc.cid];if(!c)return;
-  const dmg=isChar(c)?Math.max(0,amt-(fc.nullify||0)-(hasAbilityLabel(fc,'Inferno Ward')?1:0)):amt; // Inferno Ward (Crystora): −1
+  const dmg=isChar(c)?Math.max(0,amt-(fc.nullify||0)-(hasAbilityLabel(fc,'Inferno Ward')?1:0)-(hasAbilityLabel(fc,'Diamond Calm')?2:0)):amt; // Inferno Ward (Crystora) −1 · Diamond Calm (Crystora SSBM) −2
   // Track marked damage silently for future parry/defense mechanics
   if(isChar(c))fc.markedDamage=(fc.markedDamage||0)+dmg;
   // Omega Judgment: attacker loses 3 ATK when hitting Darkseid herald,
@@ -15586,6 +15601,21 @@ function runAbilityEffect(fc, abl, pl){
       const t2=G.players[op].field.find(f=>f.uid===uid); if(t2&&t2.currentHP>0) applyTimedCut(ap,t2,'Thunder Light Sphere',2,'⚡ ');
       renderAll(); };
     openEnemyTargetPicker(enemies, hit, {sourcePlayer:ap, title:'Thunder Light Sphere', desc:'Deal 3 damage to an opposing character. It gets −2 Attack until the end of your next turn.'});
+    return;
+  }
+  // ── CRYSTORA (SSBM): Sapphire Nova — 3 damage to target opposing character, −2 Attack until the end of your next
+  //    turn if it survives, draw 1 if it is destroyed. 2⚡, once per turn, does not tap.
+  if(label==='Sapphire Nova'){
+    const ap=G.activePlayer; const opps=_fusionOpps(ap);
+    const enemies=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) enemies.push(f); }));
+    if(!enemies.length){ log('Sapphire Nova: no opposing characters.','dmg'); renderAll(); return; }
+    const hit=(uid)=>{ const op=opps.find(o=>(G.players[o]?.field||[]).some(f=>f.uid===uid)); const t=op&&G.players[op].field.find(f=>f.uid===uid); if(!t) return;
+      const nm=DB[t.cid].name; log(`💎 Sapphire Nova: ${nm} takes 3.`,'dmg'); dealDamage(op,uid,3);
+      const t2=G.players[op].field.find(f=>f.uid===uid);
+      if(t2&&t2.currentHP>0) applyTimedCut(ap,t2,'Sapphire Nova',2,'💎 ');
+      else if(!t2){ log(`💎 Sapphire Nova destroyed ${nm} — ${pname(ap)} draws 1.`,'gain'); drawCard(ap); }
+      renderAll(); };
+    openEnemyTargetPicker(enemies, hit, {sourcePlayer:ap, title:'Sapphire Nova', desc:'Deal 3 damage to an opposing character. It gets −2 Attack until the end of your next turn; if it is destroyed, draw 1.'});
     return;
   }
   // ── JALINA: Heir's Shockwave — 2 damage to target opposing character. 2⚡, once per turn; its text taps it.
