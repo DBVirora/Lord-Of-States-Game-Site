@@ -7422,7 +7422,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.11 · Vuruna · Elise · Anya · Scorpion · Hulk · Starfire</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.12 · Asa · Falcore · Remmel</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -8409,8 +8409,26 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.11'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.12'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.12', date:'2026-11-01',
+    cards:[{id:'asa_bse', set:'base_set', number:'063/150', rarity:'rare', scan:'Sets/BASE SET/063-150 (Asa).png', newAbilities:['Half-Divine','Skyfall'],
+       note:"Asa · Character · White · Rare · cost 6 · 5 ATK / 6 HP · Demigod · race 'Demigod' · sym 'ASA'."},
+      {id:'falcore_bse', set:'base_set', number:'136/150', rarity:'legend', scan:'Sets/BASE SET/136-150 (Falcore).png', newAbilities:['Sandstorm',"Sun's Judgment",'Sunfall'],
+       note:"Falcore · Character · Yellow · Legend · cost 9 · 9 ATK / 7 HP · God · race 'God' · sym 'FALC'."},
+      {id:'remmel_bse', set:'base_set', number:'137/150', rarity:'legend', scan:'Sets/BASE SET/137-150 (Remmel).png', newAbilities:['Chaos Tithe','Lord of Ruin','Fuel the Chaos'],
+       note:"Remmel · Character · Black · Legend · cost 8 · 7 ATK / 7 HP · Chaos Lord · race 'Chaos Lord' · sym 'REMM'."}],
+    abilities:[
+      "HALF-DIVINE (Asa, passive): damage dealt to it by a CHARACTER whose subtypes include the word 'God' is reduced by 2 (in dealDamage, alongside Nullify / Inferno Ward / Diamond Calm). Source: in combat, the other combatant (G._curAtk set at every attack start via the shared attack hook, G._curDef set in executeCombatDamage and both Life-mode block steps); outside combat, the card of the current effect context (_fxCtx.uid: activated, entry and triggered abilities). Heralds don't count (not characters).",
+      "SKYFALL (Asa, entry): 2 damage to a target opposing character (both enemy boards in 2v2). Person: enemy target picker (Drunken Stance can't be picked, Godly Evasion toll applies; closing it = no damage). AI/remote: a target it can finish (≤2 Health), else its most valuable reachable target.",
+      "SANDSTORM (Falcore, activated): 3 Energy (Yellow), once every 4 turns (abilityUsed.sandstorm_turn, G.turn − last ≥ 4 — Ravager Strike convention), no tap: Paralyze EACH opposing character (not targeted, so Drunken Stance / Godly Evasion don't stop it; Vortex Shield does). Refused (no charge) with no opposing characters.",
+      "SUN'S JUDGMENT (Falcore): its attack on a Paralyzed character deals +2 (executeCombatDamage, after Water Stance).",
+      "SUNFALL (Falcore, activated): 5 Energy, once per game (abilityUsed['Sunfall']), no tap: 3 damage to each Paralyzed opposing character (not targeted). Refused (no charge) when none is Paralyzed.",
+      "CHAOS TITHE (Remmel, triggered): once per turn per Remmel (fc._titheTurn), when you sacrifice ANOTHER of your characters (doSacrifice — the Sacrifice action, Death's Toll), 2 damage to each opposing character (not targeted).",
+      "LORD OF RUIN (Remmel, activated): 4 Energy, once per game, no tap: a character card costing 5 or less (not a token or Herald) from your Otherworld (discard) to your hand. Opens the discard panel first; it is charged and spent only when a card is picked (closing = nothing spent). Refused when no such card. AI: only when a 3–5 cost character is there.",
+      "FUEL THE CHAOS (Remmel, passive): every sacrifice you make gives +1 extra Energy per Remmel you control (counted before the sacrificed card leaves, so Remmel sacrificing himself still pays)."],
+    screens:["Effects panel: '🏜 Sandstorm — recharging N turn(s)', '🌀 Chaos Tithe — already used this turn'. Log lines for Sun's Judgment, Sunfall, Skyfall, Fuel the Chaos."],
+    data:["GAME_BUILD '10.12'. No rulebook change."] },
   { build:'10.11', date:'2026-11-01',
     cards:[{id:'vuruna_ssj_bse', set:'base_set', number:'032/150', rarity:'uncommon', scan:'Sets/BASE SET/032-150 (Vuruna SSJ).png', newAbilities:['Flashpoint Chain'],
        note:"Vuruna (SSJ) · transformOnly from Vuruna · charLine 'vuruna', formTier 'ssj1', path 'saiyan' · Yellow · Uncommon · cost 6 · 6 ATK / 4 HP · Royal, Saiyan · sym 'VURSSJ'. No Burst Speed (a form has only its own printed abilities)."},
@@ -8870,6 +8888,9 @@ const DEFAULTS={
   vuruna_ssj_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/032-150%20(Vuruna%20SSJ).png',
   vuruna_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/033-150%20(Vuruna%20SSG).png',
   elise_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/035-150%20(Elise%20Base).png',
+  asa_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/063-150%20(Asa).png',
+  falcore_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/136-150%20(Falcore).png',
+  remmel_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/137-150%20(Remmel).png',
   tyler_ssbe_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/021-150%20(Tyler%20SSBE).png',
   tyler_ssbe_sr_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/152-150%20(Tyler%20SSBE)%20(Secret%20Rare).png',
   scorched_titan_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/046-150%20(The%20Scorched%20Titan).png',
@@ -9193,6 +9214,27 @@ const DB={
   //    Wildborn Adaptation: as she enters, choose one — search your deck for a Transformation of her line, or +1/+1.
   elise_bse:{id:'elise_bse',rarity:'common',name:'Elise',color:'purple',charName:'Elise',charLine:'elise',formTier:'base',subtypes:['Saiyan'],type:'base_char',race:'Saiyan',cost:3,atk:3,hp:3,sym:'ELI',setId:'base_set',cardNumber:'035/150',keywords:[],nextForms:[],
     abilities:[{label:'Wildborn Adaptation',type:'triggered',cost:0,text:'When this card enters your field, choose one: search your deck for a Transformation card of this character and put it into your hand, or this card gets +1/+1.'}],transforms:[]},
+  // ── ASA (BSE 063/150) — build 10.12. Demigod, White.
+  //    Half-Divine: damage from a character with God in its subtypes −2 (combat or ability; dealDamage).
+  //    Skyfall: on entry, 2 damage to a target opposing character.
+  asa_bse:{id:'asa_bse',rarity:'rare',name:'Asa',color:'white',charName:'Asa',subtypes:['Demigod'],type:'char',race:'Demigod',cost:6,atk:5,hp:6,sym:'ASA',setId:'base_set',cardNumber:'063/150',keywords:[],nextForms:[],
+    abilities:[{label:'Half-Divine',type:'passive',cost:0,text:'Characters with God in their subtypes deal 2 less damage to this card.'},
+      {label:'Skyfall',type:'triggered',cost:0,text:'When this card enters the field, deal 2 damage to an opponent character.'}],transforms:[]},
+  // ── FALCORE (BSE 136/150) — build 10.12. God, Yellow (Paralyze).
+  //    Sandstorm: 3⚡, once every 4 turns (G.turn − last ≥ 4, Ravager Strike convention): Paralyze EACH opposing character.
+  //    Sun's Judgment: its attacks on a Paralyzed character deal +2.  Sunfall: 5⚡, once per game: 3 to each Paralyzed foe.
+  falcore_bse:{id:'falcore_bse',rarity:'legend',name:'Falcore',color:'yellow',charName:'Falcore',subtypes:['God'],type:'char',race:'God',cost:9,atk:9,hp:7,sym:'FALC',setId:'base_set',cardNumber:'136/150',keywords:[],nextForms:[],
+    abilities:[{label:'Sandstorm',type:'activated',cost:3,limit:'every_4_turns',text:'Pay 3 Energy: Paralyze each opponent character. (Once every 4 turns)'},
+      {label:"Sun's Judgment",type:'triggered',cost:0,text:'When this card attacks a Paralyzed character, it deals +2 damage.'},
+      {label:'Sunfall',type:'activated',cost:5,limit:'once_per_game',text:'Pay 5 Energy: Deal 3 damage to each Paralyzed opponent character. (Once per game)'}],transforms:[]},
+  // ── REMMEL (BSE 137/150) — build 10.12. Chaos Lord, Black (sacrifice).
+  //    Chaos Tithe: once per turn, when you sacrifice ANOTHER of your characters, 2 damage to each opposing character.
+  //    Lord of Ruin: 4⚡, once per game: a character costing 5 or less from your Otherworld (discard) to your hand.
+  //    Fuel the Chaos: every sacrifice you make gives +1 Energy.
+  remmel_bse:{id:'remmel_bse',rarity:'legend',name:'Remmel',color:'black',charName:'Remmel',subtypes:['Chaos Lord'],type:'char',race:'Chaos Lord',cost:8,atk:7,hp:7,sym:'REMM',setId:'base_set',cardNumber:'137/150',keywords:[],nextForms:[],
+    abilities:[{label:'Chaos Tithe',type:'triggered',cost:0,limit:'once_per_turn',text:'Whenever you sacrifice one of your other characters, deal 2 damage to each opponent character. (Once per turn)'},
+      {label:'Lord of Ruin',type:'activated',cost:4,limit:'once_per_game',text:'Pay 4 Energy: Return a character with a cost of 5 or less from your Otherworld to your hand. (Once per game)'},
+      {label:'Fuel the Chaos',type:'passive',cost:0,text:'When you sacrifice a character, gain 1 extra Energy.'}],transforms:[]},
   // ── RAPTURE OF THE VORTEX — BSE regular character (Titan • Beast). GREEN/PURPLE (endurance + trickery). 049/150 Rare.
   rapture_vortex_bse:{id:'rapture_vortex_bse',rarity:'rare',name:'Rapture of the Vortex',color:'green',colors:['green','purple'],charName:'Rapture of the Vortex',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:7,atk:6,hp:8,sym:'RVORTEX',setId:'base_set',cardNumber:'049/150',nextForms:[],
     abilities:[{label:'Vortex Shield',type:'passive',cost:0,text:'This card cannot have any status effects applied to it.'},{label:'The Reckoning',type:'activated',cost:0,text:'Choose 1 Character on your opponent\'s field. Flip a coin. If heads, that character is now under Confusion. (Taps)'}],transforms:[]},
@@ -10433,6 +10475,7 @@ function triggerHeavenlyRelay(afc){
   log(`🌙 Heavenly Relay: another of ${pname(p)}'s characters that hasn't attacked may attack this turn!`,'gain');
 }
 function triggerFlameSpiral(afc){
+  if(afc&&G){ G._curAtk=afc.uid; G._curDef=null; } // who is attacking (Half-Divine's damage-source check)
   triggerCrimsonRampage(afc);
   triggerHeavenlyRelay(afc);
   if(!afc||!hasAbilityLabel(afc,'Flame Spiral')) return;
@@ -10792,6 +10835,8 @@ function fxEffectsOf(fc){
   else if(hasAbilityLabel(fc,'Heavenly Relay')&&!heavenlyRelayReady(fc)) cond('🌙','Heavenly Relay','Recharging: ready again in '+(2-(G.turn-fc.abilityUsed.relay_turn))+' turn(s).',null);
   if(fc._rampage>0) cond('🔥','Crimson Rampage','+'+fc._rampage+' Attack until the end of this turn.',null);
   if(fc._rage>0) cond('💢','Rising Rage','+'+fc._rage+' Attack (max +3) until it leaves the field.',null);
+  { const l=fc.abilityUsed&&fc.abilityUsed.sandstorm_turn; if(l!=null&&G&&G.turn-l<4&&hasAbilityLabel(fc,'Sandstorm')) cond('🏜','Sandstorm','Recharging: ready again in '+(4-(G.turn-l))+' turn(s).',null); }
+  if(hasAbilityLabel(fc,'Chaos Tithe')&&fc._titheTurn===(G&&G.turn)) cond('🌀','Chaos Tithe','Already used this turn.',null);
   ['web_snare_turn:Web Snare:🕸','get_over_here_turn:Get Over Here!:🔥'].forEach(s=>{ const [k,L,i]=s.split(':'); const l=fc.abilityUsed&&fc.abilityUsed[k];
     if(l!=null&&G&&G.turn-l<2&&hasAbilityLabel(fc,L)) cond(i,L,'Recharging: ready again in '+(2-(G.turn-l))+' turn(s).',null); });
   if(fc.nextAttackBonus>0) cond('💥','+'+fc.nextAttackBonus+' next attack','Its next attack deals +'+fc.nextAttackBonus+' damage.',null);
@@ -11570,11 +11615,21 @@ function fxRift(el,p){
 function fxFindRemoved(p,cid){ const b=fxBoard(); if(!b) return null; const els=[...b.querySelectorAll(`[data-player="${p}"][data-cid="${cid}"]`)]; const live=new Set((G.players[p]&&G.players[p].field||[]).map(f=>String(f.uid))); return els.find(e=>!live.has(e.getAttribute('data-uid')))||null; }
 
 
+// HALF-DIVINE (Asa) source check: a CHARACTER whose subtypes include the word God.
+function _dmgSourceFc(tuid){
+  const cx=(typeof _fxCtx!=='undefined')?_fxCtx:null; if(!cx) return null;
+  if(cx.combat){ const s=(String(tuid)===String(G._curAtk))?G._curDef:G._curAtk; return s!=null?fxFindFc(s):null; }
+  return cx.uid!=null?fxFindFc(cx.uid):null;
+}
+function _dmgSrcIsGod(tuid){
+  const s=_dmgSourceFc(tuid); const c=s&&DB[s.cid];
+  return !!c&&isChar(c)&&String(s.uid)!==String(tuid)&&(c.subtypes||[]).some(t=>/\bgod\b/i.test(String(t)));
+}
 function dealDamage(tp,tuid,amt){
   if(amt<=0)return;
   const fc=G.players[tp].field.find(f=>f.uid===tuid);if(!fc)return;
   const c=DB[fc.cid];if(!c)return;
-  const dmg=isChar(c)?Math.max(0,amt-(fc.nullify||0)-(hasAbilityLabel(fc,'Inferno Ward')?1:0)-(hasAbilityLabel(fc,'Diamond Calm')?2:0)):amt; // Inferno Ward (Crystora) −1 · Diamond Calm (Crystora SSBM) −2
+  const dmg=isChar(c)?Math.max(0,amt-(fc.nullify||0)-(hasAbilityLabel(fc,'Inferno Ward')?1:0)-(hasAbilityLabel(fc,'Diamond Calm')?2:0)-((hasAbilityLabel(fc,'Half-Divine')&&_dmgSrcIsGod(tuid))?2:0)):amt; // Inferno Ward (Crystora) −1 · Diamond Calm (Crystora SSBM) −2 · Half-Divine (Asa) −2 vs Gods
   // Track marked damage silently for future parry/defense mechanics
   if(isChar(c))fc.markedDamage=(fc.markedDamage||0)+dmg;
   // Omega Judgment: attacker loses 3 ATK when hitting Darkseid herald,
@@ -11989,13 +12044,31 @@ function doSacrifice(uid,energyGain,pOverride){
   const pl=G.players[sp];
   const fc=pl.field.find(f=>f.uid===uid);if(!fc)return;
   log(`${pname(sp)} sacrifices ${DB[fc.cid].name} for +${energyGain}⚡!`,'gain');
+  const _fuel=pl.field.filter(f=>hasAbilityLabel(f,'Fuel the Chaos')).length; // counted before it leaves (it can fuel itself)
   pl.field=pl.field.filter(f=>f.uid!==uid);
+  if(_fuel>0){ pl.energy+=_fuel; log(`🌀 Fuel the Chaos: +${_fuel} extra Energy.`,'gain'); }
   fc.attachments.forEach(eqId=>pl.discard.push(eqId));
   pl.discard.push(fc.cid);
   fusionLeaves(pl,fc);
   pl.energy+=energyGain;
   closeAllModals();renderAll();
   sacrificeTriggers(sp,fc);
+  chaosTithe(sp,fc);
+}
+// CHAOS TITHE (Remmel): once per turn (per Remmel), when you sacrifice ANOTHER of your characters, 2 damage to EACH
+// opposing character (not targeted; both enemy boards in 2v2).
+function chaosTithe(p, gone){
+  const pl=G.players[p]; if(!pl) return;
+  pl.field.filter(r=>r.uid!==gone.uid&&hasAbilityLabel(r,'Chaos Tithe')&&r._titheTurn!==G.turn).forEach(r=>{
+    const opps=(G.is2v2&&typeof enemyTeamOf==='function')?teamPlayers(enemyTeamOf(p)):[p===1?2:1];
+    const foes=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) foes.push({uid:f.uid,p:op}); }));
+    r._titheTurn=G.turn;
+    if(!foes.length){ log('Chaos Tithe: no opposing characters.','info'); return; }
+    const _fx=(typeof fxPush==='function')?fxPush(r.cid,'Chaos Tithe',r.uid):null;
+    log(`🌀 Chaos Tithe: ${DB[r.cid]?.name} feeds on the sacrifice — 2 damage to each opposing character!`,'dmg');
+    foes.forEach(x=>{ if(G.players[x.p].field.some(f=>f.uid===x.uid)) dealDamage(x.p,x.uid,2); });
+    if(typeof fxPop==='function') fxPop(_fx); renderAll();
+  });
 }
 // "When you sacrifice this card" payoffs. DEATH'S OFFERING (Surana SSG): choose one of your other characters —
 // +3/+2 until it leaves the field (a permanent bonus on that character; a transformation resets it like any bonus).
@@ -12606,9 +12679,12 @@ function executeCombatDamage(ap,auid,dp,duid){
   if(!afc||!dfc){renderAll();return;}
   const ac=DB[afc.cid],dc=DB[dfc.cid];
   triggerTitleDefense(dfc, afc, ap); // 🏆 WCA belt on the defender: attacker -2 ATK (applies to this attack)
+  G._curAtk=afc.uid; G._curDef=dfc.uid;
   let atkDmg=afc.currentATK+(afc.nextAttackBonus||0);
   afc.nextAttackBonus=0;
   atkDmg=applyWaterStance(dfc, afc, atkDmg); // 🌊 Nisha: an attack on her is 3 weaker
+  // ☀️ SUN'S JUDGMENT (Falcore): its attack on a Paralyzed character deals +2.
+  if(hasAbilityLabel(afc,"Sun's Judgment")&&statusActive(dfc,'paralyze')){ atkDmg+=2; log(`☀️ Sun's Judgment: ${DB[afc.cid]?.name} strikes the Paralyzed ${DB[dfc.cid]?.name} for +2!`,'dmg'); }
 
   // Power Struggle result override
   const kcWinner=G._powerStruggleWinner;
@@ -13254,6 +13330,7 @@ function resolveTeamLifeAttack(attackerPlayer, afc, blocker, enemyTeam){
   }
   const bHP=blocker.currentHP||0, bPow=effPower(blocker), excess=Math.max(0,power-bHP);
   log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHP}HP).`,'info');
+  G._curAtk=afc.uid; G._curDef=blocker.uid;
   if(owner){ dealDamage(owner, blocker.uid, power); combatDamageHooks(afc, attackerPlayer, blocker, owner, power); triggerShowdownHype(afc, attackerPlayer, owner, blocker.uid); } // Step 1-2 (death → -2 team Life via killCard)
   if(bPow>power && pursuitBlockKill(afc, blocker)){ log(`Pursuit: ${DB[afc.cid].name} destroyed its blocker — no counter.`,'gain'); }
   else if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(attackerPlayer, afc.uid, c); if(owner){ combatDamageHooks(blocker, owner, afc, attackerPlayer, c); triggerShowdownHype(blocker, owner, attackerPlayer, afc.uid); } } // Step 3
@@ -13406,6 +13483,7 @@ function resolveAITeamAttack(aiPlayer, afc, blocker, humanTeam){
   const excess=Math.max(0,incoming-bHP);
   const owner=ownerOfCard(blocker.uid);
   log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHP}HP).`,'info');
+  G._curAtk=afc.uid; G._curDef=blocker.uid;
   if(owner){ dealDamage(owner, blocker.uid, incoming); combatDamageHooks(afc, aiPlayer, blocker, owner, incoming); triggerShowdownHype(afc, aiPlayer, owner, blocker.uid); }
   if(bPow>power && pursuitBlockKill(afc, blocker)){ log(`Pursuit: ${DB[afc.cid].name} destroyed its blocker — no counter.`,'gain'); }
   else if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(aiPlayer, afc.uid, c); if(owner){ combatDamageHooks(blocker, owner, afc, aiPlayer, c); triggerShowdownHype(blocker, owner, aiPlayer, afc.uid); } }
@@ -14126,6 +14204,19 @@ function onEntry(p,fc){
   if(hasAbilityLabel(fc,'Prism Orb')) prismOrbAsk(p,fc);
   // ── WILDBORN ADAPTATION (Elise): choose one as she enters — search your deck for a Transformation of her line, or +1/+1.
   if(hasAbilityLabel(fc,'Wildborn Adaptation')) wildbornAsk(p,fc);
+  // ── SKYFALL (Asa): as it enters, 2 damage to a target opposing character (person picks; AI / remote auto-picks).
+  if(hasAbilityLabel(fc,'Skyfall')){
+    const _opps=(G.is2v2&&typeof enemyTeamOf==='function')?teamPlayers(enemyTeamOf(p)):[p===1?2:1];
+    const _foes=[]; _opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) _foes.push({fc:f,p:op}); }));
+    const _hit=(uid)=>{ const t=_foes.find(x=>x.fc.uid===uid); if(!t||!G.players[t.p].field.some(f=>f.uid===uid)) return;
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Skyfall',fc.uid):null;
+      log(`🪽 Skyfall: ${DB[fc.cid]?.name} dives on ${DB[t.fc.cid]?.name} — 2 damage!`,'dmg'); dealDamage(t.p,uid,2);
+      if(typeof fxPop==='function') fxPop(_fx); renderAll(); };
+    if(!_foes.length) log('Skyfall: no opposing character.','info');
+    else if(seqIsLocalHuman(p)&&!G._aiAuto) openEnemyTargetPicker(_foes.map(x=>x.fc), _hit, {sourcePlayer:p, title:'Skyfall', desc:'Deal 2 damage to an opposing character.'});
+    else { const pool=_foes.filter(x=>!hasDrunkenStance(x.fc)&&!hasGodlyEvasion(x.fc)); const kill=pool.filter(x=>(x.fc.currentHP||0)<=2).sort((a,b)=>aiFcValue(b.fc)-aiFcValue(a.fc))[0];
+      const t=kill||pool.sort((a,b)=>aiFcValue(b.fc)-aiFcValue(a.fc))[0]; if(t) _hit(t.fc.uid); else log('Skyfall: no target it can reach.','info'); }
+  }
   // ── PRIMAL ROAR (Voraxis): EACH opposing character −2 ATK until end of your next turn (not targeted: Drunken
   //    Stance / Godly Evasion don't stop it; both enemy boards in 2v2).
   if(hasAbilityLabel(fc,'Primal Roar')){
@@ -15110,6 +15201,44 @@ function _activateAbilityCore(fc,abl){
     const more=(fc.attacksThisTurn||0)>0; if(more) fc.extraAttacks=(fc.extraAttacks||0)+1;
     log(`⏳ Rewind: ${DB[fc.cid]?.name}${was?' untaps':''}${was&&more?' and':''}${more?' may attack once more this turn':''}.`,'gain');
     closeAllModals(); renderAll(); return;
+  }
+  // ── FALCORE: Sandstorm (3⚡, every 4 turns: Paralyze EACH opposing character — not targeted) · Sunfall (5⚡, once per
+  //    game: 3 damage to each Paralyzed opposing character). REMMEL: Lord of Ruin (4⚡, once per game, Otherworld → hand,
+  //    charged only when a card is picked). None of them tap (paid).
+  if(abl.label==='Sandstorm'||abl.label==='Sunfall'){
+    const sand=abl.label==='Sandstorm', ap=G.activePlayer, pl=G.players[ap], cost=sand?3:5;
+    if(!fc.abilityUsed) fc.abilityUsed={};
+    if(sand){ const l=fc.abilityUsed.sandstorm_turn; if(l!=null&&(G.turn-l)<4){ log(`Sandstorm: recharging — usable again in ${4-(G.turn-l)} turn(s).`,'dmg'); return; } }
+    else if(fc.abilityUsed['Sunfall']){ log('Sunfall has already been used this game.','dmg'); return; }
+    const opps=(G.is2v2&&typeof enemyTeamOf==='function')?teamPlayers(enemyTeamOf(ap)):[ap===1?2:1];
+    const foes=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])&&(sand||statusActive(f,'paralyze'))) foes.push({fc:f,p:op}); }));
+    if(!foes.length){ log(sand?'Sandstorm: no opposing characters.':'Sunfall: no Paralyzed opposing character.','dmg'); return; }
+    if(pl.energy<cost){ log(`Not enough energy (need ${cost}⚡).`,'dmg'); return; }
+    if(!spendEnergyAbility(ap,cost,DB[fc.cid]?.color||null)) return;
+    if(sand) fc.abilityUsed.sandstorm_turn=G.turn; else fc.abilityUsed['Sunfall']=true;
+    pl.usedAbilityThisTurn=true; if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    if(sand){ log(`🏜 Sandstorm: every opposing character is caught in the storm!`,'gain'); foes.forEach(x=>applyStatus(x.fc,'paralyze')); }
+    else { log(`🌅 Sunfall: 3 damage to each Paralyzed opposing character!`,'dmg'); foes.forEach(x=>{ if(G.players[x.p].field.some(f=>f.uid===x.fc.uid)) dealDamage(x.p,x.fc.uid,3); }); }
+    if(typeof SFX!=='undefined'&&SFX.ability) try{ SFX.ability(); }catch(e){}
+    renderAll(); return;
+  }
+  if(abl.label==='Lord of Ruin'){
+    const ap=G.activePlayer, pl=G.players[ap];
+    if(fc.abilityUsed&&fc.abilityUsed['Lord of Ruin']){ log('Lord of Ruin has already been used this game.','dmg'); return; }
+    const filt=(cc)=>!!cc&&isChar(cc)&&!cc.isToken&&cc.type!=='herald'&&(cc.cost||0)<=5;
+    if(!(pl.discard||[]).some(cid=>filt(DB[cid]))){ log('Lord of Ruin: no character costing 5 or less in your Otherworld.','dmg'); return; }
+    if(pl.energy<4){ log('Not enough energy (need 4⚡).','dmg'); return; }
+    closeAllModals();
+    openDiscardSearch('Lord of Ruin','Choose a character costing 5 or less from your Otherworld. It returns to your hand (4⚡).',filt,(cid)=>{
+      if(!spendEnergyAbility(ap,4,DB[fc.cid]?.color||null)){ pl.discard.push(cid); renderAll(); return; }
+      if(!fc.abilityUsed) fc.abilityUsed={}; fc.abilityUsed['Lord of Ruin']=true; pl.usedAbilityThisTurn=true;
+      if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
+      const f=newFC(cid); if(f) pl.hand.push(f);
+      log(`🌑 Lord of Ruin: ${pname(ap)} returns ${DB[cid]?.name} from the Otherworld to hand.`,'gain');
+      if(ap!==1&&typeof showCardReveal==='function') try{ showCardReveal(cid); }catch(e){}
+      renderAll(); });
+    return;
   }
   // ── ANYA CORAZON: Web Snare (1⚡, Paralyze) · SCORPION: Get Over Here! (2⚡, 2 damage + Burn). Once every 2 turns
   //    (Water Whip convention). Paid → no tap. Closing the picker refunds (activateAbility's undo snapshot).
@@ -17605,6 +17734,12 @@ function aiScoreAbility(p, fc, abl, src){
   if(aiTried('abl:'+fc.uid+':'+abl.label)) return -1;
   if(abl.ai&&abl.ai.when==='never') return -1;
   if(abl.label==="Doom's Design" && (!doomsDesignReady(fc) || !(pl.deck||[]).some(cid=>isEquip(DB[cid])))) return -1;
+  if(abl.label==='Sandstorm'){ const _l=fc.abilityUsed&&fc.abilityUsed.sandstorm_turn; if(_l!=null&&G.turn-_l<4) return -1;
+    if(aiEnemyChars(p).filter(e=>!statusActive(e.fc,'paralyze')&&!hasAbilityLabel(e.fc,'Vortex Shield')).length<2) return -1; }
+  if(abl.label==='Sunfall'){ if(fc.abilityUsed&&fc.abilityUsed['Sunfall']) return -1; const _pz=aiEnemyChars(p).filter(e=>statusActive(e.fc,'paralyze'));
+    if(!_pz.length||(_pz.length<2&&!_pz.some(e=>(e.fc.currentHP||0)<=3))) return -1; }
+  if(abl.label==='Lord of Ruin'){ if(fc.abilityUsed&&fc.abilityUsed['Lord of Ruin']) return -1;
+    if(!(pl.discard||[]).some(cid=>{ const cc=DB[cid]; return cc&&isChar(cc)&&!cc.isToken&&(cc.cost||0)<=5&&(cc.cost||0)>=3; })) return -1; }
   if(abl.label==='Web Snare'||abl.label==='Get Over Here!'){ const _k=abl.label==='Web Snare'?'web_snare_turn':'get_over_here_turn', _l=fc.abilityUsed&&fc.abilityUsed[_k];
     if(_l!=null&&G.turn-_l<2) return -1;
     const _es=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&(abl.label!=='Web Snare'||!statusActive(e.fc,'paralyze'))); if(!_es.length) return -1; }
