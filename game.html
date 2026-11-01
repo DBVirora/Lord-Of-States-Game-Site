@@ -6784,6 +6784,43 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 .wg-tag.win{color:#86efac;border-color:rgba(134,239,172,.4)}
 .wg-tag.lose{color:#fca5a5;border-color:rgba(252,165,165,.4)}
 .wg-tag.warn{color:#fbbf24;border-color:rgba(251,191,36,.4)}
+
+/* ── Spectator mode (build 10.8) ── */
+#game-screen.spectating #seam .phase-pill,#game-screen.spectating #seam .action-tool-btn,#game-screen.spectating #ph-end{opacity:.3;pointer-events:none}
+#game-screen.spectating #forfeit-btn,#game-screen.spectating #forfeit-btn-m{display:none!important}
+#game-screen.spectating .hand-card.spec-back{cursor:default}
+#game-screen.spectating .hand-hint{display:none}
+#sp-toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,12px);z-index:100002;max-width:min(420px,calc(100vw - 32px));padding:11px 16px;border-radius:12px;
+  background:rgba(10,8,24,.95);border:1px solid rgba(240,213,138,.45);color:#e9e4ff;font-size:12px;box-shadow:0 8px 28px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
+#sp-toast.on{opacity:1;transform:translate(-50%,0)}
+#sp-toast b{color:#f0d58a;font-weight:600}
+#game-screen.spectating .hand-card.spec-back .hand-art-area{height:100%}
+#spec-bar{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:9000;display:flex;align-items:center;gap:10px;padding:7px 8px 7px 12px;
+  background:rgba(10,8,24,.93);border:1px solid rgba(240,213,138,.42);border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.55);
+  width:max-content;max-width:calc(100vw - 24px);font-size:11px;color:#c4c0dc;backdrop-filter:blur(6px)}
+#spec-bar .sp-bar-tag{font-family:'Orbitron',sans-serif;font-size:8.5px;letter-spacing:2px;color:#f0d58a;white-space:nowrap}
+#spec-bar .sp-bar-mid{min-width:0;line-height:1.45}
+#spec-bar .sp-bar-vs{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#spec-bar .sp-bar-vs b{color:#f3f0ff;font-weight:600}
+#spec-bar .sp-bar-vs span{color:#6b7280;margin:0 2px}
+#spec-bar .sp-bar-vs i{font-style:normal;color:#8b8fa8;font-size:10px;margin-left:4px}
+#spec-bar .sp-bar-st{font-size:10px;color:#9ca3af}
+#spec-bar .sp-bar-wg{font-size:9.5px;color:#f0d58a}
+#spec-bar .sp-win{color:#fbbf24;font-weight:600}
+#spec-bar .sp-warn{color:#fca5a5}
+#spec-bar .sp-bar-btn{font-family:'Orbitron',sans-serif;font-size:8.5px;letter-spacing:1.5px;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:#e5e7eb;cursor:pointer;white-space:nowrap}
+#spec-bar .sp-bar-btn:hover{background:rgba(255,255,255,.1)}
+#spec-bar .sp-bar-btn.leave{border-color:rgba(240,213,138,.5);color:#f0d58a}
+@media (max-width:600px){#spec-bar{top:auto;bottom:62px;gap:6px;padding:6px 6px 6px 9px}#spec-bar .sp-bar-tag{display:none}#spec-bar .sp-bar-wg{display:none}}
+.spec-chip{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:1.5px;color:#f0d58a;padding:3px 8px;border:1px solid rgba(240,213,138,.35);border-radius:10px;background:rgba(240,213,138,.06);white-space:nowrap;align-self:center}
+.sp-live-note{font-size:10px;color:#8b8fa8;line-height:1.6;margin-bottom:10px}
+.sp-live-row{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;padding:10px 0;border-top:1px solid rgba(255,255,255,.06)}
+.sp-live-row .wg-btn{grid-row:1/3;grid-column:2}
+.sp-live-vs{font-size:12px;color:#c4c0dc}.sp-live-vs b{color:#f3f0ff;font-weight:600}.sp-live-vs span{color:#6b7280}
+.sp-live-meta{font-size:10px;color:#8b8fa8}.sp-live-meta .sp-wg{color:#f0d58a}
+.sp-allow{display:flex;align-items:center;gap:8px;margin-top:9px;font-size:10px;color:#c4c0dc;cursor:pointer}
+.sp-allow input{accent-color:#c79a3a;width:14px;height:14px;margin:0}
+.sp-allow small{color:#6b7280;font-size:9px}
 </style>
 <style>
 /* ═══════════════════ DECKS REWORK (build 8.0) — My Decks · Deck Builder · Choose Deck ═══════════════════ */
@@ -7287,7 +7324,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.7 · Wagers</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.8 · Spectators</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -7994,7 +8031,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
       <!-- YOUR HAND (fanned) -->
       <div class="hand-dock" id="hand-dock">
         <div class="hand-dock-label">
-          <span style="color:#9ca3af">YOUR HAND</span>
+          <span style="color:#9ca3af" id="hand-dock-title">YOUR HAND</span>
           <span id="p1-hand-limit-display" class="hand-limit-ok">0/12</span>
           <span class="hand-hint"><span style="color:#22c55e">green</span>=play · right-click=view · <span style="color:#ef4444">red</span>=instant</span>
         </div>
@@ -8258,8 +8295,23 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.7'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.8'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.8', date:'2026-11-01',
+    cards:[],
+    abilities:[],
+    screens:[
+      "SPECTATOR MODE (online 1v1 only). Entry points (no new menu tabs): Online lobby → '👁 WATCH LIVE MATCHES' (modal list: 'Host vs Guest', mode, turn, ⚖ Wager, 👁 viewers, WATCH button); Friends screen → '👁 WATCH' on any friend who's in a live match. Waiting room GAME SETTINGS → '👁 Allow spectators' checkbox (host decides, default on, remembered in localStorage 'loc_allow_spec'; the guest sees it greyed out).",
+      "SPECTATOR VIEW = the normal 1v1 board, read-only: host at the bottom (⇅ swaps sides), BOTH hands shown as card backs (counts only), deck/prize piles as counts, everything else public (field, Herald, Locations, discard, Rift, Energy, Life, log). Phase pills, tools, END TURN dimmed and inert; clicking a card opens the full-card view; ⚙ and 🏠 still work (🏠 = leave). Floating bar at the top (bottom on phones): '👁 SPECTATING · A vs B · mode · 👁 N', status line (turn · whose turn · phase / '🏆 X wins · reason' / feed paused), wager stakes line if wagered, buttons ⇅ · LEAVE (+ MORE LIVE when it ends). Card plays, instant reveals and ability reveals play for spectators too.",
+      "PLAYERS see '👁 N watching' next to the turn chip when anyone is watching.",
+      "Effects panel: Frost Rune now reads 'Freezes after the player who set it ends N more turn(s).' (behaviour unchanged).",
+      "RULES quick reference: a Spectating line."],
+    data:[
+      "GAME_BUILD '10.8'. No SQL. Realtime only: (1) the HOST joins Presence channel 'vcu-live' (presence key = per-client random) and track()s {w, h, g, hid, gid, m, pc, tn, n, wg, t0} while its match is live; untrack at game over / cleanup. (2) The HOST publishes on broadcast channel 'watch:<w>' (w = random 14-char id, NOT the room code — room:<code> keeps full hidden state and must stay private) event 'spec_state' {s} after every state it sends or applies (throttled ~350 ms) and every 5 s as a keepalive, plus 'spec_fx' {a:'card_play'|'instant_reveal'|'ability_reveal', d, w:1 host|2 guest} for every such game_action. It answers 'spec_hello' with an immediate snapshot.",
+      "Snapshot s = {v:1, turn, ap (1 host / 2 guest), phase, pd, over, winner (1/2), reason, ff, mode, pc, lf, sel, ha, names:{1,2}, av:{1,2} (avatar URLs < 800 chars), wager:{1:text,2:text}|null, n (viewers), log:[{m,t}] (last 30, '(You)'/'(Opponent)' stripped), p:{1,2:{energy, colorEnergy, field[], discard[], rift[], herald, lifeForce, prizesClaimed, prizesTaken[], hand:<count>, deck:<count>, prizes:<count>}}}. Never hand contents, deck order or prize identities.",
+      "SPECTATOR: subscribe 'watch:<w>' with presence key, track({n:name}), send 'spec_hello'; build a local G with spectating:true and placeholder hands/decks/prizes sized from the counts; recalcPassives is skipped (the host's field values are used as-is). No state in 10 s → 'Couldn't reach that match'; quiet 20 s → 'feed paused'; 60 s → 'feed ended'. Viewer count = number of presence keys on 'watch:<w>'; host relays it to the guest as game_action 'spec_count' {n}.",
+      "The guest now also sets G.winner/G.winReason/G.forfeited when it receives the host's game-over state (was only shown, not stored).",
+      "Web helpers: spOnMatchStart, spHostStart/Stop, spPublish, spSnapshot, spFx, spChip, spLiveEnsure/Sync/Track, spOpenLive, spWatch, spApply, spRenderBar, spFlip, spLeave, spRoomUI, spRoomPayload (match_started carries allow_spec)."] },
   { build:'10.7', date:'2026-10-31',
     cards:[],
     abilities:[],
@@ -10373,7 +10425,7 @@ function fxEffectsOf(fc){
   if(fc.mustAttack) cond('📣','Must attack','It must attack on its next turn if able.',byLabel('Combat Control'));
   if(fc.costMod) cond('💠','Cost '+(fc.costMod>0?'+':'−')+Math.abs(fc.costMod),'Its cost is changed by '+fc.costMod+'.',null);
   if(fc.nextAttackBonus>0) cond('💥','+'+fc.nextAttackBonus+' next attack','Its next attack deals +'+fc.nextAttackBonus+' damage.',null);
-  if(fc._frostRune&&fc._frostRune.turns>0) cond('❄️','Frost Rune','It Freezes when it attacks ('+fc._frostRune.turns+' turn'+(fc._frostRune.turns>1?'s':'')+' left).',byLabel('Frost Rune'));
+  if(fc._frostRune&&fc._frostRune.turns>0) cond('❄️','Frost Rune','Freezes after the player who set it ends '+fc._frostRune.turns+' more turn'+(fc._frostRune.turns>1?'s':'')+'.',byLabel('Frost Rune'));
   if(G&&fc.waterWhipped===G.turn) cond('🌊','Water Whip',"Tapped — it can't attack this turn.",byLabel('Water Whip'));
   if(G&&fc.antiLife&&fc.antiLife>G.turn) cond('🌑','Anti-Life Equation',"Locked — it can't attack.",byLabel('Anti-Life Equation'));
   if(fc._scorchedTurns>0&&fc._scorchedLocUid){ const lf=fxFindFc(fc._scorchedLocUid); cond('🔥','Scorched Earth',(lf?DB[lf.cid]?.name:'A Location')+' is destroyed in '+fc._scorchedTurns+' turn'+(fc._scorchedTurns>1?'s':'')+' unless this card is destroyed first.',lf?{cid:lf.cid,uid:lf.uid}:null); }
@@ -10608,7 +10660,7 @@ function actingPlayer(){ return G.is2v2 ? G.activePlayer : 1; }
 //  • local 2v2: whenever the active board is human-controlled (hotseat)
 //  • 1v1: only player 1
 function iControlActive(){
-  if(!G) return false;
+  if(!G||G.spectating) return false;
   if(G.is2v2 && G.onlineMode2v2) return G.activePlayer===G.mySeat;
   if(G.is2v2) return isHumanPlayer(G.activePlayer);
   return G.activePlayer===1;
@@ -11495,6 +11547,7 @@ function returnToMenuFromWin(){
   showScreen('menu-screen');
 }
 function confirmReturnMenu(){
+  if(G&&G.spectating&&typeof spLeave==='function'){ spLeave(); return; }
   // 2v2 is CO-OP — leaving never counts as a forfeit win/loss. It just ends the
   // match for the team and returns everyone to the menu.
   if(G && G.is2v2 && G.onlineMode2v2 && !G.gameOver){
@@ -19104,7 +19157,7 @@ function updateRegistryBadge(){ const b=document.getElementById('menu-registry-b
 // Sight every opponent-controlled card currently visible on the board.
 function registryScanBoard(){
   if(!G||!G.players) return;
-  const mine=G.is2v2?(G.humanPlayers||[1]):[1];
+  const mine=G.spectating?[]:(G.is2v2?(G.humanPlayers||[1]):[1]); // spectators sight both sides
   Object.keys(G.players).forEach(p=>{ if(mine.includes(+p)) return; const pl=G.players[p]; if(!pl) return;
     (pl.field||[]).forEach(f=>{ markSighted(f.cid); (f.attachments||[]).forEach(a=>markSighted(a)); });
     if(pl.herald) markSighted(pl.herald.origCid||pl.herald.cid);
@@ -21192,7 +21245,7 @@ function renderAll(){
   if(typeof syncAdminTester==='function') syncAdminTester();
   if(typeof tutorialWatch==='function') tutorialWatch();
   if(G.is2v2){ renderAll2v2(); return; }
-  recalcPassives();
+  if(!G.spectating) recalcPassives(); // spectators get the host's already-computed board
   [1,2].forEach(p=>{
     const pl=G.players[p];
     document.getElementById(`p${p}-energy`).textContent=pl.energy;
@@ -21557,6 +21610,12 @@ function renderHand(){
   const handP = G.is2v2 ? (isHumanPlayer(G.activePlayer)?G.activePlayer:null) : 1;
   if(handP===null) return;
   const pl=G.players[handP];
+  if(G.spectating){ // spectators never see a hand: card backs only
+    const url=(typeof getImg==='function')?getImg('cardback'):null;
+    pl.hand.forEach(()=>{ const div=document.createElement('div'); div.className='hand-card spec-back not-playable'; const art=document.createElement('div'); art.className='hand-art-area';
+      if(url){ const img=document.createElement('img'); img.src=url; img.alt=''; art.appendChild(img); } else art.textContent='VCU'; div.appendChild(art); el.appendChild(div); });
+    layoutHandFan(); return;
+  }
   pl.hand.forEach(fc=>{
     const c=DB[fc.cid];if(!c)return;
     const div=document.createElement('div');
@@ -21666,12 +21725,12 @@ function renderPhaseBar(){
     btn.className='phase-pill';
     if(G.phasesDone.includes(ph))btn.classList.add('done-phase');
     else if(ph===G.phase)btn.classList.add('active-phase');
-    btn.disabled=(G.is2v2?!isHumanPlayer(G.activePlayer):G.activePlayer!==1)||G.phasesDone.includes(ph);
+    btn.disabled=(G.is2v2?!isHumanPlayer(G.activePlayer):G.activePlayer!==1)||G.phasesDone.includes(ph)||!!G.spectating;
   });
   // End turn button (separate styling)
   const endBtn=document.getElementById('ph-end');
   if(endBtn){
-    endBtn.disabled=G.activePlayer!==1;
+    endBtn.disabled=G.activePlayer!==1||!!G.spectating;
   }
 }
 function renderBanner(){
@@ -21689,7 +21748,7 @@ function renderBanner(){
   }
   // Arena seam turn chip
   const tc=document.getElementById('turn-chip'), tcn=document.getElementById('turn-chip-n'), tcw=document.getElementById('turn-chip-who');
-  if(tc){ if(tcn)tcn.textContent=G.turn||1; const mine=(G.is2v2?(typeof isHumanPlayer==='function'&&isHumanPlayer(G.activePlayer)):G.activePlayer===1);
+  if(tc){ if(tcn)tcn.textContent=G.turn||1; const mine=!G.spectating&&(G.is2v2?(typeof isHumanPlayer==='function'&&isHumanPlayer(G.activePlayer)):G.activePlayer===1);
     if(tcw)tcw.textContent=mine?'· YOUR TURN · '+ph:'· '+(typeof pname==='function'?pname(G.activePlayer).toUpperCase():'OPPONENT')+' · '+ph; tc.classList.toggle('opp-turn',!mine); }
   // Update panel names
   const p1name=document.getElementById('p1-panel-name');
@@ -21823,6 +21882,7 @@ function showRulesScreen(){
     <b style="color:#c8a0ff">Sacrifice:</b> 💀 Destroy your own char for ½ its cost in energy.<br>
     <b style="color:#c8a0ff">Instants:</b> Red-border cards. Attach to chars for instant effects.<br>
     <b style="color:#c8a0ff">Tokens:</b> ⭐ Temporary — removed at end of your turn.<br>
+    <b style="color:#c8a0ff">Spectating:</b> 👁 Online lobby → Watch Live Matches (or 👁 WATCH on a friend). Spectators see the board, Energy and every card played — never anyone's hand. The host can turn spectators off in the waiting room.<br>
     <b style="color:#c8a0ff">Wagers:</b> ⚖ Optional, online 1v1 only, set up in the waiting room. Unlocks at Level 10 + 20 online matches. Stake up to 5,000 Celestium and any sealed packs or boxes; both players accept, then the host starts. The winner gets their stake back, the other player's Celestium minus a 5% house cut, and every pack. Up to 50,000 Celestium of winnings a day. Leaving or forfeiting loses the wager.<br>
     <b style="color:#c8a0ff">Win:</b> All 6 Prizes or opponent out of characters.<br>
     <b style="color:#c8a0ff">Colors:</b>
@@ -24925,14 +24985,17 @@ function renderFriendsList(){
     return (a.username||'').localeCompare(b.username||'');
   });
   el.innerHTML='';
+  if(typeof spLiveEnsure==='function') spLiveEnsure();
   sorted.forEach(f=>{
     const online=isUserOnline(f.last_active);
+    const _lm=(typeof spLiveFor==='function')?spLiveFor(f.user_id):null;
     const row=document.createElement('div');
     row.className='friend-row';
     row.innerHTML=
       '<div class="friend-avatar"><span>'+((f.username||'?')[0].toUpperCase())+'</span><div class="friend-status-dot '+(online?'online':'offline')+'"></div></div>'
       +'<div class="friend-info"><div class="friend-name">'+f.username+'</div><div class="friend-meta">'+(online?'<span style="color:#22c55e">● ONLINE</span>':'OFFLINE')+'</div></div>'
       +'<div class="friend-actions">'
+      +(_lm?'<button class="friend-btn" onclick="spWatchId(\''+_lm.w+'\',\'friends-screen\')" title="Watch their live match">👁 WATCH</button>':'')
       +'<button class="friend-btn accept" onclick="inviteFriendToMatch(\''+f.user_id+'\',\''+f.username+'\')" title="Invite to Online Match">⚔ INVITE</button>'
       +'<button class="friend-btn" onclick="mlMessageFriend(\''+f.user_id+'\',\''+(f.username||'').replace(/[\\\\\']/g,'')+'\')" title="Send a message">✉</button>'
       +'<button class="friend-btn danger" onclick="removeFriend(\''+f.id+'\',\''+(f.username||'').replace(/[\\\\\']/g,'')+'\')">✕</button>'
@@ -25438,6 +25501,7 @@ function showWaitingRoom(code,myName,isHost){
     if(startBtn){startBtn.disabled=true;startBtn.textContent=is2v2?'WAITING FOR HOST TO START...':'WAITING FOR HOST...';}
   }
   if(typeof wgOnRoomReady==='function') wgOnRoomReady();
+  if(typeof spRoomUI==='function') spRoomUI();
 }
 
 function subscribeToRoom(code){
@@ -25579,7 +25643,7 @@ async function startOnlineMatch(){
   const gameMode=document.getElementById('lobby-game-mode')?.value||'prize';
   const prizeCount=parseInt(document.getElementById('lobby-prize-count')?.value||'6');
   const lfHp=parseInt(document.getElementById('lobby-lf-hp')?.value||'100');
-  const roomData={..._onlineRoom,status:'playing',game_mode:gameMode,prize_count:prizeCount,lf_hp:lfHp,host_avatar:(window._playerAvatarUrl||null),rules_version:GAME_BUILD,...(typeof wgRoomPayload==='function'?wgRoomPayload():{})};
+  const roomData={..._onlineRoom,status:'playing',game_mode:gameMode,prize_count:prizeCount,lf_hp:lfHp,host_avatar:(window._playerAvatarUrl||null),rules_version:GAME_BUILD,...(typeof wgRoomPayload==='function'?wgRoomPayload():{}),...(typeof spRoomPayload==='function'?spRoomPayload():{})};
   // Update DB
   await sb.from('online_rooms').update({status:'playing',game_mode:gameMode,prize_count:prizeCount,lf_hp:lfHp}).eq('code',_onlineRoom.code);
   // Broadcast to guest via channel
@@ -25593,6 +25657,7 @@ async function startOnlineMatch(){
 function enterOnlineGame(room){
   _onlineRoom=room;
   if(typeof wgOnMatchStart==='function') try{ wgOnMatchStart(room); }catch(e){}
+  if(typeof spOnMatchStart==='function') try{ spOnMatchStart(room); }catch(e){}
   const isHost=_onlineRole==='host';
   // Fresh disconnect clock for the new match; ensure heartbeat is running.
   _lastOpponentPing=Date.now();
@@ -25669,6 +25734,7 @@ function enterOnlineGame(room){
 // ═══════════════════════════════════════════════════
 function sendGameAction(actionType, data){
   if(!G.onlineMode || !_onlineChannel || !_channelReady) return;
+  if(_onlineRole==='host'&&typeof spFx==='function') spFx(actionType,data,1);
   try{
     _onlineChannel.send({
       type:'broadcast',
@@ -25683,6 +25749,7 @@ function onReceiveGameAction(payload){
   // Ignore our own broadcasts echoed back
   if(payload.from === _onlineRole) return;
   const d = payload.data || {};
+  if(_onlineRole==='host'&&typeof spFx==='function') spFx(payload.action,d,2);
   switch(payload.action){
     case 'instant_reveal':
       // Opponent played an instant — show it on our screen.
@@ -25706,6 +25773,9 @@ function onReceiveGameAction(payload){
     case 'coin_call': case 'coin_result': case 'coin_choice':
       if(G&&G._entrancePlaying){ (G._ctQueue=G._ctQueue||[]).push([payload.action,d]); break; }
       if(typeof ctOnRemote==='function') ctOnRemote(payload.action,d);
+      break;
+    case 'spec_count':
+      if(typeof spChip==='function') spChip(d.n);
       break;
     case 'cos_hello':
       if(typeof cosHelloRecv==='function') cosHelloRecv(d);
@@ -25758,6 +25828,7 @@ function broadcastGameState(){
   _onlineChannel.send({type:'broadcast',event:'game_state',payload:{state:canonical,from:_onlineRole}})
     .then(()=>console.log('[BCAST] ✓ sent OK'))
     .catch(e=>console.error('[BCAST] send failed:',e));
+  if(isHost&&typeof spPublish==='function') spPublish(); // public spectator feed (no hands)
 }
 
 function sanitizePlayer(pl){
@@ -25840,6 +25911,7 @@ function onReceiveGameState(payload){
       localWinner=incoming.winner===1?2:1; // swap for guest
     }
     const reason=incoming.winReason||'Match ended';
+    G.winner=localWinner; G.winReason=reason; G.forfeited=!!incoming.forfeited;
     showWinScreen(localWinner,reason,incoming.forfeited||false);
     setTimeout(()=>onMatchEnd(localWinner===1),600);
   }
@@ -25848,6 +25920,7 @@ function onReceiveGameState(payload){
   renderAll();
   _applyingRemoteState=false;
   if(G.activePlayer===1 && typeof stanceCheckPending==='function') setTimeout(stanceCheckPending,350);
+  if(isHost&&typeof spPublish==='function') spPublish();
 }
 
 function applyPlayer(dst,src){
@@ -25983,6 +26056,7 @@ async function cancelOnlineRoom(){
 function cleanupOnlineSession(){
   const sb=getOnlineSB();
   if(typeof stopHeartbeat==='function') stopHeartbeat();
+  if(typeof spHostStop==='function') try{ spHostStop(); }catch(e){}
   if(_onlineChannel){sb.removeChannel(_onlineChannel);_onlineChannel=null;}
   _onlineRoom=null;
   _onlineRole=null;
@@ -29055,6 +29129,7 @@ window.addEventListener('load',async()=>{
       </div>
     </div>
 
+    <button class="btn-gray btn-sm" style="width:100%;margin-top:14px;padding:9px;letter-spacing:2px;color:#f0d58a" onclick="spOpenLive()">👁 WATCH LIVE MATCHES</button>
     <button class="btn-gray btn-sm" style="width:100%;margin-top:14px;padding:9px;letter-spacing:2px;color:#f0d58a" onclick="wgOpenHistory()">⚖ MY WAGERS</button>
     <button class="btn-gray btn-sm" style="width:100%;margin-top:8px;padding:9px;letter-spacing:2px" onclick="showScreen('menu-screen')">← BACK TO MENU</button>
   </div>
@@ -29109,6 +29184,7 @@ window.addEventListener('load',async()=>{
           </select>
         </div>
         <div id="lobby-mode-desc" style="font-size:9px;color:#6b7280;margin-top:6px;letter-spacing:1px">Win by claiming all Prize Cards</div>
+        <label class="sp-allow" id="lobby-allow-spec-wrap"><input type="checkbox" id="lobby-allow-spec" checked onchange="spSetAllow(this.checked)"> 👁 Allow spectators <small id="lobby-allow-spec-note">Live matches list · hands stay hidden</small></label>
       </div>
 
       <!-- Wager (build 10.7): 1v1 only, filled by wgRender() -->
@@ -31122,6 +31198,289 @@ async function wgAdminUnlock(on){
   const {data,error}=await wgSB().rpc('admin_wager_unlock',{p_user:p.id,p_unlock:!!on});
   if(out) out.textContent=error?error.message:(on?`✓ Wagers unlocked for ${p.username||p.email}.`:`Wagers locked again for ${p.username||p.email} (they re-unlock on their own once they qualify).`)+(data&&data.gate?` · Level ${data.gate.level}, ${data.gate.online} online matches`:'');
 }
+</script>
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+// SPECTATOR MODE (build 10.8) — watch live online 1v1 matches.
+// The HOST publishes a public snapshot (no hands, no deck order, no prize
+// identities — counts only) on a random channel 'watch:<id>'. The room code
+// and the players' full-state channel 'room:<code>' are never shown.
+// Live matches are listed with Realtime Presence on 'vcu-live' (no SQL).
+// Spectators get a read-only board: card backs for both hands, no controls.
+// ═══════════════════════════════════════════════════════════════════════
+const _sp={myKey:Math.random().toString(36).slice(2,12),liveCh:null,liveReady:false,live:[],liveOpen:false,host:null,watch:null,chipN:0};
+const SP_FX=new Set(['instant_reveal','ability_reveal','card_play']);
+function spSB(){ try{ const sb=getOnlineSB(); return (sb&&sb.channel)?sb:null; }catch(e){ return null; } }
+function spRandId(){ const a='abcdefghjkmnpqrstuvwxyz23456789'; let s=''; for(let i=0;i<14;i++) s+=a[Math.floor(Math.random()*a.length)]; return s; }
+function spEsc(s){ return (typeof mlEsc==='function')?mlEsc(s):String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function spAllowed(){ try{ return localStorage.getItem('loc_allow_spec')!=='0'; }catch(e){ return true; } }
+function spSetAllow(on){ try{ localStorage.setItem('loc_allow_spec',on?'1':'0'); }catch(e){} }
+function spMyName(){ return window._playerName||document.getElementById('hud-username')?.textContent||'Spectator'; }
+function spToast(msg,ms){ let t=document.getElementById('sp-toast');
+  if(!t){ t=document.createElement('div'); t.id='sp-toast'; t.setAttribute('role','status'); document.body.appendChild(t); }
+  t.innerHTML=msg; t.classList.add('on'); clearTimeout(t._h); if(ms!==0) t._h=setTimeout(()=>t.classList.remove('on'),ms||4500); }
+function spToastOff(){ const t=document.getElementById('sp-toast'); if(t){ clearTimeout(t._h); t.classList.remove('on'); } }
+function spModeName(m,pc){ return m==='lifeforce'?'Life Force':m==='combined'?'Combined':('Prize'+(pc?' ('+pc+')':'')); }
+
+// ── waiting room: "Allow spectators" (host decides) ──
+function spRoomUI(){
+  const box=document.getElementById('lobby-allow-spec'), lbl=document.getElementById('lobby-allow-spec-wrap'); if(!box||!lbl) return;
+  const is2v2=_onlineRoom&&(_onlineRoom.is_2v2||_onlineRoom.game_mode==='2v2');
+  lbl.style.display=is2v2?'none':'';
+  box.checked=spAllowed(); box.disabled=_onlineRole!=='host';
+  const note=document.getElementById('lobby-allow-spec-note'); if(note) note.textContent=_onlineRole==='host'?'Live matches list · hands stay hidden':'The host decides';
+}
+function spRoomPayload(){ return {allow_spec:spAllowed()}; }
+
+// ── live list (Presence on 'vcu-live') ──
+function spLiveEnsure(){
+  if(_sp.liveCh) return true;
+  const sb=spSB(); if(!sb) return false;
+  try{
+    _sp.liveCh=sb.channel('vcu-live',{config:{presence:{key:_sp.myKey}}})
+      .on('presence',{event:'sync'},spLiveSync)
+      .subscribe(st=>{ if(st==='SUBSCRIBED'){ _sp.liveReady=true; spLiveSync(); if(_sp.host&&!_sp.host.over) spLiveTrack(); } });
+  }catch(e){ _sp.liveCh=null; return false; }
+  return true;
+}
+function spLiveSync(){
+  let st={}; try{ st=_sp.liveCh.presenceState()||{}; }catch(e){}
+  const out=[]; Object.keys(st).forEach(k=>{ const m=(st[k]||[])[0]; if(m&&m.w&&m.h) out.push(m); });
+  out.sort((a,b)=>(b.n||0)-(a.n||0)||(a.t0||0)-(b.t0||0));
+  _sp.live=out;
+  if(_sp.liveOpen) spRenderLive();
+  if(document.getElementById('friends-screen')?.classList.contains('active')&&typeof renderFriendsList==='function') try{ renderFriendsList(); }catch(e){}
+}
+function spLiveTrack(){
+  const H=_sp.host; if(!H||!_sp.liveCh||!_sp.liveReady) return;
+  const r=H.room;
+  try{ _sp.liveCh.track({w:H.w,h:r.h||'Host',g:r.g||'Guest',hid:r.hid||null,gid:r.gid||null,m:(G&&G.gameMode)||r.mode||'prize',pc:(G&&G.prizeCount)||r.pc||6,tn:(G&&G.turn)||1,n:H.count||0,wg:!!spWagerTxt(),t0:H.t0}); }catch(e){}
+}
+function spLiveUntrack(){ try{ if(_sp.liveCh) _sp.liveCh.untrack(); }catch(e){} }
+function spLiveFor(uid){ return uid?_sp.live.find(m=>m.hid===uid||m.gid===uid):null; }
+function spOpenLive(){
+  const ok=spLiveEnsure();
+  showModal('👁 Live Matches','<div id="sp-live-list"></div>');
+  _sp.liveOpen=true; if(typeof armModalCancel==='function') armModalCancel(()=>{ _sp.liveOpen=false; });
+  spRenderLive(ok?null:'Live matches need an internet connection.');
+}
+function spRenderLive(err){
+  const el=document.getElementById('sp-live-list'); if(!el) return;
+  const mine=_sp.host&&_sp.host.w;
+  const list=_sp.live.filter(m=>m.w!==mine);
+  const head='<div class="sp-live-note">Matches show here while they\'re being played, if the host allows spectators. You see the board, both players\' Energy and every card played — never their hands.</div>';
+  if(err){ el.innerHTML=head+`<div class="ml-empty">${spEsc(err)}</div>`; return; }
+  if(!list.length){ el.innerHTML=head+`<div class="ml-empty">${_sp.liveReady?'No live matches right now.':'Looking for live matches…'}</div>`; return; }
+  el.innerHTML=head+list.map(m=>`<div class="sp-live-row"><div class="sp-live-vs"><b>${spEsc(m.h)}</b> <span>vs</span> <b>${spEsc(m.g)}</b></div>
+      <div class="sp-live-meta">${spEsc(spModeName(m.m,m.pc))} · Turn ${m.tn||1}${m.wg?' · <span class="sp-wg">⚖ Wager</span>':''}${m.n?` · 👁 ${m.n}`:''}</div>
+      <button class="wg-btn go" data-w="${spEsc(m.w)}" onclick="spWatchId(this.dataset.w)">👁 WATCH</button></div>`).join('');
+}
+function spWatchId(w,back){ const m=_sp.live.find(x=>x.w===w); if(m) spWatch(m,back); }
+
+// ── HOST: publish the public feed ──
+function spOnMatchStart(room){
+  spHostStop(); spChip(0);
+  if(!room||room.is_2v2||room.game_mode==='2v2'||_onlineRole!=='host') return;
+  const allow=(room.allow_spec===undefined||room.allow_spec===null)?spAllowed():room.allow_spec!==false;
+  if(allow) spHostStart(room);
+}
+function spHostStart(room){
+  const sb=spSB(); if(!sb) return;
+  const w=spRandId();
+  const H=_sp.host={w,ch:null,count:0,lastPub:0,pendT:null,keepT:null,over:false,trackedTurn:null,t0:Date.now(),wager:null,
+    room:{h:room.host_name||G?.onlineMyName,g:room.guest_name||G?.onlineOpponentName,hid:room.host_id,gid:room.guest_id,mode:room.game_mode,pc:room.prize_count}};
+  try{
+    H.ch=sb.channel('watch:'+w,{config:{broadcast:{self:false},presence:{key:'host-'+_sp.myKey}}})
+      .on('broadcast',{event:'spec_hello'},()=>spPublish(true))
+      .on('presence',{event:'sync'},spCount)
+      .subscribe(st=>{ if(st==='SUBSCRIBED') spPublish(true); });
+  }catch(e){ _sp.host=null; return; }
+  H.keepT=setInterval(()=>spPublish(true),5000);
+  if(spLiveEnsure()) spLiveTrack();
+}
+function spHostStop(){
+  const H=_sp.host; if(!H) return; _sp.host=null;
+  clearInterval(H.keepT); clearTimeout(H.pendT);
+  spLiveUntrack();
+  try{ const sb=spSB(); if(sb&&H.ch) sb.removeChannel(H.ch); }catch(e){}
+}
+function spCount(){
+  const H=_sp.host; if(!H||!H.ch) return;
+  let n=0; try{ n=Object.keys(H.ch.presenceState()||{}).length; }catch(e){}
+  if(n===H.count) return; H.count=n; spChip(n);
+  if(typeof sendGameAction==='function') try{ sendGameAction('spec_count',{n}); }catch(e){}
+  if(!H.over) spLiveTrack();
+}
+function spWagerTxt(){
+  const H=_sp.host; if(H&&H.wager) return H.wager;
+  const w=(typeof _wg!=='undefined')&&_wg.live&&_wg.live.w;
+  if(w&&typeof wgStake==='function'){ const t={1:wgStakeText(wgStake(w,'host')),2:wgStakeText(wgStake(w,'guest'))}; if(H) H.wager=t; return t; }
+  return null;
+}
+function spSnapshot(){
+  const H=_sp.host, re=/\s*\((You|Opponent)\)/g, strip=n=>String(n||'').replace(re,'');
+  const pub=pl=>JSON.parse(JSON.stringify({energy:pl.energy||0,colorEnergy:pl.colorEnergy||{},field:pl.field||[],discard:pl.discard||[],rift:pl.rift||[],
+    herald:pl.herald||null,lifeForce:pl.lifeForce||0,prizesClaimed:pl.prizesClaimed||0,prizesTaken:Array.isArray(pl.prizesTaken)?pl.prizesTaken:[],
+    hand:(pl.hand||[]).length,deck:(pl.deck||[]).length,prizes:(pl.prizes||[]).length},(k,v)=>typeof v==='function'?undefined:v));
+  const av=u=>(typeof u==='string'&&u.length<800)?u:null;
+  return {v:1,turn:G.turn,ap:G.activePlayer,phase:G.phase,pd:G.phasesDone||[],over:!!G.gameOver,winner:G.winner||null,reason:G.winReason||null,ff:!!G.forfeited,
+    mode:G.gameMode,pc:G.prizeCount,lf:G.startingLF,sel:G.selectedAttacker||null,ha:!!G.heraldAttacking,
+    names:{1:strip(G.onlineMyName||G.players[1].name),2:strip(G.onlineOpponentName||G.players[2].name)},
+    av:{1:av(window._playerAvatarUrl),2:av(typeof _onlineOpponentAvatar!=='undefined'?_onlineOpponentAvatar:null)},
+    wager:spWagerTxt(),n:H?H.count:0,
+    log:(G.log||[]).slice(-30).map(e=>({m:String(e.m||'').replace(re,''),t:e.t})),
+    p:{1:pub(G.players[1]),2:pub(G.players[2])}};
+}
+function spPublish(force){
+  const H=_sp.host; if(!H||!H.ch||!G||!G.onlineMode||G.is2v2||_onlineRole!=='host'||!G.players) return;
+  const now=Date.now();
+  if(!force&&!G.gameOver&&now-H.lastPub<350){ if(!H.pendT) H.pendT=setTimeout(()=>{ H.pendT=null; spPublish(true); },380); return; }
+  H.lastPub=now;
+  try{ H.ch.send({type:'broadcast',event:'spec_state',payload:{s:spSnapshot()}}); }catch(e){}
+  if(G.gameOver){ if(!H.over){ H.over=true; spLiveUntrack(); } }
+  else if(H.trackedTurn!==G.turn){ H.trackedTurn=G.turn; spLiveTrack(); }
+}
+// Card reveals / plays — host forwards its own (who=1) and the guest's (who=2)
+function spFx(action,data,who){
+  const H=_sp.host; if(!H||!H.ch||!SP_FX.has(action)) return;
+  try{ H.ch.send({type:'broadcast',event:'spec_fx',payload:{a:action,d:data||{},w:who}}); }catch(e){}
+}
+// "👁 N watching" chip for the two players
+function spChip(n){
+  _sp.chipN=n||0;
+  const seam=document.getElementById('seam'); if(!seam) return;
+  let c=document.getElementById('spec-chip');
+  if(!c){ c=document.createElement('div'); c.id='spec-chip'; c.className='spec-chip'; const tc=document.getElementById('turn-chip'); if(tc&&tc.parentNode===seam) seam.insertBefore(c,tc.nextSibling); else seam.appendChild(c); }
+  c.textContent='👁 '+_sp.chipN+' watching'; c.style.display=_sp.chipN>0?'':'none';
+}
+
+// ── SPECTATOR: read-only board ──
+function spWatch(entry,back){
+  if(!entry||!entry.w) return;
+  if((typeof _onlineRoom!=='undefined'&&_onlineRoom)||(G&&G.players&&!G.gameOver&&!G.spectating&&document.querySelector('#game-screen.active,#game-screen-2v2.active'))){ alert('Leave your own match or room before watching another.'); return; }
+  const sb=spSB(); if(!sb){ alert('Live matches need an internet connection.'); return; }
+  spStopWatch();
+  if(typeof closeAllModals==='function') closeAllModals();
+  const from=back||(document.querySelector('.screen.active')||{}).id||'menu-screen';
+  const W=_sp.watch={w:entry.w,entry,back:from==='game-screen'?'online-lobby-screen':from,t0:Date.now(),last:0,got:false,flip:false,s:null,ch:null,dog:null,stale:false};
+  try{
+    W.ch=sb.channel('watch:'+entry.w,{config:{broadcast:{self:false},presence:{key:_sp.myKey}}})
+      .on('broadcast',{event:'spec_state'},p=>spApply(p&&p.payload&&p.payload.s))
+      .on('broadcast',{event:'spec_fx'},p=>spFxRecv(p&&p.payload))
+      .subscribe(async st=>{ if(st!=='SUBSCRIBED'||_sp.watch!==W) return; try{ await W.ch.track({n:spMyName()}); }catch(e){}
+        try{ W.ch.send({type:'broadcast',event:'spec_hello',payload:{}}); }catch(e){} });
+  }catch(e){ _sp.watch=null; alert('Could not open that match.'); return; }
+  W.dog=setInterval(spWatchdog,1000);
+  spToast(`👁 Connecting to <b>${spEsc(entry.h)}</b> vs <b>${spEsc(entry.g)}</b>…`,0);
+}
+function spWatchdog(){
+  const W=_sp.watch; if(!W){ return; }
+  const now=Date.now();
+  if(!W.got){ if(now-W.t0>10000){ spStopWatch(); spToast("Couldn't reach that match — it may have just ended."); } return; }
+  const quiet=now-W.last;
+  if(!W.over&&quiet>20000&&!W.stale){ W.stale=true; spRenderBar(); }
+  if(!W.over&&quiet>60000){ W.over=true; W.lost=true; spRenderBar(); }
+}
+function spBlankPl(){ return {name:'',energy:0,colorEnergy:{},hand:[],field:[],deck:[],discard:[],rift:[],prizes:[],prizesClaimed:0,prizesTaken:[],prizesFoil:[],herald:null,lifeForce:0}; }
+function spApply(s){
+  const W=_sp.watch; if(!W||!s||!s.p) return;
+  W.last=Date.now(); W.s=s; if(W.stale){ W.stale=false; }
+  const first=!W.got; W.got=true;
+  if(first||!G||!G.spectating){
+    G={turn:1,activePlayer:1,phase:'draw',phasesDone:[],selectedAttacker:null,gameOver:false,deckSearchCallback:null,heraldAttacking:false,
+       gameMode:'prize',startingLF:100,prizeCount:6,bonusAttackers:0,spectating:true,oppCos:null,cosBySeat:null,players:{1:spBlankPl(),2:spBlankPl()},log:[]};
+    gameMode='spectate';
+  }
+  const L=c=>W.flip?(c===1?2:1):c;
+  G.turn=s.turn||1; G.activePlayer=L(s.ap===2?2:1); G.phase=s.phase||'main'; G.phasesDone=s.pd||[];
+  G.gameMode=s.mode||'prize'; G.prizeCount=s.pc||6; G.startingLF=s.lf||100; G.heraldAttacking=!!s.ha;
+  G.selectedAttacker=s.sel||null; G.log=Array.isArray(s.log)?s.log:[];
+  [1,2].forEach(c=>{
+    const src=s.p[c]||{}, dst=G.players[L(c)];
+    dst.name=(s.names&&s.names[c])||(c===1?'Host':'Guest');
+    dst.energy=src.energy||0; dst.colorEnergy=src.colorEnergy||{}; dst.field=src.field||[]; dst.discard=src.discard||[]; dst.rift=src.rift||[];
+    dst.herald=src.herald||null; dst.lifeForce=src.lifeForce||0; dst.prizesClaimed=src.prizesClaimed||0; dst.prizesTaken=src.prizesTaken||[];
+    dst.hand=Array.from({length:Math.max(0,src.hand|0)},(_,i)=>({uid:'sp'+c+'h'+i,cid:'__hidden'}));
+    dst.deck=new Array(Math.max(0,src.deck|0)).fill('__hidden');
+    dst.prizes=new Array(Math.max(0,src.prizes|0)).fill('__hidden');
+  });
+  if(first){
+    spToastOff();
+    showScreen('game-screen');
+    const gs=document.getElementById('game-screen'); if(gs) gs.classList.add('spectating');
+    if(typeof clearHoverPreview==='function') try{ clearHoverPreview(true); }catch(e){}
+  }
+  spAvatars(s);
+  const ht=document.getElementById('hand-dock-title'); if(ht) ht.textContent=(G.players[1].name||'Player').toUpperCase()+"'S HAND";
+  if(s.over&&!W.over){ W.over=true; G.gameOver=true; G.winner=L(s.winner===2?2:1); G.winReason=s.reason||''; }
+  try{ renderAll(); }catch(e){ console.warn('[SPEC] render',e); }
+  spChip(0);
+  spRenderBar();
+}
+function spAvatars(s){
+  const W=_sp.watch; const L=c=>W&&W.flip?(c===1?2:1):c;
+  [1,2].forEach(c=>{ const el=document.getElementById('p'+L(c)+'-avatar'); if(!el) return; const u=s.av&&s.av[c];
+    const key=(u||'')+'|'+c+'|'+(W&&W.flip?1:0); if(el.dataset.spav===key) return; el.dataset.spav=key; el.dataset.set='1';
+    if(u){ el.innerHTML=''; const im=document.createElement('img'); im.src=u; im.alt=''; el.appendChild(im); } else el.textContent='👤'; });
+}
+function spRenderBar(){
+  const W=_sp.watch, gs=document.getElementById('game-screen'); if(!gs) return;
+  let bar=document.getElementById('spec-bar');
+  if(!W||!W.s){ if(bar) bar.remove(); return; }
+  if(!bar){ bar=document.createElement('div'); bar.id='spec-bar'; gs.appendChild(bar); }
+  const s=W.s, top=W.flip?1:2, bot=W.flip?2:1;
+  const wager=s.wager?`<div class="sp-bar-wg">⚖ ${spEsc(s.names[1])}: ${spEsc(s.wager[1])} · ${spEsc(s.names[2])}: ${spEsc(s.wager[2])}</div>`:'';
+  let status;
+  if(W.lost) status='<span class="sp-warn">The match feed ended.</span>';
+  else if(s.over) status=`<span class="sp-win">🏆 ${spEsc(s.names[s.winner===2?2:1])} wins</span>${s.reason?' · '+spEsc(String(s.reason).replace(/\s*\((You|Opponent)\)/g,'')):''}`;
+  else if(W.stale) status='<span class="sp-warn">⚠ Feed paused — waiting for the host…</span>';
+  else status=`Turn ${s.turn||1} · ${spEsc(s.names[s.ap===2?2:1])} · ${spEsc(String(s.phase||'').toUpperCase())}`;
+  bar.innerHTML=`<span class="sp-bar-tag">👁 SPECTATING</span>
+    <div class="sp-bar-mid"><div class="sp-bar-vs"><b>${spEsc(s.names[bot])}</b> <span>vs</span> <b>${spEsc(s.names[top])}</b> <i>${spEsc(spModeName(s.mode,s.pc))}${s.n?` · 👁 ${s.n}`:''}</i></div>
+      <div class="sp-bar-st">${status}</div>${wager}</div>
+    <button class="sp-bar-btn" onclick="spFlip()" title="Swap which player is at the bottom">⇅</button>
+    ${(s.over||W.lost)?'<button class="sp-bar-btn" onclick="spLeave(true)">MORE LIVE</button>':''}
+    <button class="sp-bar-btn leave" onclick="spLeave()">LEAVE</button>`;
+}
+function spFlip(){ const W=_sp.watch; if(!W||!W.s) return; W.flip=!W.flip; const s=W.s; W.over=false; spApply(s); }
+function spFxRecv(p){
+  const W=_sp.watch; if(!W||!W.got||!p||!p.d) return;
+  const side=W.flip?(p.w===1?2:1):(p.w===2?2:1), d=p.d;
+  try{
+    if(p.a==='card_play'&&d.cardId&&typeof playCardZoom==='function') playCardZoom(d.cardId,d.variant);
+    else if(p.a==='instant_reveal'&&d.cardId&&typeof showInstantReveal==='function') showInstantReveal(d.cardId,side);
+    else if(p.a==='ability_reveal'&&d.cardId&&typeof showAbilityReveal==='function') showAbilityReveal(d.cardId,side,d.label,d.text);
+  }catch(e){}
+}
+function spStopWatch(){
+  const W=_sp.watch; if(!W) return; _sp.watch=null;
+  clearInterval(W.dog);
+  try{ if(W.ch){ try{ W.ch.untrack(); }catch(e){} const sb=spSB(); if(sb) sb.removeChannel(W.ch); } }catch(e){}
+}
+function spLeave(more){
+  const W=_sp.watch, back=(W&&W.back)||'online-lobby-screen';
+  spStopWatch();
+  const gs=document.getElementById('game-screen'); if(gs) gs.classList.remove('spectating');
+  const bar=document.getElementById('spec-bar'); if(bar) bar.remove();
+  const ht=document.getElementById('hand-dock-title'); if(ht) ht.textContent='YOUR HAND';
+  spToastOff();
+  ['p1-avatar','p2-avatar'].forEach(id=>{ const el=document.getElementById(id); if(el){ el.dataset.set=''; el.dataset.spav=''; } });
+  if(G&&G.spectating){ G={}; gameMode=''; }
+  showScreen(back==='game-screen'?'online-lobby-screen':back);
+  if(more) setTimeout(spOpenLive,150);
+}
+// Spectators can look, not touch: block clicks on the board except viewing controls
+document.addEventListener('click',e=>{
+  if(!G||!G.spectating) return;
+  const gs=document.getElementById('game-screen'); if(!gs||!gs.contains(e.target)) return;
+  if(e.target.closest('#spec-bar,#game-menu-cluster,.mobile-nav,.rail-tabs,.mobile-card-sheet,.discard-pile-mini,.rift-zone-wrap')) return;
+  e.stopPropagation(); e.preventDefault();
+  const slot=e.target.closest('[data-cid]');
+  if(slot&&DB[slot.dataset.cid]&&typeof showFullCard==='function'){
+    const p=+slot.dataset.player||0, fc=(p&&G.players[p])?G.players[p].field.find(f=>f.uid===slot.dataset.uid):null;
+    try{ showFullCard(slot.dataset.cid,fc||null); }catch(er){}
+  }
+},true);
 </script>
 
 </body>
