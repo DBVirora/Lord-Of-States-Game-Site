@@ -8435,12 +8435,12 @@ const GODOT_SYNC=[
       "GET OVER HERE! (Scorpion, activated): 2 Energy (pays Red), once every 2 turns (abilityUsed.get_over_here_turn), no tap: 2 damage (dealDamage) to a target opposing character, then Burn it if it survived.",
       "HELLFIRE VENGEANCE (Scorpion, triggered): when it is destroyed by an attack made AGAINST it (as the target or a blocker — not when it dies to retaliation while attacking), 3 damage to the attacking character. Hook: combatDamageHooks (src is the active player's attacker, Scorpion no longer on the field).",
       "RISING RAGE (The Incredible Hulk, passive): each time it takes combat damage (> 0; being attacked OR retaliation) and survives, +1 Attack (atkBonus) until it leaves the field, max +3 (fc._rage). Hook: combatDamageHooks.",
-      "HULK SMASH = Breakthrough keyword. BREAKTHROUGH CHANGED for every card (Volaris SSB too): excess = attack damage − the defender's damage reduction (Nullify, Inferno Ward 1, Diamond Calm 2) − its Health REMAINING before the hit (was: − its max Health). Excess hits the defender's Herald, which can't drop below 1 Health; Combined mode still claims a Prize for the Herald hit.",
+      "HULK SMASH = the existing Breakthrough keyword (Rulebook 9.10, unchanged): excess = attack damage − the target's full Health; it hits the enemy Herald, which can't drop below 1 Health; Combined mode claims a Prize for the Herald hit.",
       "STARBOLT (Starfire, activated): 2 Energy (pays Red), once per turn (normal once_per_turn lock), paid → no tap: 2 damage to a target opposing character (same handler as Heir's Shockwave).",
       "WARRIOR OF TAMARAN (Starfire, triggered): when its OWN attack destroys a character (active player's attacker, not a retaliation kill), its controller gains 2 Energy (even if Starfire fell in the same exchange). Hook: triggerShowdownHype.",
       "WILDBORN ADAPTATION (Elise, entry, choose one): (a) search the deck for a 'Transformation card of this character' = a non-base, non-fusion character card with the same charLine, reveal, to hand, shuffle; or (b) +1/+1 (atkBonus/hpBonus, permanent until it leaves; a transformation resets it). No such card in the deck → (b) automatically with a banner. Person: dual-button banner '🔍 Search' / '💪 +1/+1' (Prism Orb pattern; not also shown as a plain entry banner). AI/remote: searches when a form is in the deck (cheapest), else +1/+1."],
     screens:["Effects panel: '⚡ Flashpoint Chain — it may attack N more time(s) this turn.' (the extraAttacks row names Flashpoint Chain when that granted it, otherwise Rewind); '🌙 Heavenly Relay' while the extra attacker is open in the Attack Phase, and 'Recharging: ready again in N turn(s)' on cooldown."],
-    data:["GAME_BUILD '10.11'. No rulebook change (Moonlit Veil reads as Godly Evasion; extra attacks follow 9.x as before; Breakthrough's 'excess' now matches its wording)."] },
+    data:["GAME_BUILD '10.11'. No rulebook change (Moonlit Veil reads as Godly Evasion; Hulk Smash is Breakthrough 9.10)."] },
   { build:'10.10', date:'2026-11-01',
     cards:[{id:'omega_energy_bse', set:'base_set', number:'106/150', rarity:'uncommon', scan:'Sets/BASE SET/106-150 (Omega Energy).png', newAbilities:['Omega Pulse',"Death's Toll"],
        note:"Omega Energy · SPECIAL ENERGY (type 'energy_card', specialEnergy:true, subtypes Energy, Special) · Black · Uncommon. Counts as the turn's one Energy card."},
@@ -12638,7 +12638,6 @@ function executeCombatDamage(ap,auid,dp,duid){
 
   // Attacker wins OR no power struggle — normal damage resolution
   const defenderATK=dfc.currentATK;
-  const _dHpBefore=dfc.currentHP||0, _dRed=(dfc.nullify||0)+(hasAbilityLabel(dfc,'Inferno Ward')?1:0)+(hasAbilityLabel(dfc,'Diamond Calm')?2:0);
   dealDamage(dp,dfc.uid,atkDmg);
   const _pursuitKill=hasKW(afc,'pursuit') && !(G.players[dp].field.some(f=>f.uid===dfc.uid) && dfc.currentHP>0);
 
@@ -12682,7 +12681,7 @@ function executeCombatDamage(ap,auid,dp,duid){
   if(hasKW(afc,'breakthrough')){
     const stillAlive=G.players[dp].field.some(f=>f.uid===dfc.uid);
     if(!stillAlive){
-      const excess=Math.max(0,atkDmg-_dRed-_dHpBefore); // build 10.11: remaining Health, not max Health
+      const excess=Math.max(0,atkDmg-(dfc.baseHP+dfc.hpBonus));
       const oppHerald=G.players[dp].herald;
       if(oppHerald&&excess>0){
         oppHerald.currentHP=Math.max(1,oppHerald.currentHP-excess);
