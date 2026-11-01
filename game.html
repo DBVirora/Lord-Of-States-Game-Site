@@ -1389,6 +1389,7 @@ body{padding-top:46px;}
 .pvp-player-slot.waiting{border-color:rgba(251,191,36,.3);border-style:dashed;animation:pvp-wait .8s ease-in-out infinite alternate;}
 @keyframes pvp-wait{from{border-color:rgba(251,191,36,.2)}to{border-color:rgba(251,191,36,.5)}}
 .pvp-slot-avatar{width:40px;height:40px;border-radius:50%;background:#0d0d2a;border:2px solid rgba(0,180,255,.3);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;}
+.pvp-slot-avatar img{width:100%;height:100%;object-fit:cover;display:block}
 .pvp-slot-name{font-size:13px;font-weight:700;color:#e2e8f0;}
 .pvp-slot-status{font-size:9px;letter-spacing:1px;margin-top:2px;}
 .pvp-conn-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:8px;letter-spacing:1px;font-weight:700;}
@@ -7778,9 +7779,10 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
           <div style="text-align:center"><div class="cnt" id="bld-cnt">0<small>/60</small></div><div class="lbl" id="bld-cnt-sub" style="margin:3px 0 0">EMPTY</div></div>
           <div class="sep"></div>
           <div><div class="lbl">COST CURVE</div><div class="bld-curve" id="bld-curve"></div></div>
-          <div><div class="lbl">COLOURS</div><div style="display:flex;gap:4px" id="bld-colors"></div></div>
+          <div><div class="lbl">COLORS</div><div style="display:flex;gap:4px" id="bld-colors"></div></div>
           <div><div class="lbl">HERALD</div><div style="font-size:11px;color:#e9e4ff" id="bld-herald">—</div></div>
           <div style="flex:1"></div>
+          <button class="dk-btn" onclick="bldRandomOwned()" title="Build a random deck from cards you own — then edit and save it" style="padding:11px 12px">🎲 RANDOM</button>
           <button class="dk-btn" onclick="if(confirm('Clear the whole deck?'))clearBuilder()" title="Clear deck" style="padding:11px 12px">🗑</button>
           <button class="dk-btn" onclick="bldExportCurrent()" title="Copy deck code" style="padding:11px 12px">⇧</button>
           <button class="dk-btn teal" onclick="saveDeck()">💾 SAVE</button>
@@ -8429,6 +8431,8 @@ const GODOT_SYNC=[
   { build:'10.16', date:'2026-11-01',
     cards:[], abilities:[],
     screens:[
+      "SAME BUILD 10.16 (web addition, no protocol change): DECK BUILDER bar gains '🎲 RANDOM' (before 🗑) and MY DECKS gains a '🎲 RANDOM DECK · from cards you own' tile after NEW DECK. bldRandomOwned(): only cards you own (admin with Every card ×4: every playable card); no tokens/system/fusion/fusion-method cards; 1 or 2 colors (70% two) weighted by the characters you own; 1 Herald (your colors first) · characters 2–3 copies each until 24 · for each base in the deck, the transformation forms you own (1–2 each, whole tree) · Energy up to 20 (your colors first) · support cards (Instant/Equipment/Location…) 1–2 each · top up with 4s from your colors, then anything else you own. Never more copies of a finish than owned (shiniest finishes first), 4 per card, 1 Herald. Loads as a NEW unsaved deck named 'Random · Purple/Green'; status line '🎲 Random deck ready — edit anything, then SAVE' or '🎲 You own enough for n/60 — add more cards to finish it, then SAVE'; no cards → 'You don't own any cards yet — open some packs first.' Confirm before replacing a non-empty builder. Builder label COLOURS → COLORS.",
+      "PC BUG (Rulk): backing out to the main menu always lands on PLAY. MainMenu is rebuilt with MainMenu.new() and 'var tab_i: int = 0' is per instance — make it 'static var tab_i' (like news_i) so the menu reopens on the tab you left from. (Web keeps _mm.tab in memory and now also in sessionStorage 'loc_mm_tab', so a refresh keeps it too.)",
       "SPECTATOR BAR: the ⇅ button is now a 'VIEW  [Host name] [Guest name]' pair — the lit name is the player at the bottom; tap the other to watch from their side (spView(1|2) → spFlip).",
       "PC BUG (from Rulk's screenshot, PC client): the opponent's DECK PILE kept an old card back while their hand/prizes showed the right one. Battle.gd _pile() builds the deck CardView once at board build and it is never refreshed; cos_hello → _refresh() rebuilds hand/prizes only. Rebuild/retexture areas[p].deck's CardView (meta 'cv') on every _refresh / cos_hello so deck, hand and prizes all use CardView.back(p) from the CURRENT Game.opp_cos."],
     data:[
@@ -8441,7 +8445,11 @@ const GODOT_SYNC=[
       "trig_show (1v1) is now sent for BOTH players' cards resolving on the sender's screen, with seat = card owner (sender's view). Receiver: seat 2 → it's my card → p 1, who 'YOU'; otherwise p 2.",
       "game_state (1v1) now carries cos {back, mat, frame, plate, title, entrance} — the sender's equipped cosmetics; receiver applies it like cos_hello whenever it changes.",
       "SPECTATORS: host forwards fx, roll_show and trig_show on spec_fx (w = 1 host's own, 2 the guest's) — viewer maps sender seat → canonical (w 2 swaps) → its view (flip swaps).",
-      "Web fix: the opponent hand-limit label read 'Hnd: n/13' — now MAX_HAND (12)."] },
+      "Web fix: the opponent hand-limit label read 'Hnd: n/13' — now MAX_HAND (12).",
+      "SAME BUILD 10.16 — QUICK MATCH REWORK (was: the matcher entered the game before the other player had joined the room, so the coin toss call was lost and nobody could act; and the host never got the guest's deck). New handshake, no cross-player DB writes: searcher reads waiting matchmaking_queue entries (same game_mode + prize_count, newer than 10 min, oldest first), and for up to 3 of them sends 'qm_claim' {nonce, from, name, deck, mode, pc, build, av} on mm:<their uid>, waiting 3.5 s each for 'qm_accept' {nonce, code, host_name, host_avatar, mode, pc} (or 'qm_reject' {nonce}) on mm:<my uid>. WAITING player (listening on mm:<me>): accepts the first claim if still searching, same build/mode/prizes; deletes ITS OWN queue entry; inserts the online_rooms row ITSELF as host (guest_* filled in, status 'ready'); joins room:<code>; replies qm_accept ×3. Claimer: joins room:<code> as guest and re-sends player_joined every 1.5 s until match_started. Host: on the guest's player_joined → starts the match itself (startOnlineMatch with the queue's mode/prizes: coin toss etc. as a normal room). Nobody to claim → insert own entry, then every 3 s try to claim an OLDER entry (two simultaneous searchers meet). 30 s with no connection → 'Your opponent didn't connect. Search again?'. Cancel after matching → room_closed {why:'left'} → the other side: 'Your opponent left before the match started.' Version mismatch → host sends room_closed {why:'version', build}. UI: #mm-search-title 'MATCH FOUND' + 'vs <name> · connecting…/starting…'.",
+      "SAME BUILD 10.16 — ROOM ROW: the guest's own write to online_rooms can be refused by row security (it silently changed nothing → wagers said 'Both players need to be in the room.'). The HOST now writes guest_id/guest_name/guest_deck/status 'ready' into its own row whenever it accepts a player_joined, and answers 'room_sync' {} with that write + 'room_synced' {}. wager_open returning 'Both players need to be in the room' → host: rewrite then retry once; guest: send room_sync, wait for room_synced (≤2.5 s), retry once. (PC: Online.gd join writes the guest itself — keep it, but add the host-side write + room_sync/room_synced.)",
+      "SAME BUILD 10.16 — AVATARS: never show your own picture for the opponent. PC BUG: UI.avatar(url='') falls back to Net.avatar_url() (YOUR picture) — Battle.gd passes Online.opp_avatar which is '' until it arrives → both panels show you. Pass '__none__' (→ 👤) when opp_avatar is empty and rebuild when it arrives. Web: p2 avatar shows 👤 until known; avatars reset at every startGame; _onlineOpponentAvatar cleared in cleanupOnlineSession; game_state carries av (the sender's avatar URL, <800 chars) and the receiver updates the opponent picture when it changes. WAITING ROOM: both slots show profile pictures (img in .pvp-slot-avatar; fallback 👤/⚔️); host sends 'room_ack' {host_name, host_avatar} when it accepts player_joined so the guest can show the host's picture.",
+      "SAME BUILD 10.16 — OPEN ROOMS reliability: the vcu-rooms channel now reconnects on CHANNEL_ERROR / TIMED_OUT / CLOSED (backoff 2 s × tries, max 15 s) while the lobby / Find Match is open or you have a listed room, and a listed room re-tracks every 20 s. Rows from another build: newer → 'newer build X — refresh to update' (reload link); older → 'host is on older build X (you: Y)'; JOIN disabled either way."] },
   { build:'10.15', date:'2026-11-01',
     cards:[],
     abilities:[],
@@ -11172,6 +11180,8 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random
 
 function startGame(mode,deck1,deck2,foils1,foils2){
   if(typeof loadGameSettings==="function")loadGameSettings();
+  // a new match never keeps the last match's pictures (opponent avatar is re-filled below by renderBanner)
+  ['p1-avatar','p2-avatar'].forEach(id=>{ const el=document.getElementById(id); if(el){ el.dataset.set=''; el.dataset.spav=''; if(id==='p2-avatar') el.textContent=(mode==='online'||mode==='pvp')?'👤':'🤖'; } });
   try{ clearHoverPreview(true); }catch(e){}
   gameMode=mode;us=0;
   if(typeof seqReset==='function') seqReset();
@@ -20628,7 +20638,7 @@ const MENU_TABS=[
  ]},
 ];
 const MENU_TIPS=["A character's Health is how much damage it takes to destroy it.","A Herald can only be struck by characters when the enemy board is empty.","Retaliation uses the defender's Attack from before the hit.","Heralds may duel from round 4. Two Prizes or 15 Life break one.","Free abilities tap the card. Paid abilities don't.","Win the coin toss and you choose who goes first.","Equipment Hex turns off everything an enemy's equipment does.","Ending your turn with an unclaimed Prize is not allowed — claim it first."];
-let _mm={tab:0,focus:0,tipI:0,tipTimer:null,built:false,dragX:null};
+let _mm={tab:(()=>{ try{ const t=+sessionStorage.getItem('loc_mm_tab'); return (t>=0&&t<5)?t:0; }catch(e){ return 0; } })(),focus:0,tipI:0,tipTimer:null,built:false,dragX:null};
 function mmApplyBackdrop(){
   const L=document.getElementById('menu-bg-layer'), im=document.getElementById('menu-bg-image'); if(!L||!im)return;
   const bg=MENU_ART.__bg||null;
@@ -20704,7 +20714,7 @@ function mmBuildTabs(){
     const m=document.createElement('button'); m.className='mm-tab'+(i===_mm.tab?' on':''); m.innerHTML='<span>'+T.icon+'</span>'+T.label; m.onclick=()=>mmSetTab(i); b.appendChild(m);
   });
 }
-function mmSetTab(i){ _mm.tab=i; _mm.focus=0; mmBuildTabs(); const T=MENU_TABS[i]; const pl=document.getElementById('mm-plate'); if(pl)pl.innerHTML=T.plate+'<small>'+T.sub+'</small>'; mmBuildCards(true); if(typeof SFX!=='undefined'&&_gameSettings.sfx)SFX.click(); }
+function mmSetTab(i){ _mm.tab=i; _mm.focus=0; try{ sessionStorage.setItem('loc_mm_tab',String(i)); }catch(e){} mmBuildTabs(); const T=MENU_TABS[i]; const pl=document.getElementById('mm-plate'); if(pl)pl.innerHTML=T.plate+'<small>'+T.sub+'</small>'; mmBuildCards(true); if(typeof SFX!=='undefined'&&_gameSettings.sfx)SFX.click(); }
 function mmBuildCards(fresh){
   const car=document.getElementById('mm-car'); if(!car)return;
   [...car.querySelectorAll('.mm-card')].forEach(c=>c.remove());
@@ -23066,8 +23076,8 @@ function renderBanner(){
       // Real human opponent — show their actual profile picture
       p2av.innerHTML='<img src="'+_onlineOpponentAvatar+'" alt=""/>';
       p2av.dataset.set='1';
-    } else if(gameMode==='pvp'){
-      // Local PvP — generic human icon
+    } else if(gameMode==='pvp'||gameMode==='online'){
+      // Local PvP, or an online opponent whose picture hasn't arrived — generic human icon (never your own picture)
       p2av.textContent='👤';
     } else {
       // AI — keep robot
@@ -26798,9 +26808,11 @@ function showWaitingRoom(code,myName,isHost){
   if(_sub) _sub.textContent=_pub?'Anyone can join from Open Rooms, or share this code':(isHost?'Share this code with your opponent':'Waiting for the host to start the match');
   // Fill my slot
   if(isHost){
+    onlineSlotAvatar(document.getElementById('lobby-p1-avatar'),window._playerAvatarUrl||null,'👤');
     document.getElementById('lobby-p1-name').textContent=myName+(is2v2?' (You · A1)':' (You)');
     if(typeof prDeckTag==='function') document.getElementById('lobby-p1-name').insertAdjacentHTML('beforeend',prDeckTag(_onlineDeckId==='__random__'));
   } else {
+    onlineSlotAvatar(document.getElementById('lobby-p1-avatar'),(typeof _onlineOpponentAvatar!=='undefined'&&_onlineOpponentAvatar)||null,'👤');
     document.getElementById('lobby-p1-name').textContent=_onlineRoom.host_name+(is2v2?' (A1)':'');
     if(typeof prDeckTag==='function') document.getElementById('lobby-p1-name').insertAdjacentHTML('beforeend',prDeckTag(_onlineRoom.host_deck==='__random__'));
     const p2slot=document.getElementById('lobby-player-2-slot');
@@ -26809,6 +26821,7 @@ function showWaitingRoom(code,myName,isHost){
       '<div class="pvp-slot-avatar">'+(is2v2?'🤝':'⚔️')+'</div>'
       +'<div style="flex:1"><div class="pvp-slot-name">'+myName+(is2v2?' (You · A2)':' (You)')+((typeof prDeckTag==='function')?prDeckTag(_onlineDeckId==='__random__'):'')+'</div>'
       +'<div class="pvp-slot-status"><span class="pvp-conn-badge connected">CONNECTED</span></div></div>';
+    onlineSlotAvatar(p2slot.querySelector('.pvp-slot-avatar'),window._playerAvatarUrl||null,is2v2?'🤝':'⚔️');
     const startBtn=document.getElementById('lobby-start-btn');
     if(startBtn){startBtn.disabled=true;startBtn.textContent=is2v2?'WAITING FOR HOST TO START...':'WAITING FOR HOST...';}
   }
@@ -26828,7 +26841,9 @@ function subscribeToRoom(code){
         // Seat already taken by someone else (two players hit JOIN on the same public room).
         if(_onlineRoom&&_onlineRoom.status==='ready'&&_onlineRoom.guest_id&&guest_id&&guest_id!==_onlineRoom.guest_id){
           try{ _onlineChannel.send({type:'broadcast',event:'room_full',payload:{to:guest_id}}); }catch(e){} return; }
-        if(!rulesVersionOk(payload.payload.rules_version)){ rulesMismatch(payload.payload.rules_version,guest_name); return; }
+        if(!rulesVersionOk(payload.payload.rules_version)){ rulesMismatch(payload.payload.rules_version,guest_name);
+          if(_onlineRoom&&_onlineRoom.quick){ try{ _onlineChannel.send({type:'broadcast',event:'room_closed',payload:{why:'version',build:GAME_BUILD}}); }catch(e){} }
+          return; }
         if(typeof prUnlist==='function') prUnlist();
         if(guest_avatar)_onlineOpponentAvatar=guest_avatar;
         if(guest_name)window._onlineOpponentName=guest_name;
@@ -26845,7 +26860,11 @@ function subscribeToRoom(code){
         }
         const startBtn=document.getElementById('lobby-start-btn');
         if(startBtn){startBtn.disabled=false;startBtn.textContent=_is2v2?'▸ START 2v2 BATTLE':'▸ START MATCH';}
-        if(!_is2v2&&typeof wgOnRoomReady==='function') wgOnRoomReady();
+        if(!_is2v2&&!_onlineRoom.quick&&typeof wgOnRoomReady==='function') wgOnRoomReady();
+        if(_onlineRoom.quick&&!_onlineRoom._qmGo&&typeof qmHostGo==='function'){ _onlineRoom._qmGo=true; setTimeout(qmHostGo,250); }
+        onlineHostSyncRow();
+        try{ _onlineChannel.send({type:'broadcast',event:'room_ack',payload:{host_name:_onlineRoom.host_name||null,host_avatar:(window._playerAvatarUrl||null)}}); }catch(e){}
+        if(typeof onlineSlotAvatar==='function') onlineSlotAvatar(p2slot&&p2slot.querySelector('.pvp-slot-avatar'),guest_avatar,_is2v2?'🤝':'⚔️');
       }
     })
     // Host started match
@@ -26911,7 +26930,16 @@ function subscribeToRoom(code){
       if(_onlineRoom&&gid&&_onlineRoom.guest_id&&gid!==_onlineRoom.guest_id) return;
       onlineHostSeatOpen();
     })
-    .on('broadcast',{event:'room_closed'},()=>{ if(_onlineRole==='guest'&&onlineInWaitingRoom()) onlineBackToLobby('The host closed the room.'); })
+    .on('broadcast',{event:'room_closed'},(p)=>{
+      const d=(p&&p.payload)||{};
+      if(_onlineRole==='guest'&&_onlineRoom&&_onlineRoom.quick&&!(G&&G.onlineMode&&document.getElementById('game-screen')?.classList.contains('active'))){
+        qmFail(d.why==='version'?`Your opponent is on build ${d.build||'?'} and you're on ${GAME_BUILD}. Both players need the same version — refresh the page to update, then search again.`:'Your opponent left before the match started.'); return; }
+      if(_onlineRole==='guest'&&onlineInWaitingRoom()) onlineBackToLobby('The host closed the room.'); })
+    // build 10.16: the host (who owns the row) writes the guest in; the guest can ask again before opening a wager
+    .on('broadcast',{event:'room_sync'},()=>{ if(_onlineRole==='host'&&_onlineRoom&&_onlineRoom.guest_id){ onlineHostSyncRow().then(()=>{ try{ _onlineChannel.send({type:'broadcast',event:'room_synced',payload:{}}); }catch(e){} }); } })
+    .on('broadcast',{event:'room_synced'},()=>{ if(_onlineRole==='guest'&&typeof _wg!=='undefined'&&_wg.syncWait){ const f=_wg.syncWait; _wg.syncWait=null; f(); } })
+    .on('broadcast',{event:'room_ack'},(p)=>{ const d=(p&&p.payload)||{}; if(_onlineRole!=='guest') return; if(d.host_avatar) _onlineOpponentAvatar=d.host_avatar;
+      if(typeof onlineSlotAvatar==='function') onlineSlotAvatar(document.getElementById('lobby-p1-avatar'),d.host_avatar,'👤'); })
     .on('broadcast',{event:'room_full'},(p)=>{
       if(_onlineRole==='guest'&&onlineInWaitingRoom()&&p&&p.payload&&p.payload.to===_celUserId) onlineBackToLobby('That room just filled up. Pick another one.'); })
     .subscribe((status)=>{
@@ -26921,18 +26949,7 @@ function subscribeToRoom(code){
         console.log('[ROOM] ✓ Channel ready for broadcasts');
         if(typeof startHeartbeat==='function') startHeartbeat();
         // Guest announces joining
-        if(_onlineRole==='guest'){
-          const myName=document.getElementById('hud-username')?.textContent||'Player';
-          setTimeout(()=>{
-            _onlineChannel.send({type:'broadcast',event:'player_joined',payload:{
-              rules_version:GAME_BUILD,
-              guest_id:_celUserId,guest_name:myName,guest_deck:_onlineDeckId,
-              guest_deck_cards:onlineDeckCards(_onlineDeckId),
-              guest_deck_foils:(getDeckFoils(_onlineDeckId)||null),
-              guest_avatar:(window._playerAvatarUrl||null)
-            }});
-          },500);
-        }
+        if(_onlineRole==='guest') setTimeout(onlineSendJoin,500);
       } else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){
         _channelReady=false;
         console.error('[ROOM] Channel error:',status);
@@ -26940,6 +26957,31 @@ function subscribeToRoom(code){
     });
 }
 
+// build 10.16: the room row belongs to the host, so the HOST writes the guest into it (a guest's own write can be
+// refused by the table's row security, which left wagers saying "Both players need to be in the room").
+function onlineHostSyncRow(){
+  if(_onlineRole!=='host'||!_onlineRoom||!_onlineRoom.code||!_onlineRoom.guest_id) return Promise.resolve();
+  try{ return Promise.resolve(getOnlineSB().from('online_rooms').update({guest_id:_onlineRoom.guest_id,guest_name:_onlineRoom.guest_name||null,guest_deck:_onlineRoom.guest_deck||null,status:'ready'})
+    .eq('code',_onlineRoom.code)).then(()=>{},()=>{}); }catch(e){ return Promise.resolve(); }
+}
+// a waiting-room slot picture: their profile picture, or the fallback symbol
+function onlineSlotAvatar(el,url,fallback){
+  if(!el) return;
+  if(url&&typeof url==='string'){ el.innerHTML=''; const im=document.createElement('img'); im.src=url; im.alt=''; im.onerror=()=>{ el.textContent=fallback||'👤'; }; el.appendChild(im); }
+  else el.textContent=fallback||'👤';
+}
+// The guest's hello to the host: name, deck (the exact list it was dealt for a random deck), finishes, avatar, build.
+function onlineSendJoin(){
+  if(!_onlineChannel||_onlineRole!=='guest') return;
+  const myName=document.getElementById('hud-username')?.textContent||'Player';
+  try{ _onlineChannel.send({type:'broadcast',event:'player_joined',payload:{
+    rules_version:GAME_BUILD,
+    guest_id:_celUserId,guest_name:myName,guest_deck:_onlineDeckId,
+    guest_deck_cards:onlineDeckCards(_onlineDeckId),
+    guest_deck_foils:(getDeckFoils(_onlineDeckId)||null),
+    guest_avatar:(window._playerAvatarUrl||null)
+  }}); }catch(e){}
+}
 // ── RULES VERSION HANDSHAKE — web and PC clients must run the same build to play each other.
 function rulesVersionOk(v){ return String(v||'')===GAME_BUILD; }
 function rulesMismatch(theirs,who){
@@ -27151,6 +27193,7 @@ function broadcastGameState(){
     winReason:G.winReason||null,
     forfeited:G.forfeited||false,
     cos:(typeof COS_TYPES!=='undefined'&&typeof cosEquipped==='function')?Object.fromEntries(Object.keys(COS_TYPES).map(t=>[t,cosEquipped(t,1)])):undefined,
+    av:(typeof window._playerAvatarUrl==='string'&&window._playerAvatarUrl.length<800)?window._playerAvatarUrl:null,
     players:{}
   };
   if(isHost){
@@ -27254,6 +27297,7 @@ function onReceiveGameState(payload){
   clearDisconnectTimer();
   // build 10.16: the opponent's cosmetics ride on every state (a missed cos_hello can't leave mismatched card backs)
   if(incoming.cos&&typeof incoming.cos==='object'&&typeof cosHelloRecv==='function'){ const _ck=JSON.stringify(incoming.cos); if(_ck!==G._oppCosKey){ G._oppCosKey=_ck; cosHelloRecv({cos:incoming.cos}); } }
+  if(incoming.av&&typeof incoming.av==='string'&&incoming.av!==_onlineOpponentAvatar){ _onlineOpponentAvatar=incoming.av; const _p2a=document.getElementById('p2-avatar'); if(_p2a) _p2a.dataset.set=''; }
   if(typeof fxrSnapshot==='function') try{ fxrSnapshot(); }catch(e){}
   _applyingRemoteState=true;
   renderAll();
@@ -27403,6 +27447,7 @@ async function cancelOnlineRoom(){
 
 function cleanupOnlineSession(){
   const sb=getOnlineSB();
+  _onlineOpponentAvatar=null; window._onlineOpponentName=null;
   if(typeof stopHeartbeat==='function') stopHeartbeat();
   if(typeof spHostStop==='function') try{ spHostStop(); }catch(e){}
   if(typeof prStop==='function') try{ prStop(); }catch(e){}
@@ -27668,130 +27713,142 @@ function openMatchmaking(){
   document.getElementById('mm-rooms-panel').style.display='none';
 }
 
-// ── QUICK MATCH ───────────────────────────────────
+// ── QUICK MATCH (reworked 10.16) ──────────────────
+// Nobody writes a row they don't own, and nothing is sent into a room the other player hasn't joined yet:
+//  • a searcher looks at the waiting entries (same mode + prizes) and CLAIMS one over Realtime: 'qm_claim' on mm:<them>;
+//  • the waiting player accepts the first claim ('qm_accept' {code} on mm:<claimer>), deletes its own queue entry,
+//    creates the room row as its HOST (guest filled in) and joins room:<code>;
+//  • the claimer joins room:<code> as guest and re-sends player_joined (with its deck) every 1.5 s; the host starts the
+//    match itself the moment that lands — coin toss and all — with the queue's mode / prizes.
+// Nobody waiting → you add your own entry and wait (claims come to you); every 3 s you also try to claim an OLDER entry,
+// so two players who searched at the same moment still meet. A claim with no answer in 3.5 s (stale entry) is skipped.
+let _qm=null;
+function qmUI(title,sub){ const s=document.getElementById('mm-searching'); if(!s) return; s.style.display='block';
+  const t=document.getElementById('mm-search-title'), u=document.getElementById('mm-search-sub'); if(t&&title) t.textContent=title; if(u&&sub!=null) u.textContent=sub; }
+function qmListen(){
+  if(!_qm||_qm.ch) return; const sb=getOnlineSB();
+  try{ _qm.ch=sb.channel('mm:'+_celUserId,{config:{broadcast:{self:false}}})
+    .on('broadcast',{event:'qm_claim'},p=>{ qmOnClaim((p&&p.payload)||{}); })
+    .on('broadcast',{event:'qm_accept'},p=>{ const d=(p&&p.payload)||{}; if(_qm&&_qm.pending&&_qm.pending.nonce===d.nonce) _qm.pending.done(d); })
+    .on('broadcast',{event:'qm_reject'},p=>{ const d=(p&&p.payload)||{}; if(_qm&&_qm.pending&&_qm.pending.nonce===d.nonce) _qm.pending.done(null); })
+    .subscribe(st=>{ if(st==='SUBSCRIBED'&&_qm) _qm.chReady=true; }); }catch(e){}
+}
+function qmStopListen(){ if(_qm&&_qm.ch){ try{ getOnlineSB().removeChannel(_qm.ch); }catch(e){} _qm.ch=null; _qm.chReady=false; } }
+// send to someone's mm:<uid> channel a few times (they may still be connecting)
+function qmSendTo(uid,event,payload,times){
+  const sb=getOnlineSB(); let n=0, sent=false; const ch=sb.channel('mm:'+uid,{config:{broadcast:{self:false}}});
+  const fire=()=>{ try{ ch.send({type:'broadcast',event,payload}); }catch(e){} };
+  ch.subscribe(st=>{ if(st!=='SUBSCRIBED'||sent) return; sent=true; fire(); const iv=setInterval(()=>{ if(++n>=(times||3)){ clearInterval(iv); setTimeout(()=>{ try{ sb.removeChannel(ch); }catch(e){} },800); return; } fire(); },600); });
+}
 async function startQuickMatch(){
   const sb=getOnlineSB();
+  if(!_celUserId){alert('You must be logged in.');return;}
+  if(_qm&&(_qm.searching||_qm.pending)) return;
   const deckId=document.getElementById('mm-deck-select')?.value;
   const gameMode=document.getElementById('mm-game-mode')?.value||'prize';
   const prizeCount=parseInt(document.getElementById('mm-prize-count')?.value||'6');
   { const _de=onlineDeckError(deckId); if(_de){alert(_de);return;} }
+  onlineSetPick(deckId); _onlineDeckId=deckId; _onlineRandomCards=null;
   const myName=document.getElementById('hud-username')?.textContent||'Player';
-  // Show spinner
-  document.getElementById('mm-searching').style.display='block';
+  _qm={searching:true,deck:deckId,mode:gameMode,pc:prizeCount,name:myName,ch:null,chReady:false,created:null,pending:null,tried:{}};
+  qmUI('SEARCHING FOR OPPONENT','Looking for a player with the same settings...');
   document.getElementById('mm-rooms-panel').style.display='none';
-  _mmElapsed=0;
-  _mmInterval=setInterval(()=>{
-    _mmElapsed++;
-    const el=document.getElementById('mm-wait-time');
-    if(el)el.textContent='Elapsed: '+_mmElapsed+'s';
-  },1000);
-  // Try to find an open queue entry first
+  _mmElapsed=0; clearInterval(_mmInterval);
+  _mmInterval=setInterval(()=>{ _mmElapsed++; const el=document.getElementById('mm-wait-time'); if(el)el.textContent='Elapsed: '+_mmElapsed+'s'; },1000);
+  qmListen();
+  for(let k=0;k<30&&_qm&&!_qm.chReady;k++) await new Promise(r=>setTimeout(r,100));   // so accepts can reach me
   try{
-    const {data:existing}=await sb.from('matchmaking_queue')
-      .select('*')
-      .eq('game_mode',gameMode)
-      .eq('prize_count',prizeCount)
-      .eq('status','waiting')
-      .neq('user_id',_celUserId)
-      .order('created_at',{ascending:true})
-      .limit(1)
-      .maybeSingle();
-    if(existing){
-      // Found someone — create room and match them
-      await matchWithQueueEntry(existing,deckId,gameMode,prizeCount,myName);
-    } else {
-      // Nobody waiting — join the queue
-      const {data:entry}=await sb.from('matchmaking_queue').insert({
-        user_id:_celUserId,
-        user_name:myName,
-        deck_id:deckId,
-        game_mode:gameMode,
-        prize_count:prizeCount,
-        status:'waiting',
-        created_at:new Date().toISOString()
-      }).select().single();
-      _mmQueueId=entry?.id;
-      // Poll for a match every 3 seconds
-      _mmPollInterval=setInterval(()=>checkForMatch(gameMode,prizeCount,deckId),3000);
-    }
-  }catch(e){
-    cancelMatchmaking();
-    alert('Matchmaking error: '+e.message);
-  }
+    if(await qmTryCandidates()) return;
+    if(!_qm||!_qm.searching) return;
+    const created=new Date().toISOString();
+    const {data:entry}=await sb.from('matchmaking_queue').insert({user_id:_celUserId,user_name:myName,deck_id:deckId,game_mode:gameMode,prize_count:prizeCount,status:'waiting',created_at:created}).select().single();
+    _mmQueueId=entry?.id; _qm.created=(entry&&entry.created_at)||created;
+    clearInterval(_mmPollInterval); _mmPollInterval=setInterval(qmPoll,3000);
+  }catch(e){ cancelMatchmaking(); alert('Matchmaking error: '+e.message); }
 }
-
-async function matchWithQueueEntry(opponent,myDeckId,gameMode,prizeCount,myName){
-  const sb=getOnlineSB();
-  // Claim the queue entry
-  await sb.from('matchmaking_queue').update({status:'matched'}).eq('id',opponent.id);
-  // Create a room
-  const code=generateRoomCode();
-  await sb.from('online_rooms').insert({
-    code,
-    host_id:opponent.user_id,
-    host_name:opponent.user_name,
-    host_deck:opponent.deck_id,
-    guest_id:_celUserId,
-    guest_name:myName,
-    guest_deck:myDeckId,
-    status:'playing',
-    game_mode:gameMode,
-    prize_count:prizeCount
-  });
-  // Notify via broadcast
-  const ch=sb.channel('mm:'+opponent.user_id);
-  await ch.subscribe();
-  ch.send({type:'broadcast',event:'match_found',payload:{code,role:'host',opponent_name:myName}});
-  cancelMatchmaking();
-  // I join as guest
+async function qmTryCandidates(){
+  if(!_qm) return false; const sb=getOnlineSB();
+  const since=new Date(Date.now()-10*60000).toISOString();
+  let {data:list}=await sb.from('matchmaking_queue').select('*').eq('game_mode',_qm.mode).eq('prize_count',_qm.pc).eq('status','waiting')
+    .neq('user_id',_celUserId).order('created_at',{ascending:true}).limit(6);
+  list=(Array.isArray(list)?list:(list?[list]:[])).filter(e=>e&&!_qm.tried[e.id]&&String(e.created_at||since)>=since&&(!_qm.created||String(e.created_at||'')<String(_qm.created)));
+  for(const e of list.slice(0,3)){ if(!_qm||!_qm.searching) return false; if(await qmClaim(e)) return true; }
+  return false;
+}
+async function qmClaim(e){
+  if(!_qm) return false;
+  const nonce=Math.random().toString(36).slice(2,10);
+  const res=await new Promise(resolve=>{ const t=setTimeout(()=>{ if(_qm) _qm.pending=null; resolve(null); },3500);
+    _qm.pending={nonce,uid:e.user_id,done:v=>{ clearTimeout(t); if(_qm) _qm.pending=null; resolve(v); }};
+    qmSendTo(e.user_id,'qm_claim',{nonce,from:_celUserId,name:_qm.name,deck:_qm.deck,mode:_qm.mode,pc:_qm.pc,build:GAME_BUILD,av:(window._playerAvatarUrl||null)},3); });
+  if(_qm) _qm.tried[e.id]=1;
+  if(!res||!res.code||!_qm) return false;
+  // accepted → I'm the guest
+  clearInterval(_mmPollInterval); _mmPollInterval=null; _qm.searching=false; qmStopListen();
+  if(_mmQueueId){ getOnlineSB().from('matchmaking_queue').delete().eq('id',_mmQueueId).then(()=>{},()=>{}); _mmQueueId=null; }
+  const code=res.code;
   _onlineRole='guest';
-  _onlineRoom={code,host_id:opponent.user_id,host_name:opponent.user_name,host_deck:opponent.deck_id,
-    guest_id:_celUserId,guest_name:myName,guest_deck:myDeckId,
-    status:'playing',game_mode:gameMode,prize_count:prizeCount};
+  _onlineRoom={code,host_id:e.user_id,host_name:res.host_name||e.user_name,host_deck:e.deck_id,guest_id:_celUserId,guest_name:_qm.name,guest_deck:_qm.deck,status:'ready',game_mode:res.mode||_qm.mode,prize_count:res.pc||_qm.pc,quick:true};
+  _onlineDeckId=_qm.deck; _onlineRandomCards=null; _onlineOpponentAvatar=res.host_avatar||null;
+  qmUI('MATCH FOUND','vs '+(_onlineRoom.host_name||'Opponent')+' · connecting…');
   subscribeToRoom(code);
-  enterOnlineGame(_onlineRoom);
+  const t0=Date.now(); clearInterval(_qm.joinT);
+  _qm.joinT=setInterval(()=>{
+    if(!_onlineRoom||_onlineRoom.code!==code||document.getElementById('game-screen')?.classList.contains('active')){ clearInterval(_qm.joinT); return; }
+    if(Date.now()-t0>30000){ clearInterval(_qm.joinT); qmFail('Your opponent didn\'t connect. Search again?'); return; }
+    if(_channelReady) onlineSendJoin();
+  },1500);
+  return true;
 }
-
-async function checkForMatch(gameMode,prizeCount,myDeckId){
-  if(!_mmQueueId)return;
+// someone claimed my waiting entry → I host
+async function qmOnClaim(d){
   const sb=getOnlineSB();
-  // Check if our queue entry was claimed (someone else matched us)
-  const {data:entry}=await sb.from('matchmaking_queue').select('*').eq('id',_mmQueueId).maybeSingle();
-  if(!entry||entry.status==='matched'){
-    cancelMatchmaking();
-    // The room should now exist — find and enter it
-    const {data:room}=await sb.from('online_rooms').select('*')
-      .or('host_id.eq.'+_celUserId+',guest_id.eq.'+_celUserId)
-      .eq('status','playing')
-      .order('created_at',{ascending:false})
-      .limit(1).maybeSingle();
-    if(room){
-      _onlineRoom=room;
-      _onlineRole=room.host_id===_celUserId?'host':'guest';
-      subscribeToRoom(room.code);
-      enterOnlineGame(room);
-    }
-    return;
-  }
-  // Also listen for direct match notification
-  const ch=sb.channel('mm:'+_celUserId);
-  ch.on('broadcast',{event:'match_found'},(payload)=>{
-    cancelMatchmaking();
-    const {code,role,opponent_name}=payload.payload;
-    _onlineRole=role;
-    // Load room and enter
-    sb.from('online_rooms').select('*').eq('code',code).maybeSingle().then(({data:room})=>{
-      if(room){_onlineRoom=room;subscribeToRoom(code);enterOnlineGame(room);}
-    });
-  }).subscribe();
+  if(!d.from||d.from===_celUserId) return;
+  if(!_qm||!_qm.searching||_qm.pending||_onlineRoom){ qmSendTo(d.from,'qm_reject',{nonce:d.nonce},1); return; }
+  if((d.build&&d.build!==GAME_BUILD)||(d.mode&&d.mode!==_qm.mode)||(d.pc&&+d.pc!==+_qm.pc)){ qmSendTo(d.from,'qm_reject',{nonce:d.nonce,why:'mismatch'},1); return; }
+  _qm.searching=false; clearInterval(_mmPollInterval); _mmPollInterval=null;
+  if(_mmQueueId){ sb.from('matchmaking_queue').delete().eq('id',_mmQueueId).then(()=>{},()=>{}); _mmQueueId=null; }
+  const code=generateRoomCode();
+  const room={code,host_id:_celUserId,host_name:_qm.name,host_deck:_qm.deck,guest_id:d.from,guest_name:d.name||'Opponent',guest_deck:d.deck||null,status:'ready',game_mode:_qm.mode,prize_count:_qm.pc};
+  try{ await sb.from('online_rooms').insert({...room,created_at:new Date().toISOString()}); }catch(e){}
+  _onlineRole='host'; _onlineRoom={...room,quick:true}; _onlineDeckId=_qm.deck; _onlineOpponentAvatar=d.av||null;
+  qmUI('MATCH FOUND','vs '+room.guest_name+' · starting…');
+  subscribeToRoom(code);
+  qmSendTo(d.from,'qm_accept',{nonce:d.nonce,code,host_name:_qm.name,host_avatar:(window._playerAvatarUrl||null),mode:_qm.mode,pc:_qm.pc},3);
+  qmStopListen();
+  clearTimeout(_qm.hostT); _qm.hostT=setTimeout(()=>{ if(_onlineRoom&&_onlineRoom.code===code&&!_onlineRoom._qmGo) qmFail('Your opponent didn\'t connect. Search again?'); },30000);
 }
-
+async function qmPoll(){ if(_qm&&_qm.searching&&!_qm.pending) await qmTryCandidates(); }
+// host: the guest's hello arrived → start with the queue's settings
+function qmHostGo(){
+  if(!_onlineRoom||!_onlineRoom.quick||_onlineRole!=='host') return;
+  if(_qm) clearTimeout(_qm.hostT);
+  const gm=document.getElementById('lobby-game-mode'); if(gm) gm.value=_onlineRoom.game_mode||'prize';
+  const pc=document.getElementById('lobby-prize-count'); if(pc) pc.value=String(_onlineRoom.prize_count||6);
+  if(typeof updateLobbyModeSettings==='function') try{ updateLobbyModeSettings(); }catch(e){}
+  clearInterval(_mmInterval); _mmInterval=null;
+  startOnlineMatch();
+}
+function qmFail(msg){
+  const code=_onlineRoom&&_onlineRoom.code;
+  if(_qm){ clearInterval(_qm.joinT); clearTimeout(_qm.hostT); }
+  if(code&&_onlineRoom.quick){ try{ if(_onlineChannel) _onlineChannel.send({type:'broadcast',event:'room_closed',payload:{why:'left'}}); }catch(e){} if(_onlineRole==='host') getOnlineSB().from('online_rooms').delete().eq('code',code).then(()=>{},()=>{}); }
+  cleanupOnlineSession(); cancelMatchmaking(); showScreen('matchmaking-screen');
+  try{ showModal('Quick Match',msg); }catch(e){ alert(msg); }
+}
 function cancelMatchmaking(){
   if(_mmInterval){clearInterval(_mmInterval);_mmInterval=null;}
   if(_mmPollInterval){clearInterval(_mmPollInterval);_mmPollInterval=null;}
   if(_mmQueueId&&_celSB){
     _celSB.from('matchmaking_queue').delete().eq('id',_mmQueueId).then(()=>{});
     _mmQueueId=null;
+  }
+  if(_qm){ clearInterval(_qm.joinT); clearTimeout(_qm.hostT); _qm.searching=false; if(_qm.pending) _qm.pending.done(null); }
+  qmStopListen();
+  // matched but the match hasn't started yet → leave that room too
+  if(_onlineRoom&&_onlineRoom.quick&&!document.getElementById('game-screen')?.classList.contains('active')){
+    try{ if(_onlineChannel) _onlineChannel.send({type:'broadcast',event:'room_closed',payload:{why:'left'}}); }catch(e){}
+    cleanupOnlineSession();
   }
   _mmElapsed=0;
   document.getElementById('mm-searching').style.display='none';
@@ -27881,10 +27938,25 @@ function prEnsure(){
   try{
     _pr.ch=sb.channel('vcu-rooms',{config:{presence:{key:_pr.key}}})
       .on('presence',{event:'sync'},prSync)
-      .subscribe(st=>{ if(st==='SUBSCRIBED'){ _pr.ready=true; prSync(); if(_pr.mine&&_pr.mine.listed) prTrack(); } });
+      .subscribe(st=>{
+        if(st==='SUBSCRIBED'){ _pr.ready=true; _pr.fails=0; prSync(); if(_pr.mine&&_pr.mine.listed) prTrack(); }
+        else if(st==='CHANNEL_ERROR'||st==='TIMED_OUT'||st==='CLOSED'){ prReconnect(); }
+      });
   }catch(e){ _pr.ch=null; return false; }
+  if(!_pr.keepT) _pr.keepT=setInterval(prKeepAlive,20000);
   return true;
 }
+// the list's connection dropped (sleep, network blip): drop it and reconnect — a listed room re-lists itself
+function prReconnect(){
+  _pr.ready=false; const ch=_pr.ch; _pr.ch=null;
+  try{ if(ch) getOnlineSB().removeChannel(ch); }catch(e){}
+  prRender();
+  _pr.fails=(_pr.fails||0)+1;
+  clearTimeout(_pr.retryT); _pr.retryT=setTimeout(()=>{ if(prWanted()) prEnsure(); },Math.min(15000,2000*_pr.fails));
+}
+function prWanted(){ return !!((_pr.mine&&_pr.mine.listed)||document.getElementById('online-lobby-screen')?.classList.contains('active')||document.getElementById('matchmaking-screen')?.classList.contains('active')); }
+function prKeepAlive(){ if(!prWanted()) return; if(!_pr.ch){ prEnsure(); return; } if(_pr.ready&&_pr.mine&&_pr.mine.listed) prTrack(); }
+function prBuildCmp(a,b){ const x=String(a||'0').split('.').map(Number), y=String(b||'0').split('.').map(Number); for(let i=0;i<Math.max(x.length,y.length);i++){ const d=(x[i]||0)-(y[i]||0); if(d) return d>0?1:-1; } return 0; }
 function prSync(){
   let st={}; try{ st=(_pr.ch&&_pr.ch.presenceState())||{}; }catch(e){}
   const out=[]; Object.keys(st).forEach(k=>{ const m=(st[k]||[])[0]; if(m&&m.c&&m.h) out.push(m); });
@@ -27908,7 +27980,7 @@ function prRender(){
   const empty=`<div class="pr-empty">${_pr.ch?(_pr.ready?'No open rooms right now. Create a public room and it shows up here for everyone.':'Looking for open rooms…'):'Open rooms need an internet connection.'}</div>`;
   const rows=list.map(m=>{ const same=String(m.b||'')===GAME_BUILD;
     return `<div class="pr-row"><div class="pr-host"><b>${prEsc(m.h)}</b>${prDeckTag(!!m.rd)}</div>`
-      +`<div class="pr-meta">${prEsc(prModeName(m))}${same?'':` · <span class="pr-warn">build ${prEsc(m.b||'?')} · you're on ${prEsc(GAME_BUILD)}</span>`}</div>`
+      +`<div class="pr-meta">${prEsc(prModeName(m))}${same?'':(prBuildCmp(m.b,GAME_BUILD)>0?` · <span class="pr-warn">newer build ${prEsc(m.b||'?')} — <a href="#" onclick="location.reload();return false" style="color:#fbbf24">refresh to update</a></span>`:` · <span class="pr-warn">host is on older build ${prEsc(m.b||'?')} (you: ${prEsc(GAME_BUILD)})</span>`)}</div>`
       +`<button class="wg-btn go" data-c="${prEsc(m.c)}"${same?'':' disabled'} onclick="prJoin(this.dataset.c)">JOIN</button></div>`; }).join('');
   ['lobby-open-rooms','mm-rooms-list'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=list.length?rows:empty; });
   const n=document.getElementById('lobby-open-count'); if(n) n.textContent=list.length?('· '+list.length):'';
@@ -30677,9 +30749,9 @@ window.addEventListener('load',async()=>{
   <!-- QUICK MATCH SPINNER (hidden until searching) -->
   <div id="mm-searching" style="display:none;text-align:center;padding:30px">
     <div class="mm-spinner" style="margin-bottom:20px"></div>
-    <div style="font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;color:var(--blue);margin-bottom:6px mm-pulse">SEARCHING FOR OPPONENT</div>
+    <div id="mm-search-title" style="font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:3px;color:var(--blue);margin-bottom:6px">SEARCHING FOR OPPONENT</div>
     <div style="font-size:10px;color:#6b7280;margin-bottom:4px" id="mm-wait-time">Elapsed: 0s</div>
-    <div style="font-size:9px;color:#4b5563">Looking for a player with the same settings...</div>
+    <div style="font-size:9px;color:#4b5563" id="mm-search-sub">Looking for a player with the same settings...</div>
     <button class="btn-gray btn-sm" style="margin-top:16px;padding:8px 20px;letter-spacing:2px" onclick="cancelMatchmaking()">✕ CANCEL</button>
   </div>
 
@@ -31357,7 +31429,8 @@ function renderMyDecks(){
   const all=dkAllDecks();
   const sub=document.getElementById('md-sub'); if(sub) sub.textContent=`${Object.keys(SAVED_DECKS).length} DECKS · ${all.filter(x=>x.deck.preset||x.deck.cards.length===60).length} READY TO PLAY`;
   const lp=document.getElementById('md-legal'); if(lp) lp.classList.toggle('on',_md.legal);
-  let html=`<div class="dk-box new" onclick="mdNew()"><div class="plus">+</div><div class="t">NEW DECK</div><div class="s">or import a deck code</div></div>`;
+  let html=`<div class="dk-box new" onclick="mdNew()"><div class="plus">+</div><div class="t">NEW DECK</div><div class="s">or import a deck code</div></div>`
+    +`<div class="dk-box new" onclick="mdRandom()" title="A random deck built only from cards you own — edit it, then save"><div class="plus">🎲</div><div class="t">RANDOM DECK</div><div class="s">from cards you own</div></div>`;
   list.forEach(x=>{
     const sel=_md.sel===x.id;
     const quick=x.deck.preset
@@ -31378,6 +31451,71 @@ function mdFootRefresh(){
 }
 function mdCur(){ return _md.sel?(SAVED_DECKS[_md.sel]||(typeof PRESET_DECKS!=='undefined'?PRESET_DECKS[_md.sel]:null)):null; }
 function mdSelect(id){ _md.sel=(_md.sel===id)?null:id; renderMyDecks(); }
+// ── 🎲 RANDOM DECK FROM YOUR CARDS (build 10.17) ─────────────────────────────────────────────────────
+// Uses only cards you own (admins with "Every card ×4": every playable card). Picks one or two colors weighted by
+// what you own most → 1 Herald · ~24 characters (2–3 copies each) + the transformation forms you own for them ·
+// ~20 Energy · support cards; tops up from anything else you own. Never more copies than you own (shiniest
+// finishes first), 4 max per card, 1 Herald. Loads into the builder as a NEW deck — rename, edit, SAVE.
+function mdRandom(){ clearBuilder(); builderDeck._editId=null; builderDeck._cover=null; showScreen('builder-screen'); setTimeout(()=>bldRandomOwned(true),30); }
+function bldOwnedPool(){
+  const out={}, unl=(typeof adminHasUnlimitedCards==='function')&&adminHasUnlimitedCards();
+  Object.keys(DB).forEach(cid=>{ const c=DB[cid];
+    if(!c||c.isToken||c.type==='token'||c.type==='system'||c.fusion||c.fusionMethodCard||!isCardPlayable(cid)) return;
+    const list=bldVariantsFor(cid,'all').map(v=>({v,n:unl?4:variantCount(cid,v)})).filter(x=>x.n>0);
+    if(!list.length) return;
+    list.sort((a,b)=>(a.v==='none')-(b.v==='none')||VARIANT_ORDER.indexOf(b.v)-VARIANT_ORDER.indexOf(a.v));
+    out[cid]=list; });
+  return out;
+}
+function bldRandomOwned(skipConfirm){
+  const pool=bldOwnedPool(), cids=Object.keys(pool);
+  if(!cids.length){ alert("You don't own any cards yet — open some packs first."); return; }
+  const curN=builderDeck.reduce((s,e)=>s+e.count,0);
+  if(!skipConfirm&&curN>0&&!confirm('Replace what\'s in the builder with a random deck from your cards?\n(Your saved decks are not touched.)')) return;
+  const rnd=a=>{ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+  const have=cid=>pool[cid]?pool[cid].reduce((s,x)=>s+x.n,0):0;
+  const cap=cid=>Math.min(DB[cid].type==='herald'?1:4,have(cid));
+  const deck=new Map(); let total=0;
+  const add=(cid,n)=>{ const cur=deck.get(cid)||0; const k=Math.max(0,Math.min(n,cap(cid)-cur,60-total)); if(k>0){ deck.set(cid,cur+k); total+=k; } return k; };
+  const count=f=>[...deck].reduce((s,[cid,n])=>s+(f(DB[cid])?n:0),0);
+  const cols=cid=>(typeof cardColors==='function'?cardColors(cid):[DB[cid].color]).filter(Boolean);
+  const isChar=c=>['base_char','char','team'].includes(c.type)&&!c.transformOnly;
+  // colors, weighted by the characters you own
+  const w={}; cids.forEach(cid=>{ if(isChar(DB[cid])) cols(cid).forEach(k=>{ w[k]=(w[k]||0)+have(cid); }); });
+  const pickW=excl=>{ const e=Object.entries(w).filter(([k])=>!excl.includes(k)); const s=e.reduce((a,[,v])=>a+v,0); if(!s) return null; let r=Math.random()*s; for(const [k,v] of e){ r-=v; if(r<=0) return k; } return e[e.length-1][0]; };
+  const pick=[]; const c1=pickW([]); if(c1) pick.push(c1); if(c1&&Math.random()<0.7){ const c2=pickW([c1]); if(c2) pick.push(c2); }
+  const fits=cid=>{ const cc=cols(cid); return !pick.length||!cc.length||cc.some(x=>pick.includes(x)); };
+  // 1 Herald
+  const heralds=rnd(cids.filter(cid=>DB[cid].type==='herald')); const h=heralds.find(fits)||heralds[0]; if(h) add(h,1);
+  // ~24 characters, 2–3 copies each
+  const chars=rnd(cids.filter(cid=>isChar(DB[cid])&&fits(cid)));
+  for(const cid of chars){ if(count(isChar)>=24) break; add(cid,2+Math.floor(Math.random()*2)); }
+  // transformation forms you own for the bases in the deck (1–2 each)
+  if(typeof getTransformTargets==='function') [...deck.keys()].filter(cid=>DB[cid].type==='base_char').forEach(base=>{
+    const seen={}, q=[base]; while(q.length){ const cur=q.shift(); if(seen[cur]) continue; seen[cur]=1;
+      (getTransformTargets(cur)||[]).forEach(t=>{ if(pool[t]&&total<60){ add(t,1+Math.floor(Math.random()*2)); q.push(t); } }); } });
+  // ~20 Energy — your colors first, then any
+  const en=cids.filter(cid=>DB[cid].type==='energy_card'); const enFit=rnd(en.filter(fits)), enOther=rnd(en.filter(x=>!fits(x)));
+  const isEn=c=>c.type==='energy_card';
+  for(const cid of enFit.concat(enOther)){ if(count(isEn)>=20) break; add(cid,Math.min(4,20-count(isEn))); }
+  // support: Instants, Equipment, Locations…
+  const sup=rnd(cids.filter(cid=>{ const c=DB[cid]; return !['herald','energy_card','base_char','char','team'].includes(c.type)&&!c.transformOnly; }));
+  for(const cid of sup.filter(fits)){ if(total>=60) break; add(cid,1+Math.floor(Math.random()*2)); }
+  // top up: more of your colors, then anything else you own
+  const others=rnd(cids.filter(cid=>!fits(cid)&&DB[cid].type!=='herald'&&!DB[cid].transformOnly));
+  for(const cid of [...chars,...enFit,...sup.filter(fits),...others]){ if(total>=60) break; add(cid,4); }
+  // into the builder: shiniest finishes first, never more than you own of each
+  const entries=[]; deck.forEach((n,cid)=>{ let left=n; for(const x of pool[cid]){ if(left<=0) break; const k=Math.min(left,x.n); entries.push({cid,variant:x.v,count:k}); left-=k; } });
+  builderDeck=entries; builderDeck._editId=null; builderDeck._cover=h||null; _bPage=0; _bPreview=null;
+  const label=pick.map(k=>(COLOR_DEFS[k]&&COLOR_DEFS[k].label)||k).join('/');
+  const ni=document.getElementById('deck-name-input'); if(ni) ni.value='Random'+(label?' · '+label:'');
+  const pv=document.getElementById('bld-preview'); if(pv) pv.innerHTML='<div class="empty">CLICK A CARD<br>TO PREVIEW IT HERE</div>';
+  renderBuilderCards(); renderBuilderDeck();
+  const st=document.getElementById('deck-save-status');
+  const msg=total>=60?'🎲 Random deck ready — edit anything, then SAVE':'🎲 You own enough for '+total+'/60 — add more cards to finish it, then SAVE';
+  if(st){ st.textContent=msg; st.style.color=total>=60?'#c4b5fd':'#fbbf24'; clearTimeout(st._rt); st._rt=setTimeout(()=>{ if(st.textContent===msg) st.textContent=''; },7000); }
+  return total;
+}
 function mdNew(){ clearBuilder(); builderDeck._editId=null; builderDeck._cover=null; showScreen('builder-screen'); setTimeout(()=>{ const i=document.getElementById('deck-name-input'); if(i) i.focus(); },50); }
 function mdEdit(id){
   id=id||_md.sel; if(!id){ alert('Select a deck first.'); return; }
@@ -31673,7 +31811,7 @@ function ds2Hero(){
   st.innerHTML=`<div class="ds2-lbl">PLAYER 1 · DECK</div><div class="ds2-name">${dkEsc(d.name)}</div>
     <div class="kv"><span>HERALD</span><span>${h?dkEsc(DB[h].name):'none'}</span></div>
     <div class="kv"><span>CARDS</span><span style="color:${d.preset||d.cards.length===60?'#4ade80':'#f59e0b'}">${d.cards.length} / 60</span></div>
-    <div class="kv"><span>COLOURS</span><span>${dkEsc(cols)}</span></div>
+    <div class="kv"><span>COLORS</span><span>${dkEsc(cols)}</span></div>
     ${d.updatedAt?`<div class="kv"><span>UPDATED</span><span>${new Date(d.updatedAt).toLocaleDateString()}</span></div>`:''}
     <div style="flex:1"></div>
     ${SAVED_DECKS[id]?`<button class="dk-btn" style="margin-top:10px;text-align:center" onclick="loadDeckIntoBuilder('${id}');showScreen('builder-screen')">✎ EDIT DECK</button>`:''}`;
@@ -32424,7 +32562,13 @@ async function wgOnRoomReady(){
 async function wgWrap(fn){ if(_wg.busy) return; _wg.busy=true; _wg.msg=''; wgRender(); try{ await fn(); }finally{ _wg.busy=false; wgRender(); } }
 function wgErr(r){ if(r&&r.error==='locked'){ wgLoadStatus().then(wgRender); return 'Wagers are locked for your account.'; } return (r&&r.error)||'Something went wrong — try again.'; }
 function wgOpen(){ return wgWrap(async()=>{
-  const r=await wgRpc('wager_open',{p_room:_onlineRoom.code});
+  let r=await wgRpc('wager_open',{p_room:_onlineRoom.code});
+  // the server can't see the guest in the room row yet → the host writes it, then try once more
+  if(r&&!r.ok&&/Both players need to be in the room/i.test(r.error||'')){
+    if(_onlineRole==='host'){ await onlineHostSyncRow(); }
+    else { await new Promise(res=>{ _wg.syncWait=res; try{ _onlineChannel.send({type:'broadcast',event:'room_sync',payload:{}}); }catch(e){} setTimeout(()=>{ if(_wg.syncWait===res){ _wg.syncWait=null; res(); } },2500); }); }
+    r=await wgRpc('wager_open',{p_room:_onlineRoom.code});
+  }
   if(r&&r.gate&&_wg.st) _wg.st.gate=r.gate;
   if(!r||!r.ok){ _wg.msg=r&&r.error==='locked'?'':wgErr(r); return; }
   _wg.cur=r.wager; wgResetDraft(); wgNotify();
