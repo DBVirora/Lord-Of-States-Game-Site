@@ -7422,7 +7422,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.10 · Time Crystal · Special Energy</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.11 · Vuruna · Elise · Anya · Scorpion · Hulk · Starfire</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -8409,8 +8409,38 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.10'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.11'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.11', date:'2026-11-01',
+    cards:[{id:'vuruna_ssj_bse', set:'base_set', number:'032/150', rarity:'uncommon', scan:'Sets/BASE SET/032-150 (Vuruna SSJ).png', newAbilities:['Flashpoint Chain'],
+       note:"Vuruna (SSJ) · transformOnly from Vuruna · charLine 'vuruna', formTier 'ssj1', path 'saiyan' · Yellow · Uncommon · cost 6 · 6 ATK / 4 HP · Royal, Saiyan · sym 'VURSSJ'. No Burst Speed (a form has only its own printed abilities)."},
+      {id:'vuruna_ssg_bse', set:'base_set', number:'033/150', rarity:'rare', scan:'Sets/BASE SET/033-150 (Vuruna SSG).png', newAbilities:['Moonlit Veil','Heavenly Relay'],
+       note:"Vuruna (SSG) · transformOnly from Vuruna · formTier 'ssg', path 'god' · RED (cost circle; the Base Set plan listed 033 as Yellow) · Rare · cost 7 · 6 ATK / 5 HP · Royal, Saiyan, God · sym 'VURSSG'."},
+      {id:'elise_bse', set:'base_set', number:'035/150', rarity:'common', scan:'Sets/BASE SET/035-150 (Elise Base).png', newAbilities:['Wildborn Adaptation'],
+       note:"Elise · BASE CHARACTER (type 'base_char') · charLine 'elise', formTier 'base', nextForms [] (no forms yet) · Purple · Common · cost 3 · 3 ATK / 3 HP · Saiyan · sym 'ELI'. (The Base Set plan had 034 as the Purple base and 035 as its SSJ; the printed Elise is a base at 035.)"},
+      {id:'anya_corazon_promo', set:'promo', number:'PROMO', rarity:'rare', scan:'Characters/Series/Marvel/Anya Corazon (Promo).png', newAbilities:['Spider Agility','Web Snare'],
+       note:"Anya Corazon · Character · Yellow · Rare · cost 6 · 5 ATK / 4 HP · Hero, Spider · race 'Hero' · keywords ['burst_speed'] (Spider Agility → KEYWORD_PASSIVES)."},
+      {id:'scorpion_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/Mortal Kombat/Scorpion (Promo).png', newAbilities:['Get Over Here!','Hellfire Vengeance'],
+       note:"Scorpion · Character · Red · Legend · cost 7 · 8 ATK / 5 HP · Ninja, Specter · race 'Ninja'. New scans folder 'Characters/Series/Mortal Kombat/'."},
+      {id:'incredible_hulk_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/Marvel/The Incredible Hulk (Promo).png', newAbilities:['Rising Rage','Hulk Smash'],
+       note:"The Incredible Hulk · Character · Green · Legend · cost 8 · 7 ATK / 10 HP · Gamma, Monster · race 'Gamma' · keywords ['breakthrough'] (Hulk Smash → KEYWORD_PASSIVES)."},
+      {id:'starfire_promo', set:'promo', number:'PROMO', rarity:'rare', scan:'Characters/Series/DC/Starfire (Promo).png', newAbilities:['Starbolt','Warrior of Tamaran'],
+       note:"Starfire · Character · Red · Rare · cost 6 · 6 ATK / 5 HP · Hero, Tamaranean · race 'Tamaranean'."}],
+    abilities:[
+      "CHANGED: vuruna_base_bse.nextForms ['ssj1','ssg'] (was []).",
+      "FLASHPOINT CHAIN (Vuruna SSJ, triggered): once per turn (fc._flashTurn = G.turn), when its OWN attack destroys a character — killer is the active player's attacker with attacksThisTurn > 0, not a retaliation kill, and it survived — fc.extraAttacks += 1 (same counter as Rewind: raises its per-character attack cap; cleared at end of turn). Hook: triggerShowdownHype (every combat-kill point). The AI uses it automatically (its swing loop re-checks canCharacterAttack).",
+      "MOONLIT VEIL (Vuruna SSG, passive) = Godly Evasion: opponents pay 2 Energy to target it with an attack or ability (hasGodlyEvasion now also checks 'Moonlit Veil').",
+      "HEAVENLY RELAY (Vuruna SSG, triggered): once every 2 turns (fc.abilityUsed.relay_turn; ready when G.turn − last ≥ 2, the Water Whip convention), when it attacks (shared attack hook triggerFlameSpiral), if another of your characters could still attack (untapped, not Fatigued, not summoning-sick, hasn't attacked) → G.bonusAttackers += 1 for this turn (one more distinct attacker). Not spent when nobody else could attack. AI uses it in Prize/Combined (swing loop re-checks); the Life-mode AI picks its attackers up front and doesn't.",
+      "WEB SNARE (Anya Corazon, activated): 1 Energy (pays Yellow), once every 2 turns (abilityUsed.web_snare_turn, Water Whip convention), paid → no tap: Paralyze a target opposing character that isn't already Paralyzed (applyStatus 'paralyze'; Vortex Shield blocks; Drunken Stance can't be targeted; Godly Evasion toll applies). Closing the picker refunds.",
+      "GET OVER HERE! (Scorpion, activated): 2 Energy (pays Red), once every 2 turns (abilityUsed.get_over_here_turn), no tap: 2 damage (dealDamage) to a target opposing character, then Burn it if it survived.",
+      "HELLFIRE VENGEANCE (Scorpion, triggered): when it is destroyed by an attack made AGAINST it (as the target or a blocker — not when it dies to retaliation while attacking), 3 damage to the attacking character. Hook: combatDamageHooks (src is the active player's attacker, Scorpion no longer on the field).",
+      "RISING RAGE (The Incredible Hulk, passive): each time it takes combat damage (> 0; being attacked OR retaliation) and survives, +1 Attack (atkBonus) until it leaves the field, max +3 (fc._rage). Hook: combatDamageHooks.",
+      "HULK SMASH = Breakthrough keyword. BREAKTHROUGH CHANGED for every card (Volaris SSB too): excess = attack damage − the defender's damage reduction (Nullify, Inferno Ward 1, Diamond Calm 2) − its Health REMAINING before the hit (was: − its max Health). Excess hits the defender's Herald, which can't drop below 1 Health; Combined mode still claims a Prize for the Herald hit.",
+      "STARBOLT (Starfire, activated): 2 Energy (pays Red), once per turn (normal once_per_turn lock), paid → no tap: 2 damage to a target opposing character (same handler as Heir's Shockwave).",
+      "WARRIOR OF TAMARAN (Starfire, triggered): when its OWN attack destroys a character (active player's attacker, not a retaliation kill), its controller gains 2 Energy (even if Starfire fell in the same exchange). Hook: triggerShowdownHype.",
+      "WILDBORN ADAPTATION (Elise, entry, choose one): (a) search the deck for a 'Transformation card of this character' = a non-base, non-fusion character card with the same charLine, reveal, to hand, shuffle; or (b) +1/+1 (atkBonus/hpBonus, permanent until it leaves; a transformation resets it). No such card in the deck → (b) automatically with a banner. Person: dual-button banner '🔍 Search' / '💪 +1/+1' (Prism Orb pattern; not also shown as a plain entry banner). AI/remote: searches when a form is in the deck (cheapest), else +1/+1."],
+    screens:["Effects panel: '⚡ Flashpoint Chain — it may attack N more time(s) this turn.' (the extraAttacks row names Flashpoint Chain when that granted it, otherwise Rewind); '🌙 Heavenly Relay' while the extra attacker is open in the Attack Phase, and 'Recharging: ready again in N turn(s)' on cooldown."],
+    data:["GAME_BUILD '10.11'. No rulebook change (Moonlit Veil reads as Godly Evasion; extra attacks follow 9.x as before; Breakthrough's 'excess' now matches its wording)."] },
   { build:'10.10', date:'2026-11-01',
     cards:[{id:'omega_energy_bse', set:'base_set', number:'106/150', rarity:'uncommon', scan:'Sets/BASE SET/106-150 (Omega Energy).png', newAbilities:['Omega Pulse',"Death's Toll"],
        note:"Omega Energy · SPECIAL ENERGY (type 'energy_card', specialEnergy:true, subtypes Energy, Special) · Black · Uncommon. Counts as the turn's one Energy card."},
@@ -8837,6 +8867,9 @@ const DEFAULTS={
   geo_radar_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/026-150%20(Geo%20Radar%20Equipment).png',
   virora_surface_pt: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Virora/Virora%20(Surface%20Technique)%20Playtest.png',
   vuruna_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/031-150%20(Vuruna).png',
+  vuruna_ssj_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/032-150%20(Vuruna%20SSJ).png',
+  vuruna_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/033-150%20(Vuruna%20SSG).png',
+  elise_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/035-150%20(Elise%20Base).png',
   tyler_ssbe_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/021-150%20(Tyler%20SSBE).png',
   tyler_ssbe_sr_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/152-150%20(Tyler%20SSBE)%20(Secret%20Rare).png',
   scorched_titan_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/046-150%20(The%20Scorched%20Titan).png',
@@ -8875,6 +8908,9 @@ const DEFAULTS={
   korra_halloween_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Korra%20Halloween%20(Promo)%20(Secret%20Rare).png',
   korra_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Korra%20(Promo).png',
   kratos_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/God%20Of%20War/Kratos%20(Promo).png',
+  anya_corazon_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Anya%20Corazon%20(Promo).png',
+  scorpion_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Mortal%20Kombat/Scorpion%20(Promo).png',
+  incredible_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/The%20Incredible%20Hulk%20(Promo).png',
   nisha_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Nisha%20(Promo).png',
   nishvi_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Nishvi%20(Promo).png',
   nishvi_avatar_state_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Nishvi%20Avatar%20State%20(Promo).png',
@@ -8883,6 +8919,7 @@ const DEFAULTS={
   pavi_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Pavi%20Base%20(Promo).png',
   pavi_root_chakra_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Pavi%20Root%20Chakra%20(Promo).png',
   raven_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Raven%20(Promo%20Card).png',
+  starfire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Starfire%20(Promo).png',
   raven_vampire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Raven%20Vampire%20(Promo%20Card).png',
   deerhaunter_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Timesplitters/The%20DeerHaunter%20(PROMO)%20Timesplitters%20Future%20Perfect.png',
   vermynth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/076-150%20(Vermynth%20Fruit%20Instant).png',
@@ -9139,8 +9176,23 @@ const DB={
     abilities:[{label:'Primal Roar',type:'triggered',cost:0,text:'When this card enters your field, each opposing character gets −2 Attack until end of your next turn.'},
       {label:'Braided Armor',type:'passive',cost:0,text:'Resolve. This card can attack Locations.'},
       {label:'Beast Bond',type:'passive',cost:0,text:'While you control a Virora, this card and each Virora you control get +2/+2.'}]},
-  vuruna_base_bse:{id:'vuruna_base_bse',rarity:'uncommon',name:'Vuruna',color:'yellow',charName:'Vuruna',charLine:'vuruna',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:4,atk:4,hp:4,sym:'VUR',setId:'base_set',cardNumber:'031/150',keywords:['burst_speed'],nextForms:[],
+  vuruna_base_bse:{id:'vuruna_base_bse',rarity:'uncommon',name:'Vuruna',color:'yellow',charName:'Vuruna',charLine:'vuruna',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:4,atk:4,hp:4,sym:'VUR',setId:'base_set',cardNumber:'031/150',keywords:['burst_speed'],nextForms:['ssj1','ssg'],
     abilities:[{label:'Flash Step',type:'passive',cost:0,keyword:'burst_speed',text:'This card can attack the turn it enters.'}],transforms:[]},
+  // ── VURUNA (SSJ) (BSE 032/150) — build 10.11. Saiyan path, TRANSFORM-ONLY from Vuruna. Yellow.
+  //    Flashpoint Chain: once per turn, when its own attack destroys a character, it may attack again (fc.extraAttacks).
+  vuruna_ssj_bse:{id:'vuruna_ssj_bse',rarity:'uncommon',name:'Vuruna (SSJ)',color:'yellow',charName:'Vuruna',charLine:'vuruna',formTier:'ssj1',path:'saiyan',transformOnly:true,subtypes:['Royal','Saiyan'],type:'char',race:'Royal Saiyan',cost:6,atk:6,hp:4,sym:'VURSSJ',setId:'base_set',cardNumber:'032/150',keywords:[],nextForms:[],
+    abilities:[{label:'Flashpoint Chain',type:'triggered',cost:0,text:'Once per turn, when this card destroys a character with an attack, it may attack again.'}],transforms:[]},
+  // ── VURUNA (SSG) (BSE 033/150) — build 10.11. God path, TRANSFORM-ONLY from Vuruna. Red (cost circle; the set plan said Yellow).
+  //    Moonlit Veil = Godly Evasion (2⚡ toll to target it with an attack or ability).
+  //    Heavenly Relay: once every 2 turns, when it attacks, another of your characters that hasn't attacked may attack
+  //    this turn (G.bonusAttackers +1).
+  vuruna_ssg_bse:{id:'vuruna_ssg_bse',rarity:'rare',name:'Vuruna (SSG)',color:'red',charName:'Vuruna',charLine:'vuruna',formTier:'ssg',path:'god',transformOnly:true,subtypes:['Royal','Saiyan','God'],type:'char',race:'Royal Saiyan',cost:7,atk:6,hp:5,sym:'VURSSG',setId:'base_set',cardNumber:'033/150',keywords:[],nextForms:[],
+    abilities:[{label:'Moonlit Veil',type:'passive',cost:0,text:'Opponents must pay 2 Energy to target this card with an attack or ability.'},
+      {label:'Heavenly Relay',type:'triggered',cost:0,limit:'every_2_turns',text:"After this card attacks, another of your characters that hasn't attacked this turn may attack. (Once every 2 turns)"}],transforms:[]},
+  // ── ELISE (BSE 035/150) — build 10.11. Base Character, Saiyan, Purple. No forms yet (charLine 'elise').
+  //    Wildborn Adaptation: as she enters, choose one — search your deck for a Transformation of her line, or +1/+1.
+  elise_bse:{id:'elise_bse',rarity:'common',name:'Elise',color:'purple',charName:'Elise',charLine:'elise',formTier:'base',subtypes:['Saiyan'],type:'base_char',race:'Saiyan',cost:3,atk:3,hp:3,sym:'ELI',setId:'base_set',cardNumber:'035/150',keywords:[],nextForms:[],
+    abilities:[{label:'Wildborn Adaptation',type:'triggered',cost:0,text:'When this card enters your field, choose one: search your deck for a Transformation card of this character and put it into your hand, or this card gets +1/+1.'}],transforms:[]},
   // ── RAPTURE OF THE VORTEX — BSE regular character (Titan • Beast). GREEN/PURPLE (endurance + trickery). 049/150 Rare.
   rapture_vortex_bse:{id:'rapture_vortex_bse',rarity:'rare',name:'Rapture of the Vortex',color:'green',colors:['green','purple'],charName:'Rapture of the Vortex',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:7,atk:6,hp:8,sym:'RVORTEX',setId:'base_set',cardNumber:'049/150',nextForms:[],
     abilities:[{label:'Vortex Shield',type:'passive',cost:0,text:'This card cannot have any status effects applied to it.'},{label:'The Reckoning',type:'activated',cost:0,text:'Choose 1 Character on your opponent\'s field. Flip a coin. If heads, that character is now under Confusion. (Taps)'}],transforms:[]},
@@ -9241,6 +9293,29 @@ const DB={
     abilities:[{label:'Soul Link',type:'passive',cost:0,text:'The equipped character gets +1/+1. While attached, you may fuse the equipped character with its partner into a Fusion that lists Relic, paying its cost −2. This Equipment moves onto the Fusion; if it is removed or hexed, the Fusion splits.'}]},
   kratos_promo:{id:'kratos_promo',rarity:'legend',name:'Kratos',color:'red',charName:'Kratos',subtypes:['War','God'],type:'char',race:'War God',cost:7,atk:10,hp:7,sym:'KRTS',setId:'promo',cardNumber:'PROMO',keywords:['burst_speed'],nextForms:[],
     abilities:[{label:'Rage of Sparta',type:'passive',cost:0,text:'This card can attack the turn it enters.'},{label:'Olympian Blood',type:'triggered',cost:0,text:'When this card deals combat damage, it gains +1 Attack.'}]},
+  // ── ANYA CORAZON (Promo, Marvel) — build 10.11. Yellow. Spider Agility = Burst Speed.
+  //    Web Snare: 1⚡ (pays Yellow), once every 2 turns (Water Whip convention): Paralyze target opposing character.
+  anya_corazon_promo:{id:'anya_corazon_promo',rarity:'rare',name:'Anya Corazon',color:'yellow',charName:'Anya Corazon',subtypes:['Hero','Spider'],type:'char',race:'Hero',cost:6,atk:5,hp:4,sym:'ANYA',setId:'promo',cardNumber:'PROMO',keywords:['burst_speed'],nextForms:[],
+    abilities:[{label:'Spider Agility',type:'passive',cost:0,keyword:'burst_speed',text:'Burst Speed. This card can attack the turn it enters the field.'},
+      {label:'Web Snare',type:'activated',cost:1,limit:'every_2_turns',text:'Pay 1 Energy: Paralyze an opponent character. (Once every 2 turns)'}]},
+  // ── SCORPION (Promo, Mortal Kombat) — build 10.11. Red.
+  //    Get Over Here!: 2⚡ (pays Red), once every 2 turns: 2 damage to target opposing character, then Burn it (if it lives).
+  //    Hellfire Vengeance: when it is destroyed by an attack made against it, 3 damage to the attacker.
+  scorpion_promo:{id:'scorpion_promo',rarity:'legend',name:'Scorpion',color:'red',charName:'Scorpion',subtypes:['Ninja','Specter'],type:'char',race:'Ninja',cost:7,atk:8,hp:5,sym:'SCORP',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
+    abilities:[{label:'Get Over Here!',type:'activated',cost:2,limit:'every_2_turns',text:'Pay 2 Energy: Deal 2 damage to an opponent character and Burn it. (Once every 2 turns)'},
+      {label:'Hellfire Vengeance',type:'triggered',cost:0,text:'When this card is destroyed by an attack, deal 3 damage to the attacker.'}]},
+  // ── THE INCREDIBLE HULK (Promo, Marvel) — build 10.11. Green.
+  //    Rising Rage: each time it takes combat damage and survives, +1 Attack permanently (max +3, fc._rage).
+  //    Hulk Smash = the Breakthrough keyword (excess damage from a kill hits the enemy Herald, min 1 Health).
+  incredible_hulk_promo:{id:'incredible_hulk_promo',rarity:'legend',name:'The Incredible Hulk',color:'green',charName:'The Incredible Hulk',subtypes:['Gamma','Monster'],type:'char',race:'Gamma',cost:8,atk:7,hp:10,sym:'HULK',setId:'promo',cardNumber:'PROMO',keywords:['breakthrough'],nextForms:[],
+    abilities:[{label:'Rising Rage',type:'passive',cost:0,text:'Each time this card takes combat damage and survives, it gets +1 Attack permanently (max +3).'},
+      {label:'Hulk Smash',type:'passive',cost:0,keyword:'breakthrough',text:"Breakthrough. When this card destroys a character with an attack, the excess damage hits the enemy Herald (it can't drop below 1 Health)."}]},
+  // ── STARFIRE (Promo, DC) — build 10.11. Red.
+  //    Starbolt: 2⚡ (pays Red), once per turn, no tap: 2 damage to target opposing character (Heir's Shockwave handler).
+  //    Warrior of Tamaran: when its own attack destroys a character, +2 Energy.
+  starfire_promo:{id:'starfire_promo',rarity:'rare',name:'Starfire',color:'red',charName:'Starfire',subtypes:['Hero','Tamaranean'],type:'char',race:'Tamaranean',cost:6,atk:6,hp:5,sym:'STAR',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
+    abilities:[{label:'Starbolt',type:'activated',cost:2,limit:'once_per_turn',text:'Pay 2 Energy: Deal 2 damage to an opponent character. (Once per turn)'},
+      {label:'Warrior of Tamaran',type:'triggered',cost:0,text:'When this card destroys a character with an attack, gain 2 Energy.'}]},
   // ── RAVEN — PROMO DC-series Mystic Sorceress. PURPLE (trickery/debuffs — seals an
   //    enemy's abilities, then lashes out with a field-wide Freeze on death).
   //    Standalone card, NOT a transform of/into Raven Vampire.
@@ -10281,7 +10356,27 @@ function tickTitleDefense(p){
   }); });
 }
 // SHOWDOWN HYPE: belted character destroys a character → its controller banks 3 Energy.
+// FLASHPOINT CHAIN (Vuruna SSJ): once per turn, when ITS OWN attack destroys a character (not a retaliation kill),
+// it may attack once more this turn (fc.extraAttacks, the same counter Rewind uses; cleared at end of turn).
+function triggerFlashpointChain(k, kp, vp, vuid){
+  if(!k||!hasAbilityLabel(k,'Flashpoint Chain')) return;
+  if(kp!==G.activePlayer || !((k.attacksThisTurn||0)>0)) return;          // only when it is the attacker
+  if(G.players[vp]?.field.some(f=>f.uid===vuid)) return;                 // the victim survived
+  if(!G.players[kp]?.field.some(f=>f.uid===k.uid)) return;               // it fell too
+  if(k._flashTurn===G.turn) return;                                       // once per turn
+  k._flashTurn=G.turn; k.extraAttacks=(k.extraAttacks||0)+1;
+  log(`⚡ Flashpoint Chain: ${DB[k.cid]?.name} may attack again this turn!`,'gain');
+}
+// WARRIOR OF TAMARAN (Starfire): when ITS OWN attack destroys a character (not a retaliation kill), +2 Energy.
+function triggerWarriorOfTamaran(k, kp, vp, vuid){
+  if(!k||!hasAbilityLabel(k,'Warrior of Tamaran')) return;
+  if(kp!==G.activePlayer || !((k.attacksThisTurn||0)>0)) return;
+  if(G.players[vp]?.field.some(f=>f.uid===vuid)) return;
+  G.players[kp].energy+=2; log(`✴️ Warrior of Tamaran: ${pname(kp)} gains 2 Energy!`,'gain');
+}
 function triggerShowdownHype(killerFc, killerP, victimP, victimUid){
+  if(typeof triggerWarriorOfTamaran==='function') triggerWarriorOfTamaran(killerFc, killerP, victimP, victimUid);
+  if(typeof triggerFlashpointChain==='function') triggerFlashpointChain(killerFc, killerP, victimP, victimUid);
   if(typeof triggerCrimsonGale==='function') triggerCrimsonGale(killerFc, killerP, victimP, victimUid);
   if(typeof triggerGodfireSpillover==='function') triggerGodfireSpillover(killerFc, killerP, victimP, victimUid);
   if(!hasBelt(killerFc)) return;
@@ -10323,8 +10418,23 @@ function triggerGodfireSpillover(killerFc, killerP, victimP, victimUid){
   });
 }
 // FLAME SPIRAL (Korra): when she attacks, +2 ATK until the end of her controller's next turn (2 of their turn-ends). Doesn't stack while active.
+// HEAVENLY RELAY (Vuruna SSG): once every 2 turns (Water Whip convention: G.turn − last ≥ 2), when it attacks, another
+// of your characters that hasn't attacked this turn may attack (G.bonusAttackers +1 — reset every turn). Not spent when
+// no other character of yours could attack.
+function heavenlyRelayReady(fc){ const l=fc&&fc.abilityUsed&&fc.abilityUsed.relay_turn; return l==null||(G.turn-l)>=2; }
+function triggerHeavenlyRelay(afc){
+  if(!afc||!hasAbilityLabel(afc,'Heavenly Relay')||!heavenlyRelayReady(afc)) return;
+  const p=[1,2,3,4].find(x=>G.players[x]&&G.players[x].field.some(f=>f.uid===afc.uid)); if(!p||p!==G.activePlayer) return;
+  const others=G.players[p].field.filter(f=>f.uid!==afc.uid&&isChar(DB[f.cid])&&!DB[f.cid]?.isToken&&!(f.attacksThisTurn>0)&&!f.tapped&&!((f.fatigue||0)>0)&&(f.turnPlayed<G.turn||hasKW(f,'burst_speed')));
+  if(!others.length) return;
+  if(!afc.abilityUsed) afc.abilityUsed={};
+  afc.abilityUsed.relay_turn=G.turn; afc._relayTurn=G.turn;
+  G.bonusAttackers=(G.bonusAttackers||0)+1;
+  log(`🌙 Heavenly Relay: another of ${pname(p)}'s characters that hasn't attacked may attack this turn!`,'gain');
+}
 function triggerFlameSpiral(afc){
   triggerCrimsonRampage(afc);
+  triggerHeavenlyRelay(afc);
   if(!afc||!hasAbilityLabel(afc,'Flame Spiral')) return;
   if(afc._flame){ afc._flame.ends=2; return; }
   afc._flame={amt:2,ends:2}; afc.currentATK=(afc.currentATK||0)+2; afc.atkBonus=(afc.atkBonus||0)+2;
@@ -10362,7 +10472,30 @@ function triggerPinkHorizon(victimFc, dmg, attackerFc, attackerP){
 // executeCombatDamage where combat damage changes hands.
 // COMBAT-DAMAGE HOOKS (build 9.9): called wherever combat damage changes hands between two characters
 // (attack, retaliation, Power Struggle, Life-mode block damage and counters).
+// RISING RAGE (The Incredible Hulk): each time it takes combat damage (attacked OR retaliation) and survives, +1 Attack
+// until it leaves the field, at most +3 (fc._rage).
+function triggerRisingRage(tgtFc, tgtP, dmg){
+  if(!(dmg>0)||!tgtFc||!hasAbilityLabel(tgtFc,'Rising Rage')) return;
+  if(!G.players[tgtP]||!G.players[tgtP].field.some(f=>f.uid===tgtFc.uid)||!(tgtFc.currentHP>0)) return; // didn't survive
+  if((tgtFc._rage||0)>=3) return;
+  tgtFc._rage=(tgtFc._rage||0)+1; tgtFc.atkBonus=(tgtFc.atkBonus||0)+1; tgtFc.currentATK=(tgtFc.currentATK||0)+1;
+  log(`💢 Rising Rage: ${DB[tgtFc.cid]?.name} gets +1 Attack (${tgtFc._rage}/3).`,'gain');
+}
+// HELLFIRE VENGEANCE (Scorpion): destroyed by an attack MADE AGAINST it (it was the target or the blocker — not when it
+// dies to retaliation while attacking) → 3 damage to the attacker.
+function triggerHellfireVengeance(srcFc, srcP, tgtFc, tgtP){
+  if(!tgtFc||!srcFc||!hasAbilityLabel(tgtFc,'Hellfire Vengeance')) return;
+  if(srcP!==G.activePlayer) return;                                                  // the hit came from the attacker
+  if(G.players[tgtP]&&G.players[tgtP].field.some(f=>f.uid===tgtFc.uid&&f.currentHP>0)) return; // it survived
+  if(!isChar(DB[srcFc.cid])||!G.players[srcP]||!G.players[srcP].field.some(f=>f.uid===srcFc.uid)) return;
+  const _fx=(typeof fxPush==='function')?fxPush(tgtFc.cid,'Hellfire Vengeance',tgtFc.uid):null;
+  log(`🔥 Hellfire Vengeance: ${DB[tgtFc.cid]?.name} takes ${DB[srcFc.cid]?.name} down with it — 3 damage!`,'dmg');
+  dealDamage(srcP, srcFc.uid, 3);
+  if(typeof fxPop==='function') fxPop(_fx);
+}
 function combatDamageHooks(srcFc, srcP, tgtFc, tgtP, dmg){
+  triggerRisingRage(tgtFc, tgtP, dmg);
+  triggerHellfireVengeance(srcFc, srcP, tgtFc, tgtP);
   triggerOmegaVenom(srcFc, srcP, tgtFc, tgtP, dmg);
   triggerPressurePoints(srcFc, srcP, tgtFc, tgtP, dmg);
   triggerBloodstoneSkin(tgtFc, tgtP, srcFc, srcP, dmg);
@@ -10654,8 +10787,13 @@ function fxEffectsOf(fc){
   if(fc.nullify>0) cond('🛡','Nullify '+fc.nullify,'Reduces incoming damage by '+fc.nullify+'.',null);
   if(fc.mustAttack) cond('📣','Must attack','It must attack on its next turn if able.',byLabel('Combat Control'));
   if(fc.costMod) cond('💠','Cost '+(fc.costMod>0?'+':'−')+Math.abs(fc.costMod),'Its cost is changed by '+fc.costMod+'.',null);
-  if(fc.extraAttacks>0) cond('⏳','Rewind','It may attack '+fc.extraAttacks+' more time'+(fc.extraAttacks>1?'s':'')+' this turn.',null);
+  if(fc.extraAttacks>0){ const _fp=fc._flashTurn===G.turn&&hasAbilityLabel(fc,'Flashpoint Chain'); cond(_fp?'⚡':'⏳',_fp?'Flashpoint Chain':'Rewind','It may attack '+fc.extraAttacks+' more time'+(fc.extraAttacks>1?'s':'')+' this turn.',null); }
+  if(fc._relayTurn===G.turn&&G.phase==='attack') cond('🌙','Heavenly Relay',"Another of your characters that hasn't attacked may attack this turn.",null);
+  else if(hasAbilityLabel(fc,'Heavenly Relay')&&!heavenlyRelayReady(fc)) cond('🌙','Heavenly Relay','Recharging: ready again in '+(2-(G.turn-fc.abilityUsed.relay_turn))+' turn(s).',null);
   if(fc._rampage>0) cond('🔥','Crimson Rampage','+'+fc._rampage+' Attack until the end of this turn.',null);
+  if(fc._rage>0) cond('💢','Rising Rage','+'+fc._rage+' Attack (max +3) until it leaves the field.',null);
+  ['web_snare_turn:Web Snare:🕸','get_over_here_turn:Get Over Here!:🔥'].forEach(s=>{ const [k,L,i]=s.split(':'); const l=fc.abilityUsed&&fc.abilityUsed[k];
+    if(l!=null&&G&&G.turn-l<2&&hasAbilityLabel(fc,L)) cond(i,L,'Recharging: ready again in '+(2-(G.turn-l))+' turn(s).',null); });
   if(fc.nextAttackBonus>0) cond('💥','+'+fc.nextAttackBonus+' next attack','Its next attack deals +'+fc.nextAttackBonus+' damage.',null);
   if(fc._frostRune&&fc._frostRune.turns>0) cond('❄️','Frost Rune','Freezes after the player who set it ends '+fc._frostRune.turns+' more turn'+(fc._frostRune.turns>1?'s':'')+'.',byLabel('Frost Rune'));
   if(G&&fc.waterWhipped===G.turn) cond('🌊','Water Whip',"Tapped — it can't attack this turn.",byLabel('Water Whip'));
@@ -12500,6 +12638,7 @@ function executeCombatDamage(ap,auid,dp,duid){
 
   // Attacker wins OR no power struggle — normal damage resolution
   const defenderATK=dfc.currentATK;
+  const _dHpBefore=dfc.currentHP||0, _dRed=(dfc.nullify||0)+(hasAbilityLabel(dfc,'Inferno Ward')?1:0)+(hasAbilityLabel(dfc,'Diamond Calm')?2:0);
   dealDamage(dp,dfc.uid,atkDmg);
   const _pursuitKill=hasKW(afc,'pursuit') && !(G.players[dp].field.some(f=>f.uid===dfc.uid) && dfc.currentHP>0);
 
@@ -12543,7 +12682,7 @@ function executeCombatDamage(ap,auid,dp,duid){
   if(hasKW(afc,'breakthrough')){
     const stillAlive=G.players[dp].field.some(f=>f.uid===dfc.uid);
     if(!stillAlive){
-      const excess=Math.max(0,atkDmg-(dfc.baseHP+dfc.hpBonus));
+      const excess=Math.max(0,atkDmg-_dRed-_dHpBefore); // build 10.11: remaining Health, not max Health
       const oppHerald=G.players[dp].herald;
       if(oppHerald&&excess>0){
         oppHerald.currentHP=Math.max(1,oppHerald.currentHP-excess);
@@ -12910,7 +13049,7 @@ function onFieldClick(p,uid,fc){
 // ═══════════════════════════════════════════════════
 function hasGodlyEvasion(fc){
   const c=DB[fc.cid];
-  return hasAbilityLabel(fc,'Godly Evasion')||hasAbilityLabel(fc,'God Step');
+  return hasAbilityLabel(fc,'Godly Evasion')||hasAbilityLabel(fc,'God Step')||hasAbilityLabel(fc,'Moonlit Veil');
 }
 // DRUNKEN STANCE (Billy): cannot be targeted by opponent abilities at all
 // (no toll, absolute). Attacks are NOT restricted by it.
@@ -13986,6 +14125,8 @@ function onEntry(p,fc){
   if(hasAbilityLabel(fc,'Royal Summons')){ log(`👑 Royal Summons: ${pname(p)} draws 2 cards.`,'gain'); drawCard(p); drawCard(p); }
   // ── PRISM ORB (Crystal): choose one as she enters — enemy −2 ATK until end of your next turn, or heal one of yours 3.
   if(hasAbilityLabel(fc,'Prism Orb')) prismOrbAsk(p,fc);
+  // ── WILDBORN ADAPTATION (Elise): choose one as she enters — search your deck for a Transformation of her line, or +1/+1.
+  if(hasAbilityLabel(fc,'Wildborn Adaptation')) wildbornAsk(p,fc);
   // ── PRIMAL ROAR (Voraxis): EACH opposing character −2 ATK until end of your next turn (not targeted: Drunken
   //    Stance / Godly Evasion don't stop it; both enemy boards in 2v2).
   if(hasAbilityLabel(fc,'Primal Roar')){
@@ -14970,6 +15111,30 @@ function _activateAbilityCore(fc,abl){
     const more=(fc.attacksThisTurn||0)>0; if(more) fc.extraAttacks=(fc.extraAttacks||0)+1;
     log(`⏳ Rewind: ${DB[fc.cid]?.name}${was?' untaps':''}${was&&more?' and':''}${more?' may attack once more this turn':''}.`,'gain');
     closeAllModals(); renderAll(); return;
+  }
+  // ── ANYA CORAZON: Web Snare (1⚡, Paralyze) · SCORPION: Get Over Here! (2⚡, 2 damage + Burn). Once every 2 turns
+  //    (Water Whip convention). Paid → no tap. Closing the picker refunds (activateAbility's undo snapshot).
+  if(abl.label==='Web Snare'||abl.label==='Get Over Here!'){
+    const isWeb=abl.label==='Web Snare', key=isWeb?'web_snare_turn':'get_over_here_turn', cost=isWeb?1:2;
+    const last=fc.abilityUsed && fc.abilityUsed[key];
+    if(last!=null && (G.turn-last)<2){ log(`${abl.label}: wait ${2-(G.turn-last)} more turn(s).`,'dmg'); return; }
+    const ap=G.activePlayer, pl=G.players[ap];
+    const opps=(G.is2v2&&typeof enemyTeamOf==='function')?teamPlayers(enemyTeamOf(ap)):[ap===1?2:1];
+    const foes=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])&&(!isWeb||!statusActive(f,'paralyze'))) foes.push({fc:f,p:op}); }));
+    if(!foes.length){ log(`${abl.label}: no opposing character to target.`,'dmg'); return; }
+    if(pl.energy<cost){ log(`Not enough energy (need ${cost}⚡).`,'dmg'); return; }
+    if(!spendEnergyAbility(ap,cost,DB[fc.cid]?.color||null)) return;
+    if(!fc.abilityUsed) fc.abilityUsed={}; fc.abilityUsed[key]=G.turn; pl.usedAbilityThisTurn=true;
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    const hit=(uid)=>{ const t=foes.find(x=>x.fc.uid===uid); const tf=t&&G.players[t.p].field.find(f=>f.uid===uid); if(!tf) return;
+      if(isWeb){ log(`🕸 Web Snare: ${DB[tf.cid].name} is caught in a web!`,'gain'); applyStatus(tf,'paralyze'); }
+      else { log(`🔥 Get Over Here!: ${DB[fc.cid].name} drags ${DB[tf.cid].name} in — 2 damage!`,'dmg'); dealDamage(t.p,uid,2);
+        const still=G.players[t.p].field.find(f=>f.uid===uid); if(still&&still.currentHP>0) applyStatus(still,'burn'); }
+      if(typeof SFX!=='undefined'&&SFX.ability) try{ SFX.ability(); }catch(e){}
+      renderAll(); };
+    openEnemyTargetPicker(foes.map(x=>x.fc),hit,{sourcePlayer:ap,title:abl.label,desc:isWeb?'Choose an opposing character to Paralyze.':'Choose an opposing character: 2 damage, then it is Burned.'});
+    return;
   }
   // ── KORRA: Water Whip — 2⚡, once every 2 turns. Tap an opposing character so it can't attack this turn.
   if(abl.label==='Water Whip'){
@@ -16084,13 +16249,13 @@ function runAbilityEffect(fc, abl, pl){
     return;
   }
   // ── JALINA: Heir's Shockwave — 2 damage to target opposing character. 2⚡, once per turn; its text taps it.
-  if(label==="Heir's Shockwave"){
-    const ap=G.activePlayer; const opps=_fusionOpps(ap);
+  if(label==="Heir's Shockwave"||label==='Starbolt'){
+    const ap=G.activePlayer; const opps=_fusionOpps(ap); const _sb=label==='Starbolt';
     const enemies=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) enemies.push(f); }));
-    if(!enemies.length){ log("Heir's Shockwave: no opposing characters.",'dmg'); renderAll(); return; }
+    if(!enemies.length){ log(`${label}: no opposing characters.`,'dmg'); renderAll(); return; }
     const hit=(uid)=>{ const op=opps.find(o=>(G.players[o]?.field||[]).some(f=>f.uid===uid)); const t=op&&G.players[op].field.find(f=>f.uid===uid); if(!t) return;
-      log(`💥 Heir's Shockwave: ${DB[t.cid].name} takes 2.`,'dmg'); dealDamage(op,uid,2); renderAll(); };
-    openEnemyTargetPicker(enemies, hit, {sourcePlayer:ap, title:"Heir's Shockwave", desc:'Deal 2 damage to an opposing character.'});
+      log(`${_sb?'✴️':'💥'} ${label}: ${DB[t.cid].name} takes 2.`,'dmg'); dealDamage(op,uid,2); renderAll(); };
+    openEnemyTargetPicker(enemies, hit, {sourcePlayer:ap, title:label, desc:'Deal 2 damage to an opposing character.'});
     return;
   }
   // ── NISHVI (AVATAR STATE): Elemental Cataclysm — 3 damage to EACH opposing character (not targeted), then each
@@ -17441,6 +17606,9 @@ function aiScoreAbility(p, fc, abl, src){
   if(aiTried('abl:'+fc.uid+':'+abl.label)) return -1;
   if(abl.ai&&abl.ai.when==='never') return -1;
   if(abl.label==="Doom's Design" && (!doomsDesignReady(fc) || !(pl.deck||[]).some(cid=>isEquip(DB[cid])))) return -1;
+  if(abl.label==='Web Snare'||abl.label==='Get Over Here!'){ const _k=abl.label==='Web Snare'?'web_snare_turn':'get_over_here_turn', _l=fc.abilityUsed&&fc.abilityUsed[_k];
+    if(_l!=null&&G.turn-_l<2) return -1;
+    const _es=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&(abl.label!=='Web Snare'||!statusActive(e.fc,'paralyze'))); if(!_es.length) return -1; }
   if(abl.label==='Rewind'){ const _l=fc.abilityUsed&&fc.abilityUsed.rewind_turn; if((_l!=null&&G.turn-_l<2)||!fc.tapped||(fc.attacksThisTurn||0)>0) return -1;
     return ((fc.turnPlayed<G.turn||hasKW(fc,'burst_speed'))&&!statusActive(fc,'freeze')&&!((fc.fatigue||0)>0))?6:-1; }
   if((fc.fatigue||0)>0) return -1; // 💤 Fatigued
@@ -17869,7 +18037,7 @@ function hasKW(fc, kw){ if(DB[fc.cid]?.keywords?.includes(kw))return true; if(Ar
   if(fc&&fc.stance&&(kw==='onslaught'||kw==='guardian')&&stanceGrantsKW(fc,kw)) return true;
   return false; }
 // Passive abilities that are really a keyword in disguise — stealing one grants the keyword.
-const KEYWORD_PASSIVES={'Rage of Sparta':'burst_speed','Flash Step':'burst_speed','Four as One':'onslaught','Four Elements Unbound':'onslaught','Muladhara':'resolve'};
+const KEYWORD_PASSIVES={'Rage of Sparta':'burst_speed','Flash Step':'burst_speed','Spider Agility':'burst_speed','Hulk Smash':'breakthrough','Four as One':'onslaught','Four Elements Unbound':'onslaught','Muladhara':'resolve'};
 function renderKeywordBadges(fc){
   const kws=DB[fc.cid]?.keywords; if(!kws||!kws.length) return '';
   return kws.map(kw=>{ const k=KEYWORDS[kw]; if(!k) return ''; return '<span class="kw-badge '+k.cls+'" title="'+k.desc+'">'+k.label+'</span>'; }).join('');
@@ -18651,7 +18819,7 @@ function seqEntry(p, fc){
   const c=DB[fc.cid]; if(!c) return;
   const ctx={aiAuto:G._aiAuto, ap:G.activePlayer, phase:G.phase};
   let abl=_entryAbility(c);
-  if(abl && (isStanceChooserLabel(abl.label)||abl.label==='Prism Orb')) abl=null; // these choosers are their own banner
+  if(abl && (isStanceChooserLabel(abl.label)||abl.label==='Prism Orb'||abl.label==='Wildborn Adaptation')) abl=null; // these choosers are their own banner
   const runEntry=(use)=>{
     if(!G||G.gameOver) return;
     if(!(G.players[p]&&G.players[p].field.some(f=>f.uid===fc.uid))) return; // it already left play
@@ -19223,6 +19391,52 @@ function prismOrbAsk(p, fc){
         useLabel:'💠 −2 Attack', skipLabel:'💚 Heal 3', onDone:(atk)=>{ if(atk) pickAtk(); else pickHeal(); }});
     };
     choose();
+  });
+}
+
+// WILDBORN ADAPTATION (Elise). "A Transformation card of this character" = a non-base, non-fusion character card of the
+// same charLine. No such card in the deck → +1/+1 without asking. Search = the normal deck-search panel, then shuffle.
+function wildbornForms(fc){ const c=DB[fc&&fc.cid]; const line=c&&(c.charLine||c.charName);
+  return (cc)=>!!cc&&!!line&&isChar(cc)&&(cc.charLine||cc.charName)===line&&cc.formTier&&cc.formTier!=='base'&&!cc.fusion&&!cc.fusionForm; }
+function wildbornBuff(fc){ fc.currentATK=(fc.currentATK||0)+1; fc.atkBonus=(fc.atkBonus||0)+1; fc.currentHP=(fc.currentHP||0)+1; fc.hpBonus=(fc.hpBonus||0)+1;
+  log(`🌿 Wildborn Adaptation: ${DB[fc.cid]?.name} gets +1/+1.`,'gain'); }
+function wildbornSearch(p, fc){
+  const P=G.players[p], filt=wildbornForms(fc);
+  const take=(cid)=>{ const i=P.deck.indexOf(cid); if(i>-1) P.deck.splice(i,1); const f=newFC(cid); if(f) P.hand.push(f); shuffle(P.deck);
+    log(`🌿 Wildborn Adaptation: ${pname(p)} reveals ${DB[cid]?.name} and puts it into hand. Deck shuffled.`,'gain');
+    if(!seqIsLocalHuman(p)&&typeof showCardReveal==='function') try{ showCardReveal(cid); }catch(e){} renderAll(); };
+  if(seqIsLocalHuman(p)&&!(G&&G._aiAuto)&&G.activePlayer===p){
+    openDeckSearch('Wildborn Adaptation','Search your deck for a Transformation of '+(DB[fc.cid]?.charName||DB[fc.cid]?.name)+' and put it into your hand.',filt,(cid)=>{
+      // openDeckSearch already removed the card from the deck
+      const f=newFC(cid); if(f) P.hand.push(f); shuffle(P.deck);
+      log(`🌿 Wildborn Adaptation: ${pname(p)} reveals ${DB[cid]?.name} and puts it into hand. Deck shuffled.`,'gain'); renderAll(); });
+  } else { const pick=(P.deck||[]).filter(cid=>filt(DB[cid])).sort((a,b)=>(DB[a].cost||0)-(DB[b].cost||0))[0]; if(pick) take(pick); }
+}
+function wildbornAsk(p, fc){
+  seqPush(done=>{
+    if(!G||G.gameOver||!G.players[p]||!G.players[p].field.some(f=>f.uid===fc.uid)){ done(); return; }
+    const base={cid:fc.cid, p, label:'Wildborn Adaptation', text:_ablText(fc.cid,'Wildborn Adaptation'), kind:'ENTRY ABILITY'};
+    let settled=false;
+    const finish=(fn, outcome)=>{ if(settled) return; settled=true;
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Wildborn Adaptation',fc.uid):null;
+      try{ if(fn) fn(); }catch(e){ console.error('[Wildborn Adaptation]',e); }
+      if(typeof fxPop==='function') fxPop(_fx);
+      if(outcome && typeof _trigSend==='function') _trigSend(Object.assign({},base,{outcome}));
+      if(typeof renderAll==='function') renderAll(); done(); };
+    const canSearch=(G.players[p].deck||[]).some(cid=>wildbornForms(fc)(DB[cid])) && G.activePlayer===p;
+    if(!canSearch){ // nothing to find → the +1/+1 is the only real choice
+      const ms=spd('banner');
+      if(ms<=0){ finish(()=>wildbornBuff(fc),null); return; }
+      trigShow(Object.assign({},base,{outcome:'+1/+1 (no Transformation of hers in the deck)', ask:false, ms:Math.max(ms,900), onDone:()=>finish(()=>wildbornBuff(fc),null)})); return;
+    }
+    if(!seqIsLocalHuman(p)){ // AI / remote: take the form (it is what makes her line work)
+      const ms=spd('banner'); const act=()=>wildbornSearch(p,fc);
+      if(ms<=0){ finish(act,null); return; }
+      trigShow(Object.assign({},base,{outcome:'Searches for a Transformation', ask:false, ms, onDone:()=>finish(act,null)})); return;
+    }
+    trigShow({cid:fc.cid, p, label:'Wildborn Adaptation', kind:'ENTRY ABILITY · CHOOSE ONE', ask:true, dual:true,
+      text:'Choose one:\n🔍 Search your deck for a Transformation of this character and put it into your hand.\n💪 This card gets +1/+1.',
+      useLabel:'🔍 Search', skipLabel:'💪 +1/+1', onDone:(search)=>{ if(search) finish(()=>wildbornSearch(p,fc),'Searched for a Transformation'); else finish(()=>wildbornBuff(fc),'+1/+1'); }});
   });
 }
 
