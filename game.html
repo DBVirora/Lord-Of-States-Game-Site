@@ -7422,7 +7422,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.13 · Vuruna SSB · Theia · Crimson · Praxus</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.14 · The Dark Hold · Batman (DCeased) · Iron Fist</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -8409,8 +8409,24 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.13'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.14'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.14', date:'2026-11-01',
+    cards:[{id:'the_dark_hold_bse', set:'base_set', number:'102/150', rarity:'legend', scan:'Sets/BASE SET/102-150 (The Dark Hold).png', newAbilities:['Forbidden Power','Pages of Sin'],
+       note:"The Dark Hold · Equipment (persistent) · Black · Legend · cost 5 · subtypes Equipment · sym '📕'."},
+      {id:'batman_dceased_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/DC/Batman DCeased (Promo).png', newAbilities:['Infected Bite','The Horde Rises'],
+       note:"Batman (DCeased) · Character · Black · Legend · cost 7 · 7 ATK / 6 HP · Zombie, Hero · race 'Zombie'. NEW TOKEN zombie_token: 2/2, Black, subtypes Token, Zombie, isToken (no deck/packs, no Prize/kill Energy, not one of the 8 fighters, never removed at end of turn), sym '🧟'."},
+      {id:'danny_rand_promo', set:'promo', number:'PROMO', rarity:'rare', scan:'Characters/Series/Marvel/Danny Rand Iron Fist (Promo).png', newAbilities:['The Iron Fist','Chi Mending'],
+       note:"Danny Rand (Iron Fist) · Character · Yellow · Rare · cost 5 · 4 ATK / 5 HP · Hero, Martial Artist · race 'Hero'."}],
+    abilities:[
+      "FORBIDDEN POWER (The Dark Hold): on attach +3 ATK (atkBonus, like Void Crystal's +2/+2). At the START of each of the holder's controller's turns (startTurnFx, after Burn/Poison), the holder takes 1 damage per Dark Hold attached (dealDamage; can destroy it). Not while the Dark Hold is hexed.",
+      "INFECTED BITE (Batman DCeased, triggered): once per turn (fc._biteTurn), when ITS OWN attack destroys a character (not retaliation) → one 2/2 Zombie Token on your field (createZombieTokens: summoning sick; no room once the field holds 13 cards). Hook: triggerShowdownHype.",
+      "THE HORDE RISES (Batman DCeased, triggered): when it is destroyed (killCard — not sacrificed, not sent to the Rift) → two 2/2 Zombie Tokens on its owner's field.",
+      "THE IRON FIST (Danny Rand, activated): 2 Energy (Yellow), once every 2 turns (abilityUsed.iron_fist_turn, Water Whip convention), no tap: +4 ATK until the end of that turn (fc._ironFist, removed by tickIronFist at end of turn). AI: only when it can still attack this turn.",
+      "CHI MENDING (Danny Rand, passive): at the start of each of its controller's turns (startTurnFx) it heals up to 3 damage (not above max). Printed 'Regeneration' here means this heal — it does NOT use the old marked-damage 'regeneration' keyword.",
+      "PAGES OF SIN (The Dark Hold, granted to the holder, activated): free, once per turn (fc._sinTurn = G.turn), taps the holder (free ability, 13.1). Person: pick one of your OTHER characters, then an opposing character (Drunken Stance excluded, Godly Evasion toll applies) — only then: a real Sacrifice (half its printed cost back; Fuel the Chaos, Chaos Tithe, Death's Offering, Devouring Dark fire), the target is Poisoned (applyStatus; Vortex Shield blocks), you draw 1. Closing either picker = nothing happens. AI: sacrifices its least valuable other character (only if its value ≤ 12) to Poison the most valuable un-poisoned foe. Not usable while hexed."],
+    screens:["Effects panel on the holder: '📕 The Dark Hold — takes 1 damage at the start of each of your turns (· Pages of Sin used this turn)'."],
+    data:["GAME_BUILD '10.14'. No rulebook change."] },
   { build:'10.13', date:'2026-11-01',
     cards:[{id:'vuruna_ssb_bse', set:'base_set', number:'034/150', rarity:'legend', scan:'Sets/BASE SET/034-150 (Vuruna SSB).png', newAbilities:['Blue Tempest','Through the Horde'],
        note:"Vuruna (SSB) · transformOnly from Vuruna (SSG) · charLine 'vuruna', formTier 'ssb', path 'god' · Blue · Legend · cost 8 · 8 ATK / 11 HP · Royal, Saiyan, God · keywords ['onslaught'] (Blue Tempest → KEYWORD_PASSIVES). vuruna_ssg_bse.nextForms → ['ssb']. (The Base Set plan had 034 as a Purple base.)"},
@@ -8903,6 +8919,7 @@ const DEFAULTS={
   mort_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Dreamworks/Mort%20%231%20(Regular%20Character%20Promo).png',
   void_crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/072-150%20(Void%20Crystal%20Equiptment).png',
   time_crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/074-150%20(Time%20Crystal).png',
+  the_dark_hold_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/102-150%20(The%20Dark%20Hold).png',
   space_crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/073-150%20(Space%20Crystal%20Equiptment).png',
   geo_radar_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/026-150%20(Geo%20Radar%20Equipment).png',
   virora_surface_pt: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Virora/Virora%20(Surface%20Technique)%20Playtest.png',
@@ -8967,6 +8984,8 @@ const DEFAULTS={
   pavi_root_chakra_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Pavi%20Root%20Chakra%20(Promo).png',
   raven_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Raven%20(Promo%20Card).png',
   starfire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Starfire%20(Promo).png',
+  batman_dceased_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Batman%20DCeased%20(Promo).png',
+  danny_rand_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Danny%20Rand%20Iron%20Fist%20(Promo).png',
   raven_vampire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Raven%20Vampire%20(Promo%20Card).png',
   deerhaunter_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Timesplitters/The%20DeerHaunter%20(PROMO)%20Timesplitters%20Future%20Perfect.png',
   vermynth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/076-150%20(Vermynth%20Fruit%20Instant).png',
@@ -9394,6 +9413,22 @@ const DB={
   incredible_hulk_promo:{id:'incredible_hulk_promo',rarity:'legend',name:'The Incredible Hulk',color:'green',charName:'The Incredible Hulk',subtypes:['Gamma','Monster'],type:'char',race:'Gamma',cost:8,atk:7,hp:10,sym:'HULK',setId:'promo',cardNumber:'PROMO',keywords:['breakthrough'],nextForms:[],
     abilities:[{label:'Rising Rage',type:'passive',cost:0,text:'Each time this card takes combat damage and survives, it gets +1 Attack permanently (max +3).'},
       {label:'Hulk Smash',type:'passive',cost:0,keyword:'breakthrough',text:"Breakthrough. When this card destroys a character with an attack, the excess damage hits the enemy Herald (it can't drop below 1 Health)."}]},
+  // ── BATMAN (DCEASED) (Promo, DC) — build 10.14. Black. Zombie • Hero.
+  //    Infected Bite: once per turn, when its own attack destroys a character → a 2/2 Zombie Token on your field.
+  //    The Horde Rises: when it is destroyed → two 2/2 Zombie Tokens on your field.
+  batman_dceased_promo:{id:'batman_dceased_promo',rarity:'legend',name:'Batman (DCeased)',color:'black',charName:'Batman',subtypes:['Zombie','Hero'],type:'char',race:'Zombie',cost:7,atk:7,hp:6,sym:'BAT',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
+    abilities:[{label:'Infected Bite',type:'triggered',cost:0,limit:'once_per_turn',text:'When this card destroys a character with an attack, create a 2/2 Zombie token on your field. (Once per turn)'},
+      {label:'The Horde Rises',type:'triggered',cost:0,text:'When this card is destroyed, create two 2/2 Zombie tokens on your field.'}]},
+  // Zombie Token (Batman DCeased). A token: no deck/packs, no Prize or kill Energy, not counted in the 8 fighters, stays
+  // until destroyed (no end-of-turn removal).
+  zombie_token:{id:'zombie_token',rarity:'common',name:'Zombie Token',color:'black',charName:'Zombie Token',subtypes:['Token','Zombie'],type:'char',race:'Token',cost:0,atk:2,hp:2,sym:'🧟',isToken:true,
+    abilities:[]},
+  // ── DANNY RAND (IRON FIST) (Promo, Marvel) — build 10.14. Yellow. Hero • Martial Artist.
+  //    The Iron Fist: 2⚡, once every 2 turns (Water Whip convention), no tap: +4 Attack until the end of your turn.
+  //    Chi Mending: at the start of each of your turns it heals 3 damage (startTurnFx).
+  danny_rand_promo:{id:'danny_rand_promo',rarity:'rare',name:'Danny Rand (Iron Fist)',color:'yellow',charName:'Danny Rand',subtypes:['Hero','Martial Artist'],type:'char',race:'Hero',cost:5,atk:4,hp:5,sym:'IFIST',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
+    abilities:[{label:'The Iron Fist',type:'activated',cost:2,limit:'every_2_turns',text:'Pay 2 Energy: This card gets +4 Attack until the end of your turn. (Once every 2 turns)'},
+      {label:'Chi Mending',type:'passive',cost:0,text:'Regeneration. At the start of your turn, this card heals 3 damage.'}]},
   // ── STARFIRE (Promo, DC) — build 10.11. Red.
   //    Starbolt: 2⚡ (pays Red), once per turn, no tap: 2 damage to target opposing character (Heir's Shockwave handler).
   //    Warrior of Tamaran: when its own attack destroys a character, +2 Energy.
@@ -9532,6 +9567,13 @@ const DB={
   //    Future Perfect: on attach, look at the top 4, one to hand, the rest to the bottom in your order.
   //    Rewind (granted to the holder): 2⚡, once every 2 turns, usable in Main OR Attack Phase, even while tapped:
   //    untap it; if it already attacked this turn it gets one more attack (fc.extraAttacks).
+  // ── THE DARK HOLD (BSE 102/150) — build 10.14. Equipment (persistent), Black, Legend, cost 5.
+  //    Forbidden Power: the holder gets +3 Attack (_applyEquipCore) and takes 1 damage at the start of each of its
+  //    controller's turns (startTurnFx). Pages of Sin (granted to the holder): free, once per turn — sacrifice one of your
+  //    OTHER characters → Poison a target opposing character and draw 1. Charged only when both are picked.
+  the_dark_hold_bse:{id:'the_dark_hold_bse',rarity:'legend',color:'black',name:'The Dark Hold',charName:'The Dark Hold',subtypes:['Equipment'],type:'equipment',persistent:true,race:'Equipment',cost:5,atk:0,hp:0,sym:'📕',setId:'base_set',cardNumber:'102/150',
+    abilities:[{label:'Forbidden Power',type:'passive',cost:0,text:'The equipped character gets +3 Attack. At the start of each of your turns, it takes 1 damage.'},
+      {label:'Pages of Sin',type:'activated',cost:0,limit:'once_per_turn',text:'Sacrifice one of your other characters: Poison an opponent character and draw 1 card. (Once per turn)'}],transforms:[]},
   time_crystal_bse:{id:'time_crystal_bse',rarity:'rare',color:'green',name:'Time Crystal',charName:'Time Crystal',subtypes:['Relic','Equipment'],type:'equipment',persistent:true,race:'Relic',cost:5,atk:0,hp:0,sym:'⏳',setId:'base_set',cardNumber:'074/150',
     abilities:[{label:'Future Perfect',type:'triggered',cost:0,text:'After you attach this card to a character, look at the top 4 cards of your deck. Put 1 into your hand and the rest on the bottom in any order.'},
       {label:'Rewind',type:'activated',cost:2,limit:'every_2_turns',attackPhase:true,text:'Untap the equipped character. If it already attacked this turn, it may attack once more. (Cost 2 Energy, once every 2 turns)'}],transforms:[]},
@@ -10500,7 +10542,23 @@ function triggerThroughTheHorde(k, kp, vp, vuid){
       const t=fin.length?fin.sort((a,b)=>aiFcValue(b.fc)-aiFcValue(a.fc))[0].fc:((typeof aiPickEnemyTarget==='function')?aiPickEnemyTarget(pool.map(x=>x.fc),{sourcePlayer:kp}):pool[0].fc); if(t) hit(t.uid); }
   });
 }
+// ZOMBIE TOKENS (Batman DCeased): 2/2 tokens, summoning sick, at most 13 cards on that field.
+function createZombieTokens(p, n, why){
+  const pl=G.players[p]; if(!pl) return 0; let made=0;
+  for(let i=0;i<n;i++){ if(pl.field.length>=MAX_FIELD+MAX_OTHER){ log('Field is full — no room for another Zombie Token.','dmg'); break; }
+    const t=newFC('zombie_token'); if(!t) break; t.turnPlayed=G.turn; t.variant='none'; pl.field.push(t); made++; }
+  if(made) log(`🧟 ${why}: ${made} Zombie Token${made>1?'s':''} rise${made>1?'':'s'} on ${pname(p)}'s field.`,'gain');
+  if(typeof recalcPassives==='function') recalcPassives(); return made;
+}
+// INFECTED BITE (Batman DCeased): once per turn, when ITS OWN attack destroys a character → a 2/2 Zombie Token.
+function triggerInfectedBite(k, kp, vp, vuid){
+  if(!k||!hasAbilityLabel(k,'Infected Bite')||k._biteTurn===G.turn) return;
+  if(kp!==G.activePlayer || !((k.attacksThisTurn||0)>0)) return;
+  if(G.players[vp]?.field.some(f=>f.uid===vuid)) return;
+  k._biteTurn=G.turn; createZombieTokens(kp,1,'Infected Bite');
+}
 function triggerShowdownHype(killerFc, killerP, victimP, victimUid){
+  if(typeof triggerInfectedBite==='function') triggerInfectedBite(killerFc, killerP, victimP, victimUid);
   if(typeof triggerCrimsonExecution==='function') triggerCrimsonExecution(killerFc, killerP, victimP, victimUid);
   if(typeof triggerThroughTheHorde==='function') triggerThroughTheHorde(killerFc, killerP, victimP, victimUid);
   if(typeof triggerWarriorOfTamaran==='function') triggerWarriorOfTamaran(killerFc, killerP, victimP, victimUid);
@@ -10521,6 +10579,9 @@ function triggerCrimsonRampage(afc){
   const p=ownerOfCard(afc.uid)||G.activePlayer;
   dealDamage(p, afc.uid, 2);
   if(!G.players[p]?.field.some(f=>f.uid===afc.uid)){ afc._rampKO=true; log(`${DB[afc.cid]?.name} is destroyed by its own Crimson Rampage — the attack never lands.`,'dmg'); }
+}
+function tickIronFist(p){
+  (G.players[p]?.field||[]).forEach(f=>{ if(f._ironFist){ f.currentATK=Math.max(0,(f.currentATK||0)-f._ironFist); f.atkBonus=(f.atkBonus||0)-f._ironFist; f._ironFist=0; log(`${DB[f.cid]?.name}'s Iron Fist fades.`,'info'); } });
 }
 function tickCrimsonRampage(p){
   (G.players[p]?.field||[]).forEach(f=>{ if(f._rampage){ f.currentATK=Math.max(0,(f.currentATK||0)-f._rampage); f.atkBonus=(f.atkBonus||0)-f._rampage; f._rampage=0; } });
@@ -10923,6 +10984,8 @@ function fxEffectsOf(fc){
   if(fc._rage>0) cond('💢','Rising Rage','+'+fc._rage+' Attack (max +3) until it leaves the field.',null);
   { const l=fc.abilityUsed&&fc.abilityUsed.execution_turn; if(l!=null&&G&&G.turn-l<2&&l!==G.turn&&hasAbilityLabel(fc,'Crimson Execution')) cond('🩸','Crimson Execution','Recharging: ready again in '+(2-(G.turn-l))+' turn(s).',null); }
   if(hasAbilityLabel(fc,'Through the Horde')&&fc._hordeTurn===(G&&G.turn)) cond('🌊','Through the Horde','Already used this turn.',null);
+  if(fc._ironFist>0) cond('👊','The Iron Fist','+'+fc._ironFist+' Attack until the end of this turn.',null);
+  if(Array.isArray(fc.attachments)&&fc.attachments.includes('the_dark_hold_bse')) cond('📕','The Dark Hold','Takes 1 damage at the start of each of your turns'+(fc._sinTurn===(G&&G.turn)?' · Pages of Sin used this turn':'')+'.',null);
   { const l=fc.abilityUsed&&fc.abilityUsed.sandstorm_turn; if(l!=null&&G&&G.turn-l<4&&hasAbilityLabel(fc,'Sandstorm')) cond('🏜','Sandstorm','Recharging: ready again in '+(4-(G.turn-l))+' turn(s).',null); }
   if(hasAbilityLabel(fc,'Chaos Tithe')&&fc._titheTurn===(G&&G.turn)) cond('🌀','Chaos Tithe','Already used this turn.',null);
   ['web_snare_turn:Web Snare:🕸','get_over_here_turn:Get Over Here!:🔥'].forEach(s=>{ const [k,L,i]=s.split(':'); const l=fc.abilityUsed&&fc.abilityUsed[k];
@@ -11812,6 +11875,7 @@ function killCard(p,fc){
   }
   log(`☠ ${c.name} destroyed!`,'death');
   devouringDark(p, fc);
+  if(hasAbilityLabel(fc,'The Horde Rises')) createZombieTokens(p,2,'The Horde Rises');
   if(typeof SFX!=='undefined')SFX.death();
   // Death animation on the card element before removing
   const cardEl=document.querySelector(`[data-uid="${fc.uid}"]`);
@@ -14673,6 +14737,7 @@ function _applyEquipCore(fc,eq){
   if(eq.id==='crystal_73'){fc.nullify+=1;fc.currentHP+=5;fc.hpBonus+=5;log("73's Crystal: nullify+1, +5HP.",'gain');}
   if(eq.id==='wca_overdrive_belt_promo'){fc.currentATK+=2;fc.atkBonus+=2;fc.currentHP+=3;fc.hpBonus+=3;log('Main Event Glow: +2/+3!','gain');}
   if(eq.id==='void_crystal_bse'){fc.currentATK+=2;fc.atkBonus+=2;fc.currentHP+=2;fc.hpBonus+=2;log('Void Boost: +2/+2!','gain');}
+  if(eq.id==='the_dark_hold_bse'){fc.currentATK+=3;fc.atkBonus+=3;log('Forbidden Power: +3 Attack.','gain');}
   if(eq.id==='potara_earrings_bse'){fc.currentATK+=1;fc.atkBonus+=1;fc.currentHP+=1;fc.hpBonus+=1;log('Twin Bands: +1/+1.','gain');}
   if(eq.id==='twin_soul_bands_test'){fc.currentATK+=1;fc.atkBonus+=1;fc.currentHP+=1;fc.hpBonus+=1;log('Soul Link: +1/+1.','gain');}
 }
@@ -15315,6 +15380,57 @@ function _activateAbilityCore(fc,abl){
   // ── FALCORE: Sandstorm (3⚡, every 4 turns: Paralyze EACH opposing character — not targeted) · Sunfall (5⚡, once per
   //    game: 3 damage to each Paralyzed opposing character). REMMEL: Lord of Ruin (4⚡, once per game, discard pile → hand,
   //    charged only when a card is picked). None of them tap (paid).
+  // ── DANNY RAND: The Iron Fist — 2⚡, once every 2 turns, no tap: +4 Attack until the end of your turn (fc._ironFist).
+  if(abl.label==='The Iron Fist'){
+    const ap=G.activePlayer, pl=G.players[ap];
+    const l=fc.abilityUsed&&fc.abilityUsed.iron_fist_turn; if(l!=null&&(G.turn-l)<2){ log(`The Iron Fist: wait ${2-(G.turn-l)} more turn(s).`,'dmg'); return; }
+    if(pl.energy<2){ log('Not enough energy (need 2⚡).','dmg'); return; }
+    if(!spendEnergyAbility(ap,2,DB[fc.cid]?.color||null)) return;
+    if(!fc.abilityUsed) fc.abilityUsed={}; fc.abilityUsed.iron_fist_turn=G.turn; pl.usedAbilityThisTurn=true;
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    fc._ironFist=(fc._ironFist||0)+4; fc.currentATK=(fc.currentATK||0)+4; fc.atkBonus=(fc.atkBonus||0)+4;
+    log(`👊 The Iron Fist: ${DB[fc.cid]?.name} gets +4 Attack until the end of the turn!`,'gain');
+    if(typeof SFX!=='undefined'&&SFX.ability) try{ SFX.ability(); }catch(e){}
+    closeAllModals(); renderAll(); return;
+  }
+  // ── THE DARK HOLD: Pages of Sin (granted to the holder) — free, once per turn (fc._sinTurn): sacrifice one of your OTHER
+  //    characters (a real Sacrifice: half its printed cost back, payoffs fire) → Poison a target opposing character, draw 1.
+  //    Nothing happens until both are picked. A free ability taps the holder (13.1).
+  if(abl.label==='Pages of Sin'){
+    const ap=G.activePlayer, pl=G.players[ap];
+    if(!(fc.attachments||[]).includes('the_dark_hold_bse')){ log('Pages of Sin: The Dark Hold is not attached.','dmg'); return; }
+    if(typeof isEquipHexed==='function'&&isEquipHexed(fc,'the_dark_hold_bse')){ log('Pages of Sin: The Dark Hold is hexed.','dmg'); return; }
+    if(fc._sinTurn===G.turn){ log('Pages of Sin: already used this turn.','dmg'); return; }
+    const mine=pl.field.filter(f=>f.uid!==fc.uid&&isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
+    const opps=(G.is2v2&&typeof enemyTeamOf==='function')?teamPlayers(enemyTeamOf(ap)):[ap===1?2:1];
+    const foes=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])&&!hasDrunkenStance(f)) foes.push({fc:f,p:op}); }));
+    if(!mine.length){ log('Pages of Sin: you have no other character to sacrifice.','dmg'); return; }
+    if(!foes.length){ log('Pages of Sin: no opposing character to Poison.','dmg'); return; }
+    const go=(sacUid,tUid)=>{
+      const sf=pl.field.find(f=>f.uid===sacUid), t=foes.find(x=>x.fc.uid===tUid); if(!sf||!t||!G.players[t.p].field.some(f=>f.uid===tUid)) return;
+      fc._sinTurn=G.turn; pl.usedAbilityThisTurn=true; if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
+      if(abilityTapRule(fc,abl)) fc.tapped=true;
+      const _fx=(typeof fxPush==='function')?fxPush('the_dark_hold_bse','Pages of Sin',null):null;
+      log(`📕 Pages of Sin: ${pname(ap)} sacrifices ${DB[sf.cid].name}…`,'info');
+      doSacrifice(sacUid, Math.floor((DB[sf.cid]?.cost||0)/2), ap);
+      const tf=G.players[t.p].field.find(f=>f.uid===tUid); if(tf){ log(`📕 Pages of Sin: ${DB[tf.cid].name} is Poisoned.`,'dmg'); applyStatus(tf,'poison'); }
+      drawCard(ap); log(`📕 Pages of Sin: ${pname(ap)} draws 1 card.`,'gain');
+      if(typeof fxPop==='function') fxPop(_fx); if(typeof recalcPassives==='function') recalcPassives(); renderAll();
+    };
+    if(seqIsLocalHuman(ap)&&!G._aiAuto){
+      closeAllModals();
+      seqChoose('Pages of Sin','Choose one of your other characters to sacrifice. Then choose an opposing character to Poison; you draw 1 card.',
+        mine.map(f=>({label:DB[f.cid].name, sub:'cost '+(DB[f.cid]?.cost||0), val:f.uid})),
+        (sacUid)=>{ openEnemyTargetPicker(foes.map(x=>x.fc),(tUid)=>go(sacUid,tUid),{sourcePlayer:ap,title:'Pages of Sin',desc:'Choose an opposing character to Poison.'}); },
+        ()=>{});
+    } else {
+      const s=mine.slice().sort((a,b)=>aiFcValue(a)-aiFcValue(b))[0];
+      const pool=foes.filter(x=>!hasGodlyEvasion(x.fc)); const fresh=pool.filter(x=>!statusActive(x.fc,'poison'));
+      const t=(fresh.length?fresh:pool).sort((a,b)=>aiFcValue(b.fc)-aiFcValue(a.fc))[0];
+      if(s&&t) go(s.uid,t.fc.uid);
+    }
+    return;
+  }
   // ── CRIMSON: Scarlet Eclipse — 5⚡, once per game, no tap: 4 damage (+2 Killing Intent on a wounded target).
   if(abl.label==='Scarlet Eclipse'){
     const ap=G.activePlayer, pl=G.players[ap];
@@ -17417,6 +17533,16 @@ function startTurnFx(player){
   const cards=[...pl.field]; if(pl.herald) cards.push(pl.herald);
   cards.forEach(fc=>{
     const c=DB[fc.cid]; if(!c) return;
+    // ── DANNY RAND: Chi Mending — at the start of each of your turns, heal 3 damage.
+    if(isChar(c)&&hasAbilityLabel(fc,'Chi Mending')){ const mx=(fc.baseHP||0)+(fc.hpBonus||0)+(fc.passiveHp||0);
+      if((fc.currentHP||0)<mx){ const h=Math.min(3,mx-fc.currentHP); fc.currentHP+=h; log(`🍀 Chi Mending: ${c.name} heals ${h}.`,'gain'); } }
+    // ── THE DARK HOLD: Forbidden Power — the holder takes 1 damage at the start of each of your turns (per copy; not while hexed).
+    if(isChar(c)&&Array.isArray(fc.attachments)&&fc.attachments.includes('the_dark_hold_bse')&&!(typeof isEquipHexed==='function'&&isEquipHexed(fc,'the_dark_hold_bse'))){
+      const n=fc.attachments.filter(a=>a==='the_dark_hold_bse').length;
+      if(pl.field.some(f=>f.uid===fc.uid)){ const _fx=(typeof fxPush==='function')?fxPush('the_dark_hold_bse','Forbidden Power',null):null;
+        log(`📕 Forbidden Power: The Dark Hold drains ${c.name} — ${n} damage.`,'dmg'); dealDamage(player,fc.uid,n); if(typeof fxPop==='function') fxPop(_fx); }
+      if(!pl.field.some(f=>f.uid===fc.uid)) return;
+    }
     // ── VIOLET (SSG): Heart of a Saiyan God — heals +2 HP after every 2 of your turns.
     if(hasAbilityLabel(fc,'Heart of a Saiyan God')){
       fc._hosgTurns=(fc._hosgTurns||0)+1;
@@ -17528,6 +17654,7 @@ function endTurnFx(p){
   tickTimedCuts(p); // 💠 Prism Orb / 🦍 Primal Roar −2 Attack (until end of the source owner's next turn)
   tickFlameSpiral(p); // 🔥 Korra's Flame Spiral timers
   tickCrimsonRampage(p); // 🔥 Crystora (SSGE): Crimson Rampage ends with the turn
+  tickIronFist(p); // 👊 Danny Rand: The Iron Fist ends with the turn
   tickScorchedEarth(p); // count down any Scorched Earth timers this player set
   tickFusions(p); // 💤 Fatigue, then 💫 Dance timers (split at 0)
   G.bonusAttackers=0; // reset ability-granted extra attackers each turn
@@ -17923,6 +18050,12 @@ function aiScoreAbility(p, fc, abl, src){
   if(aiTried('abl:'+fc.uid+':'+abl.label)) return -1;
   if(abl.ai&&abl.ai.when==='never') return -1;
   if(abl.label==="Doom's Design" && (!doomsDesignReady(fc) || !(pl.deck||[]).some(cid=>isEquip(DB[cid])))) return -1;
+  if(abl.label==='The Iron Fist'){ const _l=fc.abilityUsed&&fc.abilityUsed.iron_fist_turn; if(_l!=null&&G.turn-_l<2) return -1;
+    if(fc.tapped||!aiReady(fc)||!canCharacterAttack(p,fc)||!aiAttackOptionsFor(p,fc).length) return -1; return 24; }
+  if(abl.label==='Pages of Sin'){ if(fc._sinTurn===G.turn||(typeof isEquipHexed==='function'&&isEquipHexed(fc,'the_dark_hold_bse'))) return -1;
+    const _o=pl.field.filter(f=>f.uid!==fc.uid&&isChar(DB[f.cid])&&!DB[f.cid]?.isToken); if(!_o.length) return -1;
+    const _cheap=Math.min(..._o.map(f=>aiFcValue(f))); const _t=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&!hasGodlyEvasion(e.fc)&&!statusActive(e.fc,'poison')&&!hasAbilityLabel(e.fc,'Vortex Shield'));
+    if(!_t.length||_cheap>12) return -1; return 22+Math.min(10,Math.max(..._t.map(e=>aiFcValue(e.fc)))*.3); }
   if(abl.label==='Rise from Darkness'){ const _l=fc.abilityUsed&&fc.abilityUsed.rise_turn; if(_l!=null&&G.turn-_l<4) return -1;
     if(pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken).length>=MAX_FIELD) return -1;
     if(!(pl.discard||[]).some(cid=>{ const cc=DB[cid]; return cc&&isChar(cc)&&!cc.isToken&&!cc.transformOnly&&!cc.fusion&&!cc.fusionForm&&cc.type!=='herald'&&(cc.cost||0)<=4&&(cc.cost||0)>=2; })) return -1; }
