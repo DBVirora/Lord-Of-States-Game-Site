@@ -6917,6 +6917,9 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 .sp-live-vs{font-size:12px;color:#c4c0dc}.sp-live-vs b{color:#f3f0ff;font-weight:600}.sp-live-vs span{color:#6b7280}
 .sp-live-meta{font-size:10px;color:#8b8fa8}.sp-live-meta .sp-wg{color:#f0d58a}
 .sp-allow{display:flex;align-items:center;gap:8px;margin-top:9px;font-size:10px;color:#c4c0dc;cursor:pointer}
+.sp-view{display:flex;align-items:center;gap:4px;min-width:0}.sp-view>span{font-size:8px;letter-spacing:2px;color:#8b8fa8;margin-right:2px}
+.sp-view .sp-bar-btn{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.65}.sp-view .sp-bar-btn.on{opacity:1;border-color:#e8c570;color:#f0d58a;box-shadow:0 0 8px rgba(232,197,112,.35)}
+@media (max-width:520px){ .sp-view>span{display:none} .sp-view .sp-bar-btn{max-width:72px} }
 /* Open Rooms (build 10.15) */
 .pr-list{max-height:280px;overflow-y:auto;margin-top:6px}
 .pr-row{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;padding:9px 0;border-top:1px solid rgba(255,255,255,.06)}
@@ -7434,7 +7437,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.15 · Open Rooms · Random decks online</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.16 · Live online animations</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -8421,8 +8424,24 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.15'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.16'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.16', date:'2026-11-01',
+    cards:[], abilities:[],
+    screens:[
+      "SPECTATOR BAR: the ⇅ button is now a 'VIEW  [Host name] [Guest name]' pair — the lit name is the player at the bottom; tap the other to watch from their side (spView(1|2) → spFlip).",
+      "PC BUG (from Rulk's screenshot, PC client): the opponent's DECK PILE kept an old card back while their hand/prizes showed the right one. Battle.gd _pile() builds the deck CardView once at board build and it is never refreshed; cos_hello → _refresh() rebuilds hand/prizes only. Rebuild/retexture areas[p].deck's CardView (meta 'cv') on every _refresh / cos_hello so deck, hand and prizes all use CardView.back(p) from the CURRENT Game.opp_cos."],
+    data:[
+      "GAME_BUILD '10.16'. No SQL. Online protocol additions — web and PC both need 10.16.",
+      "NEW game_action 'fx' {k, …} — every animated moment is mirrored to the other player (and through the host to spectators). Seats in the payload are the SENDER's view (1 = sender, 2 = receiver); uids are shared. Receiver maps p → 3-p. Kinds: attack {a:attackerUid|null, t:targetUid|null, ah:heraldSeat|null, th:heraldSeat|null, cid?} · land {uid, kind:'char'|'loc'} (card dropping onto the board; the element may not exist until the next state — wait for it) · equip {cid, uid, p} · heal {uid, amt} · slash {uid, color?} · death {uid, p} · rift {uid, cid, p} · status {uid, type} · dmg {p, text, uid?} · healpop {p, text, uid?} · transform {from, to} (cinematic, no callback) · draw {p} · banner {mine:bool, label?, cls?} (receiver shows !mine; 'YOUR TURN' ↔ \"OPPONENT'S TURN\", cls your-turn ↔ opp-turn; other labels like 'X BROKEN' keep the text) · prize {claimer, victim, cid?, v?} (cid/v only when the RECEIVER is the claimer → show the face-up reveal; otherwise a face-down card flies from the victim's prizes to the claimer's hand) · sfx {n} (n ∈ attack, damage, destroy, freeze, heraldSlam).",
+      "WHEN TO SEND: whenever the local engine plays that moment while applying its OWN logic (never while applying a remote state, never while replaying a received fx, never for nested calls inside another relayed fx). The match-start banner after the coin toss is shown locally on both screens and is NOT sent. Energy cards still use card_play (no fx).",
+      "RECEIVING A REMOVED CARD: snapshot every board card's screen rect right before applying a remote state; if an fx names a uid that is no longer on the board, play it at the snapshot position (web: invisible anchor element for ~2.6s).",
+      "PRIZES ONLINE: when the claimer is not the local player (e.g. a retaliation kill resolving on the attacker's screen), the local screen now shows the face-down fly instead of revealing the card; the claimer sees it face-up via fx prize.",
+      "roll_show now carries seat (the roller, sender's view) and is sent for EVERY roll made on the sender's screen (was: only when the sender ran the active board). Receiver labels 'YOU' when seat==2.",
+      "trig_show (1v1) is now sent for BOTH players' cards resolving on the sender's screen, with seat = card owner (sender's view). Receiver: seat 2 → it's my card → p 1, who 'YOU'; otherwise p 2.",
+      "game_state (1v1) now carries cos {back, mat, frame, plate, title, entrance} — the sender's equipped cosmetics; receiver applies it like cos_hello whenever it changes.",
+      "SPECTATORS: host forwards fx, roll_show and trig_show on spec_fx (w = 1 host's own, 2 the guest's) — viewer maps sender seat → canonical (w 2 swaps) → its view (flip swaps).",
+      "Web fix: the opponent hand-limit label read 'Hnd: n/13' — now MAX_HAND (12)."] },
   { build:'10.15', date:'2026-11-01',
     cards:[],
     abilities:[],
@@ -11800,6 +11819,127 @@ function fxRift(el,p){
 function fxFindRemoved(p,cid){ const b=fxBoard(); if(!b) return null; const els=[...b.querySelectorAll(`[data-player="${p}"][data-cid="${cid}"]`)]; const live=new Set((G.players[p]&&G.players[p].field||[]).map(f=>String(f.uid))); return els.find(e=>!live.has(e.getAttribute('data-uid')))||null; }
 
 
+// ═══ ONLINE FX RELAY (build 10.16) ═══════════════════════════════════════════════
+// Online play syncs the board as state; this mirrors the moments in between — attacks, landings, equips, heals,
+// slashes, deaths, the Rift, status and damage pop-ups, transformations, draws, prizes, turn banners and key
+// sounds — so the other player and every spectator see them live, at the sender's pace.
+// Wire format: game_action 'fx' {k, …}. Seats are the SENDER's view (1 = sender, 2 = the other player); uids are
+// shared. Hidden information never travels: a prize the receiver didn't take arrives face-down.
+let _fxrDepth=0, _fxrPlaying=0;
+const _fxrOrig={};
+const FXR_SFX=new Set(['attack','damage','destroy','freeze','heraldSlam']);
+function fxrCanSend(){ return !!(typeof G!=='undefined'&&G&&G.onlineMode&&!G.is2v2&&!G.onlineMode2v2&&!G.spectating&&!_fxrPlaying
+  &&!(typeof _applyingRemoteState!=='undefined'&&_applyingRemoteState)); }
+function fxrSend(o){ if(!o||!fxrCanSend()||typeof sendGameAction!=='function') return; try{ sendGameAction('fx',o); }catch(e){} }
+function fxrQuiet(fn){ _fxrDepth++; try{ return fn(); } finally{ _fxrDepth--; } }
+function fxrWrap(name,enc){
+  const orig=window[name]; if(typeof orig!=='function'||orig._fxr) return;
+  _fxrOrig[name]=orig;
+  const w=function(...args){
+    if(_fxrDepth===0&&fxrCanSend()){ let o=null; try{ o=enc(args); }catch(e){} if(o) fxrSend(o); }
+    _fxrDepth++; try{ return orig.apply(this,args); } finally{ _fxrDepth--; }
+  };
+  w._fxr=true; window[name]=w;
+}
+function fxrInstall(){
+  if(window._fxrInstalled) return; window._fxrInstalled=true;
+  const hz=x=>(x&&typeof x==='object'&&x.herald)?x.herald:null;
+  fxrWrap('animateAttack',a=>({k:'attack',a:a[0]??null,t:a[1]??null}));
+  fxrWrap('fxStrikeAt',a=>({k:'attack',a:hz(a[0])?null:(a[0]??null),t:hz(a[1])?null:(a[1]??null),ah:hz(a[0]),th:hz(a[1]),cid:a[2]||null}));
+  fxrWrap('fxMarkLand',a=>({k:'land',uid:a[0],kind:a[1]||'char'}));
+  fxrWrap('fxEquip',a=>({k:'equip',cid:a[0],uid:a[1],p:a[2]}));
+  fxrWrap('fxHeal',a=>({k:'heal',uid:a[0],amt:a[1]||0}));
+  fxrWrap('fxSlash',a=>({k:'slash',uid:a[0],color:a[1]||null}));
+  fxrWrap('fxDeath',a=>({k:'death',uid:a[0],p:a[1]}));
+  fxrWrap('fxRift',a=>{ const el=a[0]; return el&&el.getAttribute?{k:'rift',uid:el.getAttribute('data-uid')||null,cid:el.getAttribute('data-cid')||null,p:a[1]}:null; });
+  fxrWrap('showStatusFx',a=>({k:'status',uid:a[0],type:a[1]}));
+  fxrWrap('showDmgPopup',a=>({k:'dmg',p:a[0],text:String(a[1]),uid:a[2]||null}));
+  fxrWrap('showHealPopup',a=>({k:'healpop',p:a[0],text:String(a[1]),uid:a[2]||null}));
+  fxrWrap('playTransformAnimation',a=>({k:'transform',from:a[0],to:a[1]}));
+  fxrWrap('animateDrawFromDeck',a=>({k:'draw',p:a[0]}));
+  fxrWrap('showTurnBanner',a=>({k:'banner',mine:!!a[0],label:a[1]||null,cls:a[2]||null}));
+  if(typeof SFX!=='undefined') FXR_SFX.forEach(n=>{ const f=SFX[n]; if(typeof f!=='function'||f._fxr) return;
+    const w=function(...x){ if(_fxrDepth===0&&fxrCanSend()) fxrSend({k:'sfx',n}); return f.apply(this,x); }; w._fxr=true; SFX[n]=w; });
+}
+window.addEventListener('load',()=>{ try{ fxrInstall(); }catch(e){ console.warn('[FXR] install',e); } });
+// Where each board card sat just before a remote update — so a death / Rift / hit that lands after the card
+// already left still plays in the right spot.
+const _fxrCache=new Map();
+function fxrSnapshot(){
+  const b=fxBoard(); if(!b) return; const now=Date.now();
+  b.querySelectorAll('[data-uid]').forEach(el=>{ if(el.classList.contains('fxr-anchor')) return; const r=el.getBoundingClientRect(); if(!r.width||!r.height) return;
+    const img=el.querySelector('img'); _fxrCache.set(String(el.getAttribute('data-uid')),{x:r.left,y:r.top,w:r.width,h:r.height,src:img?img.src:'',cid:el.getAttribute('data-cid')||'',t:now}); });
+  for(const [k,v] of _fxrCache) if(now-v.t>5000) _fxrCache.delete(k);
+}
+function fxrAnchor(uid){
+  if(uid==null) return null; const live=fxElUid(uid); if(live) return live;
+  const c=_fxrCache.get(String(uid)), b=fxBoard(); if(!c||!b) return null;
+  const d=document.createElement('div'); d.className='fxr-anchor'; d.setAttribute('data-uid',uid); if(c.cid) d.setAttribute('data-cid',c.cid);
+  d.style.cssText=`position:fixed;left:${c.x}px;top:${c.y}px;width:${c.w}px;height:${c.h}px;pointer-events:none;opacity:0;z-index:1`;
+  if(c.src){ const i=document.createElement('img'); i.src=c.src; i.alt=''; i.style.cssText='width:100%;height:100%;object-fit:cover'; d.appendChild(i); }
+  b.appendChild(d); setTimeout(()=>d.remove(),2600); return d;
+}
+// A prize the viewer didn't take: face-down card lifts off the victim's pile and flies to the taker's hand.
+function fxPrizeTaken(victim,claimer){
+  if(!fxOn()) return; const pile=document.getElementById('p'+victim+'-prizes'); if(!pile) return;
+  const r=fxRect(pile), to=fxHandRect(claimer); const url=(typeof cardBackFor==='function')?cardBackFor(victim):null;
+  const h=Math.max(60,Math.min(r.h||90,110)), w=h*.7;
+  const g=document.createElement('div'); g.className='fx-ghost card'; g.style.left=(r.cx-w/2)+'px'; g.style.top=(r.cy-h/2)+'px'; g.style.width=w+'px'; g.style.height=h+'px';
+  if(url){ const i=document.createElement('img'); i.src=url; i.draggable=false; g.appendChild(i); } fxLayer().appendChild(g);
+  g.animate([{transform:'translate(0,0) scale(1) rotate(0)',opacity:1},{transform:'translate(0,-34px) scale(1.25) rotate(-6deg)',opacity:1,offset:.32},
+    {transform:`translate(${to.cx-r.cx}px,${to.cy-r.cy}px) scale(.55) rotate(8deg)`,opacity:.15}],{duration:900,easing:'cubic-bezier(.3,.7,.3,1)',fill:'forwards'});
+  setTimeout(()=>g.remove(),950); fxRing(r.cx,r.cy,'#e8c570',Math.max(r.w,r.h)*.9,520,'thin'); fxSparks(r.cx,r.cy,'#f5d77a',8,50,500);
+  if(typeof SFX!=='undefined'&&SFX.cardFlip) try{ SFX.cardFlip(); }catch(e){}
+  if(typeof holdBeat==='function') holdBeat(900);
+}
+function fxrLand(uid,kind){
+  if(!fxOn()||uid==null) return; _fxLand[uid]={t:Date.now(),kind:kind||'char'}; let n=0;
+  const iv=setInterval(()=>{ const e=fxElUid(uid); if(e||++n>30){ clearInterval(iv); if(e){ (_fxrOrig.fxMarkLand||fxMarkLand)(uid,kind); fxApplyLand(e,uid); } } },60);
+}
+function fxrBanner(d,M,spec){
+  const YOU='YOUR TURN', OPP="OPPONENT'S TURN", show=_fxrOrig.showTurnBanner||showTurnBanner;
+  if(spec){ const who=M(d.mine?1:2), std=!d.label||d.label===YOU||d.label===OPP;
+    const nm=String((G&&G.players&&G.players[who]&&G.players[who].name)||'PLAYER').replace(/\s*\((You|Opponent)\)/g,'').toUpperCase();
+    show(who===1, std?nm+"'S TURN":d.label, who===1?'your-turn':'opp-turn'); return; }
+  const lab=d.label===YOU?OPP:(d.label===OPP?YOU:d.label), cls=d.cls==='your-turn'?'opp-turn':(d.cls==='opp-turn'?'your-turn':d.cls);
+  show(!d.mine, lab||undefined, cls||undefined);
+}
+function fxrPrize(d,M,spec){
+  const cl=M(d.claimer), vi=M(d.victim);
+  if(!spec&&cl===1&&d.cid&&typeof showPrizeReveal==='function'){ G._prizeRevealBackOf=vi; showPrizeReveal(d.cid,1,null,d.v||'none'); return; }
+  fxPrizeTaken(vi,cl);
+}
+// Play a relayed moment. M maps the sender's seat to this screen's seat.
+function fxrPlay(d,M,spec){
+  if(!d||!d.k||typeof G==='undefined'||!G||!G.players) return;
+  const O=_fxrOrig, call=(n,...a)=>{ const f=O[n]||window[n]; return typeof f==='function'?f(...a):undefined; };
+  const el=uid=>uid==null?null:fxrAnchor(uid);
+  _fxrPlaying++;
+  try{
+    try{ const L=(window._fxrSeen=window._fxrSeen||[]); L.push(d.k); if(L.length>120) L.shift(); }catch(e){}
+    switch(d.k){
+      case 'attack':
+        if(d.ah||d.th){ if(!d.ah) el(d.a); if(!d.th) el(d.t); call('fxStrikeAt',d.ah?{herald:M(d.ah)}:d.a,d.th?{herald:M(d.th)}:d.t,d.cid||undefined); }
+        else { el(d.a); el(d.t); call('animateAttack',d.a,d.t); }
+        break;
+      case 'land': fxrLand(d.uid,d.kind); break;
+      case 'equip': el(d.uid); call('fxEquip',d.cid,d.uid,M(d.p)); break;
+      case 'heal': el(d.uid); call('fxHeal',d.uid,d.amt); break;
+      case 'slash': el(d.uid); call('fxSlash',d.uid,d.color||undefined); break;
+      case 'death': if(el(d.uid)) call('fxDeath',d.uid,M(d.p)); else if(typeof SFX!=='undefined'&&SFX.death) SFX.death(); break;
+      case 'rift': { const e=el(d.uid); if(e) call('fxRift',e,M(d.p)); break; }
+      case 'status': el(d.uid); call('showStatusFx',d.uid,d.type); break;
+      case 'dmg': el(d.uid); call('showDmgPopup',M(d.p),d.text,d.uid||null); break;
+      case 'healpop': el(d.uid); call('showHealPopup',M(d.p),d.text,d.uid||null); break;
+      case 'transform': if(d.from&&d.to&&DB[d.from]&&DB[d.to]) call('playTransformAnimation',d.from,d.to,null); break;
+      case 'draw': call('animateDrawFromDeck',M(d.p)); break;
+      case 'banner': fxrBanner(d,M,spec); break;
+      case 'prize': fxrPrize(d,M,spec); break;
+      case 'sfx': if(typeof SFX!=='undefined'&&FXR_SFX.has(d.n)&&typeof SFX[d.n]==='function') SFX[d.n](); break;
+    }
+  }catch(e){ console.warn('[FXR]',d.k,e); } finally{ _fxrPlaying--; }
+}
+
 // KILLING INTENT (Crimson): +2 to damage it deals to a character that already has damage on it.
 function killingIntent(src, tgt){
   if(!src||!tgt||!hasAbilityLabel(src,'Killing Intent')||!isChar(DB[tgt.cid])) return 0;
@@ -12050,7 +12190,10 @@ function resolvePrizeClaim(victim, claimer, index){
   // Reveal animation, then the CLAIMER gains the card — with the VICTIM's exact finish.
   const prizeVariant = (vpl.prizesFoil && vpl.prizesFoil[index]!=null) ? vpl.prizesFoil[index] : 'none';
   G._prizeRevealBackOf=victim;
-  showPrizeReveal(cid, claimer, ()=>{
+  if(typeof fxrSend==='function') fxrSend({k:'prize',claimer,victim,cid:claimer===1?null:cid,v:claimer===1?null:prizeVariant});
+  const _reveal=(G.onlineMode&&!G.is2v2&&claimer!==1&&typeof fxPrizeTaken==='function')
+    ?((c0,c1,done)=>{ fxPrizeTaken(victim,claimer); setTimeout(done,950); }):showPrizeReveal;
+  _reveal(cid, claimer, ()=>{
     const fc=newFC(cid); if(fc){ fc.variant=prizeVariant; cpl.hand.push(fc); }
     log(`🎖 ${pname(claimer)} takes a Prize from ${pname(victim)}: ${DB[cid]?.name||cid}! (${pname(victim)}: ${maxPrizes-vpl.prizesClaimed} prizes left)`,'gain');
     checkHandLimit(claimer);
@@ -19094,7 +19237,8 @@ function _rollBusy(){ return !!_rollCur || _rollQ.length>0; }
 function _rollActor(){ try{ return (typeof G!=='undefined'&&G&&G.activePlayer)||1; }catch(e){ return 1; } }
 function _rollIsMine(){ try{ if(!G||G._aiAuto) return false; if(typeof gameMode!=='undefined'&&gameMode==='pvp'&&!G.onlineMode) return true; return typeof iControlActive==='function' ? iControlActive() : G.activePlayer===1; }catch(e){ return true; } }
 function _rollWho(remote){ if(remote) return (typeof pname==='function'?pname(2):'Opponent'); try{ if(typeof gameMode!=='undefined'&&gameMode==='pvp'&&!G.onlineMode) return (typeof pname==='function'?pname(_rollActor()):''); return _rollIsMine()?'YOU':(typeof pname==='function'?pname(_rollActor()):'AI'); }catch(e){ return ''; } }
-function _rollSend(e){ try{ if(!e.remote&&G&&G.onlineMode&&_rollIsMine()&&typeof sendGameAction==='function') sendGameAction('roll_show',{kind:e.kind,title:e.title,desc:e.desc,heads:e.heads,flips:e.flips,results:e.results,sides:e.sides,quick:!!e.quick}); }catch(err){} }
+// build 10.16: every roll made on this screen is mirrored (was: only rolls of the active player's own client), with the roller's seat
+function _rollSend(e){ try{ if(!e.remote&&G&&G.onlineMode&&!G._aiAuto&&(G.is2v2?_rollIsMine():true)&&typeof sendGameAction==='function') sendGameAction('roll_show',{kind:e.kind,title:e.title,desc:e.desc,heads:e.heads,flips:e.flips,results:e.results,sides:e.sides,quick:!!e.quick,seat:(typeof _rollActor==='function'?_rollActor():1)}); }catch(err){} }
 function _rollReset(){ _rollQ=[]; _rollCur=null; _rollTimers.forEach(t=>clearTimeout(t)); _rollTimers=[]; const ov=document.getElementById('roll-ov'); if(ov){ ov.classList.remove('open'); } }
 function _rollEnsure(){
   let ov=document.getElementById('roll-ov'); if(ov) return ov;
@@ -19274,10 +19418,14 @@ function trigShow(o){
 function _trigChoose(use){ if(!_trig||!_trig.ask) return; const t=_trig; _trig=null; trigHide(); if(t.onDone) try{ t.onDone(use); }catch(e){ console.error('[trig]',e); } }
 function _trigClose(){ if(!_trig) return; const t=_trig; _trig=null; if(t.timer) clearTimeout(t.timer); trigHide(); if(t.onDone) try{ t.onDone(true); }catch(e){ console.error('[trig]',e); } }
 function trigHide(){ const ov=document.getElementById('trig-ov'); if(ov) ov.classList.remove('open','ask','dual'); if(typeof _beatTick==='function') _beatTick(); }
-function _trigSend(o){ try{ if(G&&G.onlineMode&&seqIsLocalHuman(o.p)&&typeof sendGameAction==='function') sendGameAction('trig_show',{cardId:o.cid,label:o.label,text:o.text,kind:o.kind,outcome:o.outcome||''}); }catch(e){} }
-function trigShowRemote(d){
+// build 10.16: 1v1 banners are mirrored for BOTH players' cards (an opponent's trigger resolving on my screen
+// reaches its owner); seat = the card owner from the sender's view.
+function _trigSend(o){ try{ if(G&&G.onlineMode&&(G.is2v2?seqIsLocalHuman(o.p):!G._aiAuto)&&typeof sendGameAction==='function') sendGameAction('trig_show',{cardId:o.cid,label:o.label,text:o.text,kind:o.kind,outcome:o.outcome||'',seat:o.p}); }catch(e){} }
+function trigShowRemote(d,P,whoOverride){
   if(!d||!d.cardId) return;
-  seqPush(done=>{ if(spd('banner')<=0){ done(); return; } trigShow({cid:d.cardId,p:2,label:d.label,text:d.text,kind:d.kind,outcome:d.outcome,who:(typeof pname==='function'?pname(2):'Opponent'),ask:false,ms:spd('banner'),onDone:()=>done()}); });
+  const p=P||((d.seat===2&&G&&!G.is2v2)?1:2);
+  const who=whoOverride||(p===1?'YOU':(typeof pname==='function'?pname(2):'Opponent'));
+  seqPush(done=>{ if(spd('banner')<=0){ done(); return; } trigShow({cid:d.cardId,p,label:d.label,text:d.text,kind:d.kind,outcome:d.outcome,who,ask:false,ms:spd('banner'),onDone:()=>done()}); });
 }
 
 // seqAbility — show an ability, ask "you may" abilities, then resolve it, in order.
@@ -20013,9 +20161,9 @@ function _rollToast(e, remote){
   setTimeout(()=>{ t.classList.add('out'); setTimeout(()=>t.remove(),400); },3200+(flips.length-1)*120);
 }
 // Online: the other client shows rolls made by its opponent.
-function rollShowRemote(d){
+function rollShowRemote(d,whoOverride){
   if(!d) return;
-  const who=(typeof pname==='function'?pname(2):'Opponent');
+  const who=whoOverride||((d.seat===2&&G&&!G.is2v2)?'YOU':(typeof pname==='function'?pname(2):'Opponent'));
   if(d.quick){ _rollToast({kind:d.kind||'coin',title:d.title,desc:d.desc,heads:!!d.heads,flips:d.flips,who},true); return; }
   _rollQ.push({kind:d.kind,title:d.title,desc:d.desc,heads:!!d.heads,results:d.results||[1],sides:d.sides||6,auto:true,who,remote:true});
   if(!_rollCur) _rollNext();
@@ -20208,7 +20356,7 @@ function _ctApply(firstWho){
     G.firstPlayer=G.activePlayer;
     G.phase='draw'; G.phasesDone=[]; G.selectedAttacker=null; G.heraldAttacking=false;
     renderAll();
-    if(typeof showTurnBanner==='function')showTurnBanner(G.activePlayer===1);
+    if(typeof showTurnBanner==='function'){ if(typeof fxrQuiet==='function') fxrQuiet(()=>showTurnBanner(G.activePlayer===1)); else showTurnBanner(G.activePlayer===1); }
     if(G.onlineMode){ if(_onlineRole==='host')broadcastGameState(); return; }
     if(gameMode!=='pvp'&&G.activePlayer===2) aiLater(runAI,700);
   },1300);
@@ -20836,7 +20984,8 @@ async function saveCosCatalog(){
 }
 function cosOwned(id){ const it=cosItem(id); return !!(it&&(it.free||(it.tier==='default'&&!it.starter)||_cos.owned[id])); }
 function cosEquipped(type,p){
-  if(p===undefined||p===1){ const id=_cos.equipped[type]||COS_DEFAULT_EQUIP[type]; return cosOwned(id)?id:COS_DEFAULT_EQUIP[type]; }
+  if((p===undefined||p===1)&&!(typeof G!=='undefined'&&G&&G.spectating&&G.cosBySeat&&G.cosBySeat[1])){ const id=_cos.equipped[type]||COS_DEFAULT_EQUIP[type]; return cosOwned(id)?id:COS_DEFAULT_EQUIP[type]; }
+  if(p===undefined) p=1;
   const seat=(typeof G!=='undefined'&&G&&G.cosBySeat&&G.cosBySeat[p])||null;
   const oc=seat||(p===2&&typeof G!=='undefined'&&G&&G.oppCos)||{}; const id=oc[type]; return (id&&cosItem(id))?id:COS_DEFAULT_EQUIP[type];
 }
@@ -20918,7 +21067,7 @@ function trimBackArt(url){
     _backTrim[url]=out.toDataURL('image/webp',.92);
     // repaint everything that shows a back
     try{ applyCosmetics(); }catch(e){}
-    try{ if(typeof G!=='undefined'&&G&&G.players){ renderDeckPile(1); renderDeckPile(2); renderP2Backs(); } }catch(e){}
+    try{ if(typeof G!=='undefined'&&G&&G.players){ renderDeckPile(1); renderDeckPile(2); renderP2Backs(); renderPrizes(1); renderPrizes(2); } }catch(e){}
     try{ if(document.getElementById('mm-loadout')) mmRenderLoadout(); if(_shopTab==='cos') renderCosShop(); }catch(e){}
   }catch(e){ _backTrim[url]=url; } };
   im.onerror=()=>{ _backTrim[url]=url; };
@@ -20952,7 +21101,7 @@ function applyIdentCos(p){
 }
 const AI_COS={ entrance:'ent_abyss' };
 function cosHelloSend(){ if(!G||!G.onlineMode||typeof sendGameAction!=='function') return; const eq={}; Object.keys(COS_TYPES).forEach(t=>eq[t]=cosEquipped(t,1)); let n=0; const iv=setInterval(()=>{ sendGameAction('cos_hello',{cos:eq}); if(++n>=4) clearInterval(iv); },400); }
-function cosHelloRecv(d){ if(!G) return; G.oppCos=(d&&d.cos)||{}; applyCosmetics(); if(typeof renderP2Backs==='function') renderP2Backs(); if(typeof renderDeckPile==='function') renderDeckPile(2); }
+function cosHelloRecv(d){ if(!G) return; G.oppCos=(d&&d.cos)||{}; applyCosmetics(); if(!G.players) return; try{ if(typeof renderP2Backs==='function') renderP2Backs(); if(typeof renderDeckPile==='function') renderDeckPile(2); if(typeof renderPrizes==='function') renderPrizes(2); }catch(e){} }
 // ── SHOP TAB ──
 let _cosFilter='all', _cosOwnedOnly=false;
 function renderCosShop(){
@@ -22405,12 +22554,14 @@ function renderAll(){
     renderField(p);
     renderLocZone(p);
   });
-  renderP2Backs();renderHand();renderPhaseBar();renderBanner();renderLog();
-  renderHeraldSlot(1);renderHeraldSlot(2);
-  renderColorEnergyBreakdown(1);renderColorEnergyBreakdown(2);
-  renderDeckPile(1);renderDeckPile(2);
-  renderRiftZone(1);renderRiftZone(2);
-  renderLifeForce();
+  // build 10.16: one failing piece can't leave later zones (deck piles, Rift…) stale
+  const _rs=(f,...a)=>{ try{ f(...a); }catch(e){ console.error('[render]',(f&&f.name)||'?',e); } };
+  _rs(renderP2Backs);_rs(renderHand);_rs(renderPhaseBar);_rs(renderBanner);_rs(renderLog);
+  _rs(renderHeraldSlot,1);_rs(renderHeraldSlot,2);
+  _rs(renderColorEnergyBreakdown,1);_rs(renderColorEnergyBreakdown,2);
+  _rs(renderDeckPile,1);_rs(renderDeckPile,2);
+  _rs(renderRiftZone,1);_rs(renderRiftZone,2);
+  _rs(renderLifeForce);
   if(typeof fitFields==='function') fitFields();
   // Color identity pips
   [1,2].forEach(p=>{
@@ -22595,7 +22746,7 @@ function updateHandLimitDisplay(p){
   const pl=G.players[p];const count=pl.hand.length;
   const cls=count>=MAX_HAND?'hand-limit-danger':count>=MAX_HAND-2?'hand-limit-warn':'hand-limit-ok';
   if(p===1){const el=document.getElementById('p1-hand-limit-display');if(el){el.className=cls;el.textContent=`${count}/${MAX_HAND}`;}}
-  if(p===2){const el=document.getElementById('p2-hand-limit');if(el){el.className='hand-limit-bar '+cls;el.innerHTML=`Hnd:<span id="p2-hand-count">${count}</span>/13`;}}
+  if(p===2){const el=document.getElementById('p2-hand-limit');if(el){el.className='hand-limit-bar '+cls;el.innerHTML=`Hnd:<span id="p2-hand-count">${count}</span>/${MAX_HAND}`;}}
 }
 
 function renderPrizes(p){
@@ -26832,6 +26983,7 @@ async function startOnlineMatch(){
 
 function enterOnlineGame(room){
   _onlineRoom=room;
+  if(typeof fxrInstall==='function') try{ fxrInstall(); }catch(e){}
   if(typeof prStop==='function') prStop();
   if(typeof wgOnMatchStart==='function') try{ wgOnMatchStart(room); }catch(e){}
   if(typeof spOnMatchStart==='function') try{ spOnMatchStart(room); }catch(e){}
@@ -26950,6 +27102,9 @@ function onReceiveGameAction(payload){
     case 'fusion_fx':
       if(d.cardId) playFusionAnimation(d.a, d.b, d.cardId, d.m, d.variant);
       break;
+    case 'fx': // build 10.16 — the opponent's attacks, deaths, pop-ups, Rift, transforms… (sender's seat 1 = my seat 2)
+      if(typeof fxrPlay==='function') fxrPlay(d, c=>c===1?2:(c===2?1:c), false);
+      break;
     case 'coin_call': case 'coin_result': case 'coin_choice':
       if(G&&G._entrancePlaying){ (G._ctQueue=G._ctQueue||[]).push([payload.action,d]); break; }
       if(typeof ctOnRemote==='function') ctOnRemote(payload.action,d);
@@ -26995,6 +27150,7 @@ function broadcastGameState(){
     winner:G.winner?(isHost?G.winner:(G.winner===1?2:1)):null,
     winReason:G.winReason||null,
     forfeited:G.forfeited||false,
+    cos:(typeof COS_TYPES!=='undefined'&&typeof cosEquipped==='function')?Object.fromEntries(Object.keys(COS_TYPES).map(t=>[t,cosEquipped(t,1)])):undefined,
     players:{}
   };
   if(isHost){
@@ -27096,6 +27252,9 @@ function onReceiveGameState(payload){
     setTimeout(()=>onMatchEnd(localWinner===1),600);
   }
   clearDisconnectTimer();
+  // build 10.16: the opponent's cosmetics ride on every state (a missed cos_hello can't leave mismatched card backs)
+  if(incoming.cos&&typeof incoming.cos==='object'&&typeof cosHelloRecv==='function'){ const _ck=JSON.stringify(incoming.cos); if(_ck!==G._oppCosKey){ G._oppCosKey=_ck; cosHelloRecv({cos:incoming.cos}); } }
+  if(typeof fxrSnapshot==='function') try{ fxrSnapshot(); }catch(e){}
   _applyingRemoteState=true;
   renderAll();
   _applyingRemoteState=false;
@@ -32465,7 +32624,7 @@ async function wgAdminUnlock(on){
 // Spectators get a read-only board: card backs for both hands, no controls.
 // ═══════════════════════════════════════════════════════════════════════
 const _sp={myKey:Math.random().toString(36).slice(2,12),liveCh:null,liveReady:false,live:[],liveOpen:false,host:null,watch:null,chipN:0};
-const SP_FX=new Set(['instant_reveal','ability_reveal','card_play','fusion_fx']);
+const SP_FX=new Set(['instant_reveal','ability_reveal','card_play','fusion_fx','fx','roll_show','trig_show']);
 function spSB(){ try{ const sb=getOnlineSB(); return (sb&&sb.channel)?sb:null; }catch(e){ return null; } }
 function spRandId(){ const a='abcdefghjkmnpqrstuvwxyz23456789'; let s=''; for(let i=0;i<14;i++) s+=a[Math.floor(Math.random()*a.length)]; return s; }
 function spEsc(s){ return (typeof mlEsc==='function')?mlEsc(s):String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
@@ -32584,6 +32743,7 @@ function spSnapshot(){
     names:{1:strip(G.onlineMyName||G.players[1].name),2:strip(G.onlineOpponentName||G.players[2].name)},
     av:{1:av(window._playerAvatarUrl),2:av(typeof _onlineOpponentAvatar!=='undefined'?_onlineOpponentAvatar:null)},
     wager:spWagerTxt(),n:H?H.count:0,
+    cos:(typeof COS_TYPES!=='undefined'&&typeof cosEquipped==='function')?{1:Object.fromEntries(Object.keys(COS_TYPES).map(t=>[t,cosEquipped(t,1)])),2:Object.fromEntries(Object.keys(COS_TYPES).map(t=>[t,cosEquipped(t,2)]))}:null,
     log:(G.log||[]).slice(-30).map(e=>({m:String(e.m||'').replace(re,''),t:e.t})),
     p:{1:pub(G.players[1]),2:pub(G.players[2])}};
 }
@@ -32651,6 +32811,8 @@ function spApply(s){
   G.turn=s.turn||1; G.activePlayer=L(s.ap===2?2:1); G.phase=s.phase||'main'; G.phasesDone=s.pd||[];
   G.gameMode=s.mode||'prize'; G.prizeCount=s.pc||6; G.startingLF=s.lf||100; G.heraldAttacking=!!s.ha;
   G.selectedAttacker=s.sel||null; G.log=Array.isArray(s.log)?s.log:[];
+  // build 10.16: each player's card back / playmat / frame follow them to whichever side they're watched from
+  if(s.cos&&s.cos[1]&&s.cos[2]){ const _ck=JSON.stringify(s.cos)+(W.flip?'f':''); if(_ck!==W.cosKey){ W.cosKey=_ck; G.cosBySeat={[L(1)]:s.cos[1],[L(2)]:s.cos[2]}; try{ applyCosmetics(); }catch(e){} } }
   [1,2].forEach(c=>{
     const src=s.p[c]||{}, dst=G.players[L(c)];
     dst.name=(s.names&&s.names[c])||(c===1?'Host':'Guest');
@@ -32669,6 +32831,7 @@ function spApply(s){
   spAvatars(s);
   const ht=document.getElementById('hand-dock-title'); if(ht) ht.textContent=(G.players[1].name||'Player').toUpperCase()+"'S HAND";
   if(s.over&&!W.over){ W.over=true; G.gameOver=true; G.winner=L(s.winner===2?2:1); G.winReason=s.reason||''; }
+  if(!first&&typeof fxrSnapshot==='function') try{ fxrSnapshot(); }catch(e){}
   try{ renderAll(); }catch(e){ console.warn('[SPEC] render',e); }
   spChip(0);
   spRenderBar();
@@ -32694,11 +32857,13 @@ function spRenderBar(){
   bar.innerHTML=`<span class="sp-bar-tag">👁 SPECTATING</span>
     <div class="sp-bar-mid"><div class="sp-bar-vs"><b>${spEsc(s.names[bot])}</b> <span>vs</span> <b>${spEsc(s.names[top])}</b> <i>${spEsc(spModeName(s.mode,s.pc))}${s.n?` · 👁 ${s.n}`:''}</i></div>
       <div class="sp-bar-st">${status}</div>${wager}</div>
-    <button class="sp-bar-btn" onclick="spFlip()" title="Swap which player is at the bottom">⇅</button>
+    <div class="sp-view" role="group" aria-label="Watch from"><span>VIEW</span><button class="sp-bar-btn${!W.flip?' on':''}" onclick="spView(1)" title="Watch from ${spEsc(s.names[1])}'s side">${spEsc(s.names[1])}</button><button class="sp-bar-btn${W.flip?' on':''}" onclick="spView(2)" title="Watch from ${spEsc(s.names[2])}'s side">${spEsc(s.names[2])}</button></div>
     ${(s.over||W.lost)?'<button class="sp-bar-btn" onclick="spLeave(true)">MORE LIVE</button>':''}
     <button class="sp-bar-btn leave" onclick="spLeave()">LEAVE</button>`;
 }
 function spFlip(){ const W=_sp.watch; if(!W||!W.s) return; W.flip=!W.flip; const s=W.s; W.over=false; spApply(s); }
+// build 10.16: watch from either player's side (1 = host at the bottom, 2 = guest at the bottom)
+function spView(c){ const W=_sp.watch; if(!W||!W.s) return; if(W.flip===(c===2)) return; spFlip(); }
 function spFxRecv(p){
   const W=_sp.watch; if(!W||!W.got||!p||!p.d) return;
   const side=W.flip?(p.w===1?2:1):(p.w===2?2:1), d=p.d;
@@ -32707,6 +32872,15 @@ function spFxRecv(p){
     else if(p.a==='fusion_fx'&&d.cardId&&typeof playFusionAnimation==='function') playFusionAnimation(d.a,d.b,d.cardId,d.m,d.variant);
     else if(p.a==='instant_reveal'&&d.cardId&&typeof showInstantReveal==='function') showInstantReveal(d.cardId,side);
     else if(p.a==='ability_reveal'&&d.cardId&&typeof showAbilityReveal==='function') showAbilityReveal(d.cardId,side,d.label,d.text);
+    else {
+      // build 10.16: seats in the payload are the sender's view → canonical (host = 1) → this viewer's side
+      const M=c=>{ if(c!==1&&c!==2) return c; const canon=(p.w===2)?(c===1?2:1):c; return W.flip?(canon===1?2:1):canon; };
+      const nm=c=>String((W.s&&W.s.names&&W.s.names[c])||'').replace(/\s*\((You|Opponent)\)/g,'');
+      const canonOf=c=>(p.w===2)?(c===1?2:1):c;
+      if(p.a==='fx'&&typeof fxrPlay==='function') fxrPlay(d,M,true);
+      else if(p.a==='roll_show'&&typeof rollShowRemote==='function') rollShowRemote(d,nm(canonOf(d.seat===2?2:1))||nm(p.w));
+      else if(p.a==='trig_show'&&typeof trigShowRemote==='function'){ const own=d.seat===2?2:1; trigShowRemote(d,M(own),nm(canonOf(own))); }
+    }
   }catch(e){}
 }
 function spStopWatch(){
