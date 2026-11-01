@@ -6917,6 +6917,18 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 .sp-live-vs{font-size:12px;color:#c4c0dc}.sp-live-vs b{color:#f3f0ff;font-weight:600}.sp-live-vs span{color:#6b7280}
 .sp-live-meta{font-size:10px;color:#8b8fa8}.sp-live-meta .sp-wg{color:#f0d58a}
 .sp-allow{display:flex;align-items:center;gap:8px;margin-top:9px;font-size:10px;color:#c4c0dc;cursor:pointer}
+/* Open Rooms (build 10.15) */
+.pr-list{max-height:280px;overflow-y:auto;margin-top:6px}
+.pr-row{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;padding:9px 0;border-top:1px solid rgba(255,255,255,.06)}
+.pr-row .wg-btn{grid-row:1/3;grid-column:2}
+.pr-row .wg-btn:disabled{opacity:.4;cursor:not-allowed}
+.pr-host{font-size:12px;color:#f3f0ff;min-width:0;overflow-wrap:anywhere}.pr-host b{font-weight:600}
+.pr-meta{font-size:10px;color:#8b8fa8}
+.pr-warn{color:#fca5a5}
+.pr-rd{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;color:#c4b5fd;border:1px solid rgba(167,139,250,.45);border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle;white-space:nowrap}
+.pr-empty{padding:16px 6px;text-align:center;color:#6b6b8a;font-size:11px}
+.pr-note{font-size:9px;color:#8b8fa8;margin-top:6px}
+.pr-note:empty{display:none}
 .sp-allow input{accent-color:#c79a3a;width:14px;height:14px;margin:0}
 .sp-allow small{color:#6b7280;font-size:9px}
 </style>
@@ -7422,7 +7434,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.14 · The Dark Hold · Batman (DCeased) · Iron Fist</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.15 · Open Rooms · Random decks online</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -8409,8 +8421,23 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.14'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.15'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.15', date:'2026-11-01',
+    cards:[],
+    abilities:[],
+    screens:[
+      "ONLINE LOBBY ('Private Room' menu item — title unchanged, subtitle now 'PUBLIC OR PRIVATE'): top card 🃏 YOUR DECK (one picker used for create, join-from-list and join-with-code; remembered in loc_online_deck). Then 🌐 OPEN ROOMS (live list, newest last: host name, '🎲 RANDOM DECK' tag, mode line e.g. '🏆 Prize · 6 Prizes', a red 'build X · you're on Y' note and a disabled JOIN when builds differ; your own room is never listed). Then 🆕 CREATE A ROOM with a '🌐 Public room — List it in Open Rooms' checkbox (remembered in loc_room_public, default off). Then 🔑 JOIN WITH A CODE.",
+      "WAITING ROOM: a public room's label reads '🌐 PUBLIC ROOM — LISTED IN OPEN ROOMS' and the line under the code 'Anyone can join from Open Rooms, or share this code'. Player slots show a '🎲 RANDOM DECK' tag for a random-deck player. If the guest leaves, the host's seat goes back to 'Waiting for opponent…', START disables, the room is re-listed and a toast says 'Your opponent left the room.'",
+      "FIND MATCH → MATCH ROOMS → BROWSE ROOMS shows the same live Open Rooms list; '+ CREATE ROOM' makes a public room with the Find Match deck/mode/prizes. The deck picker there also offers 🎲 Random Deck when allowed (Quick Match too).",
+      "ADMIN → Game switches: new GLOBAL switch '🎲 Random decks online' (key online_random_decks)."],
+    data:[
+      "GAME_BUILD '10.15'. NO SQL. Online protocol changes — web and PC both need 10.15.",
+      "ADMIN SWITCH: app_settings key 'feature_flags' JSON gains online_random_decks (bool, default false). Admins always have it (isFeatureEnabled bypass). The web re-reads feature_flags whenever the online lobby opens. When the PC admin saves feature_flags it must write online_random_decks too, or it resets to off.",
+      "RANDOM DECK ONLINE: deck id '__random__' (shown as '🎲 Random Deck · new 60 cards each match' at the top of every online deck picker when allowed). It is dealt from the PUBLIC pool: generateRandomDeck({fair:true}) = the normal random deck but excluding any card with exclusive set or in disabled_cards, even for admins. HOST: room.host_deck '__random__' → host deals its own deck at match start. GUEST: deals once per join and sends the list as guest_deck_cards in player_joined (guest_deck stays '__random__'); a host given guest_deck '__random__' with no cards deals one itself. Random decks can be used in private rooms, public rooms, friend invites (1v1 and 2v2) and Quick Match. Wagers are unchanged (any stake that is normally allowed).",
+      "OPEN ROOMS (Realtime Presence, like 'vcu-live'): channel 'vcu-rooms', presence key = random per client. Every lobby viewer subscribes and lists presenceState() metas that have c and h. The HOST of a public 1v1 room track()s {c:roomCode, h:hostName, hid:hostUserId, b:GAME_BUILD, m:'prize'|'lifeforce'|'combined', pc:prizeCount, lf:lifeHP, rd:1 if host deck is random else 0, t0:createdMs}; re-track whenever mode/prizes/HP change. untrack() when a guest's player_joined is accepted, when the match starts, when the host cancels; track() again if the guest leaves. JOIN from the list = the normal join-by-code flow. The online_rooms 'public' column is no longer used.",
+      "JOIN BY CODE (both paths): select the row where code and status='waiting'; refuse your own room; update guest fields with .eq('status','waiting').select() — if no row came back and a re-read shows another guest_id, show 'That room just filled up.'",
+      "NEW ROOM EVENTS on 'room:<code>': guest_left {guest_id} (guest cancelled in the waiting room; host resets the row guest_id/guest_name/guest_deck=null, status 'waiting', re-lists if public; the guest no longer deletes the host's room). room_closed {} (host cancelled; a waiting guest goes back to the lobby with 'The host closed the room.'). room_full {to:userId} (host already has a different guest; that player goes back with 'That room just filled up.'). Hosts ignore a player_joined from a second guest and send room_full instead."] },
   { build:'10.14', date:'2026-11-01',
     cards:[{id:'the_dark_hold_bse', set:'base_set', number:'102/150', rarity:'legend', scan:'Sets/BASE SET/102-150 (The Dark Hold).png', newAbilities:['Forbidden Power','Pages of Sin'],
        note:"The Dark Hold · Equipment (persistent) · Black · Legend · cost 5 · subtypes Equipment · sym '📕'."},
@@ -9912,16 +9939,18 @@ async function loadDecksFromStorage(){
   try{const r=await window.storage.get('saved_decks');if(r&&r.value){SAVED_DECKS=JSON.parse(r.value);console.log('[DECKS] loaded from local:',Object.keys(SAVED_DECKS).length,'decks');}}catch(e){}
 }
 
-function generateRandomDeck(){
+function generateRandomDeck(opts){
+  // opts.fair (online): deal from the public pool — no disabled or exclusive cards, even for admins.
+  const _rdOk=(opts&&opts.fair)?(id=>!DB[id].exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id])):isCardPlayable;
   // Separate card pools
-  const heraldIds=Object.keys(DB).filter(id=>DB[id].type==='herald'&&!DB[id].isToken&&isCardPlayable(id));
+  const heraldIds=Object.keys(DB).filter(id=>DB[id].type==='herald'&&!DB[id].isToken&&_rdOk(id));
   const charIds=Object.keys(DB).filter(id=>
     ['base_char','char','team'].includes(DB[id].type)&&
-    !DB[id].transformOnly&&!DB[id].isToken&&!DB[id].exclusive&&!DB[id].fusion&&isCardPlayable(id)
+    !DB[id].transformOnly&&!DB[id].isToken&&!DB[id].exclusive&&!DB[id].fusion&&_rdOk(id)
   );
   const otherIds=Object.keys(DB).filter(id=>
     !['base_char','char','team','herald','token'].includes(DB[id].type)&&
-    !DB[id].isToken&&!DB[id].fusionMethodCard&&isCardPlayable(id)
+    !DB[id].isToken&&!DB[id].fusionMethodCard&&_rdOk(id)
   );
 
   console.log('[DECK] generateRandomDeck: heralds='+heraldIds.length+' chars='+charIds.length+' other='+otherIds.length);
@@ -10033,7 +10062,7 @@ function addTransformFormsToDeck(deck){
 }
 
 function getDeckList(deckId){
-  if(deckId==='__random__')return generateRandomDeck();
+  if(deckId==='__random__')return generateRandomDeck({fair:(typeof _onlineRoom!=='undefined'&&!!_onlineRoom)});
   if(typeof PRESET_DECKS!=='undefined' && PRESET_DECKS[deckId]) return [...PRESET_DECKS[deckId].cards];
   if(SAVED_DECKS[deckId]&&SAVED_DECKS[deckId].cards&&SAVED_DECKS[deckId].cards.length>0){
     return [...SAVED_DECKS[deckId].cards];
@@ -20416,7 +20445,7 @@ const MENU_TABS=[
   {id:'campaign',t:'Campaign',s:'STORY MODE',d:'March through the Courts. Each chapter ends at a Herald.',go:()=>enterCampaign()},
   {id:'match',t:'Find Match',s:'RANKED · ONLINE',d:'Queue for a ranked 1v1. Prize, Life Force or Combined rules.',go:()=>{showScreen('matchmaking-screen');openMatchmaking();}},
   {id:'ai',t:'VS AI',s:'PRACTICE',d:'Fight the CPU at your own pace. Pick a difficulty below.',chips:[['EASY','easy'],['MEDIUM','medium'],['HARD','hard']],go:()=>goToDeckSelect('medium')},
-  {id:'room',t:'Private Room',s:'INVITE A FRIEND',d:'Open a room, share the code, play anyone.',go:()=>{showScreen('online-lobby-screen');openOnlineLobby();}},
+  {id:'room',t:'Private Room',s:'PUBLIC OR PRIVATE',d:'Join an open room or make your own and share the code.',go:()=>{showScreen('online-lobby-screen');openOnlineLobby();}},
   {id:'team',t:'2v2 Team',s:'TEAM BATTLE',d:'Two Heralds a side. Shared Life, shared glory.',go:()=>open2v2Setup()},
   {id:'pvp',t:'Local PvP',s:'SAME SCREEN',d:'Pass the device. Hot-seat duel.',go:()=>goToDeckSelect('pvp')},
  ]},
@@ -20560,7 +20589,7 @@ function mmSelect(){ const it=mmTabItems(MENU_TABS[_mm.tab])[_mm.focus]; if(!it)
 function mmTip(){ const el=document.getElementById('mm-tip'); if(!el)return; el.innerHTML='<b>TIP</b> · '+MENU_TIPS[_mm.tipI%MENU_TIPS.length]; _mm.tipI++; }
 // ── quick play (remembers the last mode + deck) ──
 const MM_MODES={ easy:{ico:'🤖',t:'VS AI',s:'EASY · PRACTICE',go:()=>goToDeckSelect('easy')}, medium:{ico:'🤖',t:'VS AI',s:'MEDIUM · PRACTICE',go:()=>goToDeckSelect('medium')}, hard:{ico:'🤖',t:'VS AI',s:'HARD · PRACTICE',go:()=>goToDeckSelect('hard')},
-  pvp:{ico:'⚔',t:'Local PvP',s:'SAME SCREEN',go:()=>goToDeckSelect('pvp')}, match:{ico:'🔍',t:'Find Match',s:'RANKED · ONLINE',go:()=>{showScreen('matchmaking-screen');openMatchmaking();}}, room:{ico:'🌐',t:'Private Room',s:'INVITE A FRIEND',go:()=>{showScreen('online-lobby-screen');openOnlineLobby();}}, team:{ico:'👥',t:'2v2 Team',s:'TEAM BATTLE',go:()=>open2v2Setup()}, campaign:{ico:'🗺',t:'Campaign',s:'STORY MODE',go:()=>enterCampaign()} };
+  pvp:{ico:'⚔',t:'Local PvP',s:'SAME SCREEN',go:()=>goToDeckSelect('pvp')}, match:{ico:'🔍',t:'Find Match',s:'RANKED · ONLINE',go:()=>{showScreen('matchmaking-screen');openMatchmaking();}}, room:{ico:'🌐',t:'Private Room',s:'PUBLIC OR PRIVATE',go:()=>{showScreen('online-lobby-screen');openOnlineLobby();}}, team:{ico:'👥',t:'2v2 Team',s:'TEAM BATTLE',go:()=>open2v2Setup()}, campaign:{ico:'🗺',t:'Campaign',s:'STORY MODE',go:()=>enterCampaign()} };
 function mmRemember(mode,deckId){ try{ const o=JSON.parse(localStorage.getItem('loc_quick_play')||'{}'); if(mode)o.mode=mode; if(deckId!==undefined)o.deck=deckId; localStorage.setItem('loc_quick_play',JSON.stringify(o)); }catch(e){} }
 function mmQuickState(){ try{ return JSON.parse(localStorage.getItem('loc_quick_play')||'{}'); }catch(e){ return {}; } }
 function mmRenderQuick(){
@@ -25088,6 +25117,7 @@ let _adminToggles={
   achievements_enabled:true,
   battle_pass_enabled:false, // WIP — hidden by default
   campaign_enabled:true, // GLOBAL: when off, non-admins get a 'coming soon' popup (button stays visible/clickable)
+  online_random_decks:false, // GLOBAL (build 10.15): everyone may pick 🎲 Random Deck for online rooms / Find Match (admins always can)
   admin_unlimited_cards:true // this one is admin-only, stored locally
 };
 
@@ -25129,7 +25159,8 @@ async function saveAdminToggles(){
       events_enabled:_adminToggles.events_enabled,
       achievements_enabled:_adminToggles.achievements_enabled,
       battle_pass_enabled:_adminToggles.battle_pass_enabled,
-      campaign_enabled:_adminToggles.campaign_enabled
+      campaign_enabled:_adminToggles.campaign_enabled,
+      online_random_decks:_adminToggles.online_random_decks===true
     };
     await _celSB.from('app_settings').upsert(
       {key:'feature_flags',value:JSON.stringify(globalFlags),updated_at:new Date().toISOString()},
@@ -26512,29 +26543,24 @@ function openOnlineLobby(){
   if(typeof mmRemember==='function') mmRemember('room');
   document.getElementById('lobby-create-join').style.display='block';
   document.getElementById('lobby-waiting-room').style.display='none';
-  // Render deck selector
-  const sel=document.getElementById('lobby-deck-selector');
-  if(!sel)return;
-  const decks=Object.entries(SAVED_DECKS);
-  if(!decks.length){
-    sel.innerHTML='<div style="font-size:10px;color:#fca5a5;padding:8px;text-align:center">No saved decks. Build one in the Deck Builder first.</div>';
-    return;
+  const pub=document.getElementById('lobby-room-public'); if(pub){ try{ pub.checked=localStorage.getItem('loc_room_public')==='1'; }catch(e){} }
+  onlineRenderDeckSelect();
+  if(typeof prEnsure==='function'){ prEnsure(); prSync(); }
+  // Pick up the admin "Random decks online" switch if it changed since this player logged in.
+  if(typeof loadAdminToggles==='function'&&typeof _celSB!=='undefined'&&_celSB){
+    Promise.resolve(loadAdminToggles()).then(()=>{ const cj=document.getElementById('lobby-create-join'); if(cj&&cj.style.display!=='none') onlineRenderDeckSelect(); }).catch(()=>{});
   }
-  sel.innerHTML='<select id="lobby-deck-select" class="admin-input" style="width:100%">'
-    +decks.map(([id,d])=>'<option value="'+id+'">'+d.name+' ('+d.cards.length+' cards)</option>').join('')
-    +'</select>';
-  _onlineDeckId=decks[0][0];
-  const selectEl=document.getElementById('lobby-deck-select');
-  if(selectEl)selectEl.onchange=function(){_onlineDeckId=this.value;};
 }
 
-async function createOnlineRoom(){
+async function createOnlineRoom(opts){
+  opts=opts||{};
   const sb=getOnlineSB();
   if(!_celUserId){alert('You must be logged in.');return;}
-  const selEl=document.getElementById('lobby-deck-select');
-  if(selEl)_onlineDeckId=selEl.value;
-  if(!_onlineDeckId||!SAVED_DECKS[_onlineDeckId]){alert('Please select a deck first.');return;}
-  if(SAVED_DECKS[_onlineDeckId].cards.length<60){alert('Deck must have 60 cards to play online!');return;}
+  const deckId=opts.deck||document.getElementById('lobby-deck-select')?.value||_onlineDeckId;
+  const derr=onlineDeckError(deckId); if(derr){alert(derr);return;}
+  _onlineDeckId=deckId; onlineSetPick(deckId);
+  const pubEl=document.getElementById('lobby-room-public');
+  const isPublic=(opts.public!==undefined)?!!opts.public:!!(pubEl&&pubEl.checked);
   const code=generateRoomCode();
   try{
     const myName=document.getElementById('hud-username')?.textContent||'Player';
@@ -26547,40 +26573,52 @@ async function createOnlineRoom(){
       created_at:new Date().toISOString()
     }).select().single();
     if(error)throw error;
-    _onlineRoom=data;
+    _onlineRoom=data||{code,host_id:_celUserId,host_name:myName,host_deck:_onlineDeckId,status:'waiting'};
     _onlineRole='host';
+    prStop();
+    if(isPublic) _pr.mine={code,name:myName,random:_onlineDeckId==='__random__',t0:Date.now(),listed:false};
+    showScreen('online-lobby-screen');
     showWaitingRoom(code,myName,true);
+    if(opts.mode){
+      const gm=document.getElementById('lobby-game-mode'); if(gm) gm.value=opts.mode;
+      const pc=document.getElementById('lobby-prize-count'); if(pc&&opts.pc) pc.value=String(opts.pc);
+      updateLobbyModeSettings();
+    }
     subscribeToRoom(code);
+    if(isPublic) prList();
   }catch(e){alert('Failed to create room: '+e.message);}
 }
 
-async function joinOnlineRoom(){
+async function joinOnlineRoom(codeArg,deckArg){
   const sb=getOnlineSB();
   if(!_celUserId){alert('You must be logged in.');return;}
   const codeInput=document.getElementById('join-room-code-input');
-  const code=(codeInput?.value||'').trim().toUpperCase();
+  const code=String(codeArg||codeInput?.value||'').trim().toUpperCase();
   if(code.length!==6){alert('Enter a valid 6-letter room code.');return;}
-  // Need a deck too
-  const decks=Object.entries(SAVED_DECKS);
-  if(!decks.length){alert('You need at least one saved deck to join a match.');return;}
-  // Pick first valid 60-card deck
-  const validDeck=decks.find(([id,d])=>d.cards.length>=60);
-  if(!validDeck){alert('You need a 60-card deck to play online!');return;}
-  _onlineDeckId=validDeck[0];
+  const deckId=deckArg||document.getElementById('lobby-deck-select')?.value||onlineDefaultDeck();
+  const derr=onlineDeckError(deckId); if(derr){alert(derr);return;}
+  _onlineDeckId=deckId; onlineSetPick(deckId); _onlineRandomCards=null;
   const myName=document.getElementById('hud-username')?.textContent||'Player';
   try{
     const {data:room,error}=await sb.from('online_rooms').select('*').eq('code',code).eq('status','waiting').maybeSingle();
     if(error||!room){alert('Room not found or already started. Check the code and try again.');return;}
-    // Update room with guest
-    const {error:upErr}=await sb.from('online_rooms').update({
+    if(room.host_id&&room.host_id===_celUserId){alert("That's your own room.");return;}
+    // Only take the seat if it is still open (two players can click JOIN on the same public room).
+    const {data:upd,error:upErr}=await sb.from('online_rooms').update({
       guest_id:_celUserId,
       guest_name:myName,
       guest_deck:_onlineDeckId,
       status:'ready'
-    }).eq('code',code);
+    }).eq('code',code).eq('status','waiting').select();
     if(upErr)throw upErr;
+    if(Array.isArray(upd)&&!upd.length){
+      const {data:chk}=await sb.from('online_rooms').select('guest_id').eq('code',code).maybeSingle();
+      if(chk&&chk.guest_id&&chk.guest_id!==_celUserId){alert('That room just filled up. Pick another one.');return;}
+    }
     _onlineRoom={...room,guest_id:_celUserId,guest_name:myName,guest_deck:_onlineDeckId,status:'ready'};
     _onlineRole='guest';
+    if(typeof prStop==='function') prStop();
+    showScreen('online-lobby-screen');
     showWaitingRoom(code,myName,false);
     subscribeToRoom(code);
   }catch(e){alert('Failed to join room: '+e.message);}
@@ -26601,19 +26639,24 @@ function showWaitingRoom(code,myName,isHost){
       banner.innerHTML='👥 2v2 TEAM BATTLE — CO-OP <span style="font-weight:400;font-size:10px;color:#86efac;letter-spacing:1px">· Life only · no prizes · no win/loss rewards</span>';
     } else { banner.style.display='none'; }
   }
+  const _pub=isHost&&!is2v2&&typeof _pr!=='undefined'&&!!_pr.mine;
   document.getElementById('lobby-room-label').textContent=is2v2
     ? (isHost?'ROOM CODE — SHARE WITH YOUR TEAMMATE':'JOINING YOUR TEAMMATE')
-    : (isHost?'ROOM CODE — SHARE WITH OPPONENT':'ROOM CODE');
+    : (_pub?'🌐 PUBLIC ROOM — LISTED IN OPEN ROOMS':(isHost?'ROOM CODE — SHARE WITH OPPONENT':'ROOM CODE'));
+  const _sub=document.getElementById('lobby-room-sub');
+  if(_sub) _sub.textContent=_pub?'Anyone can join from Open Rooms, or share this code':(isHost?'Share this code with your opponent':'Waiting for the host to start the match');
   // Fill my slot
   if(isHost){
     document.getElementById('lobby-p1-name').textContent=myName+(is2v2?' (You · A1)':' (You)');
+    if(typeof prDeckTag==='function') document.getElementById('lobby-p1-name').insertAdjacentHTML('beforeend',prDeckTag(_onlineDeckId==='__random__'));
   } else {
     document.getElementById('lobby-p1-name').textContent=_onlineRoom.host_name+(is2v2?' (A1)':'');
+    if(typeof prDeckTag==='function') document.getElementById('lobby-p1-name').insertAdjacentHTML('beforeend',prDeckTag(_onlineRoom.host_deck==='__random__'));
     const p2slot=document.getElementById('lobby-player-2-slot');
     p2slot.className='pvp-player-slot filled';
     p2slot.innerHTML=
       '<div class="pvp-slot-avatar">'+(is2v2?'🤝':'⚔️')+'</div>'
-      +'<div style="flex:1"><div class="pvp-slot-name">'+myName+(is2v2?' (You · A2)':' (You)')+'</div>'
+      +'<div style="flex:1"><div class="pvp-slot-name">'+myName+(is2v2?' (You · A2)':' (You)')+((typeof prDeckTag==='function')?prDeckTag(_onlineDeckId==='__random__'):'')+'</div>'
       +'<div class="pvp-slot-status"><span class="pvp-conn-badge connected">CONNECTED</span></div></div>';
     const startBtn=document.getElementById('lobby-start-btn');
     if(startBtn){startBtn.disabled=true;startBtn.textContent=is2v2?'WAITING FOR HOST TO START...':'WAITING FOR HOST...';}
@@ -26631,7 +26674,11 @@ function subscribeToRoom(code){
       console.log('[ROOM] player_joined received:',payload.payload);
       if(_onlineRole==='host'){
         const {guest_name,guest_id,guest_deck,guest_avatar,guest_deck_cards,guest_deck_foils}=payload.payload;
+        // Seat already taken by someone else (two players hit JOIN on the same public room).
+        if(_onlineRoom&&_onlineRoom.status==='ready'&&_onlineRoom.guest_id&&guest_id&&guest_id!==_onlineRoom.guest_id){
+          try{ _onlineChannel.send({type:'broadcast',event:'room_full',payload:{to:guest_id}}); }catch(e){} return; }
         if(!rulesVersionOk(payload.payload.rules_version)){ rulesMismatch(payload.payload.rules_version,guest_name); return; }
+        if(typeof prUnlist==='function') prUnlist();
         if(guest_avatar)_onlineOpponentAvatar=guest_avatar;
         if(guest_name)window._onlineOpponentName=guest_name;
         _onlineRoom={..._onlineRoom,guest_id,guest_name,guest_deck,status:'ready'};
@@ -26642,7 +26689,7 @@ function subscribeToRoom(code){
         if(p2slot){
           p2slot.className='pvp-player-slot filled';
           p2slot.innerHTML='<div class="pvp-slot-avatar">'+(_is2v2?'🤝':'⚔️')+'</div>'
-            +'<div style="flex:1"><div class="pvp-slot-name">'+guest_name+(_is2v2?' (Teammate · A2)':'')+'</div>'
+            +'<div style="flex:1"><div class="pvp-slot-name">'+guest_name+(_is2v2?' (Teammate · A2)':'')+((typeof prDeckTag==='function')?prDeckTag(guest_deck==='__random__'):'')+'</div>'
             +'<div class="pvp-slot-status"><span class="pvp-conn-badge connected">CONNECTED</span></div></div>';
         }
         const startBtn=document.getElementById('lobby-start-btn');
@@ -26706,6 +26753,16 @@ function subscribeToRoom(code){
     })
     .on('broadcast',{event:'heartbeat'},()=>{ onHeartbeat(); })
     .on('broadcast',{event:'wager'},(p)=>{ if(typeof wgOnRemote==='function') wgOnRemote(p&&p.payload); })
+    // Waiting room (build 10.15): the guest left → the seat opens again (and a public room is re-listed).
+    .on('broadcast',{event:'guest_left'},(p)=>{
+      if(_onlineRole!=='host'||!onlineInWaitingRoom()) return;
+      const gid=p&&p.payload&&p.payload.guest_id;
+      if(_onlineRoom&&gid&&_onlineRoom.guest_id&&gid!==_onlineRoom.guest_id) return;
+      onlineHostSeatOpen();
+    })
+    .on('broadcast',{event:'room_closed'},()=>{ if(_onlineRole==='guest'&&onlineInWaitingRoom()) onlineBackToLobby('The host closed the room.'); })
+    .on('broadcast',{event:'room_full'},(p)=>{
+      if(_onlineRole==='guest'&&onlineInWaitingRoom()&&p&&p.payload&&p.payload.to===_celUserId) onlineBackToLobby('That room just filled up. Pick another one.'); })
     .subscribe((status)=>{
       console.log('[ROOM] channel status:',status,'code:',code);
       if(status==='SUBSCRIBED'){
@@ -26719,7 +26776,7 @@ function subscribeToRoom(code){
             _onlineChannel.send({type:'broadcast',event:'player_joined',payload:{
               rules_version:GAME_BUILD,
               guest_id:_celUserId,guest_name:myName,guest_deck:_onlineDeckId,
-              guest_deck_cards:((typeof PRESET_DECKS!=='undefined'&&PRESET_DECKS[_onlineDeckId]?.cards)||SAVED_DECKS[_onlineDeckId]?.cards||null),
+              guest_deck_cards:onlineDeckCards(_onlineDeckId),
               guest_deck_foils:(getDeckFoils(_onlineDeckId)||null),
               guest_avatar:(window._playerAvatarUrl||null)
             }});
@@ -26758,6 +26815,7 @@ async function startOnlineMatch(){
   }
   // Wager: must be locked (or empty) — the server moves it to LIVE right here
   if(typeof wgBeforeStart==='function'){ const _wok=await wgBeforeStart(); if(!_wok) return; }
+  if(typeof prStop==='function') prStop();
   const gameMode=document.getElementById('lobby-game-mode')?.value||'prize';
   const prizeCount=parseInt(document.getElementById('lobby-prize-count')?.value||'6');
   const lfHp=parseInt(document.getElementById('lobby-lf-hp')?.value||'100');
@@ -26774,6 +26832,7 @@ async function startOnlineMatch(){
 
 function enterOnlineGame(room){
   _onlineRoom=room;
+  if(typeof prStop==='function') prStop();
   if(typeof wgOnMatchStart==='function') try{ wgOnMatchStart(room); }catch(e){}
   if(typeof spOnMatchStart==='function') try{ spOnMatchStart(room); }catch(e){}
   const isHost=_onlineRole==='host';
@@ -27162,13 +27221,22 @@ function updateLobbyModeSettings(){
     };
     descEl.textContent=descs[mode]||'';
   }
+  if(typeof prTrack==='function') prTrack();
 }
 
 async function cancelOnlineRoom(){
   if(typeof wgLeaveRoom==='function') try{ await wgLeaveRoom(); }catch(e){}
+  if(typeof prStop==='function') prStop();
   if(_onlineRoom){
     const sb=getOnlineSB();
-    await sb.from('online_rooms').delete().eq('code',_onlineRoom.code);
+    if(_onlineRole==='guest'){
+      // Leave the seat open for someone else (the host also resets the row when it hears this).
+      try{ if(_onlineChannel) _onlineChannel.send({type:'broadcast',event:'guest_left',payload:{guest_id:_celUserId}}); }catch(e){}
+      try{ await sb.from('online_rooms').update({guest_id:null,guest_name:null,guest_deck:null,status:'waiting'}).eq('code',_onlineRoom.code).eq('guest_id',_celUserId); }catch(e){}
+    } else {
+      try{ if(_onlineChannel) _onlineChannel.send({type:'broadcast',event:'room_closed',payload:{}}); }catch(e){}
+      await sb.from('online_rooms').delete().eq('code',_onlineRoom.code);
+    }
   }
   cleanupOnlineSession();
   showScreen('menu-screen');
@@ -27178,7 +27246,9 @@ function cleanupOnlineSession(){
   const sb=getOnlineSB();
   if(typeof stopHeartbeat==='function') stopHeartbeat();
   if(typeof spHostStop==='function') try{ spHostStop(); }catch(e){}
+  if(typeof prStop==='function') try{ prStop(); }catch(e){}
   if(_onlineChannel){sb.removeChannel(_onlineChannel);_onlineChannel=null;}
+  _onlineRandomCards=null;
   _onlineRoom=null;
   _onlineRole=null;
   _onlineDeckId=null;
@@ -27331,8 +27401,7 @@ function enterOnlineGame2v2(room){
   }
 }
 async function inviteFriendTo2v2(friendId,friendName){
-  const deckIds=Object.keys(SAVED_DECKS||{});
-  const validDeck=deckIds.find(id=>SAVED_DECKS[id].cards&&SAVED_DECKS[id].cards.length>=60);
+  const validDeck=onlineDefaultDeck();
   if(!validDeck){ alert('You need at least one 60-card deck to host a match. Build one in the Deck Builder.'); return; }
   _onlineDeckId=validDeck;
   const myName=document.getElementById('hud-username')?.textContent||'Player';
@@ -27383,8 +27452,7 @@ function open2v2FriendPicker(){
 
 async function inviteFriendToMatch(friendId,friendName){
   if(!confirm('Invite '+friendName+' to an online match?'))return;
-  const deckIds=Object.keys(SAVED_DECKS);
-  const validDeck=deckIds.find(id=>SAVED_DECKS[id].cards&&SAVED_DECKS[id].cards.length>=60);
+  const validDeck=onlineDefaultDeck();
   if(!validDeck){alert('You need a 60-card deck to create a match!');return;}
   _onlineDeckId=validDeck;
   const myName=document.getElementById('hud-username')?.textContent||'Player';
@@ -27431,10 +27499,10 @@ function openMatchmaking(){
   // Populate deck select
   const sel=document.getElementById('mm-deck-select');
   if(sel){
-    const decks=Object.entries(SAVED_DECKS);
-    sel.innerHTML=!decks.length
-      ?'<option value="">No decks — build one first</option>'
-      :decks.map(([id,d])=>'<option value="'+id+'">'+d.name+' ('+d.cards.length+')</option>').join('');
+    const cur=onlineDefaultDeck(); const opts=onlineDeckOptions(cur);
+    sel.innerHTML=opts||'<option value="">No decks — build one first</option>';
+    if(cur) sel.value=cur;
+    sel.onchange=function(){ onlineSetPick(this.value); };
   }
   // Reset UI
   document.getElementById('mm-searching').style.display='none';
@@ -27447,8 +27515,7 @@ async function startQuickMatch(){
   const deckId=document.getElementById('mm-deck-select')?.value;
   const gameMode=document.getElementById('mm-game-mode')?.value||'prize';
   const prizeCount=parseInt(document.getElementById('mm-prize-count')?.value||'6');
-  if(!deckId||!SAVED_DECKS[deckId]){alert('Select a valid deck first.');return;}
-  if(SAVED_DECKS[deckId].cards.length<60){alert('Deck must have 60 cards!');return;}
+  { const _de=onlineDeckError(deckId); if(_de){alert(_de);return;} }
   const myName=document.getElementById('hud-username')?.textContent||'Player';
   // Show spinner
   document.getElementById('mm-searching').style.display='block';
@@ -27571,86 +27638,137 @@ function cancelMatchmaking(){
   document.getElementById('mm-searching').style.display='none';
 }
 
-// ── PUBLIC MATCH ROOMS ────────────────────────────
+// ── OPEN ROOMS + RANDOM DECKS ONLINE (build 10.15) ─────────────────────────
+// Public rooms are listed over Realtime Presence on 'vcu-rooms' (no SQL). The host of a public
+// room track()s {c,h,hid,b,m,pc,lf,rd,t0}; it drops off the list the moment the seat fills, the
+// match starts, the host cancels or their connection closes. Joining from the list is the same as
+// joining with the code.
+// Random decks online: admin switch 'online_random_decks' (app_settings → feature_flags, GLOBAL;
+// admins always have it). Deck id '__random__'. Each random deck is dealt from the public pool (no
+// disabled or exclusive cards, even for admins). A random guest sends the list it was dealt as
+// guest_deck_cards, exactly like a saved deck. Wagers are unchanged.
+let _onlineRandomCards=null;
+let _onlineDeckPick=(()=>{ try{ return localStorage.getItem('loc_online_deck')||null; }catch(e){ return null; } })();
+const _pr={ch:null,ready:false,key:'r'+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4),rooms:[],mine:null};
+function prEsc(s){ return String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function onlineRandomAllowed(){ return typeof isFeatureEnabled==='function'&&isFeatureEnabled('online_random_decks'); }
+function onlineDeckError(id){
+  if(id==='__random__') return onlineRandomAllowed()?'':'Random decks are turned off for online play right now. Pick one of your decks.';
+  if(!id||!SAVED_DECKS[id]) return 'Please select a deck first.'+(onlineRandomAllowed()?'':' Build one in the Deck Builder.');
+  const n=(SAVED_DECKS[id].cards||[]).length;
+  if(n<60) return '"'+SAVED_DECKS[id].name+'" has '+n+'/60 cards. A deck must have 60 cards to play online.';
+  return '';
+}
+function onlineDefaultDeck(){
+  const ok=id=>!onlineDeckError(id);
+  if(_onlineDeckPick&&ok(_onlineDeckPick)) return _onlineDeckPick;
+  const v=Object.keys(SAVED_DECKS||{}).find(ok); if(v) return v;
+  return onlineRandomAllowed()?'__random__':null;
+}
+function onlineSetPick(id){ _onlineDeckPick=id||null; try{ if(id) localStorage.setItem('loc_online_deck',id); }catch(e){} }
+function onlineDeckOptions(cur){
+  let h=onlineRandomAllowed()?`<option value="__random__"${cur==='__random__'?' selected':''}>🎲 Random Deck · new 60 cards each match</option>`:'';
+  h+=Object.entries(SAVED_DECKS||{}).map(([id,d])=>`<option value="${prEsc(id)}"${cur===id?' selected':''}>${prEsc(d.name)} (${(d.cards||[]).length} cards)</option>`).join('');
+  return h;
+}
+function onlineDeckCards(id){
+  if(id==='__random__'){ if(!_onlineRandomCards) _onlineRandomCards=generateRandomDeck({fair:true}); return _onlineRandomCards; }
+  return ((typeof PRESET_DECKS!=='undefined'&&PRESET_DECKS[id]?.cards)||SAVED_DECKS[id]?.cards||null);
+}
+function onlineRenderDeckSelect(){
+  const box=document.getElementById('lobby-deck-selector'); if(!box) return;
+  if(!Object.keys(SAVED_DECKS||{}).length&&!onlineRandomAllowed()){
+    box.innerHTML='<div style="font-size:10px;color:#fca5a5;padding:8px;text-align:center">No saved decks. Build one in the Deck Builder first.</div>';
+    _onlineDeckId=null; onlineDeckNote(); return;
+  }
+  const cur=onlineDefaultDeck();
+  box.innerHTML='<select id="lobby-deck-select" class="admin-input" style="width:100%">'+onlineDeckOptions(cur)+'</select>';
+  const el=document.getElementById('lobby-deck-select');
+  if(el){ if(cur) el.value=cur; _onlineDeckId=el.value||null; el.onchange=function(){ _onlineDeckId=this.value; onlineSetPick(this.value); onlineDeckNote(); }; }
+  onlineDeckNote();
+}
+function onlineDeckNote(){
+  const note=document.getElementById('lobby-deck-note'); if(!note) return;
+  const v=document.getElementById('lobby-deck-select')?.value;
+  note.textContent=v==='__random__'?'🎲 You get a fresh random 60-card deck when the match starts.':'';
+}
+function onlineInWaitingRoom(){
+  const w=document.getElementById('lobby-waiting-room');
+  return !!(w&&w.style.display!=='none'&&document.getElementById('online-lobby-screen')?.classList.contains('active'));
+}
+function onlineHostSeatOpen(){
+  if(_onlineRoom){
+    _onlineRoom={..._onlineRoom,guest_id:null,guest_name:null,guest_deck:null,guest_deck_cards:null,guest_deck_foils:null,status:'waiting'};
+    try{ getOnlineSB().from('online_rooms').update({guest_id:null,guest_name:null,guest_deck:null,status:'waiting'}).eq('code',_onlineRoom.code).then(()=>{},()=>{}); }catch(e){}
+  }
+  const p2slot=document.getElementById('lobby-player-2-slot');
+  if(p2slot){ p2slot.className='pvp-player-slot waiting';
+    p2slot.innerHTML='<div class="pvp-slot-avatar">⏳</div><div style="flex:1"><div class="pvp-slot-name" style="color:#6b7280">Waiting for opponent...</div><div class="pvp-slot-status"><span class="pvp-conn-badge waiting">WAITING</span></div></div>'; }
+  const startBtn=document.getElementById('lobby-start-btn'); if(startBtn){ startBtn.disabled=true; startBtn.textContent='WAITING...'; }
+  window._onlineOpponentName=null;
+  if(typeof wgRender==='function') try{ wgRender(); }catch(e){}
+  if(_pr.mine) prList();
+  if(typeof spToast==='function') spToast('Your opponent left the room.'+(_pr.mine?' It is back in Open Rooms.':''));
+}
+function onlineBackToLobby(msg){
+  cleanupOnlineSession(); showScreen('online-lobby-screen'); openOnlineLobby();
+  try{ showModal('Room',msg); }catch(e){ alert(msg); }
+}
+// ── Presence list ──
+function prEnsure(){
+  if(_pr.ch) return true;
+  let sb=null; try{ sb=getOnlineSB(); }catch(e){}
+  if(!sb||typeof sb.channel!=='function') return false;
+  try{
+    _pr.ch=sb.channel('vcu-rooms',{config:{presence:{key:_pr.key}}})
+      .on('presence',{event:'sync'},prSync)
+      .subscribe(st=>{ if(st==='SUBSCRIBED'){ _pr.ready=true; prSync(); if(_pr.mine&&_pr.mine.listed) prTrack(); } });
+  }catch(e){ _pr.ch=null; return false; }
+  return true;
+}
+function prSync(){
+  let st={}; try{ st=(_pr.ch&&_pr.ch.presenceState())||{}; }catch(e){}
+  const out=[]; Object.keys(st).forEach(k=>{ const m=(st[k]||[])[0]; if(m&&m.c&&m.h) out.push(m); });
+  out.sort((a,b)=>(a.t0||0)-(b.t0||0));
+  _pr.rooms=out; prRender();
+}
+function prMeta(){
+  const R=_pr.mine; if(!R) return null;
+  return {c:R.code,h:R.name,hid:_celUserId||null,b:GAME_BUILD,m:document.getElementById('lobby-game-mode')?.value||'prize',
+    pc:parseInt(document.getElementById('lobby-prize-count')?.value||'6')||6,lf:parseInt(document.getElementById('lobby-lf-hp')?.value||'100')||100,rd:R.random?1:0,t0:R.t0};
+}
+function prTrack(){ const R=_pr.mine; if(!R||!R.listed||!_pr.ch||!_pr.ready) return; try{ _pr.ch.track(prMeta()); }catch(e){} }
+function prList(){ if(!_pr.mine) return; _pr.mine.listed=true; if(prEnsure()) prTrack(); }
+function prUnlist(){ const was=_pr.mine&&_pr.mine.listed; if(_pr.mine) _pr.mine.listed=false; if(was) try{ if(_pr.ch) _pr.ch.untrack(); }catch(e){} }
+function prStop(){ prUnlist(); _pr.mine=null; }
+function prDeckTag(isRandom){ return isRandom?' <span class="pr-rd">🎲 RANDOM DECK</span>':''; }
+function prModeName(m){ return m.m==='lifeforce'?`❤️ Life Force · ${m.lf||100} HP`:m.m==='combined'?`⚔️ Combined · ${m.pc||6} Prizes · ${m.lf||100} HP`:`🏆 Prize · ${m.pc||6} Prizes`; }
+function prRender(){
+  const mine=_pr.mine&&_pr.mine.code;
+  const list=_pr.rooms.filter(m=>m.c!==mine&&!(_celUserId&&m.hid===_celUserId));
+  const empty=`<div class="pr-empty">${_pr.ch?(_pr.ready?'No open rooms right now. Create a public room and it shows up here for everyone.':'Looking for open rooms…'):'Open rooms need an internet connection.'}</div>`;
+  const rows=list.map(m=>{ const same=String(m.b||'')===GAME_BUILD;
+    return `<div class="pr-row"><div class="pr-host"><b>${prEsc(m.h)}</b>${prDeckTag(!!m.rd)}</div>`
+      +`<div class="pr-meta">${prEsc(prModeName(m))}${same?'':` · <span class="pr-warn">build ${prEsc(m.b||'?')} · you're on ${prEsc(GAME_BUILD)}</span>`}</div>`
+      +`<button class="wg-btn go" data-c="${prEsc(m.c)}"${same?'':' disabled'} onclick="prJoin(this.dataset.c)">JOIN</button></div>`; }).join('');
+  ['lobby-open-rooms','mm-rooms-list'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=list.length?rows:empty; });
+  const n=document.getElementById('lobby-open-count'); if(n) n.textContent=list.length?('· '+list.length):'';
+}
+function prJoin(code){
+  const onMM=document.getElementById('matchmaking-screen')?.classList.contains('active');
+  const deck=(onMM?document.getElementById('mm-deck-select'):document.getElementById('lobby-deck-select'))?.value;
+  joinOnlineRoom(code,deck||onlineDefaultDeck());
+}
+// Find Match → Match Rooms shows the same live list.
 function showMatchRooms(){
   document.getElementById('mm-searching').style.display='none';
   document.getElementById('mm-rooms-panel').style.display='block';
   loadPublicRooms();
 }
-
-async function loadPublicRooms(){
-  const sb=getOnlineSB();
-  const listEl=document.getElementById('mm-rooms-list');
-  if(!listEl)return;
-  listEl.innerHTML='<div style="text-align:center;padding:20px;color:#6b7280;font-size:11px">Loading...</div>';
-  try{
-    const {data:rooms}=await sb.from('online_rooms')
-      .select('*')
-      .eq('status','waiting')
-      .eq('public',true)
-      .order('created_at',{ascending:false})
-      .limit(20);
-    if(!rooms||!rooms.length){
-      listEl.innerHTML='<div style="text-align:center;padding:30px;color:#6b7280"><div style="font-size:28px;margin-bottom:8px;opacity:.3">🚪</div><div style="font-size:11px">No public rooms open right now.<br>Create one and wait for someone to join!</div></div>';
-      return;
-    }
-    listEl.innerHTML='';
-    rooms.forEach(r=>{
-      const modeLabel={prize:'🏆 Prize',lifeforce:'❤️ LF',combined:'⚔️ Combined'}[r.game_mode]||r.game_mode;
-      const row=document.createElement('div');
-      row.className='match-room-row';
-      row.onclick=()=>joinPublicRoom(r);
-      row.innerHTML=
-        '<div style="flex:1">'
-        +'<div style="font-size:13px;font-weight:700;color:#e2e8f0">'+r.host_name+'\'s Room</div>'
-        +'<div style="font-size:9px;color:#6b7280;margin-top:2px">'+modeLabel+' · '+r.prize_count+' Prizes</div>'
-        +'</div>'
-        +'<span class="match-room-badge open">OPEN</span>'
-        +'<span style="font-size:11px;color:#6b7280;margin-left:6px">1/2</span>';
-      listEl.appendChild(row);
-    });
-  }catch(e){listEl.innerHTML='<div style="color:#fca5a5;font-size:11px;padding:10px">Failed to load rooms.</div>';}
-}
-
-async function createPublicRoom(){
-  const sb=getOnlineSB();
-  const deckId=document.getElementById('mm-deck-select')?.value;
-  const gameMode=document.getElementById('mm-game-mode')?.value||'prize';
-  const prizeCount=parseInt(document.getElementById('mm-prize-count')?.value||'6');
-  if(!deckId||!SAVED_DECKS[deckId]){alert('Select a valid deck first.');return;}
-  if(SAVED_DECKS[deckId].cards.length<60){alert('Deck must have 60 cards!');return;}
-  const myName=document.getElementById('hud-username')?.textContent||'Player';
-  const code=generateRoomCode();
-  try{
-    const {data}=await sb.from('online_rooms').insert({
-      code,host_id:_celUserId,host_name:myName,host_deck:deckId,
-      status:'waiting',game_mode:gameMode,prize_count:prizeCount,
-      public:true,created_at:new Date().toISOString()
-    }).select().single();
-    _onlineRoom=data;_onlineRole='host';
-    // Switch to private lobby waiting room UI to show the code + wait
-    showScreen('online-lobby-screen');
-    showWaitingRoom(code,myName,true);
-    subscribeToRoom(code);
-  }catch(e){alert('Failed to create room: '+e.message);}
-}
-
-async function joinPublicRoom(room){
-  const sb=getOnlineSB();
-  const deckId=document.getElementById('mm-deck-select')?.value;
-  if(!deckId||!SAVED_DECKS[deckId]){alert('Select a valid deck first.');return;}
-  if(SAVED_DECKS[deckId].cards.length<60){alert('Deck must have 60 cards!');return;}
-  const myName=document.getElementById('hud-username')?.textContent||'Player';
-  try{
-    await sb.from('online_rooms').update({
-      guest_id:_celUserId,guest_name:myName,guest_deck:deckId,status:'ready'
-    }).eq('code',room.code);
-    _onlineRoom={...room,guest_id:_celUserId,guest_name:myName,guest_deck:deckId,status:'ready'};
-    _onlineRole='guest';
-    subscribeToRoom(room.code);
-    showScreen('online-lobby-screen');
-    showWaitingRoom(room.code,myName,false);
-  }catch(e){alert('Failed to join room: '+e.message);}
+function loadPublicRooms(){ prEnsure(); prSync(); }
+function createPublicRoom(){
+  return createOnlineRoom({public:true, deck:document.getElementById('mm-deck-select')?.value,
+    mode:document.getElementById('mm-game-mode')?.value||'prize', pc:document.getElementById('mm-prize-count')?.value||'6'});
 }
 
 
@@ -27700,14 +27818,13 @@ function showInviteNotification(data){
 
 async function acceptInvite(roomCode, hostDeckId, is2v2, teamLife){
   const popup=document.getElementById('invite-notif-popup');if(popup)popup.remove();
-  // Need a valid deck
-  const decks=Object.entries(SAVED_DECKS);
-  const validDeck=decks.find(([id,d])=>d.cards&&d.cards.length>=60);
+  // Need a valid deck (your last online pick, a 60-card deck, or 🎲 Random when it's switched on)
+  const validDeck=onlineDefaultDeck();
   if(!validDeck){
     alert('You need a 60-card deck to accept a match invite! Build one first.');
     return;
   }
-  _onlineDeckId=validDeck[0];
+  _onlineDeckId=validDeck; _onlineRandomCards=null;
   const myName=document.getElementById('hud-username')?.textContent||'Player';
   const sb=getOnlineSB();
   try{
@@ -29926,6 +30043,10 @@ window.addEventListener('load',async()=>{
           <span class="adm-ico">🗺</span><div class="adm-swt"><b>Campaign <i class="adm-tag g">GLOBAL</i></b><span>When off, players see a "coming soon" popup.</span></div>
           <div class="admin-toggle-switch" id="admin-tg-campaign_enabled"><div class="admin-toggle-knob"></div></div>
         </div>
+        <div class="adm-sw" onclick="adminToggle('online_random_decks')" role="switch" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+          <span class="adm-ico">🎲</span><div class="adm-swt"><b>Random decks online <i class="adm-tag g">GLOBAL</i></b><span>Everyone can pick a Random Deck in online rooms and Find Match. Turn it off when the game goes public.</span></div>
+          <div class="admin-toggle-switch" id="admin-tg-online_random_decks"><div class="admin-toggle-knob"></div></div>
+        </div>
         <div class="adm-sw" onclick="adminToggle('admin_unlimited_cards')" role="switch" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
           <span class="adm-ico">🎴</span><div class="adm-swt"><b>Every card ×4 <i class="adm-tag a">ADMIN ONLY</i></b><span>You own 4 copies of every card. Nobody else is affected.</span></div>
           <div class="admin-toggle-switch" id="admin-tg-admin_unlimited_cards"><div class="admin-toggle-knob"></div></div>
@@ -30230,19 +30351,33 @@ window.addEventListener('load',async()=>{
 <div id="online-lobby-screen" class="screen" style="padding:62px 32px 24px;max-width:1200px;margin:0 auto">
   <div id="lobby-create-join" style="width:100%;max-width:480px">
     <div style="font-family:'Orbitron',sans-serif;font-size:16px;letter-spacing:4px;color:var(--blue);text-align:center;margin-bottom:6px;text-shadow:0 0 12px var(--blue)">⚔️ ONLINE PVP</div>
-    <div style="font-size:10px;color:#6b7280;text-align:center;letter-spacing:2px;margin-bottom:20px">PRIVATE ROOM</div>
+    <div style="font-size:10px;color:#6b7280;text-align:center;letter-spacing:2px;margin-bottom:20px">PUBLIC &amp; PRIVATE ROOMS</div>
+
+    <!-- YOUR DECK — used to create, join from Open Rooms, or join with a code -->
+    <div class="pvp-lobby-card" style="margin-bottom:14px">
+      <div style="font-size:10px;color:var(--violet2);letter-spacing:2px;margin-bottom:10px">🃏 YOUR DECK</div>
+      <div id="lobby-deck-selector"></div>
+      <div id="lobby-deck-note" class="pr-note"></div>
+    </div>
+
+    <!-- OPEN ROOMS (build 10.15): live list of public rooms -->
+    <div class="pvp-lobby-card" style="margin-bottom:14px">
+      <div style="font-size:10px;color:var(--violet2);letter-spacing:2px;margin-bottom:4px">🌐 OPEN ROOMS <span id="lobby-open-count" style="color:#86efac"></span></div>
+      <div style="font-size:10px;color:#6b7280">Public rooms waiting for an opponent. Join any of them.</div>
+      <div id="lobby-open-rooms" class="pr-list"></div>
+    </div>
 
     <!-- CREATE A ROOM -->
     <div class="pvp-lobby-card" style="margin-bottom:14px">
       <div style="font-size:10px;color:var(--violet2);letter-spacing:2px;margin-bottom:14px">🆕 CREATE A ROOM</div>
-      <div style="font-size:10px;color:#6b7280;margin-bottom:10px">Choose your deck then share the room code with your opponent</div>
-      <div id="lobby-deck-selector" style="margin-bottom:12px"></div>
+      <div style="font-size:10px;color:#6b7280;margin-bottom:4px">Private: share the code with a friend. Public: anyone can join it from Open Rooms.</div>
+      <label class="sp-allow" style="margin-bottom:12px"><input type="checkbox" id="lobby-room-public" onchange="try{localStorage.setItem('loc_room_public',this.checked?'1':'0')}catch(e){}"> 🌐 Public room <small>List it in Open Rooms</small></label>
       <button class="btn-primary" style="width:100%;padding:11px;font-family:'Orbitron',sans-serif;letter-spacing:3px;font-size:11px" onclick="createOnlineRoom()">▸ CREATE ROOM</button>
     </div>
 
     <!-- JOIN A ROOM -->
     <div class="pvp-lobby-card">
-      <div style="font-size:10px;color:var(--violet2);letter-spacing:2px;margin-bottom:14px">🔑 JOIN A ROOM</div>
+      <div style="font-size:10px;color:var(--violet2);letter-spacing:2px;margin-bottom:14px">🔑 JOIN WITH A CODE</div>
       <div style="font-size:10px;color:#6b7280;margin-bottom:10px">Enter the 6-letter room code your opponent shared with you</div>
       <div style="display:flex;gap:8px">
         <input type="text" id="join-room-code-input" placeholder="ROOM CODE" class="admin-input" style="flex:1;text-align:center;letter-spacing:6px;font-size:14px;font-family:'Orbitron',sans-serif;text-transform:uppercase" maxlength="6" oninput="this.value=this.value.toUpperCase()"/>
@@ -30260,7 +30395,7 @@ window.addEventListener('load',async()=>{
     <div class="pvp-lobby-card">
       <div style="font-size:10px;color:var(--violet2);letter-spacing:2px;margin-bottom:6px" id="lobby-room-label">ROOM CODE</div>
       <div class="room-code-display" id="lobby-room-code-display">——————</div>
-      <div style="font-size:9px;color:#6b7280;text-align:center;margin-bottom:16px">Share this code with your opponent</div>
+      <div style="font-size:9px;color:#6b7280;text-align:center;margin-bottom:16px" id="lobby-room-sub">Share this code with your opponent</div>
 
       <!-- Player slots -->
       <div id="lobby-player-1-slot" class="pvp-player-slot filled">
@@ -30288,7 +30423,7 @@ window.addEventListener('load',async()=>{
             <option value="combined">⚔️ Combined Mode</option>
           </select>
           <!-- Prize count: Prize + Combined only -->
-          <select id="lobby-prize-count" class="admin-input" style="width:90px">
+          <select id="lobby-prize-count" class="admin-input" style="width:90px" onchange="if(typeof prTrack==='function')prTrack()">
             <option value="6">6 Prizes</option>
             <option value="7">7 Prizes</option>
             <option value="8">8 Prizes</option>
@@ -30296,7 +30431,7 @@ window.addEventListener('load',async()=>{
             <option value="10">10 Prizes</option>
           </select>
           <!-- Life Force HP: Life Force + Combined only -->
-          <select id="lobby-lf-hp" class="admin-input" style="width:90px;display:none">
+          <select id="lobby-lf-hp" class="admin-input" style="width:90px;display:none" onchange="if(typeof prTrack==='function')prTrack()">
             <option value="100">100 HP</option>
             <option value="125">125 HP</option>
             <option value="150">150 HP</option>
