@@ -2797,8 +2797,8 @@ input:focus,select:focus,textarea:focus,
   gap:18px;
 }
 
-/* PvP lobby - put create & join side-by-side on wide screens */
-#lobby-create-join{
+/* PvP lobby - put create & join side-by-side on wide screens (not while the waiting room hides it) */
+#lobby-create-join:not([style*="none"]){
   display:grid !important;
   grid-template-columns:1fr 1fr !important;
   gap:18px !important;
@@ -2806,7 +2806,7 @@ input:focus,select:focus,textarea:focus,
   width:100% !important;
 }
 @media(max-width:900px){
-  #lobby-create-join{grid-template-columns:1fr !important;}
+  #lobby-create-join:not([style*="none"]){grid-template-columns:1fr !important;}
 }
 
 /* Online lobby header section */
@@ -6730,6 +6730,60 @@ body.he-shake{ animation:he-shake .45s linear 1; }
   #registry-screen .reg-dossier{ max-height:none; }
   #registry-screen .reg-body{ overflow:visible; }
 }
+
+/* ── Wagers (build 10.7) ── */
+#lobby-wager{margin-top:12px}
+.wg-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;background:rgba(8,8,28,.5);border:1px solid var(--border);border-radius:8px}
+.wg-bar.locked .wg-t{color:#9ca3af}
+.wg-t{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;color:#f0d58a;flex:none}
+.wg-dim{font-size:9.5px;color:#8b8fa8;letter-spacing:.3px;flex:1;min-width:150px;line-height:1.5}
+.wg-dim b{color:#c4c0dc;font-weight:500}
+.wg-btn{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;padding:7px 12px;border-radius:6px;border:1px solid rgba(240,213,138,.5);background:rgba(240,213,138,.08);color:#f0d58a;cursor:pointer}
+.wg-btn:hover:not(:disabled){background:rgba(240,213,138,.18)}
+.wg-btn:disabled{opacity:.4;cursor:default}
+.wg-btn.go{background:linear-gradient(180deg,#f0d58a,#c79a3a);color:#1a1405;border-color:#f0d58a}
+.wg-panel{padding:12px;background:rgba(28,20,6,.35);border:1px solid rgba(240,213,138,.32);border-radius:10px}
+.wg-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.wg-cols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:460px){.wg-cols{grid-template-columns:1fr}}
+.wg-col{padding:9px;background:rgba(8,8,28,.55);border:1px solid var(--border);border-radius:8px;min-width:0}
+.wg-col h5{margin:0 0 8px;font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:#9d93c4;font-weight:400;display:flex;justify-content:space-between;gap:6px}
+.wg-col h5 span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wg-cel{display:flex;align-items:center;gap:6px;font-size:12px}
+.wg-cel input{width:92px;padding:5px 7px}
+.wg-chips{display:flex;gap:4px;flex-wrap:wrap;margin:7px 0 9px}
+.wg-chip{font-size:9px;padding:3px 8px;border-radius:10px;border:1px solid var(--border);background:transparent;color:#c4c0dc;cursor:pointer}
+.wg-chip.on{border-color:#f0d58a;color:#f0d58a;background:rgba(240,213,138,.08)}
+.wg-chip:disabled{opacity:.3;cursor:default}
+.wg-sub{font-size:7.5px;letter-spacing:2px;color:#6b7280;margin:2px 0 4px}
+.wg-prow{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#c4c0dc;padding:3px 0;gap:6px}
+.wg-prow span:first-child{min-width:0;line-height:1.3}
+.wg-step{display:flex;align-items:center;gap:5px;flex:none}
+.wg-step button{width:20px;height:20px;padding:0;border-radius:4px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:#e5e7eb;cursor:pointer;line-height:1}
+.wg-step button:disabled{opacity:.3;cursor:default}
+.wg-step b{min-width:12px;text-align:center;font-weight:500}
+.wg-step i{font-style:normal;color:#6b7280;font-size:9px}
+.wg-theirs{font-size:13px;color:#f0d58a;margin-bottom:4px}
+.wg-ok{color:#86efac;flex:none}
+.wg-wait{color:#6b7280;flex:none}
+.wg-none{color:#6b7280;font-size:9px}
+.wg-odds{margin-top:9px;font-size:10px;color:#c4c0dc;line-height:1.7}
+.wg-odds b.win{color:#86efac;font-weight:500}
+.wg-odds b.lose{color:#fca5a5;font-weight:500}
+.wg-actions{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.wg-status{font-size:9.5px;color:#9ca3af;flex:1;min-width:150px;line-height:1.5}
+.wg-err{color:#fca5a5;font-size:9.5px;margin-top:7px}
+.wg-link{background:none;border:none;color:#8b8fa8;font-size:9px;letter-spacing:1px;cursor:pointer;text-decoration:underline;margin-left:auto;padding:0}
+.wg-link:disabled{opacity:.4}
+.wg-hist-head{font-size:11px;color:#c4c0dc;line-height:1.8;padding-bottom:10px;margin-bottom:8px;border-bottom:1px solid var(--border)}
+.wg-hist{max-height:52vh;overflow:auto}
+.wg-hrow{display:grid;grid-template-columns:1.1fr 1.6fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:10.5px;color:#c4c0dc}
+@media (max-width:520px){.wg-hrow{grid-template-columns:1fr auto}.wg-hst{grid-column:1/-1;order:3}}
+.wg-hst{color:#9ca3af;font-size:10px;line-height:1.5}
+.wg-tag{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:1.5px;padding:3px 8px;border-radius:10px;border:1px solid var(--border);color:#9ca3af;white-space:nowrap}
+.wg-tag.win{color:#86efac;border-color:rgba(134,239,172,.4)}
+.wg-tag.lose{color:#fca5a5;border-color:rgba(252,165,165,.4)}
+.wg-tag.warn{color:#fbbf24;border-color:rgba(251,191,36,.4)}
 </style>
 <style>
 /* ═══════════════════ DECKS REWORK (build 8.0) — My Decks · Deck Builder · Choose Deck ═══════════════════ */
@@ -7233,7 +7287,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.6 · Fusion lesson</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.7 · Wagers</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -8204,8 +8258,25 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.6'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.7'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.7', date:'2026-10-31',
+    cards:[],
+    abilities:[],
+    screens:[
+      "ONLINE WAITING ROOM (1v1 only, never 2v2 or Quick Match): a ⚖ WAGER strip between Game Settings and the Cancel/Start buttons, shown once both players are in. Locked state: '🔒 Unlocks at Level 10 + 20 online matches · you: Level X · N/20'. Unlocked: 'ADD A WAGER' → panel with two columns — YOU PUT UP (Celestium number box + 0/500/1K/2.5K/5K chips, then every sealed pack/box you own with −/+ steppers) and <OPPONENT> PUTS UP (read-only, ✓ ACCEPTED badge). Under it: 'If you win: +X 💠 (+ their packs)', 'If you lose: −your stake', 'Won today: N / 50,000'. Buttons: SET MY STAKE / UNDO when your edit differs from what's escrowed, otherwise ✓ ACCEPT TERMS; 'call it off' link. Both accepted → '🔒 LOCKED IN'. Host's START button reads 'WAGER NOT LOCKED' (disabled) while stakes exist but aren't locked, '▸ START WAGERED MATCH' once locked.",
+      "MATCH: the host logs one neutral line at the start ('⚖ Wagered match — Host: … · Guest: …'). WIN SCREEN: an extra line under the Celestium line — won (+profit, packs, 'claimed automatically'), lost, 'waiting for <name> to confirm', or 'under review'. Forfeiting from the menu button shows the same text as a toast.",
+      "ONLINE LOBBY: '⚖ MY WAGERS' button above BACK TO MENU → modal with unlock progress, won today / cap (resets 00:00 UTC), limits, and a history list (vs name, both stakes, WON +X / LOST / UNDER REVIEW / VOID · REFUNDED / CALLED OFF).",
+      "ADMIN: Gift Center gets a '⚖ WAGERS' tab — filter (needs review / disputed / live / all / settled / void / called off), table with Pay host · Pay guest · Void per row, and an 'Unlock wagers by hand' box (username or email → Unlock / Lock).",
+      "RULES quick reference: a Wagers line."],
+    data:[
+      "GAME_BUILD '10.7'. Server: run VCU_Wagers_Setup.sql in Supabase (after VCU_Mailbox_Setup.sql). Tables wagers, wager_players (online_matches, unlocked_at — server-only), online_match_log. Limits in app_settings 'wager_config' JSON (defaults enabled true, maxStake 5000, dailyCap 50000 Celestium PROFIT per UTC day, housePct 5, minLevel 10, minOnline 20).",
+      "RPCs (all return jsonb unless noted): wager_status() → {cfg, gate:{level,online,unlocked,needLevel,needOnline}, won_today, cap_left, resets_at, active}. note_online_match(p_room) → int, call at EVERY online 1v1 game over (both players; the forfeiter too) — the room must still be status 'playing'. wager_open(p_room) → {ok, wager | error:'locked', gate}. wager_get(p_id) → wager row. wager_stake(p_id, p_cel, p_packs:[{kind,type,setId,qty}]) → {ok, wager, celestium, pack_inventory}. wager_accept(p_id, p_ver = wager.terms_ver). wager_cancel(p_id) → {ok, wager, celestium, pack_inventory}. wager_start(p_id) host only, LOCKED → LIVE. wager_ping(p_id) every ~2 min while live. wager_report(p_id, p_winner uuid). wager_sweep() → int. wager_history(p_limit) → rows. Admin: admin_wagers(p_status, p_limit), admin_wager_resolve(p_id, p_winner|null, p_note), admin_wager_unlock(p_user, p_unlock).",
+      "ESCROW RULE (important for the PC client): the server takes the stake the moment wager_stake runs. Always adopt the returned celestium and pack_inventory into the local profile BEFORE any later profile save, or the next absolute save puts the stake back. Stake changes reset both acceptances (terms_ver bumps).",
+      "Statuses: open → locked (both accepted the same terms_ver) → live (host pressed start) → settled | disputed | void; open/locked → cancelled. Report = your winner's id. Naming the OPPONENT settles at once (concede). Two matching claims settle. Two different claims → disputed (admin). One self-claim settles via sweep after the other side has been silent (no ping/report) 10 min. Live with no reports and both silent 30 min → void + refunds. Open/locked untouched 30 min → cancelled + refunds.",
+      "Payout = winner's own Celestium stake + floor(loser Celestium × 0.95) + all packs from both sides; house cut = the 5% (Celestium only). Payouts and refunds to anyone but the caller arrive as mail kind 'gift' with attachments {celestium, packs:[{kind,type,setId,qty}], wager:<id>, wager_tag:'payout'|'refund'}, popup false. The web client auto-claims these via mail_claim whenever it's NOT on the game screen (payout → 'WAGER WON' celebration, refund → toast) and doesn't count them in the celestium_earned stat.",
+      "Room channel: after any wager RPC, broadcast event 'wager' {id, from:role}; the other client calls wager_get and redraws. match_started payload carries wager_id (null = no wager). Unlock is permanent once earned (Battle Pass levels reset each season); admins are auto-unlocked. The online-match counter starts at 0 from this build.",
+      "Web helpers: wgRender, wgOnRoomReady, wgOpen, wgSaveStake, wgAccept, wgCancel, wgOnRemote, wgBeforeStart, wgRoomPayload, wgOnMatchStart, wgOnMatchEnd, wgShowOutcome, wgAutoClaim, wgOpenHistory, wgAdminLoad, wgAdminResolve, wgAdminUnlock. mlClaim(id, opts{quiet,title,sub,src})."] },
   { build:'10.6', date:'2026-10-31',
     cards:[],
     abilities:[],
@@ -11385,6 +11456,7 @@ function triggerWin(p,r){
 
 function showWinScreen(p,r,forfeited){
   const iWon=(p===1); // I'm always P1 locally
+  const _ww=document.getElementById('win-wager'); if(_ww) _ww.textContent='';
   if(typeof SFX!=='undefined'){ if(iWon)SFX.win(); else SFX.lose(); }
   const emoji=document.getElementById('win-emoji');
   const text=document.getElementById('win-text');
@@ -11419,6 +11491,7 @@ function showWinScreen(p,r,forfeited){
 function returnToMenuFromWin(){
   document.getElementById('win-modal').classList.remove('open');
   if(G&&G.onlineMode)cleanupOnlineSession();
+  if(typeof wgClaimSoon==='function') wgClaimSoon();
   showScreen('menu-screen');
 }
 function confirmReturnMenu(){
@@ -11445,6 +11518,8 @@ function confirmReturnMenu(){
     try{ broadcastGameState(); }catch(e){ console.warn('[FORFEIT] broadcast failed',e); }
     // Forfeiter records a loss and gains 0 Celestium.
     _celData.matches++; _celData.losses++; try{ saveCelestium(); }catch(e){}
+    // Leaving concedes any wager on this match
+    if(typeof wgOnMatchEnd==='function') try{ wgOnMatchEnd(false); }catch(e){}
     // Let the broadcast reach the opponent before tearing down the channel.
     setTimeout(()=>{ if(typeof cleanupOnlineSession==='function') cleanupOnlineSession(); showScreen('menu-screen'); }, 350);
     return;
@@ -21748,6 +21823,7 @@ function showRulesScreen(){
     <b style="color:#c8a0ff">Sacrifice:</b> 💀 Destroy your own char for ½ its cost in energy.<br>
     <b style="color:#c8a0ff">Instants:</b> Red-border cards. Attach to chars for instant effects.<br>
     <b style="color:#c8a0ff">Tokens:</b> ⭐ Temporary — removed at end of your turn.<br>
+    <b style="color:#c8a0ff">Wagers:</b> ⚖ Optional, online 1v1 only, set up in the waiting room. Unlocks at Level 10 + 20 online matches. Stake up to 5,000 Celestium and any sealed packs or boxes; both players accept, then the host starts. The winner gets their stake back, the other player's Celestium minus a 5% house cut, and every pack. Up to 50,000 Celestium of winnings a day. Leaving or forfeiting loses the wager.<br>
     <b style="color:#c8a0ff">Win:</b> All 6 Prizes or opponent out of characters.<br>
     <b style="color:#c8a0ff">Colors:</b>
     <span style="color:#ef4444">■ Red</span> ·
@@ -22067,6 +22143,8 @@ function _isLocalPvPMatch(){
   return (typeof gameMode!=='undefined' && gameMode==='pvp') && !G.onlineMode;
 }
 async function onMatchEnd(won){
+  // Online 1v1: count the match toward the wager unlock and report any wager result
+  if(G&&G.onlineMode&&!G.is2v2&&typeof wgOnMatchEnd==='function') try{ wgOnMatchEnd(won); }catch(e){}
   // Only LOCAL player-vs-player withholds rewards; co-op vs AI / online do reward.
   if(_isLocalPvPMatch())return;
   // Battle Pass XP — every match awards play XP, wins award bonus
@@ -25359,6 +25437,7 @@ function showWaitingRoom(code,myName,isHost){
     const startBtn=document.getElementById('lobby-start-btn');
     if(startBtn){startBtn.disabled=true;startBtn.textContent=is2v2?'WAITING FOR HOST TO START...':'WAITING FOR HOST...';}
   }
+  if(typeof wgOnRoomReady==='function') wgOnRoomReady();
 }
 
 function subscribeToRoom(code){
@@ -25386,6 +25465,7 @@ function subscribeToRoom(code){
         }
         const startBtn=document.getElementById('lobby-start-btn');
         if(startBtn){startBtn.disabled=false;startBtn.textContent=_is2v2?'▸ START 2v2 BATTLE':'▸ START MATCH';}
+        if(!_is2v2&&typeof wgOnRoomReady==='function') wgOnRoomReady();
       }
     })
     // Host started match
@@ -25443,6 +25523,7 @@ function subscribeToRoom(code){
       onReceiveGameAction(payload.payload);
     })
     .on('broadcast',{event:'heartbeat'},()=>{ onHeartbeat(); })
+    .on('broadcast',{event:'wager'},(p)=>{ if(typeof wgOnRemote==='function') wgOnRemote(p&&p.payload); })
     .subscribe((status)=>{
       console.log('[ROOM] channel status:',status,'code:',code);
       if(status==='SUBSCRIBED'){
@@ -25493,10 +25574,12 @@ async function startOnlineMatch(){
     setTimeout(()=>enterOnlineGame2v2(roomData),300);
     return;
   }
+  // Wager: must be locked (or empty) — the server moves it to LIVE right here
+  if(typeof wgBeforeStart==='function'){ const _wok=await wgBeforeStart(); if(!_wok) return; }
   const gameMode=document.getElementById('lobby-game-mode')?.value||'prize';
   const prizeCount=parseInt(document.getElementById('lobby-prize-count')?.value||'6');
   const lfHp=parseInt(document.getElementById('lobby-lf-hp')?.value||'100');
-  const roomData={..._onlineRoom,status:'playing',game_mode:gameMode,prize_count:prizeCount,lf_hp:lfHp,host_avatar:(window._playerAvatarUrl||null),rules_version:GAME_BUILD};
+  const roomData={..._onlineRoom,status:'playing',game_mode:gameMode,prize_count:prizeCount,lf_hp:lfHp,host_avatar:(window._playerAvatarUrl||null),rules_version:GAME_BUILD,...(typeof wgRoomPayload==='function'?wgRoomPayload():{})};
   // Update DB
   await sb.from('online_rooms').update({status:'playing',game_mode:gameMode,prize_count:prizeCount,lf_hp:lfHp}).eq('code',_onlineRoom.code);
   // Broadcast to guest via channel
@@ -25509,6 +25592,7 @@ async function startOnlineMatch(){
 
 function enterOnlineGame(room){
   _onlineRoom=room;
+  if(typeof wgOnMatchStart==='function') try{ wgOnMatchStart(room); }catch(e){}
   const isHost=_onlineRole==='host';
   // Fresh disconnect clock for the new match; ensure heartbeat is running.
   _lastOpponentPing=Date.now();
@@ -25887,6 +25971,7 @@ function updateLobbyModeSettings(){
 }
 
 async function cancelOnlineRoom(){
+  if(typeof wgLeaveRoom==='function') try{ await wgLeaveRoom(); }catch(e){}
   if(_onlineRoom){
     const sb=getOnlineSB();
     await sb.from('online_rooms').delete().eq('code',_onlineRoom.code);
@@ -25902,6 +25987,7 @@ function cleanupOnlineSession(){
   _onlineRoom=null;
   _onlineRole=null;
   _onlineDeckId=null;
+  if(typeof wgReset==='function'){ wgReset(); try{ wgRender(); }catch(e){} }
   _endingTurn=false;
   _channelReady=false;
   _broadcastPending=false;
@@ -28782,6 +28868,7 @@ window.addEventListener('load',async()=>{
       <span class="dk-pill on" data-g="send" onclick="gcTab('send')">🎁 SEND</span>
       <span class="dk-pill" data-g="codes" onclick="gcTab('codes')">🎟 CODES</span>
       <span class="dk-pill" data-g="log" onclick="gcTab('log')">📜 SENT LOG</span>
+      <span class="dk-pill" data-g="wagers" onclick="gcTab('wagers')">⚖ WAGERS</span>
     </div>
     <div id="gc-view-send" class="gc-grid">
       <div class="gc-box">
@@ -28806,6 +28893,15 @@ window.addEventListener('load',async()=>{
       <div class="gc-box" id="gc-code-compose"></div>
     </div>
     <div id="gc-view-log" style="display:none"><div class="gc-box"><h4>SENT BY ADMINS</h4><div class="gc-scroll"><table class="gc-table"><thead><tr><th>WHEN</th><th>TO</th><th>SUBJECT</th><th>REWARDS</th><th>STATUS</th></tr></thead><tbody id="gc-log"></tbody></table></div></div></div>
+    <div id="gc-view-wagers" style="display:none"><div class="gc-box"><h4 style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">PLAYER WAGERS
+      <select id="gc-wg-filter" class="admin-input" style="width:auto;margin-left:auto" onchange="wgAdminLoad()"><option value="review">Needs review (disputed + live)</option><option value="disputed">Disputed</option><option value="live">Live</option><option value="all">All</option><option value="settled">Settled</option><option value="void">Void</option><option value="cancelled">Called off</option></select>
+      <button class="dk-btn" onclick="wgAdminLoad()">↻</button></h4>
+      <div class="gc-scroll"><table class="gc-table"><thead><tr><th>WHEN</th><th>PLAYERS</th><th>STAKES (HOST / GUEST)</th><th>STATUS</th><th>REPORTED WINNER</th><th></th></tr></thead><tbody id="gc-wagers"></tbody></table></div>
+      <div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11px;color:#9d93c4">Unlock wagers by hand:
+        <input id="gc-wg-user" class="admin-input" style="width:200px" placeholder="username or email">
+        <button class="dk-btn" onclick="wgAdminUnlock(true)">Unlock</button><button class="dk-btn" onclick="wgAdminUnlock(false)">Lock</button>
+        <span id="gc-wg-out" style="color:#c4c0dc"></span></div>
+    </div></div>
   </div>
 </div>
 
@@ -28959,7 +29055,8 @@ window.addEventListener('load',async()=>{
       </div>
     </div>
 
-    <button class="btn-gray btn-sm" style="width:100%;margin-top:14px;padding:9px;letter-spacing:2px" onclick="showScreen('menu-screen')">← BACK TO MENU</button>
+    <button class="btn-gray btn-sm" style="width:100%;margin-top:14px;padding:9px;letter-spacing:2px;color:#f0d58a" onclick="wgOpenHistory()">⚖ MY WAGERS</button>
+    <button class="btn-gray btn-sm" style="width:100%;margin-top:8px;padding:9px;letter-spacing:2px" onclick="showScreen('menu-screen')">← BACK TO MENU</button>
   </div>
 
   <!-- WAITING ROOM (shown after creating/joining) -->
@@ -29013,6 +29110,9 @@ window.addEventListener('load',async()=>{
         </div>
         <div id="lobby-mode-desc" style="font-size:9px;color:#6b7280;margin-top:6px;letter-spacing:1px">Win by claiming all Prize Cards</div>
       </div>
+
+      <!-- Wager (build 10.7): 1v1 only, filled by wgRender() -->
+      <div id="lobby-wager" style="display:none"></div>
 
       <div style="margin-top:14px;display:flex;gap:8px">
         <button class="btn-gray btn-sm" style="flex:1;padding:10px;letter-spacing:2px" onclick="cancelOnlineRoom()">✕ CANCEL</button>
@@ -30147,7 +30247,7 @@ function mlRewardLines(att){
 function mlHasRewards(att){ return !!(att&&(att.celestium||att.xp||(att.packs||[]).length||(att.cards||[]).length||(att.cosmetics||[]).length)); }
 async function mlApplyRewards(att,source){
   const items=[]; source=source||'Gift';
-  if(att.celestium){ const n=Math.floor(Number(att.celestium)||0); if(n){ _celData.celestium=(_celData.celestium||0)+n; try{ _celLog.unshift({amount:n,reason:source,ts:new Date().toISOString()}); }catch(e){} if(n>0&&typeof bumpStat==='function') bumpStat('celestium_earned',n); if(typeof updateCelDisplay==='function') updateCelDisplay(); await saveCelestium(); items.push({icon:'💠',amount:'+'+n.toLocaleString(),label:'Celestium'}); } }
+  if(att.celestium){ const n=Math.floor(Number(att.celestium)||0); if(n){ _celData.celestium=(_celData.celestium||0)+n; try{ _celLog.unshift({amount:n,reason:source,ts:new Date().toISOString()}); }catch(e){} if(n>0&&!att.wager&&typeof bumpStat==='function') bumpStat('celestium_earned',n); if(typeof updateCelDisplay==='function') updateCelDisplay(); await saveCelestium(); items.push({icon:'💠',amount:'+'+n.toLocaleString(),label:'Celestium'}); } }
   if(att.xp&&typeof awardBPXp==='function'){ const n=Math.floor(Number(att.xp)||0); if(n){ await awardBPXp(n,source); items.push({icon:'⭐',amount:'+'+n.toLocaleString(),label:'XP'}); } }
   if((att.packs||[]).length){ att.packs.forEach(p=>{ grantPack(p.kind||'pack',p.type||'basic',p.setId||'base_set',Math.max(1,Number(p.qty)||1)); items.push({icon:p.kind==='box'?'📦':'🎴',amount:'×'+(p.qty||1),label:packDisplayName(p.kind||'pack',p.type||'basic',p.setId||'base_set')}); }); await savePackInventory(); if(typeof renderPackInventory==='function') try{renderPackInventory();}catch(e){} if(typeof updatePackBadge==='function') try{updatePackBadge();}catch(e){} }
   if((att.cards||[]).length){ att.cards.forEach(c=>{ if(!DB[c.cid]) return; const q=Math.max(1,Number(c.qty)||1); for(let i=0;i<q;i++) addCardToCollection(c.cid,c.foil||'none'); const v=(c.foil&&c.foil!=='none')?((VARIANT_META[c.foil]||{}).label||c.foil):''; items.push({img:getImg(c.cid),amount:'×'+q,label:DB[c.cid].name+(v?' · '+v:'')}); }); try{ await saveCollection(); saveHoloOwned(); saveCollectionFoil(); }catch(e){ console.warn('[MAIL] card save',e); } }
@@ -30163,18 +30263,19 @@ async function mlFlushPending(){ // re-apply rewards that were claimed but not s
   for(const p of list){ try{ await mlApplyRewards(p.att,p.src); }catch(e){} }
   try{ localStorage.removeItem(mlPendingKey()); }catch(e){}
 }
-async function mlClaim(id){
+async function mlClaim(id,opts){
+  opts=opts||{};
   const m=_mail.inbox.find(x=>x.id===id); if(!m||m.claimed_at) return false;
   const {data,error}=await _celSB.rpc('mail_claim',{p_id:id});
   if(error){ alert('Could not claim: '+error.message); return false; }
   if(!data){ m.claimed_at=new Date().toISOString(); mlRender(); return false; }
-  const src='Gift from '+(m.sender_name||'Virora');
+  const src=opts.src||('Gift from '+(m.sender_name||'Virora'));
   let list=[]; try{ list=JSON.parse(localStorage.getItem(mlPendingKey())||'[]'); }catch(e){}
   list.push({id,att:data,src}); try{ localStorage.setItem(mlPendingKey(),JSON.stringify(list)); }catch(e){}
   const items=await mlApplyRewards(data,src);
   try{ localStorage.setItem(mlPendingKey(),JSON.stringify(list.filter(x=>x.id!==id))); }catch(e){}
   m.claimed_at=new Date().toISOString(); m.read_at=m.read_at||m.claimed_at;
-  if(items.length&&typeof showRewardsCelebration==='function'){ showRewardsCelebration(items); const t=document.querySelector('#rc-overlay .rc-title'), st=document.querySelector('#rc-overlay .rc-sub'); if(t) t.textContent='GIFT CLAIMED'; if(st) st.textContent=src; }
+  if(items.length&&!opts.quiet&&typeof showRewardsCelebration==='function'){ showRewardsCelebration(items); const t=document.querySelector('#rc-overlay .rc-title'), st=document.querySelector('#rc-overlay .rc-sub'); if(t) t.textContent=opts.title||'GIFT CLAIMED'; if(st) st.textContent=opts.sub||src; }
   mlRender(); mlBadge();
   return true;
 }
@@ -30202,6 +30303,7 @@ async function mlRefresh(force){
   // queue popups (unread popup mail), oldest first
   _mail.inbox.filter(m=>m.popup&&!m.read_at&&!_mail.popQueue.includes(m.id)).reverse().forEach(m=>_mail.popQueue.push(m.id));
   mlNextPopup();
+  if(typeof wgAutoClaim==='function') wgAutoClaim();
   if(!force&&wasLoaded){ const fresh=_mail.inbox.filter(m=>!before.has(m.id)&&!m.popup); if(fresh.length) mlToast('✉ New mail from <b>'+mlEsc(fresh[0].sender_name||'a player')+'</b> — click to open'); }
 }
 function mlNextPopup(){
@@ -30227,6 +30329,7 @@ function mlNextPopup(){
 async function mlInit(){ // called after login
   await mlFlushPending();
   await mlRefresh(true);
+  if(typeof wgOnLogin==='function') wgOnLogin();
   clearInterval(_mail.pollT); _mail.pollT=setInterval(()=>mlRefresh(false),90000);
 }
 function mlPing(recipientId){ // nudge an online player's client to refresh its inbox
@@ -30417,10 +30520,11 @@ async function openGiftCenter(){
 function gcTab(t){
   _gc.tab=t;
   document.querySelectorAll('#gift-center-screen .dk-pill[data-g]').forEach(p=>p.classList.toggle('on',p.dataset.g===t));
-  ['send','codes','log'].forEach(v=>{ const el=document.getElementById('gc-view-'+v); if(el) el.style.display=v===t?'':'none'; });
+  ['send','codes','log','wagers'].forEach(v=>{ const el=document.getElementById('gc-view-'+v); if(el) el.style.display=v===t?'':'none'; });
   if(t==='send') gcRenderCompose('send');
   if(t==='codes'){ gcRenderCompose('code'); gcLoadCodes(); }
   if(t==='log') gcLoadLog();
+  if(t==='wagers'&&typeof wgAdminLoad==='function') wgAdminLoad();
 }
 function gcRenderPlayers(){
   const q=(document.getElementById('gc-search')?.value||'').toLowerCase(), f=document.getElementById('gc-filter')?.value||'all';
@@ -30654,6 +30758,369 @@ async function gcLoadLog(){
   el.innerHTML=(data||[]).map(m=>`<tr><td style="white-space:nowrap">${mlWhen(m.created_at)}</td><td>${mlEsc(nm[m.recipient_id]||m.recipient_id.slice(0,8))}</td><td>${mlEsc(m.subject||'')}</td>
     <td style="color:#9d93c4">${mlEsc(mlRewardLines(m.attachments).join(' · ')||'—')}</td>
     <td>${m.attachments?(m.claimed_at?'<span style="color:#4ade80">CLAIMED</span>':'<span style="color:#f59e0b">NOT CLAIMED</span>'):(m.read_at?'READ':'UNREAD')}</td></tr>`).join('')||'<tr><td colspan="5" class="ml-empty">Nothing sent yet.</td></tr>';
+}
+</script>
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+// WAGERS v1 (build 10.7) — optional stakes on online 1v1 matches.
+// Server: VCU_Wagers_Setup.sql (escrow · settle · payouts by mail). The PC
+// version calls the same RPCs. A stake is taken by the server the moment it
+// is set; the RPC returns this player's new Celestium + pack inventory and we
+// adopt those values locally, so the next saveCelestium()/savePackInventory()
+// writes the right numbers. Payouts and refunds for the other player arrive as
+// mailbox gifts tagged attachments.wager and are claimed automatically.
+// ═══════════════════════════════════════════════════════════════════════
+const _wg={st:null,cur:null,live:null,draft:null,busy:false,pingT:null,missing:false,msg:'',reported:{},noted:{},matchKey:null,claiming:false,admin:{rows:[],filter:'review'}};
+const WG_DEFAULT_CFG={enabled:true,maxStake:5000,dailyCap:50000,housePct:5,minLevel:10,minOnline:20};
+
+function wgSB(){ return (typeof _celSB!=='undefined'&&_celSB)?_celSB:null; }
+function wgEsc(s){ return (typeof mlEsc==='function')?mlEsc(s):String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function wgFmt(n){ return Number(n||0).toLocaleString(); }
+async function wgRpc(fn,args){
+  const sb=wgSB(); if(!sb||!_celUserId) return {ok:false,error:'Sign in first.'};
+  try{
+    const {data,error}=await sb.rpc(fn,args||{});
+    if(error){
+      if(/could not find the function|does not exist|schema cache/i.test(error.message||'')){ _wg.missing=true; return {ok:false,error:"Wagers aren't set up on the server yet."}; }
+      return {ok:false,error:error.message};
+    }
+    return data;
+  }catch(e){ return {ok:false,error:String((e&&e.message)||e)}; }
+}
+// Server balances → local state (never the other way round)
+function wgAdopt(r){
+  if(!r) return;
+  if(r.celestium!=null&&typeof _celData!=='undefined'){ _celData.celestium=Number(r.celestium)||0; if(typeof updateCelDisplay==='function') try{updateCelDisplay();}catch(e){} }
+  if(Array.isArray(r.pack_inventory)){ _packInventory=r.pack_inventory;
+    if(typeof updatePackBadge==='function') try{updatePackBadge();}catch(e){}
+    if(typeof renderPackInventory==='function') try{renderPackInventory();}catch(e){} }
+}
+function wgCfg(){ return Object.assign({},WG_DEFAULT_CFG,(_wg.st&&_wg.st.cfg)||{}); }
+function wgCut(){ return Number(wgCfg().housePct)||0; }
+function wgPrize(cel){ return Math.floor((Number(cel)||0)*(100-wgCut())/100); }
+function wgSide(w){ return !w?null:(w.host_id===_celUserId?'host':(w.guest_id===_celUserId?'guest':null)); }
+function wgStake(w,s){ return {cel:Number(w[s+'_cel'])||0, packs:Array.isArray(w[s+'_packs'])?w[s+'_packs']:[], ok:!!w[s+'_ok'], name:w[s+'_name']||(s==='host'?'Host':'Guest'), id:w[s+'_id']}; }
+function wgMine(w){ return wgStake(w,wgSide(w)||'host'); }
+function wgTheirs(w){ return wgStake(w,wgSide(w)==='host'?'guest':'host'); }
+function wgPackName(p){ return p.name||(typeof packDisplayName==='function'?packDisplayName(p.kind||'pack',p.type||'basic',p.setId||'base_set'):(p.type+' pack')); }
+function wgPacksText(list){ return (list||[]).map(p=>(p.qty||1)+'× '+wgPackName(p)).join(', '); }
+function wgStakeText(s){ const bits=[]; if(s.cel) bits.push(wgFmt(s.cel)+' 💠'); if(s.packs.length) bits.push(wgPacksText(s.packs)); return bits.join(' + ')||'nothing'; }
+function wgHasStakes(w){ return !!w&&((Number(w.host_cel)||0)+(Number(w.guest_cel)||0)>0||(w.host_packs||[]).length>0||(w.guest_packs||[]).length>0||w.host_ok||w.guest_ok); }
+function wgRoomReady(){
+  return !!(typeof _onlineRoom!=='undefined'&&_onlineRoom&&_onlineRoom.code&&!(_onlineRoom.is_2v2||_onlineRoom.game_mode==='2v2')
+    &&_onlineRoom.host_id&&_onlineRoom.guest_id&&_onlineRoom.host_id!==_onlineRoom.guest_id&&_celUserId);
+}
+async function wgLoadStatus(){ const r=await wgRpc('wager_status'); if(r&&r.ok) _wg.st=r; return r; }
+function wgNotify(){ try{ if(_onlineChannel&&_wg.cur) _onlineChannel.send({type:'broadcast',event:'wager',payload:{id:_wg.cur.id,from:_onlineRole}}); }catch(e){} }
+function wgReset(){ _wg.cur=null; _wg.draft=null; _wg.msg=''; _wg.busy=false; }
+
+// ── draft (what I'm about to stake) ──
+function wgResetDraft(){
+  const w=_wg.cur; if(!w){ _wg.draft=null; return; }
+  const me=wgMine(w), packs={}; me.packs.forEach(p=>{ packs[p.key]=(packs[p.key]||0)+(Number(p.qty)||0); });
+  _wg.draft={cel:me.cel,packs};
+}
+function wgDirty(){
+  const w=_wg.cur, d=_wg.draft; if(!w||!d) return false;
+  const me=wgMine(w); if(d.cel!==me.cel) return true;
+  const saved={}; me.packs.forEach(p=>{ saved[p.key]=(saved[p.key]||0)+(Number(p.qty)||0); });
+  const keys=new Set([...Object.keys(saved),...Object.keys(d.packs)]);
+  for(const k of keys){ if((saved[k]||0)!==(d.packs[k]||0)) return true; }
+  return false;
+}
+// Packs I could stake = my sealed inventory + whatever I already have in escrow
+function wgPackPool(){
+  const pool={};
+  (typeof _packInventory!=='undefined'?_packInventory:[]).forEach(e=>{ if(!e||!(Number(e.qty)>0)) return;
+    const k=e.key||((e.kind||'pack')+'|'+(e.type||'basic')+'|'+(e.setId||'base_set'));
+    if(!pool[k]) pool[k]={key:k,kind:e.kind||'pack',type:e.type||'basic',setId:e.setId||'base_set',name:wgPackName(e),have:0};
+    pool[k].have+=Number(e.qty)||0; });
+  if(_wg.cur) wgMine(_wg.cur).packs.forEach(p=>{ if(!pool[p.key]) pool[p.key]={key:p.key,kind:p.kind,type:p.type,setId:p.setId,name:wgPackName(p),have:0}; pool[p.key].have+=Number(p.qty)||0; });
+  return pool;
+}
+function wgCelAvail(){ return (Number(_celData&&_celData.celestium)||0)+(_wg.cur?wgMine(_wg.cur).cel:0); }
+function wgSetCel(v){
+  if(!_wg.draft) return; const cap=Math.min(wgCfg().maxStake,wgCelAvail());
+  v=Math.round(Number(v)||0); _wg.draft.cel=Math.max(0,Math.min(cap,v)); _wg.msg=''; wgRender();
+}
+function wgPack(k,delta){
+  if(!_wg.draft) return; const p=wgPackPool()[k]; if(!p) return;
+  const q=Math.max(0,Math.min(p.have,(_wg.draft.packs[k]||0)+delta));
+  if(q) _wg.draft.packs[k]=q; else delete _wg.draft.packs[k]; _wg.msg=''; wgRender();
+}
+
+// ── waiting-room panel ──
+function wgRender(){
+  const box=document.getElementById('lobby-wager'); if(!box) return;
+  if(!wgRoomReady()){ box.innerHTML=''; box.style.display='none'; wgStartGate(); return; }
+  box.style.display='';
+  const st=_wg.st, g=st&&st.gate, cfg=wgCfg();
+  const bar=(t,body,btn)=>`<div class="wg-bar${t==='lock'?' locked':''}"><span class="wg-t">${t==='lock'?'🔒 WAGER':'⚖ WAGER'}</span><span class="wg-dim">${body}</span>${btn||''}</div>`;
+  if(_wg.missing){ box.innerHTML=bar('','Wagers aren\'t available on this server yet.'); wgStartGate(); return; }
+  if(!st){ box.innerHTML=bar('','Checking…'); wgStartGate(); return; }
+  if(cfg.enabled===false){ box.innerHTML=bar('lock','Wagers are switched off right now.'); wgStartGate(); return; }
+  if(g&&!g.unlocked){
+    box.innerHTML=bar('lock',`Unlocks at <b>Level ${g.needLevel}</b> and <b>${g.needOnline} online matches</b> · you: Level ${g.level} · ${Math.min(g.online,g.needOnline)}/${g.needOnline} matches`);
+    wgStartGate(); return;
+  }
+  const w=_wg.cur;
+  if(!w||!['open','locked'].includes(w.status)){
+    box.innerHTML=bar('','Optional — put Celestium or sealed packs on this match.',`<button class="wg-btn" onclick="wgOpen()" ${_wg.busy?'disabled':''}>ADD A WAGER</button>`)
+      +(_wg.msg?`<div class="wg-err">${wgEsc(_wg.msg)}</div>`:'');
+    wgStartGate(); return;
+  }
+  if(!_wg.draft) wgResetDraft();
+  const me=wgMine(w), th=wgTheirs(w), d=_wg.draft, locked=w.status==='locked', dirty=wgDirty();
+  const pool=Object.values(wgPackPool()), celAvail=wgCelAvail(), dis=(locked||_wg.busy)?'disabled':'';
+  const chips=[0,500,1000,2500,5000].filter(v=>v<=cfg.maxStake).concat(cfg.maxStake>5000?[cfg.maxStake]:[])
+    .map(v=>`<button class="wg-chip${d.cel===v?' on':''}" onclick="wgSetCel(${v})" ${(v>celAvail||locked||_wg.busy)?'disabled':''}>${v>=1000?(v/1000)+'K':v}</button>`).join('');
+  const packRows=pool.length?pool.map(p=>{ const q=d.packs[p.key]||0;
+      return `<div class="wg-prow"><span title="${wgEsc(p.name)}">${p.kind==='box'?'📦':'🎴'} ${wgEsc(p.name)}</span><span class="wg-step">`
+        +`<button data-k="${wgEsc(p.key)}" onclick="wgPack(this.dataset.k,-1)" ${(q<=0||locked||_wg.busy)?'disabled':''} aria-label="One less">−</button><b>${q}</b>`
+        +`<button data-k="${wgEsc(p.key)}" onclick="wgPack(this.dataset.k,1)" ${(q>=p.have||locked||_wg.busy)?'disabled':''} aria-label="One more">+</button><i>/${p.have}</i></span></div>`; }).join('')
+    :'<div class="wg-none">No sealed packs or boxes.</div>';
+  const theirPacks=th.packs.length?th.packs.map(p=>`<div class="wg-prow"><span>${p.kind==='box'?'📦':'🎴'} ${wgEsc(wgPackName(p))}</span><b>×${p.qty}</b></div>`).join(''):'';
+  const won=Number(st.won_today)||0, capLeft=Math.max(0,(Number(cfg.dailyCap)||0)-won), prize=wgPrize(th.cel);
+  const potEmpty=!(me.cel+th.cel>0||me.packs.length||th.packs.length);
+  let action='', status='';
+  if(dirty){
+    action=`<button class="wg-btn go" onclick="wgSaveStake()" ${_wg.busy?'disabled':''}>SET MY STAKE</button><button class="wg-btn" onclick="wgResetDraft();wgRender()" ${_wg.busy?'disabled':''}>UNDO</button>`;
+    status='Your stake is held safely the moment you set it.';
+  } else if(locked){
+    status=`<b style="color:#86efac">🔒 LOCKED IN.</b> `+(_onlineRole==='host'?'Start the match when you\'re ready.':'Waiting for the host to start.');
+  } else if(me.ok){
+    status=`✓ You accepted. Waiting for <b>${wgEsc(th.name)}</b>…`;
+  } else {
+    action=`<button class="wg-btn go" onclick="wgAccept()" ${(_wg.busy||potEmpty)?'disabled':''}>✓ ACCEPT TERMS</button>`;
+    status=potEmpty?'Set a stake to begin.':(th.ok?`<b>${wgEsc(th.name)}</b> accepted these terms — your call.`:'Both players accept the same terms to lock it in.');
+  }
+  box.innerHTML=`<div class="wg-panel">
+    <div class="wg-head"><span class="wg-t">⚖ WAGER</span><span class="wg-dim">Winner takes everything staked · ${wgCut()}% house cut on Celestium</span>
+      <button class="wg-link" onclick="wgCancel()" ${_wg.busy?'disabled':''}>call it off</button></div>
+    <div class="wg-cols">
+      <div class="wg-col"><h5><span>YOU PUT UP</span>${me.ok?'<span class="wg-ok">✓ ACCEPTED</span>':''}</h5>
+        <div class="wg-cel"><input type="number" class="admin-input" min="0" max="${Math.min(cfg.maxStake,celAvail)}" step="100" value="${d.cel}" onchange="wgSetCel(this.value)" ${dis} aria-label="Celestium stake"><span>💠</span><span class="wg-none">max ${wgFmt(Math.min(cfg.maxStake,celAvail))}</span></div>
+        <div class="wg-chips">${chips}</div>
+        <div class="wg-sub">SEALED PACKS · BOXES</div>${packRows}
+      </div>
+      <div class="wg-col"><h5><span title="${wgEsc(th.name)}">THEY PUT UP</span>${th.ok?'<span class="wg-ok">✓ ACCEPTED</span>':'<span class="wg-wait">DECIDING…</span>'}</h5>
+        <div class="wg-theirs">${th.cel?wgFmt(th.cel)+' 💠':(th.packs.length?'':'<span class="wg-none">Nothing yet</span>')}</div>${theirPacks}
+      </div>
+    </div>
+    <div class="wg-odds">If you win: <b class="win">+${wgFmt(prize)} 💠</b>${th.packs.length?' + '+wgEsc(wgPacksText(th.packs)):''} <span class="wg-none">(your own stake comes back too)</span><br>
+      If you lose: <b class="lose">${me.cel||me.packs.length?'−'+wgEsc(wgStakeText(me)):'nothing'}</b> · Won today: ${wgFmt(won)} / ${wgFmt(cfg.dailyCap)}${prize>capLeft?' <b class="lose">— over your daily cap</b>':''}</div>
+    <div class="wg-actions">${action}<span class="wg-status">${status}</span></div>
+    ${_wg.msg?`<div class="wg-err">${wgEsc(_wg.msg)}</div>`:''}
+  </div>`;
+  wgStartGate();
+}
+function wgStartGate(){
+  const b=document.getElementById('lobby-start-btn'); if(!b||_onlineRole!=='host') return;
+  if(!_onlineRoom||!_onlineRoom.guest_id||_onlineRoom.is_2v2||_onlineRoom.game_mode==='2v2'||/MISMATCH/.test(b.textContent)) return;
+  const w=_wg.cur;
+  if(w&&w.status==='open'&&wgHasStakes(w)){ b.disabled=true; b.textContent='WAGER NOT LOCKED'; b.title='Both players must accept the wager, or call it off, before the match can start.'; }
+  else if(w&&w.status==='locked'){ b.disabled=false; b.textContent='▸ START WAGERED MATCH'; b.title=''; }
+  else if(b.textContent==='WAGER NOT LOCKED'||b.textContent==='▸ START WAGERED MATCH'){ b.disabled=false; b.textContent='▸ START MATCH'; b.title=''; }
+}
+async function wgOnRoomReady(){
+  if(!wgRoomReady()){ wgRender(); return; }
+  if(_wg.cur&&_wg.cur.room_code!==_onlineRoom.code) wgReset();
+  wgRender();
+  const r=await wgLoadStatus();
+  if(r&&r.ok&&r.active&&r.active.room_code===(_onlineRoom&&_onlineRoom.code)&&['open','locked'].includes(r.active.status)){ _wg.cur=r.active; wgResetDraft(); }
+  wgRender();
+}
+async function wgWrap(fn){ if(_wg.busy) return; _wg.busy=true; _wg.msg=''; wgRender(); try{ await fn(); }finally{ _wg.busy=false; wgRender(); } }
+function wgErr(r){ if(r&&r.error==='locked'){ wgLoadStatus().then(wgRender); return 'Wagers are locked for your account.'; } return (r&&r.error)||'Something went wrong — try again.'; }
+function wgOpen(){ return wgWrap(async()=>{
+  const r=await wgRpc('wager_open',{p_room:_onlineRoom.code});
+  if(r&&r.gate&&_wg.st) _wg.st.gate=r.gate;
+  if(!r||!r.ok){ _wg.msg=r&&r.error==='locked'?'':wgErr(r); return; }
+  _wg.cur=r.wager; wgResetDraft(); wgNotify();
+}); }
+function wgSaveStake(){ return wgWrap(async()=>{
+  const w=_wg.cur, d=_wg.draft; if(!w||!d) return; const pool=wgPackPool();
+  const packs=Object.entries(d.packs).filter(([k,q])=>q>0&&pool[k]).map(([k,q])=>({kind:pool[k].kind,type:pool[k].type,setId:pool[k].setId,qty:q}));
+  const r=await wgRpc('wager_stake',{p_id:w.id,p_cel:d.cel,p_packs:packs});
+  if(!r||!r.ok){ _wg.msg=wgErr(r); return; }
+  wgAdopt(r); _wg.cur=r.wager; wgResetDraft(); wgNotify();
+}); }
+function wgAccept(){ return wgWrap(async()=>{
+  const w=_wg.cur; if(!w) return;
+  const r=await wgRpc('wager_accept',{p_id:w.id,p_ver:w.terms_ver});
+  if(r&&r.wager){ _wg.cur=r.wager; if(!wgDirty()) wgResetDraft(); }
+  if(!r||!r.ok){ _wg.msg=wgErr(r); return; }
+  wgNotify();
+}); }
+function wgCancel(){ return wgWrap(async()=>{
+  const w=_wg.cur; if(!w) return;
+  const r=await wgRpc('wager_cancel',{p_id:w.id});
+  wgAdopt(r);
+  if(!r||!r.ok){ _wg.msg=wgErr(r); if(r&&r.wager) _wg.cur=r.wager; return; }
+  wgNotify(); _wg.cur=null; _wg.draft=null;
+}); }
+// The other player changed something — fetch the row
+async function wgOnRemote(p){
+  if(!p||!p.id||p.from===_onlineRole) return;
+  const r=await wgRpc('wager_get',{p_id:p.id});
+  if(!r||!r.id) return;
+  if(_wg.reported[r.id]||(_wg.live&&_wg.live.id===r.id)){ // the match's own wager: only results matter
+    if(_wg.live&&_wg.live.id===r.id) _wg.live.w=r;
+    if(_wg.reported[r.id]&&r.status!=='live'&&!_wg['done_'+r.id]){ _wg['done_'+r.id]=1; wgShowOutcome(r); }
+    return;
+  }
+  const prev=_wg.cur, keepDraft=prev&&prev.id===r.id&&wgDirty();
+  if(['cancelled','void'].includes(r.status)){
+    wgReset(); _wg.msg=wgTheirs(r).name+' called off the wager. Anything you staked is on its way back.'; wgClaimSoon();
+  } else { _wg.cur=r; if(!keepDraft) wgResetDraft(); }
+  if(!_wg.st) await wgLoadStatus();
+  wgRender();
+}
+// Host: right before START MATCH
+async function wgBeforeStart(){
+  const w=_wg.cur; _wg.live=null;
+  if(!w||!wgRoomReady()) return true;
+  if(w.status==='open'){
+    if(!wgHasStakes(w)){ wgRpc('wager_cancel',{p_id:w.id}); _wg.cur=null; return true; }
+    alert('Finish the wager first — both players accept it, or call it off.'); return false;
+  }
+  if(w.status!=='locked') return true;
+  const r=await wgRpc('wager_start',{p_id:w.id});
+  if(!r||!r.ok){ if(r&&r.wager) _wg.cur=r.wager; _wg.msg=wgErr(r); wgRender(); alert('The wager could not start: '+wgErr(r)); return false; }
+  _wg.live={id:w.id,w:r.wager}; return true;
+}
+function wgRoomPayload(){ return (_wg.live&&_wg.live.id)?{wager_id:_wg.live.id}:{wager_id:null}; }
+
+// ── during / after the match ──
+function wgOnMatchStart(room){
+  _wg.matchKey=((room&&room.code)||'')+':'+Date.now();
+  clearInterval(_wg.pingT); _wg.pingT=null;
+  const id=room&&room.wager_id;
+  if(!id){ _wg.live=null; _wg.cur=null; _wg.draft=null; return; }
+  if(!_wg.live||_wg.live.id!==id) _wg.live={id,w:(_wg.cur&&_wg.cur.id===id)?_wg.cur:null};
+  _wg.cur=null; _wg.draft=null;
+  (async()=>{ const r=await wgRpc('wager_get',{p_id:id}); if(r&&r.id&&_wg.live&&_wg.live.id===id){ _wg.live.w=r; }
+    setTimeout(()=>{ try{ const w=_wg.live&&_wg.live.w; if(w&&_onlineRole==='host'&&G&&G.onlineMode&&typeof log==='function'){
+      log(`⚖ Wagered match — ${w.host_name||'Host'}: ${wgStakeText(wgStake(w,'host'))} · ${w.guest_name||'Guest'}: ${wgStakeText(wgStake(w,'guest'))}. Winner takes it all.`,'info');
+      if(typeof renderAll==='function') renderAll(); } }catch(e){} },1800); })();
+  _wg.pingT=setInterval(()=>{ if(_wg.live&&G&&G.onlineMode&&!G.gameOver) wgRpc('wager_ping',{p_id:_wg.live.id}); else { clearInterval(_wg.pingT); _wg.pingT=null; } },120000);
+}
+function wgWinLine(text,color){
+  const modal=document.getElementById('win-modal');
+  if(!modal||!modal.classList.contains('open')){ if(typeof mlToast==='function') mlToast(text); return; }
+  let el=document.getElementById('win-wager');
+  if(!el){ const cel=document.getElementById('win-celestium'); el=document.createElement('div'); el.id='win-wager';
+    el.style.cssText='margin:6px auto 0;max-width:380px;font-size:11px;line-height:1.5;letter-spacing:.3px;text-align:center';
+    if(cel&&cel.parentNode) cel.parentNode.insertBefore(el,cel.nextSibling); else modal.appendChild(el); }
+  el.style.color=color||'#c4c0dc'; el.textContent=text;
+}
+function wgShowOutcome(w){
+  if(!w) return; const th=wgTheirs(w);
+  if(w.status==='settled'){
+    if(w.winner_id===_celUserId) wgWinLine(`⚖ Wager won: +${wgFmt(w.profit_cel)} 💠${th.packs.length?' + '+wgPacksText(th.packs):''}, with your own stake back. It lands in your mailbox and is claimed automatically.`,'#fbbf24');
+    else wgWinLine(`⚖ Wager lost — your stake goes to ${th.name}.`,'#fca5a5');
+    wgClaimSoon();
+  } else if(w.status==='disputed') wgWinLine('⚖ Both players claimed the win, so an admin will review this wager. Both stakes stay held until then.','#fbbf24');
+  else if(w.status==='void'||w.status==='cancelled'){ wgWinLine('⚖ Wager voided — both stakes are being returned.','#c4c0dc'); wgClaimSoon(); }
+  else if(w.status==='live'){ wgWinLine(`⚖ Waiting for ${th.name} to confirm the result… If they've left, it settles on its own within about 10 minutes.`,'#9ca3af'); wgWatch(w.id); }
+}
+function wgWatch(id){ // re-check a wager waiting on a silent opponent
+  [6,11,16,30].forEach(m=>setTimeout(async()=>{
+    await wgRpc('wager_sweep'); const r=await wgRpc('wager_get',{p_id:id});
+    if(r&&r.id&&r.status!=='live'&&!_wg['done_'+id]){ _wg['done_'+id]=1; wgShowOutcome(r); }
+  },m*60000));
+}
+async function wgOnMatchEnd(won){
+  const code=_onlineRoom&&_onlineRoom.code, key=_wg.matchKey||code;
+  if(code&&!_wg.noted[key]){ _wg.noted[key]=1; wgRpc('note_online_match',{p_room:code}); }
+  const L=_wg.live; if(!L||_wg.reported[L.id]) return; _wg.reported[L.id]=1;
+  clearInterval(_wg.pingT); _wg.pingT=null;
+  let w=L.w; if(!w){ const r=await wgRpc('wager_get',{p_id:L.id}); if(r&&r.id) w=r; }
+  if(!w) return;
+  const winner=won?_celUserId:wgTheirs(w).id;
+  wgWinLine('⚖ Settling the wager…','#9ca3af');
+  const r=await wgRpc('wager_report',{p_id:L.id,p_winner:winner});
+  if(r&&r.wager) w=r.wager;
+  try{ if(_onlineChannel) _onlineChannel.send({type:'broadcast',event:'wager',payload:{id:L.id,from:_onlineRole}}); }catch(e){}
+  if(_wg.live===L) _wg.live=null;
+  if(w.status!=='live') _wg['done_'+w.id]=1;
+  wgShowOutcome(w);
+}
+function wgClaimSoon(){ setTimeout(()=>{ if(typeof mlRefresh==='function') mlRefresh(true); },1200); }
+// Claim wager payouts / refunds as soon as they reach the mailbox (never mid-match)
+async function wgAutoClaim(){
+  if(_wg.claiming||typeof _mail==='undefined') return;
+  if(document.querySelector('#game-screen.active,#game-screen-2v2.active')) return;
+  const list=(_mail.inbox||[]).filter(m=>m.attachments&&m.attachments.wager&&!m.claimed_at);
+  if(!list.length) return; _wg.claiming=true;
+  try{ for(const m of list){
+    const pay=m.attachments.wager_tag==='payout';
+    const ok=await mlClaim(m.id,{quiet:!pay,title:'WAGER WON',sub:'Winnings from your wagered match',src:pay?'Wager winnings':'Wager refund'});
+    if(ok&&!pay&&typeof mlToast==='function') mlToast('⚖ Wager stake returned: '+mlRewardLines(m.attachments).join(' · '));
+  } }finally{ _wg.claiming=false; }
+}
+async function wgLeaveRoom(){ const w=_wg.cur; if(w&&['open','locked'].includes(w.status)){ const r=await wgRpc('wager_cancel',{p_id:w.id}); wgAdopt(r); wgNotify(); } wgReset(); }
+function wgOnLogin(){ setTimeout(async()=>{ const n=await wgRpc('wager_sweep'); if(Number(n)>0) wgClaimSoon(); },4000); }
+
+// ── history (Online lobby → ⚖ MY WAGERS) ──
+async function wgOpenHistory(){
+  if(!_celUserId){ alert('Sign in first.'); return; }
+  showModal('⚖ My Wagers','<div class="ml-empty">Loading…</div>');
+  await wgRpc('wager_sweep');
+  const st=await wgLoadStatus();
+  const sb=wgSB(); let rows=[], err='';
+  try{ const {data,error}=await sb.rpc('wager_history',{p_limit:40}); if(error) err=error.message; else rows=data||[]; }catch(e){ err=String(e); }
+  const body=document.getElementById('modal-body'); if(!body) return;
+  if(_wg.missing||(err&&/function|schema cache/i.test(err))){ body.innerHTML='<div class="ml-empty">Wagers aren\'t set up on the server yet.</div>'; return; }
+  const cfg=wgCfg(), g=st&&st.gate;
+  const gate=g?(g.unlocked?'<span style="color:#86efac">✓ Unlocked</span>':`🔒 Unlocks at Level ${g.needLevel} + ${g.needOnline} online matches — you: Level ${g.level}, ${Math.min(g.online,g.needOnline)}/${g.needOnline}`):'';
+  const head=`<div class="wg-hist-head"><div>${gate}</div><div>Won today: <b>${wgFmt(st&&st.won_today)}</b> / ${wgFmt(cfg.dailyCap)} 💠 · resets at 00:00 UTC</div>
+    <div class="wg-none">Stakes: up to ${wgFmt(cfg.maxStake)} 💠 a side plus any sealed packs or boxes · ${cfg.housePct}% house cut on Celestium won.</div></div>`;
+  const chip=(w)=>{ const mine=w.winner_id===_celUserId;
+    if(w.status==='settled') return mine?`<span class="wg-tag win">WON +${wgFmt(w.profit_cel)}</span>`:'<span class="wg-tag lose">LOST</span>';
+    return {open:'<span class="wg-tag">SETTING UP</span>',locked:'<span class="wg-tag">LOCKED</span>',live:'<span class="wg-tag">IN PROGRESS</span>',disputed:'<span class="wg-tag warn">UNDER REVIEW</span>',void:'<span class="wg-tag">VOID · REFUNDED</span>',cancelled:'<span class="wg-tag">CALLED OFF</span>'}[w.status]||w.status; };
+  const list=rows.length?rows.map(w=>{ const me=wgMine(w), th=wgTheirs(w);
+      return `<div class="wg-hrow"><div class="wg-hwho">vs <b>${wgEsc(th.name)}</b><span class="wg-none"> · ${typeof mlWhen==='function'?mlWhen(w.created_at):''}</span></div>
+        <div class="wg-hst">You: ${wgEsc(wgStakeText(me))}<br>Them: ${wgEsc(wgStakeText(th))}</div><div>${chip(w)}</div></div>`; }).join('')
+    :'<div class="ml-empty">No wagers yet. Open a private room and add one from the waiting room.</div>';
+  body.innerHTML=head+`<div class="wg-hist">${list}</div>`;
+}
+
+// ── admin (Gift Center → ⚖ WAGERS) ──
+async function wgAdminLoad(){
+  const tb=document.getElementById('gc-wagers'); if(!tb) return;
+  tb.innerHTML='<tr><td colspan="6" class="ml-empty">Loading…</td></tr>';
+  const f=document.getElementById('gc-wg-filter'); _wg.admin.filter=f?f.value:'review';
+  const {data,error}=await wgSB().rpc('admin_wagers',{p_status:_wg.admin.filter==='all'?null:_wg.admin.filter,p_limit:200});
+  if(error){ tb.innerHTML=`<tr><td colspan="6" class="ml-empty">${/function|schema cache/i.test(error.message)?'Run VCU_Wagers_Setup.sql in Supabase first.':wgEsc(error.message)}</td></tr>`; return; }
+  _wg.admin.rows=data||[];
+  if(!_wg.admin.rows.length){ tb.innerHTML='<tr><td colspan="6" class="ml-empty">Nothing here.</td></tr>'; return; }
+  const nm=(w,id)=>id===w.host_id?w.host_name:(id===w.guest_id?w.guest_name:'—');
+  tb.innerHTML=_wg.admin.rows.map(w=>{
+    const open=['open','locked','live','disputed'].includes(w.status), canPay=open&&w.status!=='open';
+    const rep=`H: ${w.host_report?wgEsc(nm(w,w.host_report)):'—'}<br>G: ${w.guest_report?wgEsc(nm(w,w.guest_report)):'—'}`;
+    const res=w.status==='settled'?`<br><span style="color:#86efac">→ ${wgEsc(nm(w,w.winner_id))} (${wgEsc(w.resolved_by||'')}) +${wgFmt(w.profit_cel)} · cut ${wgFmt(w.house_cut)}</span>`:(w.note?`<br><span class="wg-none">${wgEsc(w.note)}</span>`:'');
+    return `<tr><td>${typeof mlWhen==='function'?mlWhen(w.created_at):''}<br><span class="wg-none">${wgEsc(w.room_code)}</span></td>
+      <td><b style="color:#f0d58a;font-weight:400">${wgEsc(w.host_name)}</b> (host)<br>${wgEsc(w.guest_name)}</td>
+      <td>${wgEsc(wgStakeText(wgStake(w,'host')))}<br>${wgEsc(wgStakeText(wgStake(w,'guest')))}</td>
+      <td><b>${wgEsc(w.status.toUpperCase())}</b>${res}</td><td>${rep}</td>
+      <td style="white-space:nowrap">${canPay?`<button class="dk-btn" onclick="wgAdminResolve('${w.id}','host')">Pay host</button> <button class="dk-btn" onclick="wgAdminResolve('${w.id}','guest')">Pay guest</button> `:''}${open?`<button class="dk-btn" onclick="wgAdminResolve('${w.id}',null)">Void</button>`:''}</td></tr>`;
+  }).join('');
+}
+async function wgAdminResolve(id,who){
+  const w=_wg.admin.rows.find(x=>x.id===id); if(!w) return;
+  const winner=who==='host'?w.host_id:(who==='guest'?w.guest_id:null);
+  if(!confirm(winner?`Pay this wager to ${who==='host'?w.host_name:w.guest_name}?`:'Void this wager and refund both players?')) return;
+  const {data,error}=await wgSB().rpc('admin_wager_resolve',{p_id:id,p_winner:winner,p_note:null});
+  if(error||!(data&&data.ok)) alert('Could not resolve: '+((error&&error.message)||(data&&data.error)||'unknown error'));
+  wgAdminLoad();
+}
+async function wgAdminUnlock(on){
+  const q=(document.getElementById('gc-wg-user')?.value||'').trim().toLowerCase(); const out=document.getElementById('gc-wg-out');
+  const p=(_gc.players||[]).find(x=>(x.username||'').toLowerCase()===q||(x.email||'').toLowerCase()===q);
+  if(!p){ if(out) out.textContent='No player with that name or email.'; return; }
+  const {data,error}=await wgSB().rpc('admin_wager_unlock',{p_user:p.id,p_unlock:!!on});
+  if(out) out.textContent=error?error.message:(on?`✓ Wagers unlocked for ${p.username||p.email}.`:`Wagers locked again for ${p.username||p.email} (they re-unlock on their own once they qualify).`)+(data&&data.gate?` · Level ${data.gate.level}, ${data.gate.online} online matches`:'');
 }
 </script>
 
