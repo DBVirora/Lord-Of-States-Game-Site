@@ -7324,7 +7324,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.8 · Spectators</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.9 · Pavi line · Crystora (SSGE)</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -8295,8 +8295,27 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.8'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.9'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.9', date:'2026-11-01',
+    cards:[
+      {id:'pavi_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/Avatar TLAB/Pavi Base (Promo).png', newAbilities:[],
+       note:"CHANGED: Pavi is now a BASE CHARACTER — type 'base_char', charLine 'pavi', formTier 'base', nextForms ['root_chakra']. Card text unchanged. Scan renamed to 'Pavi Base (Promo).png' (old 'Pavi (Promo).png' removed from the scans repo)."},
+      {id:'nisha_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/Avatar TLAB/Nisha (Promo).png', newAbilities:[],
+       note:"CHANGED: Nisha is now a BASE CHARACTER — type 'base_char', charLine 'nisha', formTier 'base', nextForms [] (no forms yet). Card text and scan unchanged."},
+      {id:'pavi_root_chakra_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/Avatar TLAB/Pavi Root Chakra (Promo).png', newAbilities:['Muladhara','Bloodroot Fury'],
+       note:"Pavi (Root Chakra) · transformOnly (from Pavi) · charLine 'pavi', formTier 'root_chakra', path 'chakra' (her own path) · Green (pays Green) / Red · Legend · cost 8 · 6 ATK / 8 HP · subtypes Avatar, Bender · race 'Avatar Bender' · keywords ['resolve'] · still a 'Pavi' for Nishvi's fusion materials."},
+      {id:'crystora_ssge_bse', set:'base_set', number:'138/150', rarity:'legend', scan:'Sets/BASE SET/138-150 (Crystora SSGE) FUSION TRANSFORMATION.png', newAbilities:['Crimson Rampage','Godfire Spillover'],
+       note:"Crystora (SSGE) · FUSION FORM, transformOnly (from Crystora; crystora_bse.nextForms → ['ssbm','ssge']) · Red · Legend · cost 10 · 11 ATK / 7 HP · subtypes Royal, Saiyan, God · charLine 'crystora', formTier 'ssge', path 'god'. Pays its printed 10, keeps the Relic/Dance timer, split Fatigues as with SSBM."}],
+    abilities:[
+      "MULADHARA (Pavi Root Chakra, passive): Resolve — keywords ['resolve'] (dealDamage: first lethal damage leaves her at 1 Health, fc.resolveUsed, once per game). KEYWORD_PASSIVES maps 'Muladhara' → 'resolve' so stealing it grants Resolve.",
+      "BLOODROOT FURY (Pavi Root Chakra, passive): +3 Attack while currentHP < max Health (recalcPassives). Retaliation still uses the Attack she had before the hit (engine convention).",
+      "CRIMSON RAMPAGE (Crystora SSGE, triggered): every time it attacks (any attack path — the shared triggerFlameSpiral hook), +3 Attack until the end of that turn (stacks per attack; tickCrimsonRampage at end of turn), then 2 damage to itself through dealDamage. If that destroys it, the attack is cancelled (fc._rampKO checked in resolveAttack, resolveLocationAttack, resolveCharVsHerald, declareLifeAttack, declareTeamLifeAttack, processAITeamAttacks, aiAttackHumanLife). The AI won't attack with it at 2 Health or less.",
+      "GODFIRE SPILLOVER (Crystora SSGE, triggered): when it destroys a character (any combat kill — hooked in triggerShowdownHype), 3 damage to ANOTHER opposing character: local human picks (openEnemyTargetPicker); AI / remote / off-turn auto-picks (aiPickEnemyTarget, skips Godly Evasion). Drunken Stance targets excluded. The spillover damage doesn't re-trigger it."],
+    screens:["Effects panel: '🔥 Crimson Rampage +N Attack until the end of this turn'."],
+    fixes:["UNBREAKABLE FURY (Hulk Green Scar Herald): the 'cannot block' attack used to deal raw damage and return, skipping every on-hit / on-kill effect. It now runs executeCombatDamage with G._noRetaliation=true (log: '<defender> can't block — no retaliation.').",
+      "PRIMAL STRIKE (Kevin): the heads +3 was only in the log line — the damage step recomputed without it. It now goes into afc.nextAttackBonus, which executeCombatDamage adds and clears."],
+    data:["GAME_BUILD '10.9'."] },
   { build:'10.8', date:'2026-11-01',
     cards:[],
     abilities:[],
@@ -8704,6 +8723,7 @@ const DEFAULTS={
   potara_earrings_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/101-150%20(Potara%20Earrings).png',
   art_of_fusion_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/104-150%20(Art%20of%20Fusion).png',
   crystora_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/141-150%20(Crystora)%20FUSION.png',
+  crystora_ssge_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/138-150%20(Crystora%20SSGE)%20FUSION%20TRANSFORMATION.png',
   crystora_ssbm_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/142-150%20(Crystora%20SSBM)%20FUSION%20TRANSFORMATION.png',
   jalina_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/123-150%20(Jalina).png',
   alita_ssj_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/125-150%20(Alita%20SSJ).png',
@@ -8719,7 +8739,8 @@ const DEFAULTS={
   nishvi_avatar_state_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Nishvi%20Avatar%20State%20(Promo).png',
   pavi_vampire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Pavi%20Vampire%20(Promo).png',
   doctor_doom_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Doctor%20Doom%20(Herald)%20PROMO.png',
-  pavi_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Pavi%20(Promo).png',
+  pavi_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Pavi%20Base%20(Promo).png',
+  pavi_root_chakra_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Pavi%20Root%20Chakra%20(Promo).png',
   raven_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Raven%20(Promo%20Card).png',
   raven_vampire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Raven%20Vampire%20(Promo%20Card).png',
   deerhaunter_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Timesplitters/The%20DeerHaunter%20(PROMO)%20Timesplitters%20Future%20Perfect.png',
@@ -8939,10 +8960,16 @@ const DB={
   art_of_fusion_bse:{id:'art_of_fusion_bse',rarity:'uncommon',name:'Art of Fusion',color:'white',charName:'Art of Fusion',subtypes:['Instant'],type:'instant',race:'Instant',cost:1,atk:0,hp:0,sym:'💫',setId:'base_set',cardNumber:'104/150',fusionMethodCard:'dance',nextForms:[],
     abilities:[{label:'Art of Fusion',type:'instant',cost:0,text:'Fuse two of your characters into a Fusion card from your hand that lists Dance, paying its cost −3. The Fusion lasts 3 of your turns, then splits.'}]},
   // ── CRYSTORA (BSE 141/150) — build 10.3. FUSION of Virora + Crystal, RELIC ONLY. BLUE/PURPLE (pays Blue).
-  crystora_bse:{id:'crystora_bse',rarity:'mythic',name:'Crystora',color:'blue',colors:['blue','purple'],charName:'Crystora',charLine:'crystora',formTier:'base',path:'base',subtypes:['Royal','Saiyan'],type:'char',fusion:true,race:'Royal Saiyan',cost:7,atk:6,hp:8,sym:'CRYS',setId:'base_set',cardNumber:'141/150',keywords:[],nextForms:['ssbm'],
+  crystora_bse:{id:'crystora_bse',rarity:'mythic',name:'Crystora',color:'blue',colors:['blue','purple'],charName:'Crystora',charLine:'crystora',formTier:'base',path:'base',subtypes:['Royal','Saiyan'],type:'char',fusion:true,race:'Royal Saiyan',cost:7,atk:6,hp:8,sym:'CRYS',setId:'base_set',cardNumber:'141/150',keywords:[],nextForms:['ssbm','ssge'],
     fusionMaterials:[{name:'Virora'},{name:'Crystal'}],fusionMethods:['relic'],
     abilities:[{label:'Thunder Light Sphere',type:'activated',cost:0,limit:'once_per_turn',text:'Deal 3 damage to target opposing character. It gets −2 Attack until end of your next turn. (Free, taps, once per turn)'},
       {label:'Inferno Ward',type:'passive',cost:0,text:'Damage dealt to this card is reduced by 1.'}]},
+  // ── CRYSTORA (SSGE) (BSE 138/150) — build 10.9. FUSION FORM of Crystora, TRANSFORM-ONLY, God path. Red.
+  //    Crimson Rampage: each attack +3 Attack until end of turn, then it takes 2 damage (can destroy it before the hit).
+  //    Godfire Spillover: when it destroys a character, 3 damage to another target opposing character (no chain).
+  crystora_ssge_bse:{id:'crystora_ssge_bse',rarity:'legend',name:'Crystora (SSGE)',color:'red',charName:'Crystora',charLine:'crystora',formTier:'ssge',path:'god',subtypes:['Royal','Saiyan','God'],type:'char',fusion:true,fusionForm:true,transformOnly:true,transformsFrom:'crystora_bse',race:'Royal Saiyan',cost:10,atk:11,hp:7,sym:'CRYSGE',setId:'base_set',cardNumber:'138/150',keywords:[],nextForms:[],
+    abilities:[{label:'Crimson Rampage',type:'triggered',cost:0,text:'When this card attacks, it gets +3 Attack until end of turn and takes 2 damage.'},
+      {label:'Godfire Spillover',type:'triggered',cost:0,text:'When this card destroys a character, deal 3 damage to another target opposing character.'}]},
   // ── CRYSTORA (SSBM) (BSE 142/150) — build 10.5. FUSION FORM of Crystora, TRANSFORM-ONLY (no materials printed).
   //    God path. The Relic stays on through the transformation; a split now Fatigues the materials for 2 turns.
   crystora_ssbm_bse:{id:'crystora_ssbm_bse',rarity:'mythic',name:'Crystora (SSBM)',color:'blue',colors:['blue','purple'],charName:'Crystora',charLine:'crystora',formTier:'ssbm',path:'god',subtypes:['Royal','Saiyan','God'],type:'char',fusion:true,fusionForm:true,transformOnly:true,transformsFrom:'crystora_bse',race:'Royal Saiyan',cost:10,atk:10,hp:12,sym:'CRYSBM',setId:'base_set',cardNumber:'142/150',keywords:[],nextForms:[],
@@ -9027,10 +9054,16 @@ const DB={
       {label:'Flame Spiral',type:'triggered',cost:0,text:'When this card attacks, it gets +2 Attack until end of next turn.'}]},
   // ── PAVI (PROMO) — build 9.6, card designer. Stance card: Avatar's Balance picks Air or Earth on entry and at
   //    the start of each of your turns. Keywords stay EMPTY in data: Onslaught / Guardian come from the stance (hasKW).
-  pavi_promo:{id:'pavi_promo',rarity:'legend',name:'Pavi',color:'green',colors:['green','yellow'],charName:'Pavi',subtypes:['Avatar','Bender'],type:'char',race:'Avatar Bender',cost:6,atk:4,hp:7,sym:'PAVI',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
+  pavi_promo:{id:'pavi_promo',rarity:'legend',name:'Pavi',color:'green',colors:['green','yellow'],charName:'Pavi',charLine:'pavi',formTier:'base',subtypes:['Avatar','Bender'],type:'base_char',race:'Avatar Bender',cost:6,atk:4,hp:7,sym:'PAVI',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:['root_chakra'],
     abilities:[{label:"Avatar's Balance",type:'triggered',cost:0,text:'When this card enters your field, and at the start of each of your turns, choose Air or Earth. This card stays in that stance until your next turn.'},
       {label:'Air Stance',type:'passive',cost:0,text:'Onslaught. This card can attack twice each turn and gets +1 Attack.'},
       {label:'Earth Stance',type:'passive',cost:0,text:"Guardian. This card gets +4 Defense and can't attack."}]},
+  // ── PAVI (ROOT CHAKRA) (PROMO) — build 10.9. Transform-only form of Pavi (her own 'chakra' path).
+  //    Green (pays Green) / Red. Muladhara = Resolve (once per game, survives a lethal hit at 1 Health).
+  //    Bloodroot Fury: +3 Attack while she has damage on her (recalcPassives).
+  pavi_root_chakra_promo:{id:'pavi_root_chakra_promo',rarity:'legend',name:'Pavi (Root Chakra)',color:'green',colors:['green','red'],charName:'Pavi',charLine:'pavi',formTier:'root_chakra',path:'chakra',subtypes:['Avatar','Bender'],type:'char',transformOnly:true,transformsFrom:'pavi_promo',race:'Avatar Bender',cost:8,atk:6,hp:8,sym:'PAVIRC',setId:'promo',cardNumber:'PROMO',keywords:['resolve'],nextForms:[],
+    abilities:[{label:'Muladhara',type:'passive',cost:0,text:'Resolve. The first time this card would be destroyed by damage, it survives with 1 Health instead (once per game).'},
+      {label:'Bloodroot Fury',type:'passive',cost:0,text:'While this card has damage on it, it gets +3 Attack.'}]},
   // ── PAVI (VAMPIRE) (PROMO) — build 9.9. Variant of Pavi with her own stance abilities (Crimson Gale = Air,
   //    Bloodstone Skin = Earth). Separate card id → its own 4-copy limit.
   pavi_vampire_promo:{id:'pavi_vampire_promo',rarity:'mythic',name:'Pavi (Vampire)',color:'black',charName:'Pavi',subtypes:['Vampire','Avatar'],type:'char',race:'Vampire Avatar',cost:7,atk:5,hp:8,sym:'PAVIV',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
@@ -9038,7 +9071,7 @@ const DB={
       {label:'Crimson Gale',type:'passive',cost:0,text:'Air Stance: Onslaught. Whenever this card destroys a character, it heals 3 and gets +1/+1 until it leaves the field.'},
       {label:'Bloodstone Skin',type:'passive',cost:0,text:"Earth Stance: Guardian. This card can't attack. Whenever it is dealt combat damage, the character that dealt it is Poisoned."}]},
   // ── NISHA (PROMO) — build 10.0. Stance card with her own pair: Avatar's Harmony picks Fire or Water.
-  nisha_promo:{id:'nisha_promo',rarity:'legend',name:'Nisha',color:'red',colors:['red','blue'],charName:'Nisha',subtypes:['Avatar','Bender'],type:'char',race:'Avatar Bender',cost:6,atk:5,hp:7,sym:'NISHA',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
+  nisha_promo:{id:'nisha_promo',rarity:'legend',name:'Nisha',color:'red',colors:['red','blue'],charName:'Nisha',charLine:'nisha',formTier:'base',subtypes:['Avatar','Bender'],type:'base_char',race:'Avatar Bender',cost:6,atk:5,hp:7,sym:'NISHA',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
     abilities:[{label:"Avatar's Harmony",type:'triggered',cost:0,text:'When this card enters your field, and at the start of each of your turns, choose Fire or Water. This card stays in that stance until your next turn.'},
       {label:'Fire Stance',type:'passive',cost:0,text:'This card gets +2 Attack. When it attacks, the defender is Burned.'},
       {label:'Water Stance',type:'passive',cost:0,text:"This card can't attack. Characters that attack it get −3 Attack before the hit."}]},
@@ -10089,12 +10122,48 @@ function tickTitleDefense(p){
 // SHOWDOWN HYPE: belted character destroys a character → its controller banks 3 Energy.
 function triggerShowdownHype(killerFc, killerP, victimP, victimUid){
   if(typeof triggerCrimsonGale==='function') triggerCrimsonGale(killerFc, killerP, victimP, victimUid);
+  if(typeof triggerGodfireSpillover==='function') triggerGodfireSpillover(killerFc, killerP, victimP, victimUid);
   if(!hasBelt(killerFc)) return;
   if(G.players[victimP]?.field.some(f=>f.uid===victimUid)) return; // victim survived
   G.players[killerP].energy+=3; log(`🏆 Showdown Hype: ${pname(killerP)} banks 3 Energy!`,'gain');
 }
+// CRIMSON RAMPAGE (Crystora SSGE): each attack → +3 ATK until end of turn, then 2 damage to itself.
+// If that destroys it, afc._rampKO is set and the attack stops (every attack path checks it).
+function triggerCrimsonRampage(afc){
+  if(!afc) return; afc._rampKO=false;
+  if(!hasAbilityLabel(afc,'Crimson Rampage')) return;
+  afc._rampage=(afc._rampage||0)+3; afc.currentATK=(afc.currentATK||0)+3; afc.atkBonus=(afc.atkBonus||0)+3;
+  log(`🔥 Crimson Rampage: ${DB[afc.cid]?.name} +3 Attack until end of turn — and takes 2 damage.`,'gain');
+  const p=ownerOfCard(afc.uid)||G.activePlayer;
+  dealDamage(p, afc.uid, 2);
+  if(!G.players[p]?.field.some(f=>f.uid===afc.uid)){ afc._rampKO=true; log(`${DB[afc.cid]?.name} is destroyed by its own Crimson Rampage — the attack never lands.`,'dmg'); }
+}
+function tickCrimsonRampage(p){
+  (G.players[p]?.field||[]).forEach(f=>{ if(f._rampage){ f.currentATK=Math.max(0,(f.currentATK||0)-f._rampage); f.atkBonus=(f.atkBonus||0)-f._rampage; f._rampage=0; } });
+}
+// GODFIRE SPILLOVER (Crystora SSGE): when it destroys a character, 3 damage to ANOTHER target opposing character.
+// The spillover damage itself never re-triggers it.
+function triggerGodfireSpillover(killerFc, killerP, victimP, victimUid){
+  if(!killerFc||!hasAbilityLabel(killerFc,'Godfire Spillover')) return;
+  if(G.players[victimP]?.field.some(f=>f.uid===victimUid)) return; // victim survived
+  const opps=(typeof aiEnemyPlayersOf==='function')?aiEnemyPlayersOf(killerP):[killerP===1?2:1];
+  const live=()=>{ const out=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(f.uid!==victimUid&&isChar(DB[f.cid])&&!hasDrunkenStance(f)) out.push({fc:f,p:op}); })); return out; };
+  if(!live().length){ log('🔥 Godfire Spillover: no other opposing character to hit.','info'); return; }
+  const hit=(uid)=>{ const t=live().find(x=>x.fc.uid===uid); if(!t) return; log(`🔥 Godfire Spillover: 3 damage to ${DB[t.fc.cid]?.name}!`,'dmg'); dealDamage(t.p,uid,3); if(typeof renderAll==='function') renderAll(); };
+  seqAbility(killerP, killerFc.cid, 'Godfire Spillover', null, {kind:'COMBAT'}, ()=>{
+    const c=live(); if(!c.length) return;
+    if(seqIsLocalHuman(killerP)&&!(G&&G._aiAuto)){
+      openEnemyTargetPicker(c.map(x=>x.fc), hit, {sourcePlayer:killerP, title:'Godfire Spillover', desc:'Deal 3 damage to another opposing character.'});
+    } else {
+      const pool=c.filter(x=>!hasGodlyEvasion(x.fc)); if(!pool.length) return;
+      const t=(typeof aiPickEnemyTarget==='function')?aiPickEnemyTarget(pool.map(x=>x.fc),{sourcePlayer:killerP}):pool[0].fc;
+      if(t) hit(t.uid);
+    }
+  });
+}
 // FLAME SPIRAL (Korra): when she attacks, +2 ATK until the end of her controller's next turn (2 of their turn-ends). Doesn't stack while active.
 function triggerFlameSpiral(afc){
+  triggerCrimsonRampage(afc);
   if(!afc||!hasAbilityLabel(afc,'Flame Spiral')) return;
   if(afc._flame){ afc._flame.ends=2; return; }
   afc._flame={amt:2,ends:2}; afc.currentATK=(afc.currentATK||0)+2; afc.atkBonus=(afc.atkBonus||0)+2;
@@ -10424,6 +10493,7 @@ function fxEffectsOf(fc){
   if(fc.nullify>0) cond('🛡','Nullify '+fc.nullify,'Reduces incoming damage by '+fc.nullify+'.',null);
   if(fc.mustAttack) cond('📣','Must attack','It must attack on its next turn if able.',byLabel('Combat Control'));
   if(fc.costMod) cond('💠','Cost '+(fc.costMod>0?'+':'−')+Math.abs(fc.costMod),'Its cost is changed by '+fc.costMod+'.',null);
+  if(fc._rampage>0) cond('🔥','Crimson Rampage','+'+fc._rampage+' Attack until the end of this turn.',null);
   if(fc.nextAttackBonus>0) cond('💥','+'+fc.nextAttackBonus+' next attack','Its next attack deals +'+fc.nextAttackBonus+' damage.',null);
   if(fc._frostRune&&fc._frostRune.turns>0) cond('❄️','Frost Rune','Freezes after the player who set it ends '+fc._frostRune.turns+' more turn'+(fc._frostRune.turns>1?'s':'')+'.',byLabel('Frost Rune'));
   if(G&&fc.waterWhipped===G.turn) cond('🌊','Water Whip',"Tapped — it can't attack this turn.",byLabel('Water Whip'));
@@ -10477,6 +10547,11 @@ function recalcPassives(){
       // Evolved Armor (Virora SSBE): +5 HP (DEF)
       if(abils.some(a=>a.label==='Evolved Armor')){
         add(0,5,fc.cid,'Evolved Armor',fc.uid);
+      }
+      // BLOODROOT FURY (Pavi Root Chakra): +3 ATK while this card has damage on it
+      if(abils.some(a=>a.label==='Bloodroot Fury')){
+        const _max=(fc.baseHP||0)+(fc.hpBonus||0)+prevH;
+        if((fc.currentHP||0)<_max) add(3,0,fc.cid,'Bloodroot Fury',fc.uid);
       }
       // ROYAL AMENDS (Violet): this card gains +1 Health (DEF) for every Saiyan
       // character you control (Violet herself counts). Scales with your Saiyan board.
@@ -12322,7 +12397,9 @@ function executeCombatDamage(ap,auid,dp,duid){
     dfc.currentHP+=2;
     log(`Immortality: ${dc.name} gains +2 Health (now ${dfc.currentHP}HP).`,'gain');
   }
-  if(tgtAlive&&!statusActive(dfc,'freeze')){
+  if(tgtAlive&&G._noRetaliation){
+    log(`${dc.name} can't block — no retaliation.`,'info');
+  } else if(tgtAlive&&!statusActive(dfc,'freeze')){
     if(hasKW(afc,'pursuit')){
       log(`${dc.name} retaliates ${defenderATK} (Pursuit: target survived).`,'info');
       dealDamage(ap,auid,defenderATK);
@@ -12485,7 +12562,7 @@ function resolveCharVsHerald(ap, auid, dp){
   if(!enemyBoardEmpty(ap)){ log('You can only attack the enemy Herald when their field has no characters.','dmg'); return false; }
   if(!canCharacterAttack(ap,afc)){ log("That character can't attack right now.",'dmg'); return false; }
   if(typeof fxStrikeAt==='function') fxStrikeAt(afc.uid,{herald:dp},afc.cid);
-  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc);
+  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc); if(afc._rampKO){ renderAll(); return true; }
   if(hasAbilityLabel(afc,'Bloodline Rise')){ afc.hpBonus=(afc.hpBonus||0)+2; afc.currentHP=(afc.currentHP||0)+2; log(`Bloodline Rise: ${DB[afc.cid]?.name} gains +2 Health (now ${afc.currentHP}).`,'gain'); }
   const dmg=effPower(afc); const retaliate=Math.floor((h.currentATK||0)*HERALD_RULES.charRetaliation);
   log(`⚔ ${DB[afc.cid].name}(${dmg}) → ${DB[h.cid].name} [Herald] (${h.currentHP}HP)`,'info');
@@ -12729,7 +12806,7 @@ function declareLifeAttack(attackerPlayer, attackerUid){
   }
   const defenderPlayer = attackerPlayer===1?2:1;
   if(guardiansOf([defenderPlayer]).length){ log(`${pname(defenderPlayer)} has a Guardian — attack a Guardian first. You can't attack Life while one is on the field.`,'dmg'); return; }
-  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc);
+  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc); if(afc._rampKO){ renderAll(); return; }
   // BLOODLINE RISE (Raven Vampire): gains +2 Health every time she attacks.
   if(hasAbilityLabel(afc,'Bloodline Rise')){
     afc.hpBonus=(afc.hpBonus||0)+2; afc.currentHP=(afc.currentHP||0)+2;
@@ -12842,7 +12919,7 @@ function declareTeamLifeAttack(attackerPlayer, attackerUid){
   if(!canCharacterAttack(attackerPlayer, afc)){ log("That character can't attack right now.",'dmg'); return; }
   const enemyTeam=enemyTeamOf(attackerPlayer);
   if(guardiansOf(teamPlayers(enemyTeam)).length){ log(`Team ${enemyTeam} has a Guardian — attack a Guardian first. You can't attack Team Life while one is on the field.`,'dmg'); return; }
-  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc);
+  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc); if(afc._rampKO){ renderAll(); return; }
   // BLOODLINE RISE (Raven Vampire): gains +2 Health every time she attacks.
   if(hasAbilityLabel(afc,'Bloodline Rise')){
     afc.hpBonus=(afc.hpBonus||0)+2; afc.currentHP=(afc.currentHP||0)+2;
@@ -12928,7 +13005,7 @@ function processAITeamAttacks(aiPlayer, queue, onDone){
         if(again && hasKW(again,'onslaught') && (again.attacksThisTurn||0)<2 && canCharacterAttack(aiPlayer,again)) queue.unshift(auid); }
       aiLater(()=>processAITeamAttacks(aiPlayer,queue,onDone),aiPace(1500)); return;
     } }
-  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc);
+  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc); if(afc._rampKO){ aiLater(()=>processAITeamAttacks(aiPlayer,queue,onDone),aiPace(900)); return; }
   // BLOODLINE RISE (Raven Vampire): gains +2 Health every time she attacks.
   if(hasAbilityLabel(afc,'Bloodline Rise')){
     afc.hpBonus=(afc.hpBonus||0)+2; afc.currentHP=(afc.currentHP||0)+2;
@@ -13061,7 +13138,7 @@ function processAILifeAttacks(queue, onDone){
     aiLater(()=>processAILifeAttacks(queue,onDone), aiPace(1500)); });
 }
 function aiAttackHumanLife(afc, done){
-  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc);
+  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc); if(afc._rampKO){ renderAll(); if(done)done(); return; }
   // BLOODLINE RISE (Raven Vampire): gains +2 Health every time she attacks.
   if(hasAbilityLabel(afc,'Bloodline Rise')){
     afc.hpBonus=(afc.hpBonus||0)+2; afc.currentHP=(afc.currentHP||0)+2;
@@ -13133,7 +13210,7 @@ function resolveAttack(ap,auid,dp,duid){
     _vp.energy-=2; log(`⚡ Paid 2⚡ to attack ${DB[dfc.cid].name} (Velocity Blitz).`,'info');
   }
   const ac=DB[afc.cid],dc=DB[dfc.cid];
-  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc);
+  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc); if(afc._rampKO){ renderAll(); return; }
   triggerFireStance(afc, dfc); // 🔥 Nisha: the defender is Burned as she attacks
   // BLOODLINE RISE (Raven Vampire): gains +2 Health every time she attacks.
   if(hasAbilityLabel(afc,'Bloodline Rise')){
@@ -13149,10 +13226,10 @@ function resolveAttack(ap,auid,dp,duid){
   let _primalBonus=0;
   if(hasAbilityLabel(afc,'Primal Strike')){
     const _ph=coinShow('Primal Strike','Heads = +3 damage');
-    if(_ph){ _primalBonus=3; log('Primal Strike: HEADS — this attack does +3 damage!','gain'); }
+    if(_ph){ _primalBonus=3; afc.nextAttackBonus=(afc.nextAttackBonus||0)+3; log('Primal Strike: HEADS — this attack does +3 damage!','gain'); }
     else { log('Primal Strike: TAILS — no bonus.','info'); }
   }
-  const atkDmg=afc.currentATK+(afc.nextAttackBonus||0)+_primalBonus;
+  const atkDmg=afc.currentATK+(afc.nextAttackBonus||0); // includes Primal Strike's +3 (consumed in executeCombatDamage)
   log(`⚔ ${ac.name}(${atkDmg}) → ${dc.name}(${dfc.currentHP}HP)`,'info');
   // Pre-combat ability triggers
   if(dfc.cid==='virora_ssg'){const h=coinShow('Godly Reflexes','Tails = dodged');log(`Godly Reflexes: ${!h?'dodge! (tails)':'hit! (heads)'}`,!h?'gain':'dmg');if(!h){renderAll();return;}}
@@ -13172,7 +13249,7 @@ function resolveAttack(ap,auid,dp,duid){
   const hulkHerald=G.players[ap].herald;
   if(hulkHerald?.cid==='hulk_gs_herald'&&dfc.currentATK<hulkHerald.currentATK){
     log(`Unbreakable Fury: ${dc.name} cannot block!`,'gain');
-    dealDamage(dp,dfc.uid,atkDmg);renderAll();return;
+    G._noRetaliation=true; try{ executeCombatDamage(ap,auid,dp,dfc.uid); } finally{ G._noRetaliation=false; } renderAll(); return;
   }
   // Move Out The Way
   const tank=G.players[dp].field.find(f=>f.cid==='archon'&&f.uid!==duid);
@@ -13201,7 +13278,7 @@ function resolveLocationAttack(ap,auid,dp,duid){
   if(!(DB[afc.cid]?.canAttackLocations || afc.canAttackLocations || hasTerrainScan(afc) || hasAbilityLabel(afc,'Braided Armor') || hasAbilityLabel(afc,'Earthen Stride') || hasAbilityLabel(afc,'Four Elements Unbound'))){log(`${DB[afc.cid]?.name} cannot attack Locations.`,'dmg');return;}
   if(!canCharacterAttack(ap,afc)){ log(`${DB[afc.cid]?.name} can't attack again this turn.`,'dmg'); return; }
   // Attacking a Location uses the character's attack for the turn (Onslaught: one of its two).
-  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc);
+  afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc); if(afc._rampKO){ renderAll(); return; }
   if(hasAbilityLabel(afc,'Bloodline Rise')){ afc.hpBonus=(afc.hpBonus||0)+2; afc.currentHP=(afc.currentHP||0)+2; log(`Bloodline Rise: ${DB[afc.cid]?.name} gains +2 Health (now ${afc.currentHP}).`,'gain'); }
   log(`⚔ ${DB[afc.cid].name}(${afc.currentATK}) → ${DB[dfc.cid].name}(Toughness:${dfc.currentHP})`,'info');
   dealDamage(dp,dfc.uid,afc.currentATK);
@@ -16729,6 +16806,7 @@ function endTurnFx(p){
   tickTitleDefense(p); // 🏆 WCA belt debuffs owned by this player
   tickTimedCuts(p); // 💠 Prism Orb / 🦍 Primal Roar −2 Attack (until end of the source owner's next turn)
   tickFlameSpiral(p); // 🔥 Korra's Flame Spiral timers
+  tickCrimsonRampage(p); // 🔥 Crystora (SSGE): Crimson Rampage ends with the turn
   tickScorchedEarth(p); // count down any Scorched Earth timers this player set
   tickFusions(p); // 💤 Fatigue, then 💫 Dance timers (split at 0)
   G.bonusAttackers=0; // reset ability-granted extra attackers each turn
@@ -17071,7 +17149,7 @@ function aiEnemyChars(p){ const out=[]; aiEnemyPlayersOf(p).forEach(e=>{ const p
 function aiMaxHP(f){ return (f.baseHP||0)+(f.hpBonus||0)+(f.passiveHp||0); }
 function aiCardValue(c){ if(!c)return 0; return (c.atk||0)*1.2+(c.hp||0)+((c.keywords||[]).length)*1.5+((c.abilities||[]).length)*1.2; }
 function aiFcValue(fc){ const c=DB[fc.cid]||{}; return (effPower(fc))*1.2+(fc.currentHP||0)+((c.keywords||[]).length)*1.5+((c.abilities||[]).length)+((DB[fc.cid]||{}).cost||0)*.4; }
-function aiReady(fc){ return !fc.tapped&&!((fc.fatigue||0)>0)&&(fc.turnPlayed<G.turn||hasKW(fc,'burst_speed'))&&!statusActive(fc,'freeze')&&!statusActive(fc,'paralyze')&&!statusActive(fc,'confuse'); }
+function aiReady(fc){ if(hasAbilityLabel(fc,'Crimson Rampage')&&(fc.currentHP||0)<=2) return false; return !fc.tapped&&!((fc.fatigue||0)>0)&&(fc.turnPlayed<G.turn||hasKW(fc,'burst_speed'))&&!statusActive(fc,'freeze')&&!statusActive(fc,'paralyze')&&!statusActive(fc,'confuse'); }
 function aiTurnKey(p){ return G.turn+':'+p; }
 function aiMark(key){ AIB.tried.add(key); }
 function aiTried(key){ return AIB.tried.has(key); }
@@ -17540,7 +17618,7 @@ function hasKW(fc, kw){ if(DB[fc.cid]?.keywords?.includes(kw))return true; if(Ar
   if(fc&&fc.stance&&(kw==='onslaught'||kw==='guardian')&&stanceGrantsKW(fc,kw)) return true;
   return false; }
 // Passive abilities that are really a keyword in disguise — stealing one grants the keyword.
-const KEYWORD_PASSIVES={'Rage of Sparta':'burst_speed','Flash Step':'burst_speed','Four as One':'onslaught','Four Elements Unbound':'onslaught'};
+const KEYWORD_PASSIVES={'Rage of Sparta':'burst_speed','Flash Step':'burst_speed','Four as One':'onslaught','Four Elements Unbound':'onslaught','Muladhara':'resolve'};
 function renderKeywordBadges(fc){
   const kws=DB[fc.cid]?.keywords; if(!kws||!kws.length) return '';
   return kws.map(kw=>{ const k=KEYWORDS[kw]; if(!k) return ''; return '<span class="kw-badge '+k.cls+'" title="'+k.desc+'">'+k.label+'</span>'; }).join('');
