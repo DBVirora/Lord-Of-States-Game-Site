@@ -7422,7 +7422,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.12 · Asa · Falcore · Remmel</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.13 · Vuruna SSB · Theia · Crimson · Praxus</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -8409,8 +8409,28 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.12'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.13'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.13', date:'2026-11-01',
+    cards:[{id:'vuruna_ssb_bse', set:'base_set', number:'034/150', rarity:'legend', scan:'Sets/BASE SET/034-150 (Vuruna SSB).png', newAbilities:['Blue Tempest','Through the Horde'],
+       note:"Vuruna (SSB) · transformOnly from Vuruna (SSG) · charLine 'vuruna', formTier 'ssb', path 'god' · Blue · Legend · cost 8 · 8 ATK / 11 HP · Royal, Saiyan, God · keywords ['onslaught'] (Blue Tempest → KEYWORD_PASSIVES). vuruna_ssg_bse.nextForms → ['ssb']. (The Base Set plan had 034 as a Purple base.)"},
+      {id:'theia_bse', set:'base_set', number:'057/150', rarity:'common', scan:'Sets/BASE SET/057-150 (Theia).png', newAbilities:['The Power of Primes'],
+       note:"Theia · Character · Red · Common · cost 3 · 3 ATK / 4 HP · Prime · race 'Prime'."},
+      {id:'crimson_bse', set:'base_set', number:'143/150', rarity:'mythic', scan:'Sets/BASE SET/143-150 (Crimson).png', newAbilities:['Killing Intent','Crimson Execution','Scarlet Eclipse'],
+       note:"Crimson · Character · RED (cost circle; the Base Set plan listed 143 as Yellow) · Mythic · cost 10 · 11 ATK / 8 HP · Mortal Warrior · race 'Mortal Warrior'."},
+      {id:'praxus_herald', set:'base_set', number:'148/150', rarity:'mythic', scan:'Sets/BASE SET/148-150 (Praxus).png', newAbilities:['Devouring Dark','Rise from Darkness','Event Horizon'],
+       note:"Praxus · HERALD · Black · Mythic · 11 ATK / 13 HP · Darkness God · race 'Darkness God'."}],
+    abilities:[
+      "THROUGH THE HORDE (Vuruna SSB, triggered): once per turn (fc._hordeTurn), when it destroys a character in combat (triggerShowdownHype — attack or retaliation, like Godfire Spillover), 2 damage to ANOTHER opposing character; person picks, AI finishes a ≤2-Health target else its usual pick. Drunken Stance excluded.",
+      "THE POWER OF PRIMES (Theia, passive): +2 ATK (recalcPassives) while you control ANOTHER character with the Prime subtype (or 'Prime' in its race).",
+      "KILLING INTENT (Crimson, passive): +2 to damage it deals to a character that already has damage on it (currentHP < max): its attack (combat-damage step), its retaliation and Power Struggle win, Life-mode blocks, and Scarlet Eclipse.",
+      "CRIMSON EXECUTION (Crimson, triggered): once every 2 turns (abilityUsed.execution_turn, G.turn − last ≥ 2), when ITS OWN attack destroys a character (not a retaliation kill; it survived) → fc.extraAttacks += 1.",
+      "SCARLET ECLIPSE (Crimson, activated): 5 Energy (Red), once per game, no tap: 4 damage (+2 Killing Intent) to a target opposing character. Closing the picker refunds.",
+      "DEVOURING DARK (Praxus Herald, passive): one of your characters (not tokens) is destroyed (killCard) or sacrificed (doSacrifice) → +1 Energy, max 2 per G.turn (herald._ddTurn/_ddN). Not while the Herald is broken.",
+      "RISE FROM DARKNESS (Praxus, activated): 5 Energy, once every 4 turns (abilityUsed.rise_turn), no tap: a character card costing ≤4 from your discard pile onto your field — not a token, Herald, transform-only form or fusion. It ENTERS (turnPlayed = now → summoning sick; entry abilities fire via seqEntry). Discard picker first, charged on pick. Refused when none or the fighter zone is full.",
+      "EVENT HORIZON (Praxus, activated): free (taps the Herald like other free abilities), once per game. Person: pick one of your characters, then an opposing character whose PRINTED cost is ≤ it (not Rift-immune, not Drunken Stance; Godly Evasion toll applies) — only then: a real Sacrifice of yours (half its printed cost back; Fuel the Chaos / Chaos Tithe / Death's Offering / Devouring Dark fire) and the target goes to the Rift (attachments to discard, fusion stack via fusionLeaves). Closing either picker = nothing happens. AI: the trade with the biggest value gain, only if ≥ 4."],
+    screens:["Effects panel: '🩸 Crimson Execution' (extra attack / recharging), '🌊 Through the Horde — already used this turn'."],
+    data:["GAME_BUILD '10.13'. No rulebook change."] },
   { build:'10.12', date:'2026-11-01',
     cards:[{id:'asa_bse', set:'base_set', number:'063/150', rarity:'rare', scan:'Sets/BASE SET/063-150 (Asa).png', newAbilities:['Half-Divine','Skyfall'],
        note:"Asa · Character · White · Rare · cost 6 · 5 ATK / 6 HP · Demigod · race 'Demigod' · sym 'ASA'."},
@@ -8893,6 +8913,10 @@ const DEFAULTS={
   asa_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/063-150%20(Asa).png',
   falcore_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/136-150%20(Falcore).png',
   remmel_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/137-150%20(Remmel).png?v=2',
+  vuruna_ssb_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/034-150%20(Vuruna%20SSB).png',
+  theia_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/057-150%20(Theia).png',
+  crimson_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/143-150%20(Crimson).png',
+  praxus_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/148-150%20(Praxus).png',
   tyler_ssbe_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/021-150%20(Tyler%20SSBE).png',
   tyler_ssbe_sr_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/152-150%20(Tyler%20SSBE)%20(Secret%20Rare).png',
   scorched_titan_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/046-150%20(The%20Scorched%20Titan).png',
@@ -9209,7 +9233,7 @@ const DB={
   //    Moonlit Veil = Godly Evasion (2⚡ toll to target it with an attack or ability).
   //    Heavenly Relay: once every 2 turns, when it attacks, another of your characters that hasn't attacked may attack
   //    this turn (G.bonusAttackers +1).
-  vuruna_ssg_bse:{id:'vuruna_ssg_bse',rarity:'rare',name:'Vuruna (SSG)',color:'red',charName:'Vuruna',charLine:'vuruna',formTier:'ssg',path:'god',transformOnly:true,subtypes:['Royal','Saiyan','God'],type:'char',race:'Royal Saiyan',cost:7,atk:6,hp:5,sym:'VURSSG',setId:'base_set',cardNumber:'033/150',keywords:[],nextForms:[],
+  vuruna_ssg_bse:{id:'vuruna_ssg_bse',rarity:'rare',name:'Vuruna (SSG)',color:'red',charName:'Vuruna',charLine:'vuruna',formTier:'ssg',path:'god',transformOnly:true,subtypes:['Royal','Saiyan','God'],type:'char',race:'Royal Saiyan',cost:7,atk:6,hp:5,sym:'VURSSG',setId:'base_set',cardNumber:'033/150',keywords:[],nextForms:['ssb'],
     abilities:[{label:'Moonlit Veil',type:'passive',cost:0,text:'Opponents must pay 2 Energy to target this card with an attack or ability.'},
       {label:'Heavenly Relay',type:'triggered',cost:0,limit:'every_2_turns',text:"After this card attacks, another of your characters that hasn't attacked this turn may attack. (Once every 2 turns)"}],transforms:[]},
   // ── ELISE (BSE 035/150) — build 10.11. Base Character, Saiyan, Purple. No forms yet (charLine 'elise').
@@ -9237,6 +9261,22 @@ const DB={
     abilities:[{label:'Chaos Tithe',type:'triggered',cost:0,limit:'once_per_turn',text:'Whenever you sacrifice one of your other characters, deal 2 damage to each opponent character. (Once per turn)'},
       {label:'Lord of Ruin',type:'activated',cost:4,limit:'once_per_game',text:'Pay 4 Energy: Return a character with a cost of 5 or less from your discard pile to your hand. (Once per game)'},
       {label:'Fuel the Chaos',type:'passive',cost:0,text:'When you sacrifice a character, gain 1 extra Energy.'}],transforms:[]},
+  // ── VURUNA (SSB) (BSE 034/150) — build 10.13. God path, TRANSFORM-ONLY from Vuruna (SSG). Blue.
+  //    Blue Tempest = Onslaught. Through the Horde: once per turn, when it destroys a character, 2 damage to another foe.
+  vuruna_ssb_bse:{id:'vuruna_ssb_bse',rarity:'legend',name:'Vuruna (SSB)',color:'blue',charName:'Vuruna',charLine:'vuruna',formTier:'ssb',path:'god',transformOnly:true,subtypes:['Royal','Saiyan','God'],type:'char',race:'Royal Saiyan',cost:8,atk:8,hp:11,sym:'VURSSB',setId:'base_set',cardNumber:'034/150',keywords:['onslaught'],nextForms:[],
+    abilities:[{label:'Blue Tempest',type:'passive',cost:0,keyword:'onslaught',text:'Onslaught. This card can attack twice each turn.'},
+      {label:'Through the Horde',type:'triggered',cost:0,limit:'once_per_turn',text:'Once per turn, when this card destroys a character, deal 2 damage to another opponent character.'}],transforms:[]},
+  // ── THEIA (BSE 057/150) — build 10.13. Prime, Red. The Power of Primes: +2 Attack while you control another Prime.
+  theia_bse:{id:'theia_bse',rarity:'common',name:'Theia',color:'red',charName:'Theia',subtypes:['Prime'],type:'char',race:'Prime',cost:3,atk:3,hp:4,sym:'THEIA',setId:'base_set',cardNumber:'057/150',keywords:[],nextForms:[],
+    abilities:[{label:'The Power of Primes',type:'passive',cost:0,text:'While you control another Prime character, this card gets +2 Attack.'}],transforms:[]},
+  // ── CRIMSON (BSE 143/150) — build 10.13. Mortal Warrior, Red (the set plan said Yellow; the cost circle is red).
+  //    Killing Intent: +2 to any damage it deals to a character that already has damage on it.
+  //    Crimson Execution: once every 2 turns, when its attack destroys a character, it may attack again this turn.
+  //    Scarlet Eclipse: 5⚡, once per game: 4 damage to target opposing character.
+  crimson_bse:{id:'crimson_bse',rarity:'mythic',name:'Crimson',color:'red',charName:'Crimson',subtypes:['Mortal Warrior'],type:'char',race:'Mortal Warrior',cost:10,atk:11,hp:8,sym:'CRIM',setId:'base_set',cardNumber:'143/150',keywords:[],nextForms:[],
+    abilities:[{label:'Killing Intent',type:'passive',cost:0,text:'This card deals +2 damage to characters that already have damage on them.'},
+      {label:'Crimson Execution',type:'triggered',cost:0,limit:'every_2_turns',text:'When this card destroys a character with an attack, it may attack again this turn. (Once every 2 turns)'},
+      {label:'Scarlet Eclipse',type:'activated',cost:5,limit:'once_per_game',text:'Pay 5 Energy: Deal 4 damage to an opponent character. (Once per game)'}],transforms:[]},
   // ── RAPTURE OF THE VORTEX — BSE regular character (Titan • Beast). GREEN/PURPLE (endurance + trickery). 049/150 Rare.
   rapture_vortex_bse:{id:'rapture_vortex_bse',rarity:'rare',name:'Rapture of the Vortex',color:'green',colors:['green','purple'],charName:'Rapture of the Vortex',subtypes:['Titan','Beast'],type:'char',race:'Titan',cost:7,atk:6,hp:8,sym:'RVORTEX',setId:'base_set',cardNumber:'049/150',nextForms:[],
     abilities:[{label:'Vortex Shield',type:'passive',cost:0,text:'This card cannot have any status effects applied to it.'},{label:'The Reckoning',type:'activated',cost:0,text:'Choose 1 Character on your opponent\'s field. Flip a coin. If heads, that character is now under Confusion. (Taps)'}],transforms:[]},
@@ -9571,6 +9611,18 @@ const DB={
       {type:'passive',label:'Chaos Insurgence',cost:0,text:'Each Character who enters your field gains +3 ATK.'},
       {type:'activated',label:'Ravager Strike',cost:0,limit:'every_4_turns',text:"Flip A coin, if heads choose 1 character from your opponent's field to attack 6 damage. If tails send them to the Rift Zone. (Every 4 Turns)"},
       {type:'activated',label:'Darkness Overturn',cost:7,text:'You may retrieve any 1 character card from your discard pile and place it into your hand. (Cost 7 Energy)'}
+    ],transforms:[]},
+  // ── PRAXUS (BSE 148/150) — build 10.13. HERALD, Darkness God, Black.
+  //    Devouring Dark: whenever one of your characters is destroyed or sacrificed, +1 Energy (max 2 per turn).
+  //    Rise from Darkness: 5⚡, once every 4 turns: a character costing 4 or less from your discard pile onto your field.
+  //    Event Horizon: once per game, sacrifice one of your characters → an opposing character with an equal or lower
+  //    cost goes to the Rift.
+  praxus_herald:{id:'praxus_herald',rarity:'mythic',name:'Praxus',type:'herald',race:'Darkness God',cost:0,atk:11,hp:13,sym:'👑',subtypes:['Darkness God'],color:'black',keywords:[],
+    heraldFlip:null,autoFlip:false,setId:'base_set',cardNumber:'148/150',
+    abilities:[
+      {type:'passive',label:'Devouring Dark',cost:0,text:'Whenever one of your characters is destroyed or sacrificed, gain 1 Energy. (Max 2 per turn)'},
+      {type:'activated',label:'Rise from Darkness',cost:5,limit:'every_4_turns',text:'Pay 5 Energy: Return a character with a cost of 4 or less from your discard pile to your field. (Once every 4 turns)'},
+      {type:'activated',label:'Event Horizon',cost:0,limit:'once_per_game',text:'Sacrifice one of your characters: Send an opponent character with an equal or lower cost to the Rift. (Once per game)'}
     ],transforms:[]},
   peleus_herald:{id:'peleus_herald',rarity:'mythic',name:'Peleus',type:'herald',race:'One Above All',cost:0,atk:12,hp:14,sym:'👑',subtypes:['One Above All'],color:'red',keywords:[],
     heraldFlip:null,autoFlip:false,setId:'base_set',cardNumber:'146/150',
@@ -10418,7 +10470,39 @@ function triggerWarriorOfTamaran(k, kp, vp, vuid){
   if(G.players[vp]?.field.some(f=>f.uid===vuid)) return;
   G.players[kp].energy+=2; log(`✴️ Warrior of Tamaran: ${pname(kp)} gains 2 Energy!`,'gain');
 }
+// CRIMSON EXECUTION (Crimson): once every 2 turns (Water Whip convention), when ITS OWN attack destroys a character, it
+// may attack once more this turn (fc.extraAttacks). Not on a retaliation kill.
+function triggerCrimsonExecution(k, kp, vp, vuid){
+  if(!k||!hasAbilityLabel(k,'Crimson Execution')) return;
+  if(kp!==G.activePlayer || !((k.attacksThisTurn||0)>0)) return;
+  if(G.players[vp]?.field.some(f=>f.uid===vuid)) return;
+  if(!G.players[kp]?.field.some(f=>f.uid===k.uid)) return;
+  const l=k.abilityUsed&&k.abilityUsed.execution_turn; if(l!=null&&(G.turn-l)<2) return;
+  if(!k.abilityUsed) k.abilityUsed={}; k.abilityUsed.execution_turn=G.turn; k._execTurn=G.turn;
+  k.extraAttacks=(k.extraAttacks||0)+1;
+  log(`🩸 Crimson Execution: ${DB[k.cid]?.name} may attack again this turn!`,'gain');
+}
+// THROUGH THE HORDE (Vuruna SSB): once per turn, when it destroys a character (any combat kill, like Godfire
+// Spillover), 2 damage to ANOTHER opposing character (person picks; AI picks). Drunken Stance can't be chosen.
+function triggerThroughTheHorde(k, kp, vp, vuid){
+  if(!k||!hasAbilityLabel(k,'Through the Horde')||k._hordeTurn===G.turn) return;
+  if(G.players[vp]?.field.some(f=>f.uid===vuid)) return;
+  const opps=(typeof aiEnemyPlayersOf==='function')?aiEnemyPlayersOf(kp):[kp===1?2:1];
+  const live=()=>{ const out=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(f.uid!==vuid&&isChar(DB[f.cid])&&!hasDrunkenStance(f)) out.push({fc:f,p:op}); })); return out; };
+  if(!live().length) return;
+  k._hordeTurn=G.turn;
+  const hit=(uid)=>{ const t=live().find(x=>x.fc.uid===uid); if(!t) return; const _fx=(typeof fxPush==='function')?fxPush(k.cid,'Through the Horde',k.uid):null;
+    log(`🌊 Through the Horde: 2 damage to ${DB[t.fc.cid]?.name}!`,'dmg'); dealDamage(t.p,uid,2); if(typeof fxPop==='function') fxPop(_fx); if(typeof renderAll==='function') renderAll(); };
+  seqAbility(kp, k.cid, 'Through the Horde', null, {kind:'COMBAT'}, ()=>{
+    const c=live(); if(!c.length) return;
+    if(seqIsLocalHuman(kp)&&!(G&&G._aiAuto)) openEnemyTargetPicker(c.map(x=>x.fc), hit, {sourcePlayer:kp, title:'Through the Horde', desc:'Deal 2 damage to another opposing character.'});
+    else { const pool=c.filter(x=>!hasGodlyEvasion(x.fc)); if(!pool.length) return; const fin=pool.filter(x=>(x.fc.currentHP||0)<=2);
+      const t=fin.length?fin.sort((a,b)=>aiFcValue(b.fc)-aiFcValue(a.fc))[0].fc:((typeof aiPickEnemyTarget==='function')?aiPickEnemyTarget(pool.map(x=>x.fc),{sourcePlayer:kp}):pool[0].fc); if(t) hit(t.uid); }
+  });
+}
 function triggerShowdownHype(killerFc, killerP, victimP, victimUid){
+  if(typeof triggerCrimsonExecution==='function') triggerCrimsonExecution(killerFc, killerP, victimP, victimUid);
+  if(typeof triggerThroughTheHorde==='function') triggerThroughTheHorde(killerFc, killerP, victimP, victimUid);
   if(typeof triggerWarriorOfTamaran==='function') triggerWarriorOfTamaran(killerFc, killerP, victimP, victimUid);
   if(typeof triggerFlashpointChain==='function') triggerFlashpointChain(killerFc, killerP, victimP, victimUid);
   if(typeof triggerCrimsonGale==='function') triggerCrimsonGale(killerFc, killerP, victimP, victimUid);
@@ -10832,11 +10916,13 @@ function fxEffectsOf(fc){
   if(fc.nullify>0) cond('🛡','Nullify '+fc.nullify,'Reduces incoming damage by '+fc.nullify+'.',null);
   if(fc.mustAttack) cond('📣','Must attack','It must attack on its next turn if able.',byLabel('Combat Control'));
   if(fc.costMod) cond('💠','Cost '+(fc.costMod>0?'+':'−')+Math.abs(fc.costMod),'Its cost is changed by '+fc.costMod+'.',null);
-  if(fc.extraAttacks>0){ const _fp=fc._flashTurn===G.turn&&hasAbilityLabel(fc,'Flashpoint Chain'); cond(_fp?'⚡':'⏳',_fp?'Flashpoint Chain':'Rewind','It may attack '+fc.extraAttacks+' more time'+(fc.extraAttacks>1?'s':'')+' this turn.',null); }
+  if(fc.extraAttacks>0){ const _ce=fc._execTurn===G.turn&&hasAbilityLabel(fc,'Crimson Execution'); const _fp=!_ce&&fc._flashTurn===G.turn&&hasAbilityLabel(fc,'Flashpoint Chain'); cond(_ce?'🩸':_fp?'⚡':'⏳',_ce?'Crimson Execution':_fp?'Flashpoint Chain':'Rewind','It may attack '+fc.extraAttacks+' more time'+(fc.extraAttacks>1?'s':'')+' this turn.',null); }
   if(fc._relayTurn===G.turn&&G.phase==='attack') cond('🌙','Heavenly Relay',"Another of your characters that hasn't attacked may attack this turn.",null);
   else if(hasAbilityLabel(fc,'Heavenly Relay')&&!heavenlyRelayReady(fc)) cond('🌙','Heavenly Relay','Recharging: ready again in '+(2-(G.turn-fc.abilityUsed.relay_turn))+' turn(s).',null);
   if(fc._rampage>0) cond('🔥','Crimson Rampage','+'+fc._rampage+' Attack until the end of this turn.',null);
   if(fc._rage>0) cond('💢','Rising Rage','+'+fc._rage+' Attack (max +3) until it leaves the field.',null);
+  { const l=fc.abilityUsed&&fc.abilityUsed.execution_turn; if(l!=null&&G&&G.turn-l<2&&l!==G.turn&&hasAbilityLabel(fc,'Crimson Execution')) cond('🩸','Crimson Execution','Recharging: ready again in '+(2-(G.turn-l))+' turn(s).',null); }
+  if(hasAbilityLabel(fc,'Through the Horde')&&fc._hordeTurn===(G&&G.turn)) cond('🌊','Through the Horde','Already used this turn.',null);
   { const l=fc.abilityUsed&&fc.abilityUsed.sandstorm_turn; if(l!=null&&G&&G.turn-l<4&&hasAbilityLabel(fc,'Sandstorm')) cond('🏜','Sandstorm','Recharging: ready again in '+(4-(G.turn-l))+' turn(s).',null); }
   if(hasAbilityLabel(fc,'Chaos Tithe')&&fc._titheTurn===(G&&G.turn)) cond('🌀','Chaos Tithe','Already used this turn.',null);
   ['web_snare_turn:Web Snare:🕸','get_over_here_turn:Get Over Here!:🔥'].forEach(s=>{ const [k,L,i]=s.split(':'); const l=fc.abilityUsed&&fc.abilityUsed[k];
@@ -10894,6 +10980,10 @@ function recalcPassives(){
       // Evolved Armor (Virora SSBE): +5 HP (DEF)
       if(abils.some(a=>a.label==='Evolved Armor')){
         add(0,5,fc.cid,'Evolved Armor',fc.uid);
+      }
+      // THE POWER OF PRIMES (Theia): +2 ATK while you control ANOTHER Prime character (subtype Prime).
+      if(abils.some(a=>a.label==='The Power of Primes')){
+        if(pl.field.some(f=>f.uid!==fc.uid&&isChar(DB[f.cid])&&((DB[f.cid].subtypes||[]).some(s=>/^prime$/i.test(String(s)))||/\bprime\b/i.test(DB[f.cid].race||'')))) add(2,0,fc.cid,'The Power of Primes',fc.uid);
       }
       // BLOODROOT FURY (Pavi Root Chakra): +3 ATK while this card has damage on it
       if(abils.some(a=>a.label==='Bloodroot Fury')){
@@ -11617,6 +11707,12 @@ function fxRift(el,p){
 function fxFindRemoved(p,cid){ const b=fxBoard(); if(!b) return null; const els=[...b.querySelectorAll(`[data-player="${p}"][data-cid="${cid}"]`)]; const live=new Set((G.players[p]&&G.players[p].field||[]).map(f=>String(f.uid))); return els.find(e=>!live.has(e.getAttribute('data-uid')))||null; }
 
 
+// KILLING INTENT (Crimson): +2 to damage it deals to a character that already has damage on it.
+function killingIntent(src, tgt){
+  if(!src||!tgt||!hasAbilityLabel(src,'Killing Intent')||!isChar(DB[tgt.cid])) return 0;
+  const mx=(tgt.baseHP||0)+(tgt.hpBonus||0)+(tgt.passiveHp||0);
+  return (tgt.currentHP||0)<mx?2:0;
+}
 // HALF-DIVINE (Asa) source check: a CHARACTER whose subtypes include the word God.
 function _dmgSourceFc(tuid){
   const cx=(typeof _fxCtx!=='undefined')?_fxCtx:null; if(!cx) return null;
@@ -11683,6 +11779,15 @@ function dealDamage(tp,tuid,amt){
   }
 }
 
+// DEVOURING DARK (Praxus, Herald): one of your characters is destroyed or sacrificed → +1 Energy, at most 2 per turn.
+function devouringDark(p, fc){
+  const h=G.players[p]?.herald; if(!h||h.broken||!hasAbilityLabel(h,'Devouring Dark')) return;
+  if(!fc||!isChar(DB[fc.cid])||DB[fc.cid]?.isToken) return;
+  if(h._ddTurn!==G.turn){ h._ddTurn=G.turn; h._ddN=0; }
+  if((h._ddN||0)>=2) return;
+  h._ddN=(h._ddN||0)+1; G.players[p].energy+=1;
+  log(`🌑 Devouring Dark: ${pname(p)} gains 1 Energy (${h._ddN}/2 this turn).`,'gain');
+}
 function killCard(p,fc){
   const c=DB[fc.cid];if(!c)return;
   if(!G.players[p]||!G.players[p].field.some(f=>f.uid===fc.uid)) return; // already gone (no double Prize / Energy)
@@ -11706,6 +11811,7 @@ function killCard(p,fc){
     }
   }
   log(`☠ ${c.name} destroyed!`,'death');
+  devouringDark(p, fc);
   if(typeof SFX!=='undefined')SFX.death();
   // Death animation on the card element before removing
   const cardEl=document.querySelector(`[data-uid="${fc.uid}"]`);
@@ -12049,6 +12155,7 @@ function doSacrifice(uid,energyGain,pOverride){
   const _fuel=pl.field.filter(f=>hasAbilityLabel(f,'Fuel the Chaos')).length; // counted before it leaves (it can fuel itself)
   pl.field=pl.field.filter(f=>f.uid!==uid);
   if(_fuel>0){ pl.energy+=_fuel; log(`🌀 Fuel the Chaos: +${_fuel} extra Energy.`,'gain'); }
+  devouringDark(sp, fc);
   fc.attachments.forEach(eqId=>pl.discard.push(eqId));
   pl.discard.push(fc.cid);
   fusionLeaves(pl,fc);
@@ -12687,6 +12794,7 @@ function executeCombatDamage(ap,auid,dp,duid){
   atkDmg=applyWaterStance(dfc, afc, atkDmg); // 🌊 Nisha: an attack on her is 3 weaker
   // ☀️ SUN'S JUDGMENT (Falcore): its attack on a Paralyzed character deals +2.
   if(hasAbilityLabel(afc,"Sun's Judgment")&&statusActive(dfc,'paralyze')){ atkDmg+=2; log(`☀️ Sun's Judgment: ${DB[afc.cid]?.name} strikes the Paralyzed ${DB[dfc.cid]?.name} for +2!`,'dmg'); }
+  { const _ki=killingIntent(afc,dfc); if(_ki){ atkDmg+=_ki; log(`🩸 Killing Intent: ${DB[dfc.cid]?.name} is already wounded — +2!`,'dmg'); } }
 
   // Power Struggle result override
   const kcWinner=G._powerStruggleWinner;
@@ -12700,7 +12808,7 @@ function executeCombatDamage(ap,auid,dp,duid){
     // Defender wins — deal defender's ATK to attacker, no damage to defender
     const defenderATK=dfc.currentATK;
     log(`Power Struggle: ${dc.name} wins — deals ${defenderATK} to ${ac.name}!`,'dmg');
-    dealDamage(ap,auid,defenderATK);
+    dealDamage(ap,auid,defenderATK+killingIntent(dfc,afc));
     // INHERIT TANK (Paradox): gains 2 Purple Energy whenever dealt combat damage.
     if(hasAbilityLabel(afc,'Inherit Tank') && defenderATK>0 && G.players[ap].field.some(f=>f.uid===auid)){
       G.players[ap].energy+=2; log('Inherit Tank: Paradox gains 2 Purple Energy!','gain');
@@ -12782,10 +12890,10 @@ function executeCombatDamage(ap,auid,dp,duid){
   } else if(tgtAlive&&!statusActive(dfc,'freeze')){
     if(hasKW(afc,'pursuit')){
       log(`${dc.name} retaliates ${defenderATK} (Pursuit: target survived).`,'info');
-      dealDamage(ap,auid,defenderATK);
+      dealDamage(ap,auid,defenderATK+killingIntent(dfc,afc));
     } else {
       log(`${dc.name} retaliates ${defenderATK}.`,'info');
-      dealDamage(ap,auid,defenderATK);
+      dealDamage(ap,auid,defenderATK+killingIntent(dfc,afc));
     }
     // INHERIT TANK (Paradox): attacker gains 2 Purple Energy from taking retaliation damage.
     if(hasAbilityLabel(afc,'Inherit Tank') && defenderATK>0 && G.players[ap].field.some(f=>f.uid===auid)){
@@ -13333,7 +13441,7 @@ function resolveTeamLifeAttack(attackerPlayer, afc, blocker, enemyTeam){
   const bHP=blocker.currentHP||0, bPow=effPower(blocker), excess=Math.max(0,power-bHP);
   log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHP}HP).`,'info');
   G._curAtk=afc.uid; G._curDef=blocker.uid;
-  if(owner){ dealDamage(owner, blocker.uid, power); combatDamageHooks(afc, attackerPlayer, blocker, owner, power); triggerShowdownHype(afc, attackerPlayer, owner, blocker.uid); } // Step 1-2 (death → -2 team Life via killCard)
+  if(owner){ dealDamage(owner, blocker.uid, power+killingIntent(afc,blocker)); combatDamageHooks(afc, attackerPlayer, blocker, owner, power); triggerShowdownHype(afc, attackerPlayer, owner, blocker.uid); } // Step 1-2 (death → -2 team Life via killCard)
   if(bPow>power && pursuitBlockKill(afc, blocker)){ log(`Pursuit: ${DB[afc.cid].name} destroyed its blocker — no counter.`,'gain'); }
   else if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(attackerPlayer, afc.uid, c); if(owner){ combatDamageHooks(blocker, owner, afc, attackerPlayer, c); triggerShowdownHype(blocker, owner, attackerPlayer, afc.uid); } } // Step 3
   if(excess>0){ log(`Trample! ${excess} excess to Team ${enemyTeam} Life.`,'dmg'); damageTeamLife(enemyTeam, excess, 'trample'); } // Step 4
@@ -13486,7 +13594,7 @@ function resolveAITeamAttack(aiPlayer, afc, blocker, humanTeam){
   const owner=ownerOfCard(blocker.uid);
   log(`${DB[afc.cid].name}(${power}) blocked by ${DB[blocker.cid].name}(${bHP}HP).`,'info');
   G._curAtk=afc.uid; G._curDef=blocker.uid;
-  if(owner){ dealDamage(owner, blocker.uid, incoming); combatDamageHooks(afc, aiPlayer, blocker, owner, incoming); triggerShowdownHype(afc, aiPlayer, owner, blocker.uid); }
+  if(owner){ dealDamage(owner, blocker.uid, incoming+killingIntent(afc,blocker)); combatDamageHooks(afc, aiPlayer, blocker, owner, incoming); triggerShowdownHype(afc, aiPlayer, owner, blocker.uid); }
   if(bPow>power && pursuitBlockKill(afc, blocker)){ log(`Pursuit: ${DB[afc.cid].name} destroyed its blocker — no counter.`,'gain'); }
   else if(bPow>power){ const c=bPow-power; log(`Counter! ${DB[blocker.cid].name} deals ${c} back.`,'dmg'); dealDamage(aiPlayer, afc.uid, c); if(owner){ combatDamageHooks(blocker, owner, afc, aiPlayer, c); triggerShowdownHype(blocker, owner, aiPlayer, afc.uid); } }
   if(excess>0){ log(`Trample! ${excess} to Team ${humanTeam} Life.`,'dmg'); damageTeamLife(humanTeam, excess, 'trample'); }
@@ -15207,6 +15315,85 @@ function _activateAbilityCore(fc,abl){
   // ── FALCORE: Sandstorm (3⚡, every 4 turns: Paralyze EACH opposing character — not targeted) · Sunfall (5⚡, once per
   //    game: 3 damage to each Paralyzed opposing character). REMMEL: Lord of Ruin (4⚡, once per game, discard pile → hand,
   //    charged only when a card is picked). None of them tap (paid).
+  // ── CRIMSON: Scarlet Eclipse — 5⚡, once per game, no tap: 4 damage (+2 Killing Intent on a wounded target).
+  if(abl.label==='Scarlet Eclipse'){
+    const ap=G.activePlayer, pl=G.players[ap];
+    if(fc.abilityUsed&&fc.abilityUsed['Scarlet Eclipse']){ log('Scarlet Eclipse has already been used this game.','dmg'); return; }
+    const opps=(G.is2v2&&typeof enemyTeamOf==='function')?teamPlayers(enemyTeamOf(ap)):[ap===1?2:1];
+    const foes=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) foes.push({fc:f,p:op}); }));
+    if(!foes.length){ log('Scarlet Eclipse: no opposing character.','dmg'); return; }
+    if(pl.energy<5){ log('Not enough energy (need 5⚡).','dmg'); return; }
+    if(!spendEnergyAbility(ap,5,DB[fc.cid]?.color||null)) return;
+    if(!fc.abilityUsed) fc.abilityUsed={}; fc.abilityUsed['Scarlet Eclipse']=true; pl.usedAbilityThisTurn=true;
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    const hit=(uid)=>{ const t=foes.find(x=>x.fc.uid===uid); const tf=t&&G.players[t.p].field.find(f=>f.uid===uid); if(!tf) return;
+      const n=4+killingIntent(fc,tf); log(`🌘 Scarlet Eclipse: ${DB[tf.cid].name} takes ${n}${n>4?' (Killing Intent)':''}!`,'dmg'); dealDamage(t.p,uid,n);
+      if(typeof SFX!=='undefined'&&SFX.ability) try{ SFX.ability(); }catch(e){} renderAll(); };
+    openEnemyTargetPicker(foes.map(x=>x.fc),hit,{sourcePlayer:ap,title:'Scarlet Eclipse',desc:'Deal 4 damage to an opposing character (+2 if it is already damaged).'});
+    return;
+  }
+  // ── PRAXUS (Herald): Rise from Darkness — 5⚡, once every 4 turns (Ravager Strike convention): a character costing 4 or
+  //    less (not a token, Herald, transform-only form or fusion) from your discard pile onto your field. It ENTERS the
+  //    field (entry abilities fire; summoning sickness applies). Charged only when a card is picked.
+  if(abl.label==='Rise from Darkness'){
+    const ap=G.activePlayer, pl=G.players[ap];
+    const l=fc.abilityUsed&&fc.abilityUsed.rise_turn; if(l!=null&&(G.turn-l)<4){ log(`Rise from Darkness: recharging — usable again in ${4-(G.turn-l)} turn(s).`,'dmg'); return; }
+    const filt=(cc)=>!!cc&&isChar(cc)&&!cc.isToken&&cc.type!=='herald'&&!cc.transformOnly&&!cc.fusion&&!cc.fusionForm&&(cc.cost||0)<=4;
+    if(!(pl.discard||[]).some(cid=>filt(DB[cid]))){ log('Rise from Darkness: no character costing 4 or less in your discard pile.','dmg'); return; }
+    if(pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken).length>=MAX_FIELD){ log('Rise from Darkness: your fighter zone is full.','dmg'); return; }
+    if(pl.energy<5){ log('Not enough energy (need 5⚡).','dmg'); return; }
+    closeAllModals();
+    openDiscardSearch('Rise from Darkness','Choose a character costing 4 or less from your discard pile. It returns to your field (5⚡).',filt,(cid)=>{
+      if(!spendEnergyAbility(ap,5,DB[fc.cid]?.color||null)){ pl.discard.push(cid); renderAll(); return; }
+      if(!fc.abilityUsed) fc.abilityUsed={}; fc.abilityUsed.rise_turn=G.turn; pl.usedAbilityThisTurn=true;
+      if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
+      const f=newFC(cid); if(!f){ renderAll(); return; } f.turnPlayed=G.turn; pl.field.push(f);
+      log(`🌑 Rise from Darkness: ${DB[cid]?.name} returns from the discard pile to ${pname(ap)}'s field!`,'gain');
+      try{ playCardZoom(cid,f.variant); }catch(e){} if(typeof fxMarkLand==='function') fxMarkLand(f.uid,'char');
+      if(typeof recalcPassives==='function') recalcPassives(); renderAll();
+      if(typeof seqEntry==='function') seqEntry(ap,f); });
+    return;
+  }
+  // ── PRAXUS (Herald): Event Horizon — once per game. Pick one of your characters to sacrifice (a real Sacrifice: half its
+  //    printed cost back, sacrifice payoffs fire) and an opposing character whose printed cost is equal or lower: it goes
+  //    to the Rift (Rift-immune / Drunken Stance cards can't be chosen). Nothing happens until both are picked.
+  if(abl.label==='Event Horizon'){
+    const ap=G.activePlayer, pl=G.players[ap];
+    if(fc.abilityUsed&&fc.abilityUsed['Event Horizon']){ log('Event Horizon has already been used this game.','dmg'); return; }
+    const opps=(G.is2v2&&typeof enemyTeamOf==='function')?teamPlayers(enemyTeamOf(ap)):[ap===1?2:1];
+    const foes=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])&&!DB[f.cid]?.isToken&&!isRiftImmune(f)&&!hasDrunkenStance(f)) foes.push({fc:f,p:op}); }));
+    const costOf=(f)=>DB[f.cid]?.cost||0;
+    const mine=pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken&&foes.some(x=>costOf(x.fc)<=costOf(f)));
+    if(!mine.length){ log('Event Horizon: no trade possible (no opposing character costs as little as one of yours).','dmg'); return; }
+    const go=(sacUid,tUid)=>{
+      const sf=pl.field.find(f=>f.uid===sacUid), t=foes.find(x=>x.fc.uid===tUid); if(!sf||!t) return;
+      const tf=G.players[t.p].field.find(f=>f.uid===tUid); if(!tf||costOf(tf)>costOf(sf)) return;
+      if(!fc.abilityUsed) fc.abilityUsed={}; fc.abilityUsed['Event Horizon']=true; pl.usedAbilityThisTurn=true;
+      if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
+      if(abilityTapRule(fc,abl)) fc.tapped=true;
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Event Horizon',fc.uid):null;
+      log(`🕳 Event Horizon: ${pname(ap)} sacrifices ${DB[sf.cid].name}…`,'info');
+      doSacrifice(sacUid, Math.floor(costOf(sf)/2), ap);
+      const tf2=G.players[t.p].field.find(f=>f.uid===tUid);
+      if(tf2){ G.players[t.p].field=G.players[t.p].field.filter(x=>x.uid!==tUid); (tf2.attachments||[]).forEach(eq=>G.players[t.p].discard.push(eq));
+        fusionLeaves(G.players[t.p],tf2); sendToRift(t.p,tf2.cid,'Event Horizon'); log(`🕳 Event Horizon: ${DB[tf2.cid].name} is pulled into the Rift!`,'dmg'); }
+      if(typeof fxPop==='function') fxPop(_fx);
+      if(typeof recalcPassives==='function') recalcPassives(); renderAll();
+    };
+    if(seqIsLocalHuman(ap)&&!G._aiAuto){
+      closeAllModals();
+      seqChoose('Event Horizon','Choose one of your characters to sacrifice. Then choose an opposing character with an equal or lower cost: it goes to the Rift.',
+        mine.map(f=>({label:DB[f.cid].name, sub:'cost '+costOf(f), val:f.uid})),
+        (sacUid)=>{ const sf=pl.field.find(f=>f.uid===sacUid); if(!sf) return; const pool=foes.filter(x=>costOf(x.fc)<=costOf(sf));
+          openEnemyTargetPicker(pool.map(x=>x.fc),(tUid)=>go(sacUid,tUid),{sourcePlayer:ap,title:'Event Horizon',desc:'Send an opposing character (cost '+costOf(sf)+' or less) to the Rift.'}); },
+        ()=>{});
+    } else {
+      let best=null; mine.forEach(f=>foes.filter(x=>costOf(x.fc)<=costOf(f)&&!hasGodlyEvasion(x.fc)).forEach(x=>{ const gain=aiFcValue(x.fc)-aiFcValue(f); if(!best||gain>best.gain) best={gain,s:f.uid,t:x.fc.uid}; }));
+      if(best) go(best.s,best.t);
+    }
+    return;
+  }
   if(abl.label==='Sandstorm'||abl.label==='Sunfall'){
     const sand=abl.label==='Sandstorm', ap=G.activePlayer, pl=G.players[ap], cost=sand?3:5;
     if(!fc.abilityUsed) fc.abilityUsed={};
@@ -17736,6 +17923,14 @@ function aiScoreAbility(p, fc, abl, src){
   if(aiTried('abl:'+fc.uid+':'+abl.label)) return -1;
   if(abl.ai&&abl.ai.when==='never') return -1;
   if(abl.label==="Doom's Design" && (!doomsDesignReady(fc) || !(pl.deck||[]).some(cid=>isEquip(DB[cid])))) return -1;
+  if(abl.label==='Rise from Darkness'){ const _l=fc.abilityUsed&&fc.abilityUsed.rise_turn; if(_l!=null&&G.turn-_l<4) return -1;
+    if(pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken).length>=MAX_FIELD) return -1;
+    if(!(pl.discard||[]).some(cid=>{ const cc=DB[cid]; return cc&&isChar(cc)&&!cc.isToken&&!cc.transformOnly&&!cc.fusion&&!cc.fusionForm&&cc.type!=='herald'&&(cc.cost||0)<=4&&(cc.cost||0)>=2; })) return -1; }
+  if(abl.label==='Event Horizon'){ if(fc.abilityUsed&&fc.abilityUsed['Event Horizon']) return -1;
+    const _foes=aiEnemyChars(p).filter(e=>!DB[e.fc.cid]?.isToken&&!isRiftImmune(e.fc)&&!hasDrunkenStance(e.fc)&&!hasGodlyEvasion(e.fc));
+    const _mine=pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
+    let _g=-99; _mine.forEach(f=>_foes.forEach(e=>{ if((DB[e.fc.cid]?.cost||0)<=(DB[f.cid]?.cost||0)) _g=Math.max(_g, aiFcValue(e.fc)-aiFcValue(f)); }));
+    if(_g<4) return -1; return 20+Math.min(30,_g*1.5); } // the text reads as 'costly' to the generic scorer; score the trade itself
   if(abl.label==='Sandstorm'){ const _l=fc.abilityUsed&&fc.abilityUsed.sandstorm_turn; if(_l!=null&&G.turn-_l<4) return -1;
     if(aiEnemyChars(p).filter(e=>!statusActive(e.fc,'paralyze')&&!hasAbilityLabel(e.fc,'Vortex Shield')).length<2) return -1; }
   if(abl.label==='Sunfall'){ if(fc.abilityUsed&&fc.abilityUsed['Sunfall']) return -1; const _pz=aiEnemyChars(p).filter(e=>statusActive(e.fc,'paralyze'));
@@ -18173,7 +18368,7 @@ function hasKW(fc, kw){ if(DB[fc.cid]?.keywords?.includes(kw))return true; if(Ar
   if(fc&&fc.stance&&(kw==='onslaught'||kw==='guardian')&&stanceGrantsKW(fc,kw)) return true;
   return false; }
 // Passive abilities that are really a keyword in disguise — stealing one grants the keyword.
-const KEYWORD_PASSIVES={'Rage of Sparta':'burst_speed','Flash Step':'burst_speed','Spider Agility':'burst_speed','Hulk Smash':'breakthrough','Four as One':'onslaught','Four Elements Unbound':'onslaught','Muladhara':'resolve'};
+const KEYWORD_PASSIVES={'Blue Tempest':'onslaught','Rage of Sparta':'burst_speed','Flash Step':'burst_speed','Spider Agility':'burst_speed','Hulk Smash':'breakthrough','Four as One':'onslaught','Four Elements Unbound':'onslaught','Muladhara':'resolve'};
 function renderKeywordBadges(fc){
   const kws=DB[fc.cid]?.keywords; if(!kws||!kws.length) return '';
   return kws.map(kw=>{ const k=KEYWORDS[kw]; if(!k) return ''; return '<span class="kw-badge '+k.cls+'" title="'+k.desc+'">'+k.label+'</span>'; }).join('');
