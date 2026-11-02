@@ -6935,6 +6935,60 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 .pr-note:empty{display:none}
 .sp-allow input{accent-color:#c79a3a;width:14px;height:14px;margin:0}
 .sp-allow small{color:#6b7280;font-size:9px}
+/* Court Shards — crafting (build 10.17) */
+.cs-ico{vertical-align:-2px;margin-right:3px;filter:drop-shadow(0 0 4px rgba(168,85,247,.55))}
+.cs-amt{display:inline-flex;align-items:center;white-space:nowrap;font-family:'Share Tech Mono',monospace;color:#f0d58a;letter-spacing:.5px}
+#registry-screen .reg-shards{display:flex;align-items:center;gap:8px}
+#registry-screen .reg-shards .cs-bal{font-size:14px;padding:5px 10px;border-radius:999px;border:1px solid rgba(168,85,247,.5);background:rgba(40,16,80,.6)}
+#registry-screen .cs-ext{font-size:10px!important;padding:6px 10px!important}
+.cr-panel{display:grid;gap:7px;padding:10px 12px;border-radius:10px;border:1px solid rgba(168,85,247,.4);background:linear-gradient(180deg,rgba(60,24,110,.35),rgba(14,10,38,.5))}
+.cr-bal{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;color:#c4b5fd}
+.cr-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center}
+.cr-row b{display:block;font-size:12px;color:#ece6d6;font-weight:600}
+.cr-row small{display:block;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.5px;color:#8b8fa8}
+.cr-btn{font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;font-weight:700;padding:6px 10px;border-radius:8px;cursor:pointer;color:#1a1030;background:linear-gradient(180deg,#e9d5ff,#a855f7);border:1px solid #c4b5fd}
+.cr-btn.brk{color:#fde2e2;background:rgba(127,29,29,.55);border-color:rgba(248,113,113,.55)}
+.cr-btn:disabled{opacity:.4;cursor:default}
+.cr-why{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.3px;color:#9ca3af;line-height:1.5}
+.cr-dlg{display:grid;grid-template-columns:110px minmax(0,1fr);gap:14px;align-items:start}
+.cr-dlg-card{border-radius:8px;overflow:hidden;border:1px solid rgba(232,197,112,.45);aspect-ratio:5/7;background:#0d0a20;display:grid;place-items:center;font-size:30px}
+.cr-dlg-card img{width:100%;height:100%;object-fit:cover;display:block}
+.cr-dlg-txt{display:grid;gap:6px;min-width:0}
+.cr-dlg-txt>b{font-family:'Cinzel',serif;font-size:15px;color:#f4ecd0;letter-spacing:1px}
+.cr-dlg-txt>span{font-family:'Share Tech Mono',monospace;font-size:10px;color:#9d93c4;letter-spacing:.5px}
+.cr-dlg-row{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;color:#cfc6dc;padding:5px 8px;border-radius:7px;background:rgba(0,0,0,.3)}
+.cr-dlg-row input{width:70px;font-family:'Share Tech Mono',monospace;color:#ece6d6;background:rgba(0,0,0,.4);border:1px solid rgba(232,197,112,.35);border-radius:6px;padding:4px 6px}
+.cr-warn{font-size:11px;color:#fbbf24;line-height:1.5}
+.cr-dlg-btns{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
+.cr-go{padding:9px 16px!important;font-family:'Cinzel',serif;letter-spacing:2px;font-size:12px}
+.cr-go.break{background:rgba(127,29,29,.45)!important;border-color:rgba(248,113,113,.6)!important;color:#fecaca!important}
+.cr-go:disabled{opacity:.4;cursor:default}
+.cr-ext{display:grid;gap:10px}
+.cr-ext-head,.cr-ext-none{font-size:11px;color:#9d93c4;line-height:1.55}
+.cr-ext-list{max-height:46vh;overflow:auto;display:grid;gap:3px;padding-right:4px}
+.cr-ext-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;font-size:12px;color:#e2e8f0;padding:4px 8px;border-radius:6px;background:rgba(0,0,0,.25)}
+.cr-ext-row .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cr-ext-row .nm small{display:block;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.5px}
+.cr-ext-total{text-align:right;font-family:'Cinzel',serif;font-size:14px;color:#f4ecd0;letter-spacing:1px}
+.bld-craft.on{border-color:#a855f7!important;color:#e9d5ff!important;background:rgba(124,58,237,.3)!important}
+.bld-card.craft img{filter:grayscale(.7) brightness(.55)}
+.bld-card.craft.short img{filter:grayscale(1) brightness(.4)}
+.bld-card.craft::after{content:'NOT OWNED';position:absolute;left:0;right:0;top:44%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:#e9d5ff;text-shadow:0 1px 4px #000;pointer-events:none}
+.bld-card .cr-own{border-color:rgba(168,85,247,.6)!important}
+.bld-card .cr-add{background:linear-gradient(180deg,#e9d5ff,#a855f7)!important;font-size:13px!important;box-shadow:0 0 12px rgba(168,85,247,.6)!important}
+.bld-card.craft.short .cr-add{background:#3a3a5c!important;box-shadow:none!important}
+.cr-pv{border-color:rgba(168,85,247,.6)!important;color:#e9d5ff!important}
+.cr-adm{display:grid;gap:10px}
+.cr-adm-note{font-size:11px;color:#9d93c4;line-height:1.5}
+.cr-adm-t{width:100%;border-collapse:collapse;font-size:12px}
+.cr-adm-t th{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;color:#9d93c4;text-align:left;padding:3px 6px}
+.cr-adm-t td{padding:3px 6px}
+.cr-adm input[type=number]{width:80px;font-family:'Share Tech Mono',monospace;color:#ece6d6;background:rgba(0,0,0,.4);border:1px solid rgba(232,197,112,.35);border-radius:6px;padding:4px 6px}
+.cr-adm-h{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;color:#e8c570}
+.cr-adm-holo{display:flex;gap:8px;flex-wrap:wrap}
+.cr-adm-holo label{display:grid;gap:3px;font-size:10px;color:#cfc6dc}
+.cr-adm-holo input{width:70px!important}
+@media (max-width:520px){ .cr-dlg{grid-template-columns:80px minmax(0,1fr)} .cr-row{grid-template-columns:minmax(0,1fr) auto} .cr-row .cs-amt{display:none} }
 /* Group rooms (build 10.17) */
 #lobby-group{width:100%;max-width:560px}
 .pvp-lobby-card.gr-card{padding:20px 22px!important}
@@ -7817,6 +7871,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
       <label class="dk-search" for="builder-search" style="width:200px">🔍 <input id="builder-search" placeholder="Search…" oninput="_bPage=0;renderBuilderCards()"></label>
       <div class="bld-pips" id="bld-pips"></div>
       <div id="bld-types" style="display:flex;gap:5px;flex-wrap:wrap"></div>
+      <button type="button" class="dk-pill bld-craft" id="bld-craft" style="display:none" onclick="bldCraftToggle()" title="Also show cards you can craft with Court Shards"></button>
       <div style="flex:1"></div>
       <select id="builder-set-filter" class="bld-sel" onchange="_bPage=0;renderBuilderCards()"><option value="all">SET · ALL</option></select>
       <select id="builder-rarity-filter" class="bld-sel" onchange="_bPage=0;renderBuilderCards()">
@@ -8332,6 +8387,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
     <button class="reg-back" onclick="showScreen('menu-screen')">← BACK</button>
     <button class="reg-back reg-drawer-btn" onclick="document.getElementById('reg-list').classList.toggle('open')">☰ ENTRIES</button>
     <h2 class="reg-title">COURT REGISTRY<small id="reg-sub">BASE SET · 0 / 0 REGISTERED</small></h2>
+    <div class="reg-shards" id="reg-shards" style="display:none"></div>
     <div class="reg-filters">
       <select class="reg-sel" id="reg-set" onchange="registrySetFilter('set',this.value)"></select>
       <div id="reg-rarity-chips" style="display:flex;gap:6px;flex-wrap:wrap"></div>
@@ -8499,6 +8555,7 @@ const GODOT_SYNC=[
   { build:'10.17', date:'2026-11-02',
     cards:[], abilities:[],
     screens:[
+      "SAME BUILD 10.17 (web addition, no protocol change) — COURT SHARDS / CRAFTING. Behind a GLOBAL switch, Admin → Game switches '🔨 Crafting · Court Shards' (feature_flags.crafting, default OFF; admins always have it — when the PC admin saves feature_flags it must write crafting too). REGISTRY (COURT → Registry): header gains the balance (shard icon + amount) and a '💥 BREAK EXTRAS' button; every card page gains a 'COURT SHARDS' panel after REGISTRY: 'You have N', a 'Craft a copy · Regular finish · own n / cap' row with the cost and '🔨 CRAFT' (disabled + the reason underneath when it can't), and one row per finish you own: '<Finish> ×n · breaks for X each' + '💥 BREAK'. DIALOGS (modal): Craft = card art, name, rarity, cost / you have / after, 🔨 CRAFT → celebration 'CRAFTED!' ('−cost Court Shards · N left'). Break = card art, 'Each copy gives X', How many (1..owned), 'You get', a ⚠ line when a saved deck would be short ('A saved deck (Main Deck) uses 3 of this finish — it would be 1 short.'), 💥 BREAK → toast '🔨 Broke … → +X Court Shards'. Break extras = explanation, a list (name, finish ×n, shards), 'N cards → total', '💥 BREAK N EXTRAS' → celebration 'EXTRAS BROKEN'. DECK BUILDER: a '🔨 CRAFTABLE · <balance>' pill after the type chips (hidden when crafting is off or the admin has 'Every card ×4' on); on → the pool also lists cards you could craft (Sighted, below a playset, affordable or not) as dimmed tiles 'NOT OWNED' with the cost top-left and a purple 🔨 button (opens Craft); + on a card you don't own opens Craft; the preview of a craftable card has '🔨 CRAFT A COPY · <cost>'. ADMIN: Seasons → 'Crafting rates · GLOBAL — ✎ Edit rates' (table Rarity / Break / Craft, holo multipliers, '👑 Heralds can be crafted', '📜 Sighted first', Defaults / SAVE); Your test account → '+5,000 Court Shards'. RULES screen (only while crafting is on): 'Court Shards:' line.",
       "GROUP ROOMS — ONLINE LOBBY → 🆕 CREATE A ROOM now makes a GROUP ROOM (no new menu tab; it shows inside the online lobby screen in place of the 2-slot waiting room). Text under CREATE A ROOM: 'Up to 8 people. Two play while everyone else watches; the winner stays on and the next in line steps up. Private: share the code. Public: anyone can join it from Open Rooms.' Friend invites, 2v2 and Quick Match keep the old 1v1 waiting room.",
       "GROUP ROOM SCREEN (#lobby-group, max 560 px): HEADER '🌐 NAME'S ROOM' (🔒 if private) · sub 'PUBLIC · IN OPEN ROOMS' / 'PRIVATE · SHARE THE CODE' · 'n/8 PEOPLE' · mode text; the room code as a button (tap = copy, toast 'Room code X copied'); '🚪 LEAVE'. STAGE: phase line '⏳ WAITING FOR A CHALLENGER' / '⚔ NEXT MATCH · BOTH PLAYERS PRESS READY' / '▶ NOW PLAYING' (green); two seats side by side with VS between (stacked under 520 px): picture, name '(You)', sub 'Champion · N wins in a row' (👑 before the name when the seat holder has a streak) or 'Host'/'Up first' / 'Challenger', '· 🎲 random deck'; in READY phase a '✓ READY' (green) or 'NOT READY' (amber) tag; the room owner gets a small 'skip' link on a not-ready seat when someone is waiting (sends that player to the back of the line). Empty seat: dashed '⏳ Waiting…'. Under it '🏆 X beat Y — stays on (N in a row)'. Members not playing get '👁 WATCH THE MATCH' while a match runs. YOUR DECK panel (shown when you're in line or seated): deck picker (locked while your match runs); seated + READY phase: the WAGER strip (moved here from the waiting room) and a full-width READY button (toggle → '✓ READY — tap to cancel', green); hint line: 'Setting up the match…' / 'Waiting for X to connect…' / 'Connecting to the match…' / 'Lock in the wager (both accept) or call it off first.' / 'Press READY when you're set.' / 'Waiting for X…' / 'Your match is on.' / 'You're #n in line.'. Then 🎲 WATCHER BETS, then '⏳ IN LINE (n)' (numbered, pictures, '· host', 'nW' wins) and '👁 WATCHING (n)', then two toggle buttons '🎮 Get in line' / '👁 Just watch' + hint ('Switch any time between matches.' / 'Just watch gives up your seat.' / 'Switching applies after this match.'). OWNER ONLY: '⚙ ROOM SETTINGS (you host · applies to the next match)': mode / prizes / life HP selects, '🌐 Public room — Listed in Open Rooms', '👁 Show matches in Watch Live — People in the room can always watch'.",
       "OPEN ROOMS rows for group rooms (meta g:1): '<b>NAME</b>'s room 👥 n/8' (+ ' · FULL'), meta line 'mode · ▶ A vs B' (playing) / '⚔ A vs B next' / '⏳ waiting for a challenger' + ' · k in line' + build note; two buttons stacked: '🎮 PLAY' (gold, get in line) and '👁 WATCH'; both disabled when full or on another build. The room stays listed while people play (it used to vanish once 2 were in). Blurb under OPEN ROOMS: 'Public rooms. 🎮 PLAY gets you in line to play the winner · 👁 WATCH just watches.'",
@@ -8521,7 +8578,8 @@ const GODOT_SYNC=[
       "WATCHER BETS RPCs (VCU_Watcher_Bets_Setup.sql; use a SEPARATE RPC wrapper so a missing bets SQL never marks wagers as missing): pool_open(p_room) — players of that match room only → {ok, pool}. pool_get(p_id) → view {id, room_code, host_id, guest_id, host_name, guest_name, status 'open'|'live'|'settled'|'disputed'|'void'|'cancelled', pot_host, pot_guest, winner_id, paid, house_cut, bets:[{n, side, cel, status, payout}], n_host, n_guest, mine:{side, cel, status, payout, profit}|null, me_player, cfg}. pool_bet(p_id, p_side 'host'|'guest', p_cel) — not the two players, status open, wager unlock gate (error 'locked' + gate), 1..maxStake, daily cap left → {ok, pool, celestium, pack_inventory} (adopt the balances); calling again changes side/amount. pool_unbet(p_id). pool_start(p_id) — match host. pool_report(p_id, p_winner). pool_cancel(p_id) — players/admin while open. pool_sweep() → int (call on login and on entering a room; >0 → refresh the mailbox). pool_history(p_limit). Admin: admin_pools(p_status incl. 'review', p_limit), admin_pool_resolve(p_id, p_winner|null, p_note).",
       "PAYOUT: winners get bet + floor(bet × losing pot × (100 − housePct) / (100 × winning pot)), the share capped by their daily cap left; nobody on one side → every bet refunded. Pay-outs/refunds arrive as mail with attachments.wager = pool id and wager_tag 'bet_payout' (auto-claim popup title 'BET WON', sub 'Your share of the watcher bets', source 'Bet winnings') or 'bet_refund' (quiet claim + toast '🎲 Bet refunded: …'). A bettor's own refund on cancel is put straight back into their Celestium.",
       "REMATCH for 1v1 rooms (Quick Match, invites): 'rematch' {on:bool} or {left:true}, plus from (role), on room:<code>. Toggle on click; both on → the GUEST re-deals a random deck and re-sends player_joined (every 1.5 s, ≤ 8×, while its win screen is open); the HOST starts the next match (mode/prizes/HP from the last room) the moment that player_joined arrives while both are on. Leaving the win screen sends {left:true} before the channel closes. State resets when a match starts.",
-      "FIXES: (1) a received game_state with gameOver false is IGNORED once the local match is over — the host's start-of-match re-sends could undo a forfeit made in the first seconds. (2) The Forfeit button now also reports the wager (wager_report via the loss path), 300 ms after the forfeit state is sent."]},
+      "FIXES: (1) a received game_state with gameOver false is IGNORED once the local match is over — the host's start-of-match re-sends could undo a forfeit made in the first seconds. (2) The Forfeit button now also reports the wager (wager_report via the loss path), 300 ms after the forfeit state is sent.",
+      "SAME BUILD 10.17 — COURT SHARDS DATA + RULES. SQL: VCU_Crafting_Setup.sql → profiles.court_shards integer default 0 (saved like celestium; before it exists the web keeps shards in localStorage 'loc_court_shards_<uid>' and moves them over once the column appears). Collection = profiles.collection / collection_foil exactly as today (break = removeVariantFromCollection, craft = addVariantToCollection(cid,'none',1) + markRegistered; then save collection, collection_foil, holo_owned, court_shards). RATES: app_settings 'crafting' {rates:{common:[5,40],uncommon:[10,80],rare:[25,200],legend:[100,800],mythic:[250,2000],secret:[500,0]} ([break, craft]; craft 0 = can't craft), holo:{reverse:2,classic:2,cosmic:3,gold:4,ruby:6} (break × mult; crafting always makes the Regular finish), heralds:true, sightedOnly:true} — missing keys fall back to these defaults. Rarity = card_meta override else DB rarity. CRAFTABLE (check in this order): not token/system; not exclusive ('Exclusive cards are gifts only.'); not basic Energy ('Basic Energy comes in every pack.'); set != promo ('Promo cards can't be crafted.'); has a set ('This card isn't in a set yet.'); not switched off; Heralds only when heralds:true and in _heraldPool(its set), others in _packPool(its set) ('Not in its set's packs.'); craft cost > 0 ('Secret Rares can only be pulled from packs.'); sightedOnly → not 'unregistered' in the Registry ('Sight this card first — play against it or pull it.'); owned (all finishes) < playset 4 / Heralds 1 ('You own a full playset (n).'); enough shards ('You need N more Court Shards.'). BREAK EXTRAS: per card, keep = playset (4, Heralds 1); first keep, per finish, the most copies of that finish any ONE saved deck uses (deck.cards[i] + deck.foils[i]); then fill the rest of the playset from the shiniest finishes ruby → gold → cosmic → classic → reverse → regular; break everything else. No online protocol change — web and PC keep playing on 10.17."]},
   { build:'10.16', date:'2026-11-01',
     cards:[], abilities:[],
     screens:[
@@ -20616,6 +20674,7 @@ function renderRegistry(){
   const pct=setIds.length?Math.round(regN/setIds.length*100):0;
   document.getElementById('reg-sub').textContent=(_reg.set==='__all__'?'ALL CARDS':_reg.set==='__none__'?'UNASSIGNED':setLabel(_reg.set).toUpperCase())+' · '+regN+' / '+setIds.length+' REGISTERED';
   document.getElementById('reg-pct').textContent=pct+'%'; document.getElementById('reg-barfill').style.width=pct+'%';
+  if(typeof craftHeader==='function') craftHeader();
   // list
   const list=document.getElementById('reg-entries'); list.innerHTML='';
   if(!ids.length){ list.innerHTML='<div style="padding:20px;text-align:center;color:#6b7280;font-size:12px">No entries match.</div>'; }
@@ -20690,6 +20749,7 @@ function registrySelect(cid,quiet){
       <div>${st==='registered'?'FIRST REGISTERED':'FIRST SIGHTED'}<b>${fmtRegDate(st==='registered'?_registry.first[cid]:_registry.sighted[cid])}</b></div>
       ${decks?`<div>IN DECKS<b>${decks}</b></div>`:''}</div>`;
   }
+  if(typeof craftRegistryPanel==='function') h+=craftRegistryPanel(cid);
   if(isAdmin()) h+=`<div class="reg-admin" id="reg-admin"><button type="button" onclick="registryEdit('${cid}')">✎ EDIT ENTRY</button></div>`;
   body.innerHTML=h; body.scrollTop=0;
 }
@@ -23287,6 +23347,7 @@ function showRulesScreen(){
     <b style="color:#c8a0ff">Spectating:</b> 👁 Online lobby → Watch Live Matches (or 👁 WATCH on a friend). Spectators see the board, Energy and every card played — never anyone's hand. The host can turn spectators off in the waiting room.<br>
     <b style="color:#c8a0ff">Rooms:</b> 👥 Up to 8 people. Two play while the rest watch live; the winner stays on until they lose and the loser goes to the back of the line. Pick 🎮 Get in line or 👁 Just watch. Both players press READY before every match — with nobody else in line, that's your rematch. People who aren't playing can bet Celestium on the next match (same unlock as wagers): if your player wins you get your bet back plus your share of the other side's bets, minus a 5% house cut.<br>
     <b style="color:#c8a0ff">Wagers:</b> ⚖ Optional, online 1v1 only, set up in the waiting room. Unlocks at Level 10 + 20 online matches. Stake up to 5,000 Celestium and any sealed packs or boxes; both players accept, then the host starts. The winner gets their stake back, the other player's Celestium minus a 5% house cut, and every pack. Up to 50,000 Celestium of winnings a day. Leaving or forfeiting loses the wager.<br>
+    ${(typeof craftOn==='function'&&craftOn())?'<b style="color:#c8a0ff">Court Shards:</b> 🔨 Break cards you don\'t need into Court Shards and craft the card you want (Regular finish) — COURT → Registry, or 🔨 CRAFTABLE in the Deck Builder. Holos break for more. Promos, exclusives, basic Energy and Secret Rares can\'t be crafted; crafting stops at a playset (4, Heralds 1). 💥 Break extras breaks everything over a playset your decks don\'t use.<br>':''}
     <b style="color:#c8a0ff">Win:</b> All 6 Prizes or opponent out of characters.<br>
     <b style="color:#c8a0ff">Colors:</b>
     <span style="color:#ef4444">■ Red</span> ·
@@ -25389,6 +25450,7 @@ let _adminToggles={
   battle_pass_enabled:false, // WIP — hidden by default
   campaign_enabled:true, // GLOBAL: when off, non-admins get a 'coming soon' popup (button stays visible/clickable)
   online_random_decks:false, // GLOBAL (build 10.15): everyone may pick 🎲 Random Deck for online rooms / Find Match (admins always can)
+  crafting:false, // GLOBAL (build 10.17): Court Shards — players can break and craft cards (admins always can)
   admin_unlimited_cards:true // this one is admin-only, stored locally
 };
 
@@ -25431,7 +25493,8 @@ async function saveAdminToggles(){
       achievements_enabled:_adminToggles.achievements_enabled,
       battle_pass_enabled:_adminToggles.battle_pass_enabled,
       campaign_enabled:_adminToggles.campaign_enabled,
-      online_random_decks:_adminToggles.online_random_decks===true
+      online_random_decks:_adminToggles.online_random_decks===true,
+      crafting:_adminToggles.crafting===true
     };
     await _celSB.from('app_settings').upsert(
       {key:'feature_flags',value:JSON.stringify(globalFlags),updated_at:new Date().toISOString()},
@@ -26133,6 +26196,7 @@ async function adminToggle(key){
   await saveAdminToggles();
   // Apply effect immediately for relevant toggles
   applyAdminToggleEffects();
+  if(key==='crafting'&&typeof craftRefresh==='function') craftRefresh();
 }
 
 function applyAdminToggleEffects(){
@@ -30001,6 +30065,7 @@ window.addEventListener('load',async()=>{
       await loadRegistry();
       await loadCardMeta();
       await loadCosmetics();
+      if(typeof loadCrafting==='function') await loadCrafting();
       await loadMenuArt();
       await loadAdminHoloMode();
       updateAdminBadge();
@@ -30378,6 +30443,10 @@ window.addEventListener('load',async()=>{
           <span class="adm-ico">🎲</span><div class="adm-swt"><b>Random decks online <i class="adm-tag g">GLOBAL</i></b><span>Everyone can pick a Random Deck in online rooms and Find Match. Turn it off when the game goes public.</span></div>
           <div class="admin-toggle-switch" id="admin-tg-online_random_decks"><div class="admin-toggle-knob"></div></div>
         </div>
+        <div class="adm-sw" onclick="adminToggle('crafting')" role="switch" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+          <span class="adm-ico">🔨</span><div class="adm-swt"><b>Crafting · Court Shards <i class="adm-tag g">GLOBAL</i></b><span>Players can break cards into Court Shards and craft cards (Registry and Deck Builder). Rates: Seasons → Crafting rates.</span></div>
+          <div class="admin-toggle-switch" id="admin-tg-crafting"><div class="admin-toggle-knob"></div></div>
+        </div>
         <div class="adm-sw" onclick="adminToggle('admin_unlimited_cards')" role="switch" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
           <span class="adm-ico">🎴</span><div class="adm-swt"><b>Every card ×4 <i class="adm-tag a">ADMIN ONLY</i></b><span>You own 4 copies of every card. Nobody else is affected.</span></div>
           <div class="admin-toggle-switch" id="admin-tg-admin_unlimited_cards"><div class="admin-toggle-knob"></div></div>
@@ -30387,6 +30456,8 @@ window.addEventListener('load',async()=>{
       <section class="adm-card">
         <h3 class="adm-h">Seasons</h3>
         <div class="adm-rows">
+          <div class="adm-row"><div class="adm-swt"><b>Crafting rates <i class="adm-tag g">GLOBAL</i></b><span>Court Shards a card breaks for and costs to craft, per rarity; holo multipliers; Heralds; Sighted first.</span></div>
+            <div class="adm-btns"><button class="adm-btn" onclick="craftAdminEdit()">✎ Edit rates</button></div></div>
           <div class="adm-row"><div class="adm-swt"><b>Battle Pass season <i class="adm-tag g">GLOBAL</i></b><span>Start or end the current season for everyone.</span></div>
             <div class="adm-btns"><button class="adm-btn" onclick="startBPSeasonNow()">▶ Start now</button><button class="adm-btn warn" onclick="endBPSeasonNow()">■ End now</button></div></div>
           <div class="adm-row"><div class="adm-swt"><b>Battle Pass defaults <i class="adm-tag g">GLOBAL</i></b><span>Put the Battle Pass back to its default setup.</span></div>
@@ -30435,6 +30506,7 @@ window.addEventListener('load',async()=>{
           <button type="button" class="adm-tile gold" onclick="adminGrantCelestium50k()"><span class="adm-ico">💎</span><b>+50,000 Celestium</b><span>Added to your balance</span></button>
           <button type="button" class="adm-tile" onclick="adminUnlockAllAchievements()"><span class="adm-ico">🏅</span><b>Unlock All Achievements</b><span>Marks every achievement earned</span></button>
           <button type="button" class="adm-tile" onclick="adminGrantAllCards()"><span class="adm-ico">🃏</span><b>Grant All Cards</b><span>4 copies of each card</span></button>
+          <button type="button" class="adm-tile gold" onclick="craftAdminGrant(5000)"><span class="adm-ico">🔨</span><b>+5,000 Court Shards</b><span>For testing crafting</span></button>
         </div>
       </section>
       </div>
@@ -31715,6 +31787,7 @@ function bldInitChrome(){
     if([...ss.options].some(o=>o.value===cur)) ss.value=cur;
   }
   ['builder-set-filter','builder-rarity-filter','builder-holo-filter','builder-sort'].forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.toggle('on',el.value!=='all'&&!(id==='builder-sort'&&el.value==='set')); });
+  if(typeof bldCraftChip==='function') bldCraftChip();
 }
 function bldSetType(t){ const f=document.getElementById('builder-filter'); if(f) f.value=t; document.querySelectorAll('#bld-types .dk-pill').forEach(p=>p.classList.toggle('on',p.dataset.t===t)); _bPage=0; renderBuilderCards(); }
 function bldToggleColor(c){ const i=_bColors.indexOf(c); if(i>=0)_bColors.splice(i,1); else _bColors.push(c); document.querySelectorAll('#bld-pips .bld-cpip').forEach(p=>p.classList.toggle('on',_bColors.includes(p.dataset.c))); _bPage=0; renderBuilderCards(); }
@@ -31750,8 +31823,8 @@ function renderBuilderCards(){
     if(rarityFilter!=='all'&&getRarity(c.id)!==rarityFilter) return false;
     if(setFilter!=='all'){ const s=typeof getCardSet==='function'?getCardSet(c.id):(c.setId||''); if(s!==setFilter) return false; }
     if(search&&!c.name.toLowerCase().includes(search)&&!(c.color||'').includes(search)&&!(c.keywords||[]).some(k=>k.includes(search))&&!(c.subtypes||[]).some(k=>String(k).toLowerCase().includes(search))) return false;
-    // owned only (players): at least one copy of a matching finish
-    return bldVariantsFor(c.id,holoFilter).length>0;
+    // owned only (players): at least one copy of a matching finish — plus, with 🔨 CRAFTABLE on, cards you could craft
+    return bldVariantsFor(c.id,holoFilter).length>0||((holoFilter==='all'||holoFilter==='normal')&&typeof bldCraftable==='function'&&bldCraftable(c.id));
   });
   const rk=c=>RARITY_ORDER.indexOf(getRarity(c.id));
   list.sort((a,b)=>{
@@ -31773,6 +31846,12 @@ function renderBuilderCards(){
     const maxed=inDeck>=cap||inDeck>=own;
     const fins=variants.filter(v=>v!=='none').map(v=>`<i style="background:${VARIANT_META[v]?.accent||'#fff'}" title="${VARIANT_META[v]?.label}"></i>`).join('');
     const firstV=variants[0]||'none';
+    if(own===0){ const k=craftCheck(c.id);
+      return `<div class="bld-card craft${k.ok?'':' short'}${_bPreview&&_bPreview.cid===c.id?' pv':''}" onclick="bldPreview('${c.id}','none')" oncontextmenu="event.preventDefault();showFullCard('${c.id}',null,'none')" title="${dkEsc(c.name)} — not owned · craft it for ${csFmt(k.cost)} Court Shards">
+      ${dkImgOrSym(c.id,'')}
+      <div class="own cr-own">${csAmt(k.cost,10)}</div>
+      <button class="add cr-add" onclick="event.stopPropagation();craftOpenMake('${c.id}')" title="Craft a copy">🔨</button>
+    </div>`; }
     return `<div class="bld-card${maxed?' max':''}${fins?' holo':''}${_bPreview&&_bPreview.cid===c.id?' pv':''}" onclick="bldPreview('${c.id}','${firstV}')" oncontextmenu="event.preventDefault();showFullCard('${c.id}',null,'${firstV}')" title="${dkEsc(c.name)} — click to preview, right-click to zoom">
       ${dkImgOrSym(c.id,'')}
       <div class="own">OWN ×${own===Infinity?'∞':own}</div>
@@ -31787,6 +31866,7 @@ function renderBuilderCards(){
 }
 // Add the best available copy: the finish chosen in the preview if this is the previewed card, else regular, else first owned finish.
 function bldAdd(cid){
+  if(typeof craftOpenMake==='function'&&!adminHasUnlimitedCards()&&bldOwned(cid)===0){ craftOpenMake(cid); return; }   // not owned → craft it first
   let v='none';
   if(_bPreview&&_bPreview.cid===cid) v=_bPreview.variant||'none';
   const vs=bldVariantsFor(cid,'all');
@@ -31827,6 +31907,7 @@ function bldPreview(cid,variant){
       <button class="dk-btn gold" style="flex:1;padding:9px 6px;font-size:12px;text-align:center" onclick="bldAdd('${cid}')" ${inDeck>=cap?'disabled':''}>+ ADD</button>
     </div>
     <button class="dk-btn${isCover?' teal':''}" style="padding:9px;text-align:center;font-size:11px" onclick="bldSetCover('${cid}')">${isCover?'★ DECK COVER':'☆ SET AS DECK COVER'}</button>
+    ${(typeof craftOn==='function'&&craftOn()&&!adminHasUnlimitedCards()&&(()=>{ const k=craftCheck(cid); return k.ok||k.short; })())?`<button class="dk-btn cr-pv" style="padding:9px;text-align:center;font-size:11px" onclick="craftOpenMake('${cid}')">🔨 CRAFT A COPY · ${csAmt(craftCheck(cid).cost,12)}</button>`:''}
     ${tf.length?`<div style="font-size:9px;letter-spacing:1px;color:#6b6b8a;text-align:center">TRANSFORMS → ${dkEsc(tf.join(' → '))}</div>`:''}`;
 }
 function bldSetCover(cid){
@@ -33816,6 +33897,251 @@ async function grAdminResolve(id,who){
   if(error||!(data&&data.ok)) alert('Could not resolve: '+((error&&error.message)||(data&&data.error)||'unknown error'));
   grAdminPools();
 }
+
+</script>
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// 🔨 COURT SHARDS — CRAFTING (build 10.17, same build — no online protocol change)
+//   Break a card you don't need into Court Shards; spend shards to craft a copy of a
+//   specific card (Normal finish). Crafting costs several times what breaking pays, so
+//   packs and trades stay the main way to collect.
+//   • Switch: Admin → Game switches → '🔨 Crafting' (feature_flags.crafting, GLOBAL, default off; admins always have it).
+//   • Rates: app_settings 'crafting' {rates:{rarity:[break,craft]}, holo:{finish:mult}, heralds, sightedOnly} over CRAFT_DEFAULT.
+//   • Balance: profiles.court_shards (int) — VCU_Crafting_Setup.sql; until it exists, kept on this device only.
+//   • Craftable = a card its set's packs can give (not promo / exclusive / switched off / basic Energy / token),
+//     plus Heralds of that set when cfg.heralds. Secret Rares (craft 0) break but can't be crafted. Crafting stops at a
+//     full playset (4, Heralds 1). With cfg.sightedOnly the card must be at least Sighted in the Registry.
+//   • Break extras: everything over a playset, never below the copies of each finish a saved deck uses; the shiniest
+//     finishes are kept first.
+// ═══════════════════════════════════════════════════════════════════════════
+const CRAFT_DEFAULT={
+  rates:{common:[5,40],uncommon:[10,80],rare:[25,200],legend:[100,800],mythic:[250,2000],secret:[500,0]},
+  holo:{none:1,reverse:2,classic:2,cosmic:3,gold:4,ruby:6},
+  heralds:true, sightedOnly:true
+};
+const CRAFT_KEEP_ORDER=['ruby','gold','cosmic','classic','reverse','none'];   // which finishes Break extras keeps first
+const CS_ICON="data:image/svg+xml,"+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#f7e3a6'/><stop offset='.45' stop-color='#a855f7'/><stop offset='1' stop-color='#3b0f7a'/></linearGradient></defs><polygon points='16,1 27,11 21,31 11,31 5,11' fill='url(#g)' stroke='#e8c570' stroke-width='1.3' stroke-linejoin='round'/><polygon points='16,1 16,14 5,11' fill='#fff' fill-opacity='.28'/><polyline points='5,11 16,14 27,11' fill='none' stroke='#fff' stroke-opacity='.55'/><line x1='16' y1='14' x2='16' y2='31' stroke='#fff' stroke-opacity='.3'/></svg>");
+let _craft={cfg:null,shards:0,colOK:true,busy:false,loaded:false};
+
+function csIco(px){ return `<img class="cs-ico" src="${CS_ICON}" alt="" style="width:${px||14}px;height:${px||14}px">`; }
+function csFmt(n){ return Number(n||0).toLocaleString(); }
+function csAmt(n,px){ return `<span class="cs-amt">${csIco(px)}${csFmt(n)}</span>`; }
+function craftOn(){ return typeof isFeatureEnabled==='function'&&isFeatureEnabled('crafting'); }
+function craftCfg(){
+  const c=_craft.cfg||{}, d=CRAFT_DEFAULT;
+  const rates={}; Object.keys(d.rates).forEach(r=>{ const v=c.rates&&c.rates[r]; rates[r]=(Array.isArray(v)&&v.length===2)?[Math.max(0,+v[0]||0),Math.max(0,+v[1]||0)]:d.rates[r].slice(); });
+  const holo={}; Object.keys(d.holo).forEach(f=>{ const v=c.holo&&c.holo[f]; holo[f]=(v!=null&&+v>0)?+v:d.holo[f]; });
+  return {rates,holo,heralds:c.heralds===undefined?d.heralds:!!c.heralds,sightedOnly:c.sightedOnly===undefined?d.sightedOnly:!!c.sightedOnly};
+}
+function craftShardsKey(){ return 'loc_court_shards_'+(_celUserId||'guest'); }
+async function loadCrafting(){
+  let local=null; try{ const v=localStorage.getItem(craftShardsKey()); if(v!=null) local=Math.max(0,parseInt(v,10)||0); }catch(e){}
+  _craft.shards=local||0;
+  if(!_celSB||!_celUserId){ _craft.loaded=true; return; }
+  try{ const {data}=await _celSB.from('app_settings').select('value').eq('key','crafting').maybeSingle();
+    if(data&&data.value){ try{ _craft.cfg=typeof data.value==='string'?JSON.parse(data.value):data.value; }catch(e){} } }catch(e){}
+  try{
+    const {data,error}=await _celSB.from('profiles').select('court_shards').eq('id',_celUserId).maybeSingle();
+    if(error){ _craft.colOK=false; console.warn('[Crafting] profiles.court_shards is missing — shards stay on this device until VCU_Crafting_Setup.sql is run.'); }
+    else if(data){ const v=data.court_shards;
+      if(v==null||(+v===0&&local>0)){ _craft.shards=local||0; if(local>0) craftSaveShards(); }   // carry a device balance over once the column exists
+      else _craft.shards=Math.max(0,+v||0); }
+  }catch(e){ _craft.colOK=false; }
+  _craft.loaded=true;
+}
+async function craftSaveShards(){
+  try{ localStorage.setItem(craftShardsKey(),String(_craft.shards)); }catch(e){}
+  if(!_celSB||!_celUserId||!_craft.colOK) return;
+  try{ const {error}=await _celSB.from('profiles').update({court_shards:_craft.shards}).eq('id',_celUserId); if(error){ _craft.colOK=false; console.warn('[Crafting] save failed:',error.message); } }catch(e){}
+}
+function craftRarity(cid){ return (typeof cardMeta==='function'?cardMeta(cid).rarity:null)||getRarity(cid)||'common'; }
+function craftCap(cid){ return DB[cid]&&DB[cid].type==='herald'?1:4; }
+function craftOwned(cid){ return VARIANT_ORDER.reduce((s,v)=>s+variantCount(cid,v),0); }
+function craftBreakValue(cid,variant){ const cfg=craftCfg(); const r=cfg.rates[craftRarity(cid)]||cfg.rates.common; return Math.round(r[0]*(cfg.holo[variant||'none']||1)); }
+// {ok, cost, why} — can this card be crafted right now?
+function craftCheck(cid){
+  const c=DB[cid], cfg=craftCfg();
+  if(!c||c.isToken||c.type==='token'||c.type==='system') return {ok:false,why:"This card can't be crafted."};
+  const r=cfg.rates[craftRarity(cid)]||cfg.rates.common, cost=r[1];
+  const set=typeof getCardSet==='function'?getCardSet(cid):(c.setId||'');
+  if(c.exclusive) return {ok:false,cost,why:'Exclusive cards are gifts only.'};
+  if(c.type==='energy_card'&&!c.specialEnergy) return {ok:false,cost,why:'Basic Energy comes in every pack.'};
+  if(set==='promo') return {ok:false,cost,why:"Promo cards can't be crafted."};
+  if(!set) return {ok:false,cost,why:"This card isn't in a set yet."};
+  if(typeof _disabledCards!=='undefined'&&_disabledCards[cid]) return {ok:false,cost,why:'This card is switched off right now.'};
+  if(c.type==='herald'){ if(!cfg.heralds) return {ok:false,cost,why:'Heralds come from packs only.'};
+    if(typeof _heraldPool==='function'&&!_heraldPool(set).includes(cid)) return {ok:false,cost,why:'Not in its set\'s packs.'}; }
+  else if(typeof _packPool==='function'&&!_packPool(set).includes(cid)) return {ok:false,cost,why:'Not in its set\'s packs.'};
+  if(!(cost>0)) return {ok:false,cost:0,why:(craftRarity(cid)==='secret'?'Secret Rares':'This rarity')+' can only be pulled from packs.'};
+  if(cfg.sightedOnly&&typeof registryState==='function'&&registryState(cid)==='unregistered') return {ok:false,cost,why:'Sight this card first — play against it or pull it.'};
+  const own=craftOwned(cid), cap=craftCap(cid);
+  if(own>=cap) return {ok:false,cost,full:true,why:`You own a full playset (${cap}).`};
+  if(_craft.shards<cost) return {ok:false,cost,short:cost-_craft.shards,why:`You need ${csFmt(cost-_craft.shards)} more Court Shards.`};
+  return {ok:true,cost};
+}
+// the most copies of each finish that any single saved deck uses → Break extras never goes below it
+function craftDeckNeeds(){
+  const need={};
+  Object.entries(typeof SAVED_DECKS!=='undefined'?SAVED_DECKS:{}).forEach(([id,d])=>{ if(!d||!Array.isArray(d.cards)||id==='__random__') return;
+    const per={}; d.cards.forEach((cid,i)=>{ const v=(Array.isArray(d.foils)&&d.foils[i])||'none'; const k=cid+'|'+v; per[k]=(per[k]||0)+1; });
+    Object.entries(per).forEach(([k,n])=>{ if((need[k]||0)<n) need[k]=n; }); });
+  return need;
+}
+function craftDecksUsing(cid){ return Object.entries(typeof SAVED_DECKS!=='undefined'?SAVED_DECKS:{}).filter(([id,d])=>id!=='__random__'&&d&&Array.isArray(d.cards)&&d.cards.includes(cid)).map(([id,d])=>d.name||'Deck'); }
+function craftExtras(){
+  const need=craftDeckNeeds(), out=[];
+  Object.keys(_collectionFoil||{}).forEach(cid=>{
+    const c=DB[cid]; if(!c||c.isToken||c.type==='token'||c.type==='system') return;
+    const own={}; let total=0; VARIANT_ORDER.forEach(v=>{ own[v]=variantCount(cid,v); total+=own[v]; });
+    const keep=craftCap(cid); if(total<=keep) return;
+    const kv={}; let left=keep;
+    VARIANT_ORDER.forEach(v=>{ kv[v]=Math.min(own[v],need[cid+'|'+v]||0); left-=kv[v]; });
+    CRAFT_KEEP_ORDER.forEach(v=>{ if(left<=0) return; const add=Math.min(own[v]-kv[v],left); if(add>0){ kv[v]+=add; left-=add; } });
+    VARIANT_ORDER.forEach(v=>{ const n=own[v]-kv[v]; if(n>0) out.push({cid,v,n,each:craftBreakValue(cid,v)}); });
+  });
+  out.sort((a,b)=>b.each*b.n-a.each*a.n||String(DB[a.cid].name).localeCompare(DB[b.cid].name));
+  return out;
+}
+async function craftSaveAll(){ await Promise.all([saveCollection(),saveCollectionFoil(),(typeof saveHoloOwned==='function'?saveHoloOwned():null),craftSaveShards()]); }
+function craftRefresh(cid){
+  try{ if(document.getElementById('registry-screen')?.classList.contains('active')&&typeof renderRegistry==='function') renderRegistry(); else craftHeader(); }catch(e){}
+  try{ if(document.getElementById('builder-screen')?.classList.contains('active')){ renderBuilderCards(); if(typeof _bPreview!=='undefined'&&_bPreview&&(!cid||_bPreview.cid===cid)) bldPreview(_bPreview.cid,_bPreview.variant); } }catch(e){}
+  try{ if(typeof renderProfileCollection==='function'&&document.getElementById('profile-screen')?.classList.contains('active')) renderProfileCollection(); }catch(e){}
+  try{ if(typeof mmRenderLedger==='function'&&document.getElementById('mm-ledger')) mmRenderLedger(); }catch(e){}
+}
+// ── actions ──
+async function craftBreak(cid,variant,n){
+  n=Math.max(1,n|0); if(_craft.busy||!craftOn()) return false;
+  if(variantCount(cid,variant)<n) return false;
+  const gain=craftBreakValue(cid,variant)*n;
+  _craft.busy=true;
+  try{ removeVariantFromCollection(cid,variant,n); if(typeof recomputeHoloOwned==='function') recomputeHoloOwned(); _craft.shards+=gain; await craftSaveAll(); }
+  finally{ _craft.busy=false; }
+  if(typeof SFX!=='undefined'&&SFX.destroy) try{ SFX.destroy(); }catch(e){}
+  if(typeof spToast==='function') spToast(`🔨 Broke ${n>1?n+'× ':''}${escapeHtml(DB[cid].name)} → +${csFmt(gain)} Court Shards`,2600);
+  craftRefresh(cid); return true;
+}
+async function craftMake(cid){
+  if(_craft.busy||!craftOn()) return false;
+  const chk=craftCheck(cid); if(!chk.ok) return false;
+  _craft.busy=true;
+  try{ _craft.shards-=chk.cost; addVariantToCollection(cid,'none',1); if(typeof recomputeHoloOwned==='function') recomputeHoloOwned(); await craftSaveAll(); if(typeof markRegistered==='function') markRegistered(cid); }
+  finally{ _craft.busy=false; }
+  craftRefresh(cid);
+  if(typeof showRewardsCelebration==='function'){ showRewardsCelebration([{img:getImg(cid),label:DB[cid].name}],null,{title:'CRAFTED!',sub:`−${csFmt(chk.cost)} Court Shards · ${csFmt(_craft.shards)} left`}); }
+  return true;
+}
+async function craftBreakExtras(list){
+  if(_craft.busy||!craftOn()||!list||!list.length) return 0;
+  let gain=0; _craft.busy=true;
+  try{ list.forEach(x=>{ const n=Math.min(x.n,variantCount(x.cid,x.v)); if(n>0){ removeVariantFromCollection(x.cid,x.v,n); gain+=x.each*n; } });
+    if(typeof recomputeHoloOwned==='function') recomputeHoloOwned(); _craft.shards+=gain; await craftSaveAll(); }
+  finally{ _craft.busy=false; }
+  if(typeof SFX!=='undefined'&&SFX.destroy) try{ SFX.destroy(); }catch(e){}
+  craftRefresh(); return gain;
+}
+// ── dialogs ──
+function craftVariantLabel(v){ return (VARIANT_META[v]&&VARIANT_META[v].label)||'Regular'; }
+function craftOpenMake(cid){
+  const c=DB[cid]; if(!c) return; const chk=craftCheck(cid); const cost=chk.cost||0;
+  const body=document.createElement('div'); body.className='cr-dlg';
+  body.innerHTML=`<div class="cr-dlg-card">${getImg(cid)?`<img src="${getImg(cid)}" alt="">`:'👑'}</div>
+    <div class="cr-dlg-txt"><b>${escapeHtml(c.name)}</b><span>${(RARITY_DEFS[craftRarity(cid)]||{}).label||''} · Regular finish · you own ${craftOwned(cid)} / ${craftCap(cid)}</span>
+      <div class="cr-dlg-row"><span>Cost</span>${csAmt(cost,16)}</div><div class="cr-dlg-row"><span>You have</span>${csAmt(_craft.shards,16)}</div>
+      ${chk.ok?`<div class="cr-dlg-row"><span>After</span>${csAmt(_craft.shards-cost,16)}</div>`:`<div class="cr-why">${escapeHtml(chk.why||'')}</div>`}</div>
+    <div class="cr-dlg-btns"><button class="btn-primary cr-go" type="button" data-go ${chk.ok?'':'disabled'}>🔨 CRAFT</button></div>`;
+  body.querySelector('[data-go]').onclick=async()=>{ closeAllModals(); await craftMake(cid); };
+  showModalEl('🔨 Craft a card',body);
+}
+function craftOpenBreak(cid,variant){
+  const c=DB[cid]; if(!c) return; const have=variantCount(cid,variant); if(!have) return;
+  const each=craftBreakValue(cid,variant), need=craftDeckNeeds()[cid+'|'+variant]||0, decks=craftDecksUsing(cid);
+  const body=document.createElement('div'); body.className='cr-dlg';
+  body.innerHTML=`<div class="cr-dlg-card">${getImg(cid)?`<img src="${getImg(cid)}" alt="">`:'👑'}</div>
+    <div class="cr-dlg-txt"><b>${escapeHtml(c.name)}</b><span>${craftVariantLabel(variant)} · you own ${have}</span>
+      <div class="cr-dlg-row"><span>Each copy gives</span>${csAmt(each,16)}</div>
+      <label class="cr-dlg-row"><span>How many</span><input type="number" min="1" max="${have}" value="1" data-n aria-label="How many copies to break"></label>
+      <div class="cr-dlg-row"><span>You get</span><span data-gain>${csAmt(each,16)}</span></div>
+      <div class="cr-warn" data-warn style="display:none"></div></div>
+    <div class="cr-dlg-btns"><button class="btn-primary cr-go break" type="button" data-go>💥 BREAK</button></div>`;
+  const inp=body.querySelector('[data-n]'), gainEl=body.querySelector('[data-gain]'), warn=body.querySelector('[data-warn]');
+  const upd=()=>{ let n=Math.max(1,Math.min(have,parseInt(inp.value,10)||1)); gainEl.innerHTML=csAmt(each*n,16);
+    const short=need-(have-n);
+    if(short>0){ warn.style.display=''; warn.textContent=`⚠ A saved deck${decks.length?' ('+decks.slice(0,2).join(', ')+(decks.length>2?'…':'')+')':''} uses ${need} of this finish — it would be ${short} short.`; } else warn.style.display='none';
+    return n; };
+  inp.oninput=upd; upd();
+  body.querySelector('[data-go]').onclick=async()=>{ const n=upd(); closeAllModals(); await craftBreak(cid,variant,n); };
+  showModalEl('💥 Break into Court Shards',body);
+}
+function craftOpenExtras(){
+  if(!craftOn()) return;
+  const list=craftExtras(); const total=list.reduce((s,x)=>s+x.each*x.n,0), cards=list.reduce((s,x)=>s+x.n,0);
+  const body=document.createElement('div'); body.className='cr-ext';
+  if(!list.length){ body.innerHTML='<div class="cr-ext-none">No extras — you don\'t own more than a playset (4, Heralds 1) of anything your decks don\'t use.</div>'; }
+  else body.innerHTML=`<div class="cr-ext-head">Breaks every copy over a playset (4 · Heralds 1). Your saved decks keep the copies they use, and the shiniest finishes are kept first.</div>
+    <div class="cr-ext-list">${list.map(x=>`<div class="cr-ext-row"><span class="nm">${escapeHtml(DB[x.cid].name)}<small style="color:${(VARIANT_META[x.v]||{}).accent||'#9ca3af'}">${craftVariantLabel(x.v)} ×${x.n}</small></span>${csAmt(x.each*x.n,13)}</div>`).join('')}</div>
+    <div class="cr-ext-total">${cards} card${cards===1?'':'s'} → ${csAmt(total,18)}</div>
+    <div class="cr-dlg-btns"><button class="btn-primary cr-go break" type="button" data-go>💥 BREAK ${cards} EXTRA${cards===1?'':'S'}</button></div>`;
+  const go=body.querySelector('[data-go]'); if(go) go.onclick=async()=>{ closeAllModals(); const g=await craftBreakExtras(list); if(g&&typeof showRewardsCelebration==='function') showRewardsCelebration([{img:CS_ICON,amount:'+'+csFmt(g),label:'Court Shards'}],null,{title:'EXTRAS BROKEN',sub:`${cards} card${cards===1?'':'s'} · ${csFmt(_craft.shards)} Court Shards now`}); };
+  showModalEl('💥 Break extras',body);
+}
+// ── Registry: balance + Break extras in the header, a Court Shards panel on the card's page ──
+function craftHeader(){
+  const box=document.getElementById('reg-shards'); if(!box) return;
+  if(!craftOn()){ box.style.display='none'; return; }
+  box.style.display='';
+  box.innerHTML=`<span class="cs-bal" title="Court Shards">${csAmt(_craft.shards,16)}</span><button type="button" class="reg-back cs-ext" onclick="craftOpenExtras()">💥 BREAK EXTRAS</button>`;
+}
+function craftRegistryPanel(cid){
+  if(!craftOn()||!cid||!DB[cid]) return '';
+  const c=DB[cid], st=typeof registryState==='function'?registryState(cid):'registered', chk=craftCheck(cid);
+  let h=`<div class="reg-sec">COURT SHARDS</div><div class="cr-panel"><div class="cr-bal">You have ${csAmt(_craft.shards,15)}</div>`;
+  if(st==='unregistered'&&craftCfg().sightedOnly) h+=`<div class="cr-why">🔒 Sight this card first — play against it or pull it — to craft it.</div>`;
+  else if(chk.cost>0||chk.ok){
+    h+=`<div class="cr-row"><div><b>Craft a copy</b><small>Regular finish · own ${craftOwned(cid)} / ${craftCap(cid)}</small></div>${csAmt(chk.cost,14)}<button type="button" class="cr-btn" ${chk.ok?'':'disabled'} onclick="craftOpenMake('${cid}')">🔨 CRAFT</button></div>`;
+    if(!chk.ok) h+=`<div class="cr-why">${escapeHtml(chk.why||'')}</div>`;
+  } else h+=`<div class="cr-why">${escapeHtml(chk.why||"This card can't be crafted.")}</div>`;
+  const owned=VARIANT_ORDER.filter(v=>variantCount(cid,v)>0);
+  owned.forEach(v=>{ const n=variantCount(cid,v);
+    h+=`<div class="cr-row"><div><b style="color:${(VARIANT_META[v]||{}).accent||'#e8c570'}">${craftVariantLabel(v)} ×${n}</b><small>breaks for ${csFmt(craftBreakValue(cid,v))} each</small></div>${csAmt(craftBreakValue(cid,v),14)}<button type="button" class="cr-btn brk" onclick="craftOpenBreak('${cid}','${v}')">💥 BREAK</button></div>`; });
+  return h+'</div>';
+}
+// ── Deck Builder: '🔨 CRAFTABLE' shows cards you could craft (dimmed) next to the ones you own ──
+let _bCraft=false;
+function bldCraftToggle(){ _bCraft=!_bCraft; _bPage=0; renderBuilderCards(); }
+function bldCraftChip(){
+  const el=document.getElementById('bld-craft'); if(!el) return;
+  const show=craftOn()&&!adminHasUnlimitedCards();
+  el.style.display=show?'':'none'; if(!show){ _bCraft=false; return; }
+  el.classList.toggle('on',_bCraft); el.innerHTML=`🔨 CRAFTABLE · ${csAmt(_craft.shards,12)}`;
+}
+function bldCraftable(cid){ if(!_bCraft||!craftOn()||adminHasUnlimitedCards()) return false; const k=craftCheck(cid); return !!(k.ok||k.short); }
+// ── Admin: rates editor + test shards ──
+async function craftAdminSave(cfg){
+  if(!isAdmin()||!_celSB) return false;
+  try{ const {error}=await _celSB.from('app_settings').upsert({key:'crafting',value:JSON.stringify(cfg),updated_at:new Date().toISOString()},{onConflict:'key'});
+    if(error){ alert('Save failed (crafting): '+error.message); return false; } _craft.cfg=cfg; return true; }catch(e){ alert('Save failed: '+e.message); return false; }
+}
+function craftAdminEdit(){
+  if(!isAdmin()) return; const cfg=craftCfg();
+  const body=document.createElement('div'); body.className='cr-adm';
+  body.innerHTML=`<div class="cr-adm-note">Break = Court Shards a Regular copy gives. Craft = cost of a Regular copy (0 = can't craft). A holo breaks for Break × its multiplier.</div>
+    <table class="cr-adm-t"><thead><tr><th>Rarity</th><th>Break</th><th>Craft</th></tr></thead><tbody>${RARITY_ORDER.map(r=>`<tr><td style="color:${(RARITY_DEFS[r]||{}).hex}">${(RARITY_DEFS[r]||{}).label||r}</td><td><input type="number" min="0" data-b="${r}" value="${cfg.rates[r][0]}"></td><td><input type="number" min="0" data-c="${r}" value="${cfg.rates[r][1]}"></td></tr>`).join('')}</tbody></table>
+    <div class="cr-adm-h">Holo multipliers (breaking)</div>
+    <div class="cr-adm-holo">${VARIANT_ORDER.filter(v=>v!=='none').map(v=>`<label>${craftVariantLabel(v)}<input type="number" min="1" step="0.5" data-h="${v}" value="${cfg.holo[v]}"></label>`).join('')}</div>
+    <label class="sp-allow"><input type="checkbox" data-her ${cfg.heralds?'checked':''}> 👑 Heralds can be crafted <small>Regular finish, at their rarity's cost</small></label>
+    <label class="sp-allow"><input type="checkbox" data-sig ${cfg.sightedOnly?'checked':''}> 📜 Sighted first <small>Only cards Sighted in the Registry can be crafted</small></label>
+    <div class="cr-dlg-btns"><button class="btn-gray btn-sm" type="button" data-def>Defaults</button><button class="btn-primary cr-go" type="button" data-go>SAVE</button></div>`;
+  body.querySelector('[data-def]').onclick=async()=>{ if(!confirm('Put crafting back to the default rates?')) return; if(await craftAdminSave(JSON.parse(JSON.stringify(CRAFT_DEFAULT)))){ closeAllModals(); craftRefresh(); } };
+  body.querySelector('[data-go]').onclick=async()=>{
+    const out={rates:{},holo:{none:1},heralds:body.querySelector('[data-her]').checked,sightedOnly:body.querySelector('[data-sig]').checked};
+    RARITY_ORDER.forEach(r=>{ out.rates[r]=[Math.max(0,parseInt(body.querySelector(`[data-b="${r}"]`).value,10)||0),Math.max(0,parseInt(body.querySelector(`[data-c="${r}"]`).value,10)||0)]; });
+    VARIANT_ORDER.filter(v=>v!=='none').forEach(v=>{ out.holo[v]=Math.max(1,+body.querySelector(`[data-h="${v}"]`).value||1); });
+    if(await craftAdminSave(out)){ closeAllModals(); craftRefresh(); }
+  };
+  showModalEl('🔨 Crafting rates',body);
+}
+async function craftAdminGrant(n){ if(!isAdmin()) return; _craft.shards+=n; await craftSaveShards(); craftRefresh(); alert(`✓ +${csFmt(n)} Court Shards (you now have ${csFmt(_craft.shards)}).`); }
 
 </script>
 
