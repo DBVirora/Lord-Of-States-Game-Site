@@ -6935,6 +6935,72 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 .pr-note:empty{display:none}
 .sp-allow input{accent-color:#c79a3a;width:14px;height:14px;margin:0}
 .sp-allow small{color:#6b7280;font-size:9px}
+/* Group rooms (build 10.17) */
+#lobby-group{width:100%;max-width:560px}
+.pvp-lobby-card.gr-card{padding:20px 22px!important}
+.gr-headrow{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.gr-title{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--blue);text-shadow:0 0 10px var(--blue);overflow-wrap:break-word}
+.gr-sub{font-size:9px;letter-spacing:1.5px;color:#8b8fa8;margin-top:3px}
+.gr-code{font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;padding:6px 10px;border-radius:6px;border:1px dashed rgba(0,180,255,.45);background:rgba(0,180,255,.06);color:#bfe9ff;cursor:pointer}
+.gr-code:hover{background:rgba(0,180,255,.14)}
+.gr-leave{padding:7px 10px!important;letter-spacing:1.5px}
+.gr-phase{font-size:9px;letter-spacing:2.5px;color:var(--violet2);margin-bottom:8px;text-align:center}
+.gr-phase.live{color:#86efac}
+.gr-vs{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:stretch}
+.gr-vsx{align-self:center;font-family:'Orbitron',sans-serif;font-size:11px;color:#f0d58a;letter-spacing:2px}
+.gr-seat{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.3);min-width:0}
+.gr-seat.ready{border-color:rgba(34,197,94,.55);background:rgba(34,197,94,.06)}
+.gr-seat.me{box-shadow:inset 0 0 0 1px rgba(124,58,237,.5)}
+.gr-seat.empty{border-style:dashed;border-color:rgba(251,191,36,.3)}
+.gr-seat .nm{font-size:12.5px;font-weight:700;color:#e2e8f0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gr-seat.empty .nm{color:#6b7280;font-weight:400}
+.gr-seat .sub{font-size:9px;color:#8b8fa8;margin-top:2px}
+.gr-av{width:36px;height:36px;border-radius:50%;background:#0d0d2a;border:2px solid rgba(0,180,255,.3);display:inline-flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;overflow:hidden}
+.gr-av img{width:100%;height:100%;object-fit:cover;display:block}
+.gr-av.sm{width:22px;height:22px;font-size:11px;border-width:1px}
+.gr-tag{display:inline-block;margin-top:4px;padding:1px 7px;border-radius:9px;font-size:8px;letter-spacing:1px;font-weight:700}
+.gr-tag.ok{background:rgba(34,197,94,.18);color:#4ade80;border:1px solid rgba(34,197,94,.4)}
+.gr-tag.wait{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}
+.gr-last{margin-top:10px;font-size:10.5px;color:#c4c0dc;text-align:center}
+.gr-mine{margin-top:14px;padding:12px;border-radius:8px;border:1px solid var(--border);background:rgba(8,8,28,.5)}
+.gr-ready{display:block;width:100%;margin-top:10px;padding:11px!important;font-family:'Orbitron',sans-serif;letter-spacing:3px;font-size:12px}
+.gr-ready:disabled{opacity:.45;cursor:default}
+.gr-ready.on{background:rgba(34,197,94,.18)!important;border-color:#22c55e!important;color:#86efac!important}
+#gr-ready-hint{margin-top:6px}
+.gr-h{font-size:9px;letter-spacing:2px;color:var(--violet2);margin:12px 0 6px}
+.gr-mine>.gr-h:first-child,.gr-people>.gr-h:first-child,.gr-bets>.gr-h:first-child,.gr-settings>.gr-h:first-child{margin-top:0}
+.gr-dim{font-size:10px;color:#8b8fa8;line-height:1.5}
+.gr-bets,.gr-people,.gr-settings{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06)}
+.gr-list{display:flex;flex-direction:column;gap:5px}
+.gr-li{display:flex;align-items:center;gap:8px;font-size:11.5px;color:#e2e8f0;min-width:0}
+.gr-li .k{width:16px;text-align:right;color:#f0d58a;font-size:10px;flex-shrink:0}
+.gr-li .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.gr-roles{display:flex;gap:8px;margin-top:12px}
+.gr-roles .btn-sm{flex:1;padding:9px!important;letter-spacing:1px}
+.gr-roles .btn-sm.on{border-color:var(--violet2)!important;color:#e9d5ff!important;background:rgba(124,58,237,.22)!important}
+.gr-setrow{display:flex;gap:8px;flex-wrap:wrap}.gr-setrow select{flex:1;min-width:110px}
+.gr-pots{display:flex;gap:4px;margin:4px 0 8px}
+.gr-pot{min-width:0;padding:7px 9px;border-radius:6px;font-size:10px;display:flex;flex-direction:column;gap:2px;overflow:hidden}
+.gr-pot b{font-size:11px;color:#f3f0ff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gr-pot span{color:#c4c0dc}
+.gr-pot.h{background:rgba(0,180,255,.1);border:1px solid rgba(0,180,255,.35)}
+.gr-pot.g{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.35)}
+.gr-mybet{font-size:10.5px;color:#e2e8f0;margin-bottom:8px}
+.gr-mybet .win,.gr-last-bet .win{color:#fbbf24}
+.gr-last-bet{margin-bottom:8px}
+.gr-betrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.gr-betrow input{width:110px}
+.gr-betrow .wg-chips{margin:0}
+.gr-betbtns{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 0 6px}
+.gr-betbtns .wg-btn{flex:1;min-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#gr-wager-slot #lobby-wager{margin-top:10px}
+.pr-btns{grid-row:1/3;grid-column:2;display:flex;flex-direction:column;gap:5px}
+.pr-ppl{font-size:9px;color:#86efac;margin-left:4px;white-space:nowrap}
+#win-rematch-btn.rm-hot{border-color:#22c55e;color:#86efac;box-shadow:0 0 14px rgba(34,197,94,.45)}
+#win-rematch-note{font-size:11px;color:#86efac;letter-spacing:.3px}
+#win-rematch-note:empty{display:none}
+@media (max-width:520px){ .pvp-lobby-card.gr-card{padding:16px 14px!important} .gr-vs{grid-template-columns:minmax(0,1fr)} .gr-vsx{justify-self:center}
+  .gr-headrow>div:first-child{flex:1 1 100%!important} .gr-code{flex:1} .gr-title{font-size:12px;letter-spacing:2px} }
 </style>
 <style>
 /* ═══════════════════ DECKS REWORK (build 8.0) — My Decks · Deck Builder · Choose Deck ═══════════════════ */
@@ -7438,7 +7504,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.16 · Live online animations</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.17 · Group rooms</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -8398,8 +8464,10 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
     <p id="win-reason" style="color:#6b7280;font-size:12px;margin-bottom:16px"></p>
     <div id="win-celestium" style="font-size:11px;color:#fbbf24;margin-bottom:16px"></div>
     <div id="win-buttons" style="display:flex;flex-direction:column;gap:8px">
+      <div id="win-rematch-note" role="status"></div>
       <button class="btn-primary" id="win-rematch-btn" style="width:100%;padding:11px;font-size:13px;display:none" onclick="requestRematch()">🔄 Rematch</button>
-      <button class="btn-primary" style="width:100%;padding:11px;font-size:13px" onclick="returnToMenuFromWin()">🏠 Return to Main Menu</button>
+      <button class="btn-primary" id="win-room-btn" style="width:100%;padding:11px;font-size:13px;display:none" onclick="grBackToRoom()">⟲ Back to the room</button>
+      <button class="btn-primary" id="win-menu-btn" style="width:100%;padding:11px;font-size:13px" onclick="returnToMenuFromWin()">🏠 Return to Main Menu</button>
     </div>
   </div>
 </div>
@@ -8426,8 +8494,34 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.16'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.17'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.17', date:'2026-11-02',
+    cards:[], abilities:[],
+    screens:[
+      "GROUP ROOMS — ONLINE LOBBY → 🆕 CREATE A ROOM now makes a GROUP ROOM (no new menu tab; it shows inside the online lobby screen in place of the 2-slot waiting room). Text under CREATE A ROOM: 'Up to 8 people. Two play while everyone else watches; the winner stays on and the next in line steps up. Private: share the code. Public: anyone can join it from Open Rooms.' Friend invites, 2v2 and Quick Match keep the old 1v1 waiting room.",
+      "GROUP ROOM SCREEN (#lobby-group, max 560 px): HEADER '🌐 NAME'S ROOM' (🔒 if private) · sub 'PUBLIC · IN OPEN ROOMS' / 'PRIVATE · SHARE THE CODE' · 'n/8 PEOPLE' · mode text; the room code as a button (tap = copy, toast 'Room code X copied'); '🚪 LEAVE'. STAGE: phase line '⏳ WAITING FOR A CHALLENGER' / '⚔ NEXT MATCH · BOTH PLAYERS PRESS READY' / '▶ NOW PLAYING' (green); two seats side by side with VS between (stacked under 520 px): picture, name '(You)', sub 'Champion · N wins in a row' (👑 before the name when the seat holder has a streak) or 'Host'/'Up first' / 'Challenger', '· 🎲 random deck'; in READY phase a '✓ READY' (green) or 'NOT READY' (amber) tag; the room owner gets a small 'skip' link on a not-ready seat when someone is waiting (sends that player to the back of the line). Empty seat: dashed '⏳ Waiting…'. Under it '🏆 X beat Y — stays on (N in a row)'. Members not playing get '👁 WATCH THE MATCH' while a match runs. YOUR DECK panel (shown when you're in line or seated): deck picker (locked while your match runs); seated + READY phase: the WAGER strip (moved here from the waiting room) and a full-width READY button (toggle → '✓ READY — tap to cancel', green); hint line: 'Setting up the match…' / 'Waiting for X to connect…' / 'Connecting to the match…' / 'Lock in the wager (both accept) or call it off first.' / 'Press READY when you're set.' / 'Waiting for X…' / 'Your match is on.' / 'You're #n in line.'. Then 🎲 WATCHER BETS, then '⏳ IN LINE (n)' (numbered, pictures, '· host', 'nW' wins) and '👁 WATCHING (n)', then two toggle buttons '🎮 Get in line' / '👁 Just watch' + hint ('Switch any time between matches.' / 'Just watch gives up your seat.' / 'Switching applies after this match.'). OWNER ONLY: '⚙ ROOM SETTINGS (you host · applies to the next match)': mode / prizes / life HP selects, '🌐 Public room — Listed in Open Rooms', '👁 Show matches in Watch Live — People in the room can always watch'.",
+      "OPEN ROOMS rows for group rooms (meta g:1): '<b>NAME</b>'s room 👥 n/8' (+ ' · FULL'), meta line 'mode · ▶ A vs B' (playing) / '⚔ A vs B next' / '⏳ waiting for a challenger' + ' · k in line' + build note; two buttons stacked: '🎮 PLAY' (gold, get in line) and '👁 WATCH'; both disabled when full or on another build. The room stays listed while people play (it used to vanish once 2 were in). Blurb under OPEN ROOMS: 'Public rooms. 🎮 PLAY gets you in line to play the winner · 👁 WATCH just watches.'",
+      "🎲 WATCHER BETS panel (people in the room who aren't playing, READY phase): '🎲 WATCHER BETS · pot N 💠', a two-part bar (host side blue / guest side red, width by share) 'Name · N 💠 · k bets', 'Your bet: N 💠 on X · if they win you get about Y 💠', amount input (default 500, step 100) + chips 100/500/1K/2.5K/5K (≤ maxStake), buttons 'BET ON <HOST>' / 'BET ON <GUEST>', link 'take my bet back', fine print 'Celestium only · bets close when the match starts · if your player wins you get your bet back plus your share of the other side's bets (5% house cut).' Locked gate → '🔒 Betting unlocks at Level 10 and 20 online matches · you: …'. During the match '🔒 Bets are locked — the match is on.' The two players see only '🎲 WATCHER BETS · pot N' and 'N on you (k) · M on <them> (j)'. After the pairing: '🎲 YOUR LAST BET' + '🏆 X won — you get N 💠 (+P). It's claimed from your mailbox automatically.' / '💀 X won — your N 💠 bet is gone.' / '↩ … came back.' / '⏳ … waiting for the result…'.",
+      "WIN SCREEN (online 1v1): new status line above the buttons (#win-rematch-note, green, hidden when empty), '🔄 Rematch', '⟲ Back to the room' (group rooms only), and the menu button reads '🚪 Leave room' in a group room. GROUP ROOM: Rematch only when the next pairing is the same two players (nobody else in line) — it toggles your READY for that pairing, text '🔄 Rematch' / '⏳ Waiting for X… (tap to cancel)' / '🔄 Accept rematch' (green glow, note '🔄 X wants a rematch!') / '⏳ Starting…'; both → the next match starts by itself. Someone else next → no Rematch, note 'Next up: A vs B' or 'Waiting for the next challenger…'. 1v1 ROOMS (Quick Match, friend invite): same texts; both → next match starts automatically with the same decks (random decks re-dealt); the other leaves (or their heartbeat is silent 20 s) → button hidden, note 'X left — no rematch.' The old Rematch (host back to the waiting room, guest kicked to the lobby) is gone.",
+      "SPECTATOR BAR when watching from a group room: the LEAVE button reads 'BACK TO ROOM' and there's no 'MORE LIVE'.",
+      "⚖ MY WAGERS modal: a '🎲 Watcher bets' list is appended (pool_history: 'A vs B · when', 'N 💠 on X', tag WON +P / LOST / REFUNDED / UNDER REVIEW / IN PLAY). ADMIN → Gift Center → ⚖ WAGERS: new table '🎲 WATCHER BET POOLS' under the wagers (same filter): WHEN+room code, POTS (host side / guest side), STATUS (+ '→ winner (how) paid N · cut M' or note), REPORTED WINNER, buttons 'Pay host side' / 'Pay guest side' / 'Void'.",
+      "RULES screen: new line 'Rooms: 👥 Up to 8 people. Two play while the rest watch live; the winner stays on until they lose and the loser goes to the back of the line. Pick 🎮 Get in line or 👁 Just watch. Both players press READY before every match — with nobody else in line, that's your rematch. People who aren't playing can bet Celestium on the next match (same unlock as wagers): if your player wins you get your bet back plus your share of the other side's bets, minus a 5% house cut.'"],
+    data:[
+      "GAME_BUILD '10.17'. NEW SQL: VCU_Watcher_Bets_Setup.sql (run AFTER VCU_Wagers_Setup.sql) — tables wager_pools + wager_bets, RPCs below, wg_won_today now includes bet profit (one daily cap for wagers + bets). Online protocol additions — web and PC both need 10.17.",
+      "GROUP ROOM ROW: online_rooms {code, host_id: creator, host_name, host_deck:'__lobby__', status:'waiting', game_mode, prize_count}. JOIN BY CODE / Open Rooms / invite: select the row by code with ANY status; host_deck '__lobby__' → open the group room (role 'line', or 'watch' from the WATCH button; a player without a valid 60-card deck enters as 'watch' with the note 'You need a 60-card deck to get in line — you're watching for now.'). Otherwise the old 1v1 join (now checks status 'waiting' after reading). The creator deletes the row when it leaves last. No presence in the room within 5 s of joining → 'That room is empty or has closed.' (and try to delete the row).",
+      "GROUP ROOM CHANNEL 'gr:<code>' (broadcast self:false, presence key = user id). Presence meta {u, n:name, r:'line'|'watch', b:GAME_BUILD, t0:joined ms, av:avatar url (<800 chars) | null, rd:1 if random deck}. Re-track whenever role/deck changes. STATE s (published by the COORDINATOR = s.owner as 'gr_state' {s}; everyone keeps the highest s.v; v++ on every publish): {v, owner, oname, code, pub, set:{m, pc, lf, spec}, champ, chall, streak, line:[uid], rdy:{uid:1}, n:pairing number, M:match room code|null, phase:'wait'|'ready'|'play', mready, pool:bet pool id|null, live:spectator watch id|null, last:{n,w,l,wn,ln,streak}|null, wins:{uid:count}, names:{uid:name}, avs:{uid:url}}. On subscribe: track, send 'gr_hello' {u}; the coordinator answers with gr_state. Coordinator gone from presence for 3.2 s → the present same-build member with the smallest t0 (tie: uid) sets owner=self and reconciles; the receiver of a state naming it owner reconciles too. Leaving (🚪): owner hands s.owner to the earliest other member and sends gr_state; everyone sends 'gr_bye' {u}.",
+      "EVENTS TO THE COORDINATOR (the coordinator also applies its own): gr_ready {u, n, on} (only champ/chall, only phase 'ready', n must match) · gr_mready {n, pool} (the champ's match room is up) · gr_live {n, w} (spectator feed id) · gr_abort {n} (play → ready, rdy cleared, e.g. the wager wasn't locked) · gr_result {n, w, l} (first valid one wins; n must match and phase 'play') · gr_bye {u}. FROM IT: gr_reject {to, why:'full'|'build', build} → that client leaves with 'That room is full (8 people).' / 'That room is on build X and you're on Y. Refresh the page to update.' ANYONE: gr_pot {} → everyone re-reads the bet pool.",
+      "COORDINATOR RULES (reconcile on every presence change and event): members = presence sorted by t0; different build → reject; more than 8 → reject 'full'. Not playing: a seated player who left or switched to 'watch' loses the seat (champ → streak 0). Playing: only if BOTH seated players are gone → phase 'wait'. line = old line order filtered to present 'line' members not seated + newcomers in t0 order. Not playing: no champ but a chall → chall becomes champ; empty seats filled from the front of the line. If any seat changed: n++, M = new 6-letter code (if both seats filled) else null, rdy={}, mready=false, pool=null, live=null. phase = both seats → 'ready' else 'wait'; 'ready' + mready + both rdy → 'play'. Names/avatars of seated + line copied into s.names/s.avs. RESULT: last={n,w,l,wn,ln,streak}, wins[w]++, streak = champ won ? streak+1 : 1, champ=w, chall=null, phase 'wait', the loser goes to the BACK of the line if their role is 'line', then reconcile with seats changed (next challenger = front of the line; with nobody else waiting that's the loser again = rematch).",
+      "PER-PAIRING MATCH ROOM M (a normal 1v1 room, every existing online feature works unchanged): CHAMP inserts its own row {code:M, host_id:champ, host_name, host_deck:its deck, guest_id:chall, guest_name, guest_deck:null, status:'ready', game_mode, prize_count} (no cross-player writes), keeps _onlineRoom = row + {group:<room code>, gn:n, lf_hp, allow_spec:set.spec}, subscribes room:M, calls pool_open(M) and sends gr_mready {n, pool}. CHALLENGER sets _onlineRoom {code:M, host…, guest_id:me, guest_deck, group, gn}, subscribes room:M and re-sends player_joined every 2 s until room_ack. Fresh random deck per pairing. READY is enabled when: s.mready and my M == s.M; champ: guest_deck_cards received; challenger: room_ack received; an OPEN wager with stakes blocks READY. Wagers open from the seat panel exactly like the waiting room (wager_open on M).",
+      "STARTING (phase becomes 'play', champ only): wait ≤ 6 s for guest_deck_cards; open wager with stakes → gr_abort {n} + toast 'The wager isn't locked in yet — both players accept it (or call it off), then press READY again.'; otherwise the usual wager start (wager_start for a locked wager — exactly once); mode/prizes/HP from s.set; pool_start(pool); then the usual start (match_started payload includes group, gn and allow_spec=set.spec). Both clients at enterOnlineGame store playing = {M, n, host, guest, pool}.",
+      "SPECTATORS IN THE ROOM: the champ ALWAYS publishes the spectator feed for a group match (listed on 'vcu-live' only when set.spec; unlisted otherwise) and sends gr_live {n, w}. Every member who isn't playing and is on the room screen opens that feed automatically (same as 👁 WATCH), and returns to the room 3.5 s after the phase leaves 'play'. Pressing BACK TO ROOM during a match = don't auto-open that pairing again (WATCH THE MATCH re-opens it).",
+      "END OF A MATCH: each player sends gr_result {n, w, l} ONCE for the stored playing (from onMatchEnd; from forfeit 300 ms after the forfeit state is sent; from leaving mid-match) and pool_report(pool, winner), then gr_pot. HOLD-OFF: while my match just ended and I haven't sent its result yet (max 2.5 s after the win screen) don't tear down / set up match rooms. Leaving a pairing: send one last game_state (reset the 150 ms throttle so a forfeit/win is never lost), one last spectator snapshot, stop heartbeat + feed, remove room:M; if the pairing never started: pool_cancel(pool), wager_cancel, and the champ deletes the M row. Forfeiting/leaving mid-match in a group room → the loss is reported and you go back to the room (not the menu). Win screen 'Leave room' = leave the group room and go to the menu.",
+      "OPEN ROOMS META for group rooms (tracked on 'vcu-rooms' by the CURRENT coordinator while s.pub; re-tracked whenever it changes; the listing is NOT dropped when a match starts): {c, h:owner name, hid, b, m, pc, lf, rd:0, g:1, n:people, cap:8, ph:phase, pa:champ name, pb:challenger name, ln:line length, t0}. Hide rows for the room you're in.",
+      "WATCHER BETS RPCs (VCU_Watcher_Bets_Setup.sql; use a SEPARATE RPC wrapper so a missing bets SQL never marks wagers as missing): pool_open(p_room) — players of that match room only → {ok, pool}. pool_get(p_id) → view {id, room_code, host_id, guest_id, host_name, guest_name, status 'open'|'live'|'settled'|'disputed'|'void'|'cancelled', pot_host, pot_guest, winner_id, paid, house_cut, bets:[{n, side, cel, status, payout}], n_host, n_guest, mine:{side, cel, status, payout, profit}|null, me_player, cfg}. pool_bet(p_id, p_side 'host'|'guest', p_cel) — not the two players, status open, wager unlock gate (error 'locked' + gate), 1..maxStake, daily cap left → {ok, pool, celestium, pack_inventory} (adopt the balances); calling again changes side/amount. pool_unbet(p_id). pool_start(p_id) — match host. pool_report(p_id, p_winner). pool_cancel(p_id) — players/admin while open. pool_sweep() → int (call on login and on entering a room; >0 → refresh the mailbox). pool_history(p_limit). Admin: admin_pools(p_status incl. 'review', p_limit), admin_pool_resolve(p_id, p_winner|null, p_note).",
+      "PAYOUT: winners get bet + floor(bet × losing pot × (100 − housePct) / (100 × winning pot)), the share capped by their daily cap left; nobody on one side → every bet refunded. Pay-outs/refunds arrive as mail with attachments.wager = pool id and wager_tag 'bet_payout' (auto-claim popup title 'BET WON', sub 'Your share of the watcher bets', source 'Bet winnings') or 'bet_refund' (quiet claim + toast '🎲 Bet refunded: …'). A bettor's own refund on cancel is put straight back into their Celestium.",
+      "REMATCH for 1v1 rooms (Quick Match, invites): 'rematch' {on:bool} or {left:true}, plus from (role), on room:<code>. Toggle on click; both on → the GUEST re-deals a random deck and re-sends player_joined (every 1.5 s, ≤ 8×, while its win screen is open); the HOST starts the next match (mode/prizes/HP from the last room) the moment that player_joined arrives while both are on. Leaving the win screen sends {left:true} before the channel closes. State resets when a match starts.",
+      "FIXES: (1) a received game_state with gameOver false is IGNORED once the local match is over — the host's start-of-match re-sends could undo a forfeit made in the first seconds. (2) The Forfeit button now also reports the wager (wager_report via the loss path), 300 ms after the forfeit state is sent."]},
   { build:'10.16', date:'2026-11-01',
     cards:[], abilities:[],
     screens:[
@@ -12324,12 +12418,22 @@ function showWinScreen(p,r,forfeited){
     }
   }
   // Show rematch button only in 1v1 online (2v2 rematch uses a different flow)
-  if(rematchBtn)rematchBtn.style.display=(G.onlineMode&&!is2v2)?'block':'none';
+  if(rematchBtn){ rematchBtn.style.display=(G.onlineMode&&!is2v2)?'block':'none'; rematchBtn.disabled=false; rematchBtn.textContent='🔄 Rematch'; rematchBtn.classList.remove('rm-hot'); }
+  const _wrb=document.getElementById('win-room-btn'); if(_wrb) _wrb.style.display='none';
+  const _wmb=document.getElementById('win-menu-btn'); if(_wmb) _wmb.textContent='🏠 Return to Main Menu';
+  const _wrn=document.getElementById('win-rematch-note'); if(_wrn) _wrn.textContent='';
   document.getElementById('win-modal').classList.add('open');
+  // build 10.17: group room → Back to the room / Rematch (same two, nobody in line) / Leave room; other 1v1 → rematch handshake
+  if(G.onlineMode&&!is2v2){
+    if(typeof _gr!=='undefined'&&_gr){ if(rematchBtn) rematchBtn.style.display='none'; if(typeof grWinButtons==='function') grWinButtons(); }
+    else if(typeof rmOnWin==='function') rmOnWin();
+  }
 }
 function returnToMenuFromWin(){
   document.getElementById('win-modal').classList.remove('open');
-  if(G&&G.onlineMode)cleanupOnlineSession();
+  if(typeof _gr!=='undefined'&&_gr){ grLeave(true); if(typeof cleanupOnlineSession==='function') cleanupOnlineSession(); if(typeof wgClaimSoon==='function') wgClaimSoon(); showScreen('menu-screen'); return; }
+  if(G&&G.onlineMode&&!G.is2v2&&typeof rmSend==='function'){ rmSend({left:true}); rmReset(); }
+  if(G&&G.onlineMode){ const _ch=_onlineChannel; if(_ch) _onlineChannel=null; cleanupOnlineSession(); if(_ch) setTimeout(()=>{ try{ getOnlineSB().removeChannel(_ch); }catch(e){} },300); }
   if(typeof wgClaimSoon==='function') wgClaimSoon();
   showScreen('menu-screen');
 }
@@ -12360,6 +12464,9 @@ function confirmReturnMenu(){
     _celData.matches++; _celData.losses++; try{ saveCelestium(); }catch(e){}
     // Leaving concedes any wager on this match
     if(typeof wgOnMatchEnd==='function') try{ wgOnMatchEnd(false); }catch(e){}
+    // group room: the loss is reported and you go back to the room (the winner stays on)
+    if(typeof _gr!=='undefined'&&_gr&&_onlineRoom&&_onlineRoom.group){ try{ grOnMatchEnd(false); }catch(e){}
+      setTimeout(()=>{ if(_gr){ grLeaveMatch(); grBackToRoom(); } else { cleanupOnlineSession(); showScreen('menu-screen'); } },350); return; }
     // Let the broadcast reach the opponent before tearing down the channel.
     setTimeout(()=>{ if(typeof cleanupOnlineSession==='function') cleanupOnlineSession(); showScreen('menu-screen'); }, 350);
     return;
@@ -23178,6 +23285,7 @@ function showRulesScreen(){
     <b style="color:#c8a0ff">Instants:</b> Red-border cards. Attach to chars for instant effects.<br>
     <b style="color:#c8a0ff">Tokens:</b> ⭐ Temporary — removed at end of your turn.<br>
     <b style="color:#c8a0ff">Spectating:</b> 👁 Online lobby → Watch Live Matches (or 👁 WATCH on a friend). Spectators see the board, Energy and every card played — never anyone's hand. The host can turn spectators off in the waiting room.<br>
+    <b style="color:#c8a0ff">Rooms:</b> 👥 Up to 8 people. Two play while the rest watch live; the winner stays on until they lose and the loser goes to the back of the line. Pick 🎮 Get in line or 👁 Just watch. Both players press READY before every match — with nobody else in line, that's your rematch. People who aren't playing can bet Celestium on the next match (same unlock as wagers): if your player wins you get your bet back plus your share of the other side's bets, minus a 5% house cut.<br>
     <b style="color:#c8a0ff">Wagers:</b> ⚖ Optional, online 1v1 only, set up in the waiting room. Unlocks at Level 10 + 20 online matches. Stake up to 5,000 Celestium and any sealed packs or boxes; both players accept, then the host starts. The winner gets their stake back, the other player's Celestium minus a 5% house cut, and every pack. Up to 50,000 Celestium of winnings a day. Leaving or forfeiting loses the wager.<br>
     <b style="color:#c8a0ff">Win:</b> All 6 Prizes or opponent out of characters.<br>
     <b style="color:#c8a0ff">Colors:</b>
@@ -23500,6 +23608,8 @@ function _isLocalPvPMatch(){
 async function onMatchEnd(won){
   // Online 1v1: count the match toward the wager unlock and report any wager result
   if(G&&G.onlineMode&&!G.is2v2&&typeof wgOnMatchEnd==='function') try{ wgOnMatchEnd(won); }catch(e){}
+  // build 10.17: group room — tell the room who won (winner stays on) and settle the watcher bets
+  if(G&&G.onlineMode&&!G.is2v2&&typeof grOnMatchEnd==='function') try{ grOnMatchEnd(won); }catch(e){}
   // Only LOCAL player-vs-player withholds rewards; co-op vs AI / online do reward.
   if(_isLocalPvPMatch())return;
   // Battle Pass XP — every match awards play XP, wins award bonus
@@ -26702,6 +26812,7 @@ function generateRoomCode(){
 
 function openOnlineLobby(){
   if(typeof mmRemember==='function') mmRemember('room');
+  if(typeof _gr!=='undefined'&&_gr){ grShowUI(); return; }   // still in a group room → show it
   document.getElementById('lobby-create-join').style.display='block';
   document.getElementById('lobby-waiting-room').style.display='none';
   const pub=document.getElementById('lobby-room-public'); if(pub){ try{ pub.checked=localStorage.getItem('loc_room_public')==='1'; }catch(e){} }
@@ -26717,52 +26828,42 @@ async function createOnlineRoom(opts){
   opts=opts||{};
   const sb=getOnlineSB();
   if(!_celUserId){alert('You must be logged in.');return;}
-  const deckId=opts.deck||document.getElementById('lobby-deck-select')?.value||_onlineDeckId;
+  const deckId=opts.deck||document.getElementById('lobby-deck-select')?.value||_onlineDeckId||onlineDefaultDeck();
   const derr=onlineDeckError(deckId); if(derr){alert(derr);return;}
   _onlineDeckId=deckId; onlineSetPick(deckId);
   const pubEl=document.getElementById('lobby-room-public');
   const isPublic=(opts.public!==undefined)?!!opts.public:!!(pubEl&&pubEl.checked);
   const code=generateRoomCode();
+  // build 10.17: every created room is a GROUP ROOM — up to 8 people, the winner stays on, everyone else is in line or
+  // watching. Its own row only marks the code (host_deck '__lobby__'); each match gets its own 1v1 row.
   try{
     const myName=document.getElementById('hud-username')?.textContent||'Player';
-    const {data,error}=await sb.from('online_rooms').insert({
-      code:code,
-      host_id:_celUserId,
-      host_name:myName,
-      host_deck:_onlineDeckId,
-      status:'waiting',
-      created_at:new Date().toISOString()
-    }).select().single();
+    const mode=opts.mode||'prize', pc=parseInt(opts.pc||'6')||6;
+    const {error}=await sb.from('online_rooms').insert({code,host_id:_celUserId,host_name:myName,host_deck:'__lobby__',status:'waiting',game_mode:mode,prize_count:pc,created_at:new Date().toISOString()});
     if(error)throw error;
-    _onlineRoom=data||{code,host_id:_celUserId,host_name:myName,host_deck:_onlineDeckId,status:'waiting'};
-    _onlineRole='host';
-    prStop();
-    if(isPublic) _pr.mine={code,name:myName,random:_onlineDeckId==='__random__',t0:Date.now(),listed:false};
-    showScreen('online-lobby-screen');
-    showWaitingRoom(code,myName,true);
-    if(opts.mode){
-      const gm=document.getElementById('lobby-game-mode'); if(gm) gm.value=opts.mode;
-      const pc=document.getElementById('lobby-prize-count'); if(pc&&opts.pc) pc.value=String(opts.pc);
-      updateLobbyModeSettings();
-    }
-    subscribeToRoom(code);
-    if(isPublic) prList();
+    if(typeof prStop==='function') prStop(true);
+    if(_onlineRoom&&typeof cleanupOnlineSession==='function') cleanupOnlineSession();
+    grEnter(code,{owner:true,pub:isPublic,mode,pc,lf:parseInt(opts.lf||'100')||100,deck:deckId,role:'line'});
   }catch(e){alert('Failed to create room: '+e.message);}
 }
 
-async function joinOnlineRoom(codeArg,deckArg){
+async function joinOnlineRoom(codeArg,deckArg,roleArg){
   const sb=getOnlineSB();
   if(!_celUserId){alert('You must be logged in.');return;}
   const codeInput=document.getElementById('join-room-code-input');
   const code=String(codeArg||codeInput?.value||'').trim().toUpperCase();
   if(code.length!==6){alert('Enter a valid 6-letter room code.');return;}
   const deckId=deckArg||document.getElementById('lobby-deck-select')?.value||onlineDefaultDeck();
-  const derr=onlineDeckError(deckId); if(derr){alert(derr);return;}
-  _onlineDeckId=deckId; onlineSetPick(deckId); _onlineRandomCards=null;
   const myName=document.getElementById('hud-username')?.textContent||'Player';
   try{
-    const {data:room,error}=await sb.from('online_rooms').select('*').eq('code',code).eq('status','waiting').maybeSingle();
-    if(error||!room){alert('Room not found or already started. Check the code and try again.');return;}
+    const {data:room,error}=await sb.from('online_rooms').select('*').eq('code',code).maybeSingle();
+    // build 10.17: a group room — get in line (or just watch); no deck needed to watch
+    if(!error&&room&&room.host_deck==='__lobby__'){
+      if(_onlineRoom&&typeof cleanupOnlineSession==='function') cleanupOnlineSession();
+      grEnter(code,{role:roleArg==='watch'?'watch':'line',deck:deckId}); return; }
+    const derr=onlineDeckError(deckId); if(derr){alert(derr);return;}
+    _onlineDeckId=deckId; onlineSetPick(deckId); _onlineRandomCards=null;
+    if(error||!room||room.status!=='waiting'){alert('Room not found or already started. Check the code and try again.');return;}
     if(room.host_id&&room.host_id===_celUserId){alert("That's your own room.");return;}
     // Only take the seat if it is still open (two players can click JOIN on the same public room).
     const {data:upd,error:upErr}=await sb.from('online_rooms').update({
@@ -26863,6 +26964,8 @@ function subscribeToRoom(code){
         if(!_is2v2&&!_onlineRoom.quick&&typeof wgOnRoomReady==='function') wgOnRoomReady();
         if(_onlineRoom.quick&&!_onlineRoom._qmGo&&typeof qmHostGo==='function'){ _onlineRoom._qmGo=true; setTimeout(qmHostGo,250); }
         onlineHostSyncRow();
+        if(typeof rmOnJoin==='function') rmOnJoin();
+        if(typeof _gr!=='undefined'&&_gr&&_onlineRoom.group) setTimeout(grRender,0);
         try{ _onlineChannel.send({type:'broadcast',event:'room_ack',payload:{host_name:_onlineRoom.host_name||null,host_avatar:(window._playerAvatarUrl||null)}}); }catch(e){}
         if(typeof onlineSlotAvatar==='function') onlineSlotAvatar(p2slot&&p2slot.querySelector('.pvp-slot-avatar'),guest_avatar,_is2v2?'🤝':'⚔️');
       }
@@ -26939,7 +27042,10 @@ function subscribeToRoom(code){
     .on('broadcast',{event:'room_sync'},()=>{ if(_onlineRole==='host'&&_onlineRoom&&_onlineRoom.guest_id){ onlineHostSyncRow().then(()=>{ try{ _onlineChannel.send({type:'broadcast',event:'room_synced',payload:{}}); }catch(e){} }); } })
     .on('broadcast',{event:'room_synced'},()=>{ if(_onlineRole==='guest'&&typeof _wg!=='undefined'&&_wg.syncWait){ const f=_wg.syncWait; _wg.syncWait=null; f(); } })
     .on('broadcast',{event:'room_ack'},(p)=>{ const d=(p&&p.payload)||{}; if(_onlineRole!=='guest') return; if(d.host_avatar) _onlineOpponentAvatar=d.host_avatar;
+      if(typeof _gr!=='undefined'&&_gr&&_onlineRoom&&_onlineRoom.group){ _gr.acked=true; setTimeout(grRender,0); }
       if(typeof onlineSlotAvatar==='function') onlineSlotAvatar(document.getElementById('lobby-p1-avatar'),d.host_avatar,'👤'); })
+    // build 10.17: rematch handshake for 1v1 rooms (Quick Match, invites)
+    .on('broadcast',{event:'rematch'},(p)=>{ if(typeof rmOnRemote==='function') rmOnRemote(p&&p.payload); })
     .on('broadcast',{event:'room_full'},(p)=>{
       if(_onlineRole==='guest'&&onlineInWaitingRoom()&&p&&p.payload&&p.payload.to===_celUserId) onlineBackToLobby('That room just filled up. Pick another one.'); })
     .subscribe((status)=>{
@@ -26994,7 +27100,7 @@ function rulesMismatch(theirs,who){
 // onRoomUpdate now handled via broadcast events in subscribeToRoom
 function onRoomUpdate(room){_onlineRoom=room;}
 
-async function startOnlineMatch(){
+async function startOnlineMatch(opt){
   if(!_onlineRoom||_onlineRole!=='host')return;
   const sb=getOnlineSB();
   // 2v2 match: host runs all four boards authoritatively.
@@ -27007,7 +27113,7 @@ async function startOnlineMatch(){
     return;
   }
   // Wager: must be locked (or empty) — the server moves it to LIVE right here
-  if(typeof wgBeforeStart==='function'){ const _wok=await wgBeforeStart(); if(!_wok) return; }
+  if(!(opt&&opt.wgDone)&&typeof wgBeforeStart==='function'){ const _wok=await wgBeforeStart(); if(!_wok) return; }
   if(typeof prStop==='function') prStop();
   const gameMode=document.getElementById('lobby-game-mode')?.value||'prize';
   const prizeCount=parseInt(document.getElementById('lobby-prize-count')?.value||'6');
@@ -27025,6 +27131,8 @@ async function startOnlineMatch(){
 
 function enterOnlineGame(room){
   _onlineRoom=room;
+  if(room&&room.group&&typeof grOnMatchStart==='function') grOnMatchStart(room);
+  if(typeof rmReset==='function') rmReset();
   if(typeof fxrInstall==='function') try{ fxrInstall(); }catch(e){}
   if(typeof prStop==='function') prStop();
   if(typeof wgOnMatchStart==='function') try{ wgOnMatchStart(room); }catch(e){}
@@ -27234,6 +27342,7 @@ function onReceiveGameState(payload){
   if(payload.from===_onlineRole)return;
   const incoming=payload.state;
   if(!incoming)return;
+  if(G.gameOver&&!incoming.gameOver)return;   // build 10.17: a stale state never un-ends a finished match (forfeit right after the start)
   const isHost=_onlineRole==='host';
   // Guest: first state from host clears the waiting flag
   if(G.waitingForHostState){
@@ -27605,6 +27714,7 @@ function enterOnlineGame2v2(room){
   }
 }
 async function inviteFriendTo2v2(friendId,friendName){
+  if(typeof _gr!=='undefined'&&_gr) grLeave(true);
   const validDeck=onlineDefaultDeck();
   if(!validDeck){ alert('You need at least one 60-card deck to host a match. Build one in the Deck Builder.'); return; }
   _onlineDeckId=validDeck;
@@ -27656,6 +27766,7 @@ function open2v2FriendPicker(){
 
 async function inviteFriendToMatch(friendId,friendName){
   if(!confirm('Invite '+friendName+' to an online match?'))return;
+  if(typeof _gr!=='undefined'&&_gr) grLeave(true);
   const validDeck=onlineDefaultDeck();
   if(!validDeck){alert('You need a 60-card deck to create a match!');return;}
   _onlineDeckId=validDeck;
@@ -27743,6 +27854,7 @@ function qmSendTo(uid,event,payload,times){
 async function startQuickMatch(){
   const sb=getOnlineSB();
   if(!_celUserId){alert('You must be logged in.');return;}
+  if(typeof _gr!=='undefined'&&_gr) grLeave(true);
   if(_qm&&(_qm.searching||_qm.pending)) return;
   const deckId=document.getElementById('mm-deck-select')?.value;
   const gameMode=document.getElementById('mm-game-mode')?.value||'prize';
@@ -27965,30 +28077,37 @@ function prSync(){
 }
 function prMeta(){
   const R=_pr.mine; if(!R) return null;
+  if(R.group&&typeof _gr!=='undefined'&&_gr&&_gr.s) return grListMeta(R);
   return {c:R.code,h:R.name,hid:_celUserId||null,b:GAME_BUILD,m:document.getElementById('lobby-game-mode')?.value||'prize',
     pc:parseInt(document.getElementById('lobby-prize-count')?.value||'6')||6,lf:parseInt(document.getElementById('lobby-lf-hp')?.value||'100')||100,rd:R.random?1:0,t0:R.t0};
 }
 function prTrack(){ const R=_pr.mine; if(!R||!R.listed||!_pr.ch||!_pr.ready) return; try{ _pr.ch.track(prMeta()); }catch(e){} }
 function prList(){ if(!_pr.mine) return; _pr.mine.listed=true; if(prEnsure()) prTrack(); }
-function prUnlist(){ const was=_pr.mine&&_pr.mine.listed; if(_pr.mine) _pr.mine.listed=false; if(was) try{ if(_pr.ch) _pr.ch.untrack(); }catch(e){} }
-function prStop(){ prUnlist(); _pr.mine=null; }
+function prUnlist(force){ if(_pr.mine&&_pr.mine.group&&!force) return; const was=_pr.mine&&_pr.mine.listed; if(_pr.mine) _pr.mine.listed=false; if(was) try{ if(_pr.ch) _pr.ch.untrack(); }catch(e){} }
+function prStop(force){ if(_pr.mine&&_pr.mine.group&&!force) return; prUnlist(force); _pr.mine=null; }
 function prDeckTag(isRandom){ return isRandom?' <span class="pr-rd">🎲 RANDOM DECK</span>':''; }
 function prModeName(m){ return m.m==='lifeforce'?`❤️ Life Force · ${m.lf||100} HP`:m.m==='combined'?`⚔️ Combined · ${m.pc||6} Prizes · ${m.lf||100} HP`:`🏆 Prize · ${m.pc||6} Prizes`; }
 function prRender(){
   const mine=_pr.mine&&_pr.mine.code;
-  const list=_pr.rooms.filter(m=>m.c!==mine&&!(_celUserId&&m.hid===_celUserId));
+  const inRoom=(typeof _gr!=='undefined'&&_gr)?_gr.code:null;
+  const list=_pr.rooms.filter(m=>m.c!==mine&&m.c!==inRoom&&!(_celUserId&&m.hid===_celUserId));
   const empty=`<div class="pr-empty">${_pr.ch?(_pr.ready?'No open rooms right now. Create a public room and it shows up here for everyone.':'Looking for open rooms…'):'Open rooms need an internet connection.'}</div>`;
   const rows=list.map(m=>{ const same=String(m.b||'')===GAME_BUILD;
+    const bnote=same?'':(prBuildCmp(m.b,GAME_BUILD)>0?` · <span class="pr-warn">newer build ${prEsc(m.b||'?')} — <a href="#" onclick="location.reload();return false" style="color:#fbbf24">refresh to update</a></span>`:` · <span class="pr-warn">host is on older build ${prEsc(m.b||'?')} (you: ${prEsc(GAME_BUILD)})</span>`);
+    if(m.g){ const full=(m.n||0)>=(m.cap||8), now=m.ph==='play'&&m.pa?`▶ ${prEsc(m.pa)} vs ${prEsc(m.pb)}`:(m.ph==='ready'&&m.pa?`⚔ ${prEsc(m.pa)} vs ${prEsc(m.pb)} next`:'⏳ waiting for a challenger');
+      return `<div class="pr-row"><div class="pr-host"><b>${prEsc(m.h)}</b>'s room <span class="pr-ppl">👥 ${m.n||1}/${m.cap||8}${full?' · FULL':''}</span></div>`
+        +`<div class="pr-meta">${prEsc(prModeName(m))} · ${now}${m.ln?` · ${m.ln} in line`:''}${bnote}</div>`
+        +`<div class="pr-btns"><button class="wg-btn go" data-c="${prEsc(m.c)}"${same&&!full?'':' disabled'} onclick="prJoin(this.dataset.c,'line')">🎮 PLAY</button><button class="wg-btn" data-c="${prEsc(m.c)}"${same&&!full?'':' disabled'} onclick="prJoin(this.dataset.c,'watch')">👁 WATCH</button></div></div>`; }
     return `<div class="pr-row"><div class="pr-host"><b>${prEsc(m.h)}</b>${prDeckTag(!!m.rd)}</div>`
       +`<div class="pr-meta">${prEsc(prModeName(m))}${same?'':(prBuildCmp(m.b,GAME_BUILD)>0?` · <span class="pr-warn">newer build ${prEsc(m.b||'?')} — <a href="#" onclick="location.reload();return false" style="color:#fbbf24">refresh to update</a></span>`:` · <span class="pr-warn">host is on older build ${prEsc(m.b||'?')} (you: ${prEsc(GAME_BUILD)})</span>`)}</div>`
       +`<button class="wg-btn go" data-c="${prEsc(m.c)}"${same?'':' disabled'} onclick="prJoin(this.dataset.c)">JOIN</button></div>`; }).join('');
   ['lobby-open-rooms','mm-rooms-list'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=list.length?rows:empty; });
   const n=document.getElementById('lobby-open-count'); if(n) n.textContent=list.length?('· '+list.length):'';
 }
-function prJoin(code){
+function prJoin(code,role){
   const onMM=document.getElementById('matchmaking-screen')?.classList.contains('active');
   const deck=(onMM?document.getElementById('mm-deck-select'):document.getElementById('lobby-deck-select'))?.value;
-  joinOnlineRoom(code,deck||onlineDefaultDeck());
+  joinOnlineRoom(code,deck||onlineDefaultDeck(),role);
 }
 // Find Match → Match Rooms shows the same live list.
 function showMatchRooms(){
@@ -28049,6 +28168,7 @@ function showInviteNotification(data){
 
 async function acceptInvite(roomCode, hostDeckId, is2v2, teamLife){
   const popup=document.getElementById('invite-notif-popup');if(popup)popup.remove();
+  if(typeof _gr!=='undefined'&&_gr) grLeave(true);
   // Need a valid deck (your last online pick, a 60-card deck, or 🎲 Random when it's switched on)
   const validDeck=onlineDefaultDeck();
   if(!validDeck){
@@ -28062,6 +28182,7 @@ async function acceptInvite(roomCode, hostDeckId, is2v2, teamLife){
     // Find and join the room
     const {data:room}=await sb.from('online_rooms').select('*').eq('code',roomCode).maybeSingle();
     if(!room){alert('Room not found — it may have been cancelled.');return;}
+    if(room.host_deck==='__lobby__'){ grEnter(roomCode,{role:'line',deck:validDeck}); return; }
     const is2 = is2v2 || room.game_mode==='2v2';
     // Update room with guest
     await sb.from('online_rooms').update({
@@ -28103,6 +28224,9 @@ function forfeitMatch(){
   if(G.onlineMode){
     setTimeout(()=>broadcastGameState(),100);
   }
+  // Leaving concedes any wager / tells the group room (build 10.17) — after the forfeit state is out
+  setTimeout(()=>{ if(typeof wgOnMatchEnd==='function') try{ wgOnMatchEnd(false); }catch(e){}
+    if(typeof grOnMatchEnd==='function') try{ grOnMatchEnd(false); }catch(e){} },300);
   // Show my lose screen (no celestium for forfeiting)
   showWinScreen(2,'You forfeited the match',true);
   // Forfeiting player gets 0 Celestium — just record the loss
@@ -28111,30 +28235,6 @@ function forfeitMatch(){
   saveCelestium();
 }
 
-async function requestRematch(){
-  // Return to the lobby waiting room for a rematch with deck choice
-  document.getElementById('win-modal').classList.remove('open');
-  const wasHost=_onlineRole==='host';
-  const roomCode=_onlineRoom?.code;
-  // Clean up current game but keep the room
-  G={};
-  _winScreenShown=false;
-  _endingTurn=false;
-  if(wasHost){
-    // Host: reset room to waiting and go back to lobby
-    if(roomCode){
-      const sb=getOnlineSB();
-      await sb.from('online_rooms').update({status:'waiting',guest_id:null,guest_name:null,guest_deck:null}).eq('code',roomCode);
-    }
-    showScreen('online-lobby-screen');
-    showWaitingRoom(roomCode,_onlineRoom.host_name,true);
-  } else {
-    // Guest: go back to lobby create/join screen
-    cleanupOnlineSession();
-    showScreen('online-lobby-screen');
-    openOnlineLobby();
-  }
-}
 
 
 // ═══════════════════════════════════════════════════
@@ -30448,6 +30548,8 @@ window.addEventListener('load',async()=>{
         <input id="gc-wg-user" class="admin-input" style="width:200px" placeholder="username or email">
         <button class="dk-btn" onclick="wgAdminUnlock(true)">Unlock</button><button class="dk-btn" onclick="wgAdminUnlock(false)">Lock</button>
         <span id="gc-wg-out" style="color:#c4c0dc"></span></div>
+      <h4 style="margin-top:18px">🎲 WATCHER BET POOLS <span class="wg-none" style="font-size:9px;letter-spacing:1px;font-weight:400">· same filter · matches in group rooms</span></h4>
+      <div class="gc-scroll"><table class="gc-table"><thead><tr><th>WHEN</th><th>POTS (HOST SIDE / GUEST SIDE)</th><th>STATUS</th><th>REPORTED WINNER</th><th></th></tr></thead><tbody id="gc-pools"></tbody></table></div>
     </div></div>
   </div>
 </div>
@@ -30594,14 +30696,14 @@ window.addEventListener('load',async()=>{
     <!-- OPEN ROOMS (build 10.15): live list of public rooms -->
     <div class="pvp-lobby-card" style="margin-bottom:14px">
       <div style="font-size:10px;color:var(--violet2);letter-spacing:2px;margin-bottom:4px">🌐 OPEN ROOMS <span id="lobby-open-count" style="color:#86efac"></span></div>
-      <div style="font-size:10px;color:#6b7280">Public rooms waiting for an opponent. Join any of them.</div>
+      <div style="font-size:10px;color:#6b7280">Public rooms. 🎮 PLAY gets you in line to play the winner · 👁 WATCH just watches.</div>
       <div id="lobby-open-rooms" class="pr-list"></div>
     </div>
 
     <!-- CREATE A ROOM -->
     <div class="pvp-lobby-card" style="margin-bottom:14px">
       <div style="font-size:10px;color:var(--violet2);letter-spacing:2px;margin-bottom:14px">🆕 CREATE A ROOM</div>
-      <div style="font-size:10px;color:#6b7280;margin-bottom:4px">Private: share the code with a friend. Public: anyone can join it from Open Rooms.</div>
+      <div style="font-size:10px;color:#6b7280;margin-bottom:4px">Up to 8 people. Two play while everyone else watches; the winner stays on and the next in line steps up. Private: share the code. Public: anyone can join it from Open Rooms.</div>
       <label class="sp-allow" style="margin-bottom:12px"><input type="checkbox" id="lobby-room-public" onchange="try{localStorage.setItem('loc_room_public',this.checked?'1':'0')}catch(e){}"> 🌐 Public room <small>List it in Open Rooms</small></label>
       <button class="btn-primary" style="width:100%;padding:11px;font-family:'Orbitron',sans-serif;letter-spacing:3px;font-size:11px" onclick="createOnlineRoom()">▸ CREATE ROOM</button>
     </div>
@@ -30675,12 +30777,30 @@ window.addEventListener('load',async()=>{
       </div>
 
       <!-- Wager (build 10.7): 1v1 only, filled by wgRender() -->
-      <div id="lobby-wager" style="display:none"></div>
+      <div id="lobby-wager-home"><div id="lobby-wager" style="display:none"></div></div>
 
       <div style="margin-top:14px;display:flex;gap:8px">
         <button class="btn-gray btn-sm" style="flex:1;padding:10px;letter-spacing:2px" onclick="cancelOnlineRoom()">✕ CANCEL</button>
         <button class="btn-primary" id="lobby-start-btn" style="flex:2;padding:10px;font-family:'Orbitron',sans-serif;letter-spacing:3px;font-size:11px" onclick="startOnlineMatch()" disabled>WAITING...</button>
       </div>
+    </div>
+  </div>
+
+  <!-- GROUP ROOM (build 10.17): up to 8 people · winner stays on · line / watch · READY · watcher bets -->
+  <div id="lobby-group" style="display:none">
+    <div class="pvp-lobby-card gr-card">
+      <div id="gr-head" class="gr-headrow"></div>
+      <div id="gr-stage" class="gr-stage"></div>
+      <div id="gr-mine" class="gr-mine" style="display:none">
+        <div class="gr-h">🃏 YOUR DECK</div>
+        <div id="gr-deck"></div>
+        <div id="gr-wager-slot" style="display:none"></div>
+        <button id="gr-ready-btn" class="btn-primary gr-ready" style="display:none" onclick="grReadyClick()">READY</button>
+        <div id="gr-ready-hint" class="gr-dim" style="text-align:center" role="status"></div>
+      </div>
+      <div id="gr-bets" class="gr-bets" style="display:none"></div>
+      <div id="gr-people" class="gr-people"></div>
+      <div id="gr-settings" class="gr-settings" style="display:none"></div>
     </div>
   </div>
 </div>
@@ -32544,6 +32664,7 @@ function wgRender(){
   wgStartGate();
 }
 function wgStartGate(){
+  if(typeof _gr!=='undefined'&&_gr&&typeof grRender==='function'){ clearTimeout(_gr.wgT); _gr.wgT=setTimeout(grRender,0); }
   const b=document.getElementById('lobby-start-btn'); if(!b||_onlineRole!=='host') return;
   if(!_onlineRoom||!_onlineRoom.guest_id||_onlineRoom.is_2v2||_onlineRoom.game_mode==='2v2'||/MISMATCH/.test(b.textContent)) return;
   const w=_wg.cur;
@@ -32689,13 +32810,13 @@ async function wgAutoClaim(){
   const list=(_mail.inbox||[]).filter(m=>m.attachments&&m.attachments.wager&&!m.claimed_at);
   if(!list.length) return; _wg.claiming=true;
   try{ for(const m of list){
-    const pay=m.attachments.wager_tag==='payout';
-    const ok=await mlClaim(m.id,{quiet:!pay,title:'WAGER WON',sub:'Winnings from your wagered match',src:pay?'Wager winnings':'Wager refund'});
-    if(ok&&!pay&&typeof mlToast==='function') mlToast('⚖ Wager stake returned: '+mlRewardLines(m.attachments).join(' · '));
+    const tag=m.attachments.wager_tag||'', bet=/^bet_/.test(tag), pay=tag==='payout'||tag==='bet_payout';
+    const ok=await mlClaim(m.id,{quiet:!pay,title:bet?'BET WON':'WAGER WON',sub:bet?'Your share of the watcher bets':'Winnings from your wagered match',src:pay?(bet?'Bet winnings':'Wager winnings'):(bet?'Bet refund':'Wager refund')});
+    if(ok&&!pay&&typeof mlToast==='function') mlToast((bet?'🎲 Bet refunded: ':'⚖ Wager stake returned: ')+mlRewardLines(m.attachments).join(' · '));
   } }finally{ _wg.claiming=false; }
 }
 async function wgLeaveRoom(){ const w=_wg.cur; if(w&&['open','locked'].includes(w.status)){ const r=await wgRpc('wager_cancel',{p_id:w.id}); wgAdopt(r); wgNotify(); } wgReset(); }
-function wgOnLogin(){ setTimeout(async()=>{ const n=await wgRpc('wager_sweep'); if(Number(n)>0) wgClaimSoon(); },4000); }
+function wgOnLogin(){ setTimeout(async()=>{ const n=await wgRpc('wager_sweep'); const b=(typeof grRpc==='function')?await grRpc('pool_sweep'):0; if(Number(n)>0||Number(b)>0) wgClaimSoon(); },4000); }
 
 // ── history (Online lobby → ⚖ MY WAGERS) ──
 async function wgOpenHistory(){
@@ -32719,6 +32840,7 @@ async function wgOpenHistory(){
         <div class="wg-hst">You: ${wgEsc(wgStakeText(me))}<br>Them: ${wgEsc(wgStakeText(th))}</div><div>${chip(w)}</div></div>`; }).join('')
     :'<div class="ml-empty">No wagers yet. Open a private room and add one from the waiting room.</div>';
   body.innerHTML=head+`<div class="wg-hist">${list}</div>`;
+  if(typeof grHistoryInto==='function') grHistoryInto(body);
 }
 
 // ── admin (Gift Center → ⚖ WAGERS) ──
@@ -32726,6 +32848,7 @@ async function wgAdminLoad(){
   const tb=document.getElementById('gc-wagers'); if(!tb) return;
   tb.innerHTML='<tr><td colspan="6" class="ml-empty">Loading…</td></tr>';
   const f=document.getElementById('gc-wg-filter'); _wg.admin.filter=f?f.value:'review';
+  if(typeof grAdminPools==='function') grAdminPools();
   const {data,error}=await wgSB().rpc('admin_wagers',{p_status:_wg.admin.filter==='all'?null:_wg.admin.filter,p_limit:200});
   if(error){ tb.innerHTML=`<tr><td colspan="6" class="ml-empty">${/function|schema cache/i.test(error.message)?'Run VCU_Wagers_Setup.sql in Supabase first.':wgEsc(error.message)}</td></tr>`; return; }
   _wg.admin.rows=data||[];
@@ -32789,7 +32912,7 @@ function spRoomUI(){
   box.checked=spAllowed(); box.disabled=_onlineRole!=='host';
   const note=document.getElementById('lobby-allow-spec-note'); if(note) note.textContent=_onlineRole==='host'?'Live matches list · hands stay hidden':'The host decides';
 }
-function spRoomPayload(){ return {allow_spec:spAllowed()}; }
+function spRoomPayload(){ if(_onlineRoom&&_onlineRoom.group) return {allow_spec:!!_onlineRoom.allow_spec}; return {allow_spec:spAllowed()}; }
 
 // ── live list (Presence on 'vcu-live') ──
 function spLiveEnsure(){
@@ -32811,7 +32934,7 @@ function spLiveSync(){
   if(document.getElementById('friends-screen')?.classList.contains('active')&&typeof renderFriendsList==='function') try{ renderFriendsList(); }catch(e){}
 }
 function spLiveTrack(){
-  const H=_sp.host; if(!H||!_sp.liveCh||!_sp.liveReady) return;
+  const H=_sp.host; if(!H||H.unlisted||!_sp.liveCh||!_sp.liveReady) return;
   const r=H.room;
   try{ _sp.liveCh.track({w:H.w,h:r.h||'Host',g:r.g||'Guest',hid:r.hid||null,gid:r.gid||null,m:(G&&G.gameMode)||r.mode||'prize',pc:(G&&G.prizeCount)||r.pc||6,tn:(G&&G.turn)||1,n:H.count||0,wg:!!spWagerTxt(),t0:H.t0}); }catch(e){}
 }
@@ -32841,13 +32964,14 @@ function spOnMatchStart(room){
   spHostStop(); spChip(0);
   if(!room||room.is_2v2||room.game_mode==='2v2'||_onlineRole!=='host') return;
   const allow=(room.allow_spec===undefined||room.allow_spec===null)?spAllowed():room.allow_spec!==false;
+  if(room.group){ spHostStart(room,!allow); if(_sp.host&&typeof _gr!=='undefined'&&_gr) grToCoord('gr_live',{n:room.gn,w:_sp.host.w}); return; }
   if(allow) spHostStart(room);
 }
-function spHostStart(room){
+function spHostStart(room,unlisted){
   const sb=spSB(); if(!sb) return;
   const w=spRandId();
   const H=_sp.host={w,ch:null,count:0,lastPub:0,pendT:null,keepT:null,over:false,trackedTurn:null,t0:Date.now(),wager:null,
-    room:{h:room.host_name||G?.onlineMyName,g:room.guest_name||G?.onlineOpponentName,hid:room.host_id,gid:room.guest_id,mode:room.game_mode,pc:room.prize_count}};
+    room:{h:room.host_name||G?.onlineMyName,g:room.guest_name||G?.onlineOpponentName,hid:room.host_id,gid:room.guest_id,mode:room.game_mode,pc:room.prize_count},unlisted:!!unlisted};
   try{
     H.ch=sb.channel('watch:'+w,{config:{broadcast:{self:false},presence:{key:'host-'+_sp.myKey}}})
       .on('broadcast',{event:'spec_hello'},()=>spPublish(true))
@@ -32855,7 +32979,7 @@ function spHostStart(room){
       .subscribe(st=>{ if(st==='SUBSCRIBED') spPublish(true); });
   }catch(e){ _sp.host=null; return; }
   H.keepT=setInterval(()=>spPublish(true),5000);
-  if(spLiveEnsure()) spLiveTrack();
+  if(!H.unlisted&&spLiveEnsure()) spLiveTrack();
 }
 function spHostStop(){
   const H=_sp.host; if(!H) return; _sp.host=null;
@@ -33002,8 +33126,8 @@ function spRenderBar(){
     <div class="sp-bar-mid"><div class="sp-bar-vs"><b>${spEsc(s.names[bot])}</b> <span>vs</span> <b>${spEsc(s.names[top])}</b> <i>${spEsc(spModeName(s.mode,s.pc))}${s.n?` · 👁 ${s.n}`:''}</i></div>
       <div class="sp-bar-st">${status}</div>${wager}</div>
     <div class="sp-view" role="group" aria-label="Watch from"><span>VIEW</span><button class="sp-bar-btn${!W.flip?' on':''}" onclick="spView(1)" title="Watch from ${spEsc(s.names[1])}'s side">${spEsc(s.names[1])}</button><button class="sp-bar-btn${W.flip?' on':''}" onclick="spView(2)" title="Watch from ${spEsc(s.names[2])}'s side">${spEsc(s.names[2])}</button></div>
-    ${(s.over||W.lost)?'<button class="sp-bar-btn" onclick="spLeave(true)">MORE LIVE</button>':''}
-    <button class="sp-bar-btn leave" onclick="spLeave()">LEAVE</button>`;
+    ${(s.over||W.lost)&&!(typeof _gr!=='undefined'&&_gr)?'<button class="sp-bar-btn" onclick="spLeave(true)">MORE LIVE</button>':''}
+    <button class="sp-bar-btn leave" onclick="spLeave()">${(typeof _gr!=='undefined'&&_gr)?'BACK TO ROOM':'LEAVE'}</button>`;
 }
 function spFlip(){ const W=_sp.watch; if(!W||!W.s) return; W.flip=!W.flip; const s=W.s; W.over=false; spApply(s); }
 // build 10.16: watch from either player's side (1 = host at the bottom, 2 = guest at the bottom)
@@ -33034,6 +33158,8 @@ function spStopWatch(){
 }
 function spLeave(more){
   const W=_sp.watch, back=(W&&W.back)||'online-lobby-screen';
+  // leaving a match you were watching from your group room → don't pull you back into it
+  if(typeof _gr!=='undefined'&&_gr&&W&&_gr.watching===W.w){ _gr.watching=null; _gr.watchOpt=_gr.s?_gr.s.n:null; }
   spStopWatch();
   const gs=document.getElementById('game-screen'); if(gs) gs.classList.remove('spectating');
   const bar=document.getElementById('spec-bar'); if(bar) bar.remove();
@@ -33042,6 +33168,7 @@ function spLeave(more){
   ['p1-avatar','p2-avatar'].forEach(id=>{ const el=document.getElementById(id); if(el){ el.dataset.set=''; el.dataset.spav=''; } });
   if(G&&G.spectating){ G={}; gameMode=''; }
   showScreen(back==='game-screen'?'online-lobby-screen':back);
+  if(typeof _gr!=='undefined'&&_gr){ grShowUI(); return; }
   if(more) setTimeout(spOpenLive,150);
 }
 // Spectators can look, not touch: block clicks on the board except viewing controls
@@ -33056,6 +33183,640 @@ document.addEventListener('click',e=>{
     try{ showFullCard(slot.dataset.cid,fc||null); }catch(er){}
   }
 },true);
+</script>
+<script>
+// ═══ GROUP ROOMS (build 10.17) ═══════════════════════════════════════════════════════════════════
+// Every created room is a group room: up to 8 people. Two play while everyone else watches the match live.
+// The winner stays on until they lose; the loser goes to the back of the line; the next in line steps up.
+// Both players press READY before every match (Rematch = both pressing it again when nobody else is in line).
+// Everyone picks 🎮 Get in line or 👁 Just watch, and can switch between matches. People who aren't playing can
+// bet Celestium on the next match (shared pot — VCU_Watcher_Bets_Setup.sql).
+//
+// Wire format — channel 'gr:<room code>' (presence key = user id):
+//   presence meta {u, n (name), r:'line'|'watch', b (build), t0 (joined, ms), av (picture url|null), rd (1 = random deck)}
+//   'gr_state' {s}: the room, published by the COORDINATOR = s.owner (if the owner is gone for 3 s, the present member
+//      who joined earliest takes over). Everyone keeps the highest s.v.
+//      s = {v, owner, oname, code, pub, set:{m,pc,lf,spec}, champ, chall, streak, line:[uid…], rdy:{uid:1}, n (pairing #),
+//           M (the pairing's 1v1 match room code), phase:'wait'|'ready'|'play', mready, pool (bet pool id|null),
+//           live (spectator watch id|null), last:{n,w,l,wn,ln,streak}, wins:{uid:n}, names:{uid:name}, avs:{uid:url}}
+//   to the coordinator: gr_hello {u} · gr_ready {u,n,on} · gr_mready {n,pool} · gr_live {n,w} · gr_abort {n} ·
+//      gr_result {n,w,l} · gr_bye {u} ·   from it: gr_reject {to, why:'full'|'build', build} ·   anyone: gr_pot {}
+//   Each match is a normal 1v1 online room M (row inserted by the champ as host with the challenger as guest): same
+//   handshake, wager, spectator feed (unlisted unless the room allows the Watch Live list) and result as any online match.
+//   The room's own row (code = room code) has host_deck '__lobby__' and status 'waiting'; joining it opens the room.
+const GR_MAX=8;
+let _gr=null, _grPoolMissing=false;
+function grMe(){ return _celUserId; }
+function grName(){ return document.getElementById('hud-username')?.textContent||window._playerName||'Player'; }
+function grNm(u){ const s=_gr&&_gr.s; return (_gr&&_gr.pres[u]&&_gr.pres[u].n)||(s&&s.names&&s.names[u])||'Player'; }
+function grAvOf(u){ const s=_gr&&_gr.s; return (_gr&&_gr.pres[u]&&_gr.pres[u].av)||(s&&s.avs&&s.avs[u])||null; }
+function grAvHtml(u,sm){ const url=grAvOf(u); return `<span class="gr-av${sm?' sm':''}">${url?`<img src="${prEsc(url)}" alt="" onerror="this.parentNode.textContent='👤'">`:'👤'}</span>`; }
+function grInGame(){ return !!(typeof G!=='undefined'&&G&&G.onlineMode&&!G.gameOver&&!G.spectating&&document.getElementById('game-screen')?.classList.contains('active')); }
+// my match just ended but its result isn't sent yet (onMatchEnd runs ~0.6 s after the win screen) → hold the room changes
+function grBusy(){
+  if(grInGame()) return true;
+  const P=_gr&&_gr.playing; if(!P) return false;
+  if(!P.over) P.over=Date.now();
+  const age=Date.now()-P.over;
+  if(age<2500){ clearTimeout(_gr.busyT); _gr.busyT=setTimeout(grApply,2600-age); return true; }
+  return false;
+}
+function grIsCoord(){ return !!(_gr&&_gr.s&&_gr.s.owner===grMe()); }
+function grMeta(){ return {u:grMe(),n:grName(),r:_gr.role,b:GAME_BUILD,t0:_gr.t0,av:(typeof window._playerAvatarUrl==='string'&&window._playerAvatarUrl.length<800)?window._playerAvatarUrl:null,rd:_gr.deck==='__random__'?1:0}; }
+function grTrack(){ if(_gr&&_gr.ch&&_gr.ready) try{ _gr.ch.track(grMeta()); }catch(e){} }
+function grSend(ev,payload){ if(!_gr||!_gr.ch) return; try{ _gr.ch.send({type:'broadcast',event:ev,payload:payload||{}}); }catch(e){} }
+function grToCoord(ev,payload){ grSend(ev,payload); if(grIsCoord()) grOnCoordEvent(ev,payload||{}); }
+function grSet(el,html){ if(el&&el._h!==html){ el._h=html; el.innerHTML=html; } }
+// pool RPCs: a missing bets SQL never switches wagers off
+async function grRpc(fn,args){
+  const sb=(typeof wgSB==='function')?wgSB():null; if(!sb||!_celUserId) return {ok:false,error:'Sign in first.'};
+  try{ const {data,error}=await sb.rpc(fn,args||{});
+    if(error){ if(/could not find the function|does not exist|schema cache/i.test(error.message||'')){ _grPoolMissing=true; return {ok:false,error:'missing'}; } return {ok:false,error:error.message}; }
+    return data; }catch(e){ return {ok:false,error:String((e&&e.message)||e)}; }
+}
+
+// ── enter / leave ──
+function grEnter(code,opts){
+  opts=opts||{};
+  if(_gr) grLeave(true);
+  const sb=getOnlineSB(), me=grMe();
+  let deck=opts.deck||onlineDefaultDeck(), role=opts.role==='watch'?'watch':'line', note='';
+  if(role==='line'&&onlineDeckError(deck)){ role='watch'; note='You need a 60-card deck to get in line — you\'re watching for now.'; }
+  _gr={code,ch:null,ready:false,t0:Date.now(),role,deck,s:null,pres:{},
+       M:null,n:null,started:false,acked:false,matchPool:null,matchLive:false,playing:null,
+       pool:null,pv:null,pmsg:'',lastPool:null,lastPv:null,claimed:{},watchOpt:null,watching:null,deckHtml:'',lastMeta:'',note};
+  if(opts.owner){
+    _gr.s={v:1,owner:me,oname:grName(),code,pub:!!opts.pub,set:{m:opts.mode||'prize',pc:+opts.pc||6,lf:+opts.lf||100,spec:(typeof spAllowed==='function')?spAllowed():true},
+           champ:null,chall:null,streak:0,line:[],rdy:{},n:0,M:null,phase:'wait',mready:false,pool:null,live:null,last:null,wins:{},names:{},avs:{}};
+  }
+  _gr.ch=sb.channel('gr:'+code,{config:{broadcast:{self:false},presence:{key:me}}})
+    .on('presence',{event:'sync'},grOnPresence)
+    .on('broadcast',{event:'gr_state'},p=>grOnState(p&&p.payload&&p.payload.s))
+    .on('broadcast',{event:'gr_hello'},()=>{ if(grIsCoord()) grPublish(); })
+    .on('broadcast',{event:'gr_reject'},p=>{ const d=(p&&p.payload)||{}; if(d.to===me) grFail(d.why==='full'?`That room is full (${GR_MAX} people).`:`That room is on build ${d.build||'?'} and you're on ${GAME_BUILD}. Refresh the page to update.`); })
+    .on('broadcast',{event:'gr_pot'},()=>grPoolRefresh())
+    .on('broadcast',{event:'gr_ready'},p=>grOnCoordEvent('gr_ready',(p&&p.payload)||{}))
+    .on('broadcast',{event:'gr_mready'},p=>grOnCoordEvent('gr_mready',(p&&p.payload)||{}))
+    .on('broadcast',{event:'gr_live'},p=>grOnCoordEvent('gr_live',(p&&p.payload)||{}))
+    .on('broadcast',{event:'gr_abort'},p=>grOnCoordEvent('gr_abort',(p&&p.payload)||{}))
+    .on('broadcast',{event:'gr_result'},p=>grOnCoordEvent('gr_result',(p&&p.payload)||{}))
+    .on('broadcast',{event:'gr_bye'},p=>grOnCoordEvent('gr_bye',(p&&p.payload)||{}))
+    .subscribe(st=>{
+      if(!_gr||_gr.code!==code) return;
+      if(st==='SUBSCRIBED'){ _gr.ready=true; grTrack(); grSend('gr_hello',{u:me}); if(grIsCoord()) grReconcile(true); }
+    });
+  if(!opts.owner){
+    _gr.helloT=setTimeout(()=>{ if(!_gr||_gr.code!==code||_gr.s) return;
+      const others=Object.keys(_gr.pres).filter(u=>u!==me);
+      if(!others.length){ grFail('That room is empty or has closed.'); getOnlineSB().from('online_rooms').delete().eq('code',code).then(()=>{},()=>{}); }
+      else grSend('gr_hello',{u:me}); },5000);
+  }
+  if(typeof wgLoadStatus==='function'&&typeof _wg!=='undefined'&&!_wg.st) wgLoadStatus().then(()=>grRender()).catch(()=>{});
+  grRpc('pool_sweep').then(n=>{ if(Number(n)>0&&typeof wgClaimSoon==='function') wgClaimSoon(); });
+  showScreen('online-lobby-screen'); grShowUI();
+}
+function grLeave(quiet){
+  if(!_gr) return; const sb=getOnlineSB(), s=_gr.s, me=grMe(), code=_gr.code;
+  if(_gr.M) grLeaveMatch();
+  if(s&&grIsCoord()){
+    const others=Object.values(_gr.pres).filter(m=>m.u!==me&&m.b===GAME_BUILD).sort((a,b)=>(a.t0||0)-(b.t0||0)||String(a.u).localeCompare(String(b.u)));
+    if(others.length){ s.owner=others[0].u; s.oname=others[0].n; s.v=(s.v||0)+1; grSend('gr_state',{s}); }
+    else sb.from('online_rooms').delete().eq('code',code).then(()=>{},()=>{});
+  }
+  if(typeof _pr!=='undefined'&&_pr.mine&&_pr.mine.group) prStop(true);
+  grSend('gr_bye',{u:me});
+  const g=_gr; _gr=null;
+  clearTimeout(g.helloT); clearTimeout(g.ownT); clearInterval(g.poolT); clearInterval(g.joinT);
+  setTimeout(()=>{ try{ g.ch.untrack(); }catch(e){} try{ sb.removeChannel(g.ch); }catch(e){} },150);
+  if(g.watching&&typeof _sp!=='undefined'&&_sp.watch&&_sp.watch.w===g.watching){ try{ spStopWatch(); const gs=document.getElementById('game-screen'); if(gs) gs.classList.remove('spectating'); const bar=document.getElementById('spec-bar'); if(bar) bar.remove(); if(G&&G.spectating){ G={}; gameMode=''; } }catch(e){} }
+  grMoveWager(false);
+  const box=document.getElementById('lobby-group'); if(box) box.style.display='none';
+  if(!quiet){ showScreen('online-lobby-screen'); openOnlineLobby(); }
+}
+function grFail(msg){ grLeave(true); showScreen('online-lobby-screen'); openOnlineLobby(); try{ showModal('Room',msg); }catch(e){ alert(msg); } }
+
+// ── presence, state, ownership ──
+function grOnPresence(){
+  if(!_gr||!_gr.ch) return; let st={}; try{ st=_gr.ch.presenceState()||{}; }catch(e){}
+  const P={}; Object.keys(st).forEach(k=>{ const m=(st[k]||[])[0]; if(m&&m.u) P[m.u]=m; });
+  _gr.pres=P;
+  const s=_gr.s;
+  if(s&&!P[s.owner]&&!grIsCoord()){ clearTimeout(_gr.ownT); _gr.ownT=setTimeout(grCheckOwner,3200); }
+  if(grIsCoord()) grReconcile();
+  grRender();
+}
+function grCheckOwner(){
+  if(!_gr||!_gr.s||grIsCoord()) return; const s=_gr.s, P=_gr.pres;
+  if(P[s.owner]) return;
+  const succ=Object.values(P).filter(m=>m.b===GAME_BUILD).sort((a,b)=>(a.t0||0)-(b.t0||0)||String(a.u).localeCompare(String(b.u)))[0];
+  if(succ&&succ.u===grMe()){ s.owner=grMe(); s.oname=grName(); grReconcile(true); }
+}
+function grOnState(ns){
+  if(!_gr||!ns||ns.code!==_gr.code) return;
+  const cur=_gr.s; if(cur&&(ns.v||0)<(cur.v||0)) return;
+  const was=grIsCoord();
+  _gr.s=ns; clearTimeout(_gr.helloT);
+  if(!ns.names) ns.names={}; if(!ns.avs) ns.avs={}; if(!ns.rdy) ns.rdy={}; if(!ns.line) ns.line=[]; if(!ns.wins) ns.wins={};
+  if(!was&&grIsCoord()) setTimeout(()=>{ if(grIsCoord()) grReconcile(true); },60);   // the room was handed to me
+  setTimeout(grApply,0);
+}
+function grPublish(){ if(!_gr||!_gr.s) return; _gr.s.v=(_gr.s.v||0)+1; grSend('gr_state',{s:_gr.s}); setTimeout(grApply,0); }
+// the coordinator's rules — winner stays, loser to the back, leavers replaced, READY ×2 → play
+function grReconcile(force,seatsChanged){
+  if(!grIsCoord()) return; const s=_gr.s, P=_gr.pres, me=grMe();
+  if(!P[me]&&_gr.ready) P[me]=grMeta();
+  const members=Object.values(P).sort((a,b)=>(a.t0||0)-(b.t0||0)||String(a.u).localeCompare(String(b.u)));
+  const ok=new Set();
+  members.forEach(m=>{ if(m.b!==GAME_BUILD){ grSend('gr_reject',{to:m.u,why:'build',build:GAME_BUILD}); return; } if(ok.size>=GR_MAX){ grSend('gr_reject',{to:m.u,why:'full'}); return; } ok.add(m.u); });
+  const role=u=>P[u]?P[u].r:null;
+  let ch=!!force; seatsChanged=!!seatsChanged;
+  if(s.phase==='play'){
+    if(!ok.has(s.champ)&&!ok.has(s.chall)){ s.champ=null; s.chall=null; s.streak=0; s.phase='wait'; seatsChanged=true; }
+  } else {
+    if(s.champ&&(!ok.has(s.champ)||role(s.champ)!=='line')){ s.champ=null; s.streak=0; seatsChanged=true; }
+    if(s.chall&&(!ok.has(s.chall)||role(s.chall)!=='line')){ s.chall=null; seatsChanged=true; }
+  }
+  const seated=u=>u&&(u===s.champ||u===s.chall);
+  const line=(s.line||[]).filter(u=>ok.has(u)&&role(u)==='line'&&!seated(u));
+  members.forEach(m=>{ if(ok.has(m.u)&&m.r==='line'&&!seated(m.u)&&!line.includes(m.u)) line.push(m.u); });
+  if(JSON.stringify(line)!==JSON.stringify(s.line||[])){ s.line=line; ch=true; }
+  if(s.phase!=='play'){
+    if(!s.champ&&s.chall){ s.champ=s.chall; s.chall=null; s.streak=0; seatsChanged=true; }
+    if(!s.champ&&s.line.length){ s.champ=s.line.shift(); s.streak=0; seatsChanged=true; }
+    if(!s.chall&&s.line.length){ s.chall=s.line.shift(); seatsChanged=true; }
+  }
+  if(seatsChanged){ s.n=(s.n||0)+1; s.M=(s.champ&&s.chall)?generateRoomCode():null; s.rdy={}; s.mready=false; s.pool=null; s.live=null; ch=true; }
+  if(s.phase!=='play'){
+    const ph=(s.champ&&s.chall)?'ready':'wait'; if(s.phase!==ph){ s.phase=ph; ch=true; }
+    if(s.phase==='ready'&&s.mready&&s.rdy[s.champ]&&s.rdy[s.chall]){ s.phase='play'; ch=true; }
+  }
+  [s.champ,s.chall,...(s.line||[])].filter(Boolean).forEach(u=>{ const m=P[u]; if(!m) return;
+    if(s.names[u]!==m.n){ s.names[u]=m.n; ch=true; } if((s.avs[u]||null)!==(m.av||null)){ s.avs[u]=m.av||null; ch=true; } });
+  if(s.oname!==grName()){ s.oname=grName(); ch=true; }
+  if(ch) grPublish();
+  grListing();
+}
+function grOnCoordEvent(ev,d){
+  if(!grIsCoord()) return; const s=_gr.s; d=d||{};
+  if(ev==='gr_ready'){ if(d.n!==s.n||s.phase!=='ready'||(d.u!==s.champ&&d.u!==s.chall)) return; if(d.on) s.rdy[d.u]=1; else delete s.rdy[d.u]; grReconcile(true); }
+  else if(ev==='gr_mready'){ if(d.n!==s.n) return; s.mready=true; s.pool=d.pool||null; grReconcile(true); }
+  else if(ev==='gr_live'){ if(d.n!==s.n||!d.w) return; s.live=d.w; grPublish(); }
+  else if(ev==='gr_abort'){ if(d.n!==s.n||s.phase!=='play') return; s.phase='ready'; s.rdy={}; s.live=null; grPublish(); }
+  else if(ev==='gr_result'){
+    if(d.n!==s.n||s.phase!=='play'||(d.w!==s.champ&&d.w!==s.chall)) return;
+    const w=d.w, l=(w===s.champ)?s.chall:s.champ;
+    const streak=(w===s.champ)?(s.streak||0)+1:1;
+    s.last={n:s.n,w,l,wn:grNm(w),ln:grNm(l),streak};
+    s.wins=s.wins||{}; s.wins[w]=(s.wins[w]||0)+1; s.streak=streak;
+    s.champ=w; s.chall=null; s.phase='wait';
+    const P=_gr.pres; s.line=(s.line||[]).filter(u=>u!==l); if(P[l]&&P[l].r==='line') s.line.push(l);
+    grReconcile(true,true);
+  }
+  else if(ev==='gr_bye'){ if(d.u&&d.u!==grMe()) delete _gr.pres[d.u]; grReconcile(); grRender(); }
+}
+// Open Rooms listing (the coordinator lists a public room)
+function grListing(){
+  if(!grIsCoord()) return; const s=_gr.s;
+  if(s.pub){ if(!_pr.mine||_pr.mine.code!==s.code) _pr.mine={code:s.code,name:grName(),t0:_gr.t0,listed:false,group:true};
+    const meta=JSON.stringify(prMeta()); if(!_pr.mine.listed||meta!==_gr.lastMeta){ _gr.lastMeta=meta; prList(); } }
+  else if(_pr.mine&&_pr.mine.group){ prStop(true); _gr.lastMeta=''; }
+}
+function grListMeta(R){
+  const s=_gr.s, set=s.set||{};
+  return {c:R.code,h:R.name,hid:_celUserId||null,b:GAME_BUILD,m:set.m||'prize',pc:+set.pc||6,lf:+set.lf||100,rd:0,g:1,
+    n:Object.keys(_gr.pres).length||1,cap:GR_MAX,ph:s.phase,pa:s.champ?grNm(s.champ):'',pb:s.chall?grNm(s.chall):'',ln:(s.line||[]).length,t0:R.t0};
+}
+
+// ── reacting to the state on every client ──
+function grApply(){
+  if(!_gr||!_gr.s) return; const s=_gr.s, me=grMe();
+  const mine=((s.champ===me||s.chall===me)&&s.M&&s.phase!=='wait')?s.M:null;
+  if(_gr.M&&_gr.M===s.M&&s.pool) _gr.matchPool=s.pool;
+  const busy=grBusy();
+  if(_gr.M&&_gr.M!==mine&&!busy) grLeaveMatch();
+  if(mine&&_gr.M!==mine&&!busy) grSetupMatch(s);
+  if(s.phase==='play'&&s.champ===me&&_gr.M===s.M&&!_gr.started&&!busy){ _gr.started=true; grStartMatch(); }
+  if(s.phase==='play'&&s.live&&!mine&&_gr.watchOpt!==s.n) grAutoWatch();
+  if(s.phase!=='play'&&_gr.watching){ const w=_gr.watching; _gr.watching=null;
+    setTimeout(()=>{ if(typeof _sp!=='undefined'&&_sp.watch&&_sp.watch.w===w) spLeave(); if(_gr){ grShowUI(); grApply(); if(typeof wgClaimSoon==='function') wgClaimSoon(); } },3500); }
+  if(_gr.pool!==s.pool){
+    if(_gr.pool&&_gr.pv&&_gr.pv.mine){ _gr.lastPool=_gr.pool; _gr.lastPv=_gr.pv; grLastPoll(); }
+    _gr.pool=s.pool; _gr.pv=null; _gr.pmsg=''; grPoolRefresh(); }
+  grWinButtons();
+  grRender();
+}
+async function grSetupMatch(s){
+  const me=grMe(), M=s.M, n=s.n, sb=getOnlineSB(), set=s.set||{};
+  _gr.M=M; _gr.n=n; _gr.started=false; _gr.acked=false; _gr.matchPool=null; _gr.matchLive=false; clearInterval(_gr.joinT);
+  _onlineDeckId=_gr.deck; _onlineRandomCards=null; _onlineOpponentAvatar=null; window._onlineOpponentName=null;
+  if(typeof rmReset==='function') rmReset();
+  if(s.champ===me){
+    const row={code:M,host_id:me,host_name:grName(),host_deck:_gr.deck,guest_id:s.chall,guest_name:grNm(s.chall),guest_deck:null,status:'ready',game_mode:set.m||'prize',prize_count:+set.pc||6};
+    _onlineRole='host'; _onlineRoom={...row,group:_gr.code,gn:n,lf_hp:+set.lf||100,allow_spec:!!set.spec};
+    try{ await sb.from('online_rooms').insert({...row,created_at:new Date().toISOString()}); }catch(e){}
+    if(!_gr||_gr.M!==M) return;
+    subscribeToRoom(M);
+    let pool=null; const r=await grRpc('pool_open',{p_room:M}); if(r&&r.ok&&r.pool) pool=r.pool.id;
+    if(!_gr||_gr.M!==M) return;
+    _gr.matchPool=pool; grToCoord('gr_mready',{n,pool});
+  } else {
+    _onlineRole='guest'; _onlineRoom={code:M,host_id:s.champ,host_name:grNm(s.champ),guest_id:me,guest_name:grName(),guest_deck:_gr.deck,status:'ready',game_mode:set.m||'prize',prize_count:+set.pc||6,group:_gr.code,gn:n};
+    _onlineOpponentAvatar=grAvOf(s.champ);
+    subscribeToRoom(M);
+    _gr.joinT=setInterval(()=>{ if(!_gr||_gr.M!==M||_gr.acked||grInGame()){ if(_gr) clearInterval(_gr.joinT); return; } if(_channelReady) onlineSendJoin(); },2000);
+  }
+  grMoveWager(true);
+  setTimeout(()=>{ try{ if(_gr&&_gr.M===M&&typeof wgOnRoomReady==='function') wgOnRoomReady(); }catch(e){} },400);
+  grRender();
+}
+function grLeaveMatch(){
+  if(!_gr) return; const sb=getOnlineSB(), M=_gr.M, wasHost=_onlineRole==='host';
+  clearInterval(_gr.joinT); _gr.joinT=null;
+  // this pairing never played → its bets go back and its row goes away
+  if(_gr.matchPool&&!_gr.matchLive){ const pid=_gr.matchPool; grRpc('pool_cancel',{p_id:pid}).then(()=>grSend('gr_pot',{})); }
+  if(wasHost&&M&&!_gr.matchLive) sb.from('online_rooms').delete().eq('code',M).then(()=>{},()=>{});
+  if(typeof wgLeaveRoom==='function'&&!(typeof _wg!=='undefined'&&_wg.live)) try{ wgLeaveRoom(); }catch(e){}
+  if(typeof stopHeartbeat==='function') stopHeartbeat();
+  // the finished match's last state (a forfeit, the winning blow) goes out before the channel closes
+  if(_onlineChannel&&typeof G!=='undefined'&&G&&G.onlineMode&&G.gameOver&&!G.spectating&&typeof broadcastGameState==='function'){ try{ _lastBroadcastTime=0; _broadcastPending=false; broadcastGameState(); }catch(e){} }
+  if(typeof spHostStop==='function') try{ spPublish&&spPublish(true); spHostStop(); }catch(e){}
+  if(_onlineChannel){ const ch=_onlineChannel; _onlineChannel=null; setTimeout(()=>{ try{ sb.removeChannel(ch); }catch(e){} },200); }
+  _channelReady=false; _onlineRoom=null; _onlineRole=null; _onlineRandomCards=null;
+  if(typeof clearDisconnectTimer==='function') try{ clearDisconnectTimer(); }catch(e){}
+  _gr.M=null; _gr.n=null; _gr.started=false; _gr.acked=false; _gr.matchPool=null; _gr.matchLive=false;
+  grMoveWager(false);
+}
+async function grStartMatch(){
+  if(!_gr||!_gr.s||!_onlineRoom) return; const s=_gr.s, set=s.set||{}, M=_gr.M;
+  for(let k=0;k<24&&_onlineRoom&&!(Array.isArray(_onlineRoom.guest_deck_cards)&&_onlineRoom.guest_deck_cards.length);k++) await new Promise(r=>setTimeout(r,250));
+  if(!_gr||!_onlineRoom||_gr.M!==M) return;
+  // the wager has to be locked (or empty) — wgBeforeStart moves a locked one to LIVE
+  if(typeof wgBeforeStart==='function'){
+    const w=(typeof _wg!=='undefined')?_wg.cur:null;
+    if(w&&w.status==='open'&&typeof wgHasStakes==='function'&&wgHasStakes(w)){ grAbortStart(); return; }
+    const ok=await wgBeforeStart(); if(!ok){ grAbortStart(); return; }
+  }
+  const gm=document.getElementById('lobby-game-mode'); if(gm) gm.value=set.m||'prize';
+  const pc=document.getElementById('lobby-prize-count'); if(pc) pc.value=String(+set.pc||6);
+  const lf=document.getElementById('lobby-lf-hp'); if(lf) lf.value=String(+set.lf||100);
+  _onlineRoom.allow_spec=!!set.spec;
+  if(_gr.matchPool){ await grRpc('pool_start',{p_id:_gr.matchPool}); grSend('gr_pot',{}); }
+  if(!_gr||_gr.M!==M) return;
+  _gr.matchLive=true;
+  startOnlineMatch({wgDone:true});
+}
+function grAbortStart(){
+  if(!_gr) return; _gr.started=false;
+  grToCoord('gr_abort',{n:_gr.n});
+  if(typeof spToast==='function') spToast('The wager isn\'t locked in yet — both players accept it (or call it off), then press READY again.',6000);
+}
+function grAutoWatch(){
+  const s=_gr.s; if(!s.live||_onlineRoom) return;
+  if(typeof _sp!=='undefined'&&_sp.watch&&_sp.watch.w===s.live) return;
+  if(!document.getElementById('online-lobby-screen')?.classList.contains('active')) return;
+  _gr.watching=s.live;
+  try{ spWatch({w:s.live,h:grNm(s.champ),g:grNm(s.chall),hid:s.champ,gid:s.chall,m:(s.set||{}).m,pc:(s.set||{}).pc,n:0},'online-lobby-screen'); }catch(e){}
+}
+function grWatchNow(){ if(!_gr||!_gr.s) return; _gr.watchOpt=null; grAutoWatch(); }
+// the match is over (both players call this from their own result; the forfeiter too)
+function grOnMatchEnd(won){
+  const P=_gr&&_gr.playing; if(!P) return; _gr.playing=null;
+  const me=grMe(), opp=(P.h===me)?P.g:P.h;
+  const w=won?me:opp, l=won?opp:me;
+  grToCoord('gr_result',{n:P.n,w,l});
+  if(P.pool) grRpc('pool_report',{p_id:P.pool,p_winner:w}).then(()=>{ grSend('gr_pot',{}); });
+  setTimeout(grApply,300);
+}
+// enterOnlineGame → this match (its room, pairing number, players and bet pool) is what the result is reported for
+function grOnMatchStart(room){
+  if(!_gr||!room||!room.group) return;
+  _gr.matchLive=true; clearInterval(_gr.joinT);
+  _gr.playing={M:room.code,n:room.gn,h:room.host_id,g:room.guest_id,pool:_gr.matchPool||(_gr.s&&_gr.s.M===room.code?_gr.s.pool:null)};
+}
+function grBackToRoom(){
+  const wm=document.getElementById('win-modal'); if(wm) wm.classList.remove('open');
+  if(typeof wgClaimSoon==='function') wgClaimSoon();
+  showScreen('online-lobby-screen'); grShowUI(); grApply();
+}
+// ── player actions ──
+function grReadyClick(){ if(!_gr||!_gr.s) return; const s=_gr.s; grToCoord('gr_ready',{u:grMe(),n:s.n,on:!s.rdy[grMe()]}); }
+function grRematchClick(){ if(!_gr||!_gr.s) return; const s=_gr.s; if(s.phase!=='ready'){ grBackToRoom(); return; } grToCoord('gr_ready',{u:grMe(),n:s.n,on:!s.rdy[grMe()]}); }
+function grSetRole(r){
+  if(!_gr) return;
+  if(r==='line'){ const e=onlineDeckError(_gr.deck); if(e){ _gr.note=e; grRender(); return; } }
+  _gr.role=r==='watch'?'watch':'line'; _gr.note=''; grTrack();
+  if(grIsCoord()){ _gr.pres[grMe()]=grMeta(); grReconcile(); }
+  grRender();
+}
+function grSetDeck(v){
+  if(!_gr||!v) return; _gr.deck=v; if(typeof onlineSetPick==='function') onlineSetPick(v); _gr.note=''; grTrack();
+  if(_onlineRoom&&_onlineRoom.group&&!grInGame()&&_gr.M){
+    _onlineDeckId=v;
+    if(_onlineRole==='host') _onlineRoom.host_deck=v;
+    else { _onlineRoom.guest_deck=v; _onlineRandomCards=null; if(typeof onlineSendJoin==='function') onlineSendJoin(); }
+    const s=_gr.s; if(s&&s.rdy[grMe()]) grToCoord('gr_ready',{u:grMe(),n:s.n,on:false});
+  }
+  grRender();
+}
+function grSkip(u){ if(!grIsCoord()) return; const s=_gr.s; if(s.phase==='play') return;
+  if(s.champ===u){ s.champ=null; s.streak=0; } else if(s.chall===u) s.chall=null; else return;
+  s.line=(s.line||[]).filter(x=>x!==u); s.line.push(u); grReconcile(true,true); }
+function grSetSetting(k,v){ if(!grIsCoord()) return; const s=_gr.s;
+  if(k==='pub') s.pub=!!v; else { s.set=s.set||{}; s.set[k]=(k==='spec')?!!v:(k==='m'?v:+v); }
+  grPublish(); grListing(); }
+function grCopyCode(){ const c=_gr&&_gr.code; if(!c) return; try{ navigator.clipboard.writeText(c); if(typeof spToast==='function') spToast('Room code <b>'+c+'</b> copied',2500); }catch(e){} }
+
+// ── watcher bets ──
+async function grPoolRefresh(){
+  if(!_gr) return;
+  if(_gr.lastPool) grLastPoll(true);
+  if(!_gr.pool){ grRenderBets(); return; }
+  const pid=_gr.pool; const r=await grRpc('pool_get',{p_id:pid});
+  if(!_gr||_gr.pool!==pid) return;
+  if(r&&r.id) _gr.pv=r;
+  grRenderBets();
+  clearInterval(_gr.poolT);
+  if(_gr.pv&&['open','live'].includes(_gr.pv.status)) _gr.poolT=setInterval(()=>{ if(!_gr||_gr.pool!==pid){ return; } grRpc('pool_get',{p_id:pid}).then(x=>{ if(_gr&&_gr.pool===pid&&x&&x.id){ _gr.pv=x; grRenderBets(); } }); },6000);
+}
+// the pool I bet in is over: fetch its result until it settles (then the mailbox claims the payout)
+function grLastPoll(once){
+  if(!_gr||!_gr.lastPool) return; const pid=_gr.lastPool;
+  const go=()=>grRpc('pool_get',{p_id:pid}).then(x=>{ if(!_gr||_gr.lastPool!==pid||!x||!x.id) return; _gr.lastPv=x;
+    if(['settled','void','cancelled'].includes(x.status)&&!_gr.claimed[pid]){ _gr.claimed[pid]=1; if(typeof wgClaimSoon==='function') wgClaimSoon(); }
+    grRenderBets(); });
+  go(); if(once) return;
+  [4000,10000,25000,60000].forEach(t=>setTimeout(()=>{ if(_gr&&_gr.lastPool===pid&&_gr.lastPv&&['open','live','disputed'].includes(_gr.lastPv.status)) go(); },t));
+}
+async function grBet(side){
+  if(!_gr||!_gr.pool||_gr.betBusy) return;
+  const v=Math.floor(+(document.getElementById('gr-bet-amt')?.value||0));
+  if(!(v>0)){ _gr.pmsg='Enter how much Celestium to bet.'; grRenderBets(); return; }
+  _gr.betBusy=true; grRenderBets();
+  const r=await grRpc('pool_bet',{p_id:_gr.pool,p_side:side,p_cel:v});
+  if(!_gr) return; _gr.betBusy=false;
+  if(r&&r.gate&&typeof _wg!=='undefined'&&_wg.st) _wg.st.gate=r.gate;
+  if(r&&r.ok){ if(typeof wgAdopt==='function') wgAdopt(r); _gr.pv=r.pool; _gr.pmsg=''; grSend('gr_pot',{}); }
+  else _gr.pmsg=(r&&r.error==='locked')?'locked':((r&&r.error)||'That bet didn\'t go through.');
+  grRenderBets();
+}
+async function grUnbet(){
+  if(!_gr||!_gr.pool||_gr.betBusy) return; _gr.betBusy=true; grRenderBets();
+  const r=await grRpc('pool_unbet',{p_id:_gr.pool}); if(!_gr) return; _gr.betBusy=false;
+  if(r&&r.ok){ if(typeof wgAdopt==='function') wgAdopt(r); _gr.pv=r.pool; _gr.pmsg=''; grSend('gr_pot',{}); } else _gr.pmsg=(r&&r.error)||'Couldn\'t take the bet back.';
+  grRenderBets();
+}
+function grBetChip(v){ const i=document.getElementById('gr-bet-amt'); if(i) i.value=v; }
+function grRenderBets(){
+  const box=document.getElementById('gr-bets'); if(!box) return;
+  const s=_gr&&_gr.s, me=grMe(), fmt=n=>Number(n||0).toLocaleString();
+  if(!s){ box.style.display='none'; return; }
+  const seated=s.champ===me||s.chall===me;
+  const last=(_gr.lastPv&&_gr.lastPv.mine)?grBetResult(_gr.lastPv):'';
+  const pv=_gr.pv;
+  let body='';
+  if(!s.pool||s.phase==='wait'||!pv||seated){
+    if(seated&&pv&&s.phase!=='wait'){   // the two players see the pot, not the bet buttons
+      const tot=(+pv.pot_host||0)+(+pv.pot_guest||0);
+      if(tot>0){ const ms=pv.host_id===me?'host':'guest', os=ms==='host'?'guest':'host';
+        body=`<div class="gr-h">🎲 WATCHER BETS <span class="gr-dim">· pot ${fmt(tot)} 💠</span></div><div class="gr-dim">${fmt(pv['pot_'+ms])} 💠 on you (${pv['n_'+ms]||0}) · ${fmt(pv['pot_'+os])} 💠 on ${prEsc(pv[os+'_name'])} (${pv['n_'+os]||0})</div>`; }
+    } else if(!seated&&s.pool&&!pv&&s.phase!=='wait') body='<div class="gr-h">🎲 WATCHER BETS</div><div class="gr-dim">Loading the pot…</div>';
+    body=(last?`<div class="gr-h">🎲 YOUR LAST BET</div>${last}`:'')+body;
+    if(!body){ box.style.display='none'; grSet(box,''); return; }
+    box.style.display=''; grSetKeep(box,body); return;
+  }
+  const cfg=pv.cfg||{}, cut=Number(cfg.housePct==null?5:cfg.housePct), maxS=Number(cfg.maxStake||5000);
+  const H=+pv.pot_host||0, Gs=+pv.pot_guest||0, tot=H+Gs, pct=tot?Math.round(H*100/tot):50;
+  const hn=pv.host_name||grNm(s.champ), gn=pv.guest_name||grNm(s.chall), mine=pv.mine&&pv.mine.status==='open'?pv.mine:null;
+  const est=(side,stake)=>{ let W=side==='host'?H:Gs, L=side==='host'?Gs:H; if(mine){ if(mine.side===side) W-=+mine.cel; else L-=+mine.cel; } W+=stake; return stake+Math.floor(stake*L*(100-cut)/(100*Math.max(1,W))); };
+  if(last) body+=`<div class="gr-h">🎲 YOUR LAST BET</div>${last}`;
+  body+=`<div class="gr-h">🎲 WATCHER BETS <span class="gr-dim">· pot ${fmt(tot)} 💠</span></div>
+    <div class="gr-pots"><div class="gr-pot h" style="flex:${Math.max(12,pct)}"><b>${prEsc(hn)}</b><span>${fmt(H)} 💠 · ${pv.n_host||0} bet${pv.n_host==1?'':'s'}</span></div>
+      <div class="gr-pot g" style="flex:${Math.max(12,100-pct)}"><b>${prEsc(gn)}</b><span>${fmt(Gs)} 💠 · ${pv.n_guest||0} bet${pv.n_guest==1?'':'s'}</span></div></div>`;
+  if(mine) body+=`<div class="gr-mybet">Your bet: <b>${fmt(mine.cel)} 💠</b> on <b>${prEsc(mine.side==='host'?hn:gn)}</b> · if they win you get about <b class="win">${fmt(est(mine.side,+mine.cel))} 💠</b></div>`;
+  if(pv.status==='open'){
+    const g=(typeof _wg!=='undefined'&&_wg.st)?_wg.st.gate:null;
+    if(_gr.pmsg==='locked'||(g&&!g.unlocked)){ body+=`<div class="gr-dim">🔒 Betting unlocks at <b>Level ${(g&&g.needLevel)||10}</b> and <b>${(g&&g.needOnline)||20} online matches</b>${g?` · you: Level ${g.level} · ${Math.min(g.online,g.needOnline)}/${g.needOnline}`:''}.</div>`; }
+    else {
+      const chips=[100,500,1000,2500,5000].filter(v=>v<=maxS).map(v=>`<button class="wg-chip" onclick="grBetChip(${v})">${v>=1000?(v/1000)+'K':v}</button>`).join('');
+      const dis=_gr.betBusy?'disabled':'';
+      body+=`<div class="gr-betrow"><input id="gr-bet-amt" type="number" class="admin-input" min="1" max="${maxS}" step="100" value="${mine?mine.cel:500}" aria-label="Bet amount in Celestium"><span>💠</span><div class="wg-chips">${chips}</div></div>
+        <div class="gr-betbtns"><button class="wg-btn go" ${dis} onclick="grBet('host')">BET ON ${prEsc(hn).toUpperCase()}</button><button class="wg-btn go" ${dis} onclick="grBet('guest')">BET ON ${prEsc(gn).toUpperCase()}</button>
+        ${mine?`<button class="wg-link" ${dis} onclick="grUnbet()">take my bet back</button>`:''}</div>
+        <div class="gr-dim">Celestium only · bets close when the match starts · if your player wins you get your bet back plus your share of the other side's bets (${cut}% house cut).</div>`;
+    }
+  } else if(pv.status==='live') body+=`<div class="gr-dim">🔒 Bets are locked — the match is on.</div>`;
+  if(_gr.pmsg&&_gr.pmsg!=='locked') body+=`<div class="wg-err">${prEsc(_gr.pmsg)}</div>`;
+  box.style.display=''; grSetKeep(box,body);
+}
+// re-render without losing what the viewer is typing
+function grSetKeep(box,html){
+  if(box._h===html) return;
+  const inp=document.getElementById('gr-bet-amt'), val=inp?inp.value:null, foc=inp&&document.activeElement===inp;
+  grSet(box,html);
+  const n=document.getElementById('gr-bet-amt'); if(n&&val!=null){ n.value=val; if(foc) try{ n.focus(); }catch(e){} }
+}
+function grBetResult(pv){
+  const fmt=n=>Number(n||0).toLocaleString(), m=pv.mine, w=pv.winner_id===pv.host_id?pv.host_name:(pv.winner_id===pv.guest_id?pv.guest_name:null);
+  if(!m) return '';
+  let t='';
+  if(pv.status==='settled') t=m.status==='won'?`🏆 ${prEsc(w||'Your pick')} won — you get <b class="win">${fmt(m.payout)} 💠</b> (+${fmt(m.profit)}). It's claimed from your mailbox automatically.`
+      :m.status==='lost'?`💀 ${prEsc(w||'The other player')} won — your ${fmt(m.cel)} 💠 bet is gone.`:`↩ Nobody bet on the other side, so your ${fmt(m.cel)} 💠 came back.`;
+  else if(['void','cancelled'].includes(pv.status)) t=`↩ That match didn't happen — your ${fmt(m.cel)} 💠 came back.`;
+  else if(pv.status==='disputed') t='⚖ Both players claimed the win — an admin will settle the bets.';
+  else if(pv.status==='live') t=`⏳ Your ${fmt(m.cel)} 💠 on ${prEsc(m.side==='host'?pv.host_name:pv.guest_name)} — waiting for the result…`;
+  return t?`<div class="gr-dim gr-last-bet">${t}</div>`:'';
+}
+
+// ── win screen: Back to room · Rematch (only when the same two play again) · Leave room ──
+function grWinButtons(){
+  const modal=document.getElementById('win-modal'); if(!modal||!modal.classList.contains('open')||!_gr||!_gr.s) return;
+  if(G&&G.spectating) return;
+  const s=_gr.s, me=grMe(), rb=document.getElementById('win-rematch-btn'), back=document.getElementById('win-room-btn'), menu=document.getElementById('win-menu-btn'), note=document.getElementById('win-rematch-note');
+  if(back) back.style.display='block';
+  if(menu) menu.textContent='🚪 Leave room';
+  const last=s.last, opp=last?(last.w===me?last.l:last.w):null;
+  const same=!!(last&&opp&&s.phase!=='wait'&&((s.champ===me&&s.chall===opp)||(s.chall===me&&s.champ===opp)));
+  if(rb){ rb.style.display=same?'block':'none';
+    const mr=!!s.rdy[me], tr=!!s.rdy[opp], on=grNm(opp);
+    rb.disabled=mr&&tr;
+    rb.textContent=mr&&tr?'⏳ Starting…':mr?`⏳ Waiting for ${on}… (tap to cancel)`:tr?'🔄 Accept rematch':'🔄 Rematch';
+    rb.classList.toggle('rm-hot',tr&&!mr); }
+  if(note){ const on=opp?grNm(opp):'';
+    note.textContent=same?(s.rdy[opp]&&!s.rdy[me]?`🔄 ${on} wants a rematch!`:''):(s.phase==='wait'?'Waiting for the next challenger…':(s.champ&&s.chall?`Next up: ${grNm(s.champ)} vs ${grNm(s.chall)}`:'')); }
+}
+
+// ── room screen ──
+function grShowUI(){
+  const cj=document.getElementById('lobby-create-join'), wr=document.getElementById('lobby-waiting-room'), box=document.getElementById('lobby-group');
+  if(cj) cj.style.display='none'; if(wr) wr.style.display='none'; if(box) box.style.display='block';
+  grRender();
+}
+// the wager strip lives in the waiting room; while you're seated in a group room it moves into your seat panel
+function grMoveWager(on){
+  const wg=document.getElementById('lobby-wager'); if(!wg) return;
+  const slot=on?document.getElementById('gr-wager-slot'):document.getElementById('lobby-wager-home');
+  if(slot&&wg.parentNode!==slot) slot.appendChild(wg);
+}
+function grRender(){
+  const box=document.getElementById('lobby-group'); if(!box||!_gr) return;
+  const s=_gr.s, me=grMe(), P=_gr.pres;
+  const head=document.getElementById('gr-head'), stage=document.getElementById('gr-stage'), ppl=document.getElementById('gr-people'), sets=document.getElementById('gr-settings'), mine=document.getElementById('gr-mine');
+  const nMem=Object.keys(P).length||1, set=(s&&s.set)||{};
+  grSet(head,`<div style="flex:1;min-width:0"><div class="gr-title">${s&&s.pub?'🌐':'🔒'} ${prEsc((s&&s.oname)||'…')}'s room</div>
+      <div class="gr-sub">${s&&s.pub?'PUBLIC · IN OPEN ROOMS':'PRIVATE · SHARE THE CODE'} · ${nMem}/${GR_MAX} PEOPLE${s?' · '+prEsc(prModeName({m:set.m,pc:set.pc,lf:set.lf})):''}</div></div>
+    <button class="gr-code" onclick="grCopyCode()" title="Copy the room code" aria-label="Room code ${prEsc(_gr.code)}, tap to copy">${prEsc(_gr.code)}</button>
+    <button class="btn-gray btn-sm gr-leave" onclick="grLeave()">🚪 LEAVE</button>`);
+  if(!s){ grSet(stage,'<div class="gr-dim" style="padding:20px;text-align:center">Joining the room…</div>'); grSet(ppl,''); if(mine) mine.style.display='none'; if(sets) sets.style.display='none'; grRenderBets(); return; }
+  const seat=(u,lab)=>{ if(!u) return `<div class="gr-seat empty"><span class="gr-av">⏳</span><div style="min-width:0"><div class="nm">Waiting…</div><div class="sub">${lab}</div></div></div>`;
+    const rdy=!!s.rdy[u], isMe=u===me, crown=u===s.champ&&(s.streak||0)>0;
+    return `<div class="gr-seat${rdy?' ready':''}${isMe?' me':''}">${grAvHtml(u)}<div style="min-width:0;flex:1"><div class="nm">${crown?'👑 ':''}${prEsc(grNm(u))}${isMe?' <span class="gr-dim">(You)</span>':''}</div>
+      <div class="sub">${lab}${crown?` · ${s.streak} win${s.streak>1?'s':''} in a row`:''}${(P[u]&&P[u].rd)?' · 🎲 random deck':''}</div>
+      ${s.phase==='ready'?(rdy?'<span class="gr-tag ok">✓ READY</span>':'<span class="gr-tag wait">NOT READY</span>'):''}
+      ${grIsCoord()&&s.phase==='ready'&&!rdy&&!isMe&&(s.line||[]).length?` <button class="wg-link" style="margin-left:6px" onclick="grSkip('${prEsc(u)}')" title="Send to the back of the line">skip</button>`:''}</div></div>`; };
+  let st='';
+  const amSeated=s.champ===me||s.chall===me;
+  if(s.phase==='wait') st=`<div class="gr-phase">⏳ WAITING FOR A CHALLENGER</div><div class="gr-vs">${seat(s.champ,s.streak?'Champion':'Up first')}<div class="gr-vsx">VS</div>${seat(null,'Next in line steps up')}</div>
+     <div class="gr-dim" style="margin-top:10px;text-align:center">${nMem<2?'Share the code'+(s.pub?' — your room is in Open Rooms too.':' or make the room public.'):'Someone needs to get in line to play.'}</div>`;
+  else if(s.phase==='ready') st=`<div class="gr-phase">⚔ NEXT MATCH · BOTH PLAYERS PRESS READY</div><div class="gr-vs">${seat(s.champ,s.streak?'Champion':'Host')}<div class="gr-vsx">VS</div>${seat(s.chall,'Challenger')}</div>`;
+  else st=`<div class="gr-phase live">▶ NOW PLAYING</div><div class="gr-vs">${seat(s.champ,s.streak?'Champion':'Host')}<div class="gr-vsx">VS</div>${seat(s.chall,'Challenger')}</div>
+     ${amSeated?'':`<button class="btn-primary gr-ready" onclick="grWatchNow()" ${s.live?'':'disabled'}>👁 ${s.live?'WATCH THE MATCH':'STARTING…'}</button>`}`;
+  if(s.last) st+=`<div class="gr-last">🏆 <b>${prEsc(s.last.wn)}</b> beat ${prEsc(s.last.ln)}${s.last.w===s.champ?` — stays on${(s.last.streak||0)>1?` (${s.last.streak} in a row)`:''}`:''}</div>`;
+  grSet(stage,st);
+  // my panel: deck (anyone in line), wager + READY (seated before the match)
+  if(mine){
+    const inLine=_gr.role==='line'; mine.style.display=(inLine||amSeated)?'':'none';
+    const dk=document.getElementById('gr-deck');
+    if(dk){ const opts=onlineDeckOptions(_gr.deck);
+      if(opts!==_gr.deckHtml){ _gr.deckHtml=opts; dk.innerHTML=opts?`<select class="admin-input" style="width:100%" aria-label="Your deck" onchange="grSetDeck(this.value)">${opts}</select>`:'<div class="gr-dim" style="color:#fca5a5">No saved decks. Build one in the Deck Builder first.</div>'; }
+      const sel=dk.querySelector('select'); if(sel){ sel.disabled=amSeated&&s.phase==='play'; if(_gr.deck&&sel.value!==_gr.deck) sel.value=_gr.deck; } }
+    const rbtn=document.getElementById('gr-ready-btn'), hint=document.getElementById('gr-ready-hint'), ws=document.getElementById('gr-wager-slot');
+    const showReady=amSeated&&s.phase==='ready';
+    if(ws) ws.style.display=showReady?'':'none';
+    let why='';
+    if(showReady){
+      if(!s.mready||_gr.M!==s.M) why='Setting up the match…';
+      else if(_onlineRole==='host'&&!(_onlineRoom&&Array.isArray(_onlineRoom.guest_deck_cards)&&_onlineRoom.guest_deck_cards.length)) why=`Waiting for ${grNm(s.chall)} to connect…`;
+      else if(_onlineRole==='guest'&&!_gr.acked) why='Connecting to the match…';
+      else { const w=(typeof _wg!=='undefined')?_wg.cur:null; if(w&&w.status==='open'&&typeof wgHasStakes==='function'&&wgHasStakes(w)&&!s.rdy[me]) why='Lock in the wager (both accept) or call it off first.'; }
+    }
+    const on=!!s.rdy[me];
+    if(rbtn){ rbtn.style.display=showReady?'':'none'; rbtn.disabled=!!why&&!on; rbtn.classList.toggle('on',on); rbtn.textContent=on?'✓ READY — tap to cancel':'READY'; }
+    if(hint) hint.textContent=_gr.note||(showReady?(why||(on?`Waiting for ${grNm(me===s.champ?s.chall:s.champ)}…`:'Press READY when you\'re set.')):(amSeated&&s.phase==='play'?'Your match is on.':(inLine?((s.line||[]).indexOf(me)>=0?`You're #${(s.line||[]).indexOf(me)+1} in line.`:''):'')));
+  }
+  // people: line, watchers, my role
+  if(ppl){
+    const line=(s.line||[]), watchers=Object.values(P).filter(m=>m.r==='watch'&&m.u!==s.champ&&m.u!==s.chall);
+    const li=(u,k)=>`<div class="gr-li">${k?`<span class="k">${k}</span>`:''}${grAvHtml(u,true)}<span class="nm">${prEsc(grNm(u))}${u===me?' <span class="gr-dim">(You)</span>':''}${u===s.owner?' <span class="gr-dim">· host</span>':''}${(s.wins&&s.wins[u])?` <span class="gr-dim">· ${s.wins[u]}W</span>`:''}</span></div>`;
+    grSet(ppl,`<div class="gr-h">⏳ IN LINE <span class="gr-dim">(${line.length})</span></div>
+      <div class="gr-list">${line.length?line.map((u,i)=>li(u,i+1)).join(''):'<div class="gr-dim">Nobody waiting.</div>'}</div>
+      <div class="gr-h">👁 WATCHING <span class="gr-dim">(${watchers.length})</span></div>
+      <div class="gr-list">${watchers.length?watchers.map(m=>li(m.u,'')).join(''):'<div class="gr-dim">Nobody just watching.</div>'}</div>
+      <div class="gr-roles" role="group" aria-label="Play or watch"><button class="btn-gray btn-sm${_gr.role==='line'?' on':''}" onclick="grSetRole('line')">🎮 Get in line</button><button class="btn-gray btn-sm${_gr.role==='watch'?' on':''}" onclick="grSetRole('watch')">👁 Just watch</button></div>
+      <div class="gr-dim" style="margin-top:6px;text-align:center">${amSeated&&s.phase==='play'?'Switching applies after this match.':(amSeated&&_gr.role==='line'?'Just watch gives up your seat.':'Switch any time between matches.')}</div>`);
+  }
+  // owner settings
+  if(sets){
+    if(grIsCoord()){ sets.style.display='';
+      grSet(sets,`<div class="gr-h">⚙ ROOM SETTINGS <span class="gr-dim">(you host · applies to the next match)</span></div>
+        <div class="gr-setrow"><select class="admin-input" aria-label="Game mode" onchange="grSetSetting('m',this.value)">${[['prize','🏆 Prize Mode'],['lifeforce','❤️ Life Force'],['combined','⚔️ Combined']].map(([v,t])=>`<option value="${v}"${set.m===v?' selected':''}>${t}</option>`).join('')}</select>
+          ${set.m!=='lifeforce'?`<select class="admin-input" aria-label="Prizes" onchange="grSetSetting('pc',this.value)">${[6,7,8,9,10].map(v=>`<option value="${v}"${+set.pc===v?' selected':''}>${v} Prizes</option>`).join('')}</select>`:''}
+          ${set.m!=='prize'?`<select class="admin-input" aria-label="Life Force" onchange="grSetSetting('lf',this.value)">${[100,125,150,175,200].map(v=>`<option value="${v}"${+set.lf===v?' selected':''}>${v} HP</option>`).join('')}</select>`:''}</div>
+        <label class="sp-allow"><input type="checkbox" ${s.pub?'checked':''} onchange="grSetSetting('pub',this.checked)"> 🌐 Public room <small>Listed in Open Rooms</small></label>
+        <label class="sp-allow"><input type="checkbox" ${set.spec?'checked':''} onchange="grSetSetting('spec',this.checked)"> 👁 Show matches in Watch Live <small>People in the room can always watch</small></label>`);
+    } else sets.style.display='none';
+  }
+  grRenderBets();
+}
+
+// ═══ REMATCH for 1v1 rooms outside a group room (Quick Match, friend invites) — build 10.17 ═══
+// 'rematch' {on:bool | left:true, from} on room:<code>. Both on → the guest deals again (random deck) and re-sends
+// player_joined; the host starts the next match as soon as it has that. Leaving the win screen sends left.
+let _rm={me:false,them:false,left:false,started:false,joined:false,t:null,jt:null};
+function rmReset(){ clearInterval(_rm.t); clearInterval(_rm.jt); _rm={me:false,them:false,left:false,started:false,joined:false,t:null,jt:null}; }
+function rmSend(p){ try{ if(_onlineChannel) _onlineChannel.send({type:'broadcast',event:'rematch',payload:{...p,from:_onlineRole}}); }catch(e){} }
+// the win screen can be drawn twice for one match (my forfeit, then their game-over state) — keep the handshake going;
+// it is reset when a match starts (enterOnlineGame) or the room changes
+function rmOnWin(){ if(!_rm.t) _rm.t=setInterval(rmTick,2000); rmRender(); }
+function rmTick(){
+  const modal=document.getElementById('win-modal');
+  if(!modal||!modal.classList.contains('open')){ clearInterval(_rm.t); _rm.t=null; return; }
+  if(!_rm.left&&typeof _lastOpponentPing!=='undefined'&&Date.now()-_lastOpponentPing>20000){ _rm.left=true; _rm.them=false; rmRender(); }
+}
+function requestRematch(){
+  if(_gr){ grRematchClick(); return; }
+  if(!_onlineChannel||!_onlineRoom||_rm.left||_rm.started){ rmRender(); return; }
+  _rm.me=!_rm.me; rmSend({on:_rm.me}); rmRender(); rmCheck();
+}
+function rmOnRemote(d){
+  if(!d||d.from===_onlineRole||_gr) return;
+  if(d.left){ _rm.left=true; _rm.them=false; } else _rm.them=!!d.on;
+  rmRender(); rmCheck();
+}
+function rmOnJoin(){ if(_gr||_onlineRole!=='host'||!_rm.me||!_rm.them||_rm.started) return; _rm.joined=true; rmCheck(); }
+function rmCheck(){
+  if(!_rm.me||!_rm.them||_rm.left||_rm.started) return;
+  if(_onlineRole==='guest'){
+    _rm.started=true; _onlineRandomCards=null; onlineSendJoin(); let k=0;
+    _rm.jt=setInterval(()=>{ const open=document.getElementById('win-modal')?.classList.contains('open'); if(!open||++k>8){ clearInterval(_rm.jt); return; } onlineSendJoin(); },1500);
+  } else if(_rm.joined){
+    _rm.started=true;
+    const r=_onlineRoom||{};
+    const gm=document.getElementById('lobby-game-mode'); if(gm) gm.value=r.game_mode||'prize';
+    const pc=document.getElementById('lobby-prize-count'); if(pc) pc.value=String(r.prize_count||6);
+    const lf=document.getElementById('lobby-lf-hp'); if(lf) lf.value=String(r.lf_hp||100);
+    setTimeout(()=>startOnlineMatch(),250);
+  }
+  rmRender();
+}
+function rmRender(){
+  if(_gr) return;
+  const rb=document.getElementById('win-rematch-btn'), note=document.getElementById('win-rematch-note'); if(!rb) return;
+  const on=String((G&&G.onlineOpponentName)||window._onlineOpponentName||'Your opponent');
+  if(_rm.left){ rb.style.display='none'; if(note) note.textContent=`${on} left — no rematch.`; return; }
+  rb.disabled=_rm.started||(_rm.me&&_rm.them);
+  rb.textContent=(_rm.me&&_rm.them)?'⏳ Starting…':_rm.me?`⏳ Waiting for ${on}… (tap to cancel)`:_rm.them?'🔄 Accept rematch':'🔄 Rematch';
+  rb.classList.toggle('rm-hot',_rm.them&&!_rm.me);
+  if(note) note.textContent=_rm.them&&!_rm.me?`🔄 ${on} wants a rematch!`:'';
+}
+
+// ── 🎲 watcher bets: history (⚖ MY WAGERS) and admin (Gift Center → ⚖ WAGERS) ──
+async function grHistoryInto(body){
+  if(!body) return;
+  const r=await grRpc('pool_history',{p_limit:30});
+  if(!Array.isArray(r)||!r.length) return;
+  const fmt=n=>Number(n||0).toLocaleString();
+  const chip=b=>b.status==='won'?`<span class="wg-tag win">WON +${fmt(b.profit)}</span>`:b.status==='lost'?'<span class="wg-tag lose">LOST</span>':b.status==='refunded'?'<span class="wg-tag">REFUNDED</span>':(b.pool_status==='disputed'?'<span class="wg-tag warn">UNDER REVIEW</span>':'<span class="wg-tag">IN PLAY</span>');
+  const html=`<div class="wg-hist-head" style="margin-top:14px"><div><b>🎲 Watcher bets</b></div></div><div class="wg-hist">${r.map(b=>`<div class="wg-hrow"><div class="wg-hwho"><b>${prEsc(b.host_name||'?')}</b> vs <b>${prEsc(b.guest_name||'?')}</b><span class="wg-none"> · ${typeof mlWhen==='function'?mlWhen(b.created_at):''}</span></div>
+    <div class="wg-hst">${fmt(b.cel)} 💠 on ${prEsc(b.side==='host'?b.host_name:b.guest_name)}</div><div>${chip(b)}</div></div>`).join('')}</div>`;
+  body.insertAdjacentHTML('beforeend',html);
+}
+const _grAdm={rows:[]};
+async function grAdminPools(){
+  const tb=document.getElementById('gc-pools'); if(!tb) return;
+  tb.innerHTML='<tr><td colspan="5" class="ml-empty">Loading…</td></tr>';
+  const f=(typeof _wg!=='undefined'&&_wg.admin&&_wg.admin.filter)||'review';
+  const {data,error}=await wgSB().rpc('admin_pools',{p_status:f==='all'?null:(f==='locked'?'open':f),p_limit:200});
+  if(error){ tb.innerHTML=`<tr><td colspan="5" class="ml-empty">${/function|schema cache/i.test(error.message)?'Run VCU_Watcher_Bets_Setup.sql in Supabase first.':prEsc(error.message)}</td></tr>`; return; }
+  _grAdm.rows=data||[];
+  if(!_grAdm.rows.length){ tb.innerHTML='<tr><td colspan="5" class="ml-empty">Nothing here.</td></tr>'; return; }
+  const fmt=n=>Number(n||0).toLocaleString(), nm=(w,id)=>id===w.host_id?w.host_name:(id===w.guest_id?w.guest_name:'—');
+  tb.innerHTML=_grAdm.rows.map(w=>{ const open=['open','live','disputed'].includes(w.status);
+    const rep=`H: ${w.host_report?prEsc(nm(w,w.host_report)):'—'}<br>G: ${w.guest_report?prEsc(nm(w,w.guest_report)):'—'}`;
+    const res=w.status==='settled'?`<br><span style="color:#86efac">→ ${prEsc(nm(w,w.winner_id))} (${prEsc(w.resolved_by||'')}) paid ${fmt(w.paid)} · cut ${fmt(w.house_cut)}</span>`:(w.note?`<br><span class="wg-none">${prEsc(w.note)}</span>`:'');
+    return `<tr><td>${typeof mlWhen==='function'?mlWhen(w.created_at):''}<br><span class="wg-none">${prEsc(w.room_code)}</span></td>
+      <td><b style="color:#f0d58a;font-weight:400">${prEsc(w.host_name)}</b> ${fmt(w.pot_host)} 💠<br>${prEsc(w.guest_name)} ${fmt(w.pot_guest)} 💠</td>
+      <td><b>${prEsc(String(w.status).toUpperCase())}</b>${res}</td><td>${rep}</td>
+      <td style="white-space:nowrap">${open&&w.status!=='open'?`<button class="dk-btn" onclick="grAdminResolve('${w.id}','host')">Pay host side</button> <button class="dk-btn" onclick="grAdminResolve('${w.id}','guest')">Pay guest side</button> `:''}${open?`<button class="dk-btn" onclick="grAdminResolve('${w.id}',null)">Void</button>`:''}</td></tr>`; }).join('');
+}
+async function grAdminResolve(id,who){
+  const w=_grAdm.rows.find(x=>x.id===id); if(!w) return;
+  const winner=who==='host'?w.host_id:(who==='guest'?w.guest_id:null);
+  if(!confirm(winner?`Settle these bets with ${who==='host'?w.host_name:w.guest_name} as the winner?`:'Void this pool and refund every bet?')) return;
+  const {data,error}=await wgSB().rpc('admin_pool_resolve',{p_id:id,p_winner:winner,p_note:null});
+  if(error||!(data&&data.ok)) alert('Could not resolve: '+((error&&error.message)||(data&&data.error)||'unknown error'));
+  grAdminPools();
+}
+
 </script>
 
 </body>
