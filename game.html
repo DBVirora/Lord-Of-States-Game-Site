@@ -6935,6 +6935,292 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 .pr-note:empty{display:none}
 .sp-allow input{accent-color:#c79a3a;width:14px;height:14px;margin:0}
 .sp-allow small{color:#6b7280;font-size:9px}
+/* ═══ BATTLE PASS v3 (build 10.18) — the Fortnite-style pass: character pages, a hero, a tile row, a page view ═══ */
+@font-face{font-family:'BPAnton';src:url(data:font/woff2;base64,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) format('woff2');font-display:swap}
+#battle-pass-screen.bp3s{padding:0!important;max-width:none!important;margin:0!important}
+#battle-pass-screen.bp3s.active{display:block}
+.b3{--u:min(1vw,1.78vh);--top:max(52px,calc(var(--u)*4.4));--sky1:#0a3fb8;--sky2:#2fa9ff;--floor1:#f0c56a;--floor2:#c8923a;--acc:#ffe31a;
+  position:fixed;inset:0;z-index:5;overflow:hidden;color:#fff;font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;user-select:none;-webkit-tap-highlight-color:transparent;
+  background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 62%,var(--sky2) 100%)}
+.b3 *{box-sizing:border-box}
+.b3-f{font-family:'BPAnton','Anton','Impact','Arial Narrow',sans-serif;font-weight:400;letter-spacing:.01em;text-transform:uppercase}
+.b3-i{font-style:italic}
+/* sky: clouds, sun glints, light streaks, the court floor */
+.b3-sky{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.b3-cloud{position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.55),rgba(255,255,255,.18) 55%,transparent);filter:blur(calc(var(--u)*.6));animation:b3-drift 90s linear infinite;opacity:.55}
+@keyframes b3-drift{from{transform:translateX(-8vw)}to{transform:translateX(8vw)}}
+.b3-glint{position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.65),rgba(160,220,255,.15) 60%,transparent);mix-blend-mode:screen}
+.b3-floor{position:absolute;left:0;right:0;bottom:0;height:46%;pointer-events:none}
+.b3-floor .sand{position:absolute;inset:0;clip-path:polygon(0 38%,22% 50%,46% 62%,70% 52%,100% 22%,100% 100%,0 100%);
+  background:radial-gradient(ellipse at 30% 100%,rgba(255,255,255,.18),transparent 60%),repeating-linear-gradient(-20deg,rgba(120,70,10,.05) 0 2px,transparent 2px 22px),linear-gradient(180deg,var(--floor1),var(--floor2))}
+.b3-floor .sand::after{content:'';position:absolute;inset:0;opacity:.09;background:radial-gradient(circle at 18% 72%,transparent 0 6%,rgba(90,50,0,.55) 6.2% 6.6%,transparent 6.8%),radial-gradient(circle at 18% 72%,transparent 0 10%,rgba(90,50,0,.45) 10.2% 10.5%,transparent 10.7%),radial-gradient(circle at 78% 82%,transparent 0 8%,rgba(90,50,0,.45) 8.2% 8.6%,transparent 8.8%)}
+.b3-floor .s1{position:absolute;inset:0;clip-path:polygon(64% 54%,100% 18%,100% 24%,70% 56%);background:linear-gradient(90deg,rgba(255,255,255,.0),rgba(255,255,255,.9))}
+.b3-floor .s2{position:absolute;inset:0;clip-path:polygon(72% 60%,100% 34%,100% 41%,78% 62%);background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--sky1) 80%,#fff))}
+.b3-floor .s3{position:absolute;inset:0;clip-path:polygon(0 64%,0 68%,30% 76%,32% 74%);background:linear-gradient(90deg,color-mix(in srgb,var(--sky1) 85%,#000),transparent)}
+/* hero (the focused page's character) */
+.b3-hero{position:absolute;left:50%;bottom:calc(var(--u)*6);width:calc(var(--u)*31);height:calc(var(--u)*44);max-height:calc(100vh - var(--top) - 3vh);transform:translateX(-42%);pointer-events:none;display:flex;align-items:flex-end;justify-content:center;filter:drop-shadow(0 calc(var(--u)*1.2) calc(var(--u)*2) rgba(0,0,0,.35))}
+.b3-hero img{max-width:100%;max-height:100%;width:auto;height:auto;display:block}
+.b3-hero.swap{animation:b3-hero .45s cubic-bezier(.2,.9,.3,1)}
+@keyframes b3-hero{from{opacity:0;transform:translateX(-42%) translateY(calc(var(--u)*3)) scale(.97)}}
+/* header */
+.b3-head{position:absolute;left:calc(var(--u)*3.2);top:var(--top);z-index:3}
+.b3-brand{display:flex;align-items:center;gap:calc(var(--u)*1)}
+.b3-crest{width:calc(var(--u)*5.6);height:calc(var(--u)*5.6);flex:none;filter:drop-shadow(0 calc(var(--u)*.2) calc(var(--u)*.4) rgba(0,0,0,.35))}
+.b3-brand h1{margin:0;font-size:calc(var(--u)*4.1);line-height:.95;text-shadow:0 calc(var(--u)*.18) 0 rgba(0,0,0,.18)}
+.b3-brand h2{margin:calc(var(--u)*.25) 0 0;font-size:calc(var(--u)*1.9);line-height:1;color:#ffd84a;text-shadow:0 calc(var(--u)*.12) 0 rgba(0,0,0,.25)}
+.b3-btns{display:flex;gap:calc(var(--u)*1);margin-top:calc(var(--u)*1.6)}
+.b3-btn{border:none;cursor:pointer;border-radius:calc(var(--u)*.55);padding:calc(var(--u)*.75) calc(var(--u)*1.6);font-size:calc(var(--u)*1.55);line-height:1.05;color:#101632;background:var(--acc);box-shadow:0 calc(var(--u)*.2) 0 rgba(0,0,0,.18);transition:transform .12s,filter .12s;text-align:center}
+.b3-btn:hover{filter:brightness(1.07);transform:translateY(-1px)}
+.b3-btn:active{transform:scale(.97)}
+.b3-btn.lt{background:#b9e3ff;color:#13204a}
+.b3-btn.pk{background:#ffd6f5;color:#3d0f43}
+.b3-btn small{display:block;font-size:.62em;opacity:.8}
+.b3-btn:disabled{opacity:.5;cursor:default;transform:none}
+.b3-status{display:flex;align-items:center;gap:calc(var(--u)*.8);margin-top:calc(var(--u)*1.4);font-size:calc(var(--u)*1.2);text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.b3-status b{font-size:calc(var(--u)*1.25);letter-spacing:.06em}
+.b3-status i{width:1px;height:calc(var(--u)*1.6);background:rgba(255,255,255,.5)}
+/* level ring + hints (top right) */
+.b3-lvlbox{position:absolute;right:calc(var(--u)*3.2);top:var(--top);z-index:3;display:flex;flex-direction:column;align-items:flex-end;gap:calc(var(--u)*.8)}
+.b3-ring{position:relative;width:calc(var(--u)*5.8);height:calc(var(--u)*5.8);border-radius:calc(var(--u)*.9);background:rgba(16,28,70,.78);display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.b3-ring svg{position:absolute;inset:8%;width:84%;height:84%;transform:rotate(-90deg)}
+.b3-ring circle{fill:none;stroke-width:3.4}
+.b3-ring .bg{stroke:rgba(255,255,255,.14)}
+.b3-ring .fg{stroke:url(#b3g);stroke-linecap:round;transition:stroke-dashoffset .8s cubic-bezier(.2,.8,.3,1)}
+.b3-ring span{position:relative;text-align:center;line-height:.95}
+.b3-ring span small{display:block;font-size:calc(var(--u)*1);opacity:.85}
+.b3-ring span b{font-size:calc(var(--u)*2.1)}
+.b3-ring.sm{width:calc(var(--u)*5);height:calc(var(--u)*5)}
+.b3-hint{font-size:calc(var(--u)*1.35);text-shadow:0 1px 3px rgba(0,0,0,.4);text-align:right}
+.b3-hint b{font-family:'BPAnton','Anton',sans-serif;font-size:1.3em;font-weight:400}
+.b3-seals{display:flex;align-items:center;gap:calc(var(--u)*.6);padding:calc(var(--u)*.45) calc(var(--u)*1);border-radius:999px;background:var(--acc);color:#151a36;font-size:calc(var(--u)*1.25);box-shadow:0 0 calc(var(--u)*1.4) rgba(255,227,26,.55);animation:b3-pulse 1.8s ease-in-out infinite}
+@keyframes b3-pulse{50%{box-shadow:0 0 calc(var(--u)*2.4) rgba(255,227,26,.9)}}
+.b3-tip{position:absolute;right:calc(var(--u)*3.2);top:calc(var(--u)*24);z-index:3;display:flex;align-items:center;gap:calc(var(--u)*1);max-width:calc(var(--u)*34);padding:calc(var(--u)*.7) calc(var(--u)*1.1);border-radius:calc(var(--u)*.5);background:rgba(22,40,96,.72);font-size:calc(var(--u)*1.12);line-height:1.35;animation:b3-in .3s ease}
+.b3-tip .lk{font-size:calc(var(--u)*1.6)}
+@keyframes b3-in{from{opacity:0;transform:translateY(calc(var(--u)*.6))}}
+/* tile row */
+.b3-row{position:absolute;left:50%;bottom:calc(var(--u)*9.2);transform:translateX(-50%);z-index:4;display:flex;align-items:flex-end;gap:calc(var(--u)*.9)}
+.b3-t{--c1:#334;--c2:#556;position:relative;width:calc(var(--u)*7.4);height:calc(var(--u)*9.4);padding:0;border:none;cursor:pointer;border-radius:calc(var(--u)*.5);overflow:visible;background:none;color:#fff;transition:transform .18s cubic-bezier(.2,.9,.3,1)}
+.b3-t .bgc{position:absolute;inset:0;border-radius:inherit;overflow:hidden;background:linear-gradient(180deg,var(--c2),var(--c1));box-shadow:0 calc(var(--u)*.35) calc(var(--u)*.9) rgba(0,0,0,.25)}
+.b3-t .bgc::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.45))}
+.b3-t .por{position:absolute;left:50%;bottom:0;height:128%;transform:translateX(-50%);pointer-events:none;z-index:1;-webkit-mask:linear-gradient(180deg,#000 82%,transparent 100%);mask:linear-gradient(180deg,#000 82%,transparent 100%)}
+.b3-t .por img{height:100%;width:auto;display:block}
+.b3-t .ct{position:absolute;left:0;right:0;bottom:calc(var(--u)*.6);z-index:2;text-align:center}
+.b3-t .ct b{display:block;font-size:calc(var(--u)*1.45);text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.b3-t .bar{height:calc(var(--u)*.42);margin:calc(var(--u)*.25) calc(var(--u)*.9) 0;border-radius:99px;background:rgba(0,0,0,.45);overflow:hidden}
+.b3-t .bar i{display:block;height:100%;background:linear-gradient(90deg,#ff9be8,#fff);border-radius:inherit}
+.b3-t .lock{display:inline-grid;place-items:center;width:calc(var(--u)*2);height:calc(var(--u)*2);border-radius:50%;background:rgba(0,0,0,.55);font-size:calc(var(--u)*1.05)}
+.b3-t .pill{display:inline-block;padding:calc(var(--u)*.2) calc(var(--u)*1);border-radius:999px;background:rgba(10,14,40,.85);font-size:calc(var(--u)*1.25)}
+.b3-t .badge{position:absolute;top:calc(var(--u)*.6);right:calc(var(--u)*.6);z-index:3;width:calc(var(--u)*1.7);height:calc(var(--u)*1.7);border-radius:50%;background:#fff;color:#111;font-weight:900;font-size:calc(var(--u)*1.1);display:grid;place-items:center;box-shadow:0 0 0 calc(var(--u)*.18) rgba(0,0,0,.6)}
+.b3-t.locked .por img{filter:brightness(.6) saturate(.6)}
+.b3-t:hover{transform:translateY(calc(var(--u)*-.5))}
+.b3-t.on{width:calc(var(--u)*9.6);height:calc(var(--u)*13.2);transform:rotate(-2deg) translateY(calc(var(--u)*.6))}
+.b3-t.on .bgc{box-shadow:0 0 0 calc(var(--u)*.32) #fff,0 0 0 calc(var(--u)*.5) rgba(255,255,255,.35),0 calc(var(--u)*.6) calc(var(--u)*1.6) rgba(0,0,0,.35)}
+.b3-t.wide{width:calc(var(--u)*15.6)}
+.b3-t.wide.on{width:calc(var(--u)*17.4)}
+.b3-t.duo{width:calc(var(--u)*14.4);display:flex;gap:calc(var(--u)*.25)}
+.b3-t.duo .half{position:relative;flex:1;border-radius:calc(var(--u)*.5);overflow:visible}
+.b3-t.duo.on{width:calc(var(--u)*17)}
+.b3-sep{align-self:center;color:rgba(255,255,255,.75);font-size:calc(var(--u)*1.6);letter-spacing:.2em;margin:0 calc(var(--u)*.4)}
+.b3-foot{position:absolute;left:calc(var(--u)*3.2);bottom:calc(var(--u)*2.4);z-index:3;font-size:calc(var(--u)*1.2);color:rgba(255,255,255,.85);text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.b3-quests{position:absolute;left:50%;bottom:calc(var(--u)*1.6);transform:translateX(-50%);z-index:4;background:none;border:none;color:#fff;cursor:pointer;text-align:center;font-size:calc(var(--u)*1.55);text-shadow:0 1px 3px rgba(0,0,0,.4)}
+.b3-quests span{display:block;font-size:calc(var(--u)*1.1);line-height:.8;animation:b3-bob 1.6s ease-in-out infinite}
+.b3-quests em{font-style:normal;display:inline-grid;place-items:center;min-width:calc(var(--u)*1.7);height:calc(var(--u)*1.7);margin-left:calc(var(--u)*.4);border-radius:999px;background:var(--acc);color:#141a36;font-size:calc(var(--u)*1)}
+@keyframes b3-bob{50%{transform:translateY(calc(var(--u)*.3))}}
+.b3-back{position:absolute;right:calc(var(--u)*3.2);bottom:calc(var(--u)*2.2);z-index:6;display:flex;align-items:center;gap:calc(var(--u)*.6);border:none;cursor:pointer;padding:calc(var(--u)*.55) calc(var(--u)*1.2);border-radius:calc(var(--u)*.6);background:rgba(16,22,56,.78);color:#fff;font-size:calc(var(--u)*1.4)}
+.b3-back kbd{font:inherit;font-size:.6em;padding:.1em .35em;border-radius:.25em;background:#fff;color:#111}
+.b3-back.lt{background:rgba(255,236,210,.9);color:#2a1a0a}
+/* ── the page view ── */
+.b3-pv{position:absolute;inset:0;z-index:8;display:none;background:linear-gradient(180deg,var(--pc1) 0%,var(--pc2) 70%);--pc1:#3a1d8f;--pc2:#e0479e}
+.b3-pv.open{display:block;animation:b3-pvin .32s cubic-bezier(.2,.9,.3,1)}
+@keyframes b3-pvin{from{opacity:0;transform:scale(1.02)}}
+.b3-pv .b3-floor .sand{clip-path:polygon(0 44%,24% 56%,52% 68%,74% 56%,100% 28%,100% 100%,0 100%)}
+.b3-pv .b3-floor .s2{background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--pc1) 70%,#fff))}
+.b3-sel{position:absolute;left:50%;top:var(--top);transform:translateX(-50%);z-index:6;display:flex;align-items:center;gap:calc(var(--u)*1)}
+.b3-sel .lane{display:flex;gap:calc(var(--u)*.15);padding:calc(var(--u)*.3);border-radius:999px;background:rgba(10,14,40,.55)}
+.b3-av{position:relative;width:calc(var(--u)*3.6);height:calc(var(--u)*3.6);border-radius:50%;overflow:hidden;border:none;padding:0;cursor:pointer;background:linear-gradient(180deg,var(--c2),var(--c1))}
+.b3-av img{position:absolute;left:50%;top:6%;height:190%;transform:translateX(-50%)}
+.b3-av.on{box-shadow:0 0 0 calc(var(--u)*.25) #fff,0 0 calc(var(--u)*1) rgba(255,255,255,.6);width:calc(var(--u)*4.2);height:calc(var(--u)*4.2)}
+.b3-av .lk{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.45);font-size:calc(var(--u)*1.3)}
+.b3-arrow{width:calc(var(--u)*2.6);height:calc(var(--u)*2.6);border-radius:calc(var(--u)*.5);border:none;cursor:pointer;background:rgba(255,255,255,.85);color:#222;font-size:calc(var(--u)*1.4);font-weight:900}
+.b3-arrow:disabled{opacity:.35;cursor:default}
+.b3-info{position:absolute;left:calc(var(--u)*3.2);top:calc(var(--top) + var(--u)*5.6);z-index:5;max-width:calc(var(--u)*34)}
+.b3-info .k{font-size:calc(var(--u)*1.45);opacity:.9}
+.b3-info h3{margin:calc(var(--u)*.2) 0 calc(var(--u)*.5);font-size:calc(var(--u)*4);line-height:.95;text-shadow:0 calc(var(--u)*.18) 0 rgba(0,0,0,.18)}
+.b3-info p{margin:0;font-size:calc(var(--u)*1.32);line-height:1.4;text-shadow:0 1px 2px rgba(0,0,0,.3)}
+.b3-info .tags{display:flex;gap:calc(var(--u)*.5);margin-top:calc(var(--u)*.9);flex-wrap:wrap}
+.b3-tag{padding:calc(var(--u)*.2) calc(var(--u)*.8);border-radius:calc(var(--u)*.35);font-size:calc(var(--u)*1.05);background:rgba(0,0,0,.35)}
+.b3-tag.free{background:#22c55e;color:#06260f}
+.b3-tag.pass{background:#ffe31a;color:#151a36}
+.b3-tag.prem{background:linear-gradient(90deg,#ffd6f5,#c4b5fd);color:#2b0f43}
+.b3-act{position:absolute;right:calc(var(--u)*3.2);top:calc(var(--top) + var(--u)*8.6);z-index:5;width:calc(var(--u)*18.6);display:flex;flex-direction:column;gap:calc(var(--u)*.8)}
+.b3-act .st{text-align:center;font-size:calc(var(--u)*2.4);line-height:1;margin-bottom:calc(var(--u)*.3)}
+.b3-act .st.ok{color:#4ade80;text-shadow:0 0 calc(var(--u)*1) rgba(74,222,128,.5)}
+.b3-act .st.go{color:#ffe31a}
+.b3-act .st.no{color:rgba(255,255,255,.75)}
+.b3-act .b3-btn{width:100%;background:rgba(255,234,252,.92);color:#2b1340;font-size:calc(var(--u)*1.45)}
+.b3-act .b3-btn.cl{background:var(--acc);color:#151a36;font-size:calc(var(--u)*1.7);box-shadow:0 0 calc(var(--u)*1.4) rgba(255,227,26,.55)}
+.b3-act .why{font-size:calc(var(--u)*1.12);line-height:1.4;text-align:center;padding:calc(var(--u)*.6) calc(var(--u)*.8);border-radius:calc(var(--u)*.5);background:rgba(10,14,40,.5)}
+.b3-art{position:absolute;left:50%;top:calc(var(--top) + var(--u)*5.4);bottom:calc(var(--u)*18.6);transform:translateX(-50%);z-index:4;display:flex;align-items:center;justify-content:center;width:calc(var(--u)*46);pointer-events:none}
+.b3-art.swap>*{animation:b3-pop .42s cubic-bezier(.2,1.3,.4,1)}
+@keyframes b3-pop{from{opacity:0;transform:scale(.86) translateY(calc(var(--u)*1.4))}}
+.b3-art .card{height:100%;max-height:calc(var(--u)*34);aspect-ratio:63/88;border-radius:calc(var(--u)*.8);overflow:hidden;position:relative;box-shadow:0 calc(var(--u)*1.2) calc(var(--u)*3) rgba(0,0,0,.45),0 0 calc(var(--u)*3) rgba(255,255,255,.25)}
+.b3-art .card img{width:100%;height:100%;object-fit:cover;display:block}
+.b3-art .card .holo{position:absolute;inset:0;mix-blend-mode:color-dodge;opacity:.55;background:linear-gradient(115deg,transparent 20%,rgba(255,80,120,.55) 35%,rgba(255,220,150,.5) 45%,rgba(120,200,255,.5) 55%,transparent 70%);background-size:220% 220%;animation:b3-holo 3.2s ease-in-out infinite alternate}
+@keyframes b3-holo{to{background-position:100% 100%}}
+.b3-art .char{height:112%;align-self:flex-end;filter:drop-shadow(0 calc(var(--u)*1) calc(var(--u)*2) rgba(0,0,0,.35))}
+.b3-art .back{height:92%;aspect-ratio:63/88;border-radius:calc(var(--u)*.8);object-fit:cover;box-shadow:0 calc(var(--u)*1) calc(var(--u)*3) rgba(0,0,0,.45)}
+.b3-art .mat{width:100%;aspect-ratio:16/9;border-radius:calc(var(--u)*1);background-size:cover;background-position:center;box-shadow:0 calc(var(--u)*1) calc(var(--u)*3) rgba(0,0,0,.45);transform:perspective(calc(var(--u)*80)) rotateX(22deg)}
+.b3-art .coin{width:calc(var(--u)*20);height:calc(var(--u)*20);object-fit:contain;filter:drop-shadow(0 0 calc(var(--u)*3) rgba(255,255,255,.55));animation:b3-spin 5s ease-in-out infinite}
+@keyframes b3-spin{50%{transform:rotateY(25deg) translateY(calc(var(--u)*-.6))}}
+.b3-art .amt{position:absolute;bottom:4%;font-size:calc(var(--u)*3);text-shadow:0 calc(var(--u)*.2) 0 rgba(0,0,0,.25)}
+.b3-art .frm{width:calc(var(--u)*20);height:calc(var(--u)*20);border-radius:50%;display:grid;place-items:center;font-size:calc(var(--u)*9);background:radial-gradient(circle,#2a2f55,#11142a);box-shadow:0 0 0 calc(var(--u)*1) var(--r1),0 0 calc(var(--u)*4) var(--r2),inset 0 0 calc(var(--u)*2) var(--r2)}
+.b3-art .plt{min-width:calc(var(--u)*32);padding:calc(var(--u)*1.6) calc(var(--u)*3);border-radius:calc(var(--u)*.6);font-size:calc(var(--u)*2.6);text-align:center;background:var(--pb);box-shadow:inset 0 0 0 calc(var(--u)*.2) var(--pl),0 calc(var(--u)*1) calc(var(--u)*3) rgba(0,0,0,.4)}
+.b3-art .ttl{font-size:calc(var(--u)*4.2);color:#fff;text-shadow:0 0 calc(var(--u)*.6) var(--tc),0 0 calc(var(--u)*2.2) var(--tc),0 calc(var(--u)*.3) 0 rgba(0,0,0,.45);text-align:center;line-height:1;padding:calc(var(--u)*1.2) calc(var(--u)*2.4);border-radius:calc(var(--u)*.8);background:rgba(10,12,34,.55)}
+.b3-art .ttl small{display:block;font-size:.34em;color:#fff;opacity:.85;margin-bottom:.4em;text-shadow:none}
+.b3-art .ent{width:calc(var(--u)*22);height:calc(var(--u)*22);border-radius:50%;display:grid;place-items:center;font-size:calc(var(--u)*10);background:radial-gradient(circle,var(--ec2),transparent 70%);animation:b3-spin 4s ease-in-out infinite}
+.b3-art .pack{height:84%;filter:drop-shadow(0 calc(var(--u)*1) calc(var(--u)*2) rgba(0,0,0,.4))}
+.b3-rw{position:absolute;left:50%;bottom:calc(var(--u)*6.6);transform:translateX(-50%);z-index:6;display:flex;align-items:flex-end;gap:calc(var(--u)*.9)}
+.b3-r{--rc:#fff;position:relative;width:calc(var(--u)*8.8);height:calc(var(--u)*10.4);padding:0;border:none;cursor:pointer;border-radius:calc(var(--u)*.6);overflow:hidden;background:linear-gradient(160deg,color-mix(in srgb,var(--pc2) 70%,#fff),var(--pc2));box-shadow:0 calc(var(--u)*.3) calc(var(--u)*.9) rgba(0,0,0,.25);transition:transform .15s}
+.b3-r:hover{transform:translateY(calc(var(--u)*-.4))}
+.b3-r.big{width:calc(var(--u)*16.4);overflow:visible;border-radius:calc(var(--u)*.6)}
+.b3-r.big .rbg{position:absolute;inset:0;border-radius:inherit;background:inherit;overflow:hidden}
+.b3-r.on{box-shadow:0 0 0 calc(var(--u)*.3) #fff,0 0 0 calc(var(--u)*.55) rgba(255,255,255,.4),0 calc(var(--u)*.5) calc(var(--u)*1.4) rgba(0,0,0,.35);transform:translateY(calc(var(--u)*-.6))}
+.b3-r .ri{position:absolute;inset:8%;display:flex;align-items:center;justify-content:center}
+.b3-r .ri img{max-width:100%;max-height:100%;object-fit:contain;border-radius:calc(var(--u)*.3)}
+.b3-r.big .ri{inset:auto 0 0 0;height:122%;align-items:flex-end}
+.b3-r.big .ri img{max-height:100%;border-radius:0}
+.b3-r .ri .em{font-size:calc(var(--u)*4)}
+.b3-r .ri .txt{font-size:calc(var(--u)*1.25);line-height:1.1;text-align:center;color:#fff!important;padding:calc(var(--u)*.5);border-radius:calc(var(--u)*.3);background:rgba(10,12,34,.55);text-shadow:0 0 calc(var(--u)*.6) var(--tc,#e8c570)}
+.b3-r .ri .mini-ring{width:70%;aspect-ratio:1;border-radius:50%;background:#1c2142;box-shadow:0 0 0 calc(var(--u)*.4) var(--r1),0 0 calc(var(--u)*1.2) var(--r2)}
+.b3-r .ri .mini-plate{width:100%;padding:12% 4%;border-radius:calc(var(--u)*.3);background:var(--pb);box-shadow:inset 0 0 0 1px var(--pl);font-size:calc(var(--u)*1);text-align:center}
+.b3-r .ok{position:absolute;top:calc(var(--u)*.5);left:calc(var(--u)*.5);z-index:2;width:calc(var(--u)*1.7);height:calc(var(--u)*1.7);border-radius:50%;background:#22c55e;color:#fff;display:grid;place-items:center;font-size:calc(var(--u)*1.05);font-weight:900;box-shadow:0 0 0 calc(var(--u)*.15) #fff}
+.b3-r .fr{position:absolute;top:calc(var(--u)*.55);right:calc(var(--u)*.5);z-index:2;padding:calc(var(--u)*.1) calc(var(--u)*.5);border-radius:calc(var(--u)*.3);background:#22c55e;color:#06260f;font-size:calc(var(--u)*.85)}
+.b3-r .lk{position:absolute;right:calc(var(--u)*.5);bottom:calc(var(--u)*.5);z-index:2;width:calc(var(--u)*1.8);height:calc(var(--u)*1.8);border-radius:50%;background:rgba(0,0,0,.6);display:grid;place-items:center;font-size:calc(var(--u)*.95)}
+.b3-r.claimed .ri{opacity:.95}
+.b3-r.nope .ri{filter:saturate(.55) brightness(.8)}
+.b3-r.flash{animation:b3-flash .7s ease}
+@keyframes b3-flash{0%{filter:brightness(2.2)}100%{filter:none}}
+.b3-pager{position:absolute;left:50%;bottom:calc(var(--u)*2.2);transform:translateX(-50%);z-index:6;display:flex;align-items:center;gap:calc(var(--u)*1.4);font-size:calc(var(--u)*1.6)}
+.b3-pager .b3-arrow{background:rgba(255,220,200,.88)}
+.b3-stamp{position:absolute;left:50%;top:42%;z-index:9;transform:translate(-50%,-50%) rotate(-6deg);font-size:calc(var(--u)*6);color:#4ade80;text-shadow:0 0 calc(var(--u)*2) rgba(74,222,128,.8),0 calc(var(--u)*.3) 0 rgba(0,0,0,.4);pointer-events:none;animation:b3-stamp 1.1s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes b3-stamp{0%{opacity:0;transform:translate(-50%,-50%) rotate(-6deg) scale(2)}25%{opacity:1;transform:translate(-50%,-50%) rotate(-6deg) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) rotate(-6deg) scale(1.05)}}
+.b3-spark{position:absolute;z-index:9;width:calc(var(--u)*.7);height:calc(var(--u)*.7);border-radius:50%;background:#fff;box-shadow:0 0 calc(var(--u)*1) #fff;pointer-events:none}
+/* ── dialogs (get the pass, buy levels, quests, choose a set) ── */
+.b3-dlg{position:absolute;inset:0;z-index:20;display:none;align-items:center;justify-content:center;background:rgba(6,10,30,.72);backdrop-filter:blur(4px)}
+.b3-dlg.open{display:flex;animation:b3-fade .25s ease}
+@keyframes b3-fade{from{opacity:0}}
+.b3-dbox{width:min(92vw,calc(var(--u)*78));max-height:86vh;overflow:auto;padding:calc(var(--u)*2.2);border-radius:calc(var(--u)*1.2);background:linear-gradient(180deg,#16307a,#0c1640);box-shadow:0 calc(var(--u)*2) calc(var(--u)*5) rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.12);position:relative}
+.b3-dbox h4{margin:0 0 calc(var(--u)*1.2);font-size:calc(var(--u)*3);line-height:1}
+.b3-dx{position:absolute;top:calc(var(--u)*1);right:calc(var(--u)*1);width:calc(var(--u)*2.8);height:calc(var(--u)*2.8);border-radius:50%;border:none;background:rgba(255,255,255,.12);color:#fff;font-size:calc(var(--u)*1.4);cursor:pointer}
+.b3-offers{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--u)*1.4)}
+.b3-offer{padding:calc(var(--u)*1.6);border-radius:calc(var(--u)*.9);background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.03));box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);display:flex;flex-direction:column}
+.b3-offer.prem{background:linear-gradient(180deg,rgba(255,170,240,.28),rgba(120,70,220,.18));box-shadow:inset 0 0 0 2px rgba(255,214,245,.6)}
+.b3-offer b{font-size:calc(var(--u)*2.3)}
+.b3-offer .pr{display:flex;align-items:center;gap:calc(var(--u)*.6);margin:calc(var(--u)*.6) 0 calc(var(--u)*1);font-size:calc(var(--u)*2)}
+.b3-offer .pr img{width:calc(var(--u)*2.2);height:calc(var(--u)*2.2);border-radius:50%}
+.b3-offer ul{margin:0 0 calc(var(--u)*1.4);padding-left:1.1em;font-size:calc(var(--u)*1.22);line-height:1.55;flex:1}
+.b3-offer .b3-btn{width:100%}
+.b3-own{display:inline-block;padding:calc(var(--u)*.6) calc(var(--u)*1.2);border-radius:calc(var(--u)*.5);background:rgba(74,222,128,.2);color:#4ade80;text-align:center}
+.b3-lvls{display:flex;align-items:center;justify-content:center;gap:calc(var(--u)*2);margin:calc(var(--u)*1.4) 0}
+.b3-lvls .n{font-size:calc(var(--u)*5);min-width:calc(var(--u)*8);text-align:center}
+.b3-lvls .b3-arrow{width:calc(var(--u)*4);height:calc(var(--u)*4);font-size:calc(var(--u)*2.2)}
+.b3-quick{display:flex;justify-content:center;gap:calc(var(--u)*.8);margin-bottom:calc(var(--u)*1.4)}
+.b3-quick button{border:none;cursor:pointer;padding:calc(var(--u)*.4) calc(var(--u)*1.2);border-radius:999px;background:rgba(255,255,255,.14);color:#fff;font-size:calc(var(--u)*1.2)}
+.b3-sum{display:flex;justify-content:space-between;font-size:calc(var(--u)*1.4);padding:calc(var(--u)*1) 0;border-top:1px solid rgba(255,255,255,.15);margin-bottom:calc(var(--u)*1.2)}
+.b3-q{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--u)*1.6)}
+.b3-q .missions-tab-col{background:rgba(255,255,255,.05);border-radius:calc(var(--u)*.8);padding:calc(var(--u)*1)}
+.b3-choose{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--u)*1.4)}
+.b3-cset{position:relative;height:calc(var(--u)*28);border:none;cursor:pointer;border-radius:calc(var(--u)*1);overflow:hidden;background:linear-gradient(180deg,var(--c2),var(--c1));color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.2);transition:transform .15s}
+.b3-cset:hover{transform:translateY(calc(var(--u)*-.5));box-shadow:inset 0 0 0 3px #fff}
+.b3-cset img{position:absolute;left:50%;bottom:0;height:96%;transform:translateX(-50%)}
+.b3-cset b{position:absolute;left:0;right:0;bottom:calc(var(--u)*1.2);font-size:calc(var(--u)*2.4);text-shadow:0 2px 4px rgba(0,0,0,.6)}
+.b3-seals-m,.b3-foot-m{display:none}
+.b3-ended{position:absolute;left:50%;top:calc(var(--top) + var(--u)*.4);transform:translateX(-50%);z-index:7;padding:calc(var(--u)*.4) calc(var(--u)*1.4);border-radius:999px;background:#b91c1c;font-size:calc(var(--u)*1.3)}
+/* phones in portrait: stack it */
+@media (max-aspect-ratio:4/5){
+  .b3{--u:2.05vw;--top:58px}
+  .b3-brand h1{font-size:calc(var(--u)*4.7)!important}.b3-brand h2{font-size:calc(var(--u)*2.8)!important}.b3-crest{width:calc(var(--u)*7)!important;height:calc(var(--u)*7)!important}
+  .b3-lvlbox{top:calc(var(--top) + var(--u)*.4);right:calc(var(--u)*4)}.b3-lvlbox .b3-seals{display:none}
+  .b3-head{left:calc(var(--u)*4);right:calc(var(--u)*4)}
+  .b3-seals-m{display:inline-flex;margin-top:calc(var(--u)*1.6);animation:none}
+  .b3-foot-m{display:block;margin-top:calc(var(--u)*1.2);font-size:calc(var(--u)*1.9);opacity:.85}
+  .b3-foot{display:none}
+  .b3-pv .b3-lvlbox{display:none}
+  .b3-sel{left:0;right:0;transform:none;padding:0 calc(var(--u)*3);justify-content:center}.b3-sel .lane{overflow-x:auto;max-width:74vw;scrollbar-width:none}
+  .b3-info p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .b3-info .tags{margin-top:calc(var(--u)*.8)}
+  .b3-hero{height:58vh;bottom:22vh;transform:translateX(-50%)}
+  @keyframes b3-hero{from{opacity:0;transform:translateX(-50%) translateY(3vh)}}
+  .b3-btn{font-size:calc(var(--u)*2.3);padding:calc(var(--u)*1.1) calc(var(--u)*2)}
+  .b3-status{font-size:calc(var(--u)*2.2)}.b3-status b{font-size:calc(var(--u)*2.3)}
+  .b3-ring{width:calc(var(--u)*9);height:calc(var(--u)*9)}.b3-ring span small{font-size:calc(var(--u)*1.6)}.b3-ring span b{font-size:calc(var(--u)*3.2)}
+  .b3-hint{display:none}.b3-seals{font-size:calc(var(--u)*2.2)}
+  .b3-tip{left:calc(var(--u)*4);right:calc(var(--u)*4);top:auto;bottom:calc(20vh + var(--u)*20);max-width:none;font-size:calc(var(--u)*2.1)}
+  .b3-row{left:0;right:0;transform:none;bottom:calc(var(--u)*11);padding:calc(var(--u)*3) calc(var(--u)*4) calc(var(--u)*1);overflow-x:auto;justify-content:flex-start;scrollbar-width:none}
+  .b3-row::-webkit-scrollbar{display:none}
+  .b3-t{flex:none;width:calc(var(--u)*13);height:calc(var(--u)*17)}.b3-t.on{width:calc(var(--u)*15.5);height:calc(var(--u)*20)}
+  .b3-t.wide{width:calc(var(--u)*26)}.b3-t.wide.on{width:calc(var(--u)*28)}.b3-t.duo{width:calc(var(--u)*24)}.b3-t.duo.on{width:calc(var(--u)*27)}
+  .b3-t .ct b{font-size:calc(var(--u)*2.6)}.b3-t .pill{font-size:calc(var(--u)*2.2)}
+  .b3-quests{font-size:calc(var(--u)*2.8);bottom:calc(var(--u)*2.2)}
+  .b3-info{top:calc(var(--top) + var(--u)*8.4);left:calc(var(--u)*4);right:calc(var(--u)*4);max-width:none}.b3-info h3{font-size:calc(var(--u)*5.2)}.b3-info .k{font-size:calc(var(--u)*2.2)}.b3-info p{font-size:calc(var(--u)*2.1)}
+  .b3-art{top:calc(var(--top) + var(--u)*33);bottom:calc(var(--u)*42);width:90vw}
+  .b3-act{left:calc(var(--u)*4);right:calc(var(--u)*4);width:auto;top:auto;bottom:calc(var(--u)*31);flex-direction:row;flex-wrap:wrap;justify-content:center;gap:calc(var(--u)*1)}
+  .b3-act .why{display:none}
+  .b3-act .st{width:100%;font-size:calc(var(--u)*3.4);margin:0}.b3-act .b3-btn{flex:1 1 40%;font-size:calc(var(--u)*2.4);padding:calc(var(--u)*1) calc(var(--u)*1.2)}
+  .b3-rw{left:0;right:0;transform:none;bottom:calc(var(--u)*10.5);padding:calc(var(--u)*2) calc(var(--u)*4) 0;overflow-x:auto;justify-content:flex-start;scrollbar-width:none}
+  .b3-r{flex:none;width:calc(var(--u)*13);height:calc(var(--u)*16)}.b3-r.big{width:calc(var(--u)*21)}
+  .b3-pager{font-size:calc(var(--u)*2.6)}.b3-arrow{width:calc(var(--u)*5);height:calc(var(--u)*5);font-size:calc(var(--u)*2.4)}
+  .b3-av{width:calc(var(--u)*6.4);height:calc(var(--u)*6.4)}.b3-av.on{width:calc(var(--u)*7.4);height:calc(var(--u)*7.4)}
+  .b3-back{font-size:calc(var(--u)*2.2);right:calc(var(--u)*4)}.b3-pager{left:calc(var(--u)*4);transform:none}
+  .b3-offers,.b3-q,.b3-choose{grid-template-columns:1fr}
+  .b3-dbox{width:94vw}.b3-dbox h4{font-size:calc(var(--u)*5)}.b3-offer b{font-size:calc(var(--u)*4)}.b3-offer .pr{font-size:calc(var(--u)*3.4)}.b3-offer ul{font-size:calc(var(--u)*2.4)}
+  .b3-cset{height:calc(var(--u)*46)}
+}
+@media (prefers-reduced-motion:reduce){ .b3-cloud,.b3-seals,.b3-quests span,.b3-art .coin,.b3-art .ent,.b3-art .card .holo{animation:none} }
+/* ── admin season editor ── */
+.b3-edit{position:absolute;inset:0;z-index:30;display:none;overflow:auto;background:rgba(6,9,24,.97);padding:64px 18px 30px;font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;color:#e5e7eb;user-select:text}
+.b3-edit.open{display:block}
+.b3e{max-width:1400px;margin:0 auto}
+.b3e-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.b3e-top h4{margin:0;font-size:30px}
+.b3e-note{color:#9ca3af;font-size:12px}
+.b3e-acts{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+.b3e-acts button,.b3e-pacts button,.b3e-add{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;padding:7px 12px;border-radius:6px;cursor:pointer;font-weight:700;font-size:12px;letter-spacing:.04em}
+.b3e-acts button.go{background:#ffe31a;color:#151a36;border-color:#ffe31a}
+.b3e-box .b3e-acts{margin-left:0}
+.b3e-grid{display:grid;grid-template-columns:340px 1fr;gap:14px;align-items:start}
+.b3e-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;min-width:0}
+.b3e-box h5{margin:14px 0 8px;font-size:12px;letter-spacing:.16em;color:#ffd84a}
+.b3e-box h5:first-child{margin-top:0}
+.b3e-box h5 small{letter-spacing:0;color:#9ca3af;font-weight:400}
+.b3e-f{display:flex;flex-direction:column;gap:3px;margin-bottom:7px;min-width:0}
+.b3e-f span{font-size:11px;color:#9ca3af}
+.b3e-f input,.b3e-f select{background:#0d1330;border:1px solid rgba(255,255,255,.16);color:#fff;border-radius:5px;padding:6px 8px;font-size:12px;min-width:0;width:100%}
+.b3e-f input[type=color]{padding:2px;height:30px}
+.b3e-ck{display:flex;align-items:center;gap:6px;font-size:12px;margin:4px 0 8px}
+.b3e-cols{display:grid;grid-template-columns:1fr 1fr;gap:0 8px}
+.b3e-pages{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+.b3e-pt{flex:none;width:96px;height:118px;position:relative;border:none;border-radius:8px;overflow:hidden;cursor:pointer;background:linear-gradient(180deg,var(--c2,#334),var(--c1,#112));color:#fff;padding:0}
+.b3e-pt img{position:absolute;left:50%;bottom:0;height:120%;transform:translateX(-50%)}
+.b3e-pt b{position:absolute;left:4px;right:4px;bottom:16px;font-size:12px;text-shadow:0 1px 3px #000}
+.b3e-pt small{position:absolute;left:0;right:0;bottom:3px;font-size:10px;opacity:.85;text-shadow:0 1px 3px #000}
+.b3e-pt.on{box-shadow:0 0 0 3px #fff}
+.b3e-pt.add{background:rgba(255,255,255,.06);font-size:28px}
+.b3e-page{margin-top:10px}
+.b3e-row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 10px}
+.b3e-pacts{display:flex;gap:8px;margin:4px 0 6px}
+.b3e-pacts .del,.b3e-ra .del{color:#fca5a5;border-color:rgba(248,113,113,.4)}
+.b3e-rws{display:flex;flex-direction:column;gap:8px}
+.b3e-rw{display:grid;grid-template-columns:74px 1fr auto;gap:10px;align-items:start;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px}
+.b3e-th{width:74px;height:92px;border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(160deg,color-mix(in srgb,var(--pc2) 70%,#fff),var(--pc2));--u:9px}
+.b3e-th img{max-width:100%;max-height:100%;object-fit:contain}
+.b3e-th .em{font-size:34px}.b3e-th .txt{font-size:11px;text-align:center;padding:4px}.b3e-th .mini-ring{width:60%;aspect-ratio:1;border-radius:50%;background:#1c2142;box-shadow:0 0 0 4px var(--r1),0 0 10px var(--r2)}.b3e-th .mini-plate{font-size:9px;padding:6px;border-radius:4px;background:var(--pb)}
+.b3e-rf{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0 10px;min-width:0}
+.b3e-ra{display:flex;flex-direction:column;gap:4px}
+.b3e-ra button{width:30px;height:28px;border-radius:5px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;cursor:pointer}
+.b3e-add{margin-top:8px}
+@media (max-width:900px){ .b3e-grid{grid-template-columns:1fr} .b3e-row3{grid-template-columns:1fr} }
+
 /* ═══ TRIAL OF COURTS (build 10.18) — the gauntlet: midnight stone, gold leaf, arched court doors ═══ */
 #trial-screen{--tr-ink:#efe8d8;--tr-mute:#9aa3c0;--tr-dim:#5f6888;--tr-gold:#e8c570;--tr-gold2:#f7e3a6;--tr-blood:#b91c3c;--tr-line:rgba(232,197,112,.22);--tr-panel:rgba(8,12,28,.82);
   padding:58px 16px 22px;color:var(--tr-ink);min-height:100vh;box-sizing:border-box}
@@ -8966,6 +9252,8 @@ const GODOT_SYNC=[
       "CELESTIAL SURGE (Virora Surfacer MUI, activated): 5 Energy (her color, Purple), once per turn, paid → doesn't tap. openEnemyTargetPicker over every opposing character (2v2: both enemies' fields) → dealDamage 5 (Nullify applies). If that target left the field, a second picker: Freeze another opposing character that isn't already Frozen (STATUS_META.freeze.dur); none left → log only. AI picks both targets itself (aiPickEnemyTarget). No opposing characters → the ability is refunded (_abilityUndo) and not used.",
       "SILENT HORIZON (Virora Surfacer MUI, activated): 4 Energy, ONCE PER GAME (limit 'once_per_game' — the lock survives the per-turn reset), paid → doesn't tap. Freezes every opposing character (2v2: both enemies). No opposing characters → refunded, not spent. AI: only uses it when 2+ enemies that aren't Frozen / Vortex Shielded would be hit (score 10 + 5 per enemy + 3 per enemy that could attack next turn)."],
     screens:[
+      "SAME BUILD 10.18 — BATTLE PASS v3 (replaces the 3-track tier list; still behind feature_flags.battle_pass_enabled). LAYOUT like Fortnite's current pass, built on a 16:9 stage that scales with the window (unit --u = min(1vw, 1.78vh); phones in portrait get a stacked layout). Font: Anton (embedded), uppercase, italic for headings. MAIN SCREEN: sky gradient (theme.sky1→sky2) with drifting clouds and glints, a gold 'court floor' wedge across the bottom with diagonal light streaks; the FOCUSED page's character cut-out stands centre (fades/slides in when the focus changes). Top-left: gold star crest + 'BATTLE PASS' + season line (seasonTitle, else seasonLabel 'SEASON 1'); buttons 'BUY LEVELS' (yellow) and 'GET THE BATTLE PASS' (light blue) / 'UPGRADE TO PREMIUM' (pink) / none when Premium; a status line (FREE PASS · 🛡 BATTLE PASS · 👑 PREMIUM PASS). Top-right: the LVL ring (XP progress), a hint ('Choose a Set to Unlock at LVL 30' / 'Every level gives you 1 claim' / max-level text) and a pulsing yellow '★ N CLAIMS READY'. A tip box with 🔒 shows why the focused tile is locked. Tile row (bottom): one portrait tile per main page (gradient c2→c1, cut-out spilling over the top, 'n/total' + bar when open, 🔒 when locked, white '!' badge when something is claimable); the focused tile is larger, tilted −2° with a white outline; then the 'Choose a Set' pair (two halves; pill 'LVL 30' / 'CHOOSE A SET' / 'n/total'); '•••'; the wide Bonus tile ('★ BONUS REWARDS'). Bottom-left 'Available through MMM DD YYYY' (start + duration), bottom-centre 'QUESTS ⌄' (yellow count of claimable quests) opens the daily/weekly quests dialog (the existing mission lists), bottom-right 'ESC BACK'. Tap a tile to focus it, tap again (or Enter) to open its page; ←/→ move the focus. PAGE VIEW: background in the page's colours; top-centre the page selector (round portraits, 🔒 on locked pages, ‹ ›); top-right the LVL ring; left the reward type ('ALT-ART CARD · MYTHIC', 'CARD BACK', 'CURRENCY'…), name and text, tags (FREE / BATTLE PASS / CHOOSE A SET / PREMIUM · BONUS, '<page> · n/total'); centre the reward big (card with a holo sheen, card back, tilted playmat, ringed avatar, name plate, glowing title, entrance, Celestium coin / shard gem / pack with the amount); right the state + buttons: 'CLAIMED' + VIEW REWARD (cards, backs, mats) + EQUIP/EQUIPPED (cosmetics) · 'READY TO CLAIM' + 'CLAIM · ★1' · 'CHOOSE A SET' + 'CHOOSE THIS SET' · 'LOCKED' + GET THE BATTLE PASS / GET PREMIUM + the reason · 'LEVEL UP TO CLAIM' + BUY LEVELS · 'SEASON ENDED'. Bottom: the page's rewards, 6 per sub-page (the first card reward is a wide tile with the character), green ✓ when claimed, green 'FREE' flag, 🔒 when locked; pager '‹ 1/2 ›'; 'ESC BACK'. Claiming flashes the tile, stamps 'CLAIMED!' and throws sparks. DIALOGS: GET THE PASS (two offer cards with prices and bullet lists, OWNED when owned), BUY LEVELS (− n +, +1/+5/+10/+25/MAX, LVL a → b, cost), the pass-unlocked splash, VIEW REWARD lightbox for backs/mats (cards open the normal full card view). Level-up popup now says 'LEVEL N!' + 'k reward claims ready' and opens the pass when tapped. ADMIN: Admin → Battle Pass Editor now opens a season editor over the pass: season name/label/ID/start/length/max level/XP per win+match, prices, rules (premium levels, claims to open the next page, Choose-a-Set levels, XP per extra claim), main-screen colours, START / END SEASON, RESET MY PROGRESS, USE PLACEHOLDER PAGES; pages as tabs (kind main/choice/bonus, name, short name, cut-out link, two colours, level gate; move/delete/add) each with its reward rows (type card/cosmetic/celestium/shards/pack + the fields for that type, FREE, name/text overrides; up/down/delete/add). PREVIEW applies locally, SAVE writes app_settings 'battle_pass_config'.",
+      "BATTLE PASS v3 DATA. Config keys added to battle_pass_config (missing → defaults; old keys stay): seasonLabel ('SEASON 1'), seasonTitle (''), theme {sky1 #0a3fb8, sky2 #2fa9ff, floor1 #f0c56a, floor2 #c8923a}, prices {pass 3500, premium 6000, upgrade 2500, level 150}, premiumLevels 10, unlockAfter 6, choiceLevel 30, choiceBothLevel 40, bonusXpPerSeal 1500, pages[] = {id, kind 'main'|'choice'|'bonus', name, short, cid, art (cut-out URL), c1, c2, acc, gate, rewards[]}; reward = {id, type 'card'|'cosmetic'|'celestium'|'shards'|'pack', free?, name?, desc?, cid+finish (card), cos {id,type back|mat|frame|plate|title|entrance, name, img | text+color | ring[2] | bg+line | fx+icon+c+glow} (cosmetic), amount (+ pack 'basic'|'premium')}. PLACEHOLDER SEASON (bp3Defaults): main pages p1 Virora (Surfacer MUI) virora_surfacer_mui_sr_bse · p2 Crystora crystora_bse (gate 10) · p3 Vuruna (SSB) vuruna_ssb_bse (18) · p4 Elise elise_bse (26) · p5 Falcore falcore_bse (34); choice c1 Surana (SSG) surana_ssg_bse / c2 Theia theia_bse; bonus b1 Remmel remmel_bse. Cut-outs: scans repo 'Battle Pass/Placeholders/bp_<key>.webp' (virora_mui, crystora, vuruna_ssb, elise, falcore, surana_ssg, theia, remmel). Main page rewards (8): the character's card in Ruby Holo (alt-art placeholder) · card back (img = their Main Menu art) · title '<SHORT>'S CHAMPION' FREE · 300 Celestium FREE · playmat (same art) · ring frame (accent) · name plate (odd pages) or 2 Basic Packs (even pages) · 400 Celestium. Choice pages (5): card (Ruby) · back · title '<SHORT>'S CHOSEN' · frame · 500 Court Shards. Bonus (6): card (Ruby) · back · mat · entrance (fx abyss) · title 'COURT SOVEREIGN' · 1000 Celestium. Cosmetic ids 'bp_s1_<page>_<n>'; they join cosCatalog as tier 'exclusive', unlock {kind:'pass'} (shown in the shop as locked 'Battle Pass') when the pass is switched on or you own them. RULES: claims earned = level (+1 per bonusXpPerSeal XP past maxTier); claims spent = rewards claimed (every claim costs 1, FREE ones too). Main page k (k≥2) opens when you have claimed ≥ unlockAfter rewards on page k−1 OR level ≥ gate (default (k−1)×8). Choice pages need the Battle Pass: at choiceLevel you choose one ('CHOOSE THIS SET' → player.choice), the other opens at choiceBothLevel (Premium: both at choiceLevel). Bonus page: Premium only, opens once every non-bonus reward is claimed. Non-FREE main rewards need the Battle Pass; buying the pass later lets saved claims be spent. Season ended (ended flag or start+duration passed) → no claims, no purchases. PURCHASES (Celestium): Battle Pass prices.pass; Premium prices.premium, or prices.upgrade from the Battle Pass; Premium adds premiumLevels levels (XP set to the start of the new level, keeping progress into it). Buy Levels prices.level each, up to the max level. GRANTS: card → addVariantToCollection(cid, finish, 1) + save + markRegistered; cosmetic → grantCosmetic(cos.id); celestium → awardCelestium; shards → Court Shards; pack → awardPack('pack', basic|premium, base_set, n). PLAYER DATA (profiles.battle_pass_data): pass 'none'|'battle'|'premium' (from old hasStandard/hasPremium), claimed {rewardId: ISO}, choice [pageId]; hasStandard/hasPremium kept in sync. XP curve, missions, XP sources unchanged.",
       "SAME BUILD 10.18 — TRIAL OF COURTS (the gauntlet; solo vs the CPU, nothing online). SWITCH: feature_flags.trial (GLOBAL, default OFF, admins always have it; Admin → Game switches '🏛 Trial of Courts'; the PC admin must write trial when it saves feature_flags). OPEN: PLAY tab → new card 'Trial of Courts' · 'GAUNTLET · ONE LOSS ENDS IT' right after Campaign (art fallback gorim_herald); Quick Play remembers it. SCREEN trial-screen (midnight stone + gold leaf): header ← BACK · 'TRIAL OF COURTS' + sub-line · Wins / Trial Marks pills during a run. SETUP: a hero line, then four groups of option cards — THE PATH: '🪜 The Ladder' (Courts I–VII then the High Throne, 8 fights, a reward after every win) / '🚪 The Crossroads' (3 tiers × [Gate: Duel or Elite Duel] [Crossing: 2 of Sanctum/Merchant/Rift] [Hall: Duel or Elite Duel] [Court Lord; tier III = the High Throne], 6–9 fights); THE RULES: '🏆 Short Prizes' (Prize mode, 3 Prizes) / '❤ Half Life' (Life Force, 50 Life); YOUR RANK: Squire (Easy CPU, rewards ×1) / Knight (Medium, ×1.5) / Lord (Hard, ×2) — Court Lords and the Throne use the next CPU up (Squire→Medium, Knight→Hard, Lord→Hard); YOUR DECK: your 60-card decks + the Starters (herald art, name, colour dots). Summary panel (path, rules, rank, deck, payout) + 'BEGIN THE TRIAL' + your best result on that path/rules/rank. RUN (3 columns; stacks on phones): THE CLIMB (steps bottom→top as gold diamonds: done ✓ / current pulsing / boss red), the STAGE ('COURT III' etc., 'Choose your door'): ARCHED DOOR cards — fight doors show the Court's Herald art, a keystone gem in the Court colour, kind tag DUEL / ELITE DUEL / COURT LORD / THE HIGH THRONE, Court name, style + colours + Herald name, 'EASY|MEDIUM|HARD CPU · +N MARKS', red rule chips; Sanctum 🕯 / Merchant ⚖ / Rift 🌀 doors. Side: YOUR RUN (deck, Courts won, Trial Marks, Recruits), BOONS list, ASCENDED card thumbs (+n), 'ABANDON THE TRIAL' (paid for the wins so far). ENTERING A FIGHT: a 2.3 s cinematic (tap to skip): Herald art zooms in, a band in the Court colour sweeps across, '<STEP> · <KIND>' / '<COURT NAME>' / '<Herald> presides' / rule chips; then the match starts (the opponent is named after the Court). AFTER A FIGHT the win screen shows '🏛 COURT WON — CHOOSE YOUR REWARD' / '♛ CLAIM THE HIGH THRONE' / '📜 YOUR TRIAL ENDS HERE' instead of Return to Main Menu, and a gold Trial line. OVERLAYS (dealt-in cards): reward stamp 'COURT WON' / 'COURT LORD FELLED' / 'THE SANCTUM' + 3 options (Boon cards, '⬆ Ascend', '🂠 Recruit', or '⚖ Tribute +25 Marks' when the Boons run out); ASCEND picker (your deck's characters, +n badge, up to +3); RECRUIT (3 cards, 'TAKE NONE') → MAKE ROOM (pick one copy to take out; Heralds can't be cut); THE MERCHANT (3 Boons 30 · Ascend 20 · Recruit 15 Marks, 'LEAVE THE MERCHANT →'); THE RIFT ('Step through' = curse + two rewards / 'Walk past'). RESULT: 'TRIAL COMPLETE' / 'THE TRIAL ENDS' stamp, why, Courts won + Celestium + Court Shards + packs tiles, 'BEGIN A NEW TRIAL'. Leaving a Trial fight (menu, closing the page) = a loss.",
       "SAME BUILD 10.18 — THE COURT FORGE (crafting's own screen; crafting is no longer in the Registry: the Registry header balance / 💥 Break extras and the per-card 'COURT SHARDS' panel are gone). OPEN: main menu COURT tab → new card 'Court Forge' · 'CRAFT · SHATTER' right after Registry (only while crafting is on; menu art fallback = Virora Surfacer MUI), or the Profile's new purple 'COURT SHARDS' pill next to Celestium (shows the balance, tap → Forge). SCREEN (forge-screen): obsidian/amethyst background with rising ember particles (orange + violet); header ← BACK · 'THE COURT FORGE' (Cinzel, stamped in on open) + subtitle · the balance badge on the right (shard gem + big number, ticks up/down and pulses after a forge/shatter). Mode bar: 🔨 FORGE ('Spend shards on a card') · 💥 SHATTER ('Break cards into shards') · ⚡ BREAK EXTRAS (sub-line 'N cards → X shards', opens the existing Break extras dialog). Left: filters (search name/number, set — FORGE hides the promo set, + 'All sets' —, rarity chips ALL C U R L M SR 👑, color dots ALL purple red blue green yellow black white, toggle 'Ready to forge' / 'Extras only'), a count line, then a card grid. FORGE grid = every card its set's packs can give (+ that set's Heralds when heralds:true), by number; tile = art, name, rarity gem, cost, owned n/cap and a tag: READY TO FORGE (orange glow) / NEED N (dim) / ✓ PLAYSET / PACKS ONLY (craft 0, e.g. Secret Rares) / 🔒 SIGHT IT FIRST (card back + ??? when sightedOnly) / UNAVAILABLE. SHATTER grid = cards you own in the set; tile = best break value, ×owned, an 'N EXTRAS' tag. Right: the ANVIL (on phones a bottom sheet that slides up when a card is tapped): the card floating over two slow-spinning rune rings in its rarity color, rarity line, name, number · set. FORGE: playset pips 'You own n of cap', Cost / You have / After forging, '🔨 FORGE · cost' (disabled + the craftCheck reason). SHATTER: one row per owned finish with − n + (starts at that finish's extras), 'own n · X each', deck warnings ('a saved deck uses N — you'd keep M' + deck names), You get / You have, '💥 SHATTER n' (breaks exactly those counts in one save). CINEMATICS (any screen — also the Deck Builder's craft and Break extras): FORGED = dark overlay, shard gems fly from the balance in arcs into the centre, two rune rings ignite with a flash, the card rises in with a light sweep, 'FORGED' · name · '−cost COURT SHARDS · X LEFT', CONTINUE. SHATTERED = the card (with up to 2 more behind it for a multi-card break) shakes, glowing cracks draw across it, it bursts into a 5×7 grid of fragments while shard gems fly to the balance, 'SHATTERED' · name ×n / 'N cards' · '+gain' · 'COURT SHARDS · X NOW', CONTINUE. Reduced motion / animations off → a toast instead. Logic, rates and saving are unchanged (craftCheck / craftMake / craftBreakExtras).",
       "CRAFTING (Court Shards): Heralds now craft for ONE flat cost whatever their rarity — default 3,500 (CRAFT_DEFAULT.heraldCost). They still BREAK at their rarity's rate × holo. Admin → Seasons → Crafting rates gains a row under the Heralds checkbox: '👑 Herald craft cost' [number, step 50]; the checkbox hint now reads 'Regular finish, flat cost below (any rarity)'. Rules 'Court Shards:' line adds 'Heralds cost 3,500 to craft.' (the live value). A Herald cost of 0 = can't craft ('Heralds come from packs only.')."],
@@ -21621,7 +21909,7 @@ const COS_BUILTIN=[
 let _cosCatalogExtra={};  // app_settings 'cosmetics' → {id:{...fields, enabled:false?}}
 function cosCatalog(){
   const map={}; COS_BUILTIN.forEach(it=>{ map[it.id]=Object.assign({},it); });
-  Object.entries(_cosCatalogExtra||{}).forEach(([id,o])=>{ if(!o||typeof o!=='object')return; map[id]=Object.assign(map[id]||{id,type:'back',tier:'common'},o,{id}); if(map[id].img&&map[id].type==='mat'){ map[id].mat=`linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),url("${map[id].img}")`; } });
+  Object.entries(Object.assign({},(typeof bp3CosMap==='function'?bp3CosMap():{}),_cosCatalogExtra||{})).forEach(([id,o])=>{ if(!o||typeof o!=='object')return; map[id]=Object.assign(map[id]||{id,type:'back',tier:'common'},o,{id}); if(map[id].img&&map[id].type==='mat'){ map[id].mat=`linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),url("${map[id].img}")`; } });
   const order=['back','mat','frame','plate','title','entrance']; const tier=['default','common','rare','legendary','exclusive'];
   return Object.values(map).filter(it=>it.enabled!==false&&COS_TYPES[it.type]).sort((a,b)=>order.indexOf(a.type)-order.indexOf(b.type)||tier.indexOf(a.tier)-tier.indexOf(b.tier)||((b.free?1:0)-(a.free?1:0))||String(a.name).localeCompare(String(b.name)));
 }
@@ -21780,7 +22068,7 @@ function renderCosShop(){
   const head=`<div class="cos-head">${chips.map(([k,l])=>`<button class="cos-chip${_cosFilter===k?' on':''}" onclick="_cosFilter='${k}';renderCosShop()">${l}</button>`).join('')}
     <button class="cos-chip${_cosOwnedOnly?' on':''}" style="margin-left:auto" onclick="_cosOwnedOnly=!_cosOwnedOnly;renderCosShop()">🎒 MY LOCKER</button>
     ${isAdmin()?'<button class="cos-chip" onclick="cosManage()">✎ MANAGE</button>':''}</div>`;
-  let items=_cosFilter==='sets'?[]:cosCatalog().filter(it=>_cosFilter==='all'||it.type===_cosFilter); if(_cosOwnedOnly) items=items.filter(it=>cosOwned(it.id));
+  let items=_cosFilter==='sets'?[]:cosCatalog().filter(it=>(_cosFilter==='all'||it.type===_cosFilter)&&!(it.bpItem&&!cosOwned(it.id))); if(_cosOwnedOnly) items=items.filter(it=>cosOwned(it.id));
   let sets=(_cosFilter==='all'||_cosFilter==='sets')?cosSetList():[]; if(_cosOwnedOnly) sets=sets.filter(s=>s.items.every(id=>cosOwned(id)));
   const tiles=items.map(it=>{
     const owned=cosOwned(it.id), eq=cosEquipped(it.type,1)===it.id, tier=COS_TIERS[it.tier]||COS_TIERS.common, price=cosPrice(it);
@@ -31577,140 +31865,22 @@ window.addEventListener('load',async()=>{
 </div>
 
 <!-- BATTLE PASS SCREEN -->
-<div id="battle-pass-screen" class="screen" style="padding:62px 32px 24px;max-width:1500px;margin:0 auto">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-    <button class="btn-gray btn-sm" onclick="showScreen('menu-screen')">← Back</button>
-    <div style="font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:4px;color:var(--blue);text-shadow:0 0 10px var(--blue)">⚔ BATTLE PASS</div>
-    <div style="display:flex;gap:4px;margin-left:18px">
-      <button class="bp-nav-tab active" id="bp-tab-pass" onclick="switchBPTab('pass')">BATTLE PASS</button>
-      <button class="bp-nav-tab" id="bp-tab-missions" onclick="switchBPTab('missions')">CHALLENGES</button>
-    </div>
-    <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
-      <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" style="width:18px;height:18px;border-radius:50%"/>
-      <span id="bp-cel-amount" style="font-size:13px;font-weight:700;color:#fbbf24">—</span>
-    </div>
-  </div>
-
-  <!-- ════════ PASS TAB ════════ -->
-  <div id="bp-tab-content-pass">
-
-  <!-- TOP STRIP (Fortnite-style season header) -->
-  <div class="bp-season-strip">
-    <div class="bp-season-tier-card">
-      <div class="bp-season-tier-label">TIER</div>
-      <div class="bp-season-tier-num" id="bp-current-tier">1</div>
-      <div class="bp-season-tier-xp" id="bp-xp-text">0 / 400</div>
-      <div class="bp-season-tier-bar"><div class="bp-season-tier-fill" id="bp-progress-fill" style="width:0%"></div></div>
-    </div>
-    <div class="bp-season-title-block">
-      <div class="bp-season-name" id="bp-season-name">VOID PRISM</div>
-      <div class="bp-season-sub" id="bp-season-sub">SEASON 1 • <span id="bp-time-left">—</span> remaining</div>
-      <div class="bp-pass-status" id="bp-pass-status">
-        <div class="bp-pass-badge free">⚡ FREE TRACK</div>
-      </div>
-    </div>
-    <div class="bp-season-page" id="bp-season-page-info">PAGE 1 / 5</div>
-  </div>
-
-  <!-- BUY ROW (only visible if not all passes owned) -->
-  <div class="bp-buy-row" id="bp-buy-row" style="display:flex;gap:8px;margin-bottom:12px">
-    <button class="bp-buy-btn" id="bp-buy-standard" onclick="buyStandardPass()">
-      <span>💎</span><span>STANDARD PASS — 3,000 Cel</span>
-    </button>
-    <button class="bp-buy-btn premium" id="bp-buy-premium" onclick="buyPremiumPass()">
-      <span>👑</span><span>+ PREMIUM — 1,500 Cel</span>
-    </button>
-  </div>
-
-  <!-- TIER PAGE (10 tiers visible at once, paginated) -->
-  <div class="bp-tier-page-wrap">
-    <button class="bp-page-arrow" id="bp-page-prev" onclick="bpPagePrev()">◀</button>
-    <div class="bp-tier-page" id="bp-tier-page">
-      <!-- rendered by JS -->
-    </div>
-    <button class="bp-page-arrow" id="bp-page-next" onclick="bpPageNext()">▶</button>
-  </div>
-
-  <!-- Reward focus panel (right side, like Fortnite shows the outfit) -->
-  <div class="bp-reward-focus" id="bp-reward-focus">
-    <div class="bp-reward-focus-icon" id="bp-reward-focus-icon">🎁</div>
-    <div class="bp-reward-focus-label" id="bp-reward-focus-label">SELECT A REWARD</div>
-    <div class="bp-reward-focus-name" id="bp-reward-focus-name">Click any tier reward to view details</div>
-    <div class="bp-reward-focus-desc" id="bp-reward-focus-desc"></div>
-  </div>
-
-  </div><!-- /pass tab -->
-
-  <!-- ════════ MISSIONS / CHALLENGES TAB ════════ -->
-  <div id="bp-tab-content-missions" style="display:none">
-    <div class="missions-tab-grid">
-      <div class="missions-tab-col">
-        <div class="missions-tab-header">
-          <div style="display:flex;align-items:center;gap:8px">
-            <span style="font-size:18px">🌅</span>
-            <div>
-              <div class="missions-tab-title">DAILY CHALLENGES</div>
-              <div class="missions-tab-sub" id="bp-daily-reset">Resets in —</div>
-            </div>
-          </div>
+<div id="battle-pass-screen" class="screen bp3s">
+  <!-- BATTLE PASS v3 (build 10.18): Fortnite-style — main screen (#b3-main), a page view (#b3-pv), dialogs, the admin editor -->
+  <div class="b3" id="b3">
+    <div id="b3-main"></div>
+    <div class="b3-pv" id="b3-pv"></div>
+    <div class="b3-dlg" id="b3-qdlg" role="dialog" aria-modal="true" aria-label="Quests">
+      <div class="b3-dbox"><h4 class="b3-f b3-i">QUESTS</h4>
+        <div class="b3-q">
+          <div class="missions-tab-col"><div class="missions-tab-header"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">🌅</span><div><div class="missions-tab-title">DAILY QUESTS</div><div class="missions-tab-sub" id="bp-daily-reset">Resets in —</div></div></div></div><div id="bp-daily-missions"></div></div>
+          <div class="missions-tab-col"><div class="missions-tab-header"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">📅</span><div><div class="missions-tab-title" style="color:#fbbf24">WEEKLY QUESTS</div><div class="missions-tab-sub" id="bp-weekly-reset">Resets in —</div></div></div></div><div id="bp-weekly-missions"></div></div>
         </div>
-        <div id="bp-daily-missions"></div>
-      </div>
-      <div class="missions-tab-col">
-        <div class="missions-tab-header">
-          <div style="display:flex;align-items:center;gap:8px">
-            <span style="font-size:18px">📅</span>
-            <div>
-              <div class="missions-tab-title" style="color:#fbbf24">WEEKLY CHALLENGES</div>
-              <div class="missions-tab-sub" id="bp-weekly-reset">Resets in —</div>
-            </div>
-          </div>
-        </div>
-        <div id="bp-weekly-missions"></div>
-      </div>
+        <p style="margin:14px 0 0;font-size:13px;opacity:.8;text-align:center">Quest XP levels up your Battle Pass. Every level is one reward claim.</p>
+        <button type="button" class="b3-dx" onclick="bp3CloseQuests()" aria-label="Close">✕</button></div>
     </div>
-  </div>
-
-  <!-- HIDDEN OLD HEADER (kept for compat with JS that still references it) -->
-  <div class="bp-header" style="display:none">
-    <div class="bp-season-name" id="bp-season-name">VOID PRISM</div>
-    <div class="bp-season-sub" id="bp-season-sub">SEASON 1 — TIER PROGRESSION</div>
-
-    <div class="bp-progress-section">
-      <div class="bp-tier-badge">
-        <div class="bp-tier-num" id="bp-current-tier">1</div>
-        <div class="bp-tier-lbl">TIER</div>
-      </div>
-      <div class="bp-progress-info">
-        <div class="bp-progress-label">PROGRESS TO NEXT TIER</div>
-        <div class="bp-progress-bar"><div class="bp-progress-fill" id="bp-progress-fill" style="width:0%"></div></div>
-        <div class="bp-xp-text" id="bp-xp-text">0 / 1000 XP</div>
-      </div>
-      <div class="bp-timer">
-        <div class="bp-timer-val" id="bp-time-left">—</div>
-        <div class="bp-timer-lbl">REMAINING</div>
-      </div>
-    </div>
-
-    <div class="bp-pass-status" id="bp-pass-status">
-      <div class="bp-pass-badge free">⚡ FREE TRACK</div>
-    </div>
-
-    <div class="bp-buy-row" id="bp-buy-row">
-      <button class="bp-buy-btn" id="bp-buy-standard" onclick="buyStandardPass()">
-        <span>💎</span><span>STANDARD PASS — 3,000 Cel</span>
-      </button>
-      <button class="bp-buy-btn premium" id="bp-buy-premium" onclick="buyPremiumPass()">
-        <span>👑</span><span>+ PREMIUM — 1,500 Cel</span>
-      </button>
-    </div>
-  </div>
-
-
-
-  <!-- Old tier rows kept hidden for compat -->
-  <div class="bp-tier-grid" style="display:none">
-    <div id="bp-tier-rows"></div>
+    <div class="b3-dlg" id="b3-dlg" role="dialog" aria-modal="true"></div>
+    <div class="b3-edit" id="b3-edit"></div>
   </div>
 </div>
 
@@ -35334,6 +35504,523 @@ function trCut(cid){
 }
 
 if(typeof MM_MODES!=='undefined') MM_MODES.trial={ico:'🏛',t:'Trial of Courts',s:'GAUNTLET',go:()=>openTrial()};
+</script>
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// BATTLE PASS v3 (build 10.18) — Fortnite-style: every page is one character's set.
+//   MAIN SCREEN: the focused page's character stands in the middle; 'BATTLE PASS' + season line top left with
+//   BUY LEVELS / GET THE PASS; the LVL ring top right; a row of character tiles (progress n/total, 🔒 locked,
+//   the 'Choose a Set' pair, then ••• and the wide Bonus Rewards tile); 'Available through <date>'; QUESTS.
+//   PAGE VIEW: the page's colours, a page selector, the selected reward big in the middle, its type/name/text
+//   left, CLAIM / VIEW REWARD / EQUIP right, a row of the page's rewards (6 per sub-page) and a pager.
+//   PASSES: Free (rewards marked FREE) · Battle Pass (every reward on the main pages + 1 'Choose a Set' at
+//   choiceLevel, both at choiceBothLevel) · Premium (the Battle Pass + premiumLevels levels at once, both sets at
+//   choiceLevel, and the Premium-only Bonus Rewards page). Prices in Celestium (prices.pass / premium / upgrade).
+//   CLAIMS: every level = 1 claim (+1 per bonusXpPerSeal XP past the max level). Spend a claim on any reward of an
+//   unlocked page, in any order. Main page k unlocks after unlockAfter claims on page k−1, or at its level gate.
+//   Bonus Rewards unlock once every other reward is claimed. Season data: BP_CONFIG.pages (Admin → Battle Pass
+//   Editor); without it the placeholder season below is used. Player data: _bpPlayerData.pass / claimed / choice.
+// ═══════════════════════════════════════════════════════════════════════════
+const BP3_RAW='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/';
+const BP3_CEL=BP3_RAW+'currency/Celstium.png';
+function bp3Cut(k){ return BP3_RAW+'Battle%20Pass/Placeholders/bp_'+k+'.webp'; }
+function bp3Mmi(f){ return BP3_RAW+'Main%20Menu%20Images/'+encodeURIComponent(f).replace(/%20/g,'%20'); }
+let _b3={focus:0,pv:null,sub:0,sel:0,cfgKey:null,cfg:null,keys:false};
+// ── the placeholder season (Rulk picks the real pages once the Base Set is done) ──
+function bp3Defaults(){
+  if(bp3Defaults._c) return bp3Defaults._c;
+  const nm=cid=>(DB[cid]&&DB[cid].name)||cid;
+  const mk=(id,kind,o)=>{ const R=[]; const S=o.short;
+    const cos=(n,type,extra)=>({id:id+'_'+n,type:'cosmetic',cos:Object.assign({id:'bp_s1_'+id+'_'+n,type},extra)});
+    if(kind==='bonus'){
+      R.push({id:id+'_card',type:'card',cid:o.cid,finish:'ruby'});
+      R.push(cos('back','back',{name:S+' Card Back',img:bp3Mmi(o.mm)}));
+      R.push(cos('mat','mat',{name:S+' Playmat',img:bp3Mmi(o.mm)}));
+      R.push(cos('ent','entrance',{name:S+"'s Arrival",fx:'abyss',c:o.acc,glow:o.acc+'99',icon:'👑'}));
+      R.push(cos('title','title',{name:'Court Sovereign',text:'COURT SOVEREIGN',color:o.acc}));
+      R.push({id:id+'_cel',type:'celestium',amount:1000});
+      return R; }
+    if(kind==='choice'){
+      R.push({id:id+'_card',type:'card',cid:o.cid,finish:'ruby'});
+      R.push(cos('back','back',{name:S+' Card Back',img:bp3Mmi(o.mm)}));
+      R.push(cos('title','title',{name:S+"'s Chosen",text:(S+"'s Chosen").toUpperCase(),color:o.acc}));
+      R.push(cos('frame','frame',{name:S+' Ring',ring:[o.acc,o.acc+'88']}));
+      R.push({id:id+'_shards',type:'shards',amount:500});
+      return R; }
+    R.push({id:id+'_card',type:'card',cid:o.cid,finish:'ruby'});
+    R.push(cos('back','back',{name:S+' Card Back',img:bp3Mmi(o.mm)}));
+    R.push(cos('title','title',{name:S+"'s Champion",text:(S+"'s Champion").toUpperCase(),color:o.acc}));
+    R[2].free=true;
+    R.push({id:id+'_cel1',type:'celestium',amount:300,free:true});
+    R.push(cos('mat','mat',{name:S+' Playmat',img:bp3Mmi(o.mm)}));
+    R.push(cos('frame','frame',{name:S+' Ring',ring:[o.acc,o.acc+'88']}));
+    if(o.even) R.push({id:id+'_packs',type:'pack',pack:'basic',amount:2});
+    else R.push(cos('plate','plate',{name:S+' Plate',bg:`linear-gradient(90deg,${o.c2}cc,${o.c1}33)`,line:o.acc}));
+    R.push({id:id+'_cel2',type:'celestium',amount:700});
+    return R; };
+  const P=(id,kind,o)=>Object.assign({id,kind,name:nm(o.cid),short:o.short,cid:o.cid,art:bp3Cut(o.k),c1:o.c1,c2:o.c2,acc:o.acc,gate:o.gate||0},{rewards:mk(id,kind,o)});
+  const pages=[
+    P('p1','main',{cid:'virora_surfacer_mui_sr_bse',short:'Virora',k:'virora_mui',mm:'vmuisurfacerSurfacer MUI virora.jpg',c1:'#3b1a8f',c2:'#e0479e',acc:'#ff8bd8'}),
+    P('p2','main',{cid:'crystora_bse',short:'Crystora',k:'crystora',mm:'crysdtora11Crystora (lord of courts).jpg',c1:'#7c2d12',c2:'#f59e0b',acc:'#ffd27a',gate:10,even:true}),
+    P('p3','main',{cid:'vuruna_ssb_bse',short:'Vuruna',k:'vuruna_ssb',mm:'vurunassb1111vurunassb21.jpg',c1:'#1e3a8a',c2:'#22d3ee',acc:'#7dd3fc',gate:18}),
+    P('p4','main',{cid:'elise_bse',short:'Elise',k:'elise',mm:'elise1Elise 1.jpg',c1:'#2e1065',c2:'#8b5cf6',acc:'#c4b5fd',gate:26,even:true}),
+    P('p5','main',{cid:'falcore_bse',short:'Falcore',k:'falcore',mm:'falcoreDesigner (3).jpg',c1:'#78350f',c2:'#fbbf24',acc:'#fde68a',gate:34}),
+    P('c1','choice',{cid:'surana_ssg_bse',short:'Surana',k:'surana_ssg',mm:'ssgsurana1suranassg.jpg',c1:'#450a0a',c2:'#ef4444',acc:'#fca5a5'}),
+    P('c2','choice',{cid:'theia_bse',short:'Theia',k:'theia',mm:'teheia1theia111.jpg',c1:'#831843',c2:'#f472b6',acc:'#fbcfe8'}),
+    P('b1','bonus',{cid:'remmel_bse',short:'Remmel',k:'remmel',mm:'rAAMMELDesigner (4).jpg',c1:'#022c22',c2:'#10b981',acc:'#6ee7b7'})
+  ];
+  return (bp3Defaults._c={pages,theme:{sky1:'#0a3fb8',sky2:'#2fa9ff',floor1:'#f0c56a',floor2:'#c8923a'},prices:{pass:3500,premium:6000,upgrade:2500,level:150},
+    premiumLevels:10,unlockAfter:6,choiceLevel:30,choiceBothLevel:40,bonusXpPerSeal:1500});
+}
+function bp3Cfg(){
+  const c=(typeof BP_CONFIG!=='undefined'&&BP_CONFIG)||BP_DEFAULT_CONFIG; if(_b3.cfgKey===c&&_b3.cfg) return _b3.cfg;
+  const d=bp3Defaults(); const num=(v,f)=>(v!=null&&v!==''&&isFinite(+v))?+v:f;
+  const pages=(Array.isArray(c.pages)&&c.pages.length?c.pages:d.pages).filter(p=>p&&Array.isArray(p.rewards));
+  _b3.cfg={pages,theme:Object.assign({},d.theme,c.theme||{}),prices:Object.assign({},d.prices,c.prices||{}),premiumLevels:num(c.premiumLevels,d.premiumLevels),unlockAfter:num(c.unlockAfter,d.unlockAfter),
+    choiceLevel:num(c.choiceLevel,d.choiceLevel),choiceBothLevel:num(c.choiceBothLevel,d.choiceBothLevel),bonusXpPerSeal:Math.max(100,num(c.bonusXpPerSeal,d.bonusXpPerSeal)),
+    label:c.seasonLabel||('SEASON '+(c.seasonNumber||1)),title:c.seasonTitle||'',maxTier:num(c.maxTier,50)};
+  _b3.cfgKey=c; return _b3.cfg;
+}
+function bp3Reset(){ _b3.cfgKey=null; _b3.cfg=null; }
+// ── player state ──
+function bp3P(){
+  if(typeof _bpPlayerData==='undefined'||!_bpPlayerData) _bpPlayerData={xp:0,tier:1};
+  const P=_bpPlayerData;
+  if(!P.claimed||typeof P.claimed!=='object') P.claimed={};
+  if(!P.pass) P.pass=P.hasPremium?'premium':(P.hasStandard?'battle':'none');
+  if(!Array.isArray(P.choice)) P.choice=[];
+  P.hasStandard=P.pass!=='none'; P.hasPremium=P.pass==='premium';
+  return P;
+}
+const BP3_RANK={none:0,battle:1,premium:2};
+function bp3Has(k){ return BP3_RANK[bp3P().pass]>=BP3_RANK[k]; }
+function bp3Level(){ return bpCurrentTierFromXP(bp3P().xp||0); }
+function bp3Earned(){ const C=bp3Cfg(), L=bp3Level(); let n=L; if(L>=C.maxTier){ const over=(bp3P().xp||0)-bpTotalXpForTier(C.maxTier); n+=Math.max(0,Math.floor(over/C.bonusXpPerSeal)); } return n; }
+function bp3Spent(){ const C=bp3Cfg(), P=bp3P(); let n=0; C.pages.forEach(p=>p.rewards.forEach(r=>{ if(P.claimed[r.id]) n++; })); return n; }
+function bp3Seals(){ return Math.max(0,bp3Earned()-bp3Spent()); }
+function bp3Ended(){ const c=(typeof BP_CONFIG!=='undefined'&&BP_CONFIG)||{}; if(c.ended) return true; if(!c.startDate) return false; return Date.now()>new Date(c.startDate).getTime()+(c.durationDays||30)*864e5; }
+function bp3EndDate(){ const c=(typeof BP_CONFIG!=='undefined'&&BP_CONFIG)||{}; if(!c.startDate) return null; return new Date(new Date(c.startDate).getTime()+(c.durationDays||30)*864e5); }
+function bp3Find(rid){ for(const pg of bp3Cfg().pages){ const r=pg.rewards.find(x=>x.id===rid); if(r) return {pg,r}; } return {}; }
+function bp3Claimed(pg){ const P=bp3P(); return pg.rewards.filter(r=>P.claimed[r.id]).length; }
+function bp3Mains(){ return bp3Cfg().pages.filter(p=>p.kind==='main'); }
+function bp3PageState(pg){
+  const C=bp3Cfg(), P=bp3P(), L=bp3Level();
+  if(pg.kind==='main'){ const M=bp3Mains(), i=M.indexOf(pg); if(i<=0) return {open:true};
+    const prev=M[i-1], gate=+pg.gate||i*8;
+    if(bp3Claimed(prev)>=Math.min(C.unlockAfter,prev.rewards.length)||L>=gate) return {open:true};
+    return {open:false,why:`Claim ${Math.min(C.unlockAfter,prev.rewards.length)} rewards on the ${prev.short||prev.name} page, or reach LVL ${gate}.`}; }
+  if(pg.kind==='choice'){
+    const both=bp3Has('premium')?C.choiceLevel:C.choiceBothLevel;
+    const line=`Reach level ${C.choiceLevel} to unlock one Set. Reach level ${both} to unlock both Sets.`;
+    if(!bp3Has('battle')) return {open:false,need:'battle',why:'The Choose-a-Set pages come with the Battle Pass. '+line};
+    if(P.choice.includes(pg.id)||L>=both) return {open:true};
+    if(L<C.choiceLevel) return {open:false,why:line};
+    if(!P.choice.length) return {open:false,choose:true,why:`Choose this Set now — the other one unlocks at LVL ${both}.`};
+    return {open:false,why:`Reach level ${both} to unlock both Sets.`}; }
+  if(pg.kind==='bonus'){
+    if(!bp3Has('premium')) return {open:false,need:'premium',why:'Bonus Rewards come with the Premium Pass. Claim all rewards from the Battle Pass to open them.'};
+    const left=C.pages.filter(p=>p.kind!=='bonus').reduce((s,p)=>s+p.rewards.filter(r=>!P.claimed[r.id]).length,0);
+    if(left>0) return {open:false,why:`Claim all rewards from the Battle Pass to unlock these (${left} left).`};
+    return {open:true}; }
+  return {open:true};
+}
+function bp3RewardState(pg,r){
+  const P=bp3P(); if(P.claimed[r.id]) return {s:'claimed'};
+  const ps=bp3PageState(pg); if(!ps.open) return {s:'locked',why:ps.why,choose:ps.choose,need:ps.need};
+  if(pg.kind==='main'&&!r.free&&!bp3Has('battle')) return {s:'pass',why:'Get the Battle Pass to claim this reward. Your levels are saved — anything you have already earned can be claimed right after.'};
+  if(bp3Ended()) return {s:'ended',why:'This season has ended.'};
+  if(bp3Seals()<1) return {s:'seal',why:'Every level gives you 1 claim. Level up — play matches and finish Quests — to claim this.'};
+  return {s:'ready'};
+}
+function bp3Ready(pg){ return pg.rewards.filter(r=>bp3RewardState(pg,r).s==='ready').length; }
+// ── reward text and art ──
+const BP3_COSK={back:'CARD BACK',mat:'PLAYMAT',frame:'AVATAR FRAME',plate:'NAME PLATE',title:'TITLE',entrance:'HERALD ENTRANCE'};
+function bp3Kind(r){ if(r.type==='card') return 'ALT-ART CARD · '+(((RARITY_DEFS[(DB[r.cid]||{}).rarity]||{}).label)||'CARD'); if(r.type==='cosmetic') return BP3_COSK[r.cos&&r.cos.type]||'COSMETIC';
+  return {celestium:'CURRENCY',shards:'CRAFTING',pack:'BOOSTER PACK'}[r.type]||'REWARD'; }
+function bp3Name(r){ if(r.name) return r.name; if(r.type==='card') return (DB[r.cid]&&DB[r.cid].name)||r.cid; if(r.type==='cosmetic') return (r.cos&&r.cos.name)||'Cosmetic';
+  if(r.type==='celestium') return (+r.amount||0).toLocaleString()+' Celestium'; if(r.type==='shards') return (+r.amount||0).toLocaleString()+' Court Shards';
+  if(r.type==='pack'){ const n=+r.amount||1; return n+' '+(r.pack==='premium'?'Premium':'Basic')+' Pack'+(n===1?'':'s'); } return 'Reward'; }
+function bp3Desc(r){ if(r.desc) return r.desc;
+  if(r.type==='card'){ const v=(VARIANT_META[r.finish||'none']||{}).label||''; return `A Battle Pass printing of ${bp3Name(r)}${v&&r.finish!=='none'?' ('+v+')':''}. It plays exactly like the regular card and counts toward your collection.`; }
+  if(r.type==='cosmetic'){ const t=r.cos&&r.cos.type; return {back:'A card back for your deck — everyone sees it in your matches.',mat:'A playmat for your side of the board.',frame:'A ring around your portrait on the main menu, profile and in matches.',plate:'A name plate behind your name.',title:'A title shown under your name.',entrance:'A Herald entrance played when your Herald takes the field.'}[t]||''; }
+  return {celestium:'The currency of the Courts. Spend it in the Shop and on Battle Pass levels.',shards:'Break and forge cards at the Court Forge.',pack:'A sealed pack of 10 Base Set cards. Find it under Profile → My Packs.'}[r.type]||''; }
+function bp3Esc(s){ return typeof escapeHtml==='function'?escapeHtml(String(s==null?'':s)):String(s); }
+function bp3Thumb(r,pg,big){
+  if(big) return `<img src="${pg.art}" alt="" loading="lazy">`;
+  if(r.type==='card'){ const u=getImg(r.cid); return u?`<img src="${u}" alt="" loading="lazy">`:'<span class="em">🎴</span>'; }
+  if(r.type==='celestium') return `<img src="${BP3_CEL}" alt="" style="width:70%">`;
+  if(r.type==='shards') return `<img src="${typeof CS_ICON!=='undefined'?CS_ICON:''}" alt="" style="width:62%">`;
+  if(r.type==='pack') return `<img src="${typeof PACK_ART!=='undefined'?PACK_ART:''}" alt="">`;
+  const c=r.cos||{};
+  if(c.type==='back'||c.type==='mat') return c.img?`<img src="${c.img}" alt="" loading="lazy" style="${c.type==='mat'?'width:100%;height:60%;object-fit:cover':'height:100%;aspect-ratio:63/88;object-fit:cover'}">`:'<span class="em">🂠</span>';
+  if(c.type==='frame') return `<div class="mini-ring" style="--r1:${(c.ring||['#e8c570'])[0]};--r2:${(c.ring||['#e8c570','#e8c57088'])[1]}"></div>`;
+  if(c.type==='plate') return `<div class="mini-plate b3-f" style="--pb:${c.bg||'rgba(0,0,0,.3)'};--pl:${c.line||'#e8c570'}">${bp3Esc(((window._playerName||'PLAYER')+'').toUpperCase().slice(0,10))}</div>`;
+  if(c.type==='title') return `<div class="txt b3-f" style="--tc:${c.color||'#e8c570'}">${bp3Esc(c.text||c.name||'')}</div>`;
+  if(c.type==='entrance') return `<span class="em" style="filter:drop-shadow(0 0 8px ${c.c||'#e8c570'})">${c.icon||'👑'}</span>`;
+  return '<span class="em">🎁</span>';
+}
+function bp3Art(r,pg){
+  if(r.type==='card'){ const u=getImg(r.cid); return `<div class="card">${u?`<img src="${u}" alt="">`:''}${r.finish&&r.finish!=='none'?'<i class="holo"></i>':''}</div>`; }
+  if(r.type==='celestium') return `<img class="coin" src="${BP3_CEL}" alt=""><b class="amt b3-f">+${(+r.amount||0).toLocaleString()}</b>`;
+  if(r.type==='shards') return `<img class="coin" src="${typeof CS_ICON!=='undefined'?CS_ICON:''}" alt=""><b class="amt b3-f">+${(+r.amount||0).toLocaleString()}</b>`;
+  if(r.type==='pack') return `<img class="pack" src="${typeof PACK_ART!=='undefined'?PACK_ART:''}" alt=""><b class="amt b3-f">×${+r.amount||1}</b>`;
+  const c=r.cos||{};
+  if(c.type==='back') return c.img?`<img class="back" src="${c.img}" alt="">`:'';
+  if(c.type==='mat') return `<div class="mat" style="background-image:url('${c.img||''}')"></div>`;
+  if(c.type==='frame') return `<div class="frm" style="--r1:${(c.ring||['#e8c570'])[0]};--r2:${(c.ring||['#e8c570','#e8c57088'])[1]}">👤</div>`;
+  if(c.type==='plate') return `<div class="plt b3-f" style="--pb:${c.bg||'rgba(0,0,0,.3)'};--pl:${c.line||'#e8c570'}">${bp3Esc(((window._playerName||'PLAYER')+'').toUpperCase())}</div>`;
+  if(c.type==='title') return `<div class="ttl b3-f" style="--tc:${c.color||'#e8c570'}"><small>${bp3Esc(((window._playerName||'PLAYER')+'').toUpperCase())}</small>${bp3Esc(c.text||c.name||'')}</div>`;
+  if(c.type==='entrance') return `<div class="ent" style="--ec2:${c.glow||'rgba(232,197,112,.5)'}">${c.icon||'👑'}</div>`;
+  return `<img class="char" src="${pg.art}" alt="">`;
+}
+// cosmetics the season gives, registered in the cosmetics catalog (exclusive, unlocked by the Battle Pass)
+function bp3CosMap(){
+  try{ const on=typeof isFeatureEnabled==='function'&&isFeatureEnabled('battle_pass_enabled'); const own=(typeof _cos!=='undefined'&&_cos&&_cos.owned)||{};
+    const out={}; bp3Cfg().pages.forEach(pg=>pg.rewards.forEach(r=>{ if(r.type!=='cosmetic'||!r.cos||!r.cos.id) return; if(!on&&!own[r.cos.id]) return;
+      out[r.cos.id]=Object.assign({tier:'exclusive',unlock:{kind:'pass'},bpItem:true,desc:'Battle Pass reward · '+bp3Cfg().label},r.cos); }));
+    return out; }catch(e){ return {}; }
+}
+// ── open / render ──
+async function openBattlePass(){
+  if(!BP_CONFIG&&typeof loadBattlePass==='function') await loadBattlePass();
+  bp3Reset(); bp3P();
+  const sc=document.getElementById('battle-pass-screen'); if(sc) sc.classList.add('bp3s');
+  _b3.pv=null; const tiles=bp3Tiles(); _b3.focus=Math.max(0,tiles.findIndex(t=>t.t!=='sep'&&bp3TileReady(t)>0)); if(_b3.focus<0) _b3.focus=0;
+  bp3Keys(); renderBattlePass();
+  if(typeof startBPTimer==='function') startBPTimer();
+}
+function renderBattlePass(){
+  const root=document.getElementById('b3'); if(!root) return; bp3P(); const C=bp3Cfg();
+  root.style.setProperty('--sky1',C.theme.sky1); root.style.setProperty('--sky2',C.theme.sky2); root.style.setProperty('--floor1',C.theme.floor1); root.style.setProperty('--floor2',C.theme.floor2);
+  bp3RenderMain(); if(_b3.pv) bp3RenderPage();
+  const qd=document.getElementById('b3-qdlg'); if(qd&&qd.classList.contains('open')&&typeof renderMissions==='function') renderMissions();
+}
+function updateBPHudIfVisible(){ if(document.getElementById('battle-pass-screen')?.classList.contains('active')) renderBattlePass(); }
+function bp3Tiles(){
+  const C=bp3Cfg(); const T=bp3Mains().map(pg=>({t:'page',pg})); const ch=C.pages.filter(p=>p.kind==='choice'); if(ch.length) T.push({t:'choice',pages:ch});
+  const bo=C.pages.filter(p=>p.kind==='bonus'); if(bo.length){ T.push({t:'sep'}); bo.forEach(pg=>T.push({t:'bonus',pg})); } return T;
+}
+function bp3TileReady(t){ if(t.t==='choice') return t.pages.reduce((s,p)=>s+bp3Ready(p),0); return t.pg?bp3Ready(t.pg):0; }
+function bp3TileHero(t){ if(t.t==='choice'){ const P=bp3P(); const pick=t.pages.find(p=>P.choice.includes(p.id)); return pick||t.pages[(_b3.duoFlip||0)%t.pages.length]; } return t.pg; }
+function bp3Ring(cls){
+  const C=bp3Cfg(), P=bp3P(), L=bp3Level(); const max=L>=C.maxTier; const into=bpXpIntoCurrentTier(P.xp||0), need=bpXpRequiredForTier(L);
+  const pct=max?1:Math.max(0,Math.min(1,into/need)); const R=15.5, L2=2*Math.PI*R;
+  return `<div class="b3-ring ${cls||''}" title="${max?'Max level':Math.floor(into).toLocaleString()+' / '+need.toLocaleString()+' XP'}"><svg viewBox="0 0 36 36" aria-hidden="true"><defs><linearGradient id="b3g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c4b5fd"/><stop offset="1" stop-color="#ffffff"/></linearGradient></defs><circle class="bg" cx="18" cy="18" r="${R}"/><circle class="fg" cx="18" cy="18" r="${R}" stroke-dasharray="${L2.toFixed(2)}" stroke-dashoffset="${(L2*(1-pct)).toFixed(2)}"/></svg><span class="b3-f"><small>LVL</small><b>${L}</b></span></div>`;
+}
+function bp3Sky(){
+  return `<div class="b3-sky"><i class="b3-cloud" style="left:2%;top:18%;width:38vw;height:16vw"></i><i class="b3-cloud" style="left:44%;top:4%;width:46vw;height:20vw;animation-duration:120s"></i><i class="b3-cloud" style="left:66%;top:30%;width:34vw;height:13vw;animation-duration:100s;animation-direction:reverse"></i><i class="b3-cloud" style="left:18%;top:42%;width:30vw;height:9vw;opacity:.35"></i>
+    <i class="b3-glint" style="left:34%;top:2%;width:9vw;height:9vw"></i><i class="b3-glint" style="left:40%;top:14%;width:4vw;height:4vw;opacity:.6"></i></div>
+    <div class="b3-floor"><i class="sand"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></div>`;
+}
+const BP3_CREST=`<svg class="b3-crest" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="b3c1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset=".5" stop-color="#f4b740"/><stop offset="1" stop-color="#a5620f"/></linearGradient><linearGradient id="b3c2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe27a"/><stop offset="1" stop-color="#d48a14"/></linearGradient></defs><path d="M32 3l7 7h10l-1 10 7 7-7 7 1 10H39l-7 7-7-7H15l1-10-7-7 7-7-1-10h10z" fill="url(#b3c1)" stroke="#7a4708" stroke-width="1.5"/><circle cx="32" cy="32" r="15" fill="url(#b3c2)" stroke="#8a520c" stroke-width="1.5"/><path d="M32 21l3.2 6.6 7.3 1-5.3 5.1 1.3 7.2L32 37.5l-6.5 3.4 1.3-7.2-5.3-5.1 7.3-1z" fill="#fff8d6" stroke="#8a520c" stroke-width="1"/></svg>`;
+function bp3RenderMain(){
+  const el=document.getElementById('b3-main'); if(!el) return;
+  const C=bp3Cfg(), P=bp3P(), L=bp3Level(); const tiles=bp3Tiles(); if(_b3.focus>=tiles.length||tiles[_b3.focus].t==='sep') _b3.focus=0;
+  const ft=tiles[_b3.focus]; const hero=bp3TileHero(ft); const seals=bp3Seals();
+  const passTxt=P.pass==='premium'?'<b class="b3-f">👑 PREMIUM PASS</b><i></i>Everything unlocked, plus Bonus Rewards':P.pass==='battle'?'<b class="b3-f">🛡 BATTLE PASS</b><i></i>Every reward on every page':'<b class="b3-f">FREE PASS</b><i></i>Claim the rewards marked FREE — get the pass for the rest';
+  const getBtn=P.pass==='premium'?'':`<button type="button" class="b3-btn ${P.pass==='battle'?'pk':'lt'} b3-f" onclick="bp3OpenBuy()">${P.pass==='battle'?'UPGRADE TO<br>PREMIUM':'GET THE<br>BATTLE PASS'}</button>`;
+  const end=bp3EndDate(); const ended=bp3Ended();
+  const next=L<C.choiceLevel&&C.pages.some(p=>p.kind==='choice')?`Choose a Set to Unlock at LVL <b>${C.choiceLevel}</b>`:(L>=C.maxTier?`Max level — every ${C.bonusXpPerSeal.toLocaleString()} XP gives another claim`:`Every level gives you <b>1</b> claim`);
+  const tip=bp3Tip(ft);
+  const tileHtml=tiles.map((t,i)=>bp3TileHtml(t,i===_b3.focus,i)).join('');
+  const ready=bp3QuestReady();
+  el.innerHTML=`${bp3Sky()}<div class="b3-hero${_b3.heroKey!==hero.id?' swap':''}" id="b3-hero"><img src="${hero.art}" alt=""></div>
+    ${ended?'<div class="b3-ended b3-f">SEASON ENDED</div>':''}
+    <div class="b3-head"><div class="b3-brand">${BP3_CREST}<div><h1 class="b3-f b3-i">BATTLE PASS</h1><h2 class="b3-f b3-i">${bp3Esc(C.title?C.title:C.label)}</h2></div></div>
+      <div class="b3-btns"><button type="button" class="b3-btn b3-f" onclick="bp3OpenLevels()" ${L>=C.maxTier||ended?'disabled':''}>BUY LEVELS</button>${getBtn}</div>
+      <div class="b3-status">${passTxt}</div>${seals>0&&!ended?`<div class="b3-seals b3-seals-m b3-f">★ ${seals} CLAIM${seals===1?'':'S'} READY</div>`:''}${end?`<div class="b3-foot-m">${ended?'Ended':'Available through'} ${end.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'}).toUpperCase()}</div>`:''}</div>
+    <div class="b3-lvlbox">${bp3Ring()}<div class="b3-hint">${next}</div>${seals>0&&!ended?`<div class="b3-seals b3-f">★ ${seals} CLAIM${seals===1?'':'S'} READY</div>`:''}</div>
+    ${tip?`<div class="b3-tip"><span>${tip}</span><span class="lk">🔒</span></div>`:''}
+    <div class="b3-row" role="listbox" aria-label="Battle Pass pages">${tileHtml}</div>
+    ${end?`<div class="b3-foot">${ended?'Ended':'Available through'} ${end.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'}).toUpperCase()}</div>`:`<div class="b3-foot">${bp3Esc(C.label)}</div>`}
+    <button type="button" class="b3-quests b3-f" onclick="bp3OpenQuests()">QUESTS${ready?`<em>${ready}</em>`:''}<span>⌄</span></button>
+    <button type="button" class="b3-back b3-f" onclick="bp3Leave()"><kbd>ESC</kbd>BACK</button>`;
+  _b3.heroKey=hero.id;
+  try{ const on=el.querySelector('.b3-t.on'), row=el.querySelector('.b3-row'); if(on&&row&&row.scrollWidth>row.clientWidth) row.scrollLeft=Math.max(0,on.offsetLeft-row.clientWidth/2+on.offsetWidth/2); }catch(e){}
+}
+function bp3Tip(t){
+  if(!t||t.t==='sep') return '';
+  if(t.t==='choice'){ const ps=t.pages.map(bp3PageState); if(ps.some(s=>s.open)) return ''; const s=ps.find(x=>x.choose); if(s) return ''; return ps[0].why; }
+  const s=bp3PageState(t.pg); return s.open?'':s.why;
+}
+function bp3TileHtml(t,on,i){
+  if(t.t==='sep') return '<span class="b3-sep">•••</span>';
+  const C=bp3Cfg(), P=bp3P();
+  if(t.t==='choice'){
+    const halves=t.pages.map(pg=>`<span class="half" style="--c1:${pg.c1};--c2:${pg.c2}"><span class="bgc"></span><span class="por"><img src="${pg.art}" alt="" loading="lazy"></span></span>`).join('');
+    const st=t.pages.map(bp3PageState); const L=bp3Level();
+    let pill; if(st.some(s=>s.choose)) pill='<span class="pill b3-f" style="background:#ffe31a;color:#151a36">CHOOSE A SET</span>';
+    else if(st.some(s=>s.open)){ const n=t.pages.reduce((s,p)=>s+bp3Claimed(p),0), tot=t.pages.filter((p,k)=>st[k].open).reduce((s,p)=>s+p.rewards.length,0); pill=`<b class="b3-f">${n}/${tot}</b>`; }
+    else pill=`<span class="pill b3-f">${!bp3Has('battle')?'🔒 ':''}LVL ${C.choiceLevel}</span>`;
+    const rdy=bp3TileReady(t);
+    return `<button type="button" class="b3-t duo${on?' on':''}" data-i="${i}" onclick="bp3Tile(${i})" aria-label="Choose a Set">${halves}<span class="ct">${pill}</span>${rdy?'<span class="badge">!</span>':''}</button>`;
+  }
+  const pg=t.pg, s=bp3PageState(pg), n=bp3Claimed(pg), tot=pg.rewards.length, rdy=bp3Ready(pg);
+  const bottom=t.t==='bonus'?`<span class="pill b3-f">${s.open?n+'/'+tot+' · ':''}★ BONUS REWARDS</span>`:(s.open?`<b class="b3-f">${n}/${tot}</b><div class="bar"><i style="width:${Math.round(n/tot*100)}%"></i></div>`:'<span class="lock">🔒</span>');
+  return `<button type="button" class="b3-t${t.t==='bonus'?' wide':''}${on?' on':''}${s.open?'':' locked'}" data-i="${i}" style="--c1:${pg.c1};--c2:${pg.c2}" onclick="bp3Tile(${i})" aria-label="${bp3Esc(pg.name)}"><span class="bgc"></span><span class="por"><img src="${pg.art}" alt="" loading="lazy"></span><span class="ct">${bottom}</span>${rdy?'<span class="badge">!</span>':''}</button>`;
+}
+function bp3Tile(i){
+  const tiles=bp3Tiles(), t=tiles[i]; if(!t||t.t==='sep') return;
+  if(_b3.focus!==i){ _b3.focus=i; bp3Sfx('click'); bp3RenderMain(); return; }
+  const pg=t.t==='choice'?bp3TileHero(t):t.pg; bp3OpenPage(pg.id);
+}
+function bp3Sfx(n){ try{ if(typeof SFX!=='undefined'&&SFX[n]&&(typeof _gameSettings==='undefined'||_gameSettings.sfx!==false)) SFX[n](); }catch(e){} }
+function bp3Leave(){ if(_b3.pv){ bp3ClosePage(); return; } showScreen('menu-screen'); }
+// ── the page view ──
+function bp3OpenPage(pid){
+  const pg=bp3Cfg().pages.find(p=>p.id===pid); if(!pg) return;
+  _b3.pv=pid; _b3.sub=0; const P=bp3P(); let sel=pg.rewards.findIndex(r=>bp3RewardState(pg,r).s==='ready'); if(sel<0) sel=pg.rewards.findIndex(r=>!P.claimed[r.id]); _b3.sel=Math.max(0,sel); _b3.sub=Math.floor(_b3.sel/6);
+  bp3Sfx('cardFlip'); bp3RenderPage(true);
+}
+function bp3ClosePage(){ _b3.pv=null; const v=document.getElementById('b3-pv'); if(v){ v.classList.remove('open'); v.innerHTML=''; } const tiles=bp3Tiles(); bp3RenderMain(); }
+function bp3Pages(){ return bp3Cfg().pages; }
+function bp3PageStep(d){ const ps=bp3Pages(); const i=ps.findIndex(p=>p.id===_b3.pv); const j=Math.max(0,Math.min(ps.length-1,i+d)); if(j!==i) bp3OpenPage(ps[j].id); }
+function bp3RenderPage(anim){
+  const v=document.getElementById('b3-pv'); if(!v) return; const pg=bp3Pages().find(p=>p.id===_b3.pv); if(!pg){ bp3ClosePage(); return; }
+  const P=bp3P(); const r=pg.rewards[_b3.sel]||pg.rewards[0]; const st=bp3RewardState(pg,r); const ps=bp3PageState(pg);
+  v.style.setProperty('--pc1',pg.c1); v.style.setProperty('--pc2',pg.c2);
+  const all=bp3Pages(), idx=all.indexOf(pg);
+  const sel=all.map(p=>{ const s=bp3PageState(p); return `<button type="button" class="b3-av${p.id===pg.id?' on':''}" style="--c1:${p.c1};--c2:${p.c2}" onclick="bp3OpenPage('${p.id}')" title="${bp3Esc(p.name)}"><img src="${p.art}" alt="">${s.open?'':'<span class="lk">🔒</span>'}</button>`; }).join('');
+  const subs=Math.ceil(pg.rewards.length/6); if(_b3.sub>=subs) _b3.sub=0;
+  const row=pg.rewards.slice(_b3.sub*6,_b3.sub*6+6).map((x,k)=>{ const i=_b3.sub*6+k; const s=bp3RewardState(pg,x); const big=i===0&&x.type==='card';
+    return `<button type="button" class="b3-r${big?' big':''}${i===_b3.sel?' on':''}${s.s==='claimed'?' claimed':''}${['locked','pass'].includes(s.s)?' nope':''}" data-r="${x.id}" onclick="bp3Sel(${i})" aria-label="${bp3Esc(bp3Name(x))}">${big?'<span class="rbg"></span>':''}<span class="ri">${bp3Thumb(x,pg,big)}</span>${s.s==='claimed'?'<span class="ok">✓</span>':''}${x.free&&pg.kind==='main'?'<span class="fr b3-f">FREE</span>':''}${['locked','pass'].includes(s.s)?'<span class="lk">🔒</span>':''}</button>`; }).join('');
+  const tags=[]; if(pg.kind==='main') tags.push(r.free?'<span class="b3-tag free b3-f">FREE</span>':'<span class="b3-tag pass b3-f">BATTLE PASS</span>'); if(pg.kind==='choice') tags.push('<span class="b3-tag pass b3-f">CHOOSE A SET</span>'); if(pg.kind==='bonus') tags.push('<span class="b3-tag prem b3-f">PREMIUM · BONUS</span>');
+  tags.push(`<span class="b3-tag b3-f">${bp3Esc(pg.short||pg.name)} · ${bp3Claimed(pg)}/${pg.rewards.length}</span>`);
+  // right-hand actions
+  let act='';
+  const viewable=r.type==='card'||(r.type==='cosmetic'&&r.cos&&(r.cos.type==='back'||r.cos.type==='mat'));
+  const view=viewable?`<button type="button" class="b3-btn b3-f" onclick="bp3View()">VIEW REWARD</button>`:'';
+  if(st.s==='claimed'){
+    let eq=''; if(r.type==='cosmetic'&&r.cos){ const on=(typeof cosEquipped==='function')&&cosEquipped(r.cos.type)===r.cos.id; eq=`<button type="button" class="b3-btn b3-f" ${on?'disabled':''} onclick="bp3Equip()">${on?'EQUIPPED':'EQUIP'}</button>`; }
+    act=`<div class="st ok b3-f b3-i">CLAIMED</div>${view}${eq}`;
+  } else if(st.s==='ready') act=`<div class="st go b3-f b3-i">READY TO CLAIM</div><button type="button" class="b3-btn cl b3-f" onclick="bp3Claim('${r.id}')">CLAIM · ★1</button>${view}<div class="why">${bp3Seals()} claim${bp3Seals()===1?'':'s'} left · 1 per level</div>`;
+  else if(st.s==='locked'&&st.choose) act=`<div class="st go b3-f b3-i">CHOOSE A SET</div><button type="button" class="b3-btn cl b3-f" onclick="bp3Choose('${pg.id}')">CHOOSE THIS SET</button>${view}<div class="why">${bp3Esc(st.why)}</div>`;
+  else if(st.s==='locked'||st.s==='pass'){ const need=st.need||(st.s==='pass'?'battle':null);
+    act=`<div class="st no b3-f b3-i">LOCKED</div>${need&&!bp3Has(need)?`<button type="button" class="b3-btn cl b3-f" onclick="bp3OpenBuy()">${need==='premium'?'GET PREMIUM':'GET THE BATTLE PASS'}</button>`:''}${view}<div class="why">${bp3Esc(st.why)}</div>`; }
+  else if(st.s==='seal') act=`<div class="st no b3-f b3-i">LEVEL UP TO CLAIM</div><button type="button" class="b3-btn cl b3-f" onclick="bp3OpenLevels()">BUY LEVELS</button>${view}<div class="why">${bp3Esc(st.why)}</div>`;
+  else act=`<div class="st no b3-f b3-i">SEASON ENDED</div>${view}`;
+  v.innerHTML=`${bp3Sky()}<div class="b3-sel"><button type="button" class="b3-arrow" ${idx<=0?'disabled':''} onclick="bp3PageStep(-1)" aria-label="Previous page">‹</button><div class="lane">${sel}</div><button type="button" class="b3-arrow" ${idx>=all.length-1?'disabled':''} onclick="bp3PageStep(1)" aria-label="Next page">›</button></div>
+    <div class="b3-lvlbox" style="top:var(--top)">${bp3Ring('sm')}</div>
+    <div class="b3-info"><div class="k b3-f b3-i">${bp3Esc(bp3Kind(r))}</div><h3 class="b3-f b3-i">${bp3Esc(bp3Name(r))}</h3><p>${bp3Esc(bp3Desc(r))}</p><div class="tags">${tags.join('')}</div></div>
+    <div class="b3-art swap" id="b3-art">${bp3Art(r,pg)}</div>
+    <div class="b3-act">${act}</div>
+    <div class="b3-rw">${row}</div>
+    ${subs>1?`<div class="b3-pager b3-f"><button type="button" class="b3-arrow" ${_b3.sub<=0?'disabled':''} onclick="bp3Sub(-1)" aria-label="Previous rewards">‹</button><span>${_b3.sub+1}/${subs}</span><button type="button" class="b3-arrow" ${_b3.sub>=subs-1?'disabled':''} onclick="bp3Sub(1)" aria-label="More rewards">›</button></div>`:''}
+    <button type="button" class="b3-back lt b3-f" onclick="bp3ClosePage()"><kbd>ESC</kbd>BACK</button>`;
+  v.classList.add('open'); if(!anim) v.style.animation='none'; else v.style.animation='';
+  try{ const on=v.querySelector('.b3-r.on'), rw=v.querySelector('.b3-rw'); if(on&&rw&&rw.scrollWidth>rw.clientWidth) rw.scrollLeft=Math.max(0,on.offsetLeft-rw.clientWidth/2+on.offsetWidth/2); }catch(e){}
+}
+function bp3Sel(i){ _b3.sel=i; bp3Sfx('click'); bp3RenderPage(); }
+function bp3Sub(d){ const pg=bp3Pages().find(p=>p.id===_b3.pv); if(!pg) return; const subs=Math.ceil(pg.rewards.length/6); _b3.sub=Math.max(0,Math.min(subs-1,_b3.sub+d)); _b3.sel=_b3.sub*6; bp3RenderPage(); }
+function bp3View(){ const pg=bp3Pages().find(p=>p.id===_b3.pv); const r=pg&&pg.rewards[_b3.sel]; if(!r) return;
+  if(r.type==='card'&&typeof showFullCard==='function'){ showFullCard(r.cid,null,r.finish||'none'); return; }
+  if(r.type==='cosmetic'&&r.cos&&r.cos.img) bp3Dlg(`<h4 class="b3-f b3-i">${bp3Esc(bp3Name(r))}</h4><img src="${r.cos.img}" alt="" style="display:block;max-width:100%;max-height:68vh;margin:0 auto;border-radius:10px">`); }
+function bp3Equip(){ const pg=bp3Pages().find(p=>p.id===_b3.pv); const r=pg&&pg.rewards[_b3.sel]; if(!r||!r.cos) return; if(typeof cosEquip==='function'&&cosEquip(r.cos.id)){ bp3Toast(`Equipped ${bp3Name(r)}`); } bp3RenderPage(); }
+function bp3Choose(pid){ const P=bp3P(); const pg=bp3Pages().find(p=>p.id===pid); if(!pg||P.choice.length) return; if(!confirm(`Choose the ${pg.short||pg.name} Set? The other Set unlocks at LVL ${bp3Has('premium')?bp3Cfg().choiceLevel:bp3Cfg().choiceBothLevel}.`)) return;
+  P.choice.push(pid); saveBPPlayerData(); bp3Sfx('heraldSlam'); bp3RenderPage(); bp3RenderMain(); }
+async function bp3Claim(rid){
+  const {pg,r}=bp3Find(rid); if(!pg||!r) return; const st=bp3RewardState(pg,r); if(st.s!=='ready') return;
+  const P=bp3P(); P.claimed[rid]=new Date().toISOString();
+  try{ await bp3Grant(r); }catch(e){ console.warn('[BP] grant',e); }
+  try{ await saveBPPlayerData(); }catch(e){}
+  bp3Sfx('powerup'); bp3RenderPage(); bp3RenderMain(); bp3Celebrate(rid);
+}
+async function bp3Grant(r){
+  if(r.type==='card'){ addVariantToCollection(r.cid,r.finish||'none',1); if(typeof recomputeHoloOwned==='function') recomputeHoloOwned();
+    await Promise.all([saveCollection(),saveCollectionFoil(),(typeof saveHoloOwned==='function'?saveHoloOwned():null)]); if(typeof markRegistered==='function') markRegistered(r.cid); return; }
+  if(r.type==='cosmetic'&&r.cos){ bp3Reset(); if(typeof grantCosmetic==='function') grantCosmetic(r.cos.id,'Battle Pass',false); return; }
+  if(r.type==='celestium'){ await awardCelestium(+r.amount||0,'Battle Pass'); return; }
+  if(r.type==='shards'&&typeof _craft!=='undefined'){ _craft.shards+=(+r.amount||0); await craftSaveShards(); if(typeof craftRefresh==='function') craftRefresh(); return; }
+  if(r.type==='pack'&&typeof awardPack==='function'){ await awardPack('pack',r.pack||'basic',r.set||'base_set',+r.amount||1); return; }
+}
+function bp3Celebrate(rid){
+  const v=document.getElementById('b3-pv'); if(!v) return; const tile=v.querySelector(`.b3-r[data-r="${rid}"]`); if(tile){ tile.classList.add('flash'); }
+  const s=document.createElement('div'); s.className='b3-stamp b3-f b3-i'; s.textContent='CLAIMED!'; v.appendChild(s); setTimeout(()=>s.remove(),1200);
+  const art=document.getElementById('b3-art'); const R=art?art.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2,width:0,height:0};
+  for(let i=0;i<18;i++){ const p=document.createElement('i'); p.className='b3-spark'; const cx=R.left+R.width/2, cy=R.top+R.height/2; p.style.left=cx+'px'; p.style.top=cy+'px'; v.appendChild(p);
+    const a=Math.random()*Math.PI*2, d=80+Math.random()*220; const an=p.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d}px) scale(.2)`,opacity:0}],{duration:700+Math.random()*500,easing:'cubic-bezier(.2,.8,.3,1)',fill:'forwards'}); an.onfinish=()=>p.remove(); }
+}
+// ── dialogs ──
+function bp3Dlg(html){ const d=document.getElementById('b3-dlg'); if(!d) return; d.innerHTML=`<div class="b3-dbox">${html}<button type="button" class="b3-dx" onclick="bp3DlgClose()" aria-label="Close">✕</button></div>`; d.classList.add('open'); d.onclick=e=>{ if(e.target===d) bp3DlgClose(); }; }
+function bp3DlgClose(){ const d=document.getElementById('b3-dlg'); if(d){ d.classList.remove('open'); d.innerHTML=''; } }
+function bp3Toast(m){ if(typeof spToast==='function') spToast(m,2200); }
+function bp3OpenBuy(){
+  const C=bp3Cfg(), P=bp3P(); const cel=(typeof _celData!=='undefined'&&_celData.celestium)||0; const coin=`<img src="${BP3_CEL}" alt="">`;
+  const hasB=bp3Has('battle'); const premCost=hasB?C.prices.upgrade:C.prices.premium;
+  const both=C.choiceBothLevel, cl=C.choiceLevel;
+  bp3Dlg(`<h4 class="b3-f b3-i">GET THE PASS</h4><div class="b3-offers">
+    <div class="b3-offer"><b class="b3-f b3-i">BATTLE PASS</b><div class="pr b3-f">${coin}${C.prices.pass.toLocaleString()}</div>
+      <ul><li>Every reward on all ${bp3Mains().length} character pages</li><li>One Choose-a-Set page at LVL ${cl}, both at LVL ${both}</li><li>Claim with the levels you've already earned</li><li>About ${bp3PassCel().toLocaleString()} Celestium back as rewards</li></ul>
+      ${hasB?'<span class="b3-own b3-f">✓ OWNED</span>':`<button type="button" class="b3-btn b3-f" ${cel<C.prices.pass||bp3Ended()?'disabled':''} onclick="bp3Buy('battle')">BUY · ${C.prices.pass.toLocaleString()}</button>`}</div>
+    <div class="b3-offer prem"><b class="b3-f b3-i">PREMIUM PASS</b><div class="pr b3-f">${coin}${premCost.toLocaleString()}${hasB?' <small style="font-size:.5em;opacity:.8">UPGRADE</small>':''}</div>
+      <ul><li>Everything in the Battle Pass</li><li><b>+${C.premiumLevels} levels</b> right away</li><li>Both Choose-a-Set pages at LVL ${cl}</li><li>The Premium-only <b>Bonus Rewards</b> page</li></ul>
+      ${bp3Has('premium')?'<span class="b3-own b3-f">✓ OWNED</span>':`<button type="button" class="b3-btn pk b3-f" ${cel<premCost||bp3Ended()?'disabled':''} onclick="bp3Buy('premium')">${hasB?'UPGRADE':'BUY'} · ${premCost.toLocaleString()}</button>`}</div></div>
+    <div class="why" style="margin-top:14px;text-align:center;font-size:13px;opacity:.85">You have ${cel.toLocaleString()} Celestium</div>`);
+}
+function bp3PassCel(){ return bp3Mains().reduce((s,p)=>s+p.rewards.filter(r=>r.type==='celestium'&&!r.free).reduce((a,r)=>a+(+r.amount||0),0),0); }
+async function bp3Buy(kind){
+  const C=bp3Cfg(), P=bp3P(); if(bp3Ended()) return; let cost;
+  if(kind==='battle'){ if(bp3Has('battle')) return; cost=C.prices.pass; }
+  else { if(bp3Has('premium')) return; cost=bp3Has('battle')?C.prices.upgrade:C.prices.premium; }
+  if(((_celData&&_celData.celestium)||0)<cost){ bp3Toast('Not enough Celestium.'); return; }
+  _celData.celestium-=cost; try{ _celLog.unshift({amount:-cost,reason:kind==='premium'?'Premium Pass':'Battle Pass',ts:new Date().toISOString()}); }catch(e){}
+  const was=P.pass; P.pass=kind; bp3P(); let gained=0; if(kind==='premium') gained=bp3AddLevels(C.premiumLevels);
+  try{ await Promise.all([saveCelestium(),saveBPPlayerData()]); }catch(e){}
+  if(typeof updateCelDisplay==='function') updateCelDisplay(); if(typeof updateXpHud==='function') updateXpHud();
+  bp3DlgClose(); bp3Sfx('win'); renderBattlePass();
+  bp3Dlg(`<div style="text-align:center;padding:10px 0"><div style="font-size:64px">${kind==='premium'?'👑':'🛡'}</div><h4 class="b3-f b3-i" style="font-size:44px">${kind==='premium'?'PREMIUM PASS':'BATTLE PASS'} UNLOCKED</h4><p style="font-size:15px;opacity:.9">${kind==='premium'?(gained?`+${gained} levels · `:'')+'Bonus Rewards and both Sets are yours.':'Every reward on every page can be claimed now.'} You have ${bp3Seals()} claim${bp3Seals()===1?'':'s'} ready.</p><button type="button" class="b3-btn b3-f" onclick="bp3DlgClose()">LET'S GO</button></div>`);
+}
+function bp3AddLevels(n){
+  const P=bp3P(), max=bp3Cfg().maxTier, L=bp3Level(), t=Math.min(max,L+n); if(t<=L) return 0;
+  const into=bpXpIntoCurrentTier(P.xp||0); P.xp=bpTotalXpForTier(t)+(t>=max?0:Math.min(into,bpXpRequiredForTier(t)-1)); P.tier=t; return t-L;
+}
+let _b3lv=1;
+function bp3OpenLevels(){ const C=bp3Cfg(), L=bp3Level(); if(L>=C.maxTier||bp3Ended()) return; _b3lv=Math.min(_b3lv||1,C.maxTier-L)||1; bp3LevelsDlg(); }
+function bp3LevelsDlg(){
+  const C=bp3Cfg(), L=bp3Level(), room=C.maxTier-L; _b3lv=Math.max(1,Math.min(room,_b3lv)); const cost=_b3lv*C.prices.level; const cel=(_celData&&_celData.celestium)||0;
+  bp3Dlg(`<h4 class="b3-f b3-i">BUY LEVELS</h4><div class="b3-lvls"><button type="button" class="b3-arrow" onclick="_b3lv--;bp3LevelsDlg()" ${_b3lv<=1?'disabled':''}>−</button><div class="n b3-f">+${_b3lv}</div><button type="button" class="b3-arrow" onclick="_b3lv++;bp3LevelsDlg()" ${_b3lv>=room?'disabled':''}>+</button></div>
+    <div class="b3-quick">${[1,5,10,25].filter(n=>n<=room).map(n=>`<button type="button" onclick="_b3lv=${n};bp3LevelsDlg()">+${n}</button>`).join('')}<button type="button" onclick="_b3lv=${room};bp3LevelsDlg()">MAX</button></div>
+    <div class="b3-sum"><span>LVL ${L} → <b>LVL ${L+_b3lv}</b> · ${_b3lv} more claim${_b3lv===1?'':'s'}</span><span><img src="${BP3_CEL}" alt="" style="width:18px;vertical-align:-3px"> ${cost.toLocaleString()}</span></div>
+    <button type="button" class="b3-btn b3-f" style="width:100%" ${cel<cost?'disabled':''} onclick="bp3BuyLevels()">BUY ${_b3lv} LEVEL${_b3lv===1?'':'S'} · ${cost.toLocaleString()}</button>
+    <div class="why" style="margin-top:10px;text-align:center;font-size:13px;opacity:.85">${C.prices.level} Celestium per level · you have ${cel.toLocaleString()}</div>`);
+}
+async function bp3BuyLevels(){
+  const C=bp3Cfg(); const n=_b3lv, cost=n*C.prices.level; if(((_celData&&_celData.celestium)||0)<cost||bp3Ended()) return;
+  _celData.celestium-=cost; try{ _celLog.unshift({amount:-cost,reason:'Battle Pass levels ×'+n,ts:new Date().toISOString()}); }catch(e){}
+  const g=bp3AddLevels(n);
+  try{ await Promise.all([saveCelestium(),saveBPPlayerData()]); }catch(e){}
+  if(typeof updateCelDisplay==='function') updateCelDisplay(); if(typeof updateXpHud==='function') updateXpHud();
+  bp3DlgClose(); bp3Sfx('energy'); renderBattlePass(); bp3Toast(`+${g} level${g===1?'':'s'} — LVL ${bp3Level()}`);
+}
+function bp3QuestReady(){ try{ if(!BP_CONFIG||typeof ensureMissionState!=='function') return 0; ensureMissionState(); const P=_bpPlayerData; let n=0;
+  [['daily',BP_CONFIG.dailyMissions],['weekly',BP_CONFIG.weeklyMissions]].forEach(([sc,list])=>(list||[]).forEach(m=>{ if((P.missionProgress[sc][m.id]||0)>=m.target&&!P.missionClaimed[sc][m.id]) n++; })); return n; }catch(e){ return 0; } }
+function bp3OpenQuests(){ const d=document.getElementById('b3-qdlg'); if(!d) return; d.classList.add('open'); d.onclick=e=>{ if(e.target===d) bp3CloseQuests(); }; if(typeof renderMissions==='function') renderMissions(); if(typeof setBPResetTimers==='function') setBPResetTimers(); }
+function bp3CloseQuests(){ const d=document.getElementById('b3-qdlg'); if(d) d.classList.remove('open'); bp3RenderMain(); }
+function bp3Keys(){
+  if(_b3.keys) return; _b3.keys=true;
+  addEventListener('keydown',e=>{
+    const sc=document.getElementById('battle-pass-screen'); if(!sc||!sc.classList.contains('active')) return;
+    if(['INPUT','TEXTAREA','SELECT'].includes((document.activeElement||{}).tagName)) return;
+    const dlg=document.querySelector('#b3-dlg.open,#b3-qdlg.open,#b3-edit.open');
+    if(e.key==='Escape'){ e.preventDefault(); if(dlg){ if(dlg.id==='b3-qdlg') bp3CloseQuests(); else if(dlg.id==='b3-edit') bp3EditClose(); else bp3DlgClose(); return; } bp3Leave(); return; }
+    if(dlg) return;
+    if(_b3.pv){ const pg=bp3Pages().find(p=>p.id===_b3.pv); if(!pg) return;
+      if(e.key==='ArrowRight'){ _b3.sel=Math.min(pg.rewards.length-1,_b3.sel+1); _b3.sub=Math.floor(_b3.sel/6); bp3RenderPage(); }
+      else if(e.key==='ArrowLeft'){ _b3.sel=Math.max(0,_b3.sel-1); _b3.sub=Math.floor(_b3.sel/6); bp3RenderPage(); }
+      else if(e.key==='PageDown'||e.key===']') bp3PageStep(1); else if(e.key==='PageUp'||e.key==='[') bp3PageStep(-1);
+      else if(e.key==='Enter'){ const r=pg.rewards[_b3.sel]; if(r) bp3Claim(r.id); }
+      return; }
+    const tiles=bp3Tiles(); let i=_b3.focus;
+    if(e.key==='ArrowRight'){ do{ i=Math.min(tiles.length-1,i+1); }while(tiles[i].t==='sep'&&i<tiles.length-1); _b3.focus=i; bp3RenderMain(); }
+    else if(e.key==='ArrowLeft'){ do{ i=Math.max(0,i-1); }while(tiles[i].t==='sep'&&i>0); _b3.focus=i; bp3RenderMain(); }
+    else if(e.key==='Enter'){ bp3Tile(_b3.focus); }
+  });
+}
+// level-up popup (shows what the new level gives)
+function showBPLevelUp(newTier,reason){
+  const old=document.getElementById('bp-levelup-popup'); if(old) old.remove();
+  const p=document.createElement('div'); p.id='bp-levelup-popup'; p.className='bp-levelup-popup';
+  const s=bp3Seals();
+  p.innerHTML='<div class="bp-levelup-icon">⬆️</div><div><div style="font-size:9px;color:var(--violet2);letter-spacing:2px">BATTLE PASS</div><div style="font-size:14px;font-weight:700;color:#fbbf24;font-family:Orbitron,sans-serif">LEVEL '+newTier+'!</div><div style="font-size:10px;color:#e5e7eb">'+s+' reward claim'+(s===1?'':'s')+' ready</div></div>';
+  p.style.cursor='pointer'; p.onclick=()=>{ p.remove(); if(typeof openBattlePassIfEnabled==='function') openBattlePassIfEnabled(); };
+  document.body.appendChild(p); setTimeout(()=>{ if(p.parentNode) p.remove(); },4000);
+}
+async function resetMyBPProgress(){
+  if(!isAdmin()) return; if(!confirm('Reset YOUR Battle Pass progress (levels, pass, claims)? Other players are not affected.')) return;
+  _bpPlayerData={xp:0,tier:1,pass:'none',claimed:{},choice:[],hasStandard:false,hasPremium:false,claimedFree:{},claimedStandard:{},claimedPremium:{},seasonId:BP_CONFIG&&BP_CONFIG.seasonId};
+  await saveBPPlayerData(); if(typeof updateXpHud==='function') updateXpHud(); updateBPHudIfVisible(); alert('✓ Your Battle Pass progress was reset.');
+}
+
+// ── ADMIN: Battle Pass season editor (build 10.18) — season, prices, theme, and every page with its rewards ──
+let _b3e=null;
+function openBPEditor(){
+  if(!isAdmin()){ alert('Admin only'); return; }
+  const C=bp3Cfg(), c=BP_CONFIG||BP_DEFAULT_CONFIG;
+  _b3e={seasonId:c.seasonId||'season_1',seasonLabel:C.label,seasonTitle:C.title||'',startDate:c.startDate||null,durationDays:c.durationDays||30,maxTier:C.maxTier,xpPerWin:c.xpPerWin||50,xpPerMatch:c.xpPerMatch||20,
+    theme:Object.assign({},C.theme),prices:Object.assign({},C.prices),premiumLevels:C.premiumLevels,unlockAfter:C.unlockAfter,choiceLevel:C.choiceLevel,choiceBothLevel:C.choiceBothLevel,bonusXpPerSeal:C.bonusXpPerSeal,
+    pages:JSON.parse(JSON.stringify(C.pages)),_open:0,_sid:c.seasonId||'season_1'};
+  showScreen('battle-pass-screen'); openBattlePass().then(()=>bp3EditRender());
+}
+function bp3EditClose(){ const e=document.getElementById('b3-edit'); if(e){ e.classList.remove('open'); e.innerHTML=''; } }
+function bp3EdPath(o,p,v){ const k=p.split('.'); let t=o; for(let i=0;i<k.length-1;i++){ const n=isNaN(+k[i])?k[i]:+k[i]; if(t[n]==null) t[n]=isNaN(+k[i+1])?{}:[]; t=t[n]; } const last=isNaN(+k[k.length-1])?k[k.length-1]:+k[k.length-1]; if(v===undefined) return t[last]; t[last]=v; }
+function bp3EdSet(el){ let v=el.type==='checkbox'?el.checked:el.value; if(el.type==='number') v=v===''?'':+v; if(el.dataset.k==='startDate') v=v?new Date(v).toISOString():null; bp3EdPath(_b3e,el.dataset.k,v); if(el.dataset.re) bp3EditRender(); }
+function bp3EdIn(k,label,type,extra){ const v=bp3EdPath(_b3e,k); let val=v==null?'':v; if(k==='startDate'&&v) val=new Date(v).toISOString().slice(0,16);
+  if(type==='checkbox') return `<label class="b3e-ck"><input type="checkbox" data-k="${k}" ${v?'checked':''} onchange="bp3EdSet(this)"${extra||''}> ${label}</label>`;
+  return `<label class="b3e-f"><span>${label}</span><input type="${type||'text'}" data-k="${k}" value="${String(val).replace(/"/g,'&quot;')}" onchange="bp3EdSet(this)"${extra||''}></label>`; }
+function bp3EdSel(k,label,opts,re){ const v=bp3EdPath(_b3e,k); return `<label class="b3e-f"><span>${label}</span><select data-k="${k}" ${re?'data-re="1"':''} onchange="bp3EdSet(this)">${opts.map(o=>{ const [val,t]=Array.isArray(o)?o:[o,o]; return `<option value="${val}"${String(v)===String(val)?' selected':''}>${t}</option>`; }).join('')}</select></label>`; }
+function bp3EditRender(){
+  const e=document.getElementById('b3-edit'); if(!e||!_b3e) return; const E=_b3e; if(E._open>=E.pages.length) E._open=Math.max(0,E.pages.length-1);
+  const pg=E.pages[E._open];
+  const pageTabs=E.pages.map((p,i)=>`<button type="button" class="b3e-pt${i===E._open?' on':''}" style="--c1:${p.c1};--c2:${p.c2}" onclick="_b3e._open=${i};bp3EditRender()"><img src="${p.art||''}" alt=""><b>${bp3Esc(p.short||p.name||p.id)}</b><small>${p.kind}</small></button>`).join('');
+  const rw=pg?pg.rewards.map((r,i)=>bp3EdReward(pg,r,i)).join(''):'';
+  e.innerHTML=`<div class="b3e"><div class="b3e-top"><h4 class="b3-f b3-i">BATTLE PASS EDITOR</h4><span class="b3e-note">Changes go live for everyone when you SAVE. PREVIEW shows them only to you until you reload.</span>
+      <div class="b3e-acts"><button type="button" onclick="bp3EdPreview()">PREVIEW</button><button type="button" class="go" onclick="bp3EdSave()">SAVE</button><button type="button" onclick="bp3EditClose()">CLOSE</button></div></div>
+    <div class="b3e-grid"><section class="b3e-box"><h5>SEASON</h5>
+      ${bp3EdIn('seasonTitle','Season name (under BATTLE PASS; blank = the label)')}${bp3EdIn('seasonLabel','Season label (e.g. SEASON 1)')}
+      ${bp3EdIn('seasonId','Season ID — changing it starts a NEW season (everyone resets)')}
+      ${bp3EdIn('startDate','Start (blank = not started)','datetime-local')}${bp3EdIn('durationDays','Length (days)','number')}
+      ${bp3EdIn('maxTier','Max level','number')}${bp3EdIn('xpPerWin','XP per win','number')}${bp3EdIn('xpPerMatch','XP per match','number')}
+      <h5>PRICES (CELESTIUM)</h5>${bp3EdIn('prices.pass','Battle Pass','number')}${bp3EdIn('prices.premium','Premium Pass (new players)','number')}${bp3EdIn('prices.upgrade','Upgrade Battle → Premium','number')}${bp3EdIn('prices.level','One level','number')}
+      <h5>RULES</h5>${bp3EdIn('premiumLevels','Premium: levels given at once','number')}${bp3EdIn('unlockAfter','Claims on a page to open the next','number')}${bp3EdIn('choiceLevel','Choose-a-Set: one Set at LVL','number')}${bp3EdIn('choiceBothLevel','Choose-a-Set: both Sets at LVL (Battle Pass)','number')}${bp3EdIn('bonusXpPerSeal','XP per extra claim past the max level','number')}
+      <h5>MAIN SCREEN COLORS</h5><div class="b3e-cols">${bp3EdIn('theme.sky1','Sky top','color')}${bp3EdIn('theme.sky2','Sky bottom','color')}${bp3EdIn('theme.floor1','Floor light','color')}${bp3EdIn('theme.floor2','Floor dark','color')}</div>
+      <h5>SEASON</h5><div class="b3e-acts"><button type="button" onclick="startBPSeasonNow().then(()=>{bp3Reset();renderBattlePass();})">START SEASON NOW</button><button type="button" onclick="endBPSeasonNow().then(()=>{bp3Reset();renderBattlePass();})">END SEASON</button><button type="button" onclick="resetMyBPProgress()">RESET MY PROGRESS</button><button type="button" onclick="bp3EdPlaceholders()">USE PLACEHOLDER PAGES</button></div>
+    </section>
+    <section class="b3e-box"><h5>PAGES <small>— the main screen shows main pages in order, then the Choose-a-Set pair, then Bonus</small></h5><div class="b3e-pages">${pageTabs}<button type="button" class="b3e-pt add" onclick="bp3EdAddPage()">＋<b>Add page</b></button></div>
+      ${pg?`<div class="b3e-page"><div class="b3e-row3">${bp3EdSel('pages.'+E._open+'.kind','Kind',[['main','Main page'],['choice','Choose-a-Set'],['bonus','Bonus (Premium)']],true)}${bp3EdIn('pages.'+E._open+'.name','Name')}${bp3EdIn('pages.'+E._open+'.short','Short name')}</div>
+        <div class="b3e-row3">${bp3EdIn('pages.'+E._open+'.art','Character cut-out (transparent PNG/WebP link)','url',' data-re="1"')}${bp3EdIn('pages.'+E._open+'.c1','Color dark','color',' data-re="1"')}${bp3EdIn('pages.'+E._open+'.c2','Color light','color',' data-re="1"')}</div>
+        ${pg.kind==='main'?`<div class="b3e-row3">${bp3EdIn('pages.'+E._open+'.gate','Opens anyway at LVL (free players)','number')}</div>`:''}
+        <div class="b3e-pacts"><button type="button" onclick="bp3EdMovePage(-1)">◀ MOVE</button><button type="button" onclick="bp3EdMovePage(1)">MOVE ▶</button><button type="button" class="del" onclick="bp3EdDelPage()">DELETE PAGE</button></div>
+        <h5>REWARDS <small>— ${pg.rewards.length}; the first one is the big headline tile</small></h5><div class="b3e-rws">${rw}</div><button type="button" class="b3e-add" onclick="bp3EdAddReward()">＋ ADD REWARD</button></div>`:'<p>No pages.</p>'}
+    </section></div>
+    <datalist id="b3e-cids">${Object.keys(DB).filter(id=>DB[id]&&!DB[id].isToken&&DB[id].type!=='system').map(id=>`<option value="${id}">${bp3Esc(DB[id].name)}</option>`).join('')}</datalist></div>`;
+  e.classList.add('open');
+}
+function bp3EdReward(pg,r,i){
+  const b='pages.'+_b3e._open+'.rewards.'+i+'.'; let f='';
+  if(r.type==='card') f=bp3EdIn(b+'cid','Card id','text',' list="b3e-cids" data-re="1"')+bp3EdSel(b+'finish','Finish',VARIANT_ORDER.map(v=>[v,(VARIANT_META[v]||{}).label||v]));
+  else if(r.type==='cosmetic'){ const c=r.cos||(r.cos={id:'bp_'+_b3e.seasonId+'_'+r.id,type:'title'}); const cb=b+'cos.';
+    f=bp3EdSel(cb+'type','Cosmetic',Object.keys(BP3_COSK).map(k=>[k,BP3_COSK[k]]),true)+bp3EdIn(cb+'name','Name');
+    if(c.type==='back'||c.type==='mat') f+=bp3EdIn(cb+'img','Image link','url');
+    if(c.type==='title') f+=bp3EdIn(cb+'text','Title text')+bp3EdIn(cb+'color','Color','color');
+    if(c.type==='frame') f+=bp3EdIn(cb+'ring.0','Ring color','color')+bp3EdIn(cb+'ring.1','Glow','text');
+    if(c.type==='plate') f+=bp3EdIn(cb+'bg','Background (CSS)')+bp3EdIn(cb+'line','Edge color','color');
+    if(c.type==='entrance') f+=bp3EdSel(cb+'fx','Effect',['royal','storm','abyss','inferno'])+bp3EdIn(cb+'icon','Icon')+bp3EdIn(cb+'c','Color','color');
+  } else if(r.type==='pack') f=bp3EdIn(b+'amount','How many','number')+bp3EdSel(b+'pack','Pack',[['basic','Basic'],['premium','Premium']]);
+  else f=bp3EdIn(b+'amount','Amount','number');
+  const thumb=`<span class="b3e-th" style="--pc2:${pg.c2}">${bp3Thumb(r,pg,false)}</span>`;
+  return `<div class="b3e-rw">${thumb}<div class="b3e-rf">${bp3EdSel(b+'type','Type',[['card','Card'],['cosmetic','Cosmetic'],['celestium','Celestium'],['shards','Court Shards'],['pack','Pack']],true)}${f}
+    ${pg.kind==='main'?bp3EdIn(b+'free','FREE (no pass needed)','checkbox'):''}${r.type==='cosmetic'?'':bp3EdIn(b+'name','Name (blank = automatic)')}${bp3EdIn(b+'desc','Text (blank = automatic)')}</div>
+    <div class="b3e-ra"><button type="button" onclick="bp3EdMoveRw(${i},-1)" aria-label="Up">▲</button><button type="button" onclick="bp3EdMoveRw(${i},1)" aria-label="Down">▼</button><button type="button" class="del" onclick="bp3EdDelRw(${i})" aria-label="Delete">✕</button></div></div>`;
+}
+function bp3EdAddReward(){ const pg=_b3e.pages[_b3e._open]; const id=pg.id+'_'+Date.now().toString(36); pg.rewards.push({id,type:'celestium',amount:100}); bp3EditRender(); }
+function bp3EdDelRw(i){ const pg=_b3e.pages[_b3e._open]; if(!confirm('Delete this reward? Players who claimed it keep what they got.')) return; pg.rewards.splice(i,1); bp3EditRender(); }
+function bp3EdMoveRw(i,d){ const R=_b3e.pages[_b3e._open].rewards; const j=i+d; if(j<0||j>=R.length) return; [R[i],R[j]]=[R[j],R[i]]; bp3EditRender(); }
+function bp3EdAddPage(){ const id='pg'+Date.now().toString(36); _b3e.pages.push({id,kind:'main',name:'New page',short:'New',art:'',c1:'#1e3a8a',c2:'#60a5fa',gate:0,rewards:[{id:id+'_1',type:'celestium',amount:100}]}); _b3e._open=_b3e.pages.length-1; bp3EditRender(); }
+function bp3EdDelPage(){ if(!confirm('Delete this page and its rewards?')) return; _b3e.pages.splice(_b3e._open,1); _b3e._open=Math.max(0,_b3e._open-1); bp3EditRender(); }
+function bp3EdMovePage(d){ const P=_b3e.pages, i=_b3e._open, j=i+d; if(j<0||j>=P.length) return; [P[i],P[j]]=[P[j],P[i]]; _b3e._open=j; bp3EditRender(); }
+function bp3EdPlaceholders(){ if(!confirm('Replace every page with the placeholder pages?')) return; bp3Defaults._c=null; _b3e.pages=JSON.parse(JSON.stringify(bp3Defaults().pages)); _b3e._open=0; bp3EditRender(); }
+function bp3EdBuild(){
+  const E=_b3e, errs=[]; const ids=new Set();
+  E.pages.forEach(p=>{ if(!p.rewards||!p.rewards.length) errs.push(`Page "${p.name}" has no rewards.`);
+    (p.rewards||[]).forEach(r=>{ if(ids.has(r.id)) errs.push('Duplicate reward id '+r.id); ids.add(r.id);
+      if(r.type==='card'&&!DB[r.cid]) errs.push(`Page "${p.name}": no card with id "${r.cid}".`);
+      if(r.type==='cosmetic'){ r.cos=r.cos||{}; if(!r.cos.id) r.cos.id='bp_'+E.seasonId+'_'+r.id; if(!r.cos.name) r.cos.name=bp3Name(r); if(r.cos.type==='frame'&&r.cos.ring&&!r.cos.ring[1]) r.cos.ring[1]=(r.cos.ring[0]||'#e8c570')+'88'; if(r.cos.type==='entrance'&&!r.cos.glow) r.cos.glow=(r.cos.c||'#e8c570')+'99'; }
+      if(['celestium','shards','pack'].includes(r.type)) r.amount=Math.max(1,+r.amount||1);
+      if(r.type!=='cosmetic') delete r.cos; ['name','desc'].forEach(k=>{ if(r[k]==='') delete r[k]; }); }); });
+  const out=Object.assign({},BP_CONFIG||BP_DEFAULT_CONFIG,{seasonId:E.seasonId,seasonLabel:E.seasonLabel,seasonTitle:E.seasonTitle,startDate:E.startDate,durationDays:+E.durationDays||30,maxTier:+E.maxTier||50,
+    xpPerWin:+E.xpPerWin||50,xpPerMatch:+E.xpPerMatch||20,theme:E.theme,prices:{pass:+E.prices.pass||0,premium:+E.prices.premium||0,upgrade:+E.prices.upgrade||0,level:+E.prices.level||0},
+    premiumLevels:+E.premiumLevels||0,unlockAfter:+E.unlockAfter||1,choiceLevel:+E.choiceLevel||1,choiceBothLevel:+E.choiceBothLevel||1,bonusXpPerSeal:+E.bonusXpPerSeal||1500,pages:E.pages});
+  if(out.ended&&E.startDate&&Date.now()<new Date(E.startDate).getTime()+out.durationDays*864e5) delete out.ended;
+  return {out,errs};
+}
+function bp3EdPreview(){ const {out,errs}=bp3EdBuild(); if(errs.length){ alert('Fix these first:\n• '+errs.join('\n• ')); return; } BP_CONFIG=out; bp3Reset(); renderBattlePass(); bp3Toast('Preview applied — only you see it until you SAVE.'); }
+async function bp3EdSave(){
+  if(!isAdmin()||!_celSB) return; const {out,errs}=bp3EdBuild(); if(errs.length){ alert('Fix these first:\n• '+errs.join('\n• ')); return; }
+  if(out.seasonId!==_b3e._sid&&!confirm(`Season ID changed (${_b3e._sid} → ${out.seasonId}). That starts a NEW season: every player's levels, pass and claims reset. Continue?`)) return;
+  try{ const {error}=await _celSB.from('app_settings').upsert({key:'battle_pass_config',value:JSON.stringify(out),updated_at:new Date().toISOString()},{onConflict:'key'});
+    if(error){ alert('Save failed: '+error.message); return; } BP_CONFIG=out; _b3e._sid=out.seasonId; bp3Reset(); renderBattlePass(); bp3Toast('✓ Battle Pass saved — live for every player.'); }catch(e){ alert('Save failed: '+e.message); }
+}
+
 </script>
 
 </body>
