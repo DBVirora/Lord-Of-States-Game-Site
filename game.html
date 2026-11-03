@@ -6936,6 +6936,7 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 .sp-allow input{accent-color:#c79a3a;width:14px;height:14px;margin:0}
 .sp-allow small{color:#6b7280;font-size:9px}
 /* Court Shards — crafting (build 10.17) */
+.cr-adm-hc{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0 2px;font-size:12px;color:#e8dcc0}.cr-adm-hc input{width:96px}
 .cs-ico{vertical-align:-2px;margin-right:3px;filter:drop-shadow(0 0 4px rgba(168,85,247,.55))}
 .cs-amt{display:inline-flex;align-items:center;white-space:nowrap;font-family:'Share Tech Mono',monospace;color:#f0d58a;letter-spacing:.5px}
 #registry-screen .reg-shards{display:flex;align-items:center;gap:8px}
@@ -7558,7 +7559,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.17 · Group rooms</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.18 · Virora (Surfacer MUI)</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -8550,8 +8551,22 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.17'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.18'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.18', date:'2026-11-02',
+    cards:[
+      {id:'virora_surfacer_mui_sr_bse', set:'base_set', number:'154/150', rarity:'secret', scan:'Sets/BASE SET/154-150 (Virora Surfacer MUI) (Secret Rare).png', newAbilities:['Mastered Instinct','Celestial Surge','Silent Horizon'],
+        note:"Virora (Surfacer MUI) SECRET RARE · secretRare:true · Purple · Character (played from hand, NOT transformOnly) · cost 12 · 11 ATK / 8 HP · subtypes Royal, Saiyan, Celestial · race 'Royal Saiyan Celestial' · charName 'Virora' (Virora checks like Void Synergy count her) · charLine 'virora_mui' (her own line) · no formTier · nextForms [] · transforms [] — a standalone card: nothing transforms into or out of her. Main menu art (admin sets it per tab): Main Menu Images/vmuisurfacerSurfacer MUI virora.jpg."}],
+    abilities:[
+      "MASTERED INSTINCT (Virora Surfacer MUI, triggered): when she is attacked, flip a coin with the FULL roll panel (coinFlipShow, both players see it). Resolves in executeCombatDamage on the normal path, after Water Stance / Sun's Judgment / Killing Intent are in atkDmg and after the Power Struggle branches (a tie or defender win returns before it). HEADS = the attack MISSES: no dealDamage, and no on-hit triggers (Receipt, Olympian Blood, combatDamageHooks, Inherit Tank, Blood Tithe, Godly Blitz, Exsanguinate, Pursuit kill all see 0 / are skipped); retaliation still happens normally (she hits back unless Frozen / no-retaliation). TAILS = atkDmg − 2 (not below 0). Logs '🌌 Mastered Instinct: HEADS — X's attack misses Y!' / 'TAILS — Y takes 2 less (a→b).'",
+      "CELESTIAL SURGE (Virora Surfacer MUI, activated): 5 Energy (her color, Purple), once per turn, paid → doesn't tap. openEnemyTargetPicker over every opposing character (2v2: both enemies' fields) → dealDamage 5 (Nullify applies). If that target left the field, a second picker: Freeze another opposing character that isn't already Frozen (STATUS_META.freeze.dur); none left → log only. AI picks both targets itself (aiPickEnemyTarget). No opposing characters → the ability is refunded (_abilityUndo) and not used.",
+      "SILENT HORIZON (Virora Surfacer MUI, activated): 4 Energy, ONCE PER GAME (limit 'once_per_game' — the lock survives the per-turn reset), paid → doesn't tap. Freezes every opposing character (2v2: both enemies). No opposing characters → refunded, not spent. AI: only uses it when 2+ enemies that aren't Frozen / Vortex Shielded would be hit (score 10 + 5 per enemy + 3 per enemy that could attack next turn)."],
+    screens:[
+      "CRAFTING (Court Shards): Heralds now craft for ONE flat cost whatever their rarity — default 3,500 (CRAFT_DEFAULT.heraldCost). They still BREAK at their rarity's rate × holo. Admin → Seasons → Crafting rates gains a row under the Heralds checkbox: '👑 Herald craft cost' [number, step 50]; the checkbox hint now reads 'Regular finish, flat cost below (any rarity)'. Rules 'Court Shards:' line adds 'Heralds cost 3,500 to craft.' (the live value). A Herald cost of 0 = can't craft ('Heralds come from packs only.')."],
+    data:[
+      "GAME_BUILD '10.18' (web and PC must both be on 10.18 to play online — port the card before mixed play). Build tag 'build 10.18 · Virora (Surfacer MUI)'.",
+      "app_settings 'crafting' gains heraldCost (integer ≥ 0; missing → 3500). craftCheck: cost = (type==='herald') ? heraldCost : rates[rarity][1]; every other check and message is unchanged. When the PC admin saves crafting it must write heraldCost too.",
+      "ENGINE: the generic activated-ability path now also refuses a 'once_per_game' ability whose lock is set ('<label> has already been used this game.') — before, only the menu's greyed button stopped a second use."] },
   { build:'10.17', date:'2026-11-02',
     cards:[], abilities:[],
     screens:[
@@ -9173,6 +9188,7 @@ const DEFAULTS={
   jalina_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/123-150%20(Jalina).png',
   alita_ssj_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/125-150%20(Alita%20SSJ).png',
   alita_ssj_sr_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/153-150%20(Alita%20SSJ)%20(Secret%20Rare).png',
+  virora_surfacer_mui_sr_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/154-150%20(Virora%20Surfacer%20MUI)%20(Secret%20Rare).png',
   voraxis_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/140-150%20(Voraxis).png',
   ivan_wca_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Wrestling/Ivan%20WCA%20(Promo%20Card).png',
   wca_overdrive_belt_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Wrestling/WCA%20OVERDRIVE%20CHAMPION%20BELT%20(PROMO%20EQUIPTMENT).png',
@@ -9443,6 +9459,13 @@ const DB={
   alita_ssj_sr_bse:{id:'alita_ssj_sr_bse',rarity:'secret',secretRare:true,name:'Alita (SSJ)',color:'yellow',charName:'Alita',charLine:'alita',formTier:'ssj1',path:'saiyan',transformOnly:true,subtypes:['Prime','Saiyan'],type:'char',race:'Prime Saiyan',cost:7,atk:7,hp:5,sym:'ALSSJ',setId:'base_set',cardNumber:'153/150',keywords:[],nextForms:[],
     abilities:[{label:'Velocity Blitz',type:'passive',cost:0,text:'Opposing characters must pay 2 Energy to attack this card.'},
       {label:'Pressure Points',type:'triggered',cost:0,text:'Whenever this card deals combat damage to a character, that character is Paralyzed.'}]},
+  // ── VIRORA (SURFACER MUI) (BSE 154/150, SECRET RARE) — build 10.18. A standalone character: her own charLine
+  //    ('virora_mui'), no formTier, no nextForms → nothing transforms into or out of her. charName stays 'Virora'
+  //    so "Virora" checks (Paradox's Void Synergy…) count her.
+  virora_surfacer_mui_sr_bse:{id:'virora_surfacer_mui_sr_bse',rarity:'secret',secretRare:true,name:'Virora (Surfacer MUI)',color:'purple',charName:'Virora',charLine:'virora_mui',subtypes:['Royal','Saiyan','Celestial'],type:'char',race:'Royal Saiyan Celestial',cost:12,atk:11,hp:8,sym:'VMUI',setId:'base_set',cardNumber:'154/150',keywords:[],nextForms:[],transforms:[],
+    abilities:[{label:'Mastered Instinct',type:'triggered',cost:0,text:'When this card is attacked, flip a coin. Heads: the attack misses (it deals no damage, and this card still hits back). Tails: this card takes 2 less damage from it.'},
+      {label:'Celestial Surge',type:'activated',cost:5,limit:'once_per_turn',text:'Pay 5 Energy: Deal 5 damage to an opponent character. If this destroys it, Freeze another opponent character. (Once per turn)'},
+      {label:'Silent Horizon',type:'activated',cost:4,limit:'once_per_game',text:'Pay 4 Energy: Freeze each opponent character. (Once per game)'}]},
   // ── VORAXIS (BSE 140/150) — build 9.7. Great Ape Saiyan. Primal Roar (entry, all enemies −2 ATK until end of your
   //    next turn) · Braided Armor (Resolve + can attack Locations) · Beast Bond (with a Virora: it and each Virora +2/+2).
   voraxis_bse:{id:'voraxis_bse',rarity:'legend',name:'Voraxis',color:'purple',charName:'Voraxis',subtypes:['Great Ape','Saiyan'],type:'char',race:'Great Ape Saiyan',cost:9,atk:7,hp:10,sym:'VRX',setId:'base_set',cardNumber:'140/150',keywords:['resolve'],canAttackLocations:true,nextForms:[],
@@ -13236,18 +13259,30 @@ function executeCombatDamage(ap,auid,dp,duid){
 
   // Attacker wins OR no power struggle — normal damage resolution
   const defenderATK=dfc.currentATK;
-  dealDamage(dp,dfc.uid,atkDmg);
-  const _pursuitKill=hasKW(afc,'pursuit') && !(G.players[dp].field.some(f=>f.uid===dfc.uid) && dfc.currentHP>0);
+  // 🌌 MASTERED INSTINCT (Virora Surfacer MUI): when she's attacked, flip a coin (full panel, both players).
+  //    HEADS → the attack misses: no damage and no on-hit effects, and she still hits back (normal retaliation).
+  //    TAILS → she takes 2 less damage from it. Checked here, so it covers every attack that reaches combat damage
+  //    (blocks in Life modes too); a Power Struggle tie / defender win never gets here (no damage to her anyway).
+  let _miMiss=false;
+  if(hasAbilityLabel(dfc,'Mastered Instinct')&&isChar(dc)){
+    const _h=coinFlipShow('Mastered Instinct — '+dc.name,'Heads: the attack misses · Tails: she takes 2 less damage');
+    if(_h){ _miMiss=true; log(`🌌 Mastered Instinct: HEADS — ${ac.name}'s attack misses ${dc.name}!`,'gain'); atkDmg=0; }
+    else { const _cut=Math.min(2,Math.max(0,atkDmg)); log(`🌌 Mastered Instinct: TAILS — ${dc.name} takes 2 less (${atkDmg}→${atkDmg-_cut}).`,'gain'); atkDmg-=_cut; }
+  }
+  if(!_miMiss) dealDamage(dp,dfc.uid,atkDmg);
+  const _pursuitKill=!_miMiss && hasKW(afc,'pursuit') && !(G.players[dp].field.some(f=>f.uid===dfc.uid) && dfc.currentHP>0);
 
   // INHERIT TANK (Paradox): the DEFENDER gains 2 Purple Energy when dealt combat damage.
   if(hasAbilityLabel(dfc,'Inherit Tank') && atkDmg>0){
     G.players[dp].energy+=2; log('Inherit Tank: Paradox gains 2 Purple Energy!','gain');
   }
   // RECEIPT (Ivan WCA): dfc just took combat damage from afc. (Pursuit kill → no Receipt.)
+  if(!_miMiss){   // a missed attack (Mastered Instinct) deals nothing → no on-hit triggers
   triggerReceipt(dfc, atkDmg, afc, ap, _pursuitKill);
   // OLYMPIAN BLOOD (Kratos): afc just dealt this combat damage.
   triggerOlympianBlood(afc, ap, atkDmg);
   combatDamageHooks(afc, ap, dfc, dp, atkDmg);
+  }
   // BLOOD TITHE (Lady Loki Vampire): drains -1/-1 from the character she hits, +1/+1 to herself.
   if(hasAbilityLabel(afc,'Blood Tithe') && atkDmg>0 && isChar(dc) && G.players[dp].field.some(f=>f.uid===dfc.uid)){
     dfc.atkBonus=(dfc.atkBonus||0)-1; dfc.currentATK=Math.max(0,(dfc.currentATK||0)-1);
@@ -16865,6 +16900,7 @@ function _activateAbilityCore(fc,abl){
   // COLORED ABILITY COST (e.g. Magnus SSG Court Sight "Cost 2 Blue energy"): needs that much of the colour banked.
   if(abl.energyColor && _cost>0 && ((pl.colorEnergy||{})[abl.energyColor]||0)<_cost){ log(`${abl.label} needs ${_cost} ${abl.energyColor.toUpperCase()} Energy (you have ${(pl.colorEnergy||{})[abl.energyColor]||0}).`,'dmg'); return; }
   if(fc.abilityUsed&&fc.abilityUsed[abl.label]&&abl.limit==='once_per_turn'){ log(`${abl.label} already used this turn.`,'dmg'); return; }
+  if(fc.abilityUsed&&fc.abilityUsed[abl.label]&&abl.limit==='once_per_game'){ log(`${abl.label} has already been used this game.`,'dmg'); return; }   // build 10.18
   if(abl.label==="Doom's Design"){ if(!doomsDesignReady(fc)){ log(`Doom's Design: wait ${2-(G.turn-fc.abilityUsed.dooms_design_turn)} more turn(s).`,'dmg'); return; } if(!fc.abilityUsed)fc.abilityUsed={}; fc.abilityUsed.dooms_design_turn=G.turn; }
   spendEnergyAbility(G.activePlayer, _cost, abl.energyColor||DB[fc.cid]?.color||null);fc.abilityUsed[abl.label]=true;
   // TAPPED SYSTEM:
@@ -16943,6 +16979,45 @@ function runAbilityEffect(fc, abl, pl){
       body.innerHTML=`<div style="display:flex;gap:14px;align-items:center"><div style="width:120px;height:168px;border-radius:8px;overflow:hidden;border:1px solid #3a2a6a;background:#000;flex:none">${url?`<img src="${url}" style="width:100%;height:100%;object-fit:cover">`:''}</div><div><div style="font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:#e8c570">${nm}</div><div style="font-size:11px;color:#9ca3af;margin-top:6px">was on top of ${pname(oppNum)}'s deck.<br>It has been put on the bottom.</div></div></div>`;
       showModalEl('📡 Deep Ping',body);
     }
+    renderAll(); return;
+  }
+  // ── VIRORA (SURFACER MUI) BSE 154/150 SR: Celestial Surge — 5 damage to an opposing character; if that destroys it,
+  //    Freeze another opposing character. 5⚡, once per turn (generic lock). Paid → doesn't tap. 2v2: any enemy.
+  if(label==='Celestial Surge'){
+    const ap=G.activePlayer; const opps=_fusionOpps(ap);
+    const ownerOf=(uid)=>opps.find(o=>(G.players[o]?.field||[]).some(f=>f.uid===uid));
+    const enemies=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) enemies.push(f); }));
+    if(!enemies.length){ if(_abilityUndo) _abilityUndo(); log('Celestial Surge: no opposing characters — not used.','dmg'); renderAll(); return; }
+    openEnemyTargetPicker(enemies,(uid)=>{
+      const op=ownerOf(uid); const t=op&&G.players[op].field.find(f=>f.uid===uid); if(!t){ renderAll(); return; }
+      log(`🌌 Celestial Surge hits ${DB[t.cid].name} for 5!`,'dmg');
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Celestial Surge',fc.uid):null;
+      try{ dealDamage(op,uid,5); } finally{ if(typeof fxPop==='function') fxPop(_fx); }
+      const destroyed=!G.players[op].field.some(f=>f.uid===uid);
+      if(!destroyed){ if(typeof recalcPassives==='function')recalcPassives(); closeAllModals(); renderAll(); return; }
+      const others=[]; opps.forEach(o=>(G.players[o]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])&&!statusActive(f,'freeze')) others.push(f); }));
+      if(!others.length){ log('Celestial Surge: target destroyed — no other character to Freeze.','info'); closeAllModals(); renderAll(); return; }
+      log('Celestial Surge: target destroyed — Freeze another opposing character!','gain');
+      const _go=()=>openEnemyTargetPicker(others,(fuid)=>{
+        const fo=ownerOf(fuid); const ft=fo&&G.players[fo].field.find(f=>f.uid===fuid);
+        if(ft){ applyStatus(ft,'freeze',(STATUS_META.freeze&&STATUS_META.freeze.dur)||1); if(typeof showStatusFx==='function') showStatusFx(ft.uid,'freeze'); log(`❄️ Celestial Surge: ${DB[ft.cid].name} is Frozen.`,'gain'); }
+        if(typeof recalcPassives==='function')recalcPassives(); closeAllModals(); renderAll();
+      },{sourcePlayer:ap,title:'Celestial Surge — Freeze',desc:'Choose another opposing character to Freeze.'});
+      if(G._aiAuto) _go(); else setTimeout(_go,350);
+    },{sourcePlayer:ap,title:'Celestial Surge',desc:'Choose an opposing character to deal 5 damage to.'});
+    return;
+  }
+  // ── VIRORA (SURFACER MUI): Silent Horizon — Freeze every opposing character. 4⚡, once per GAME (the lock survives
+  //    resetPerTurnAbilityLocks because the def says limit:'once_per_game'). Nothing to Freeze → refunded, not spent.
+  if(label==='Silent Horizon'){
+    const ap=G.activePlayer; const foes=[];
+    _fusionOpps(ap).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) foes.push(f); }));
+    if(!foes.length){ if(_abilityUndo) _abilityUndo(); log('Silent Horizon: no opposing characters — not used.','dmg'); renderAll(); return; }
+    const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Silent Horizon',fc.uid):null;
+    try{ foes.forEach(f=>{ applyStatus(f,'freeze',(STATUS_META.freeze&&STATUS_META.freeze.dur)||1); if(typeof showStatusFx==='function') showStatusFx(f.uid,'freeze'); }); }
+    finally{ if(typeof fxPop==='function') fxPop(_fx); }
+    log(`❄️ Silent Horizon: every opposing character is Frozen (${foes.length}).`,'dmg');
+    if(typeof recalcPassives==='function') recalcPassives();
     renderAll(); return;
   }
   // ── VIRORA (SURFACE TECHNIQUE) PT: Surface Rasengan — 3 damage to a target; if it dies, Freeze another opposing character.
@@ -18428,6 +18503,8 @@ function aiScoreAbility(p, fc, abl, src){
   if(abl.label==='Elemental Cataclysm'){ const es=aiEnemyChars(p); if(!es.length) return -1;
     const kills=es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,3-(e.fc.nullify||0))).length;
     return 16+es.length*5+kills*14-(aiReady(fc)?12:0); }
+  if(abl.label==='Silent Horizon'){ const es=aiEnemyChars(p).filter(e=>!statusActive(e.fc,'freeze')&&!hasAbilityLabel(e.fc,'Vortex Shield')); if(es.length<2) return -1;
+    const rdy=es.filter(e=>e.fc.turnPlayed<G.turn||hasKW(e.fc,'burst_speed')).length; return 10+es.length*5+rdy*3; }
   if(AIB.noop.has(abl.label)) return -1; // learned: this ability has no coded effect
   if(abl.label==='The Reckoning'&&(fc.tapped||!aiEnemyChars(p).some(e=>!statusActive(e.fc,'confuse')&&e.fc.cid!=='rapture_vortex_bse'))) return -1; // nothing left worth confusing
   const text=((abl.text||'')+' '+(abl.label||'')).toLowerCase();
@@ -23347,7 +23424,7 @@ function showRulesScreen(){
     <b style="color:#c8a0ff">Spectating:</b> 👁 Online lobby → Watch Live Matches (or 👁 WATCH on a friend). Spectators see the board, Energy and every card played — never anyone's hand. The host can turn spectators off in the waiting room.<br>
     <b style="color:#c8a0ff">Rooms:</b> 👥 Up to 8 people. Two play while the rest watch live; the winner stays on until they lose and the loser goes to the back of the line. Pick 🎮 Get in line or 👁 Just watch. Both players press READY before every match — with nobody else in line, that's your rematch. People who aren't playing can bet Celestium on the next match (same unlock as wagers): if your player wins you get your bet back plus your share of the other side's bets, minus a 5% house cut.<br>
     <b style="color:#c8a0ff">Wagers:</b> ⚖ Optional, online 1v1 only, set up in the waiting room. Unlocks at Level 10 + 20 online matches. Stake up to 5,000 Celestium and any sealed packs or boxes; both players accept, then the host starts. The winner gets their stake back, the other player's Celestium minus a 5% house cut, and every pack. Up to 50,000 Celestium of winnings a day. Leaving or forfeiting loses the wager.<br>
-    ${(typeof craftOn==='function'&&craftOn())?'<b style="color:#c8a0ff">Court Shards:</b> 🔨 Break cards you don\'t need into Court Shards and craft the card you want (Regular finish) — COURT → Registry, or 🔨 CRAFTABLE in the Deck Builder. Holos break for more. Promos, exclusives, basic Energy and Secret Rares can\'t be crafted; crafting stops at a playset (4, Heralds 1). 💥 Break extras breaks everything over a playset your decks don\'t use.<br>':''}
+    ${(typeof craftOn==='function'&&craftOn())?'<b style="color:#c8a0ff">Court Shards:</b> 🔨 Break cards you don\'t need into Court Shards and craft the card you want (Regular finish) — COURT → Registry, or 🔨 CRAFTABLE in the Deck Builder. Holos break for more. Promos, exclusives, basic Energy and Secret Rares can\'t be crafted; crafting stops at a playset (4, Heralds 1). Heralds cost '+csFmt(craftCfg().heraldCost)+' to craft. 💥 Break extras breaks everything over a playset your decks don\'t use.<br>':''}
     <b style="color:#c8a0ff">Win:</b> All 6 Prizes or opponent out of characters.<br>
     <b style="color:#c8a0ff">Colors:</b>
     <span style="color:#ef4444">■ Red</span> ·
@@ -33906,7 +33983,8 @@ async function grAdminResolve(id,who){
 //   specific card (Normal finish). Crafting costs several times what breaking pays, so
 //   packs and trades stay the main way to collect.
 //   • Switch: Admin → Game switches → '🔨 Crafting' (feature_flags.crafting, GLOBAL, default off; admins always have it).
-//   • Rates: app_settings 'crafting' {rates:{rarity:[break,craft]}, holo:{finish:mult}, heralds, sightedOnly} over CRAFT_DEFAULT.
+//   • Rates: app_settings 'crafting' {rates:{rarity:[break,craft]}, holo:{finish:mult}, heralds, heraldCost, sightedOnly} over CRAFT_DEFAULT.
+//     (build 10.18) A Herald crafts for the flat heraldCost (default 3,500) whatever its rarity; it still BREAKS at its rarity's rate.
 //   • Balance: profiles.court_shards (int) — VCU_Crafting_Setup.sql; until it exists, kept on this device only.
 //   • Craftable = a card its set's packs can give (not promo / exclusive / switched off / basic Energy / token),
 //     plus Heralds of that set when cfg.heralds. Secret Rares (craft 0) break but can't be crafted. Crafting stops at a
@@ -33917,7 +33995,7 @@ async function grAdminResolve(id,who){
 const CRAFT_DEFAULT={
   rates:{common:[5,40],uncommon:[10,80],rare:[25,200],legend:[100,800],mythic:[250,2000],secret:[500,0]},
   holo:{none:1,reverse:2,classic:2,cosmic:3,gold:4,ruby:6},
-  heralds:true, sightedOnly:true
+  heralds:true, heraldCost:3500, sightedOnly:true
 };
 const CRAFT_KEEP_ORDER=['ruby','gold','cosmic','classic','reverse','none'];   // which finishes Break extras keeps first
 const CS_ICON="data:image/svg+xml,"+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#f7e3a6'/><stop offset='.45' stop-color='#a855f7'/><stop offset='1' stop-color='#3b0f7a'/></linearGradient></defs><polygon points='16,1 27,11 21,31 11,31 5,11' fill='url(#g)' stroke='#e8c570' stroke-width='1.3' stroke-linejoin='round'/><polygon points='16,1 16,14 5,11' fill='#fff' fill-opacity='.28'/><polyline points='5,11 16,14 27,11' fill='none' stroke='#fff' stroke-opacity='.55'/><line x1='16' y1='14' x2='16' y2='31' stroke='#fff' stroke-opacity='.3'/></svg>");
@@ -33931,7 +34009,8 @@ function craftCfg(){
   const c=_craft.cfg||{}, d=CRAFT_DEFAULT;
   const rates={}; Object.keys(d.rates).forEach(r=>{ const v=c.rates&&c.rates[r]; rates[r]=(Array.isArray(v)&&v.length===2)?[Math.max(0,+v[0]||0),Math.max(0,+v[1]||0)]:d.rates[r].slice(); });
   const holo={}; Object.keys(d.holo).forEach(f=>{ const v=c.holo&&c.holo[f]; holo[f]=(v!=null&&+v>0)?+v:d.holo[f]; });
-  return {rates,holo,heralds:c.heralds===undefined?d.heralds:!!c.heralds,sightedOnly:c.sightedOnly===undefined?d.sightedOnly:!!c.sightedOnly};
+  const hc=(c.heraldCost!=null&&c.heraldCost!==''&&isFinite(+c.heraldCost)&&+c.heraldCost>=0)?Math.round(+c.heraldCost):d.heraldCost;
+  return {rates,holo,heralds:c.heralds===undefined?d.heralds:!!c.heralds,heraldCost:hc,sightedOnly:c.sightedOnly===undefined?d.sightedOnly:!!c.sightedOnly};
 }
 function craftShardsKey(){ return 'loc_court_shards_'+(_celUserId||'guest'); }
 async function loadCrafting(){
@@ -33962,7 +34041,7 @@ function craftBreakValue(cid,variant){ const cfg=craftCfg(); const r=cfg.rates[c
 function craftCheck(cid){
   const c=DB[cid], cfg=craftCfg();
   if(!c||c.isToken||c.type==='token'||c.type==='system') return {ok:false,why:"This card can't be crafted."};
-  const r=cfg.rates[craftRarity(cid)]||cfg.rates.common, cost=r[1];
+  const r=cfg.rates[craftRarity(cid)]||cfg.rates.common, cost=c.type==='herald'?cfg.heraldCost:r[1];
   const set=typeof getCardSet==='function'?getCardSet(cid):(c.setId||'');
   if(c.exclusive) return {ok:false,cost,why:'Exclusive cards are gifts only.'};
   if(c.type==='energy_card'&&!c.specialEnergy) return {ok:false,cost,why:'Basic Energy comes in every pack.'};
@@ -33972,7 +34051,7 @@ function craftCheck(cid){
   if(c.type==='herald'){ if(!cfg.heralds) return {ok:false,cost,why:'Heralds come from packs only.'};
     if(typeof _heraldPool==='function'&&!_heraldPool(set).includes(cid)) return {ok:false,cost,why:'Not in its set\'s packs.'}; }
   else if(typeof _packPool==='function'&&!_packPool(set).includes(cid)) return {ok:false,cost,why:'Not in its set\'s packs.'};
-  if(!(cost>0)) return {ok:false,cost:0,why:(craftRarity(cid)==='secret'?'Secret Rares':'This rarity')+' can only be pulled from packs.'};
+  if(!(cost>0)) return {ok:false,cost:0,why:c.type==='herald'?'Heralds come from packs only.':(craftRarity(cid)==='secret'?'Secret Rares':'This rarity')+' can only be pulled from packs.'};
   if(cfg.sightedOnly&&typeof registryState==='function'&&registryState(cid)==='unregistered') return {ok:false,cost,why:'Sight this card first — play against it or pull it.'};
   const own=craftOwned(cid), cap=craftCap(cid);
   if(own>=cap) return {ok:false,cost,full:true,why:`You own a full playset (${cap}).`};
@@ -34129,12 +34208,13 @@ function craftAdminEdit(){
     <table class="cr-adm-t"><thead><tr><th>Rarity</th><th>Break</th><th>Craft</th></tr></thead><tbody>${RARITY_ORDER.map(r=>`<tr><td style="color:${(RARITY_DEFS[r]||{}).hex}">${(RARITY_DEFS[r]||{}).label||r}</td><td><input type="number" min="0" data-b="${r}" value="${cfg.rates[r][0]}"></td><td><input type="number" min="0" data-c="${r}" value="${cfg.rates[r][1]}"></td></tr>`).join('')}</tbody></table>
     <div class="cr-adm-h">Holo multipliers (breaking)</div>
     <div class="cr-adm-holo">${VARIANT_ORDER.filter(v=>v!=='none').map(v=>`<label>${craftVariantLabel(v)}<input type="number" min="1" step="0.5" data-h="${v}" value="${cfg.holo[v]}"></label>`).join('')}</div>
-    <label class="sp-allow"><input type="checkbox" data-her ${cfg.heralds?'checked':''}> 👑 Heralds can be crafted <small>Regular finish, at their rarity's cost</small></label>
+    <label class="sp-allow"><input type="checkbox" data-her ${cfg.heralds?'checked':''}> 👑 Heralds can be crafted <small>Regular finish, flat cost below (any rarity)</small></label>
+    <label class="cr-adm-hc">👑 Herald craft cost <input type="number" min="0" step="50" data-hc value="${cfg.heraldCost}"></label>
     <label class="sp-allow"><input type="checkbox" data-sig ${cfg.sightedOnly?'checked':''}> 📜 Sighted first <small>Only cards Sighted in the Registry can be crafted</small></label>
     <div class="cr-dlg-btns"><button class="btn-gray btn-sm" type="button" data-def>Defaults</button><button class="btn-primary cr-go" type="button" data-go>SAVE</button></div>`;
   body.querySelector('[data-def]').onclick=async()=>{ if(!confirm('Put crafting back to the default rates?')) return; if(await craftAdminSave(JSON.parse(JSON.stringify(CRAFT_DEFAULT)))){ closeAllModals(); craftRefresh(); } };
   body.querySelector('[data-go]').onclick=async()=>{
-    const out={rates:{},holo:{none:1},heralds:body.querySelector('[data-her]').checked,sightedOnly:body.querySelector('[data-sig]').checked};
+    const out={rates:{},holo:{none:1},heralds:body.querySelector('[data-her]').checked,heraldCost:Math.max(0,parseInt(body.querySelector('[data-hc]').value,10)||0),sightedOnly:body.querySelector('[data-sig]').checked};
     RARITY_ORDER.forEach(r=>{ out.rates[r]=[Math.max(0,parseInt(body.querySelector(`[data-b="${r}"]`).value,10)||0),Math.max(0,parseInt(body.querySelector(`[data-c="${r}"]`).value,10)||0)]; });
     VARIANT_ORDER.filter(v=>v!=='none').forEach(v=>{ out.holo[v]=Math.max(1,+body.querySelector(`[data-h="${v}"]`).value||1); });
     if(await craftAdminSave(out)){ closeAllModals(); craftRefresh(); }
