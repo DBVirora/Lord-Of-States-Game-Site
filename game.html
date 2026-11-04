@@ -9825,6 +9825,7 @@ const GODOT_SYNC=[
       "CELESTIAL SURGE (Virora Surfacer MUI, activated): 5 Energy (her color, Purple), once per turn, paid → doesn't tap. openEnemyTargetPicker over every opposing character (2v2: both enemies' fields) → dealDamage 5 (Nullify applies). If that target left the field, a second picker: Freeze another opposing character that isn't already Frozen (STATUS_META.freeze.dur); none left → log only. AI picks both targets itself (aiPickEnemyTarget). No opposing characters → the ability is refunded (_abilityUndo) and not used.",
       "SILENT HORIZON (Virora Surfacer MUI, activated): 4 Energy, ONCE PER GAME (limit 'once_per_game' — the lock survives the per-turn reset), paid → doesn't tap. Freezes every opposing character (2v2: both enemies). No opposing characters → refunded, not spent. AI: only uses it when 2+ enemies that aren't Frozen / Vortex Shielded would be hit (score 10 + 5 per enemy + 3 per enemy that could attack next turn)."],
     screens:[
+      "SAME BUILD 10.18 — BATTLE PASS XP. New config battle_pass_config.xp (missing keys → defaults; xpPerWin / xpPerMatch / xpPerLoginStreak are no longer read): bands [[10,600],[50,1000],[0,1500]] = XP to go up FROM level t: t<10 → 600, t<50 → 1000, else 1500 (LVL 10 = 5,400 XP, LVL 50 = 45,400, LVL 75 = 82,900; xpCurve 'flat' + xpPerTier still overrides). Match played 50 (all players, every finished match), win +100, first win of the (local calendar) day +250 (battle_pass_data.firstWinDay = Date.toDateString()), daily login 150. ACTION XP — only for what YOU do and only in matches that count for stats (not AI-vs-AI, not Local PvP, not admin test, not Advanced Training): character destroyed 25 (the existing kill hook), transformation 25 (the existing 'transformations' stat hook), fusion 40 (end of performFusion when isMe(p)), Herald broken 75 (the 'heralds_broken' hook); all action XP together is capped at matchCap 400 per match (G._bpActXp). Quests unchanged. Editor: a new XP box — XP per level for 1–10 / 11–50 / 51+, match, win, first win, login, destroyed, transformation, fusion, Herald broken, the cap — with a live line: LVL 10 / every set / everything in XP and the days a regular player (5 games a day + quests) needs.",
       "SAME BUILD 10.18 — BATTLE PASS v3.1: THE REGULAR SEASON LAYOUT (replaces Premium and Choose-a-Set). ONE PASS: Free = rewards marked FREE · Battle Pass (prices.pass, default 3500) = everything incl. Bonus. Old pass 'premium' → 'battle'. No upgrade, no +levels bundle; Buy Levels stays (prices.level 150). SETS: every main page is one character's set of 10 rewards shown as 2 rows of 5 (page view: 5 per sub-page, pager 1/2). Placeholder season: 5 sets (Virora MUI, Crystora, Vuruna SSB, Elise, Falcore) × 10 = levels 1–50: card (Ruby) · FREE title · FREE 300 Celestium · card back · playmat · ring frame · name plate (sets 1/3/5) or 2 Basic Packs (2/4) · 300 Court Shards · 1 Premium Pack · 500 Celestium. UNLOCK TOKENS: the first set is open; every other set opens with a token and the player picks which. tokensEarned = min(sets−1, max(number of OPEN sets with ≥ unlockAfter (7) claims, number of tokenLevels (10,20,30,40) reached)); tokens = earned − sets opened with one. Player data: battle_pass_data.unlocked [pageId]. Locked set: tile pill '◆ UNLOCK' when a token is free (else 🔒); tip 'Tap again to open this set — then use an Unlock Token'; page view 'UNLOCK THIS SET' + 'USE UNLOCK TOKEN · ◆1' → confirm dialog 'UNLOCK <NAME>?' (NOT YET / UNLOCK · ◆1). Without a token: 'Claim 7 rewards on a set, or reach LVL n, to earn an Unlock Token.' Main screen: a cyan '◆ n UNLOCK TOKEN(S)' pill under the claims pill; hint '◆ n Unlock Token(s) — pick your next set' / 'Claim 7 on a set or reach LVL n for an Unlock Token'. BONUS REWARDS: kind 'bonus' pages (placeholder: one page, 25 rewards = 5 rows of 5, levels 51–75: Remmel card/back/mat/entrance/'COURT SOVEREIGN'; Surana card/back/mat/ring/500; Theia card/back/mat/plate/3 Premium Packs; Sovereign ring/plate/1000 shards/'THE UNBROKEN'/500; Sovereign back/mat/'Sovereign Crown' entrance/5 Premium Packs/1000). Open for pass holders once EVERY reward on every set is claimed ('Claim every reward on all 5 sets to open the Bonus Rewards (n left).'). Tag 'BONUS · BATTLE PASS'. MAX LEVEL: with the placeholder season = total rewards (75); with saved pages = maxTier (the editor shows 'claiming everything takes N'); bp3Cfg writes it back to BP_CONFIG.maxTier so the XP curve caps there. Config keys: unlockAfter (7), tokenLevels [10,20,30,40]; removed: premiumLevels, choiceLevel, choiceBothLevel, prices.premium/upgrade. GET THE BATTLE PASS dialog: one offer (sets + rewards, Bonus count, 'Pick your own order', Celestium back) BUY · price. Editor: kind Set / Bonus (after every set), no level gate, prices pass + level, rules unlockAfter + tokenLevels. Market: the Premium Pass tile is gone (Battle Pass + Levels).",
       "SAME BUILD 10.18 — COURT FORGE ✦ INFUSE + BATTLE PASS CARDS. The Forge has a third mode button '✦ INFUSE · Raise a copy's holo finish' (cyan). INFUSE: tiles = cards you own that aren't basic Energy/tokens and still have a copy below Ruby (shown in their best finish with a finish tag; foot = cheapest step cost + ×copies); 'Ready to infuse' filter; count line 'n CARDS · m READY TO INFUSE'. Anvil: the card in its best finish, then one row per finish you own: '<Finish> ×n → <next finish>' + a '✦ cost' button (disabled when short; Ruby row = 'the top finish'); a ⚠ line when a saved deck uses that finish and you'd drop below it. Ladder: none → reverse → classic → cosmic → gold → ruby (one step per infuse). Cost = round(base × infuse[target] / 10) × 10, min 10; base = the rarity's craft cost, or the Herald craft cost for Heralds, or break × 8 when the craft cost is 0 (Secret Rares). Default multipliers: reverse .5, classic .75, cosmic 1, gold 1.5, ruby 2.5. Doing it: −cost shards; removeVariantFromCollection(cid,from,1); addVariantToCollection(cid,to,1); recompute holo_owned; save collection, collection_foil, holo_owned, court_shards. Cinematic 'INFUSED' (like FORGED, tinted the new finish's colour, the card shown with that holo; animations off → toast). BATTLE PASS CARDS: a card whose set id is bp<n> (bp1, bp2…), or an exclusive card that is a card reward in the Battle Pass config. In craftCheck BEFORE the exclusive check: if you own 0 → 'Claim it from the Battle Pass first — then you can forge more copies.'; playset full → as usual; cost = base × passMult (default 2), rounded to 10; no pack-pool / Sighted checks. Owned pass cards appear in FORGE mode for their set / All sets. bp<n> sets never sell as packs (purchasableSets skips them). Config app_settings 'crafting' gains infuse {reverse,classic,cosmic,gold,ruby}, infuseOn (default true), passMult (default 2); the admin Crafting rates window has the five ✦ Infuse boxes, an 'Infusing is on' box and '🎟 Battle Pass cards: craft cost ×'.",
       "SAME BUILD 10.18 — THE COURT MARKET (the shop, rebuilt; still behind feature_flags.shop_enabled). Main menu cards are unchanged: SHOP → Booster Packs / Single Cards / Cosmetics / Events open the Market at the Booster Packs / Daily Singles / first collection / Events section; LOCKER → Loadout opens the old cosmetics grid as a Loadout (owned items only, no buying, '🏪 THE MARKET' chip). Anything that called openShop now opens the Market. LAYOUT on a 16:9 stage that scales with the window (unit u = min(1vw, 1.78vh); phones in portrait: section chips across the top, 2-column tiles, the showcase becomes a bottom sheet). Fonts: Anton for headings (uppercase italic). LEFT: a ☰ button + a vertical rail of ◆ dots (one per section, current one bright); ☰ / Tab opens the SECTIONS list (name + a small line), which slides the tiles right and hides the showcase. CENTRE: one scrolling column of sections. Each section repaints the whole screen as it scrolls into view (top of the section above 38% of the column): a backdrop image (cross-fade), a colour wash from the section's two colours (dark on the left), a thin gilded diagonal band, a faint slowly turning crest ring, drifting motes. Section header = big italic title + a small caps line. Tiles: 4 columns, 14.2u tall, wide tiles span 2 columns, pack tiles span 2 rows; tile colour = rarity for daily cosmetics (common slate, rare blue, legendary orange) or the section colours; art (card back tilted, playmat as cover, avatar with ring/frame, name plate, glowing title text, entrance icon with pulse rings, card, floating pack, fanned packs + '36 PACKS'); name + Celestium price (sale: old price struck through) or green OWNED; tags top-left (SAVE n, LAST DAY, ALWAYS HERE, BEST ODDS, 10% OFF, SEASON, +LEVELS); a crimson wax seal with gold rim 'n% OFF' top-right on sales; legendary/collection tiles get a slow rainbow edge; a foil sheen follows the pointer. Click = select (white outline, slight zoom, an info strip slides up: 'CARD BACK · LEGENDARY'); click the selected tile again / Enter = buy. Arrows move the selection, PageUp/PageDown jump sections, Esc closes dialog → list → sheet → leaves. COLLECTION sections open with a landing: pill ('IN THE MARKET · n MORE DAYS' / 'LAST DAY' / '★ TODAY'S FEATURED'), the set name huge, 'n-ITEM SET', item icons, VIEW SET + price with the struck full price, a bouncing ⌄; then a wide set tile + one tile per piece. Backdrop = the set's playmat. RIGHT: the SHOWCASE of the selected tile — card back as a big 3D card that tilts with the pointer; playmat as a tilted board with your card back on it; set = board + standing back; frame = big avatar with the ring/frame; plate/title = your name plate with the title; entrance = your Herald card popping in over spinning rays in its colours; single = the card with tilt; packs = a 3D pack you drag to spin (back face: LORD OF COURTS · set · 10 CARDS…; premium = gold sheen + PREMIUM ribbon); box = a 3D box (gold band 'BOOSTER BOX · 36', three packs on the front). Under it a glass info card (gold hairline): type · tier, name, text, rotation line ('LEAVES IN 5H 12M' / 'LEAVES IN 2 DAYS' / 'LEAVES TONIGHT' / 'ALWAYS IN THE MARKET' + 'LAST SEEN n DAYS AGO' / 'FIRST TIME IN THE MARKET'), price and BUY / EQUIP / ✓ EQUIPPED; packs: AMOUNT buttons (packQty, default 1/5/10), total, BUY & OPEN, BUY & STORE, VIEW ODDS (see data); Your Packs: OPEN ONE / OPEN ALL n; Battle Pass tiles: OPEN THE PASS + GET IT / UPGRADE / BUY LEVELS (open the pass screen and its buy / levels dialog). TOP-RIGHT: 'THE MARKET TURNS IN hh:mm:ss' + your Celestium. BOTTOM-RIGHT: 🎒 MY LOCKER (→ Loadout), ABOUT THE MARKET, ✎ MARKET EDITOR (admin), ESC BACK. BUY dialog: thumbnail, PRICE / YOUR CELESTIUM / AFTER (red 'NOT ENOUGH'), CANCEL + 'BUY · n' ('BUY & OPEN · n' / 'BUY & STORE · n'). Then 'ACQUIRED!' + sparks: cosmetics DONE / EQUIP NOW (no auto-equip), sets EQUIP SET, packs stored: LATER / OPEN ALL n / OPEN ONE NOW; BUY & OPEN goes straight to the pack opening; a single goes straight to its reveal. SECTIONS (default order, editable): Featured (only when the daily featured pick is an item — a landing like a collection's), Booster Packs ('THE VAULT · <SET>', set chips when more than one set sells, Basic + Premium tall tiles, Booster Box + Premium Booster Box wide tiles, then 'YOUR PACKS · n UNOPENED' with one tile per stored pack kind), Battle Pass (when battle_pass_enabled: Battle Pass wide tile with the first page's cut-out, Premium Pass with the bonus page's cut-out, Levels), Daily Singles, Collections (each collection in the Market is its own section; a featured collection goes first of everything), Card Backs, Playmats, Frames & Plates, Titles, Herald Entrances (the day's rotating items by type; empty sections are skipped), Events (when events_enabled: 'No events are running right now…'). Admin: Admin → Market Editor tile, or the ✎ button.",
@@ -13574,8 +13575,8 @@ function killCard(p,fc){
       if(typeof saveAchievementsDebounced==='function') saveAchievementsDebounced();
       // Profile stat: lifetime characters killed.
       if(typeof bumpStat==='function') bumpStat('chars_killed',1);
-      // +25 XP per character kill (any game mode)
-      if(typeof awardBPXp==='function') awardBPXp(25,'Character Destroyed');
+      // Battle Pass XP per character you destroy (capped per match with the other action XP)
+      if(typeof bpActionXp==='function') bpActionXp('kill','Character Destroyed');
     }
   }
   renderAll();checkWin();
@@ -14766,6 +14767,7 @@ function breakHerald(ownerP, byP, source){
   else if(G.gameMode==='lifeforce'){ damageLifeForce(ownerP, HERALD_RULES.breakLife, 'Herald broken'); }
   else { claimPrizesFrom(ownerP, byP, HERALD_RULES.breakPrizes); }
   if(isMe(byP)&&typeof bumpStat==='function') bumpStat('heralds_broken',1);
+  if(isMe(byP)&&typeof bpActionXp==='function') bpActionXp('herald','Herald Broken');
   if(typeof showTurnBanner==='function') showTurnBanner(byP===1||(G.is2v2&&isHumanPlayer(byP)), `${name.toUpperCase()} BROKEN`, byP===1?'your-turn':'opp-turn');
   renderAll();
 }
@@ -16788,6 +16790,7 @@ function doTransform(fieldUid,newCid,handUid,cost,ownerOverride){
         setTimeout(()=>checkAchievements(),600);
       }
       if(typeof bumpStat==='function') bumpStat('transformations',1);
+      if(typeof bpActionXp==='function') bpActionXp('transform','Transformation');
     }
     renderAll();
     // Online: broadcast the new form
@@ -21391,6 +21394,7 @@ function performFusion(p, handUid, aUid, bUid, method){
   if(typeof fxMarkLand==='function') fxMarkLand(nf.uid,'char');
   if(p===1&&typeof sendGameAction==='function') sendGameAction('fusion_fx',{cardId:c.id,variant:nf.variant,a:a.cid,b:b.cid,m:method});
   if(typeof trackCardPlayed==='function') trackCardPlayed(p,c);
+  if(isMe(p)&&typeof bpActionXp==='function') bpActionXp('fusion','Fusion');
   if(typeof recalcPassives==='function') recalcPassives();
   renderAll();
   if(G.onlineMode&&typeof syncOnlineState==='function') syncOnlineState();
@@ -30459,10 +30463,30 @@ async function saveBPPlayerData(){
 
 // ─── XP / TIER LOGIC ─────────────────────────────
 // Per-tier XP using progressive curve from design doc
+// ── BATTLE PASS XP (build 10.18): every number lives in battle_pass_config.xp (Admin → Battle Pass Editor → XP) ──
+// Level curve: levels 1–10 cost 600 XP each (quick first tokens), 11–50 cost 1,000, 51+ (Bonus) cost 1,500.
+//   LVL 10 = 5,400 XP · LVL 50 = 45,400 · LVL 75 = 82,900. Tuned for 30-day seasons: a regular player (5 games a day + quests)
+//   finishes the 5 sets in about 2 weeks and the Bonus near the end; a heavy player finishes everything in about 2½ weeks.
+// Match XP: played 50 · win +100 · first win of the day +250 · in-match actions (yours only): character destroyed 25,
+//   transformation 25, fusion 40, Herald broken 75 — capped at 400 a match. Daily login 150. Quests as before.
+const BP_XP_DEFAULT={bands:[[10,600],[50,1000],[0,1500]],match:50,win:100,firstWin:250,kill:25,transform:25,fusion:40,herald:75,matchCap:400,login:150};
+function bpXpCfg(){
+  const c=(typeof BP_CONFIG!=='undefined'&&BP_CONFIG&&BP_CONFIG.xp&&typeof BP_CONFIG.xp==='object')?BP_CONFIG.xp:{}, o={};
+  Object.keys(BP_XP_DEFAULT).forEach(k=>{ if(k==='bands') return; const v=c[k]; o[k]=(v!=null&&v!==''&&isFinite(+v)&&+v>=0)?Math.round(+v):BP_XP_DEFAULT[k]; });
+  const b=Array.isArray(c.bands)&&c.bands.length?c.bands:BP_XP_DEFAULT.bands;
+  o.bands=b.map(x=>[Math.max(0,Math.round(+x[0]||0)),Math.max(1,Math.round(+x[1]||1))]); if(!o.bands.some(x=>x[0]===0)) o.bands.push([0,o.bands[o.bands.length-1][1]]);
+  return o;
+}
 function bpXpRequiredForTier(tier){
-  // XP needed to advance FROM this tier to next
+  // XP needed to advance FROM this tier to the next
   if(BP_CONFIG&&BP_CONFIG.xpCurve==='flat'&&BP_CONFIG.xpPerTier){return BP_CONFIG.xpPerTier;}
-  return 375+(tier*25); // 400, 425, 450, ... 1625
+  const B=bpXpCfg().bands; for(const [upTo,xp] of B){ if(upTo===0||tier<upTo) return xp; } return B[B.length-1][1];
+}
+// XP for something YOU did in a match (kills, transformations, fusions, Herald breaks) — capped per match
+function bpActionXp(kind,reason){
+  try{ if(typeof G==='undefined'||!G||G.spectating||(typeof matchCountsStats==='function'&&!matchCountsStats())) return;
+    const X=bpXpCfg(), amt=X[kind]||0; if(!amt) return; const used=G._bpActXp||0, n=Math.min(amt,Math.max(0,X.matchCap-used)); if(n<=0) return;
+    G._bpActXp=used+n; if(typeof awardBPXp==='function') awardBPXp(n,reason); }catch(e){}
 }
 
 function bpTotalXpForTier(targetTier){
@@ -30578,18 +30602,19 @@ function showBPLevelUp(newTier,reason){
 
 // ─── HOOKS INTO GAME EVENTS ──────────────────────
 async function bpOnMatchWin(){
-  await awardBPXp((BP_CONFIG&&BP_CONFIG.xpPerWin)||75,'Match Win');
+  const X=bpXpCfg(); await awardBPXp(X.win,'Match Win');
+  try{ const day=new Date().toDateString(); if(X.firstWin&&_bpPlayerData&&_bpPlayerData.firstWinDay!==day){ _bpPlayerData.firstWinDay=day; await awardBPXp(X.firstWin,'First Win of the Day'); } }catch(e){}
   if(typeof incrementMissionProgress==='function')await incrementMissionProgress('wins',1);
 }
 
 async function bpOnMatchEnd(){
-  await awardBPXp((BP_CONFIG&&BP_CONFIG.xpPerMatch)||30,'Match Played');
+  await awardBPXp(bpXpCfg().match,'Match Played');
   if(typeof incrementMissionProgress==='function')await incrementMissionProgress('matches',1);
 }
 
 async function bpOnDailyLogin(){
   if(!BP_CONFIG)return;
-  await awardBPXp(BP_CONFIG.xpPerLoginStreak||150,'Daily Login');
+  await awardBPXp(bpXpCfg().login,'Daily Login');
 }
 
 // ─── PASS PURCHASE ───────────────────────────────
@@ -36536,7 +36561,8 @@ let _b3e=null;
 function openBPEditor(){
   if(!isAdmin()){ alert('Admin only'); return; }
   const C=bp3Cfg(), c=BP_CONFIG||BP_DEFAULT_CONFIG;
-  _b3e={seasonId:c.seasonId||'season_1',seasonLabel:C.label,seasonTitle:C.title||'',startDate:c.startDate||null,durationDays:c.durationDays||30,maxTier:C.maxTier,xpPerWin:c.xpPerWin||50,xpPerMatch:c.xpPerMatch||20,
+  const X0=bpXpCfg(); _b3e={seasonId:c.seasonId||'season_1',seasonLabel:C.label,seasonTitle:C.title||'',startDate:c.startDate||null,durationDays:c.durationDays||30,maxTier:C.maxTier,
+    xp:{l1:X0.bands[0][1],l2:(X0.bands[1]||X0.bands[0])[1],l3:X0.bands[X0.bands.length-1][1],match:X0.match,win:X0.win,firstWin:X0.firstWin,login:X0.login,kill:X0.kill,transform:X0.transform,fusion:X0.fusion,herald:X0.herald,matchCap:X0.matchCap},
     theme:Object.assign({},C.theme),prices:{pass:C.prices.pass,level:C.prices.level},unlockAfter:C.unlockAfter,tokenLevels:C.tokenLevels.join(', '),bonusXpPerSeal:C.bonusXpPerSeal,
     pages:JSON.parse(JSON.stringify(C.pages)),_open:0,_sid:c.seasonId||'season_1'};
   showScreen('battle-pass-screen'); openBattlePass().then(()=>bp3EditRender());
@@ -36559,7 +36585,10 @@ function bp3EditRender(){
       ${bp3EdIn('seasonTitle','Season name (under BATTLE PASS; blank = the label)')}${bp3EdIn('seasonLabel','Season label (e.g. SEASON 1)')}
       ${bp3EdIn('seasonId','Season ID — changing it starts a NEW season (everyone resets)')}
       ${bp3EdIn('startDate','Start (blank = not started)','datetime-local')}${bp3EdIn('durationDays','Length (days)','number')}
-      ${bp3EdIn('maxTier',`Max level (claiming everything takes ${E.pages.reduce((n,p)=>n+(p.rewards||[]).length,0)})`,'number')}${bp3EdIn('xpPerWin','XP per win','number')}${bp3EdIn('xpPerMatch','XP per match','number')}
+      ${bp3EdIn('maxTier',`Max level (claiming everything takes ${E.pages.reduce((n,p)=>n+(p.rewards||[]).length,0)})`,'number')}<h5>XP <small>— ${bp3EdXpLine()}</small></h5>
+      <div class="b3e-cols">${bp3EdIn('xp.l1','XP per level, levels 1–10','number',' data-re="1"')}${bp3EdIn('xp.l2','XP per level, levels 11–50','number',' data-re="1"')}${bp3EdIn('xp.l3','XP per level, 51 and up (Bonus)','number',' data-re="1"')}</div>
+      <div class="b3e-cols">${bp3EdIn('xp.match','Match played','number')}${bp3EdIn('xp.win','Win (extra)','number')}${bp3EdIn('xp.firstWin','First win of the day','number')}${bp3EdIn('xp.login','Daily login','number')}</div>
+      <div class="b3e-cols">${bp3EdIn('xp.kill','Character destroyed','number')}${bp3EdIn('xp.transform','Transformation','number')}${bp3EdIn('xp.fusion','Fusion','number')}${bp3EdIn('xp.herald','Herald broken','number')}${bp3EdIn('xp.matchCap','Action XP cap per match','number')}</div>
       <h5>PRICES (CELESTIUM)</h5>${bp3EdIn('prices.pass','Battle Pass (one pass — Bonus included)','number')}${bp3EdIn('prices.level','One level','number')}
       <h5>RULES</h5>${bp3EdIn('unlockAfter','Claims on a set that earn an Unlock Token','number')}${bp3EdIn('tokenLevels','Levels that also give an Unlock Token (comma separated)')}${bp3EdIn('bonusXpPerSeal','XP per extra claim past the max level','number')}
       <h5>MAIN SCREEN COLORS</h5><div class="b3e-cols">${bp3EdIn('theme.sky1','Sky top','color')}${bp3EdIn('theme.sky2','Sky bottom','color')}${bp3EdIn('theme.floor1','Floor light','color')}${bp3EdIn('theme.floor2','Floor dark','color')}</div>
@@ -36574,6 +36603,13 @@ function bp3EditRender(){
     <datalist id="b3e-cids">${Object.keys(DB).filter(id=>DB[id]&&!DB[id].isToken&&DB[id].type!=='system').map(id=>`<option value="${id}">${bp3Esc(DB[id].name)}</option>`).join('')}</datalist></div>`;
   e.classList.add('open');
 }
+function bp3EdXpOut(){ const x=_b3e.xp||{}, n=(v,d)=>(v!==''&&v!=null&&isFinite(+v)&&+v>=0)?Math.round(+v):d, D=BP_XP_DEFAULT;
+  return {bands:[[10,Math.max(1,n(x.l1,600))],[50,Math.max(1,n(x.l2,1000))],[0,Math.max(1,n(x.l3,1500))]],match:n(x.match,D.match),win:n(x.win,D.win),firstWin:n(x.firstWin,D.firstWin),login:n(x.login,D.login),
+    kill:n(x.kill,D.kill),transform:n(x.transform,D.transform),fusion:n(x.fusion,D.fusion),herald:n(x.herald,D.herald),matchCap:n(x.matchCap,D.matchCap)}; }
+function bp3EdXpLine(){ const o=bp3EdXpOut(), b=o.bands; let t=0; const at={}; const tot=(_b3e.pages||[]).reduce((n,p)=>n+(p.rewards||[]).length,0)||75; const mains=(_b3e.pages||[]).filter(p=>p.kind==='main').reduce((n,p)=>n+(p.rewards||[]).length,0)||50;
+  for(let L=1;L<Math.max(tot,mains);L++){ t+=(L<10?b[0][1]:L<50?b[1][1]:b[2][1]); if(L+1===10) at[10]=t; if(L+1===mains) at.m=t; if(L+1===tot) at.t=t; }
+  const day=5*o.match+3*o.win+o.firstWin+5*Math.min(217,o.matchCap)+o.login+750+2300/7;
+  return `LVL 10 = ${(at[10]||0).toLocaleString()} XP · every set (LVL ${mains}) = ${(at.m||0).toLocaleString()} · everything (LVL ${tot}) = ${(at.t||0).toLocaleString()} · a regular player (5 games a day + quests) ≈ ${Math.round(day).toLocaleString()} XP a day → every set in ~${Math.ceil((at.m||0)/day)} days, everything in ~${Math.ceil((at.t||0)/day)}`; }
 function bp3EdReward(pg,r,i){
   const b='pages.'+_b3e._open+'.rewards.'+i+'.'; let f='';
   if(r.type==='card') f=bp3EdIn(b+'cid','Card id','text',' list="b3e-cids" data-re="1"')+bp3EdSel(b+'finish','Finish',VARIANT_ORDER.map(v=>[v,(VARIANT_META[v]||{}).label||v]));
@@ -36607,7 +36643,7 @@ function bp3EdBuild(){
       if(['celestium','shards','pack'].includes(r.type)) r.amount=Math.max(1,+r.amount||1);
       if(r.type!=='cosmetic') delete r.cos; ['name','desc'].forEach(k=>{ if(r[k]==='') delete r[k]; }); }); });
   const out=Object.assign({},BP_CONFIG||BP_DEFAULT_CONFIG,{seasonId:E.seasonId,seasonLabel:E.seasonLabel,seasonTitle:E.seasonTitle,startDate:E.startDate,durationDays:+E.durationDays||30,maxTier:+E.maxTier||E.pages.reduce((n,p)=>n+(p.rewards||[]).length,0)||50,
-    xpPerWin:+E.xpPerWin||50,xpPerMatch:+E.xpPerMatch||20,theme:E.theme,prices:{pass:+E.prices.pass||0,level:+E.prices.level||0},
+    xp:bp3EdXpOut(),theme:E.theme,prices:{pass:+E.prices.pass||0,level:+E.prices.level||0},
     unlockAfter:+E.unlockAfter||1,tokenLevels:String(E.tokenLevels||'').split(',').map(x=>Math.round(+x)).filter(x=>x>0).sort((a,b)=>a-b),bonusXpPerSeal:+E.bonusXpPerSeal||1500,pages:E.pages.map(p=>p.kind==='choice'?Object.assign(p,{kind:'main'}):p)});
   ['premiumLevels','choiceLevel','choiceBothLevel'].forEach(k=>delete out[k]);
   if(!E.pages.filter(p=>p.kind==='main').length) errs.push('Add at least one Set (kind: Set).');
