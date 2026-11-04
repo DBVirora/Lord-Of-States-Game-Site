@@ -9818,11 +9818,14 @@ const GAME_BUILD='10.18'; // rules version — must match the opponent's client 
 const GODOT_SYNC=[
   { build:'10.18', date:'2026-11-02',
     cards:[
+      {id:'crystal_ssj_bse', set:'base_set', number:'114/150', rarity:'uncommon', scan:'Sets/BASE SET/114-150 (Crystal SSJ).png', newAbilities:['Prism Barrier'],
+        note:"Crystal (SSJ) · Blue · transformOnly · charLine 'crystal' · formTier 'ssj1' · path 'saiyan' · cost 5 · 4 ATK / 5 HP · subtypes Saiyan · race 'Saiyan' · sym CRYSSJ. DATA CHANGE: crystal_bse.nextForms [] → ['ssj1'] (Crystal → Crystal (SSJ)). Main menu art: 'Main Menu Images/Crystal SSJ1Crystalssj1.jpg'."},
       {id:'surana_sss_bse', set:'base_set', number:'030/150', rarity:'legend', scan:'Sets/BASE SET/030-150 (Surana SSS).png', newAbilities:['Scarlet Siphon','Blood Rite','Crimson Cataclysm'],
         note:"Surana (SSS) = Super Saiyan Scarlet · Black · transformOnly · charLine 'surana' · formTier 'sss' · path 'god' (Surana has no SSB: SSS is the form after SSG) · cost 10 · 12 ATK / 9 HP · subtypes Omega, Celestial, Saiyan God · race 'Omega Celestial Saiyan' · sym SURSSS · noTapOnAbility:true. DATA CHANGE: surana_ssg_bse.nextForms [] → ['sss'] (Base → SSG → SSS). Main menu art: 'Main Menu Images/Super Saiyan Scarlet Surana1SSS Surana.jpg'."},
       {id:'virora_surfacer_mui_sr_bse', set:'base_set', number:'154/150', rarity:'secret', scan:'Sets/BASE SET/154-150 (Virora Surfacer MUI) (Secret Rare).png', newAbilities:['Mastered Instinct','Celestial Surge','Silent Horizon'],
         note:"Virora (Surfacer MUI) SECRET RARE · secretRare:true · Purple · Character (played from hand, NOT transformOnly) · cost 12 · 11 ATK / 8 HP · subtypes Royal, Saiyan, Celestial · race 'Royal Saiyan Celestial' · charName 'Virora' (Virora checks like Void Synergy count her) · charLine 'virora_mui' (her own line) · no formTier · nextForms [] · transforms [] — a standalone card: nothing transforms into or out of her. Main menu art (admin sets it per tab): Main Menu Images/vmuisurfacerSurfacer MUI virora.jpg."}],
     abilities:[
+      "PRISM BARRIER (Crystal SSJ, activated): 2 Energy (Blue), once per turn (generic lock), paid → doesn't tap. Choose one of YOUR characters (she can pick herself; chooser with Skip/close = refund; AI picks its highest-value unshielded character). Sets fc._prismShield = 3, fc._prismBy = you; a new barrier replaces an old one (no stacking). In dealDamage, AFTER Nullify / Inferno Ward / Diamond Calm / Half-Divine: if the damage is still > 0, prevent up to 3 of it and the barrier is spent (even on a 1-damage hit). Covers combat (attack, hit back, Power Struggle) and ability damage; Burn/Poison chip doesn't use dealDamage and the barrier is already gone by then. Ends at the start of the placer's next turn (tickPrismBarrier, first thing in startTurnFx). Status chip 💠. AI: uses it when an enemy character exists, leaving at least 1 Energy.",
       "SCARLET SIPHON (Surana SSS, triggered): in combatDamageHooks (after Omega Venom / Withering Touch) — whenever she deals combat damage > 0 to a CHARACTER (attacking, retaliating, Power Struggle, Life-mode blocks and block counters): if that character is still on the field it gets −2 Attack (currentATK −2, not below 0; atkBonus −2; lasts until it leaves the field); if Surana is still on the field she heals 2 (capped at baseHP + hpBonus + passiveHp). Either half happens without the other (a kill still heals her). Heralds aren't characters. Label-based (a stolen copy works).",
       "BLOOD RITE (Surana SSS, activated): FREE, once per turn (generic once_per_turn lock), does NOT tap (card flag noTapOnAbility — otherwise the +3 could never attack). Normal reveal → flipCoinFor (the full roll panel). HEADS: nothing ('the rite fails'). TAILS: you MAY sacrifice one of your other non-token characters (a chooser with Skip; closing it = Skip) — a real Sacrifice via doSacrifice (half its printed cost back as Energy, Death's Offering / Chaos Tithe / Fuel the Chaos fire). If you do: Surana gets +3 Attack until the end of your turn (fc._bloodRite, removed by tickBloodRite at end of turn next to tickIronFist; status chip 🩸) and heals 3 (capped at max). No other character → nothing. AI: only uses it when it has a cheap sacrifice (aiFcValue ≤ 12) AND either Surana can attack this turn or she's missing 3+ HP; on tails it sacrifices its lowest-value character.",
       "CRIMSON CATACLYSM (Surana SSS, activated): 5 Energy (Black), ONCE PER GAME (limit 'once_per_game'), paid → doesn't tap. 3 damage to EACH opposing character (not targeted; 2v2: both enemies; dealDamage so Nullify applies), then recalcPassives + checkWin. No opposing characters → refunded, not spent. AI: 2+ enemies or at least one kill; score 12 + 5/enemy + 14/kill.",
@@ -10454,6 +10457,7 @@ const DEFAULTS={
   lady_loki_vampire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Lady%20Loki%20Vampire%20(Promo).png',
   paradox_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/027-150%20(Paradox).png',
   crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/113-150%20(Crystal%20Base).png',
+  crystal_ssj_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/114-150%20(Crystal%20SSJ).png',
   surana_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/028-150%20(Surana%20Base).png',
   surana_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/029-150%20(Surana%20SSG).png',
   surana_sss_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/030-150%20(Surana%20SSS).png',
@@ -10685,8 +10689,11 @@ const DB={
   surana_bse:{id:'surana_bse',rarity:'common',name:'Surana',color:'black',charName:'Surana',charLine:'surana',formTier:'base',subtypes:['Omega','Celestial','Saiyan'],type:'base_char',race:'Omega Celestial Saiyan',cost:2,atk:1,hp:3,sym:'SUR',setId:'base_set',cardNumber:'028/150',keywords:[],nextForms:['ssg'],
     abilities:[{label:'Omega Venom',type:'triggered',cost:0,text:'Whenever this card deals combat damage to a character, that character is Poisoned.'}]},
   // ── CRYSTAL (BSE 113/150) — build 9.7. Base of the new Blue Saiyan line (114 = her SSJ, planned).
-  crystal_bse:{id:'crystal_bse',rarity:'common',name:'Crystal',color:'blue',charName:'Crystal',charLine:'crystal',formTier:'base',subtypes:['Saiyan'],type:'base_char',race:'Saiyan',cost:2,atk:2,hp:3,sym:'CRY',setId:'base_set',cardNumber:'113/150',keywords:[],nextForms:[],
+  crystal_bse:{id:'crystal_bse',rarity:'common',name:'Crystal',color:'blue',charName:'Crystal',charLine:'crystal',formTier:'base',subtypes:['Saiyan'],type:'base_char',race:'Saiyan',cost:2,atk:2,hp:3,sym:'CRY',setId:'base_set',cardNumber:'113/150',keywords:[],nextForms:['ssj1'],
     abilities:[{label:'Prism Orb',type:'triggered',cost:0,text:'When this card enters your field, choose one: target opposing character gets −2 Attack until end of your next turn, or heal one of your characters for 3.'}]},
+  // ── CRYSTAL (SSJ) (BSE 114/150) — build 10.18. Saiyan-path form of Crystal (113). BLUE (protection / control).
+  crystal_ssj_bse:{id:'crystal_ssj_bse',rarity:'uncommon',name:'Crystal (SSJ)',color:'blue',charName:'Crystal',charLine:'crystal',formTier:'ssj1',path:'saiyan',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:5,atk:4,hp:5,sym:'CRYSSJ',setId:'base_set',cardNumber:'114/150',keywords:[],nextForms:[],
+    abilities:[{label:'Prism Barrier',type:'activated',cost:2,limit:'once_per_turn',text:'Pay 2 Energy: Choose one of your characters. The next time it would be dealt damage before your next turn, prevent 3 of that damage. (Once per turn)'}]},
   // ── SURANA (SSG) (BSE 029/150) — build 10.3. God form of Surana. BLACK (Poison + sacrifice payoff).
   surana_ssg_bse:{id:'surana_ssg_bse',rarity:'uncommon',name:'Surana (SSG)',color:'black',charName:'Surana',charLine:'surana',formTier:'ssg',path:'god',transformOnly:true,subtypes:['Omega','Celestial','Saiyan God'],type:'char',race:'Omega Celestial Saiyan',cost:5,atk:5,hp:5,sym:'SURSSG',setId:'base_set',cardNumber:'029/150',keywords:[],nextForms:['sss'],
     abilities:[{label:'Withering Touch',type:'triggered',cost:0,text:'Whenever this card deals combat damage to a character, that character is Poisoned.'},
@@ -12526,6 +12533,7 @@ function fxEffectsOf(fc){
   if(hasAbilityLabel(fc,'Through the Horde')&&fc._hordeTurn===(G&&G.turn)) cond('🌊','Through the Horde','Already used this turn.',null);
   if(fc._ironFist>0) cond('👊','The Iron Fist','+'+fc._ironFist+' Attack until the end of this turn.',null);
   if(fc._bloodRite>0) cond('🩸','Blood Rite','+'+fc._bloodRite+' Attack until the end of this turn.',null);
+  if(fc._prismShield>0) cond('💠','Prism Barrier','Prevents '+fc._prismShield+' of the next damage it would be dealt (ends at the start of its owner\'s next turn).',null);
   if(Array.isArray(fc.attachments)&&fc.attachments.includes('the_dark_hold_bse')) cond('📕','The Dark Hold','Takes 1 damage at the start of each of your turns'+(fc._sinTurn===(G&&G.turn)?' · Pages of Sin used this turn':'')+'.',null);
   { const l=fc.abilityUsed&&fc.abilityUsed.sandstorm_turn; if(l!=null&&G&&G.turn-l<4&&hasAbilityLabel(fc,'Sandstorm')) cond('🏜','Sandstorm','Recharging: ready again in '+(4-(G.turn-l))+' turn(s).',null); }
   if(hasAbilityLabel(fc,'Chaos Tithe')&&fc._titheTurn===(G&&G.turn)) cond('🌀','Chaos Tithe','Already used this turn.',null);
@@ -13451,11 +13459,25 @@ function _dmgSrcIsGod(tuid){
   const s=_dmgSourceFc(tuid); const c=s&&DB[s.cid];
   return !!c&&isChar(c)&&String(s.uid)!==String(tuid)&&(c.subtypes||[]).some(t=>/\bgod\b/i.test(String(t)));
 }
+// PRISM BARRIER (Crystal SSJ): fc._prismShield = damage it still prevents (3), fc._prismBy = who placed it. The first time the
+// character would be dealt damage (after Nullify / Inferno Ward / Diamond Calm / Half-Divine), up to 3 of it is prevented and the
+// barrier is spent — even if the hit was smaller. Combat and ability damage (both go through dealDamage). Ends at the start of
+// the placer's next turn (tickPrismBarrier in startTurnFx, before Burn/Poison chip).
+function prismBarrierAbsorb(fc,dmg){
+  const blk=Math.min(fc._prismShield||0,dmg); fc._prismShield=0; fc._prismBy=null;
+  if(blk>0){ log(`💠 Prism Barrier: ${DB[fc.cid]?.name} is shielded — ${blk} damage prevented${dmg-blk>0?` (takes ${dmg-blk})`:''}.`,'gain');
+    if(typeof showStatusFx==='function') try{ showStatusFx(fc.uid,'freeze'); }catch(e){} }
+  return dmg-blk;
+}
+function tickPrismBarrier(p){
+  (G.is2v2&&typeof teamPlayers==='function'?[1,2,3,4]:[1,2]).forEach(q=>(G.players[q]?.field||[]).forEach(f=>{ if(f._prismShield>0&&f._prismBy===p){ f._prismShield=0; f._prismBy=null; log(`💠 ${DB[f.cid]?.name}'s Prism Barrier fades.`,'info'); } }));
+}
 function dealDamage(tp,tuid,amt){
   if(amt<=0)return;
   const fc=G.players[tp].field.find(f=>f.uid===tuid);if(!fc)return;
   const c=DB[fc.cid];if(!c)return;
-  const dmg=isChar(c)?Math.max(0,amt-(fc.nullify||0)-(hasAbilityLabel(fc,'Inferno Ward')?1:0)-(hasAbilityLabel(fc,'Diamond Calm')?2:0)-((hasAbilityLabel(fc,'Half-Divine')&&_dmgSrcIsGod(tuid))?2:0)):amt; // Inferno Ward (Crystora) −1 · Diamond Calm (Crystora SSBM) −2 · Half-Divine (Asa) −2 vs Gods
+  let dmg=isChar(c)?Math.max(0,amt-(fc.nullify||0)-(hasAbilityLabel(fc,'Inferno Ward')?1:0)-(hasAbilityLabel(fc,'Diamond Calm')?2:0)-((hasAbilityLabel(fc,'Half-Divine')&&_dmgSrcIsGod(tuid))?2:0)):amt; // Inferno Ward (Crystora) −1 · Diamond Calm (Crystora SSBM) −2 · Half-Divine (Asa) −2 vs Gods
+  if(isChar(c)&&fc._prismShield>0&&dmg>0) dmg=prismBarrierAbsorb(fc,dmg); // 💠 Prism Barrier (Crystal SSJ): prevents up to 3 of the next damage, then it's gone
   // Track marked damage silently for future parry/defense mechanics
   if(isChar(c))fc.markedDamage=(fc.markedDamage||0)+dmg;
   // Omega Judgment: attacker loses 3 ATK when hitting Darkseid herald,
@@ -18299,6 +18321,29 @@ function runAbilityEffect(fc, abl, pl){
     }
     renderAll(); return;
   }
+  // ── CRYSTAL (SSJ) BSE 114/150: Prism Barrier — 2⚡, once per turn, paid → doesn't tap. Choose one of your characters (herself
+  //    included): the next time it would be dealt damage before your next turn, prevent 3 of it (fc._prismShield). A new barrier on
+  //    the same character replaces the old one (no stacking). Closing the chooser refunds the ability.
+  if(label==='Prism Barrier'){
+    const ap=G.activePlayer, P=G.players[ap]; const _undo=_abilityUndo;
+    const mine=P.field.filter(f=>isChar(DB[f.cid]));
+    if(!mine.length){ if(_undo) _undo(); log('Prism Barrier: no character to shield — not used.','dmg'); renderAll(); return; }
+    const go=(uid)=>{ const t=P.field.find(f=>f.uid===uid); if(!t){ if(_undo) _undo(); renderAll(); return; }
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Prism Barrier',fc.uid):null;
+      t._prismShield=3; t._prismBy=ap; if(typeof showStatusFx==='function') try{ showStatusFx(t.uid,'freeze'); }catch(e){}
+      if(typeof fxPop==='function') fxPop(_fx);
+      log(`💠 Prism Barrier: ${DB[t.cid].name} is shielded — the next damage it would be dealt before your next turn is reduced by 3.`,'gain');
+      renderAll(); };
+    if(seqIsLocalHuman(ap)&&!G._aiAuto){
+      seqChoose('💠 Prism Barrier','Choose one of your characters. The next time it would be dealt damage before your next turn, prevent 3 of that damage.',
+        mine.map(f=>({label:DB[f.cid].name+(f.uid===fc.uid?' (this card)':''), sub:'♥'+(f.currentHP||0)+(f._prismShield>0?' · shielded':''), val:f.uid})),
+        go, ()=>{ if(_undo) _undo(); log('Prism Barrier: cancelled — Energy back.','info'); });
+    } else {
+      const pool=mine.filter(f=>!(f._prismShield>0)); const t=(pool.length?pool:mine).slice().sort((a,b)=>aiFcValue(b)-aiFcValue(a))[0];
+      go(t.uid);
+    }
+    return;
+  }
   // ── SURANA (SSS) BSE 030/150: Blood Rite — free, once per turn (generic lock), doesn't tap (noTapOnAbility). Flip a coin
   //    (full roll panel); TAILS → you MAY sacrifice one of your other characters (a real Sacrifice: half its printed cost
   //    back, Death's Offering / Chaos Tithe fire). If you do: +3 Attack until the end of your turn (fc._bloodRite) and heal 3.
@@ -19312,6 +19357,7 @@ function rollAttackStatuses(p, fc){
 function startTurnFx(player){
   if(typeof fxCtx==='function') fxCtx(null,'Turn',null,{turn:true});
   if(G&&G.trial&&typeof trTurnStart==='function') trTurnStart(player);   // build 10.18: Energy Font
+  tickPrismBarrier(player); // 💠 Crystal (SSJ): Prism Barriers this player placed last ran "before your next turn"
   if(typeof applyStatusDoT==='function') applyStatusDoT(player); // Burn/Poison chip at turn start
   const pl=G.players[player]; if(!pl) return;
   // ── SURFACER BINDING (The Surfacer Herald): if an OPPONENT has The Surfacer as
@@ -19874,6 +19920,8 @@ function aiScoreAbility(p, fc, abl, src){
   if(abl.label==='Elemental Cataclysm'){ const es=aiEnemyChars(p); if(!es.length) return -1;
     const kills=es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,3-(e.fc.nullify||0))).length;
     return 16+es.length*5+kills*14-(aiReady(fc)?12:0); }
+  if(abl.label==='Prism Barrier'){ const _m=pl.field.filter(f=>isChar(DB[f.cid])&&!(f._prismShield>0)); if(!_m.length||!aiEnemyChars(p).length) return -1;
+    if(pl.energy-cost<1) return -1; return 5+Math.min(7,Math.max(..._m.map(f=>aiFcValue(f)))*.25); } // a shield for its best character before the enemy turn
   if(abl.label==='Blood Rite'){ const _o=pl.field.filter(f=>f.uid!==fc.uid&&isChar(DB[f.cid])&&!DB[f.cid]?.isToken); if(!_o.length) return -1;
     if(Math.min(..._o.map(f=>aiFcValue(f)))>12) return -1; const _hurt=Math.max(0,aiMaxHP(fc)-(fc.currentHP||0));
     const _atk=aiReady(fc)&&canCharacterAttack(p,fc)&&aiAttackOptionsFor(p,fc).length>0; if(!_atk&&_hurt<3) return -1;
