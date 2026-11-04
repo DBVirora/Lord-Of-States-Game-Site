@@ -7697,6 +7697,14 @@ body.po2-open #fullcard-modal{z-index:400}
 .b3-cset img{position:absolute;left:50%;bottom:0;height:96%;transform:translateX(-50%)}
 .b3-cset b{position:absolute;left:0;right:0;bottom:calc(var(--u)*1.2);font-size:calc(var(--u)*2.4);text-shadow:0 2px 4px rgba(0,0,0,.6)}
 .b3-seals-m,.b3-foot-m{display:none}
+/* v3.1: Unlock Tokens + one pass */
+.b3-tok{display:flex;align-items:center;gap:calc(var(--u)*.6);padding:calc(var(--u)*.45) calc(var(--u)*1);border-radius:999px;background:linear-gradient(90deg,#7dd3fc,#c4b5fd);color:#151a36;font-size:calc(var(--u)*1.25);box-shadow:0 0 calc(var(--u)*1.4) rgba(125,211,252,.55);margin-top:calc(var(--u)*.5);animation:b3-pulse 1.8s ease-in-out infinite}
+.b3-tok-m{display:none}
+.b3-t .pill.tok{background:linear-gradient(90deg,#7dd3fc,#c4b5fd);color:#151a36;animation:b3-pulse 1.6s ease-in-out infinite}
+.b3-tip.tok{background:rgba(20,40,80,.72);box-shadow:inset 0 0 0 1px rgba(125,211,252,.6)}
+.b3-tip.tok .lk{color:#7dd3fc}
+.b3-tokbig{font-size:calc(var(--u)*6);line-height:1;color:#7dd3fc;text-shadow:0 0 calc(var(--u)*2) rgba(125,211,252,.8)}
+.b3-offers.one{grid-template-columns:1fr;max-width:calc(var(--u)*40);margin:0 auto}
 .b3-ended{position:absolute;left:50%;top:calc(var(--top) + var(--u)*.4);transform:translateX(-50%);z-index:7;padding:calc(var(--u)*.4) calc(var(--u)*1.4);border-radius:999px;background:#b91c1c;font-size:calc(var(--u)*1.3)}
 /* phones in portrait: stack it */
 @media (max-aspect-ratio:4/5){
@@ -7705,6 +7713,8 @@ body.po2-open #fullcard-modal{z-index:400}
   .b3-lvlbox{top:calc(var(--top) + var(--u)*.4);right:calc(var(--u)*4)}.b3-lvlbox .b3-seals{display:none}
   .b3-head{left:calc(var(--u)*4);right:calc(var(--u)*4)}
   .b3-seals-m{display:inline-flex;margin-top:calc(var(--u)*1.6);animation:none}
+  .b3-tok-m{display:inline-flex;margin-left:calc(var(--u)*1);margin-top:calc(var(--u)*1.6);animation:none;font-size:calc(var(--u)*2.2)}.b3-lvlbox .b3-tok{display:none}
+  .b3-tokbig{font-size:calc(var(--u)*12)}.b3-offers.one{max-width:none}
   .b3-foot-m{display:block;margin-top:calc(var(--u)*1.2);font-size:calc(var(--u)*1.9);opacity:.85}
   .b3-foot{display:none}
   .b3-pv .b3-lvlbox{display:none}
@@ -9815,6 +9825,7 @@ const GODOT_SYNC=[
       "CELESTIAL SURGE (Virora Surfacer MUI, activated): 5 Energy (her color, Purple), once per turn, paid → doesn't tap. openEnemyTargetPicker over every opposing character (2v2: both enemies' fields) → dealDamage 5 (Nullify applies). If that target left the field, a second picker: Freeze another opposing character that isn't already Frozen (STATUS_META.freeze.dur); none left → log only. AI picks both targets itself (aiPickEnemyTarget). No opposing characters → the ability is refunded (_abilityUndo) and not used.",
       "SILENT HORIZON (Virora Surfacer MUI, activated): 4 Energy, ONCE PER GAME (limit 'once_per_game' — the lock survives the per-turn reset), paid → doesn't tap. Freezes every opposing character (2v2: both enemies). No opposing characters → refunded, not spent. AI: only uses it when 2+ enemies that aren't Frozen / Vortex Shielded would be hit (score 10 + 5 per enemy + 3 per enemy that could attack next turn)."],
     screens:[
+      "SAME BUILD 10.18 — BATTLE PASS v3.1: THE REGULAR SEASON LAYOUT (replaces Premium and Choose-a-Set). ONE PASS: Free = rewards marked FREE · Battle Pass (prices.pass, default 3500) = everything incl. Bonus. Old pass 'premium' → 'battle'. No upgrade, no +levels bundle; Buy Levels stays (prices.level 150). SETS: every main page is one character's set of 10 rewards shown as 2 rows of 5 (page view: 5 per sub-page, pager 1/2). Placeholder season: 5 sets (Virora MUI, Crystora, Vuruna SSB, Elise, Falcore) × 10 = levels 1–50: card (Ruby) · FREE title · FREE 300 Celestium · card back · playmat · ring frame · name plate (sets 1/3/5) or 2 Basic Packs (2/4) · 300 Court Shards · 1 Premium Pack · 500 Celestium. UNLOCK TOKENS: the first set is open; every other set opens with a token and the player picks which. tokensEarned = min(sets−1, max(number of OPEN sets with ≥ unlockAfter (7) claims, number of tokenLevels (10,20,30,40) reached)); tokens = earned − sets opened with one. Player data: battle_pass_data.unlocked [pageId]. Locked set: tile pill '◆ UNLOCK' when a token is free (else 🔒); tip 'Tap again to open this set — then use an Unlock Token'; page view 'UNLOCK THIS SET' + 'USE UNLOCK TOKEN · ◆1' → confirm dialog 'UNLOCK <NAME>?' (NOT YET / UNLOCK · ◆1). Without a token: 'Claim 7 rewards on a set, or reach LVL n, to earn an Unlock Token.' Main screen: a cyan '◆ n UNLOCK TOKEN(S)' pill under the claims pill; hint '◆ n Unlock Token(s) — pick your next set' / 'Claim 7 on a set or reach LVL n for an Unlock Token'. BONUS REWARDS: kind 'bonus' pages (placeholder: one page, 25 rewards = 5 rows of 5, levels 51–75: Remmel card/back/mat/entrance/'COURT SOVEREIGN'; Surana card/back/mat/ring/500; Theia card/back/mat/plate/3 Premium Packs; Sovereign ring/plate/1000 shards/'THE UNBROKEN'/500; Sovereign back/mat/'Sovereign Crown' entrance/5 Premium Packs/1000). Open for pass holders once EVERY reward on every set is claimed ('Claim every reward on all 5 sets to open the Bonus Rewards (n left).'). Tag 'BONUS · BATTLE PASS'. MAX LEVEL: with the placeholder season = total rewards (75); with saved pages = maxTier (the editor shows 'claiming everything takes N'); bp3Cfg writes it back to BP_CONFIG.maxTier so the XP curve caps there. Config keys: unlockAfter (7), tokenLevels [10,20,30,40]; removed: premiumLevels, choiceLevel, choiceBothLevel, prices.premium/upgrade. GET THE BATTLE PASS dialog: one offer (sets + rewards, Bonus count, 'Pick your own order', Celestium back) BUY · price. Editor: kind Set / Bonus (after every set), no level gate, prices pass + level, rules unlockAfter + tokenLevels. Market: the Premium Pass tile is gone (Battle Pass + Levels).",
       "SAME BUILD 10.18 — COURT FORGE ✦ INFUSE + BATTLE PASS CARDS. The Forge has a third mode button '✦ INFUSE · Raise a copy's holo finish' (cyan). INFUSE: tiles = cards you own that aren't basic Energy/tokens and still have a copy below Ruby (shown in their best finish with a finish tag; foot = cheapest step cost + ×copies); 'Ready to infuse' filter; count line 'n CARDS · m READY TO INFUSE'. Anvil: the card in its best finish, then one row per finish you own: '<Finish> ×n → <next finish>' + a '✦ cost' button (disabled when short; Ruby row = 'the top finish'); a ⚠ line when a saved deck uses that finish and you'd drop below it. Ladder: none → reverse → classic → cosmic → gold → ruby (one step per infuse). Cost = round(base × infuse[target] / 10) × 10, min 10; base = the rarity's craft cost, or the Herald craft cost for Heralds, or break × 8 when the craft cost is 0 (Secret Rares). Default multipliers: reverse .5, classic .75, cosmic 1, gold 1.5, ruby 2.5. Doing it: −cost shards; removeVariantFromCollection(cid,from,1); addVariantToCollection(cid,to,1); recompute holo_owned; save collection, collection_foil, holo_owned, court_shards. Cinematic 'INFUSED' (like FORGED, tinted the new finish's colour, the card shown with that holo; animations off → toast). BATTLE PASS CARDS: a card whose set id is bp<n> (bp1, bp2…), or an exclusive card that is a card reward in the Battle Pass config. In craftCheck BEFORE the exclusive check: if you own 0 → 'Claim it from the Battle Pass first — then you can forge more copies.'; playset full → as usual; cost = base × passMult (default 2), rounded to 10; no pack-pool / Sighted checks. Owned pass cards appear in FORGE mode for their set / All sets. bp<n> sets never sell as packs (purchasableSets skips them). Config app_settings 'crafting' gains infuse {reverse,classic,cosmic,gold,ruby}, infuseOn (default true), passMult (default 2); the admin Crafting rates window has the five ✦ Infuse boxes, an 'Infusing is on' box and '🎟 Battle Pass cards: craft cost ×'.",
       "SAME BUILD 10.18 — THE COURT MARKET (the shop, rebuilt; still behind feature_flags.shop_enabled). Main menu cards are unchanged: SHOP → Booster Packs / Single Cards / Cosmetics / Events open the Market at the Booster Packs / Daily Singles / first collection / Events section; LOCKER → Loadout opens the old cosmetics grid as a Loadout (owned items only, no buying, '🏪 THE MARKET' chip). Anything that called openShop now opens the Market. LAYOUT on a 16:9 stage that scales with the window (unit u = min(1vw, 1.78vh); phones in portrait: section chips across the top, 2-column tiles, the showcase becomes a bottom sheet). Fonts: Anton for headings (uppercase italic). LEFT: a ☰ button + a vertical rail of ◆ dots (one per section, current one bright); ☰ / Tab opens the SECTIONS list (name + a small line), which slides the tiles right and hides the showcase. CENTRE: one scrolling column of sections. Each section repaints the whole screen as it scrolls into view (top of the section above 38% of the column): a backdrop image (cross-fade), a colour wash from the section's two colours (dark on the left), a thin gilded diagonal band, a faint slowly turning crest ring, drifting motes. Section header = big italic title + a small caps line. Tiles: 4 columns, 14.2u tall, wide tiles span 2 columns, pack tiles span 2 rows; tile colour = rarity for daily cosmetics (common slate, rare blue, legendary orange) or the section colours; art (card back tilted, playmat as cover, avatar with ring/frame, name plate, glowing title text, entrance icon with pulse rings, card, floating pack, fanned packs + '36 PACKS'); name + Celestium price (sale: old price struck through) or green OWNED; tags top-left (SAVE n, LAST DAY, ALWAYS HERE, BEST ODDS, 10% OFF, SEASON, +LEVELS); a crimson wax seal with gold rim 'n% OFF' top-right on sales; legendary/collection tiles get a slow rainbow edge; a foil sheen follows the pointer. Click = select (white outline, slight zoom, an info strip slides up: 'CARD BACK · LEGENDARY'); click the selected tile again / Enter = buy. Arrows move the selection, PageUp/PageDown jump sections, Esc closes dialog → list → sheet → leaves. COLLECTION sections open with a landing: pill ('IN THE MARKET · n MORE DAYS' / 'LAST DAY' / '★ TODAY'S FEATURED'), the set name huge, 'n-ITEM SET', item icons, VIEW SET + price with the struck full price, a bouncing ⌄; then a wide set tile + one tile per piece. Backdrop = the set's playmat. RIGHT: the SHOWCASE of the selected tile — card back as a big 3D card that tilts with the pointer; playmat as a tilted board with your card back on it; set = board + standing back; frame = big avatar with the ring/frame; plate/title = your name plate with the title; entrance = your Herald card popping in over spinning rays in its colours; single = the card with tilt; packs = a 3D pack you drag to spin (back face: LORD OF COURTS · set · 10 CARDS…; premium = gold sheen + PREMIUM ribbon); box = a 3D box (gold band 'BOOSTER BOX · 36', three packs on the front). Under it a glass info card (gold hairline): type · tier, name, text, rotation line ('LEAVES IN 5H 12M' / 'LEAVES IN 2 DAYS' / 'LEAVES TONIGHT' / 'ALWAYS IN THE MARKET' + 'LAST SEEN n DAYS AGO' / 'FIRST TIME IN THE MARKET'), price and BUY / EQUIP / ✓ EQUIPPED; packs: AMOUNT buttons (packQty, default 1/5/10), total, BUY & OPEN, BUY & STORE, VIEW ODDS (see data); Your Packs: OPEN ONE / OPEN ALL n; Battle Pass tiles: OPEN THE PASS + GET IT / UPGRADE / BUY LEVELS (open the pass screen and its buy / levels dialog). TOP-RIGHT: 'THE MARKET TURNS IN hh:mm:ss' + your Celestium. BOTTOM-RIGHT: 🎒 MY LOCKER (→ Loadout), ABOUT THE MARKET, ✎ MARKET EDITOR (admin), ESC BACK. BUY dialog: thumbnail, PRICE / YOUR CELESTIUM / AFTER (red 'NOT ENOUGH'), CANCEL + 'BUY · n' ('BUY & OPEN · n' / 'BUY & STORE · n'). Then 'ACQUIRED!' + sparks: cosmetics DONE / EQUIP NOW (no auto-equip), sets EQUIP SET, packs stored: LATER / OPEN ALL n / OPEN ONE NOW; BUY & OPEN goes straight to the pack opening; a single goes straight to its reveal. SECTIONS (default order, editable): Featured (only when the daily featured pick is an item — a landing like a collection's), Booster Packs ('THE VAULT · <SET>', set chips when more than one set sells, Basic + Premium tall tiles, Booster Box + Premium Booster Box wide tiles, then 'YOUR PACKS · n UNOPENED' with one tile per stored pack kind), Battle Pass (when battle_pass_enabled: Battle Pass wide tile with the first page's cut-out, Premium Pass with the bonus page's cut-out, Levels), Daily Singles, Collections (each collection in the Market is its own section; a featured collection goes first of everything), Card Backs, Playmats, Frames & Plates, Titles, Herald Entrances (the day's rotating items by type; empty sections are skipped), Events (when events_enabled: 'No events are running right now…'). Admin: Admin → Market Editor tile, or the ✎ button.",
       "COURT MARKET DATA. app_settings 'shop_config' (missing keys → defaults): dailySlots 10, featuredCount 2, featuredStay 3 (days), singlesCount 8, dailyFeatured true, showOdds false, singlesPrice {common 200, uncommon 400, rare 900, legend 1800, mythic 3500, secret 6000}, packQty [1,5,10] (max 4, 1–99), pinned [ids always in], hidden [ids never in], sales {id:{pct 1–90, until ISO or ''}} (ids = a cosmetic id, a set id, 'pack_basic','pack_premium','box_basic','box_premium'), sections {sectionId or setId:{name,art,c1,c2}}, order [section ids], setArt {setId:{pack:url}}. ROTATION — identical on web and PC, everyone sees the same Market: D = floor(unixMs / 86400000) (turns at 00:00 UTC). hash = FNV-1a 32 (h=0x811c9dc5; per UTF-16 unit: h^=c; h=imul(h,0x01000193)>>>0). rng = mulberry32(seed) (a+=0x6D2B79F5; t=a; t=imul(t^(t>>>15),t|1); t^=t+imul(t^(t>>>7),t|61); return ((t^(t>>>14))>>>0)/2^32). shuffle(list,seedStr): copy, sort ascending (string order), Fisher-Yates from the end with j=floor(rng()*(i+1)), rng seeded with hash(seedStr). Cosmetic pool = catalog items not free, tier not default/exclusive, no unlock rule, not a Battle Pass item, not starter, price > 0, not hidden. Set pool = COS_SETS (with ≥2 existing items) not hidden whose items are all buyable that way. Pinned sets are always collections (left 0 = always). Rotating sets: order = shuffle(rotating set ids,'mk-col'); fc = min(featuredCount, count); for k in 0..fc-1: w = floor((D+k)/featuredStay); idx = ((w*fc+k) mod n + n) mod n; skip forward past sets already chosen; daysLeft = featuredStay − ((D+k) mod featuredStay) (1 = LAST DAY / LEAVES TONIGHT). Collection items = every item of those sets. Pinned items (not in a collection) always show. Daily = shuffle(pool minus collection items minus pinned,'mk-day-'+D) first dailySlots. Featured (dailyFeatured): candidates = rotating collections as 'set:<id>' + daily legendary items as 'cos:<id>' (if none: all daily items); pick = shuffle(candidates,'mk-feat-'+D)[0]. LAST SEEN = the most recent earlier day (up to 120 back) whose rotation has the item. Daily Singles = shuffle(cards: not exclusive/token/system/transformOnly/Herald/basic Energy, not hidden or switched off, has a set, not promo, rarity not secret,'mk-singles-'+D) first singlesCount; price = singlesPrice[rarity]; buying adds a Regular copy (no limit). PRICES: cosmetic = its price; set = today's set price for the pieces you're missing (as before), struck price = those pieces bought one by one; pack = PACK_COSTS (basic 300, premium 850) each; box = 36 packs at 10% off (struck = full); a sale: round(base × (100 − pct)/100 / 10) × 10. Buying packs: pay amount × each, grant that many to Your Packs (pack_inventory), then BUY & OPEN opens one from Your Packs. Buying a box grants 36 packs. Cosmetics are no longer auto-equipped on purchase. ODDS dialog (VIEW ODDS: players only when showOdds; admins always, marked admin-only) shows the generatePack weights as % — slot 9 Reverse Holo rarity, slot 10 Rare+ (Herald weight folds into Mythic when the set has no Herald; Secret only when the set has one), slot-10 holo chance 30% basic / 45% premium (Heralds half), and the holo finish weights. MARKET EDITOR (admin): tabs Rotation (the numbers, Daily Featured + Show pack odds switches, singles prices, pack amounts, ◀ DAY ▶ preview of other days — local only — and that day's list), Sales (rows: item, % off, end date; + ADD SALE), Items (each set/cosmetic: Rotates / Always in the Market / Never in the Market), Sections (order ▲▼; per section and per collection: name, art URL, two colours, RESET), Packs (pack art per set). PREVIEW applies only for you; SAVE FOR EVERYONE writes app_settings 'shop_config'. ASSETS (scans repo): Market/Backdrops/<featured|vault|singles|backs|mats|frames|titles|entrances|events|set_<id>>.webp (1920×1080 backdrops; the collections use their playmats), Market/Thumbs/<back_*|mat_*>.webp (small tile art), Market/Thumbs/pack_base_set.webp (the Base Set pack, trimmed to the pack, 601×1012).",
@@ -36111,14 +36122,14 @@ if(typeof MM_MODES!=='undefined') MM_MODES.trial={ico:'🏛',t:'Trial of Courts'
 //   BUY LEVELS / GET THE PASS; the LVL ring top right; a row of character tiles (progress n/total, 🔒 locked,
 //   the 'Choose a Set' pair, then ••• and the wide Bonus Rewards tile); 'Available through <date>'; QUESTS.
 //   PAGE VIEW: the page's colours, a page selector, the selected reward big in the middle, its type/name/text
-//   left, CLAIM / VIEW REWARD / EQUIP right, a row of the page's rewards (6 per sub-page) and a pager.
-//   PASSES: Free (rewards marked FREE) · Battle Pass (every reward on the main pages + 1 'Choose a Set' at
-//   choiceLevel, both at choiceBothLevel) · Premium (the Battle Pass + premiumLevels levels at once, both sets at
-//   choiceLevel, and the Premium-only Bonus Rewards page). Prices in Celestium (prices.pass / premium / upgrade).
+//   left, CLAIM / VIEW REWARD / EQUIP right, a row of the page's rewards (5 per sub-page) and a pager.
+//   REGULAR SEASON LAYOUT (v3.1): 5 character SETS × 10 rewards (levels 1–50), then BONUS REWARDS (25, levels 51–75).
+//   ONE PASS: Free = the rewards marked FREE (2 per set) · Battle Pass (prices.pass) = everything, Bonus included.
 //   CLAIMS: every level = 1 claim (+1 per bonusXpPerSeal XP past the max level). Spend a claim on any reward of an
-//   unlocked page, in any order. Main page k unlocks after unlockAfter claims on page k−1, or at its level gate.
-//   Bonus Rewards unlock once every other reward is claimed. Season data: BP_CONFIG.pages (Admin → Battle Pass
-//   Editor); without it the placeholder season below is used. Player data: _bpPlayerData.pass / claimed / choice.
+//   open set, in any order. The first set is open; every other set opens with an UNLOCK TOKEN, and YOU pick which:
+//   a token comes from claiming unlockAfter (7) rewards on a set, or from reaching each tokenLevels level (10/20/30/40).
+//   Bonus Rewards open (pass holders) once every reward on every set is claimed. Season data: BP_CONFIG.pages (Admin →
+//   Battle Pass Editor); without it the placeholder season below is used. Player data: _bpPlayerData.pass / claimed / unlocked.
 // ═══════════════════════════════════════════════════════════════════════════
 const BP3_RAW='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/';
 const BP3_CEL=BP3_RAW+'currency/Celstium.png';
@@ -36131,53 +36142,54 @@ function bp3Defaults(){
   const nm=cid=>(DB[cid]&&DB[cid].name)||cid;
   const mk=(id,kind,o)=>{ const R=[]; const S=o.short;
     const cos=(n,type,extra)=>({id:id+'_'+n,type:'cosmetic',cos:Object.assign({id:'bp_s1_'+id+'_'+n,type},extra)});
-    if(kind==='bonus'){
-      R.push({id:id+'_card',type:'card',cid:o.cid,finish:'ruby'});
-      R.push(cos('back','back',{name:S+' Card Back',img:bp3Mmi(o.mm)}));
-      R.push(cos('mat','mat',{name:S+' Playmat',img:bp3Mmi(o.mm)}));
-      R.push(cos('ent','entrance',{name:S+"'s Arrival",fx:'abyss',c:o.acc,glow:o.acc+'99',icon:'👑'}));
-      R.push(cos('title','title',{name:'Court Sovereign',text:'COURT SOVEREIGN',color:o.acc}));
-      R.push({id:id+'_cel',type:'celestium',amount:1000});
-      return R; }
-    if(kind==='choice'){
-      R.push({id:id+'_card',type:'card',cid:o.cid,finish:'ruby'});
-      R.push(cos('back','back',{name:S+' Card Back',img:bp3Mmi(o.mm)}));
-      R.push(cos('title','title',{name:S+"'s Chosen",text:(S+"'s Chosen").toUpperCase(),color:o.acc}));
-      R.push(cos('frame','frame',{name:S+' Ring',ring:[o.acc,o.acc+'88']}));
-      R.push({id:id+'_shards',type:'shards',amount:500});
+    if(kind==='bonus'){ const B=o.bonus;
+      B.forEach(x=>{ const k=x.k, sh=x.short;
+        if(x.cid) R.push({id:id+'_'+k+'_card',type:'card',cid:x.cid,finish:'ruby'});
+        if(x.mm){ R.push(cos(k+'_back','back',{name:sh+' Card Back',img:bp3Mmi(x.mm)})); R.push(cos(k+'_mat','mat',{name:sh+' Playmat',img:bp3Mmi(x.mm)})); }
+        (x.more||[]).forEach(m=>R.push(m.type?Object.assign({id:id+'_'+k+'_'+m.n},m):cos(k+'_'+m.n,m.cos,m.extra))); });
       return R; }
     R.push({id:id+'_card',type:'card',cid:o.cid,finish:'ruby'});
-    R.push(cos('back','back',{name:S+' Card Back',img:bp3Mmi(o.mm)}));
-    R.push(cos('title','title',{name:S+"'s Champion",text:(S+"'s Champion").toUpperCase(),color:o.acc}));
-    R[2].free=true;
+    R.push(cos('title','title',{name:S+"'s Champion",text:(S+"'s Champion").toUpperCase(),color:o.acc})); R[1].free=true;
     R.push({id:id+'_cel1',type:'celestium',amount:300,free:true});
+    R.push(cos('back','back',{name:S+' Card Back',img:bp3Mmi(o.mm)}));
     R.push(cos('mat','mat',{name:S+' Playmat',img:bp3Mmi(o.mm)}));
     R.push(cos('frame','frame',{name:S+' Ring',ring:[o.acc,o.acc+'88']}));
     if(o.even) R.push({id:id+'_packs',type:'pack',pack:'basic',amount:2});
     else R.push(cos('plate','plate',{name:S+' Plate',bg:`linear-gradient(90deg,${o.c2}cc,${o.c1}33)`,line:o.acc}));
-    R.push({id:id+'_cel2',type:'celestium',amount:700});
+    R.push({id:id+'_shards',type:'shards',amount:300});
+    R.push({id:id+'_ppack',type:'pack',pack:'premium',amount:1});
+    R.push({id:id+'_cel2',type:'celestium',amount:500});
     return R; };
-  const P=(id,kind,o)=>Object.assign({id,kind,name:nm(o.cid),short:o.short,cid:o.cid,art:bp3Cut(o.k),c1:o.c1,c2:o.c2,acc:o.acc,gate:o.gate||0},{rewards:mk(id,kind,o)});
+  const P=(id,kind,o)=>Object.assign({id,kind,name:o.name||nm(o.cid),short:o.short,cid:o.cid,art:bp3Cut(o.k),c1:o.c1,c2:o.c2,acc:o.acc},{rewards:mk(id,kind,o)});
+  const gold='#f6c453';
   const pages=[
     P('p1','main',{cid:'virora_surfacer_mui_sr_bse',short:'Virora',k:'virora_mui',mm:'vmuisurfacerSurfacer MUI virora.jpg',c1:'#3b1a8f',c2:'#e0479e',acc:'#ff8bd8'}),
-    P('p2','main',{cid:'crystora_bse',short:'Crystora',k:'crystora',mm:'crysdtora11Crystora (lord of courts).jpg',c1:'#7c2d12',c2:'#f59e0b',acc:'#ffd27a',gate:10,even:true}),
-    P('p3','main',{cid:'vuruna_ssb_bse',short:'Vuruna',k:'vuruna_ssb',mm:'vurunassb1111vurunassb21.jpg',c1:'#1e3a8a',c2:'#22d3ee',acc:'#7dd3fc',gate:18}),
-    P('p4','main',{cid:'elise_bse',short:'Elise',k:'elise',mm:'elise1Elise 1.jpg',c1:'#2e1065',c2:'#8b5cf6',acc:'#c4b5fd',gate:26,even:true}),
-    P('p5','main',{cid:'falcore_bse',short:'Falcore',k:'falcore',mm:'falcoreDesigner (3).jpg',c1:'#78350f',c2:'#fbbf24',acc:'#fde68a',gate:34}),
-    P('c1','choice',{cid:'surana_ssg_bse',short:'Surana',k:'surana_ssg',mm:'ssgsurana1suranassg.jpg',c1:'#450a0a',c2:'#ef4444',acc:'#fca5a5'}),
-    P('c2','choice',{cid:'theia_bse',short:'Theia',k:'theia',mm:'teheia1theia111.jpg',c1:'#831843',c2:'#f472b6',acc:'#fbcfe8'}),
-    P('b1','bonus',{cid:'remmel_bse',short:'Remmel',k:'remmel',mm:'rAAMMELDesigner (4).jpg',c1:'#022c22',c2:'#10b981',acc:'#6ee7b7'})
+    P('p2','main',{cid:'crystora_bse',short:'Crystora',k:'crystora',mm:'crysdtora11Crystora (lord of courts).jpg',c1:'#7c2d12',c2:'#f59e0b',acc:'#ffd27a',even:true}),
+    P('p3','main',{cid:'vuruna_ssb_bse',short:'Vuruna',k:'vuruna_ssb',mm:'vurunassb1111vurunassb21.jpg',c1:'#1e3a8a',c2:'#22d3ee',acc:'#7dd3fc'}),
+    P('p4','main',{cid:'elise_bse',short:'Elise',k:'elise',mm:'elise1Elise 1.jpg',c1:'#2e1065',c2:'#8b5cf6',acc:'#c4b5fd',even:true}),
+    P('p5','main',{cid:'falcore_bse',short:'Falcore',k:'falcore',mm:'falcoreDesigner (3).jpg',c1:'#78350f',c2:'#fbbf24',acc:'#fde68a'}),
+    P('b1','bonus',{name:'Bonus Rewards',short:'Bonus',cid:'remmel_bse',k:'remmel',c1:'#022c22',c2:'#10b981',acc:'#6ee7b7',bonus:[
+      {k:'remmel',short:'Remmel',cid:'remmel_bse',mm:'rAAMMELDesigner (4).jpg',more:[{n:'ent',cos:'entrance',extra:{name:"Remmel's Arrival",fx:'abyss',c:'#6ee7b7',glow:'#6ee7b799',icon:'👑'}},{n:'title',cos:'title',extra:{name:'Court Sovereign',text:'COURT SOVEREIGN',color:'#6ee7b7'}}]},
+      {k:'surana',short:'Surana',cid:'surana_ssg_bse',mm:'ssgsurana1suranassg.jpg',more:[{n:'frame',cos:'frame',extra:{name:'Surana Ring',ring:['#fca5a5','#fca5a588']}},{n:'cel',type:'celestium',amount:500}]},
+      {k:'theia',short:'Theia',cid:'theia_bse',mm:'teheia1theia111.jpg',more:[{n:'plate',cos:'plate',extra:{name:'Theia Plate',bg:'linear-gradient(90deg,#f472b6cc,#83184333)',line:'#fbcfe8'}},{n:'packs',type:'pack',pack:'premium',amount:3}]},
+      {k:'sov',short:'Sovereign',more:[{n:'frame',cos:'frame',extra:{name:'Sovereign Ring',ring:[gold,gold+'88']}},{n:'plate',cos:'plate',extra:{name:'Sovereign Plate',bg:'linear-gradient(90deg,rgba(246,196,83,.45),rgba(120,70,10,.15))',line:gold}},{n:'shards',type:'shards',amount:1000},{n:'title',cos:'title',extra:{name:'The Unbroken',text:'THE UNBROKEN',color:gold}},{n:'cel',type:'celestium',amount:500}]},
+      {k:'crown',short:'Sovereign',mm:'Viroras tower.jpg',more:[{n:'ent',cos:'entrance',extra:{name:'Sovereign Crown',fx:'royal',c:gold,glow:gold+'99',icon:'👑'}},{n:'packs',type:'pack',pack:'premium',amount:5},{n:'cel',type:'celestium',amount:1000}]}
+    ]})
   ];
-  return (bp3Defaults._c={pages,theme:{sky1:'#0a3fb8',sky2:'#2fa9ff',floor1:'#f0c56a',floor2:'#c8923a'},prices:{pass:3500,premium:6000,upgrade:2500,level:150},
-    premiumLevels:10,unlockAfter:6,choiceLevel:30,choiceBothLevel:40,bonusXpPerSeal:1500});
+  return (bp3Defaults._c={pages,theme:{sky1:'#0a3fb8',sky2:'#2fa9ff',floor1:'#f0c56a',floor2:'#c8923a'},prices:{pass:3500,level:150},
+    unlockAfter:7,tokenLevels:[10,20,30,40],bonusXpPerSeal:1500});
 }
 function bp3Cfg(){
   const c=(typeof BP_CONFIG!=='undefined'&&BP_CONFIG)||BP_DEFAULT_CONFIG; if(_b3.cfgKey===c&&_b3.cfg) return _b3.cfg;
   const d=bp3Defaults(); const num=(v,f)=>(v!=null&&v!==''&&isFinite(+v))?+v:f;
-  const pages=(Array.isArray(c.pages)&&c.pages.length?c.pages:d.pages).filter(p=>p&&Array.isArray(p.rewards));
-  _b3.cfg={pages,theme:Object.assign({},d.theme,c.theme||{}),prices:Object.assign({},d.prices,c.prices||{}),premiumLevels:num(c.premiumLevels,d.premiumLevels),unlockAfter:num(c.unlockAfter,d.unlockAfter),
-    choiceLevel:num(c.choiceLevel,d.choiceLevel),choiceBothLevel:num(c.choiceBothLevel,d.choiceBothLevel),bonusXpPerSeal:Math.max(100,num(c.bonusXpPerSeal,d.bonusXpPerSeal)),
-    label:c.seasonLabel||('SEASON '+(c.seasonNumber||1)),title:c.seasonTitle||'',maxTier:num(c.maxTier,50)};
+  const custom=Array.isArray(c.pages)&&c.pages.length;
+  const pages=(custom?c.pages:d.pages).filter(p=>p&&Array.isArray(p.rewards)).map(p=>p.kind==='choice'?Object.assign({},p,{kind:'main'}):p);
+  const total=pages.reduce((n,p)=>n+p.rewards.length,0);
+  const maxTier=Math.max(1,custom?num(c.maxTier,total):total); try{ if(c.maxTier!==maxTier) c.maxTier=maxTier; }catch(e){}   // the XP curve's cap follows the season
+  let tl=Array.isArray(c.tokenLevels)?c.tokenLevels:(typeof c.tokenLevels==='string'&&c.tokenLevels.trim()?c.tokenLevels.split(','):null);
+  tl=(tl||d.tokenLevels).map(x=>Math.round(+x)).filter(x=>x>0).sort((a,b)=>a-b);
+  _b3.cfg={pages,theme:Object.assign({},d.theme,c.theme||{}),prices:Object.assign({},d.prices,c.prices||{}),unlockAfter:Math.max(1,num(c.unlockAfter,d.unlockAfter)),tokenLevels:tl,
+    bonusXpPerSeal:Math.max(100,num(c.bonusXpPerSeal,d.bonusXpPerSeal)),label:c.seasonLabel||('SEASON '+(c.seasonNumber||1)),title:c.seasonTitle||'',maxTier,total};
   _b3.cfgKey=c; return _b3.cfg;
 }
 function bp3Reset(){ _b3.cfgKey=null; _b3.cfg=null; }
@@ -36186,12 +36198,13 @@ function bp3P(){
   if(typeof _bpPlayerData==='undefined'||!_bpPlayerData) _bpPlayerData={xp:0,tier:1};
   const P=_bpPlayerData;
   if(!P.claimed||typeof P.claimed!=='object') P.claimed={};
-  if(!P.pass) P.pass=P.hasPremium?'premium':(P.hasStandard?'battle':'none');
-  if(!Array.isArray(P.choice)) P.choice=[];
-  P.hasStandard=P.pass!=='none'; P.hasPremium=P.pass==='premium';
+  if(!P.pass) P.pass=(P.hasPremium||P.hasStandard)?'battle':'none';
+  if(P.pass==='premium') P.pass='battle';   // v3.1: one pass (an old Premium counts as the Battle Pass)
+  if(!Array.isArray(P.unlocked)) P.unlocked=[];
+  P.hasStandard=P.pass!=='none'; P.hasPremium=P.hasStandard;
   return P;
 }
-const BP3_RANK={none:0,battle:1,premium:2};
+const BP3_RANK={none:0,battle:1,premium:1};
 function bp3Has(k){ return BP3_RANK[bp3P().pass]>=BP3_RANK[k]; }
 function bp3Level(){ return bpCurrentTierFromXP(bp3P().xp||0); }
 function bp3Earned(){ const C=bp3Cfg(), L=bp3Level(); let n=L; if(L>=C.maxTier){ const over=(bp3P().xp||0)-bpTotalXpForTier(C.maxTier); n+=Math.max(0,Math.floor(over/C.bonusXpPerSeal)); } return n; }
@@ -36202,31 +36215,31 @@ function bp3EndDate(){ const c=(typeof BP_CONFIG!=='undefined'&&BP_CONFIG)||{}; 
 function bp3Find(rid){ for(const pg of bp3Cfg().pages){ const r=pg.rewards.find(x=>x.id===rid); if(r) return {pg,r}; } return {}; }
 function bp3Claimed(pg){ const P=bp3P(); return pg.rewards.filter(r=>P.claimed[r.id]).length; }
 function bp3Mains(){ return bp3Cfg().pages.filter(p=>p.kind==='main'); }
+// ── Unlock Tokens: the first set is open; each other set opens with a token, and the player picks which ──
+function bp3MainOpen(pg){ const M=bp3Mains(); return M[0]===pg||bp3P().unlocked.includes(pg.id); }
+function bp3TokensEarned(){ const C=bp3Cfg(), M=bp3Mains(), L=bp3Level(); if(M.length<2) return 0;
+  const byClaims=M.filter(p=>bp3MainOpen(p)&&bp3Claimed(p)>=Math.min(C.unlockAfter,p.rewards.length)).length, byLevel=C.tokenLevels.filter(l=>L>=l).length;
+  return Math.min(M.length-1,Math.max(byClaims,byLevel)); }
+function bp3Tokens(){ const M=bp3Mains(); const used=bp3P().unlocked.filter(id=>M.some((p,i)=>i>0&&p.id===id)).length; return Math.max(0,bp3TokensEarned()-used); }
+function bp3NextTokenLvl(){ const L=bp3Level(); return bp3Cfg().tokenLevels.find(l=>l>L)||null; }
+function bp3TokenHow(){ const C=bp3Cfg(), n=bp3NextTokenLvl(); return `Claim ${C.unlockAfter} rewards on a set${n?`, or reach LVL ${n},`:''} to earn an Unlock Token.`; }
+function bp3MainsLeft(){ return bp3Mains().reduce((n,p)=>n+p.rewards.filter(r=>!bp3P().claimed[r.id]).length,0); }
 function bp3PageState(pg){
   const C=bp3Cfg(), P=bp3P(), L=bp3Level();
-  if(pg.kind==='main'){ const M=bp3Mains(), i=M.indexOf(pg); if(i<=0) return {open:true};
-    const prev=M[i-1], gate=+pg.gate||i*8;
-    if(bp3Claimed(prev)>=Math.min(C.unlockAfter,prev.rewards.length)||L>=gate) return {open:true};
-    return {open:false,why:`Claim ${Math.min(C.unlockAfter,prev.rewards.length)} rewards on the ${prev.short||prev.name} page, or reach LVL ${gate}.`}; }
-  if(pg.kind==='choice'){
-    const both=bp3Has('premium')?C.choiceLevel:C.choiceBothLevel;
-    const line=`Reach level ${C.choiceLevel} to unlock one Set. Reach level ${both} to unlock both Sets.`;
-    if(!bp3Has('battle')) return {open:false,need:'battle',why:'The Choose-a-Set pages come with the Battle Pass. '+line};
-    if(P.choice.includes(pg.id)||L>=both) return {open:true};
-    if(L<C.choiceLevel) return {open:false,why:line};
-    if(!P.choice.length) return {open:false,choose:true,why:`Choose this Set now — the other one unlocks at LVL ${both}.`};
-    return {open:false,why:`Reach level ${both} to unlock both Sets.`}; }
+  if(pg.kind==='main'){ if(bp3MainOpen(pg)) return {open:true};
+    if(bp3Tokens()>0) return {open:false,token:true,why:`Use an Unlock Token to open the ${pg.short||pg.name} set — you choose the order.`};
+    return {open:false,why:bp3TokenHow()}; }
   if(pg.kind==='bonus'){
-    if(!bp3Has('premium')) return {open:false,need:'premium',why:'Bonus Rewards come with the Premium Pass. Claim all rewards from the Battle Pass to open them.'};
-    const left=C.pages.filter(p=>p.kind!=='bonus').reduce((s,p)=>s+p.rewards.filter(r=>!P.claimed[r.id]).length,0);
-    if(left>0) return {open:false,why:`Claim all rewards from the Battle Pass to unlock these (${left} left).`};
+    const left=bp3MainsLeft(), n=bp3Mains().length;
+    if(!bp3Has('battle')) return {open:false,need:'battle',why:`Bonus Rewards come with the Battle Pass. They open once every reward on all ${n} sets is claimed.`};
+    if(left>0) return {open:false,why:`Claim every reward on all ${n} sets to open the Bonus Rewards (${left} left).`};
     return {open:true}; }
   return {open:true};
 }
 function bp3RewardState(pg,r){
   const P=bp3P(); if(P.claimed[r.id]) return {s:'claimed'};
-  const ps=bp3PageState(pg); if(!ps.open) return {s:'locked',why:ps.why,choose:ps.choose,need:ps.need};
-  if(pg.kind==='main'&&!r.free&&!bp3Has('battle')) return {s:'pass',why:'Get the Battle Pass to claim this reward. Your levels are saved — anything you have already earned can be claimed right after.'};
+  const ps=bp3PageState(pg); if(!ps.open) return {s:'locked',why:ps.why,token:ps.token,need:ps.need};
+  if(!r.free&&!bp3Has('battle')) return {s:'pass',why:'Get the Battle Pass to claim this reward. Your levels are saved — anything you have already earned can be claimed right after.'};
   if(bp3Ended()) return {s:'ended',why:'This season has ended.'};
   if(bp3Seals()<1) return {s:'seal',why:'Every level gives you 1 claim. Level up — play matches and finish Quests — to claim this.'};
   return {s:'ready'};
@@ -36295,12 +36308,13 @@ function renderBattlePass(){
   const qd=document.getElementById('b3-qdlg'); if(qd&&qd.classList.contains('open')&&typeof renderMissions==='function') renderMissions();
 }
 function updateBPHudIfVisible(){ if(document.getElementById('battle-pass-screen')?.classList.contains('active')) renderBattlePass(); }
+const BP3_PER=5;   // rewards per sub-page (a set of 10 = 2 pages of 5)
 function bp3Tiles(){
-  const C=bp3Cfg(); const T=bp3Mains().map(pg=>({t:'page',pg})); const ch=C.pages.filter(p=>p.kind==='choice'); if(ch.length) T.push({t:'choice',pages:ch});
+  const C=bp3Cfg(); const T=bp3Mains().map(pg=>({t:'page',pg}));
   const bo=C.pages.filter(p=>p.kind==='bonus'); if(bo.length){ T.push({t:'sep'}); bo.forEach(pg=>T.push({t:'bonus',pg})); } return T;
 }
-function bp3TileReady(t){ if(t.t==='choice') return t.pages.reduce((s,p)=>s+bp3Ready(p),0); return t.pg?bp3Ready(t.pg):0; }
-function bp3TileHero(t){ if(t.t==='choice'){ const P=bp3P(); const pick=t.pages.find(p=>P.choice.includes(p.id)); return pick||t.pages[(_b3.duoFlip||0)%t.pages.length]; } return t.pg; }
+function bp3TileReady(t){ return t.pg?bp3Ready(t.pg):0; }
+function bp3TileHero(t){ return t.pg; }
 function bp3Ring(cls){
   const C=bp3Cfg(), P=bp3P(), L=bp3Level(); const max=L>=C.maxTier; const into=bpXpIntoCurrentTier(P.xp||0), need=bpXpRequiredForTier(L);
   const pct=max?1:Math.max(0,Math.min(1,into/need)); const R=15.5, L2=2*Math.PI*R;
@@ -36316,10 +36330,11 @@ function bp3RenderMain(){
   const el=document.getElementById('b3-main'); if(!el) return;
   const C=bp3Cfg(), P=bp3P(), L=bp3Level(); const tiles=bp3Tiles(); if(_b3.focus>=tiles.length||tiles[_b3.focus].t==='sep') _b3.focus=0;
   const ft=tiles[_b3.focus]; const hero=bp3TileHero(ft); const seals=bp3Seals();
-  const passTxt=P.pass==='premium'?'<b class="b3-f">👑 PREMIUM PASS</b><i></i>Everything unlocked, plus Bonus Rewards':P.pass==='battle'?'<b class="b3-f">🛡 BATTLE PASS</b><i></i>Every reward on every page':'<b class="b3-f">FREE PASS</b><i></i>Claim the rewards marked FREE — get the pass for the rest';
-  const getBtn=P.pass==='premium'?'':`<button type="button" class="b3-btn ${P.pass==='battle'?'pk':'lt'} b3-f" onclick="bp3OpenBuy()">${P.pass==='battle'?'UPGRADE TO<br>PREMIUM':'GET THE<br>BATTLE PASS'}</button>`;
-  const end=bp3EndDate(); const ended=bp3Ended();
-  const next=L<C.choiceLevel&&C.pages.some(p=>p.kind==='choice')?`Choose a Set to Unlock at LVL <b>${C.choiceLevel}</b>`:(L>=C.maxTier?`Max level — every ${C.bonusXpPerSeal.toLocaleString()} XP gives another claim`:`Every level gives you <b>1</b> claim`);
+  const passTxt=P.pass!=='none'?'<b class="b3-f">🛡 BATTLE PASS</b><i></i>Every reward on every set, then the Bonus Rewards':'<b class="b3-f">FREE PASS</b><i></i>Claim the rewards marked FREE — get the pass for the rest';
+  const getBtn=P.pass!=='none'?'':`<button type="button" class="b3-btn lt b3-f" onclick="bp3OpenBuy()">GET THE<br>BATTLE PASS</button>`;
+  const end=bp3EndDate(); const ended=bp3Ended(); const tok=bp3Tokens(); const locked=bp3Mains().filter(p=>!bp3MainOpen(p)).length;
+  const next=tok>0?`◆ <b>${tok}</b> Unlock Token${tok===1?'':'s'} — pick your next set`:(locked?`Claim <b>${C.unlockAfter}</b> on a set${bp3NextTokenLvl()?` or reach LVL <b>${bp3NextTokenLvl()}</b>`:''} for an Unlock Token`:(L>=C.maxTier?`Max level — every ${C.bonusXpPerSeal.toLocaleString()} XP gives another claim`:`Every level gives you <b>1</b> claim`));
+  const tokPill=tok>0&&!ended?`<div class="b3-tok b3-f">◆ ${tok} UNLOCK TOKEN${tok===1?'':'S'}</div>`:'';
   const tip=bp3Tip(ft);
   const tileHtml=tiles.map((t,i)=>bp3TileHtml(t,i===_b3.focus,i)).join('');
   const ready=bp3QuestReady();
@@ -36327,9 +36342,9 @@ function bp3RenderMain(){
     ${ended?'<div class="b3-ended b3-f">SEASON ENDED</div>':''}
     <div class="b3-head"><div class="b3-brand">${BP3_CREST}<div><h1 class="b3-f b3-i">BATTLE PASS</h1><h2 class="b3-f b3-i">${bp3Esc(C.title?C.title:C.label)}</h2></div></div>
       <div class="b3-btns"><button type="button" class="b3-btn b3-f" onclick="bp3OpenLevels()" ${L>=C.maxTier||ended?'disabled':''}>BUY LEVELS</button>${getBtn}</div>
-      <div class="b3-status">${passTxt}</div>${seals>0&&!ended?`<div class="b3-seals b3-seals-m b3-f">★ ${seals} CLAIM${seals===1?'':'S'} READY</div>`:''}${end?`<div class="b3-foot-m">${ended?'Ended':'Available through'} ${end.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'}).toUpperCase()}</div>`:''}</div>
-    <div class="b3-lvlbox">${bp3Ring()}<div class="b3-hint">${next}</div>${seals>0&&!ended?`<div class="b3-seals b3-f">★ ${seals} CLAIM${seals===1?'':'S'} READY</div>`:''}</div>
-    ${tip?`<div class="b3-tip"><span>${tip}</span><span class="lk">🔒</span></div>`:''}
+      <div class="b3-status">${passTxt}</div>${seals>0&&!ended?`<div class="b3-seals b3-seals-m b3-f">★ ${seals} CLAIM${seals===1?'':'S'} READY</div>`:''}${tokPill?tokPill.replace('b3-tok','b3-tok b3-tok-m'):''}${end?`<div class="b3-foot-m">${ended?'Ended':'Available through'} ${end.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'}).toUpperCase()}</div>`:''}</div>
+    <div class="b3-lvlbox">${bp3Ring()}<div class="b3-hint">${next}</div>${seals>0&&!ended?`<div class="b3-seals b3-f">★ ${seals} CLAIM${seals===1?'':'S'} READY</div>`:''}${tokPill}</div>
+    ${tip?`<div class="b3-tip${tip.token?' tok':''}"><span>${tip.text}</span><span class="lk">${tip.token?'◆':'🔒'}</span></div>`:''}
     <div class="b3-row" role="listbox" aria-label="Battle Pass pages">${tileHtml}</div>
     ${end?`<div class="b3-foot">${ended?'Ended':'Available through'} ${end.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'}).toUpperCase()}</div>`:`<div class="b3-foot">${bp3Esc(C.label)}</div>`}
     <button type="button" class="b3-quests b3-f" onclick="bp3OpenQuests()">QUESTS${ready?`<em>${ready}</em>`:''}<span>⌄</span></button>
@@ -36338,37 +36353,26 @@ function bp3RenderMain(){
   try{ const on=el.querySelector('.b3-t.on'), row=el.querySelector('.b3-row'); if(on&&row&&row.scrollWidth>row.clientWidth) row.scrollLeft=Math.max(0,on.offsetLeft-row.clientWidth/2+on.offsetWidth/2); }catch(e){}
 }
 function bp3Tip(t){
-  if(!t||t.t==='sep') return '';
-  if(t.t==='choice'){ const ps=t.pages.map(bp3PageState); if(ps.some(s=>s.open)) return ''; const s=ps.find(x=>x.choose); if(s) return ''; return ps[0].why; }
-  const s=bp3PageState(t.pg); return s.open?'':s.why;
+  if(!t||t.t==='sep') return null;
+  const s=bp3PageState(t.pg); if(s.open) return null; return {text:s.token?'Tap again to open this set — then use an Unlock Token':s.why,token:!!s.token};
 }
 function bp3TileHtml(t,on,i){
   if(t.t==='sep') return '<span class="b3-sep">•••</span>';
-  const C=bp3Cfg(), P=bp3P();
-  if(t.t==='choice'){
-    const halves=t.pages.map(pg=>`<span class="half" style="--c1:${pg.c1};--c2:${pg.c2}"><span class="bgc"></span><span class="por"><img src="${pg.art}" alt="" loading="lazy"></span></span>`).join('');
-    const st=t.pages.map(bp3PageState); const L=bp3Level();
-    let pill; if(st.some(s=>s.choose)) pill='<span class="pill b3-f" style="background:#ffe31a;color:#151a36">CHOOSE A SET</span>';
-    else if(st.some(s=>s.open)){ const n=t.pages.reduce((s,p)=>s+bp3Claimed(p),0), tot=t.pages.filter((p,k)=>st[k].open).reduce((s,p)=>s+p.rewards.length,0); pill=`<b class="b3-f">${n}/${tot}</b>`; }
-    else pill=`<span class="pill b3-f">${!bp3Has('battle')?'🔒 ':''}LVL ${C.choiceLevel}</span>`;
-    const rdy=bp3TileReady(t);
-    return `<button type="button" class="b3-t duo${on?' on':''}" data-i="${i}" onclick="bp3Tile(${i})" aria-label="Choose a Set">${halves}<span class="ct">${pill}</span>${rdy?'<span class="badge">!</span>':''}</button>`;
-  }
   const pg=t.pg, s=bp3PageState(pg), n=bp3Claimed(pg), tot=pg.rewards.length, rdy=bp3Ready(pg);
-  const bottom=t.t==='bonus'?`<span class="pill b3-f">${s.open?n+'/'+tot+' · ':''}★ BONUS REWARDS</span>`:(s.open?`<b class="b3-f">${n}/${tot}</b><div class="bar"><i style="width:${Math.round(n/tot*100)}%"></i></div>`:'<span class="lock">🔒</span>');
+  const bottom=t.t==='bonus'?`<span class="pill b3-f">${s.open?n+'/'+tot+' · ':''}★ BONUS REWARDS</span>`:(s.open?`<b class="b3-f">${n}/${tot}</b><div class="bar"><i style="width:${Math.round(n/tot*100)}%"></i></div>`:(s.token?'<span class="pill tok b3-f">◆ UNLOCK</span>':'<span class="lock">🔒</span>'));
   return `<button type="button" class="b3-t${t.t==='bonus'?' wide':''}${on?' on':''}${s.open?'':' locked'}" data-i="${i}" style="--c1:${pg.c1};--c2:${pg.c2}" onclick="bp3Tile(${i})" aria-label="${bp3Esc(pg.name)}"><span class="bgc"></span><span class="por"><img src="${pg.art}" alt="" loading="lazy"></span><span class="ct">${bottom}</span>${rdy?'<span class="badge">!</span>':''}</button>`;
 }
 function bp3Tile(i){
   const tiles=bp3Tiles(), t=tiles[i]; if(!t||t.t==='sep') return;
   if(_b3.focus!==i){ _b3.focus=i; bp3Sfx('click'); bp3RenderMain(); return; }
-  const pg=t.t==='choice'?bp3TileHero(t):t.pg; bp3OpenPage(pg.id);
+  bp3OpenPage(t.pg.id);
 }
 function bp3Sfx(n){ try{ if(typeof SFX!=='undefined'&&SFX[n]&&(typeof _gameSettings==='undefined'||_gameSettings.sfx!==false)) SFX[n](); }catch(e){} }
 function bp3Leave(){ if(_b3.pv){ bp3ClosePage(); return; } showScreen('menu-screen'); }
 // ── the page view ──
 function bp3OpenPage(pid){
   const pg=bp3Cfg().pages.find(p=>p.id===pid); if(!pg) return;
-  _b3.pv=pid; _b3.sub=0; const P=bp3P(); let sel=pg.rewards.findIndex(r=>bp3RewardState(pg,r).s==='ready'); if(sel<0) sel=pg.rewards.findIndex(r=>!P.claimed[r.id]); _b3.sel=Math.max(0,sel); _b3.sub=Math.floor(_b3.sel/6);
+  _b3.pv=pid; _b3.sub=0; const P=bp3P(); let sel=pg.rewards.findIndex(r=>bp3RewardState(pg,r).s==='ready'); if(sel<0) sel=pg.rewards.findIndex(r=>!P.claimed[r.id]); _b3.sel=Math.max(0,sel); _b3.sub=Math.floor(_b3.sel/BP3_PER);
   bp3Sfx('cardFlip'); bp3RenderPage(true);
 }
 function bp3ClosePage(){ _b3.pv=null; const v=document.getElementById('b3-pv'); if(v){ v.classList.remove('open'); v.innerHTML=''; } const tiles=bp3Tiles(); bp3RenderMain(); }
@@ -36379,11 +36383,11 @@ function bp3RenderPage(anim){
   const P=bp3P(); const r=pg.rewards[_b3.sel]||pg.rewards[0]; const st=bp3RewardState(pg,r); const ps=bp3PageState(pg);
   v.style.setProperty('--pc1',pg.c1); v.style.setProperty('--pc2',pg.c2);
   const all=bp3Pages(), idx=all.indexOf(pg);
-  const sel=all.map(p=>{ const s=bp3PageState(p); return `<button type="button" class="b3-av${p.id===pg.id?' on':''}" style="--c1:${p.c1};--c2:${p.c2}" onclick="bp3OpenPage('${p.id}')" title="${bp3Esc(p.name)}"><img src="${p.art}" alt="">${s.open?'':'<span class="lk">🔒</span>'}</button>`; }).join('');
-  const subs=Math.ceil(pg.rewards.length/6); if(_b3.sub>=subs) _b3.sub=0;
-  const row=pg.rewards.slice(_b3.sub*6,_b3.sub*6+6).map((x,k)=>{ const i=_b3.sub*6+k; const s=bp3RewardState(pg,x); const big=i===0&&x.type==='card';
-    return `<button type="button" class="b3-r${big?' big':''}${i===_b3.sel?' on':''}${s.s==='claimed'?' claimed':''}${['locked','pass'].includes(s.s)?' nope':''}" data-r="${x.id}" onclick="bp3Sel(${i})" aria-label="${bp3Esc(bp3Name(x))}">${big?'<span class="rbg"></span>':''}<span class="ri">${bp3Thumb(x,pg,big)}</span>${s.s==='claimed'?'<span class="ok">✓</span>':''}${x.free&&pg.kind==='main'?'<span class="fr b3-f">FREE</span>':''}${['locked','pass'].includes(s.s)?'<span class="lk">🔒</span>':''}</button>`; }).join('');
-  const tags=[]; if(pg.kind==='main') tags.push(r.free?'<span class="b3-tag free b3-f">FREE</span>':'<span class="b3-tag pass b3-f">BATTLE PASS</span>'); if(pg.kind==='choice') tags.push('<span class="b3-tag pass b3-f">CHOOSE A SET</span>'); if(pg.kind==='bonus') tags.push('<span class="b3-tag prem b3-f">PREMIUM · BONUS</span>');
+  const sel=all.map(p=>{ const s=bp3PageState(p); return `<button type="button" class="b3-av${p.id===pg.id?' on':''}" style="--c1:${p.c1};--c2:${p.c2}" onclick="bp3OpenPage('${p.id}')" title="${bp3Esc(p.name)}"><img src="${p.art}" alt="">${s.open?'':`<span class="lk">${s.token?'◆':'🔒'}</span>`}</button>`; }).join('');
+  const subs=Math.ceil(pg.rewards.length/BP3_PER); if(_b3.sub>=subs) _b3.sub=0;
+  const row=pg.rewards.slice(_b3.sub*BP3_PER,_b3.sub*BP3_PER+BP3_PER).map((x,k)=>{ const i=_b3.sub*BP3_PER+k; const s=bp3RewardState(pg,x); const big=i===0&&x.type==='card';
+    return `<button type="button" class="b3-r${big?' big':''}${i===_b3.sel?' on':''}${s.s==='claimed'?' claimed':''}${['locked','pass'].includes(s.s)?' nope':''}" data-r="${x.id}" onclick="bp3Sel(${i})" aria-label="${bp3Esc(bp3Name(x))}">${big?'<span class="rbg"></span>':''}<span class="ri">${bp3Thumb(x,pg,big)}</span>${s.s==='claimed'?'<span class="ok">✓</span>':''}${x.free?'<span class="fr b3-f">FREE</span>':''}${['locked','pass'].includes(s.s)?'<span class="lk">🔒</span>':''}</button>`; }).join('');
+  const tags=[]; if(pg.kind==='bonus') tags.push('<span class="b3-tag prem b3-f">BONUS · BATTLE PASS</span>'); else tags.push(r.free?'<span class="b3-tag free b3-f">FREE</span>':'<span class="b3-tag pass b3-f">BATTLE PASS</span>');
   tags.push(`<span class="b3-tag b3-f">${bp3Esc(pg.short||pg.name)} · ${bp3Claimed(pg)}/${pg.rewards.length}</span>`);
   // right-hand actions
   let act='';
@@ -36393,9 +36397,9 @@ function bp3RenderPage(anim){
     let eq=''; if(r.type==='cosmetic'&&r.cos){ const on=(typeof cosEquipped==='function')&&cosEquipped(r.cos.type)===r.cos.id; eq=`<button type="button" class="b3-btn b3-f" ${on?'disabled':''} onclick="bp3Equip()">${on?'EQUIPPED':'EQUIP'}</button>`; }
     act=`<div class="st ok b3-f b3-i">CLAIMED</div>${view}${eq}`;
   } else if(st.s==='ready') act=`<div class="st go b3-f b3-i">READY TO CLAIM</div><button type="button" class="b3-btn cl b3-f" onclick="bp3Claim('${r.id}')">CLAIM · ★1</button>${view}<div class="why">${bp3Seals()} claim${bp3Seals()===1?'':'s'} left · 1 per level</div>`;
-  else if(st.s==='locked'&&st.choose) act=`<div class="st go b3-f b3-i">CHOOSE A SET</div><button type="button" class="b3-btn cl b3-f" onclick="bp3Choose('${pg.id}')">CHOOSE THIS SET</button>${view}<div class="why">${bp3Esc(st.why)}</div>`;
+  else if(st.s==='locked'&&st.token) act=`<div class="st go b3-f b3-i">UNLOCK THIS SET</div><button type="button" class="b3-btn cl b3-f" onclick="bp3UseTokenAsk('${pg.id}')">UNLOCK · ◆1</button>${view}<div class="why">${bp3Tokens()} token${bp3Tokens()===1?'':'s'} · ${bp3Esc(st.why)}</div>`;
   else if(st.s==='locked'||st.s==='pass'){ const need=st.need||(st.s==='pass'?'battle':null);
-    act=`<div class="st no b3-f b3-i">LOCKED</div>${need&&!bp3Has(need)?`<button type="button" class="b3-btn cl b3-f" onclick="bp3OpenBuy()">${need==='premium'?'GET PREMIUM':'GET THE BATTLE PASS'}</button>`:''}${view}<div class="why">${bp3Esc(st.why)}</div>`; }
+    act=`<div class="st no b3-f b3-i">LOCKED</div>${need&&!bp3Has(need)?`<button type="button" class="b3-btn cl b3-f" onclick="bp3OpenBuy()">GET THE BATTLE PASS</button>`:''}${view}<div class="why">${bp3Esc(st.why)}</div>`; }
   else if(st.s==='seal') act=`<div class="st no b3-f b3-i">LEVEL UP TO CLAIM</div><button type="button" class="b3-btn cl b3-f" onclick="bp3OpenLevels()">BUY LEVELS</button>${view}<div class="why">${bp3Esc(st.why)}</div>`;
   else act=`<div class="st no b3-f b3-i">SEASON ENDED</div>${view}`;
   v.innerHTML=`${bp3Sky()}<div class="b3-sel"><button type="button" class="b3-arrow" ${idx<=0?'disabled':''} onclick="bp3PageStep(-1)" aria-label="Previous page">‹</button><div class="lane">${sel}</div><button type="button" class="b3-arrow" ${idx>=all.length-1?'disabled':''} onclick="bp3PageStep(1)" aria-label="Next page">›</button></div>
@@ -36410,13 +36414,16 @@ function bp3RenderPage(anim){
   try{ const on=v.querySelector('.b3-r.on'), rw=v.querySelector('.b3-rw'); if(on&&rw&&rw.scrollWidth>rw.clientWidth) rw.scrollLeft=Math.max(0,on.offsetLeft-rw.clientWidth/2+on.offsetWidth/2); }catch(e){}
 }
 function bp3Sel(i){ _b3.sel=i; bp3Sfx('click'); bp3RenderPage(); }
-function bp3Sub(d){ const pg=bp3Pages().find(p=>p.id===_b3.pv); if(!pg) return; const subs=Math.ceil(pg.rewards.length/6); _b3.sub=Math.max(0,Math.min(subs-1,_b3.sub+d)); _b3.sel=_b3.sub*6; bp3RenderPage(); }
+function bp3Sub(d){ const pg=bp3Pages().find(p=>p.id===_b3.pv); if(!pg) return; const subs=Math.ceil(pg.rewards.length/BP3_PER); _b3.sub=Math.max(0,Math.min(subs-1,_b3.sub+d)); _b3.sel=_b3.sub*BP3_PER; bp3RenderPage(); }
 function bp3View(){ const pg=bp3Pages().find(p=>p.id===_b3.pv); const r=pg&&pg.rewards[_b3.sel]; if(!r) return;
   if(r.type==='card'&&typeof showFullCard==='function'){ showFullCard(r.cid,null,r.finish||'none'); return; }
   if(r.type==='cosmetic'&&r.cos&&r.cos.img) bp3Dlg(`<h4 class="b3-f b3-i">${bp3Esc(bp3Name(r))}</h4><img src="${r.cos.img}" alt="" style="display:block;max-width:100%;max-height:68vh;margin:0 auto;border-radius:10px">`); }
 function bp3Equip(){ const pg=bp3Pages().find(p=>p.id===_b3.pv); const r=pg&&pg.rewards[_b3.sel]; if(!r||!r.cos) return; if(typeof cosEquip==='function'&&cosEquip(r.cos.id)){ bp3Toast(`Equipped ${bp3Name(r)}`); } bp3RenderPage(); }
-function bp3Choose(pid){ const P=bp3P(); const pg=bp3Pages().find(p=>p.id===pid); if(!pg||P.choice.length) return; if(!confirm(`Choose the ${pg.short||pg.name} Set? The other Set unlocks at LVL ${bp3Has('premium')?bp3Cfg().choiceLevel:bp3Cfg().choiceBothLevel}.`)) return;
-  P.choice.push(pid); saveBPPlayerData(); bp3Sfx('heraldSlam'); bp3RenderPage(); bp3RenderMain(); }
+function bp3UseTokenAsk(pid){ const pg=bp3Pages().find(p=>p.id===pid); if(!pg||bp3Tokens()<1) return;
+  bp3Dlg(`<div style="text-align:center"><div class="b3-tokbig b3-f">◆</div><h4 class="b3-f b3-i">UNLOCK ${bp3Esc((pg.short||pg.name).toUpperCase())}?</h4><p style="font-size:15px;opacity:.9;margin:6px 0 16px">This uses 1 Unlock Token (you have ${bp3Tokens()}). The set stays open for the rest of the season.</p><div style="display:flex;gap:10px;justify-content:center"><button type="button" class="b3-btn lt b3-f" onclick="bp3DlgClose()">NOT YET</button><button type="button" class="b3-btn b3-f" onclick="bp3UseToken('${pid}')">UNLOCK · ◆1</button></div></div>`); }
+async function bp3UseToken(pid){ const P=bp3P(); const pg=bp3Mains().find(p=>p.id===pid); if(!pg||bp3MainOpen(pg)||bp3Tokens()<1) return;
+  P.unlocked.push(pid); try{ await saveBPPlayerData(); }catch(e){} bp3DlgClose(); bp3Sfx('heraldSlam'); bp3Toast(`${pg.short||pg.name}'s set is open!`); bp3RenderMain(); if(_b3.pv) bp3RenderPage(); }
+function bp3Choose(pid){ bp3UseTokenAsk(pid); }
 async function bp3Claim(rid){
   const {pg,r}=bp3Find(rid); if(!pg||!r) return; const st=bp3RewardState(pg,r); if(st.s!=='ready') return;
   const P=bp3P(); P.claimed[rid]=new Date().toISOString();
@@ -36444,30 +36451,24 @@ function bp3Dlg(html){ const d=document.getElementById('b3-dlg'); if(!d) return;
 function bp3DlgClose(){ const d=document.getElementById('b3-dlg'); if(d){ d.classList.remove('open'); d.innerHTML=''; } }
 function bp3Toast(m){ if(typeof spToast==='function') spToast(m,2200); }
 function bp3OpenBuy(){
-  const C=bp3Cfg(), P=bp3P(); const cel=(typeof _celData!=='undefined'&&_celData.celestium)||0; const coin=`<img src="${BP3_CEL}" alt="">`;
-  const hasB=bp3Has('battle'); const premCost=hasB?C.prices.upgrade:C.prices.premium;
-  const both=C.choiceBothLevel, cl=C.choiceLevel;
-  bp3Dlg(`<h4 class="b3-f b3-i">GET THE PASS</h4><div class="b3-offers">
+  const C=bp3Cfg(); const cel=(typeof _celData!=='undefined'&&_celData.celestium)||0; const coin=`<img src="${BP3_CEL}" alt="">`; const M=bp3Mains(), B=C.pages.filter(p=>p.kind==='bonus');
+  const mainN=M.reduce((n,p)=>n+p.rewards.length,0), bonusN=B.reduce((n,p)=>n+p.rewards.length,0), has=bp3Has('battle');
+  bp3Dlg(`<h4 class="b3-f b3-i">GET THE BATTLE PASS</h4><div class="b3-offers one">
     <div class="b3-offer"><b class="b3-f b3-i">BATTLE PASS</b><div class="pr b3-f">${coin}${C.prices.pass.toLocaleString()}</div>
-      <ul><li>Every reward on all ${bp3Mains().length} character pages</li><li>One Choose-a-Set page at LVL ${cl}, both at LVL ${both}</li><li>Claim with the levels you've already earned</li><li>About ${bp3PassCel().toLocaleString()} Celestium back as rewards</li></ul>
-      ${hasB?'<span class="b3-own b3-f">✓ OWNED</span>':`<button type="button" class="b3-btn b3-f" ${cel<C.prices.pass||bp3Ended()?'disabled':''} onclick="bp3Buy('battle')">BUY · ${C.prices.pass.toLocaleString()}</button>`}</div>
-    <div class="b3-offer prem"><b class="b3-f b3-i">PREMIUM PASS</b><div class="pr b3-f">${coin}${premCost.toLocaleString()}${hasB?' <small style="font-size:.5em;opacity:.8">UPGRADE</small>':''}</div>
-      <ul><li>Everything in the Battle Pass</li><li><b>+${C.premiumLevels} levels</b> right away</li><li>Both Choose-a-Set pages at LVL ${cl}</li><li>The Premium-only <b>Bonus Rewards</b> page</li></ul>
-      ${bp3Has('premium')?'<span class="b3-own b3-f">✓ OWNED</span>':`<button type="button" class="b3-btn pk b3-f" ${cel<premCost||bp3Ended()?'disabled':''} onclick="bp3Buy('premium')">${hasB?'UPGRADE':'BUY'} · ${premCost.toLocaleString()}</button>`}</div></div>
+      <ul><li>Every reward on all <b>${M.length} sets</b> (${mainN} rewards, levels 1–${mainN})</li>${bonusN?`<li>The <b>Bonus Rewards</b> — ${bonusN} more once you finish every set (up to LVL ${C.maxTier})</li>`:''}<li>Pick your own order: each set opens with an Unlock Token</li><li>Claim with the levels you've already earned</li><li>About ${bp3PassCel().toLocaleString()} Celestium back as rewards</li></ul>
+      ${has?'<span class="b3-own b3-f">✓ OWNED</span>':`<button type="button" class="b3-btn b3-f" ${cel<C.prices.pass||bp3Ended()?'disabled':''} onclick="bp3Buy('battle')">BUY · ${C.prices.pass.toLocaleString()}</button>`}</div></div>
     <div class="why" style="margin-top:14px;text-align:center;font-size:13px;opacity:.85">You have ${cel.toLocaleString()} Celestium</div>`);
 }
-function bp3PassCel(){ return bp3Mains().reduce((s,p)=>s+p.rewards.filter(r=>r.type==='celestium'&&!r.free).reduce((a,r)=>a+(+r.amount||0),0),0); }
+function bp3PassCel(){ return bp3Cfg().pages.reduce((s,p)=>s+p.rewards.filter(r=>r.type==='celestium'&&!r.free).reduce((a,r)=>a+(+r.amount||0),0),0); }
 async function bp3Buy(kind){
-  const C=bp3Cfg(), P=bp3P(); if(bp3Ended()) return; let cost;
-  if(kind==='battle'){ if(bp3Has('battle')) return; cost=C.prices.pass; }
-  else { if(bp3Has('premium')) return; cost=bp3Has('battle')?C.prices.upgrade:C.prices.premium; }
+  const C=bp3Cfg(), P=bp3P(); if(bp3Ended()||bp3Has('battle')) return; const cost=C.prices.pass;
   if(((_celData&&_celData.celestium)||0)<cost){ bp3Toast('Not enough Celestium.'); return; }
-  _celData.celestium-=cost; try{ _celLog.unshift({amount:-cost,reason:kind==='premium'?'Premium Pass':'Battle Pass',ts:new Date().toISOString()}); }catch(e){}
-  const was=P.pass; P.pass=kind; bp3P(); let gained=0; if(kind==='premium') gained=bp3AddLevels(C.premiumLevels);
+  _celData.celestium-=cost; try{ _celLog.unshift({amount:-cost,reason:'Battle Pass',ts:new Date().toISOString()}); }catch(e){}
+  P.pass='battle'; bp3P();
   try{ await Promise.all([saveCelestium(),saveBPPlayerData()]); }catch(e){}
   if(typeof updateCelDisplay==='function') updateCelDisplay(); if(typeof updateXpHud==='function') updateXpHud();
   bp3DlgClose(); bp3Sfx('win'); renderBattlePass();
-  bp3Dlg(`<div style="text-align:center;padding:10px 0"><div style="font-size:64px">${kind==='premium'?'👑':'🛡'}</div><h4 class="b3-f b3-i" style="font-size:44px">${kind==='premium'?'PREMIUM PASS':'BATTLE PASS'} UNLOCKED</h4><p style="font-size:15px;opacity:.9">${kind==='premium'?(gained?`+${gained} levels · `:'')+'Bonus Rewards and both Sets are yours.':'Every reward on every page can be claimed now.'} You have ${bp3Seals()} claim${bp3Seals()===1?'':'s'} ready.</p><button type="button" class="b3-btn b3-f" onclick="bp3DlgClose()">LET'S GO</button></div>`);
+  bp3Dlg(`<div style="text-align:center;padding:10px 0"><div style="font-size:64px">🛡</div><h4 class="b3-f b3-i" style="font-size:44px">BATTLE PASS UNLOCKED</h4><p style="font-size:15px;opacity:.9">Every reward on every set can be claimed now — finish them all for the Bonus Rewards. You have ${bp3Seals()} claim${bp3Seals()===1?'':'s'} ready.</p><button type="button" class="b3-btn b3-f" onclick="bp3DlgClose()">LET'S GO</button></div>`);
 }
 function bp3AddLevels(n){
   const P=bp3P(), max=bp3Cfg().maxTier, L=bp3Level(), t=Math.min(max,L+n); if(t<=L) return 0;
@@ -36504,8 +36505,8 @@ function bp3Keys(){
     if(e.key==='Escape'){ e.preventDefault(); if(dlg){ if(dlg.id==='b3-qdlg') bp3CloseQuests(); else if(dlg.id==='b3-edit') bp3EditClose(); else bp3DlgClose(); return; } bp3Leave(); return; }
     if(dlg) return;
     if(_b3.pv){ const pg=bp3Pages().find(p=>p.id===_b3.pv); if(!pg) return;
-      if(e.key==='ArrowRight'){ _b3.sel=Math.min(pg.rewards.length-1,_b3.sel+1); _b3.sub=Math.floor(_b3.sel/6); bp3RenderPage(); }
-      else if(e.key==='ArrowLeft'){ _b3.sel=Math.max(0,_b3.sel-1); _b3.sub=Math.floor(_b3.sel/6); bp3RenderPage(); }
+      if(e.key==='ArrowRight'){ _b3.sel=Math.min(pg.rewards.length-1,_b3.sel+1); _b3.sub=Math.floor(_b3.sel/BP3_PER); bp3RenderPage(); }
+      else if(e.key==='ArrowLeft'){ _b3.sel=Math.max(0,_b3.sel-1); _b3.sub=Math.floor(_b3.sel/BP3_PER); bp3RenderPage(); }
       else if(e.key==='PageDown'||e.key===']') bp3PageStep(1); else if(e.key==='PageUp'||e.key==='[') bp3PageStep(-1);
       else if(e.key==='Enter'){ const r=pg.rewards[_b3.sel]; if(r) bp3Claim(r.id); }
       return; }
@@ -36526,7 +36527,7 @@ function showBPLevelUp(newTier,reason){
 }
 async function resetMyBPProgress(){
   if(!isAdmin()) return; if(!confirm('Reset YOUR Battle Pass progress (levels, pass, claims)? Other players are not affected.')) return;
-  _bpPlayerData={xp:0,tier:1,pass:'none',claimed:{},choice:[],hasStandard:false,hasPremium:false,claimedFree:{},claimedStandard:{},claimedPremium:{},seasonId:BP_CONFIG&&BP_CONFIG.seasonId};
+  _bpPlayerData={xp:0,tier:1,pass:'none',claimed:{},unlocked:[],hasStandard:false,hasPremium:false,claimedFree:{},claimedStandard:{},claimedPremium:{},seasonId:BP_CONFIG&&BP_CONFIG.seasonId};
   await saveBPPlayerData(); if(typeof updateXpHud==='function') updateXpHud(); updateBPHudIfVisible(); alert('✓ Your Battle Pass progress was reset.');
 }
 
@@ -36536,7 +36537,7 @@ function openBPEditor(){
   if(!isAdmin()){ alert('Admin only'); return; }
   const C=bp3Cfg(), c=BP_CONFIG||BP_DEFAULT_CONFIG;
   _b3e={seasonId:c.seasonId||'season_1',seasonLabel:C.label,seasonTitle:C.title||'',startDate:c.startDate||null,durationDays:c.durationDays||30,maxTier:C.maxTier,xpPerWin:c.xpPerWin||50,xpPerMatch:c.xpPerMatch||20,
-    theme:Object.assign({},C.theme),prices:Object.assign({},C.prices),premiumLevels:C.premiumLevels,unlockAfter:C.unlockAfter,choiceLevel:C.choiceLevel,choiceBothLevel:C.choiceBothLevel,bonusXpPerSeal:C.bonusXpPerSeal,
+    theme:Object.assign({},C.theme),prices:{pass:C.prices.pass,level:C.prices.level},unlockAfter:C.unlockAfter,tokenLevels:C.tokenLevels.join(', '),bonusXpPerSeal:C.bonusXpPerSeal,
     pages:JSON.parse(JSON.stringify(C.pages)),_open:0,_sid:c.seasonId||'season_1'};
   showScreen('battle-pass-screen'); openBattlePass().then(()=>bp3EditRender());
 }
@@ -36558,18 +36559,17 @@ function bp3EditRender(){
       ${bp3EdIn('seasonTitle','Season name (under BATTLE PASS; blank = the label)')}${bp3EdIn('seasonLabel','Season label (e.g. SEASON 1)')}
       ${bp3EdIn('seasonId','Season ID — changing it starts a NEW season (everyone resets)')}
       ${bp3EdIn('startDate','Start (blank = not started)','datetime-local')}${bp3EdIn('durationDays','Length (days)','number')}
-      ${bp3EdIn('maxTier','Max level','number')}${bp3EdIn('xpPerWin','XP per win','number')}${bp3EdIn('xpPerMatch','XP per match','number')}
-      <h5>PRICES (CELESTIUM)</h5>${bp3EdIn('prices.pass','Battle Pass','number')}${bp3EdIn('prices.premium','Premium Pass (new players)','number')}${bp3EdIn('prices.upgrade','Upgrade Battle → Premium','number')}${bp3EdIn('prices.level','One level','number')}
-      <h5>RULES</h5>${bp3EdIn('premiumLevels','Premium: levels given at once','number')}${bp3EdIn('unlockAfter','Claims on a page to open the next','number')}${bp3EdIn('choiceLevel','Choose-a-Set: one Set at LVL','number')}${bp3EdIn('choiceBothLevel','Choose-a-Set: both Sets at LVL (Battle Pass)','number')}${bp3EdIn('bonusXpPerSeal','XP per extra claim past the max level','number')}
+      ${bp3EdIn('maxTier',`Max level (claiming everything takes ${E.pages.reduce((n,p)=>n+(p.rewards||[]).length,0)})`,'number')}${bp3EdIn('xpPerWin','XP per win','number')}${bp3EdIn('xpPerMatch','XP per match','number')}
+      <h5>PRICES (CELESTIUM)</h5>${bp3EdIn('prices.pass','Battle Pass (one pass — Bonus included)','number')}${bp3EdIn('prices.level','One level','number')}
+      <h5>RULES</h5>${bp3EdIn('unlockAfter','Claims on a set that earn an Unlock Token','number')}${bp3EdIn('tokenLevels','Levels that also give an Unlock Token (comma separated)')}${bp3EdIn('bonusXpPerSeal','XP per extra claim past the max level','number')}
       <h5>MAIN SCREEN COLORS</h5><div class="b3e-cols">${bp3EdIn('theme.sky1','Sky top','color')}${bp3EdIn('theme.sky2','Sky bottom','color')}${bp3EdIn('theme.floor1','Floor light','color')}${bp3EdIn('theme.floor2','Floor dark','color')}</div>
       <h5>SEASON</h5><div class="b3e-acts"><button type="button" onclick="startBPSeasonNow().then(()=>{bp3Reset();renderBattlePass();})">START SEASON NOW</button><button type="button" onclick="endBPSeasonNow().then(()=>{bp3Reset();renderBattlePass();})">END SEASON</button><button type="button" onclick="resetMyBPProgress()">RESET MY PROGRESS</button><button type="button" onclick="bp3EdPlaceholders()">USE PLACEHOLDER PAGES</button></div>
     </section>
-    <section class="b3e-box"><h5>PAGES <small>— the main screen shows main pages in order, then the Choose-a-Set pair, then Bonus</small></h5><div class="b3e-pages">${pageTabs}<button type="button" class="b3e-pt add" onclick="bp3EdAddPage()">＋<b>Add page</b></button></div>
-      ${pg?`<div class="b3e-page"><div class="b3e-row3">${bp3EdSel('pages.'+E._open+'.kind','Kind',[['main','Main page'],['choice','Choose-a-Set'],['bonus','Bonus (Premium)']],true)}${bp3EdIn('pages.'+E._open+'.name','Name')}${bp3EdIn('pages.'+E._open+'.short','Short name')}</div>
+    <section class="b3e-box"><h5>PAGES <small>— Sets in order (the first one is open; players open the rest with Unlock Tokens, in any order), then Bonus (opens when every set is claimed). 10 rewards a set = 2 rows of 5.</small></h5><div class="b3e-pages">${pageTabs}<button type="button" class="b3e-pt add" onclick="bp3EdAddPage()">＋<b>Add page</b></button></div>
+      ${pg?`<div class="b3e-page"><div class="b3e-row3">${bp3EdSel('pages.'+E._open+'.kind','Kind',[['main','Set'],['bonus','Bonus (after every set)']],true)}${bp3EdIn('pages.'+E._open+'.name','Name')}${bp3EdIn('pages.'+E._open+'.short','Short name')}</div>
         <div class="b3e-row3">${bp3EdIn('pages.'+E._open+'.art','Character cut-out (transparent PNG/WebP link)','url',' data-re="1"')}${bp3EdIn('pages.'+E._open+'.c1','Color dark','color',' data-re="1"')}${bp3EdIn('pages.'+E._open+'.c2','Color light','color',' data-re="1"')}</div>
-        ${pg.kind==='main'?`<div class="b3e-row3">${bp3EdIn('pages.'+E._open+'.gate','Opens anyway at LVL (free players)','number')}</div>`:''}
         <div class="b3e-pacts"><button type="button" onclick="bp3EdMovePage(-1)">◀ MOVE</button><button type="button" onclick="bp3EdMovePage(1)">MOVE ▶</button><button type="button" class="del" onclick="bp3EdDelPage()">DELETE PAGE</button></div>
-        <h5>REWARDS <small>— ${pg.rewards.length}; the first one is the big headline tile</small></h5><div class="b3e-rws">${rw}</div><button type="button" class="b3e-add" onclick="bp3EdAddReward()">＋ ADD REWARD</button></div>`:'<p>No pages.</p>'}
+        <h5>REWARDS <small>— ${pg.rewards.length} (${Math.ceil(pg.rewards.length/5)} row${Math.ceil(pg.rewards.length/5)===1?'':'s'} of 5); the first one is the big headline tile</small></h5><div class="b3e-rws">${rw}</div><button type="button" class="b3e-add" onclick="bp3EdAddReward()">＋ ADD REWARD</button></div>`:'<p>No pages.</p>'}
     </section></div>
     <datalist id="b3e-cids">${Object.keys(DB).filter(id=>DB[id]&&!DB[id].isToken&&DB[id].type!=='system').map(id=>`<option value="${id}">${bp3Esc(DB[id].name)}</option>`).join('')}</datalist></div>`;
   e.classList.add('open');
@@ -36597,7 +36597,7 @@ function bp3EdMoveRw(i,d){ const R=_b3e.pages[_b3e._open].rewards; const j=i+d; 
 function bp3EdAddPage(){ const id='pg'+Date.now().toString(36); _b3e.pages.push({id,kind:'main',name:'New page',short:'New',art:'',c1:'#1e3a8a',c2:'#60a5fa',gate:0,rewards:[{id:id+'_1',type:'celestium',amount:100}]}); _b3e._open=_b3e.pages.length-1; bp3EditRender(); }
 function bp3EdDelPage(){ if(!confirm('Delete this page and its rewards?')) return; _b3e.pages.splice(_b3e._open,1); _b3e._open=Math.max(0,_b3e._open-1); bp3EditRender(); }
 function bp3EdMovePage(d){ const P=_b3e.pages, i=_b3e._open, j=i+d; if(j<0||j>=P.length) return; [P[i],P[j]]=[P[j],P[i]]; _b3e._open=j; bp3EditRender(); }
-function bp3EdPlaceholders(){ if(!confirm('Replace every page with the placeholder pages?')) return; bp3Defaults._c=null; _b3e.pages=JSON.parse(JSON.stringify(bp3Defaults().pages)); _b3e._open=0; bp3EditRender(); }
+function bp3EdPlaceholders(){ if(!confirm('Replace every page with the placeholder pages?')) return; bp3Defaults._c=null; _b3e.pages=JSON.parse(JSON.stringify(bp3Defaults().pages)); _b3e.maxTier=_b3e.pages.reduce((n,p)=>n+p.rewards.length,0); _b3e.unlockAfter=bp3Defaults().unlockAfter; _b3e.tokenLevels=bp3Defaults().tokenLevels.join(', '); _b3e._open=0; bp3EditRender(); }
 function bp3EdBuild(){
   const E=_b3e, errs=[]; const ids=new Set();
   E.pages.forEach(p=>{ if(!p.rewards||!p.rewards.length) errs.push(`Page "${p.name}" has no rewards.`);
@@ -36606,9 +36606,11 @@ function bp3EdBuild(){
       if(r.type==='cosmetic'){ r.cos=r.cos||{}; if(!r.cos.id) r.cos.id='bp_'+E.seasonId+'_'+r.id; if(!r.cos.name) r.cos.name=bp3Name(r); if(r.cos.type==='frame'&&r.cos.ring&&!r.cos.ring[1]) r.cos.ring[1]=(r.cos.ring[0]||'#e8c570')+'88'; if(r.cos.type==='entrance'&&!r.cos.glow) r.cos.glow=(r.cos.c||'#e8c570')+'99'; }
       if(['celestium','shards','pack'].includes(r.type)) r.amount=Math.max(1,+r.amount||1);
       if(r.type!=='cosmetic') delete r.cos; ['name','desc'].forEach(k=>{ if(r[k]==='') delete r[k]; }); }); });
-  const out=Object.assign({},BP_CONFIG||BP_DEFAULT_CONFIG,{seasonId:E.seasonId,seasonLabel:E.seasonLabel,seasonTitle:E.seasonTitle,startDate:E.startDate,durationDays:+E.durationDays||30,maxTier:+E.maxTier||50,
-    xpPerWin:+E.xpPerWin||50,xpPerMatch:+E.xpPerMatch||20,theme:E.theme,prices:{pass:+E.prices.pass||0,premium:+E.prices.premium||0,upgrade:+E.prices.upgrade||0,level:+E.prices.level||0},
-    premiumLevels:+E.premiumLevels||0,unlockAfter:+E.unlockAfter||1,choiceLevel:+E.choiceLevel||1,choiceBothLevel:+E.choiceBothLevel||1,bonusXpPerSeal:+E.bonusXpPerSeal||1500,pages:E.pages});
+  const out=Object.assign({},BP_CONFIG||BP_DEFAULT_CONFIG,{seasonId:E.seasonId,seasonLabel:E.seasonLabel,seasonTitle:E.seasonTitle,startDate:E.startDate,durationDays:+E.durationDays||30,maxTier:+E.maxTier||E.pages.reduce((n,p)=>n+(p.rewards||[]).length,0)||50,
+    xpPerWin:+E.xpPerWin||50,xpPerMatch:+E.xpPerMatch||20,theme:E.theme,prices:{pass:+E.prices.pass||0,level:+E.prices.level||0},
+    unlockAfter:+E.unlockAfter||1,tokenLevels:String(E.tokenLevels||'').split(',').map(x=>Math.round(+x)).filter(x=>x>0).sort((a,b)=>a-b),bonusXpPerSeal:+E.bonusXpPerSeal||1500,pages:E.pages.map(p=>p.kind==='choice'?Object.assign(p,{kind:'main'}):p)});
+  ['premiumLevels','choiceLevel','choiceBothLevel'].forEach(k=>delete out[k]);
+  if(!E.pages.filter(p=>p.kind==='main').length) errs.push('Add at least one Set (kind: Set).');
   if(out.ended&&E.startDate&&Date.now()<new Date(E.startDate).getTime()+out.durationDays*864e5) delete out.ended;
   return {out,errs};
 }
@@ -36735,8 +36737,7 @@ function mkOffer(key){
   if(kind==='card'){ const c=DB[a]; if(!c) return null; const r=getRarity(a), C=mkCfg(); const rd=RARITY_DEFS[r]||RARITY_DEFS.common; const base=C.singlesPrice[r]||C.singlesPrice.common;
     return {key,kind,cid:a,c,name:c.name,rarity:r,tierLabel:rd.label,tc:rd.hex,glow:rd.glow,type:'SINGLE CARD · '+rd.label,desc:((typeof setLabel==='function'&&setLabel(getCardSet(a)))||'')+' · You own '+((_collection&&_collection[a])||0),price:base,was:0,pct:0}; }
   if(kind==='bp'){ const ok=typeof bp3Cfg==='function'; const C=ok?bp3Cfg():null; if(!C) return null; const P=C.prices||{};
-    if(a==='battle') return {key,kind,bp:a,name:'Battle Pass',type:'PASS · '+C.label,price:P.pass||0,owned:bp3Has('battle'),desc:'Every reward on all '+bp3Mains().length+' character pages, plus a Choose-a-Set page.'};
-    if(a==='premium'){ const up=bp3Has('battle'); return {key,kind,bp:a,name:'Premium Pass',type:'PASS · '+C.label,price:up?(P.upgrade||0):(P.premium||0),upgrade:up,owned:bp3Has('premium'),desc:'Everything in the Battle Pass, +'+C.premiumLevels+' levels right away, both Choose-a-Set pages and the Bonus page.'}; }
+    if(a==='battle'){ const M=bp3Mains(), bn=C.pages.filter(p=>p.kind==='bonus').reduce((n,p)=>n+p.rewards.length,0); return {key,kind,bp:a,name:'Battle Pass',type:'PASS · '+C.label,price:P.pass||0,owned:bp3Has('battle'),desc:'Every reward on all '+M.length+' sets'+(bn?', then '+bn+' Bonus Rewards':'')+'. You pick the order of the sets.'}; }
     if(a==='levels') return {key,kind,bp:a,name:'Battle Pass Levels',type:'LEVELS',price:P.level||150,desc:'Buy levels to reach rewards sooner. '+mkN(P.level||150)+' Celestium each.'}; }
   return null;
 }
@@ -36767,7 +36768,6 @@ function mkArt(o){
   if(o.kind==='card'){ const u=getImg(o.cid); return u?`<img class="mk-a-card" src="${u}" alt="" loading="lazy" draggable="false">`:`<div class="mk-a-big">${mkEsc(o.c.sym||'?')}</div>`; }
   if(o.kind==='bp'){ const pages=(typeof bp3Cfg==='function'?bp3Cfg().pages:[])||[]; const art=(pg)=>pg&&pg.art?`<img class="mk-a-cut" src="${pg.art}" alt="" loading="lazy" draggable="false">`:'';
     if(o.bp==='battle') return art(pages[0])+`<div class="mk-a-big">BATTLE PASS<small>${mkEsc(bp3Cfg().label)}</small></div>`;
-    if(o.bp==='premium') return art(pages.find(p=>p.kind==='bonus')||pages[1])+`<div class="mk-a-big">PREMIUM<small>+${bp3Cfg().premiumLevels} LEVELS</small></div>`;
     return `<div class="mk-a-big">+LVL<small>LEVELS</small></div>`; }
   return '';
 }
@@ -36838,7 +36838,7 @@ function mkBuildSections(){
     S.vault={id:'vault',name:mkSecName('vault'),sub:'The Vault · '+((typeof setLabel==='function'&&setLabel(sid))||''),html:`<header class="mk-sh"><h2 class="mk-f mk-i">${mkEsc(mkSecName('vault'))}</h2><span class="mk-sub">THE VAULT · ${mkEsc(((typeof setLabel==='function'&&setLabel(sid))||'').toUpperCase())}</span></header>${chips}${g}${ig}`}; }
   // battle pass
   if(typeof isFeatureEnabled==='function'&&isFeatureEnabled('battle_pass_enabled')&&typeof bp3Cfg==='function'){
-    const t=[mkTile('bp:battle',{w2:1,tags:bp3Has('battle')?[]:[['SEASON','p']]}),bp3Has('premium')?'':mkTile('bp:premium',{tags:[['+LEVELS','y']]}),mkTile('bp:levels')].join('');
+    const t=[mkTile('bp:battle',{w2:1,tags:bp3Has('battle')?[]:[['SEASON','p']]}),mkTile('bp:levels')].join('');
     S.pass={id:'pass',name:mkSecName('pass'),sub:bp3Cfg().label,html:`<header class="mk-sh"><h2 class="mk-f mk-i">${mkEsc(mkSecName('pass'))}</h2><span class="mk-sub">${mkEsc(bp3Cfg().label)}${bp3Cfg().title?' · '+mkEsc(bp3Cfg().title):''}</span></header><div class="mk-grid">${t}</div>`}; }
   // daily singles
   { const cs=mkSingles(D); if(cs.length) S.singles={id:'singles',name:mkSecName('singles'),sub:'New cards every day',html:`<header class="mk-sh"><h2 class="mk-f mk-i">${mkEsc(mkSecName('singles'))}</h2><span class="mk-sub">NEW CARDS EVERY DAY · <b class="mk-tmx">${mkFmtLeft()}</b></span></header><div class="mk-grid">${cs.map(cid=>mkTile('card:'+cid)).join('')}</div>`}; }
@@ -37028,7 +37028,7 @@ function mkPvVisual(o){
   if(o.kind==='box'){ const u=mkPackArt(o.setId), prem=o.tier==='premium'; const pk=`<i class="pk" style="background-image:url('${u}');background-size:auto 100%"></i>`;
     return `<div class="mk-spinz" id="mk-spin"><div class="mk-3db${prem?' prem':''}" id="mk-3d"><i class="k"></i><i class="l"></i><i class="r"></i><i class="t"></i><i class="f"><span class="bl">${prem?'PREMIUM BOX':'BOOSTER BOX'} · ${BOX_PACKS}</span>${pk}${pk}${pk}</i></div></div>`; }
   if(o.kind==='bp'){ const pages=bp3Cfg().pages||[]; if(o.bp==='levels') return `<div class="mk-pvlv">+LVL<small>BATTLE PASS LEVELS</small></div>`;
-    const pg=o.bp==='premium'?(pages.find(p=>p.kind==='bonus')||pages[1]):pages[0]; return `<div class="mk-pvpass">${pg&&pg.art?`<img src="${pg.art}" alt="" draggable="false">`:''}</div>`; }
+    const pg=pages[0]; return `<div class="mk-pvpass">${pg&&pg.art?`<img src="${pg.art}" alt="" draggable="false">`:''}</div>`; }
   return '';
 }
 function mkRotMeta(o){
