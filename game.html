@@ -6935,6 +6935,19 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 .pr-note:empty{display:none}
 .sp-allow input{accent-color:#c79a3a;width:14px;height:14px;margin:0}
 .sp-allow small{color:#6b7280;font-size:9px}
+/* ═══ COURT FORGE ✦ INFUSE (build 10.18) ═══ */
+.fg-modes button.on[data-fgm="infuse"]{color:#e6fbff;border-color:rgba(125,211,252,.75);background:linear-gradient(135deg,rgba(56,189,248,.28),rgba(14,9,26,.85) 70%);box-shadow:inset 0 -2px 0 #7dd3fc}
+#forge-screen[data-mode="infuse"] .fg-glow{background:radial-gradient(closest-side,rgba(125,211,252,.5),transparent)}
+.fg-frow.inf{grid-template-columns:auto auto auto 1fr;gap:4px 10px}
+.fg-frow.inf .fg-inf{justify-self:end}
+.fg-inf-arrow{color:#cfc6dc;font-weight:800}
+.fg-inf{border:0;border-radius:8px;padding:6px 12px;font:800 12px 'Segoe UI',sans-serif;letter-spacing:.06em;cursor:pointer;color:#06202c;background:linear-gradient(135deg,#a5f3fc,#7dd3fc 55%,#c4b5fd);box-shadow:0 0 14px rgba(125,211,252,.45);display:inline-flex;align-items:center;gap:6px}
+.fg-inf:disabled{opacity:.45;cursor:default;box-shadow:none}
+.fg-inf *{color:#06202c!important;text-shadow:none!important}
+.fg-inf-w{grid-column:1/-1;color:#fbbf24}
+.fg-big.holo-card,.fx-card.holo-card{position:relative}
+.fx-card.holo-card{position:absolute}
+.fg-fxl.infuse .fx-txt b{background:linear-gradient(180deg,#fff,var(--rc));-webkit-background-clip:text;background-clip:text;color:transparent}
 /* ═══ THE COURT MARKET (build 10.18) — the shop: section rail, themed sections, tiles, a live showcase on the right ═══ */
 #market-screen.mks{padding:0!important;max-width:none!important;margin:0!important}
 #market-screen.mks.active{display:block}
@@ -9603,6 +9616,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
     <nav class="fg-modes" role="tablist" aria-label="Forge mode">
       <button type="button" role="tab" data-fgm="forge" class="on" onclick="fgMode('forge')"><i>🔨</i><span>FORGE<small>Spend shards on a card</small></span></button>
       <button type="button" role="tab" data-fgm="shatter" onclick="fgMode('shatter')"><i>💥</i><span>SHATTER<small>Break cards into shards</small></span></button>
+      <button type="button" role="tab" data-fgm="infuse" onclick="fgMode('infuse')"><i>✦</i><span>INFUSE<small>Raise a copy's holo finish</small></span></button>
       <button type="button" class="fg-extras" onclick="craftOpenExtras()"><i>⚡</i><span>BREAK EXTRAS<small id="fg-ext-sub">Everything over a playset</small></span></button>
     </nav>
     <div class="fg-main">
@@ -9801,6 +9815,7 @@ const GODOT_SYNC=[
       "CELESTIAL SURGE (Virora Surfacer MUI, activated): 5 Energy (her color, Purple), once per turn, paid → doesn't tap. openEnemyTargetPicker over every opposing character (2v2: both enemies' fields) → dealDamage 5 (Nullify applies). If that target left the field, a second picker: Freeze another opposing character that isn't already Frozen (STATUS_META.freeze.dur); none left → log only. AI picks both targets itself (aiPickEnemyTarget). No opposing characters → the ability is refunded (_abilityUndo) and not used.",
       "SILENT HORIZON (Virora Surfacer MUI, activated): 4 Energy, ONCE PER GAME (limit 'once_per_game' — the lock survives the per-turn reset), paid → doesn't tap. Freezes every opposing character (2v2: both enemies). No opposing characters → refunded, not spent. AI: only uses it when 2+ enemies that aren't Frozen / Vortex Shielded would be hit (score 10 + 5 per enemy + 3 per enemy that could attack next turn)."],
     screens:[
+      "SAME BUILD 10.18 — COURT FORGE ✦ INFUSE + BATTLE PASS CARDS. The Forge has a third mode button '✦ INFUSE · Raise a copy's holo finish' (cyan). INFUSE: tiles = cards you own that aren't basic Energy/tokens and still have a copy below Ruby (shown in their best finish with a finish tag; foot = cheapest step cost + ×copies); 'Ready to infuse' filter; count line 'n CARDS · m READY TO INFUSE'. Anvil: the card in its best finish, then one row per finish you own: '<Finish> ×n → <next finish>' + a '✦ cost' button (disabled when short; Ruby row = 'the top finish'); a ⚠ line when a saved deck uses that finish and you'd drop below it. Ladder: none → reverse → classic → cosmic → gold → ruby (one step per infuse). Cost = round(base × infuse[target] / 10) × 10, min 10; base = the rarity's craft cost, or the Herald craft cost for Heralds, or break × 8 when the craft cost is 0 (Secret Rares). Default multipliers: reverse .5, classic .75, cosmic 1, gold 1.5, ruby 2.5. Doing it: −cost shards; removeVariantFromCollection(cid,from,1); addVariantToCollection(cid,to,1); recompute holo_owned; save collection, collection_foil, holo_owned, court_shards. Cinematic 'INFUSED' (like FORGED, tinted the new finish's colour, the card shown with that holo; animations off → toast). BATTLE PASS CARDS: a card whose set id is bp<n> (bp1, bp2…), or an exclusive card that is a card reward in the Battle Pass config. In craftCheck BEFORE the exclusive check: if you own 0 → 'Claim it from the Battle Pass first — then you can forge more copies.'; playset full → as usual; cost = base × passMult (default 2), rounded to 10; no pack-pool / Sighted checks. Owned pass cards appear in FORGE mode for their set / All sets. bp<n> sets never sell as packs (purchasableSets skips them). Config app_settings 'crafting' gains infuse {reverse,classic,cosmic,gold,ruby}, infuseOn (default true), passMult (default 2); the admin Crafting rates window has the five ✦ Infuse boxes, an 'Infusing is on' box and '🎟 Battle Pass cards: craft cost ×'.",
       "SAME BUILD 10.18 — THE COURT MARKET (the shop, rebuilt; still behind feature_flags.shop_enabled). Main menu cards are unchanged: SHOP → Booster Packs / Single Cards / Cosmetics / Events open the Market at the Booster Packs / Daily Singles / first collection / Events section; LOCKER → Loadout opens the old cosmetics grid as a Loadout (owned items only, no buying, '🏪 THE MARKET' chip). Anything that called openShop now opens the Market. LAYOUT on a 16:9 stage that scales with the window (unit u = min(1vw, 1.78vh); phones in portrait: section chips across the top, 2-column tiles, the showcase becomes a bottom sheet). Fonts: Anton for headings (uppercase italic). LEFT: a ☰ button + a vertical rail of ◆ dots (one per section, current one bright); ☰ / Tab opens the SECTIONS list (name + a small line), which slides the tiles right and hides the showcase. CENTRE: one scrolling column of sections. Each section repaints the whole screen as it scrolls into view (top of the section above 38% of the column): a backdrop image (cross-fade), a colour wash from the section's two colours (dark on the left), a thin gilded diagonal band, a faint slowly turning crest ring, drifting motes. Section header = big italic title + a small caps line. Tiles: 4 columns, 14.2u tall, wide tiles span 2 columns, pack tiles span 2 rows; tile colour = rarity for daily cosmetics (common slate, rare blue, legendary orange) or the section colours; art (card back tilted, playmat as cover, avatar with ring/frame, name plate, glowing title text, entrance icon with pulse rings, card, floating pack, fanned packs + '36 PACKS'); name + Celestium price (sale: old price struck through) or green OWNED; tags top-left (SAVE n, LAST DAY, ALWAYS HERE, BEST ODDS, 10% OFF, SEASON, +LEVELS); a crimson wax seal with gold rim 'n% OFF' top-right on sales; legendary/collection tiles get a slow rainbow edge; a foil sheen follows the pointer. Click = select (white outline, slight zoom, an info strip slides up: 'CARD BACK · LEGENDARY'); click the selected tile again / Enter = buy. Arrows move the selection, PageUp/PageDown jump sections, Esc closes dialog → list → sheet → leaves. COLLECTION sections open with a landing: pill ('IN THE MARKET · n MORE DAYS' / 'LAST DAY' / '★ TODAY'S FEATURED'), the set name huge, 'n-ITEM SET', item icons, VIEW SET + price with the struck full price, a bouncing ⌄; then a wide set tile + one tile per piece. Backdrop = the set's playmat. RIGHT: the SHOWCASE of the selected tile — card back as a big 3D card that tilts with the pointer; playmat as a tilted board with your card back on it; set = board + standing back; frame = big avatar with the ring/frame; plate/title = your name plate with the title; entrance = your Herald card popping in over spinning rays in its colours; single = the card with tilt; packs = a 3D pack you drag to spin (back face: LORD OF COURTS · set · 10 CARDS…; premium = gold sheen + PREMIUM ribbon); box = a 3D box (gold band 'BOOSTER BOX · 36', three packs on the front). Under it a glass info card (gold hairline): type · tier, name, text, rotation line ('LEAVES IN 5H 12M' / 'LEAVES IN 2 DAYS' / 'LEAVES TONIGHT' / 'ALWAYS IN THE MARKET' + 'LAST SEEN n DAYS AGO' / 'FIRST TIME IN THE MARKET'), price and BUY / EQUIP / ✓ EQUIPPED; packs: AMOUNT buttons (packQty, default 1/5/10), total, BUY & OPEN, BUY & STORE, VIEW ODDS (see data); Your Packs: OPEN ONE / OPEN ALL n; Battle Pass tiles: OPEN THE PASS + GET IT / UPGRADE / BUY LEVELS (open the pass screen and its buy / levels dialog). TOP-RIGHT: 'THE MARKET TURNS IN hh:mm:ss' + your Celestium. BOTTOM-RIGHT: 🎒 MY LOCKER (→ Loadout), ABOUT THE MARKET, ✎ MARKET EDITOR (admin), ESC BACK. BUY dialog: thumbnail, PRICE / YOUR CELESTIUM / AFTER (red 'NOT ENOUGH'), CANCEL + 'BUY · n' ('BUY & OPEN · n' / 'BUY & STORE · n'). Then 'ACQUIRED!' + sparks: cosmetics DONE / EQUIP NOW (no auto-equip), sets EQUIP SET, packs stored: LATER / OPEN ALL n / OPEN ONE NOW; BUY & OPEN goes straight to the pack opening; a single goes straight to its reveal. SECTIONS (default order, editable): Featured (only when the daily featured pick is an item — a landing like a collection's), Booster Packs ('THE VAULT · <SET>', set chips when more than one set sells, Basic + Premium tall tiles, Booster Box + Premium Booster Box wide tiles, then 'YOUR PACKS · n UNOPENED' with one tile per stored pack kind), Battle Pass (when battle_pass_enabled: Battle Pass wide tile with the first page's cut-out, Premium Pass with the bonus page's cut-out, Levels), Daily Singles, Collections (each collection in the Market is its own section; a featured collection goes first of everything), Card Backs, Playmats, Frames & Plates, Titles, Herald Entrances (the day's rotating items by type; empty sections are skipped), Events (when events_enabled: 'No events are running right now…'). Admin: Admin → Market Editor tile, or the ✎ button.",
       "COURT MARKET DATA. app_settings 'shop_config' (missing keys → defaults): dailySlots 10, featuredCount 2, featuredStay 3 (days), singlesCount 8, dailyFeatured true, showOdds false, singlesPrice {common 200, uncommon 400, rare 900, legend 1800, mythic 3500, secret 6000}, packQty [1,5,10] (max 4, 1–99), pinned [ids always in], hidden [ids never in], sales {id:{pct 1–90, until ISO or ''}} (ids = a cosmetic id, a set id, 'pack_basic','pack_premium','box_basic','box_premium'), sections {sectionId or setId:{name,art,c1,c2}}, order [section ids], setArt {setId:{pack:url}}. ROTATION — identical on web and PC, everyone sees the same Market: D = floor(unixMs / 86400000) (turns at 00:00 UTC). hash = FNV-1a 32 (h=0x811c9dc5; per UTF-16 unit: h^=c; h=imul(h,0x01000193)>>>0). rng = mulberry32(seed) (a+=0x6D2B79F5; t=a; t=imul(t^(t>>>15),t|1); t^=t+imul(t^(t>>>7),t|61); return ((t^(t>>>14))>>>0)/2^32). shuffle(list,seedStr): copy, sort ascending (string order), Fisher-Yates from the end with j=floor(rng()*(i+1)), rng seeded with hash(seedStr). Cosmetic pool = catalog items not free, tier not default/exclusive, no unlock rule, not a Battle Pass item, not starter, price > 0, not hidden. Set pool = COS_SETS (with ≥2 existing items) not hidden whose items are all buyable that way. Pinned sets are always collections (left 0 = always). Rotating sets: order = shuffle(rotating set ids,'mk-col'); fc = min(featuredCount, count); for k in 0..fc-1: w = floor((D+k)/featuredStay); idx = ((w*fc+k) mod n + n) mod n; skip forward past sets already chosen; daysLeft = featuredStay − ((D+k) mod featuredStay) (1 = LAST DAY / LEAVES TONIGHT). Collection items = every item of those sets. Pinned items (not in a collection) always show. Daily = shuffle(pool minus collection items minus pinned,'mk-day-'+D) first dailySlots. Featured (dailyFeatured): candidates = rotating collections as 'set:<id>' + daily legendary items as 'cos:<id>' (if none: all daily items); pick = shuffle(candidates,'mk-feat-'+D)[0]. LAST SEEN = the most recent earlier day (up to 120 back) whose rotation has the item. Daily Singles = shuffle(cards: not exclusive/token/system/transformOnly/Herald/basic Energy, not hidden or switched off, has a set, not promo, rarity not secret,'mk-singles-'+D) first singlesCount; price = singlesPrice[rarity]; buying adds a Regular copy (no limit). PRICES: cosmetic = its price; set = today's set price for the pieces you're missing (as before), struck price = those pieces bought one by one; pack = PACK_COSTS (basic 300, premium 850) each; box = 36 packs at 10% off (struck = full); a sale: round(base × (100 − pct)/100 / 10) × 10. Buying packs: pay amount × each, grant that many to Your Packs (pack_inventory), then BUY & OPEN opens one from Your Packs. Buying a box grants 36 packs. Cosmetics are no longer auto-equipped on purchase. ODDS dialog (VIEW ODDS: players only when showOdds; admins always, marked admin-only) shows the generatePack weights as % — slot 9 Reverse Holo rarity, slot 10 Rare+ (Herald weight folds into Mythic when the set has no Herald; Secret only when the set has one), slot-10 holo chance 30% basic / 45% premium (Heralds half), and the holo finish weights. MARKET EDITOR (admin): tabs Rotation (the numbers, Daily Featured + Show pack odds switches, singles prices, pack amounts, ◀ DAY ▶ preview of other days — local only — and that day's list), Sales (rows: item, % off, end date; + ADD SALE), Items (each set/cosmetic: Rotates / Always in the Market / Never in the Market), Sections (order ▲▼; per section and per collection: name, art URL, two colours, RESET), Packs (pack art per set). PREVIEW applies only for you; SAVE FOR EVERYONE writes app_settings 'shop_config'. ASSETS (scans repo): Market/Backdrops/<featured|vault|singles|backs|mats|frames|titles|entrances|events|set_<id>>.webp (1920×1080 backdrops; the collections use their playmats), Market/Thumbs/<back_*|mat_*>.webp (small tile art), Market/Thumbs/pack_base_set.webp (the Base Set pack, trimmed to the pack, 601×1012).",
       "SAME BUILD 10.18 — PACK OPENING v2 (replaces the pack-open modal everywhere: Market, Your Packs, rewards, codes). Full screen: dark radial glow in the pack colour (violet, premium gold, red if a Secret Rare is inside), slow spinning rays, motes; header '<SET>' + pack name; ✕ top-right. THE PACK floats big in the middle (trimmed art, premium = gold glow + gold sheen), a dashed tear line with a ✂ sliding across the top (10.5% down), hint 'TAP TO OPEN · OR DRAG ACROSS THE TOP TO TEAR IT'. TAP (or Enter/Space): it CHARGES for 1.15 s — shakes harder and harder, glowing the colour of the best card inside (rare blue, legend purple, mythic gold, secret red, else pale violet), light cracks draw across it, rising tone — then BURSTS: flash, 16 shards of the pack art fly out, a shockwave ring. DRAG across the top strip (start in the top 27%, mostly sideways, either direction): a glowing seam follows your finger with a spark at the tip and little rip sounds, the top flap lifts and bends; let go before 60% and it settles back; at 60% on release (or 97% while dragging) it TEARS: the flap flies off, light pours out of the opening, the cards rise out. Dragging lower on the pack just tilts it. THE CARDS come out face-down with YOUR equipped card back, each glowing its rarity (common faint, uncommon green, rare blue, legend purple pulsing, mythic gold pulsing, secret red pulsing + trembling; holos get a spinning rainbow edge, reverse holos a violet-blue sheen). FAN mode (default): all cards spread in rows sized to the screen; tap any to flip (3D); a Legend/Mythic/Secret flips into a TAKEOVER — the card big with pointer tilt and holo, spinning rays in its colour, the rarity huge in Anton, the name, NEW + the finish, 'TAP TO CONTINUE'. FLIP ALL flips the rest quickly (no takeovers). ONE BY ONE (Settings → Pack Reveal): a stack in the middle; tap = flip the top card, tap again = it slides into a tray along the bottom; REVEAL ALL. A single card (a Daily Single) is revealed on its own, big. When everything is face-up: rarity chips (SECRET RARE / MYTHIC / LEGEND / RARE / UNCOMMON / COMMON / ✦ HOLO / ✦ REV HOLO / NEW), tap a card for its full view, then OPEN NEXT · n LEFT + OPEN ALL n (when you have more of that pack stored) or BUY ANOTHER · price (sale price), and DONE. OPEN ALL (on the pack screen when more of the same pack are stored, after a pack, or from Your Packs in the Market): opens them all at once — one charge/tear, then a sorted grid of every card (rarest and holos first) cascading in with the same chips. Boxes open the same way. Settings: new row 'Pack Reveal' — Fan / One by one (_gameSettings.packReveal 'fan'|'stack'). Animations off → no charge/shards, straight to the cards. Esc: closes a takeover, flips everything during a reveal, else closes.",
@@ -24681,7 +24696,7 @@ function showRulesScreen(){
     <b style="color:#c8a0ff">Spectating:</b> 👁 Online lobby → Watch Live Matches (or 👁 WATCH on a friend). Spectators see the board, Energy and every card played — never anyone's hand. The host can turn spectators off in the waiting room.<br>
     <b style="color:#c8a0ff">Rooms:</b> 👥 Up to 8 people. Two play while the rest watch live; the winner stays on until they lose and the loser goes to the back of the line. Pick 🎮 Get in line or 👁 Just watch. Both players press READY before every match — with nobody else in line, that's your rematch. People who aren't playing can bet Celestium on the next match (same unlock as wagers): if your player wins you get your bet back plus your share of the other side's bets, minus a 5% house cut.<br>
     <b style="color:#c8a0ff">Wagers:</b> ⚖ Optional, online 1v1 only, set up in the waiting room. Unlocks at Level 10 + 20 online matches. Stake up to 5,000 Celestium and any sealed packs or boxes; both players accept, then the host starts. The winner gets their stake back, the other player's Celestium minus a 5% house cut, and every pack. Up to 50,000 Celestium of winnings a day. Leaving or forfeiting loses the wager.<br>
-    ${(typeof craftOn==='function'&&craftOn())?'<b style="color:#c8a0ff">Court Shards:</b> 🔨 Break cards you don\'t need into Court Shards and craft the card you want (Regular finish) — COURT → Court Forge, or 🔨 CRAFTABLE in the Deck Builder. Holos break for more. Promos, exclusives, basic Energy and Secret Rares can\'t be crafted; crafting stops at a playset (4, Heralds 1). Heralds cost '+csFmt(craftCfg().heraldCost)+' to craft. 💥 Break extras breaks everything over a playset your decks don\'t use.<br>':''}
+    ${(typeof craftOn==='function'&&craftOn())?'<b style="color:#c8a0ff">Court Shards:</b> 🔨 Break cards you don\'t need into Court Shards and craft the card you want (Regular finish) — COURT → Court Forge, or 🔨 CRAFTABLE in the Deck Builder. Holos break for more. Promos, exclusives, basic Energy and Secret Rares can\'t be crafted; crafting stops at a playset (4, Heralds 1). Battle Pass cards can be forged once you own one (double cost). ✦ Infuse raises one copy one finish: Regular → Reverse → Classic → Cosmic → Gold → Ruby. Heralds cost '+csFmt(craftCfg().heraldCost)+' to craft. 💥 Break extras breaks everything over a playset your decks don\'t use.<br>':''}
     <b style="color:#c8a0ff">Win:</b> All 6 Prizes or opponent out of characters.<br>
     <b style="color:#c8a0ff">Colors:</b>
     <span style="color:#ef4444">■ Red</span> ·
@@ -26145,7 +26160,7 @@ function switchShopTab(tab){
 
 // Sets available to buy packs from: non-promo sets that actually have cards.
 function purchasableSets(){
-  return (_cardSets||[]).filter(s=>s.id!=='promo' && _packPool(s.id).length>0);
+  return (_cardSets||[]).filter(s=>s.id!=='promo' && !/^bp\d+$/i.test(s.id) && _packPool(s.id).length>0);
 }
 
 function renderShopPacksTab(){
@@ -35171,7 +35186,9 @@ function craftCfg(){
   const rates={}; Object.keys(d.rates).forEach(r=>{ const v=c.rates&&c.rates[r]; rates[r]=(Array.isArray(v)&&v.length===2)?[Math.max(0,+v[0]||0),Math.max(0,+v[1]||0)]:d.rates[r].slice(); });
   const holo={}; Object.keys(d.holo).forEach(f=>{ const v=c.holo&&c.holo[f]; holo[f]=(v!=null&&+v>0)?+v:d.holo[f]; });
   const hc=(c.heraldCost!=null&&c.heraldCost!==''&&isFinite(+c.heraldCost)&&+c.heraldCost>=0)?Math.round(+c.heraldCost):d.heraldCost;
-  return {rates,holo,heralds:c.heralds===undefined?d.heralds:!!c.heralds,heraldCost:hc,sightedOnly:c.sightedOnly===undefined?d.sightedOnly:!!c.sightedOnly};
+  const infD={reverse:.5,classic:.75,cosmic:1,gold:1.5,ruby:2.5}, infuse={}; Object.keys(infD).forEach(f=>{ const v=c.infuse&&c.infuse[f]; infuse[f]=(v!=null&&v!==''&&+v>0)?+v:infD[f]; });
+  const passMult=(c.passMult!=null&&c.passMult!==''&&+c.passMult>0)?+c.passMult:2;
+  return {rates,holo,heralds:c.heralds===undefined?d.heralds:!!c.heralds,heraldCost:hc,sightedOnly:c.sightedOnly===undefined?d.sightedOnly:!!c.sightedOnly,infuse,passMult,infuseOn:c.infuseOn!==false};
 }
 function craftShardsKey(){ return 'loc_court_shards_'+(_celUserId||'guest'); }
 async function loadCrafting(){
@@ -35204,6 +35221,11 @@ function craftCheck(cid){
   if(!c||c.isToken||c.type==='token'||c.type==='system') return {ok:false,why:"This card can't be crafted."};
   const r=cfg.rates[craftRarity(cid)]||cfg.rates.common, cost=c.type==='herald'?cfg.heraldCost:r[1];
   const set=typeof getCardSet==='function'?getCardSet(cid):(c.setId||'');
+  if(typeof craftIsPassCard==='function'&&craftIsPassCard(cid)){ const pc=craftPassCost(cid), po=craftOwned(cid), pcap=craftCap(cid);
+    if(po<1) return {ok:false,cost:pc,pass:true,why:'Claim it from the Battle Pass first — then you can forge more copies.'};
+    if(po>=pcap) return {ok:false,cost:pc,pass:true,full:true,why:`You own a full playset (${pcap}).`};
+    if(_craft.shards<pc) return {ok:false,cost:pc,pass:true,short:pc-_craft.shards,why:`You need ${csFmt(pc-_craft.shards)} more Court Shards.`};
+    return {ok:true,cost:pc,pass:true}; }
   if(c.exclusive) return {ok:false,cost,why:'Exclusive cards are gifts only.'};
   if(c.type==='energy_card'&&!c.specialEnergy) return {ok:false,cost,why:'Basic Energy comes in every pack.'};
   if(set==='promo') return {ok:false,cost,why:"Promo cards can't be crafted."};
@@ -35375,10 +35397,16 @@ function craftAdminEdit(){
     <label class="sp-allow"><input type="checkbox" data-her ${cfg.heralds?'checked':''}> 👑 Heralds can be crafted <small>Regular finish, flat cost below (any rarity)</small></label>
     <label class="cr-adm-hc">👑 Herald craft cost <input type="number" min="0" step="50" data-hc value="${cfg.heraldCost}"></label>
     <label class="sp-allow"><input type="checkbox" data-sig ${cfg.sightedOnly?'checked':''}> 📜 Sighted first <small>Only cards Sighted in the Registry can be crafted</small></label>
+    <div class="cr-adm-h">✦ Infuse (raise one copy one finish) — cost = the card's craft cost × this</div>
+    <div class="cr-adm-holo">${['reverse','classic','cosmic','gold','ruby'].map(v=>`<label>→ ${craftVariantLabel(v)}<input type="number" min="0.1" step="0.25" data-inf="${v}" value="${cfg.infuse[v]}"></label>`).join('')}</div>
+    <label class="sp-allow"><input type="checkbox" data-infon ${cfg.infuseOn?'checked':''}> ✦ Infusing is on</label>
+    <label class="cr-adm-hc">🎟 Battle Pass cards: craft cost × <input type="number" min="0.5" step="0.5" data-pm value="${cfg.passMult}"></label>
     <div class="cr-dlg-btns"><button class="btn-gray btn-sm" type="button" data-def>Defaults</button><button class="btn-primary cr-go" type="button" data-go>SAVE</button></div>`;
   body.querySelector('[data-def]').onclick=async()=>{ if(!confirm('Put crafting back to the default rates?')) return; if(await craftAdminSave(JSON.parse(JSON.stringify(CRAFT_DEFAULT)))){ closeAllModals(); craftRefresh(); } };
   body.querySelector('[data-go]').onclick=async()=>{
-    const out={rates:{},holo:{none:1},heralds:body.querySelector('[data-her]').checked,heraldCost:Math.max(0,parseInt(body.querySelector('[data-hc]').value,10)||0),sightedOnly:body.querySelector('[data-sig]').checked};
+    const out={rates:{},holo:{none:1},heralds:body.querySelector('[data-her]').checked,heraldCost:Math.max(0,parseInt(body.querySelector('[data-hc]').value,10)||0),sightedOnly:body.querySelector('[data-sig]').checked,
+      infuse:{},infuseOn:body.querySelector('[data-infon]').checked,passMult:Math.max(.5,+body.querySelector('[data-pm]').value||2)};
+    ['reverse','classic','cosmic','gold','ruby'].forEach(v=>{ out.infuse[v]=Math.max(.1,+body.querySelector(`[data-inf="${v}"]`).value||1); });
     RARITY_ORDER.forEach(r=>{ out.rates[r]=[Math.max(0,parseInt(body.querySelector(`[data-b="${r}"]`).value,10)||0),Math.max(0,parseInt(body.querySelector(`[data-c="${r}"]`).value,10)||0)]; });
     VARIANT_ORDER.filter(v=>v!=='none').forEach(v=>{ out.holo[v]=Math.max(1,+body.querySelector(`[data-h="${v}"]`).value||1); });
     if(await craftAdminSave(out)){ closeAllModals(); craftRefresh(); }
@@ -35423,9 +35451,10 @@ function fgPool(){
   if(_fg.mode==='forge'){
     const sets=set==='__all__'?fgSets().map(s=>s.id):[set]; const S=new Set();
     sets.forEach(sid=>{ (typeof _packPool==='function'?_packPool(sid):[]).forEach(id=>S.add(id)); if(cfg.heralds&&typeof _heraldPool==='function') _heraldPool(sid).forEach(id=>S.add(id)); });
+    if(typeof craftIsPassCard==='function') Object.keys(DB).forEach(id=>{ if(craftIsPassCard(id)&&craftOwned(id)>0&&(set==='__all__'||getCardSet(id)===set)) S.add(id); });
     ids=[...S].filter(id=>DB[id]&&!(DB[id].type==='energy_card'&&!DB[id].specialEnergy)&&!DB[id].isToken);
   } else {
-    ids=Object.keys(DB).filter(id=>craftOwned(id)>0&&(set==='__all__'||getCardSet(id)===set));
+    ids=Object.keys(DB).filter(id=>craftOwned(id)>0&&(set==='__all__'||getCardSet(id)===set)&&(_fg.mode!=='infuse'||(typeof craftInfuseable==='function'&&craftInfuseable(id))));
   }
   return ids;
 }
@@ -35435,7 +35464,7 @@ function fgEntries(){
   if(_fg.rar!=='all') ids=ids.filter(id=>fgRarity(id)===_fg.rar);
   if(_fg.col!=='all') ids=ids.filter(id=>fgColorsOf(id).includes(_fg.col));
   if(_fg.q){ const q=_fg.q.toLowerCase(); ids=ids.filter(id=>{ const m=cardMeta(id); const hidden=_fg.mode==='forge'&&registryState(id)==='unregistered'; return (!hidden&&m.name.toLowerCase().includes(q))||String(m.number).toLowerCase().includes(q); }); }
-  if(_fg.only) ids=ids.filter(id=>_fg.mode==='forge'?craftCheck(id).ok:!!ex[id]);
+  if(_fg.only) ids=ids.filter(id=>_fg.mode==='forge'?craftCheck(id).ok:_fg.mode==='infuse'?craftInfuseAny(id):!!ex[id]);
   ids.sort((a,b)=>{ const A=cardMeta(a),B=cardMeta(b); return (A.setId||'').localeCompare(B.setId||'')||cardNumberSort(A.number)-cardNumberSort(B.number)||A.name.localeCompare(B.name); });
   return {ids,ex};
 }
@@ -35467,8 +35496,8 @@ function fgRender(){
     FG_COLORS.map(([k,c])=>`<button type="button" class="fg-chip fg-dot${_fg.col===k?' on':''}" style="--c:${c}" title="${k[0].toUpperCase()+k.slice(1)}" aria-label="${k}" onclick="fgSet('col','${k}');fgRender()"></button>`).join('');
   const q=document.getElementById('fg-q'); if(q&&q.value!==_fg.q) q.value=_fg.q;
   const on=document.getElementById('fg-only'); if(on) on.checked=!!_fg.only;
-  const ol=document.getElementById('fg-only-l'); if(ol) ol.textContent=_fg.mode==='forge'?'Ready to forge':'Extras only';
-  document.getElementById('fg-sub').textContent=_fg.mode==='forge'?'SPEND COURT SHARDS · FORGE THE CARD YOU WANT':'BREAK WHAT YOU DON\'T NEED INTO COURT SHARDS';
+  const ol=document.getElementById('fg-only-l'); if(ol) ol.textContent=_fg.mode==='forge'?'Ready to forge':_fg.mode==='infuse'?'Ready to infuse':'Extras only';
+  document.getElementById('fg-sub').textContent=_fg.mode==='forge'?'SPEND COURT SHARDS · FORGE THE CARD YOU WANT':_fg.mode==='infuse'?'RAISE A COPY ONE FINISH · REGULAR → REVERSE → CLASSIC → COSMIC → GOLD → RUBY':'BREAK WHAT YOU DON\'T NEED INTO COURT SHARDS';
   fgRenderGrid(); fgRenderAnvil();
 }
 function fgBal(){ if(_fg.counting) return; const b=document.getElementById('fg-bal-n'); if(b) b.textContent=csFmt(_craft.shards); const ic=document.getElementById('fg-bal-ico'); if(ic&&!ic.src) ic.src=CS_ICON; }
@@ -35477,9 +35506,11 @@ function fgRenderGrid(){
   const {ids,ex}=fgEntries(); const back=getImg('cardback');
   document.getElementById('fg-count').textContent=_fg.mode==='forge'
     ?`${ids.length} CARD${ids.length===1?'':'S'} · ${ids.filter(id=>craftCheck(id).ok).length} READY TO FORGE`
+    :_fg.mode==='infuse'?`${ids.length} CARD${ids.length===1?'':'S'} · ${ids.filter(id=>craftInfuseAny(id)).length} READY TO INFUSE`
     :`${ids.length} CARD${ids.length===1?'':'S'} OWNED · ${ids.reduce((s,id)=>s+craftOwned(id),0)} COPIES`;
   if(!ids.length){ g.innerHTML=`<div class="fg-empty">${_fg.mode==='forge'?'Nothing to forge with these filters.':'You don\'t own any cards that match.'}</div>`; return; }
   g.innerHTML=ids.map(id=>{ const m=cardMeta(id), hex=fgHex(id);
+    if(_fg.mode==='infuse') return fgInfuseTile(id);
     if(_fg.mode==='forge'){
       const [st,tag,chk]=fgForgeState(id); const hide=st==='locked';
       const img=hide?(back||''):getImg(id);
@@ -35509,11 +35540,12 @@ function fgStage(cid,hide,pop){
 function fgRenderAnvil(pop){
   const a=document.getElementById('fg-anvil'); if(!a) return; const cid=_fg.sel;
   const x='<button type="button" class="fg-x" aria-label="Close" onclick="fgCloseSheet()"></button>';
-  if(!cid||!DB[cid]||(_fg.mode==='shatter'&&!craftOwned(cid))){
-    a.innerHTML=x+`<div class="fg-blank"><div style="font-size:44px;opacity:.75">${_fg.mode==='forge'?'🔨':'💥'}</div><b>${_fg.mode==='forge'?'CHOOSE A CARD TO FORGE':'CHOOSE A CARD TO SHATTER'}</b>
-      ${_fg.mode==='forge'?'Cards glowing orange are ready. A forged copy is the Regular finish — holos only come from packs.':'Holos shatter for more. Cards your saved decks use are flagged before you break them.'}</div>`;
-    if(_fg.mode==='shatter'&&cid) _fg.sel=null; return;
+  if(!cid||!DB[cid]||(_fg.mode!=='forge'&&!craftOwned(cid))){
+    a.innerHTML=x+`<div class="fg-blank"><div style="font-size:44px;opacity:.75">${_fg.mode==='forge'?'🔨':_fg.mode==='infuse'?'✦':'💥'}</div><b>${_fg.mode==='forge'?'CHOOSE A CARD TO FORGE':_fg.mode==='infuse'?'CHOOSE A CARD TO INFUSE':'CHOOSE A CARD TO SHATTER'}</b>
+      ${_fg.mode==='forge'?'Cards glowing orange are ready. A forged copy is the Regular finish — Infuse can raise it to a holo.':_fg.mode==='infuse'?'Infuse turns one copy into the next finish up: Regular → Reverse → Classic → Cosmic → Gold → Ruby.':'Holos shatter for more. Cards your saved decks use are flagged before you break them.'}</div>`;
+    if(_fg.mode!=='forge'&&cid) _fg.sel=null; return;
   }
+  if(_fg.mode==='infuse'){ fgInfuseAnvil(cid,x,pop); return; }
   const m=cardMeta(cid), hex=fgHex(cid), r=craftRarity(cid), rl=DB[cid].type==='herald'?'HERALD · '+((RARITY_DEFS[r]||{}).label||''):((RARITY_DEFS[r]||{}).label||'');
   const setName=((typeof _cardSets!=='undefined'?_cardSets:[]).find(s=>s.id===m.setId)||{}).name||'';
   if(_fg.mode==='forge'){
@@ -35523,7 +35555,7 @@ function fgRenderAnvil(pop){
       <div class="fg-led"><div class="big"><span>Cost</span>${chk.cost>0?csAmt(chk.cost,16):'—'}</div><div><span>You have</span>${csAmt(_craft.shards,14)}</div>${chk.ok?`<div class="after"><span>After forging</span>${csAmt(_craft.shards-chk.cost,14)}</div>`:''}</div>
       <button type="button" class="fg-go" id="fg-go" ${chk.ok?'':'disabled'} onclick="fgDoForge()">🔨 FORGE${chk.cost>0?' · '+csFmt(chk.cost):''}</button>
       ${chk.ok?'':`<div class="fg-why">${escapeHtml(hide?'Sight this card first — play against it or pull it.':(chk.why||''))}</div>`}
-      <p class="fg-note">Forged copies are the Regular finish and work like any other copy — decks, trades, everything.</p>`;
+      <p class="fg-note">${chk.pass?'Battle Pass card: once you own one, you can forge more (×'+craftCfg().passMult+' cost). ':''}Forged copies are the Regular finish and work like any other copy — decks, trades, everything. ✦ INFUSE raises a copy to a holo.</p>`;
     return;
   }
   // shatter
@@ -37533,6 +37565,77 @@ function poKeys(){
 }
 // Settings: Pack Reveal — Fan / One by one
 function setPackReveal(v){ _gameSettings.packReveal=v==='stack'?'stack':'fan'; document.querySelectorAll('.settings-prv-btn').forEach(b=>b.classList.toggle('active',b.dataset.prv===_gameSettings.packReveal)); poSfx('click'); if(typeof saveGameSettings==='function') saveGameSettings(); }
+
+</script>
+<script>
+// ═══ COURT FORGE: ✦ INFUSE (holo upgrades) + Battle Pass cards can be forged once you own one (build 10.18) ═══
+// INFUSE raises ONE copy you own by ONE finish: Regular → Reverse → Classic → Cosmic → Gold → Ruby. Works on every card you own
+// (pass cards, promos, Heralds…) except basic Energy. Cost = the card's base × the target finish's multiplier.
+const INFUSE_LADDER=['none','reverse','classic','cosmic','gold','ruby'];
+const CRAFT_INFUSE_DEFAULT={reverse:.5,classic:.75,cosmic:1,gold:1.5,ruby:2.5};
+function craftInfuseNext(v){ const i=INFUSE_LADDER.indexOf(v||'none'); return (i>=0&&i<INFUSE_LADDER.length-1)?INFUSE_LADDER[i+1]:null; }
+function craftInfuseBase(cid){ const cfg=craftCfg(), c=DB[cid]; if(c&&c.type==='herald') return cfg.heraldCost>0?cfg.heraldCost:3500; const r=cfg.rates[craftRarity(cid)]||cfg.rates.common; return r[1]>0?r[1]:Math.max(10,r[0]*8); }
+function craftInfuseCost(cid,from){ const to=craftInfuseNext(from); if(!to) return 0; return Math.max(10,Math.round(craftInfuseBase(cid)*(craftCfg().infuse[to]||1)/10)*10); }
+function craftInfuseable(cid){ const c=DB[cid]; if(!c||c.isToken||c.type==='token'||c.type==='system') return false; if(c.type==='energy_card'&&!c.specialEnergy) return false; return INFUSE_LADDER.slice(0,-1).some(v=>variantCount(cid,v)>0); }
+function craftInfuseCheck(cid,from){
+  const cfg=craftCfg(); if(!cfg.infuseOn) return {ok:false,why:'Infusing is switched off right now.'};
+  if(!craftInfuseable(cid)) return {ok:false,why:"This card can't be infused."};
+  const to=craftInfuseNext(from); if(!to) return {ok:false,why:'Ruby is the top finish.'};
+  if(variantCount(cid,from)<1) return {ok:false,why:'You don\'t own a '+craftVariantLabel(from)+' copy.'};
+  const cost=craftInfuseCost(cid,from); if(_craft.shards<cost) return {ok:false,cost,to,short:cost-_craft.shards,why:`You need ${csFmt(cost-_craft.shards)} more Court Shards.`};
+  return {ok:true,cost,to};
+}
+function craftInfuseAny(cid){ return INFUSE_LADDER.slice(0,-1).some(v=>variantCount(cid,v)>0&&craftInfuseCheck(cid,v).ok); }
+async function craftInfuse(cid,from){
+  if(_craft.busy||!craftOn()) return false; const chk=craftInfuseCheck(cid,from); if(!chk.ok) return false;
+  _craft.busy=true; const before=_craft.shards;
+  try{ _craft.shards-=chk.cost; removeVariantFromCollection(cid,from,1); addVariantToCollection(cid,chk.to,1); if(typeof recomputeHoloOwned==='function') recomputeHoloOwned(); await craftSaveAll(); if(typeof markRegistered==='function') markRegistered(cid); }
+  finally{ _craft.busy=false; }
+  craftRefresh(cid); fgInfuseFx(cid,from,chk.to,chk.cost,before); return true;
+}
+// Battle Pass cards: a card in a BP set (bp1, bp2…) or an exclusive card a Battle Pass gives
+function craftIsPassCard(cid){ const c=DB[cid]; if(!c) return false; const set=String((typeof getCardSet==='function'?getCardSet(cid):c.setId)||'').toLowerCase(); if(/^bp\d+$/.test(set)) return true;
+  if(!c.exclusive) return false; try{ return (bp3Cfg().pages||[]).some(p=>(p.rewards||[]).some(r=>r.type==='card'&&r.cid===cid)); }catch(e){ return false; } }
+function craftPassCost(cid){ const cfg=craftCfg(), c=DB[cid]; const r=cfg.rates[craftRarity(cid)]||cfg.rates.common; const base=c&&c.type==='herald'?(cfg.heraldCost>0?cfg.heraldCost:3500):(r[1]>0?r[1]:Math.max(10,r[0]*8)); return Math.round(base*cfg.passMult/10)*10; }
+// ── the INFUSE anvil + tiles ──
+function fgInfuseTile(id){
+  const m=cardMeta(id), hex=fgHex(id), own=craftOwned(id); const steps=INFUSE_LADDER.slice(0,-1).filter(v=>variantCount(id,v)>0);
+  const cheapest=Math.min(...steps.map(v=>craftInfuseCost(id,v))); const best=[...INFUSE_LADDER].reverse().find(v=>variantCount(id,v)>0)||'none'; const ready=craftInfuseAny(id);
+  return `<button type="button" class="fg-tile ${ready?'st-ready':'st-own'}${_fg.sel===id?' sel':''}" data-cid="${id}" onclick="fgPick('${id}')"><div class="fg-art${best!=='none'?' holo-card always-on holo-'+best:''}">${getImg(id)?`<img src="${getImg(id)}" alt="" loading="lazy">`:''}${best!=='none'&&typeof _holoLayersHTML==='function'?_holoLayersHTML(best):''}</div>
+    <div class="fg-tname">${escapeHtml(m.name)}</div>
+    <div class="fg-tfoot"><span class="fg-gem" style="--rc:${hex}"></span><span class="fg-tval">${csAmt(cheapest,11)}</span><span class="fg-town">×${own}</span></div>${best!=='none'?`<i class="fg-tag" style="background:${(VARIANT_META[best]||{}).accent};color:#0a0a18">${craftVariantLabel(best).replace(' Holo','').toUpperCase()}</i>`:''}</button>`;
+}
+function fgInfuseAnvil(cid,x,pop){
+  const a=document.getElementById('fg-anvil'); const m=cardMeta(cid), hex=fgHex(cid), r=craftRarity(cid), rl=DB[cid].type==='herald'?'HERALD · '+((RARITY_DEFS[r]||{}).label||''):((RARITY_DEFS[r]||{}).label||'');
+  const setName=((typeof _cardSets!=='undefined'?_cardSets:[]).find(s=>s.id===m.setId)||{}).name||''; const need=craftDeckNeeds();
+  const best=[...INFUSE_LADDER].reverse().find(v=>variantCount(cid,v)>0)||'none';
+  const rows=INFUSE_LADDER.filter(v=>variantCount(cid,v)>0).map(v=>{ const have=variantCount(cid,v), to=craftInfuseNext(v), acc=(VARIANT_META[v]||{}).accent||'#e8c570';
+    if(!to) return `<div class="fg-frow"><b style="color:${acc}">${craftVariantLabel(v)}</b><span class="fg-inf-arrow">×${have}</span><small>the top finish</small></div>`;
+    const chk=craftInfuseCheck(cid,v), cost=craftInfuseCost(cid,v), nd=need[cid+'|'+v]||0, warn=have-1<nd;
+    return `<div class="fg-frow inf"><b style="color:${acc}">${craftVariantLabel(v)} <small style="color:#cfc6dc">×${have}</small></b><span class="fg-inf-arrow">→</span><b style="color:${(VARIANT_META[to]||{}).accent}">${craftVariantLabel(to)}</b>
+      <button type="button" class="fg-inf" ${chk.ok?'':'disabled'} onclick="fgDoInfuse('${v}')" title="${escapeHtml(chk.ok?'Infuse one copy':(chk.why||''))}">✦ ${csAmt(cost,12)}</button>${warn?`<small class="fg-inf-w">⚠ a saved deck uses ${nd} ${craftVariantLabel(v)}</small>`:''}</div>`; }).join('');
+  const url=getImg(cid);
+  a.innerHTML=x+`<div class="fg-stage" style="--rc:${hex}"><div class="fg-ring"></div><div class="fg-ring r2"></div><div class="fg-glow"></div><div class="fg-big${pop?' pop':''}${best!=='none'?' holo-card always-on holo-'+best:''}">${url?`<img src="${url}" alt="">`:''}${best!=='none'&&typeof _holoLayersHTML==='function'?_holoLayersHTML(best):''}</div></div>
+    <div class="fg-meta"><span class="fg-rl" style="color:${hex}">◆ ${rl}</span><h3>${escapeHtml(m.name)}</h3><small>${m.number?'No. '+escapeHtml(m.number)+' · ':''}${escapeHtml(setName)}</small></div>
+    <div style="margin:10px 0 6px">${rows}</div>
+    <div class="fg-led"><div><span>You have</span>${csAmt(_craft.shards,14)}</div></div>
+    <p class="fg-note">Infusing turns ONE copy into the next finish up: Regular → Reverse → Classic → Cosmic → Gold → Ruby. Your number of copies stays the same.</p>`;
+}
+async function fgDoInfuse(from){ const cid=_fg.sel; if(!cid||_craft.busy) return; document.querySelectorAll('#fg-anvil .fg-inf').forEach(b=>b.disabled=true); await craftInfuse(cid,from); }
+function fgInfuseFx(cid,from,to,cost,before){
+  const after=_craft.shards; const nm=craftVariantLabel(to);
+  if(!fgMotion()){ if(typeof spToast==='function') spToast(`✦ ${escapeHtml(DB[cid].name)} is now ${nm} · −${csFmt(cost)} Court Shards`,2600); fgCount(before,after,300); return; }
+  const L=fgFxLayer(); const url=getImg(cid)||''; const acc=(VARIANT_META[to]||{}).accent||'#e8c570';
+  L.style.setProperty('--rc',acc);
+  L.innerHTML=`<div class="fx-dim"></div><div class="fx-core"><div class="fx-rune"></div><div class="fx-rune r2"></div><div class="fx-flash"></div><div class="fx-card fx-inf holo-card always-on holo-${to}">${url?`<img src="${url}" alt="">`:''}${typeof _holoLayersHTML==='function'?_holoLayersHTML(to):''}<i class="fx-sweep"></i></div></div>
+    <div class="fx-txt"><b>INFUSED</b><span>${escapeHtml(DB[cid].name)} · ${escapeHtml(craftVariantLabel(from))} → ${escapeHtml(nm)}</span><small>−${csFmt(cost)} COURT SHARDS · ${csFmt(after)} LEFT</small></div><button type="button" class="fx-ok">CONTINUE</button>`;
+  L.className='fg-fxl on forge infuse'; L.onclick=null; const run=++_fgRun; const live=()=>run===_fgRun;
+  const c={x:innerWidth/2,y:innerHeight*.44}; fgFlyShards(L,Math.min(22,8+Math.round(Math.log10(cost+1)*3.5)),fgBalPoint(),c,{stagger:40}); fgCount(before,after,900); fgSfx('energy');
+  setTimeout(()=>{ if(!live()) return; L.classList.add('ignite'); fgSfx('transform'); },1050);
+  setTimeout(()=>{ if(!live()) return; L.classList.add('reveal'); try{ if(typeof SFX!=='undefined'&&SFX.mystical) SFX.mystical(to==='ruby'||to==='gold'); }catch(e){} },1380);
+  L.querySelector('.fx-ok').onclick=fgFxClose;
+  setTimeout(()=>{ if(!live()) return; L.onclick=e=>{ if(e.target===L||e.target.classList.contains('fx-dim')) fgFxClose(); }; },1800);
+}
 
 </script>
 
