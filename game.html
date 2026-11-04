@@ -9818,9 +9818,14 @@ const GAME_BUILD='10.18'; // rules version — must match the opponent's client 
 const GODOT_SYNC=[
   { build:'10.18', date:'2026-11-02',
     cards:[
+      {id:'surana_sss_bse', set:'base_set', number:'030/150', rarity:'legend', scan:'Sets/BASE SET/030-150 (Surana SSS).png', newAbilities:['Scarlet Siphon','Blood Rite','Crimson Cataclysm'],
+        note:"Surana (SSS) = Super Saiyan Scarlet · Black · transformOnly · charLine 'surana' · formTier 'sss' · path 'god' (Surana has no SSB: SSS is the form after SSG) · cost 10 · 12 ATK / 9 HP · subtypes Omega, Celestial, Saiyan God · race 'Omega Celestial Saiyan' · sym SURSSS · noTapOnAbility:true. DATA CHANGE: surana_ssg_bse.nextForms [] → ['sss'] (Base → SSG → SSS). Main menu art: 'Main Menu Images/Super Saiyan Scarlet Surana1SSS Surana.jpg'."},
       {id:'virora_surfacer_mui_sr_bse', set:'base_set', number:'154/150', rarity:'secret', scan:'Sets/BASE SET/154-150 (Virora Surfacer MUI) (Secret Rare).png', newAbilities:['Mastered Instinct','Celestial Surge','Silent Horizon'],
         note:"Virora (Surfacer MUI) SECRET RARE · secretRare:true · Purple · Character (played from hand, NOT transformOnly) · cost 12 · 11 ATK / 8 HP · subtypes Royal, Saiyan, Celestial · race 'Royal Saiyan Celestial' · charName 'Virora' (Virora checks like Void Synergy count her) · charLine 'virora_mui' (her own line) · no formTier · nextForms [] · transforms [] — a standalone card: nothing transforms into or out of her. Main menu art (admin sets it per tab): Main Menu Images/vmuisurfacerSurfacer MUI virora.jpg."}],
     abilities:[
+      "SCARLET SIPHON (Surana SSS, triggered): in combatDamageHooks (after Omega Venom / Withering Touch) — whenever she deals combat damage > 0 to a CHARACTER (attacking, retaliating, Power Struggle, Life-mode blocks and block counters): if that character is still on the field it gets −2 Attack (currentATK −2, not below 0; atkBonus −2; lasts until it leaves the field); if Surana is still on the field she heals 2 (capped at baseHP + hpBonus + passiveHp). Either half happens without the other (a kill still heals her). Heralds aren't characters. Label-based (a stolen copy works).",
+      "BLOOD RITE (Surana SSS, activated): FREE, once per turn (generic once_per_turn lock), does NOT tap (card flag noTapOnAbility — otherwise the +3 could never attack). Normal reveal → flipCoinFor (the full roll panel). HEADS: nothing ('the rite fails'). TAILS: you MAY sacrifice one of your other non-token characters (a chooser with Skip; closing it = Skip) — a real Sacrifice via doSacrifice (half its printed cost back as Energy, Death's Offering / Chaos Tithe / Fuel the Chaos fire). If you do: Surana gets +3 Attack until the end of your turn (fc._bloodRite, removed by tickBloodRite at end of turn next to tickIronFist; status chip 🩸) and heals 3 (capped at max). No other character → nothing. AI: only uses it when it has a cheap sacrifice (aiFcValue ≤ 12) AND either Surana can attack this turn or she's missing 3+ HP; on tails it sacrifices its lowest-value character.",
+      "CRIMSON CATACLYSM (Surana SSS, activated): 5 Energy (Black), ONCE PER GAME (limit 'once_per_game'), paid → doesn't tap. 3 damage to EACH opposing character (not targeted; 2v2: both enemies; dealDamage so Nullify applies), then recalcPassives + checkWin. No opposing characters → refunded, not spent. AI: 2+ enemies or at least one kill; score 12 + 5/enemy + 14/kill.",
       "MASTERED INSTINCT (Virora Surfacer MUI, triggered): when she is attacked, flip a coin with the FULL roll panel (coinFlipShow, both players see it). Resolves in executeCombatDamage on the normal path, after Water Stance / Sun's Judgment / Killing Intent are in atkDmg and after the Power Struggle branches (a tie or defender win returns before it). HEADS = the attack MISSES: no dealDamage, and no on-hit triggers (Receipt, Olympian Blood, combatDamageHooks, Inherit Tank, Blood Tithe, Godly Blitz, Exsanguinate, Pursuit kill all see 0 / are skipped); retaliation still happens normally (she hits back unless Frozen / no-retaliation). TAILS = atkDmg − 2 (not below 0). Logs '🌌 Mastered Instinct: HEADS — X's attack misses Y!' / 'TAILS — Y takes 2 less (a→b).'",
       "CELESTIAL SURGE (Virora Surfacer MUI, activated): 5 Energy (her color, Purple), once per turn, paid → doesn't tap. openEnemyTargetPicker over every opposing character (2v2: both enemies' fields) → dealDamage 5 (Nullify applies). If that target left the field, a second picker: Freeze another opposing character that isn't already Frozen (STATUS_META.freeze.dur); none left → log only. AI picks both targets itself (aiPickEnemyTarget). No opposing characters → the ability is refunded (_abilityUndo) and not used.",
       "SILENT HORIZON (Virora Surfacer MUI, activated): 4 Energy, ONCE PER GAME (limit 'once_per_game' — the lock survives the per-turn reset), paid → doesn't tap. Freezes every opposing character (2v2: both enemies). No opposing characters → refunded, not spent. AI: only uses it when 2+ enemies that aren't Frozen / Vortex Shielded would be hit (score 10 + 5 per enemy + 3 per enemy that could attack next turn)."],
@@ -10451,6 +10456,7 @@ const DEFAULTS={
   crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/113-150%20(Crystal%20Base).png',
   surana_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/028-150%20(Surana%20Base).png',
   surana_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/029-150%20(Surana%20SSG).png',
+  surana_sss_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/030-150%20(Surana%20SSS).png',
   virora_volaris_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/060-150%20(Virora%20%26%20Volaris)%20(Team%20Card).png',
   alita_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/062-150%20(Alita%20Base).png',
   past_perfect_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/092-150%20(Past%20Perfect).png',
@@ -10682,9 +10688,15 @@ const DB={
   crystal_bse:{id:'crystal_bse',rarity:'common',name:'Crystal',color:'blue',charName:'Crystal',charLine:'crystal',formTier:'base',subtypes:['Saiyan'],type:'base_char',race:'Saiyan',cost:2,atk:2,hp:3,sym:'CRY',setId:'base_set',cardNumber:'113/150',keywords:[],nextForms:[],
     abilities:[{label:'Prism Orb',type:'triggered',cost:0,text:'When this card enters your field, choose one: target opposing character gets −2 Attack until end of your next turn, or heal one of your characters for 3.'}]},
   // ── SURANA (SSG) (BSE 029/150) — build 10.3. God form of Surana. BLACK (Poison + sacrifice payoff).
-  surana_ssg_bse:{id:'surana_ssg_bse',rarity:'uncommon',name:'Surana (SSG)',color:'black',charName:'Surana',charLine:'surana',formTier:'ssg',path:'god',transformOnly:true,subtypes:['Omega','Celestial','Saiyan God'],type:'char',race:'Omega Celestial Saiyan',cost:5,atk:5,hp:5,sym:'SURSSG',setId:'base_set',cardNumber:'029/150',keywords:[],nextForms:[],
+  surana_ssg_bse:{id:'surana_ssg_bse',rarity:'uncommon',name:'Surana (SSG)',color:'black',charName:'Surana',charLine:'surana',formTier:'ssg',path:'god',transformOnly:true,subtypes:['Omega','Celestial','Saiyan God'],type:'char',race:'Omega Celestial Saiyan',cost:5,atk:5,hp:5,sym:'SURSSG',setId:'base_set',cardNumber:'029/150',keywords:[],nextForms:['sss'],
     abilities:[{label:'Withering Touch',type:'triggered',cost:0,text:'Whenever this card deals combat damage to a character, that character is Poisoned.'},
       {label:"Death's Offering",type:'triggered',cost:0,text:'When you sacrifice this card, choose one of your other characters. It gets +3/+2 until it leaves the field.'}]},
+  // ── SURANA (SSS) "Super Saiyan Scarlet" (BSE 030/150) — build 10.18. Surana's form after SSG (god path; Surana has no SSB).
+  //    BLACK. noTapOnAbility: Blood Rite is free but must not tap her, or its +3 Attack could never be used.
+  surana_sss_bse:{id:'surana_sss_bse',rarity:'legend',name:'Surana (SSS)',color:'black',charName:'Surana',charLine:'surana',formTier:'sss',path:'god',transformOnly:true,noTapOnAbility:true,subtypes:['Omega','Celestial','Saiyan God'],type:'char',race:'Omega Celestial Saiyan',cost:10,atk:12,hp:9,sym:'SURSSS',setId:'base_set',cardNumber:'030/150',keywords:[],nextForms:[],
+    abilities:[{label:'Scarlet Siphon',type:'triggered',cost:0,text:'Whenever this card deals combat damage to a character, that character gets −2 Attack and this card heals 2.'},
+      {label:'Blood Rite',type:'activated',cost:0,limit:'once_per_turn',text:'Flip a coin, if tails you may sacrifice one of your other characters: If you do this card gets +3 Attack until the end of your turn and heals 3 damage. (Once per turn)'},
+      {label:'Crimson Cataclysm',type:'activated',cost:5,limit:'once_per_game',text:'Pay 5 Energy: Deal 3 damage to each opponent character. (Once per game)'}]},
   // ── VIRORA & VOLARIS (BSE 060/150) — build 10.3. Team card (one card, played from hand). PURPLE (transformation enabler).
   virora_volaris_bse:{id:'virora_volaris_bse',rarity:'rare',name:'Virora & Volaris',color:'purple',charName:'Virora & Volaris',subtypes:['Royal','Saiyan','Team'],type:'team',race:'Royal Saiyan',cost:8,atk:7,hp:9,sym:'V&V',setId:'base_set',cardNumber:'060/150',keywords:[],nextForms:[],
     abilities:[{label:'Royal Summons',type:'triggered',cost:0,text:'When this card enters your field, draw 2 cards.'},
@@ -12089,6 +12101,9 @@ function triggerCrimsonRampage(afc){
 function tickIronFist(p){
   (G.players[p]?.field||[]).forEach(f=>{ if(f._ironFist){ f.currentATK=Math.max(0,(f.currentATK||0)-f._ironFist); f.atkBonus=(f.atkBonus||0)-f._ironFist; f._ironFist=0; log(`${DB[f.cid]?.name}'s Iron Fist fades.`,'info'); } });
 }
+function tickBloodRite(p){
+  (G.players[p]?.field||[]).forEach(f=>{ if(f._bloodRite){ f.currentATK=Math.max(0,(f.currentATK||0)-f._bloodRite); f.atkBonus=(f.atkBonus||0)-f._bloodRite; f._bloodRite=0; log(`${DB[f.cid]?.name}'s Blood Rite fades.`,'info'); } });
+}
 function tickCrimsonRampage(p){
   (G.players[p]?.field||[]).forEach(f=>{ if(f._rampage){ f.currentATK=Math.max(0,(f.currentATK||0)-f._rampage); f.atkBonus=(f.atkBonus||0)-f._rampage; f._rampage=0; } });
 }
@@ -12193,6 +12208,7 @@ function combatDamageHooks(srcFc, srcP, tgtFc, tgtP, dmg){
   triggerRisingRage(tgtFc, tgtP, dmg);
   triggerHellfireVengeance(srcFc, srcP, tgtFc, tgtP);
   triggerOmegaVenom(srcFc, srcP, tgtFc, tgtP, dmg);
+  triggerScarletSiphon(srcFc, srcP, tgtFc, tgtP, dmg);
   triggerPressurePoints(srcFc, srcP, tgtFc, tgtP, dmg);
   triggerBloodstoneSkin(tgtFc, tgtP, srcFc, srcP, dmg);
 }
@@ -12233,6 +12249,24 @@ function triggerPressurePoints(srcFc, srcP, tgtFc, tgtP, dmg){
   const _fx=(typeof fxPush==='function')?fxPush(srcFc.cid,'Pressure Points',srcFc.uid):null;
   log(`⚡ Pressure Points: ${DB[srcFc.cid]?.name} paralyzes ${DB[tgtFc.cid]?.name}.`,'dmg');
   try{ applyStatus(tgtFc,'paralyze'); }catch(e){ console.warn('[Pressure Points]',e); }
+  if(typeof fxPop==='function') fxPop(_fx);
+}
+// SCARLET SIPHON (Surana SSS): whenever she deals combat damage to a CHARACTER (attacking, retaliating, blocking or
+// countering), that character gets −2 Attack (until it leaves the field; not below 0) and she heals 2 (up to her max).
+// The −2 needs the character to survive; the heal only needs Surana to still be on the field.
+function triggerScarletSiphon(srcFc, srcP, tgtFc, tgtP, dmg){
+  if(!(dmg>0) || !srcFc || !tgtFc || !hasAbilityLabel(srcFc,'Scarlet Siphon')) return;
+  if(!isChar(DB[tgtFc.cid])) return;
+  const alive=!!(G.players[tgtP] && G.players[tgtP].field.some(f=>f.uid===tgtFc.uid));
+  const mine=!!(G.players[srcP] && G.players[srcP].field.some(f=>f.uid===srcFc.uid));
+  if(!alive && !mine) return;
+  const _fx=(typeof fxPush==='function')?fxPush(srcFc.cid,'Scarlet Siphon',srcFc.uid):null;
+  try{
+    if(alive){ const was=tgtFc.currentATK||0; tgtFc.currentATK=Math.max(0,was-2); tgtFc.atkBonus=(tgtFc.atkBonus||0)-2;
+      log(`🩸 Scarlet Siphon: ${DB[tgtFc.cid]?.name} gets −2 Attack (now ${tgtFc.currentATK}).`,'dmg'); }
+    if(mine){ const mx=(srcFc.baseHP||0)+(srcFc.hpBonus||0)+(srcFc.passiveHp||0), before=srcFc.currentHP||0, h=Math.max(0,Math.min(2,mx-before));
+      if(h>0){ srcFc.currentHP=before+h; if(typeof fxHeal==='function') try{ fxHeal(srcFc.uid,h); }catch(e){} log(`🩸 Scarlet Siphon: ${DB[srcFc.cid]?.name} heals ${h} (now ${srcFc.currentHP}).`,'gain'); } }
+  } catch(e){ console.warn('[Scarlet Siphon]',e); }
   if(typeof fxPop==='function') fxPop(_fx);
 }
 function triggerOmegaVenom(srcFc, srcP, tgtFc, tgtP, dmg){
@@ -12491,6 +12525,7 @@ function fxEffectsOf(fc){
   { const l=fc.abilityUsed&&fc.abilityUsed.execution_turn; if(l!=null&&G&&G.turn-l<2&&l!==G.turn&&hasAbilityLabel(fc,'Crimson Execution')) cond('🩸','Crimson Execution','Recharging: ready again in '+(2-(G.turn-l))+' turn(s).',null); }
   if(hasAbilityLabel(fc,'Through the Horde')&&fc._hordeTurn===(G&&G.turn)) cond('🌊','Through the Horde','Already used this turn.',null);
   if(fc._ironFist>0) cond('👊','The Iron Fist','+'+fc._ironFist+' Attack until the end of this turn.',null);
+  if(fc._bloodRite>0) cond('🩸','Blood Rite','+'+fc._bloodRite+' Attack until the end of this turn.',null);
   if(Array.isArray(fc.attachments)&&fc.attachments.includes('the_dark_hold_bse')) cond('📕','The Dark Hold','Takes 1 damage at the start of each of your turns'+(fc._sinTurn===(G&&G.turn)?' · Pages of Sin used this turn':'')+'.',null);
   { const l=fc.abilityUsed&&fc.abilityUsed.sandstorm_turn; if(l!=null&&G&&G.turn-l<4&&hasAbilityLabel(fc,'Sandstorm')) cond('🏜','Sandstorm','Recharging: ready again in '+(4-(G.turn-l))+' turn(s).',null); }
   if(hasAbilityLabel(fc,'Chaos Tithe')&&fc._titheTurn===(G&&G.turn)) cond('🌀','Chaos Tithe','Already used this turn.',null);
@@ -18264,6 +18299,56 @@ function runAbilityEffect(fc, abl, pl){
     }
     renderAll(); return;
   }
+  // ── SURANA (SSS) BSE 030/150: Blood Rite — free, once per turn (generic lock), doesn't tap (noTapOnAbility). Flip a coin
+  //    (full roll panel); TAILS → you MAY sacrifice one of your other characters (a real Sacrifice: half its printed cost
+  //    back, Death's Offering / Chaos Tithe fire). If you do: +3 Attack until the end of your turn (fc._bloodRite) and heal 3.
+  //    Heads, or no other character, or Skip → the rite is spent and nothing else happens.
+  if(label==='Blood Rite'){
+    const ap=G.activePlayer, P=G.players[ap];
+    flipCoinFor({title:'Blood Rite — '+(DB[fc.cid]?.name||'Surana'),desc:'Tails: you may sacrifice one of your other characters for +3 Attack and heal 3'},(heads)=>{
+      if(!P.field.some(f=>f.uid===fc.uid)){ renderAll(); return; }
+      if(heads){ log('🩸 Blood Rite: heads — the rite fails this turn.','info'); renderAll(); return; }
+      const mine=P.field.filter(f=>f.uid!==fc.uid&&isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
+      if(!mine.length){ log('🩸 Blood Rite: tails — but you have no other character to sacrifice.','info'); renderAll(); return; }
+      const go=(sacUid)=>{
+        const sf=P.field.find(f=>f.uid===sacUid); if(!sf||!P.field.some(f=>f.uid===fc.uid)){ renderAll(); return; }
+        const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Blood Rite',fc.uid):null;
+        try{
+          log(`🩸 Blood Rite: ${pname(ap)} sacrifices ${DB[sf.cid].name}…`,'info');
+          doSacrifice(sacUid, Math.floor((DB[sf.cid]?.cost||0)/2), ap);
+          const me=P.field.find(f=>f.uid===fc.uid);
+          if(me){ me._bloodRite=(me._bloodRite||0)+3; me.currentATK=(me.currentATK||0)+3; me.atkBonus=(me.atkBonus||0)+3;
+            const mx=(me.baseHP||0)+(me.hpBonus||0)+(me.passiveHp||0), before=me.currentHP||0, h=Math.max(0,Math.min(3,mx-before)); me.currentHP=before+h;
+            if(h>0&&typeof fxHeal==='function') try{ fxHeal(me.uid,h); }catch(e){}
+            log(`🩸 Blood Rite: ${DB[me.cid].name} gets +3 Attack until the end of the turn${h>0?` and heals ${h}`:''} (now ${me.currentATK}/${me.currentHP}).`,'gain'); }
+        } finally { if(typeof fxPop==='function') fxPop(_fx); }
+        if(typeof recalcPassives==='function') recalcPassives(); renderAll();
+      };
+      if(seqIsLocalHuman(ap)&&!G._aiAuto){
+        seqChoose('🩸 Blood Rite — Tails','You may sacrifice one of your other characters. If you do, '+(DB[fc.cid]?.name||'Surana')+' gets +3 Attack until the end of your turn and heals 3.',
+          mine.map(f=>({label:DB[f.cid].name, sub:'cost '+(DB[f.cid]?.cost||0)+' · +'+Math.floor((DB[f.cid]?.cost||0)/2)+'⚡', val:f.uid})),
+          go, ()=>{ log('🩸 Blood Rite: no sacrifice.','info'); });
+      } else {
+        const s=mine.slice().sort((a,b)=>aiFcValue(a)-aiFcValue(b))[0];
+        if(s&&aiFcValue(s)<=12) go(s.uid); else { log('🩸 Blood Rite: no sacrifice.','info'); renderAll(); }
+      }
+    });
+    return;
+  }
+  // ── SURANA (SSS): Crimson Cataclysm — 3 damage to EACH opposing character (not targeted; Nullify applies). 5⚡, once per
+  //    GAME (limit 'once_per_game'), paid → doesn't tap. No opposing characters → refunded, not spent.
+  if(label==='Crimson Cataclysm'){
+    const ap=G.activePlayer; const foes=[];
+    _fusionOpps(ap).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) foes.push({p:op,uid:f.uid}); }));
+    if(!foes.length){ if(_abilityUndo) _abilityUndo(); log('Crimson Cataclysm: no opposing characters — not used.','dmg'); renderAll(); return; }
+    log(`🩸 Crimson Cataclysm: every opposing character takes 3 damage!`,'dmg');
+    const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Crimson Cataclysm',fc.uid):null;
+    try{ foes.forEach(t=>{ if((G.players[t.p]?.field||[]).some(x=>x.uid===t.uid)) dealDamage(t.p,t.uid,3); }); }
+    finally { if(typeof fxPop==='function') fxPop(_fx); }
+    if(typeof recalcPassives==='function') recalcPassives();
+    renderAll(); if(typeof checkWin==='function') checkWin();
+    return;
+  }
   // ── VIRORA (SURFACER MUI) BSE 154/150 SR: Celestial Surge — 5 damage to an opposing character; if that destroys it,
   //    Freeze another opposing character. 5⚡, once per turn (generic lock). Paid → doesn't tap. 2v2: any enemy.
   if(label==='Celestial Surge'){
@@ -19363,6 +19448,7 @@ function endTurnFx(p){
   tickFlameSpiral(p); // 🔥 Korra's Flame Spiral timers
   tickCrimsonRampage(p); // 🔥 Crystora (SSGE): Crimson Rampage ends with the turn
   tickIronFist(p); // 👊 Danny Rand: The Iron Fist ends with the turn
+  tickBloodRite(p); // 🩸 Surana (SSS): Blood Rite's +3 Attack ends with the turn
   tickScorchedEarth(p); // count down any Scorched Earth timers this player set
   tickFusions(p); // 💤 Fatigue, then 💫 Dance timers (split at 0)
   G.bonusAttackers=0; // reset ability-granted extra attackers each turn
@@ -19788,6 +19874,13 @@ function aiScoreAbility(p, fc, abl, src){
   if(abl.label==='Elemental Cataclysm'){ const es=aiEnemyChars(p); if(!es.length) return -1;
     const kills=es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,3-(e.fc.nullify||0))).length;
     return 16+es.length*5+kills*14-(aiReady(fc)?12:0); }
+  if(abl.label==='Blood Rite'){ const _o=pl.field.filter(f=>f.uid!==fc.uid&&isChar(DB[f.cid])&&!DB[f.cid]?.isToken); if(!_o.length) return -1;
+    if(Math.min(..._o.map(f=>aiFcValue(f)))>12) return -1; const _hurt=Math.max(0,aiMaxHP(fc)-(fc.currentHP||0));
+    const _atk=aiReady(fc)&&canCharacterAttack(p,fc)&&aiAttackOptionsFor(p,fc).length>0; if(!_atk&&_hurt<3) return -1;
+    return 6+(_atk?8:0)+Math.min(3,_hurt)*2; } // a coin flip: only worth it with a cheap sacrifice and a use for the +3 / heal
+  if(abl.label==='Crimson Cataclysm'){ const es=aiEnemyChars(p); if(!es.length) return -1;
+    const kills=es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,3-(e.fc.nullify||0))).length; if(es.length<2&&!kills) return -1;
+    return 12+es.length*5+kills*14; }
   if(abl.label==='Silent Horizon'){ const es=aiEnemyChars(p).filter(e=>!statusActive(e.fc,'freeze')&&!hasAbilityLabel(e.fc,'Vortex Shield')); if(es.length<2) return -1;
     const rdy=es.filter(e=>e.fc.turnPlayed<G.turn||hasKW(e.fc,'burst_speed')).length; return 10+es.length*5+rdy*3; }
   if(AIB.noop.has(abl.label)) return -1; // learned: this ability has no coded effect
