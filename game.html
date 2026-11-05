@@ -9818,6 +9818,8 @@ const GAME_BUILD='10.18'; // rules version — must match the opponent's client 
 const GODOT_SYNC=[
   { build:'10.18', date:'2026-11-02',
     cards:[
+      {id:'pharoah_bse', set:'base_set', number:'112/150', rarity:'legend', scan:'Sets/BASE SET/112-150 (Pharoah).png', newAbilities:['Limitless Power','Unbreakable'],
+        note:"Pharoah · Green · Character played from hand (standalone, no line) · cost 8 · 6 ATK / 9 HP · subtypes Saiyan · race 'Saiyan' · sym PHA · keywords ['resolve']. Main menu art: 'Main Menu Images/pharoh1pharoah.jpg'."},
       {id:'wonder_woman_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/DC/Wonder Woman (Promo).png', newAbilities:['Bracelets of Submission','Lasso of Truth',"Amazon's Valor"],
         note:"Wonder Woman (Promo, DC) · White · Character · cost 8 · 8 ATK / 7 HP · subtypes Amazon, Hero · race 'Amazon' · charName 'Wonder Woman' · sym WW. Main menu art: 'Main Menu Images/wnder1Wonderowman.jpg'."},
       {id:'crystal_ssj_bse', set:'base_set', number:'114/150', rarity:'uncommon', scan:'Sets/BASE SET/114-150 (Crystal SSJ).png', newAbilities:['Prism Barrier'],
@@ -9827,6 +9829,8 @@ const GODOT_SYNC=[
       {id:'virora_surfacer_mui_sr_bse', set:'base_set', number:'154/150', rarity:'secret', scan:'Sets/BASE SET/154-150 (Virora Surfacer MUI) (Secret Rare).png', newAbilities:['Mastered Instinct','Celestial Surge','Silent Horizon'],
         note:"Virora (Surfacer MUI) SECRET RARE · secretRare:true · Purple · Character (played from hand, NOT transformOnly) · cost 12 · 11 ATK / 8 HP · subtypes Royal, Saiyan, Celestial · race 'Royal Saiyan Celestial' · charName 'Virora' (Virora checks like Void Synergy count her) · charLine 'virora_mui' (her own line) · no formTier · nextForms [] · transforms [] — a standalone card: nothing transforms into or out of her. Main menu art (admin sets it per tab): Main Menu Images/vmuisurfacerSurfacer MUI virora.jpg."}],
     abilities:[
+      "LIMITLESS POWER (Pharoah, triggered): in startTurnFx's per-card loop (after Chi Mending): while fc._limitless < 4, +1 to _limitless, atkBonus, currentATK, hpBonus and currentHP (lasts until it leaves the field; first growth is the start of your turn after it's played). Status chip 💚.",
+      "UNBREAKABLE (Pharoah, passive): Resolve — keywords ['resolve'] and KEYWORD_PASSIVES 'Unbreakable' → 'resolve' (a stolen copy works). Existing Resolve rule in dealDamage: the first lethal damage leaves it at 1 Health (fc.resolveUsed, once per game).",
       "BRACELETS OF SUBMISSION (Wonder Woman, passive): in dealDamage after Nullify / Inferno Ward / Diamond Calm / Half-Divine and BEFORE Prism Barrier: if the damage is > 0, it is NOT combat damage (current fx context isn't {combat:true}) and she hasn't used it this player-turn (key G.turn+':'+G.activePlayer), all of it is prevented and the key is stored on fc._braceTurn. Combat context is set by resolveAttack, resolveCharVsHerald, resolveHeraldAttackTarget, resolveHeraldVsField, resolveLocationAttack and NOW resolveLifeAttack too. In-combat counters push their own context, so they count as ability damage: NOW Inferno Reflex, Shielded Pressure and Godfire Spillover (Hellfire Vengeance and Through the Horde already did). Instants, Herald abilities and start-of-turn triggers (Silent Killer, Forbidden Power) count as ability damage. Burn/Poison chip doesn't go through dealDamage.",
       "LASSO OF TRUTH (Wonder Woman, activated): 2 Energy (White), once every 2 turns — its own key fc.abilityUsed.lasso_turn with the Water Whip convention (G.turn − last < 2 = wait), paid → doesn't tap. Spend first, then openEnemyTargetPicker over every opposing character (2v2: both enemies; Godly Evasion toll / Drunken Stance as usual; closing the picker refunds via the activateAbility undo). The target gets fc._lassoUntil = lassoUntilFor(controller): 1v1 G.turn + 1 (G.turn counts every player turn); 2v2 G.turn if the controller still acts later this round, else G.turn + 1. isLassoed(fc) = G.turn ≤ _lassoUntil → canCharacterAttack returns false (blocks humans and the AI) + a click message + status chip 🪢. Then the controller's hand is shown to a local human (showOpponentHandModal); when the AI uses it, the log just notes the reveal. AI: target = the opposing character with the highest Attack that isn't Drunken / already lassoed; score 6 + 0.8 × that Attack (max +12).",
       "AMAZON'S VALOR (Wonder Woman, passive): recalcPassives, next to Tag Division — each of your OTHER characters whose subtypes include 'Hero' gets +1 Attack per Amazon's Valor source on your field. Heroes today: Anya Corazon, Batman (DCeased), Danny Rand (Iron Fist), Starfire (and Wonder Woman herself, who doesn't buff herself).",
@@ -10463,6 +10467,7 @@ const DEFAULTS={
   paradox_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/027-150%20(Paradox).png',
   crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/113-150%20(Crystal%20Base).png',
   crystal_ssj_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/114-150%20(Crystal%20SSJ).png',
+  pharoah_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/112-150%20(Pharoah).png',
   surana_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/028-150%20(Surana%20Base).png',
   surana_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/029-150%20(Surana%20SSG).png',
   surana_sss_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/030-150%20(Surana%20SSS).png',
@@ -10697,6 +10702,11 @@ const DB={
   // ── CRYSTAL (BSE 113/150) — build 9.7. Base of the new Blue Saiyan line (114 = her SSJ, planned).
   crystal_bse:{id:'crystal_bse',rarity:'common',name:'Crystal',color:'blue',charName:'Crystal',charLine:'crystal',formTier:'base',subtypes:['Saiyan'],type:'base_char',race:'Saiyan',cost:2,atk:2,hp:3,sym:'CRY',setId:'base_set',cardNumber:'113/150',keywords:[],nextForms:['ssj1'],
     abilities:[{label:'Prism Orb',type:'triggered',cost:0,text:'When this card enters your field, choose one: target opposing character gets −2 Attack until end of your next turn, or heal one of your characters for 3.'}]},
+  // ── PHAROAH (BSE 112/150) — build 10.18. GREEN (endurance / growth). Standalone Character played from hand (no line).
+  //    Limitless Power: at the start of your turn +1/+1 until it leaves the field (fc._limitless, max +4/+4). Unbreakable = Resolve.
+  pharoah_bse:{id:'pharoah_bse',rarity:'legend',name:'Pharoah',color:'green',charName:'Pharoah',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:8,atk:6,hp:9,sym:'PHA',setId:'base_set',cardNumber:'112/150',keywords:['resolve'],nextForms:[],
+    abilities:[{label:'Limitless Power',type:'triggered',cost:0,text:'At the start of your turn, this card gets +1/+1 permanently (max +4/+4).'},
+      {label:'Unbreakable',type:'passive',cost:0,text:'Resolve. The first time this card would be destroyed by damage, it survives with 1 Health instead (once per game).'}]},
   // ── CRYSTAL (SSJ) (BSE 114/150) — build 10.18. Saiyan-path form of Crystal (113). BLUE (protection / control).
   crystal_ssj_bse:{id:'crystal_ssj_bse',rarity:'uncommon',name:'Crystal (SSJ)',color:'blue',charName:'Crystal',charLine:'crystal',formTier:'ssj1',path:'saiyan',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:5,atk:4,hp:5,sym:'CRYSSJ',setId:'base_set',cardNumber:'114/150',keywords:[],nextForms:[],
     abilities:[{label:'Prism Barrier',type:'activated',cost:2,limit:'once_per_turn',text:'Pay 2 Energy: Choose one of your characters. The next time it would be dealt damage before your next turn, prevent 3 of that damage. (Once per turn)'}]},
@@ -12548,6 +12558,7 @@ function fxEffectsOf(fc){
   if(hasAbilityLabel(fc,'Through the Horde')&&fc._hordeTurn===(G&&G.turn)) cond('🌊','Through the Horde','Already used this turn.',null);
   if(fc._ironFist>0) cond('👊','The Iron Fist','+'+fc._ironFist+' Attack until the end of this turn.',null);
   if(fc._bloodRite>0) cond('🩸','Blood Rite','+'+fc._bloodRite+' Attack until the end of this turn.',null);
+  if(fc._limitless>0) cond('💚','Limitless Power','+'+fc._limitless+'/+'+fc._limitless+' so far (max +4/+4).',null);
   if(isLassoed(fc)) cond('🪢','Lasso of Truth',"Can't attack until the end of its controller's next turn.",null);
   if(fc._prismShield>0) cond('💠','Prism Barrier','Prevents '+fc._prismShield+' of the next damage it would be dealt (ends at the start of its owner\'s next turn).',null);
   if(Array.isArray(fc.attachments)&&fc.attachments.includes('the_dark_hold_bse')) cond('📕','The Dark Hold','Takes 1 damage at the start of each of your turns'+(fc._sinTurn===(G&&G.turn)?' · Pages of Sin used this turn':'')+'.',null);
@@ -19439,6 +19450,11 @@ function startTurnFx(player){
     // ── DANNY RAND: Chi Mending — at the start of each of your turns, heal 3 damage.
     if(isChar(c)&&hasAbilityLabel(fc,'Chi Mending')){ const mx=(fc.baseHP||0)+(fc.hpBonus||0)+(fc.passiveHp||0);
       if((fc.currentHP||0)<mx){ const h=Math.min(3,mx-fc.currentHP); fc.currentHP+=h; log(`🍀 Chi Mending: ${c.name} heals ${h}.`,'gain'); } }
+    // ── PHAROAH: Limitless Power — at the start of each of your turns +1/+1 until it leaves the field, up to +4/+4 in all.
+    if(isChar(c)&&hasAbilityLabel(fc,'Limitless Power')&&(fc._limitless||0)<4){
+      fc._limitless=(fc._limitless||0)+1; fc.atkBonus=(fc.atkBonus||0)+1; fc.currentATK=(fc.currentATK||0)+1; fc.hpBonus=(fc.hpBonus||0)+1; fc.currentHP=(fc.currentHP||0)+1;
+      log(`💚 Limitless Power: ${c.name} gets +1/+1 (now +${fc._limitless}/+${fc._limitless}, ${fc.currentATK}/${fc.currentHP}).`,'gain');
+      if(typeof fxHeal==='function') try{ fxHeal(fc.uid,1); }catch(e){} }
     // ── THE DARK HOLD: Forbidden Power — the holder takes 1 damage at the start of each of your turns (per copy; not while hexed).
     if(isChar(c)&&Array.isArray(fc.attachments)&&fc.attachments.includes('the_dark_hold_bse')&&!(typeof isEquipHexed==='function'&&isEquipHexed(fc,'the_dark_hold_bse'))){
       const n=fc.attachments.filter(a=>a==='the_dark_hold_bse').length;
@@ -20421,7 +20437,7 @@ function hasKW(fc, kw){ if(DB[fc.cid]?.keywords?.includes(kw))return true; if(Ar
   if(fc&&fc.stance&&(kw==='onslaught'||kw==='guardian')&&stanceGrantsKW(fc,kw)) return true;
   return false; }
 // Passive abilities that are really a keyword in disguise — stealing one grants the keyword.
-const KEYWORD_PASSIVES={'Blue Tempest':'onslaught','Rage of Sparta':'burst_speed','Flash Step':'burst_speed','Spider Agility':'burst_speed','Hulk Smash':'breakthrough','Four as One':'onslaught','Four Elements Unbound':'onslaught','Muladhara':'resolve'};
+const KEYWORD_PASSIVES={'Blue Tempest':'onslaught','Rage of Sparta':'burst_speed','Flash Step':'burst_speed','Spider Agility':'burst_speed','Hulk Smash':'breakthrough','Four as One':'onslaught','Four Elements Unbound':'onslaught','Muladhara':'resolve','Unbreakable':'resolve'};
 function renderKeywordBadges(fc){
   const kws=DB[fc.cid]?.keywords; if(!kws||!kws.length) return '';
   return kws.map(kw=>{ const k=KEYWORDS[kw]; if(!k) return ''; return '<span class="kw-badge '+k.cls+'" title="'+k.desc+'">'+k.label+'</span>'; }).join('');
