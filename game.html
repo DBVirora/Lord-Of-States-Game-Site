@@ -9818,6 +9818,8 @@ const GAME_BUILD='10.18'; // rules version — must match the opponent's client 
 const GODOT_SYNC=[
   { build:'10.18', date:'2026-11-02',
     cards:[
+      {id:'wonder_woman_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/DC/Wonder Woman (Promo).png', newAbilities:['Bracelets of Submission','Lasso of Truth',"Amazon's Valor"],
+        note:"Wonder Woman (Promo, DC) · White · Character · cost 8 · 8 ATK / 7 HP · subtypes Amazon, Hero · race 'Amazon' · charName 'Wonder Woman' · sym WW. Main menu art: 'Main Menu Images/wnder1Wonderowman.jpg'."},
       {id:'crystal_ssj_bse', set:'base_set', number:'114/150', rarity:'uncommon', scan:'Sets/BASE SET/114-150 (Crystal SSJ).png', newAbilities:['Prism Barrier'],
         note:"Crystal (SSJ) · Blue · transformOnly · charLine 'crystal' · formTier 'ssj1' · path 'saiyan' · cost 5 · 4 ATK / 5 HP · subtypes Saiyan · race 'Saiyan' · sym CRYSSJ. DATA CHANGE: crystal_bse.nextForms [] → ['ssj1'] (Crystal → Crystal (SSJ)). Main menu art: 'Main Menu Images/Crystal SSJ1Crystalssj1.jpg'."},
       {id:'surana_sss_bse', set:'base_set', number:'030/150', rarity:'legend', scan:'Sets/BASE SET/030-150 (Surana SSS).png', newAbilities:['Scarlet Siphon','Blood Rite','Crimson Cataclysm'],
@@ -9825,6 +9827,9 @@ const GODOT_SYNC=[
       {id:'virora_surfacer_mui_sr_bse', set:'base_set', number:'154/150', rarity:'secret', scan:'Sets/BASE SET/154-150 (Virora Surfacer MUI) (Secret Rare).png', newAbilities:['Mastered Instinct','Celestial Surge','Silent Horizon'],
         note:"Virora (Surfacer MUI) SECRET RARE · secretRare:true · Purple · Character (played from hand, NOT transformOnly) · cost 12 · 11 ATK / 8 HP · subtypes Royal, Saiyan, Celestial · race 'Royal Saiyan Celestial' · charName 'Virora' (Virora checks like Void Synergy count her) · charLine 'virora_mui' (her own line) · no formTier · nextForms [] · transforms [] — a standalone card: nothing transforms into or out of her. Main menu art (admin sets it per tab): Main Menu Images/vmuisurfacerSurfacer MUI virora.jpg."}],
     abilities:[
+      "BRACELETS OF SUBMISSION (Wonder Woman, passive): in dealDamage after Nullify / Inferno Ward / Diamond Calm / Half-Divine and BEFORE Prism Barrier: if the damage is > 0, it is NOT combat damage (current fx context isn't {combat:true}) and she hasn't used it this player-turn (key G.turn+':'+G.activePlayer), all of it is prevented and the key is stored on fc._braceTurn. Combat context is set by resolveAttack, resolveCharVsHerald, resolveHeraldAttackTarget, resolveHeraldVsField, resolveLocationAttack and NOW resolveLifeAttack too. In-combat counters push their own context, so they count as ability damage: NOW Inferno Reflex, Shielded Pressure and Godfire Spillover (Hellfire Vengeance and Through the Horde already did). Instants, Herald abilities and start-of-turn triggers (Silent Killer, Forbidden Power) count as ability damage. Burn/Poison chip doesn't go through dealDamage.",
+      "LASSO OF TRUTH (Wonder Woman, activated): 2 Energy (White), once every 2 turns — its own key fc.abilityUsed.lasso_turn with the Water Whip convention (G.turn − last < 2 = wait), paid → doesn't tap. Spend first, then openEnemyTargetPicker over every opposing character (2v2: both enemies; Godly Evasion toll / Drunken Stance as usual; closing the picker refunds via the activateAbility undo). The target gets fc._lassoUntil = lassoUntilFor(controller): 1v1 G.turn + 1 (G.turn counts every player turn); 2v2 G.turn if the controller still acts later this round, else G.turn + 1. isLassoed(fc) = G.turn ≤ _lassoUntil → canCharacterAttack returns false (blocks humans and the AI) + a click message + status chip 🪢. Then the controller's hand is shown to a local human (showOpponentHandModal); when the AI uses it, the log just notes the reveal. AI: target = the opposing character with the highest Attack that isn't Drunken / already lassoed; score 6 + 0.8 × that Attack (max +12).",
+      "AMAZON'S VALOR (Wonder Woman, passive): recalcPassives, next to Tag Division — each of your OTHER characters whose subtypes include 'Hero' gets +1 Attack per Amazon's Valor source on your field. Heroes today: Anya Corazon, Batman (DCeased), Danny Rand (Iron Fist), Starfire (and Wonder Woman herself, who doesn't buff herself).",
       "PRISM BARRIER (Crystal SSJ, activated): 2 Energy (Blue), once per turn (generic lock), paid → doesn't tap. Choose one of YOUR characters (she can pick herself; chooser with Skip/close = refund; AI picks its highest-value unshielded character). Sets fc._prismShield = 3, fc._prismBy = you; a new barrier replaces an old one (no stacking). In dealDamage, AFTER Nullify / Inferno Ward / Diamond Calm / Half-Divine: if the damage is still > 0, prevent up to 3 of it and the barrier is spent (even on a 1-damage hit). Covers combat (attack, hit back, Power Struggle) and ability damage; Burn/Poison chip doesn't use dealDamage and the barrier is already gone by then. Ends at the start of the placer's next turn (tickPrismBarrier, first thing in startTurnFx). Status chip 💠. AI: uses it when an enemy character exists, leaving at least 1 Energy.",
       "SCARLET SIPHON (Surana SSS, triggered): in combatDamageHooks (after Omega Venom / Withering Touch) — whenever she deals combat damage > 0 to a CHARACTER (attacking, retaliating, Power Struggle, Life-mode blocks and block counters): if that character is still on the field it gets −2 Attack (currentATK −2, not below 0; atkBonus −2; lasts until it leaves the field); if Surana is still on the field she heals 2 (capped at baseHP + hpBonus + passiveHp). Either half happens without the other (a kill still heals her). Heralds aren't characters. Label-based (a stolen copy works).",
       "BLOOD RITE (Surana SSS, activated): FREE, once per turn (generic once_per_turn lock), does NOT tap (card flag noTapOnAbility — otherwise the +3 could never attack). Normal reveal → flipCoinFor (the full roll panel). HEADS: nothing ('the rite fails'). TAILS: you MAY sacrifice one of your other non-token characters (a chooser with Skip; closing it = Skip) — a real Sacrifice via doSacrifice (half its printed cost back as Energy, Death's Offering / Chaos Tithe / Fuel the Chaos fire). If you do: Surana gets +3 Attack until the end of your turn (fc._bloodRite, removed by tickBloodRite at end of turn next to tickIronFist; status chip 🩸) and heals 3 (capped at max). No other character → nothing. AI: only uses it when it has a cheap sacrifice (aiFcValue ≤ 12) AND either Surana can attack this turn or she's missing 3+ HP; on tails it sacrifices its lowest-value character.",
@@ -10491,6 +10496,7 @@ const DEFAULTS={
   pavi_root_chakra_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Pavi%20Root%20Chakra%20(Promo).png',
   raven_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Raven%20(Promo%20Card).png',
   starfire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Starfire%20(Promo).png',
+  wonder_woman_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Wonder%20Woman%20(Promo).png',
   batman_dceased_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Batman%20DCeased%20(Promo).png',
   danny_rand_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Danny%20Rand%20Iron%20Fist%20(Promo).png',
   raven_vampire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Raven%20Vampire%20(Promo%20Card).png',
@@ -10952,6 +10958,15 @@ const DB={
   danny_rand_promo:{id:'danny_rand_promo',rarity:'rare',name:'Danny Rand (Iron Fist)',color:'yellow',charName:'Danny Rand',subtypes:['Hero','Martial Artist'],type:'char',race:'Hero',cost:5,atk:4,hp:5,sym:'IFIST',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
     abilities:[{label:'The Iron Fist',type:'activated',cost:2,limit:'every_2_turns',text:'Pay 2 Energy: This card gets +4 Attack until the end of your turn. (Once every 2 turns)'},
       {label:'Chi Mending',type:'passive',cost:0,text:'Regeneration. At the start of your turn, this card heals 3 damage.'}]},
+  // ── WONDER WOMAN (Promo, DC) — build 10.18. White (cost circle matches Asa). Legend.
+  //    Bracelets of Submission: the first time each turn ABILITY damage (anything but combat damage) would hit her, it's all prevented.
+  //    Lasso of Truth: 2⚡, once every 2 turns (Water Whip convention), no tap: an opposing character can't attack until the end of
+  //    its controller's next turn (fc._lassoUntil, checked in canCharacterAttack) and you see its controller's hand.
+  //    Amazon's Valor: your OTHER Hero characters get +1 Attack (recalcPassives, next to Tag Division).
+  wonder_woman_promo:{id:'wonder_woman_promo',rarity:'legend',name:'Wonder Woman',color:'white',charName:'Wonder Woman',subtypes:['Amazon','Hero'],type:'char',race:'Amazon',cost:8,atk:8,hp:7,sym:'WW',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
+    abilities:[{label:'Bracelets of Submission',type:'passive',cost:0,text:'The first time each turn an ability would deal damage to this card, prevent all of it.'},
+      {label:'Lasso of Truth',type:'activated',cost:2,limit:'every_2_turns',text:"Pay 2 Energy: Choose an opponent character. It can't attack until the end of its controller's next turn, and its controller reveals their hand to you. (Once every 2 turns)"},
+      {label:"Amazon's Valor",type:'passive',cost:0,text:'Your other Hero characters get +1 Attack.'}]},
   // ── STARFIRE (Promo, DC) — build 10.11. Red.
   //    Starbolt: 2⚡ (pays Red), once per turn, no tap: 2 damage to target opposing character (Heir's Shockwave handler).
   //    Warrior of Tamaran: when its own attack destroys a character, +2 Energy.
@@ -12122,7 +12137,7 @@ function triggerGodfireSpillover(killerFc, killerP, victimP, victimUid){
   const opps=(typeof aiEnemyPlayersOf==='function')?aiEnemyPlayersOf(killerP):[killerP===1?2:1];
   const live=()=>{ const out=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(f.uid!==victimUid&&isChar(DB[f.cid])&&!hasDrunkenStance(f)) out.push({fc:f,p:op}); })); return out; };
   if(!live().length){ log('🔥 Godfire Spillover: no other opposing character to hit.','info'); return; }
-  const hit=(uid)=>{ const t=live().find(x=>x.fc.uid===uid); if(!t) return; log(`🔥 Godfire Spillover: 3 damage to ${DB[t.fc.cid]?.name}!`,'dmg'); dealDamage(t.p,uid,3); if(typeof renderAll==='function') renderAll(); };
+  const hit=(uid)=>{ const t=live().find(x=>x.fc.uid===uid); if(!t) return; log(`🔥 Godfire Spillover: 3 damage to ${DB[t.fc.cid]?.name}!`,'dmg'); { const _fx=(typeof fxPush==='function')?fxPush(killerFc.cid,'Godfire Spillover',killerFc.uid):null; try{ dealDamage(t.p,uid,3); } finally{ if(typeof fxPop==='function') fxPop(_fx); } } if(typeof renderAll==='function') renderAll(); };
   seqAbility(killerP, killerFc.cid, 'Godfire Spillover', null, {kind:'COMBAT'}, ()=>{
     const c=live(); if(!c.length) return;
     if(seqIsLocalHuman(killerP)&&!(G&&G._aiAuto)){
@@ -12533,6 +12548,7 @@ function fxEffectsOf(fc){
   if(hasAbilityLabel(fc,'Through the Horde')&&fc._hordeTurn===(G&&G.turn)) cond('🌊','Through the Horde','Already used this turn.',null);
   if(fc._ironFist>0) cond('👊','The Iron Fist','+'+fc._ironFist+' Attack until the end of this turn.',null);
   if(fc._bloodRite>0) cond('🩸','Blood Rite','+'+fc._bloodRite+' Attack until the end of this turn.',null);
+  if(isLassoed(fc)) cond('🪢','Lasso of Truth',"Can't attack until the end of its controller's next turn.",null);
   if(fc._prismShield>0) cond('💠','Prism Barrier','Prevents '+fc._prismShield+' of the next damage it would be dealt (ends at the start of its owner\'s next turn).',null);
   if(Array.isArray(fc.attachments)&&fc.attachments.includes('the_dark_hold_bse')) cond('📕','The Dark Hold','Takes 1 damage at the start of each of your turns'+(fc._sinTurn===(G&&G.turn)?' · Pages of Sin used this turn':'')+'.',null);
   { const l=fc.abilityUsed&&fc.abilityUsed.sandstorm_turn; if(l!=null&&G&&G.turn-l<4&&hasAbilityLabel(fc,'Sandstorm')) cond('🏜','Sandstorm','Recharging: ready again in '+(4-(G.turn-l))+' turn(s).',null); }
@@ -12638,6 +12654,8 @@ function recalcPassives(){
       // gets +1 ATK while Ivan is on the field. Removing Ivan drops it.
       // One +1 for each Tag Division source other than this character (Ivan, or a thief of his ability).
       pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'Tag Division')).forEach(f=>add(1,0,f.cid,'Tag Division',f.uid));
+      // WONDER WOMAN — Amazon's Valor: your OTHER Hero characters get +1 Attack (one +1 per source).
+      if((c.subtypes||[]).some(t=>/^hero$/i.test(String(t).trim()))) pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,"Amazon's Valor")).forEach(f=>add(1,0,f.cid,"Amazon's Valor",f.uid));
       // BEAST BOND (Voraxis): while you control a Virora, this card and each Virora you control get +2/+2.
       //   "a Virora" = a character with Virora in its name (every Virora form, Darkspine Virora, Virora (Surface
       //   Technique), Magnus & Virora). Each Beast Bond source adds its own +2/+2 to every Virora.
@@ -13463,6 +13481,10 @@ function _dmgSrcIsGod(tuid){
 // character would be dealt damage (after Nullify / Inferno Ward / Diamond Calm / Half-Divine), up to 3 of it is prevented and the
 // barrier is spent — even if the hit was smaller. Combat and ability damage (both go through dealDamage). Ends at the start of
 // the placer's next turn (tickPrismBarrier in startTurnFx, before Burn/Poison chip).
+// BRACELETS OF SUBMISSION (Wonder Woman): ability damage = any dealDamage NOT under the combat context (fxCtx {combat:true}, set by
+// resolveAttack / Herald fights / Life-mode blocks). Counters that fire inside combat (Inferno Reflex, Shielded Pressure, Godfire
+// Spillover, Hellfire Vengeance, Through the Horde) push their own context, so they count as abilities. One use per player-turn.
+function _braceTurnKey(){ return (G?G.turn:0)+':'+(G?G.activePlayer:0); }
 function prismBarrierAbsorb(fc,dmg){
   const blk=Math.min(fc._prismShield||0,dmg); fc._prismShield=0; fc._prismBy=null;
   if(blk>0){ log(`💠 Prism Barrier: ${DB[fc.cid]?.name} is shielded — ${blk} damage prevented${dmg-blk>0?` (takes ${dmg-blk})`:''}.`,'gain');
@@ -13477,6 +13499,9 @@ function dealDamage(tp,tuid,amt){
   const fc=G.players[tp].field.find(f=>f.uid===tuid);if(!fc)return;
   const c=DB[fc.cid];if(!c)return;
   let dmg=isChar(c)?Math.max(0,amt-(fc.nullify||0)-(hasAbilityLabel(fc,'Inferno Ward')?1:0)-(hasAbilityLabel(fc,'Diamond Calm')?2:0)-((hasAbilityLabel(fc,'Half-Divine')&&_dmgSrcIsGod(tuid))?2:0)):amt; // Inferno Ward (Crystora) −1 · Diamond Calm (Crystora SSBM) −2 · Half-Divine (Asa) −2 vs Gods
+  if(isChar(c)&&dmg>0&&hasAbilityLabel(fc,'Bracelets of Submission')&&!(typeof _fxCtx!=='undefined'&&_fxCtx&&_fxCtx.combat)&&fc._braceTurn!==_braceTurnKey()){ // 🛡 Wonder Woman
+    fc._braceTurn=_braceTurnKey(); log(`🛡 Bracelets of Submission: ${DB[fc.cid]?.name} deflects it — all ${dmg} damage prevented.`,'gain');
+    if(typeof showStatusFx==='function') try{ showStatusFx(fc.uid,'freeze'); }catch(e){} dmg=0; }
   if(isChar(c)&&fc._prismShield>0&&dmg>0) dmg=prismBarrierAbsorb(fc,dmg); // 💠 Prism Barrier (Crystal SSJ): prevents up to 3 of the next damage, then it's gone
   // Track marked damage silently for future parry/defense mechanics
   if(isChar(c))fc.markedDamage=(fc.markedDamage||0)+dmg;
@@ -14701,12 +14726,12 @@ function executeCombatDamage(ap,auid,dp,duid){
   // INFERNO REFLEX — Violet (SSG) counters any attacker for 2 flat damage when hit.
   if(!_noCounter&&hasAbilityLabel(dfc,'Inferno Reflex')&&G.players[ap].field.some(f=>f.uid===auid)){
     log(`Inferno Reflex: ${dc.name} counters ${ac.name} for 2!`,'dmg');
-    dealDamage(ap,auid,2);
+    { const _fx=(typeof fxPush==='function')?fxPush(dfc.cid,'Inferno Reflex',dfc.uid):null; try{ dealDamage(ap,auid,2); } finally{ if(typeof fxPop==='function') fxPop(_fx); } }
   }
   // SHIELDED PRESSURE — Tyler (SSBE) counters any attacker for 3 flat damage when hit.
   if(!_noCounter&&hasAbilityLabel(dfc,'Shielded Pressure')&&G.players[ap].field.some(f=>f.uid===auid)){
     log(`Shielded Pressure: ${dc.name} counters ${ac.name} for 3!`,'dmg');
-    dealDamage(ap,auid,3);
+    { const _fx=(typeof fxPush==='function')?fxPush(dfc.cid,'Shielded Pressure',dfc.uid):null; try{ dealDamage(ap,auid,3); } finally{ if(typeof fxPop==='function') fxPop(_fx); } }
   }
   renderAll();
 }
@@ -14951,8 +14976,15 @@ function maxAttackersAllowed(){
   return 1 + (G.bonusAttackers||0);
 }
 // Can this specific character be selected/attack right now?
+// LASSO OF TRUTH (Wonder Woman): fc._lassoUntil = the last G.turn on which it can't attack (the end of its controller's next turn).
+function isLassoed(fc){ return !!(fc&&fc._lassoUntil!=null&&G&&G.turn<=fc._lassoUntil); }
+function lassoUntilFor(ctrl){
+  if(G.is2v2&&Array.isArray(G.turnOrder)){ const ci=G.turnOrder.indexOf(ctrl); return ci>(G.turnIndex||0)?G.turn:G.turn+1; } // 2v2: G.turn counts rounds
+  return G.turn+1; // 1v1: G.turn counts every player turn
+}
 function canCharacterAttack(p, fc){
   if(!fc || !isChar(DB[fc.cid])) return false;
+  if(isLassoed(fc)) return false; // 🪢 Lasso of Truth
   if(fc.tapped) return false; // tapped cards (used a free ability) can't attack
   if(stanceNoAttack(fc)) return false; // Earth Stance / Bloodstone Skin: "can't attack"
   if((fc.fatigue||0)>0) return false; // 💤 Fatigued (split fusion materials)
@@ -14983,6 +15015,7 @@ function onFieldClick(p,uid,fc){
       if(fc.turnPlayed>=G.turn&&!hasKW(fc,'burst_speed')){log('Just played — wait 1 turn.','dmg');return;}
       if((fc.fatigue||0)>0){log(`💤 ${DB[fc.cid].name} is Fatigued — it can't attack for ${fc.fatigue} more of your turn${fc.fatigue>1?'s':''}.`,'dmg');return;}
       if(stanceNoAttack(fc)){log(`${DB[fc.cid].name} is in ${STANCE_META[fc.stance].label} and can't attack.`,'dmg');return;}
+      if(isLassoed(fc)){log(`🪢 ${DB[fc.cid].name} is bound by the Lasso of Truth — it can't attack this turn.`,'dmg');return;}
       // ENFORCE: only one character may attack per phase (unless ability grants more)
       if(!canCharacterAttack(p, fc)){
         if((fc.attacksThisTurn||0)>0){log(`${DB[fc.cid].name} already attacked this turn.`,'dmg');}
@@ -15107,6 +15140,7 @@ function declareLifeAttack(attackerPlayer, attackerUid){
 // Resolve a Life attack with the spec order (damage → death → counter → trample).
 function resolveLifeAttack(attackerPlayer, afc, blocker){
   const defenderPlayer = attackerPlayer===1?2:1;
+  if(typeof fxCtx==='function') fxCtx(null,'Combat',null,{combat:true});
   if(afc&&typeof fxStrikeAt==='function') fxStrikeAt(afc.uid, blocker?blocker.uid:{herald:defenderPlayer}, afc.cid);
   const power=effPower(afc);
   if(!blocker){
@@ -17290,6 +17324,37 @@ function _activateAbilityCore(fc,abl){
       if(typeof SFX!=='undefined'&&SFX.ability) try{ SFX.ability(); }catch(e){}
       renderAll(); };
     openEnemyTargetPicker(foes.map(x=>x.fc),hit,{sourcePlayer:ap,title:abl.label,desc:isWeb?'Choose an opposing character to Paralyze.':'Choose an opposing character: 2 damage, then it is Burned.'});
+    return;
+  }
+  // ── WONDER WOMAN: Lasso of Truth — 2⚡, once every 2 turns (fc.abilityUsed.lasso_turn, Water Whip convention), no tap. Choose an
+  //    opposing character: it can't attack until the end of its controller's next turn, and you see that player's hand.
+  if(abl.label==='Lasso of Truth'){
+    const last=fc.abilityUsed && fc.abilityUsed.lasso_turn;
+    if(last!=null && (G.turn-last)<2){ log(`Lasso of Truth: wait ${2-(G.turn-last)} more turn(s).`,'dmg'); return; }
+    const ap=G.activePlayer, pl=G.players[ap]; const opps=_fusionOpps(ap);
+    const ownerOf=(uid)=>opps.find(o=>(G.players[o]?.field||[]).some(f=>f.uid===uid));
+    const enemies=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) enemies.push(f); }));
+    if(!enemies.length){ log('Lasso of Truth: no opposing characters.','dmg'); return; }
+    if(pl.energy<2){ log('Not enough energy (need 2⚡).','dmg'); return; }
+    if(!spendEnergyAbility(ap,2,DB[fc.cid]?.color||null)) return;
+    if(!fc.abilityUsed) fc.abilityUsed={}; fc.abilityUsed.lasso_turn=G.turn; pl.usedAbilityThisTurn=true;
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    const bind=(uid)=>{ const op=ownerOf(uid); const t=op&&G.players[op].field.find(f=>f.uid===uid); if(!t){ renderAll(); return; }
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Lasso of Truth',fc.uid):null;
+      t._lassoUntil=lassoUntilFor(op); if(typeof fxPop==='function') fxPop(_fx);
+      log(`🪢 Lasso of Truth: ${DB[t.cid].name} can't attack until the end of ${pname(op)}'s next turn — and ${pname(op)} reveals their hand.`,'gain');
+      if(typeof SFX!=='undefined'&&SFX.ability) try{ SFX.ability(); }catch(e){}
+      if(seqIsLocalHuman(ap)&&!G._aiAuto){ const _show=()=>showOpponentHandModal(op); if(typeof showOpponentHandModal==='function') setTimeout(_show,250); }
+      else log(`🪢 ${pname(op)}'s hand (${(G.players[op].hand||[]).length} cards) is revealed to ${pname(ap)}.`,'info');
+      renderAll(); };
+    if(seqIsLocalHuman(ap)&&!G._aiAuto){
+      openEnemyTargetPicker(enemies,bind,{sourcePlayer:ap,title:'Lasso of Truth',desc:"Choose an opposing character. It can't attack until the end of its controller's next turn, and they reveal their hand to you."});
+    } else {
+      const pool=enemies.filter(f=>!hasDrunkenStance(f)&&!isLassoed(f)&&(!hasGodlyEvasion(f)||pl.energy>=2));
+      const best=(pool.length?pool:enemies).slice().sort((a,b)=>effPower(b)-effPower(a))[0];
+      openEnemyTargetPicker([best],bind,{sourcePlayer:ap,title:'Lasso of Truth'});
+    }
     return;
   }
   // ── KORRA: Water Whip — 2⚡, once every 2 turns. Tap an opposing character so it can't attack this turn.
@@ -19911,6 +19976,9 @@ function aiScoreAbility(p, fc, abl, src){
     if(!_pz.length||(_pz.length<2&&!_pz.some(e=>(e.fc.currentHP||0)<=3))) return -1; }
   if(abl.label==='Lord of Ruin'){ if(fc.abilityUsed&&fc.abilityUsed['Lord of Ruin']) return -1;
     if(!(pl.discard||[]).some(cid=>{ const cc=DB[cid]; return cc&&isChar(cc)&&!cc.isToken&&(cc.cost||0)<=5&&(cc.cost||0)>=3; })) return -1; }
+  if(abl.label==='Lasso of Truth'){ const _l=fc.abilityUsed&&fc.abilityUsed.lasso_turn; if(_l!=null&&G.turn-_l<2) return -1;
+    const _es=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&!isLassoed(e.fc)&&!statusActive(e.fc,'freeze')&&effPower(e.fc)>0); if(!_es.length) return -1;
+    return 6+Math.min(12,Math.max(..._es.map(e=>effPower(e.fc)))*.8); } // bench their biggest attacker for a turn
   if(abl.label==='Web Snare'||abl.label==='Get Over Here!'){ const _k=abl.label==='Web Snare'?'web_snare_turn':'get_over_here_turn', _l=fc.abilityUsed&&fc.abilityUsed[_k];
     if(_l!=null&&G.turn-_l<2) return -1;
     const _es=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&(abl.label!=='Web Snare'||!statusActive(e.fc,'paralyze'))); if(!_es.length) return -1; }
