@@ -9818,6 +9818,8 @@ const GAME_BUILD='10.18'; // rules version — must match the opponent's client 
 const GODOT_SYNC=[
   { build:'10.18', date:'2026-11-02',
     cards:[
+      {id:'asteria_herald', set:'base_set', number:'150/150', rarity:'mythic', scan:'Sets/BASE SET/150-150 (Asteria).png', newAbilities:['Aetherion Light','Radiant Blessing','Cosmic Radiance'],
+        note:"Asteria · HERALD · Green (the plan's Green Herald slot) · 10 ATK / 14 HP · subtypes Prime, God · race 'Prime God'. Main menu art: 'Main Menu Images/Asteria.jpg'. NEW ENGINE: a shared heal hook noteHeal(fc, amt) + healFc(fc, amt)."},
       {id:'zaria_bse', set:'base_set', number:'127/150', rarity:'legend', scan:'Sets/BASE SET/127-150 (Zaria).png', newAbilities:['Combat Mastery','Tactical Authority','Divine Command'],
         note:"Zaria · 'The Goddess of War' · Red · Character played from hand (standalone) · cost 7 · 7 ATK / 6 HP · subtypes Prime, God · race 'Prime God' · sym ZAR. Main menu art: 'Main Menu Images/Zaria.jpg'."},
       {id:'pharoah_bse', set:'base_set', number:'112/150', rarity:'legend', scan:'Sets/BASE SET/112-150 (Pharoah).png', newAbilities:['Limitless Power','Unbreakable'],
@@ -9831,6 +9833,10 @@ const GODOT_SYNC=[
       {id:'virora_surfacer_mui_sr_bse', set:'base_set', number:'154/150', rarity:'secret', scan:'Sets/BASE SET/154-150 (Virora Surfacer MUI) (Secret Rare).png', newAbilities:['Mastered Instinct','Celestial Surge','Silent Horizon'],
         note:"Virora (Surfacer MUI) SECRET RARE · secretRare:true · Purple · Character (played from hand, NOT transformOnly) · cost 12 · 11 ATK / 8 HP · subtypes Royal, Saiyan, Celestial · race 'Royal Saiyan Celestial' · charName 'Virora' (Virora checks like Void Synergy count her) · charLine 'virora_mui' (her own line) · no formTier · nextForms [] · transforms [] — a standalone card: nothing transforms into or out of her. Main menu art (admin sets it per tab): Main Menu Images/vmuisurfacerSurfacer MUI virora.jpg."}],
     abilities:[
+      "HEAL HOOK (engine): noteHeal(fc, amt) runs after every heal effect with the Health actually restored — now wired into Crimson Gale, Scarlet Siphon, healing Instants (Fruits / Matcha), The Gift of the God's, Etheric Strike, Healing Hands, Blood Rite, Regeneration, Chi Mending, Heart of a Saiyan God, Saiyan God Healing, Prism Orb, Senzu Bean, plus Asteria's own heals. healFc(fc, amt) = heal up to max Health (baseHP + hpBonus + passiveHp) + fxHeal + noteHeal. Gaining Health (hpBonus buffs) is NOT a heal.",
+      "AETHERION LIGHT (Asteria Herald, triggered): (1) startTurnFx, after Burn/Poison chip and before the per-card effects: each of your characters healFc(f, 1). (2) noteHeal: when one of your characters heals (amt > 0) and your Herald is unbroken with Aetherion Light → +1 Attack (fc._aeth += 1, fc._aethBy = you; one +1 per heal, they stack), removed in endTurnFx when YOU end your turn. Chip ✨.",
+      "RADIANT BLESSING (Asteria Herald, activated): 2 Energy (Green), once per turn (generic lock), paid → no tap. Choose one of your characters (shows ♥ and status icons) → healFc(t, 3) and cureStatus on one status; with 2+ statuses a second chooser picks which (AI order: Freeze, Paralyze, Confusion, Poison, Burn). Closing either chooser refunds. AI: uses it when a character is missing 2+ Health or has a status.",
+      "COSMIC RADIANCE (Asteria Herald, activated): 4 Energy (Green), ONCE PER GAME, paid → no tap. 2 damage to EACH opposing character (2v2 both enemies; dealDamage so Nullify applies); none → refunded. AI: 2+ enemies or a kill; score 10 + 4/enemy + 12/kill.",
       "COMBAT MASTERY (Zaria, triggered): in executeCombatDamage next to Sun's Judgment — when she is the attacker and the defender is a character whose PRINTED cost (DB cost) is higher than hers (7), atkDmg += 2. Attacks only (not her hit back).",
       "TACTICAL AUTHORITY (Zaria, passive): recalcPassives next to Amazon's Valor — each of your OTHER characters with subtype Prime gets +1 Attack per source. Primes today: Theia, Alita, Alita (SSJ), Jalina, Kevin, Kevin (SSG).",
       "DIVINE COMMAND (Zaria, activated): 3 Energy (Red), ONCE PER GAME (generic lock), paid → no tap. Each of your characters (herself included) +2 Attack / +2 Health (currentATK, atkBonus, currentHP, hpBonus; fc._dcmd). End-of-turn sweep (next to King's Right Hand): −_dcmd Attack/Health, Health never below 1. No characters → refunded. Chip ⭐. AI: 2+ characters and an attack to make; score 6 + 3 per character.",
@@ -10474,6 +10480,7 @@ const DEFAULTS={
   crystal_ssj_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/114-150%20(Crystal%20SSJ).png',
   pharoah_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/112-150%20(Pharoah).png',
   zaria_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/127-150%20(Zaria).png',
+  asteria_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/150-150%20(Asteria).png',
   surana_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/028-150%20(Surana%20Base).png',
   surana_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/029-150%20(Surana%20SSG).png',
   surana_sss_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/030-150%20(Surana%20SSS).png',
@@ -11214,6 +11221,17 @@ const DB={
       {type:'passive',label:'Chaos Insurgence',cost:0,text:'Each Character who enters your field gains +3 ATK.'},
       {type:'activated',label:'Ravager Strike',cost:0,limit:'every_4_turns',text:"Flip A coin, if heads choose 1 character from your opponent's field to attack 6 damage. If tails send them to the Rift Zone. (Every 4 Turns)"},
       {type:'activated',label:'Darkness Overturn',cost:7,text:'You may retrieve any 1 character card from your discard pile and place it into your hand. (Cost 7 Energy)'}
+    ],transforms:[]},
+  // ── ASTERIA (BSE 150/150) — build 10.18. HERALD, Prime God, Green (the planned Green Herald slot; healing = Green).
+  //    Aetherion Light: start of your turn each of your characters heals 1; whenever one of your characters heals, +1 Attack until
+  //    the end of your turn (noteHeal → fc._aeth). Radiant Blessing: 2⚡ once per turn — heal 3 + cure one status. Cosmic Radiance:
+  //    4⚡ once per game — 2 damage to each opposing character.
+  asteria_herald:{id:'asteria_herald',rarity:'mythic',name:'Asteria',type:'herald',race:'Prime God',cost:0,atk:10,hp:14,sym:'👑',subtypes:['Prime','God'],color:'green',keywords:[],
+    heraldFlip:null,autoFlip:false,setId:'base_set',cardNumber:'150/150',
+    abilities:[
+      {type:'triggered',label:'Aetherion Light',cost:0,text:'At the start of your turn, each of your characters heals 1 damage. Whenever one of your characters heals, it gets +1 Attack until the end of your turn.'},
+      {type:'activated',label:'Radiant Blessing',cost:2,limit:'once_per_turn',text:'Pay 2 Energy: One of your characters heals 3 damage and loses one status. (Once per turn)'},
+      {type:'activated',label:'Cosmic Radiance',cost:4,limit:'once_per_game',text:'Pay 4 Energy: Deal 2 damage to each opponent character. (Once per game)'}
     ],transforms:[]},
   // ── PRAXUS (BSE 148/150) — build 10.13. HERALD, Darkness God, Black.
   //    Devouring Dark: whenever one of your characters is destroyed or sacrificed, +1 Energy (max 2 per turn).
@@ -12275,7 +12293,7 @@ function triggerCrimsonGale(killerFc, killerP, victimP, victimUid){
   if(!G.players[killerP] || !G.players[killerP].field.some(f=>f.uid===killerFc.uid)) return; // she died too
   const _fx=(typeof fxPush==='function')?fxPush(killerFc.cid,'Crimson Gale',killerFc.uid):null;
   const mx=(killerFc.baseHP||0)+(killerFc.hpBonus||0)+(killerFc.passiveHp||0), before=killerFc.currentHP||0;
-  killerFc.currentHP=Math.min(mx,before+3);
+  killerFc.currentHP=Math.min(mx,before+3); noteHeal(killerFc,killerFc.currentHP-before);
   killerFc.atkBonus=(killerFc.atkBonus||0)+1; killerFc.currentATK=(killerFc.currentATK||0)+1;
   killerFc.hpBonus=(killerFc.hpBonus||0)+1; killerFc.currentHP=(killerFc.currentHP||0)+1;
   if(typeof fxHeal==='function') try{ fxHeal(killerFc.uid,3); }catch(e){}
@@ -12310,7 +12328,7 @@ function triggerScarletSiphon(srcFc, srcP, tgtFc, tgtP, dmg){
     if(alive){ const was=tgtFc.currentATK||0; tgtFc.currentATK=Math.max(0,was-2); tgtFc.atkBonus=(tgtFc.atkBonus||0)-2;
       log(`🩸 Scarlet Siphon: ${DB[tgtFc.cid]?.name} gets −2 Attack (now ${tgtFc.currentATK}).`,'dmg'); }
     if(mine){ const mx=(srcFc.baseHP||0)+(srcFc.hpBonus||0)+(srcFc.passiveHp||0), before=srcFc.currentHP||0, h=Math.max(0,Math.min(2,mx-before));
-      if(h>0){ srcFc.currentHP=before+h; if(typeof fxHeal==='function') try{ fxHeal(srcFc.uid,h); }catch(e){} log(`🩸 Scarlet Siphon: ${DB[srcFc.cid]?.name} heals ${h} (now ${srcFc.currentHP}).`,'gain'); } }
+      if(h>0){ srcFc.currentHP=before+h; noteHeal(srcFc,h); if(typeof fxHeal==='function') try{ fxHeal(srcFc.uid,h); }catch(e){} log(`🩸 Scarlet Siphon: ${DB[srcFc.cid]?.name} heals ${h} (now ${srcFc.currentHP}).`,'gain'); } }
   } catch(e){ console.warn('[Scarlet Siphon]',e); }
   if(typeof fxPop==='function') fxPop(_fx);
 }
@@ -12571,6 +12589,7 @@ function fxEffectsOf(fc){
   if(hasAbilityLabel(fc,'Through the Horde')&&fc._hordeTurn===(G&&G.turn)) cond('🌊','Through the Horde','Already used this turn.',null);
   if(fc._ironFist>0) cond('👊','The Iron Fist','+'+fc._ironFist+' Attack until the end of this turn.',null);
   if(fc._bloodRite>0) cond('🩸','Blood Rite','+'+fc._bloodRite+' Attack until the end of this turn.',null);
+  if(fc._aeth>0) cond('✨','Aetherion Light','+'+fc._aeth+' Attack until the end of the turn.',null);
   if(fc._dcmd>0) cond('⭐','Divine Command','+'+fc._dcmd+'/+'+fc._dcmd+' until the end of this turn.',null);
   if(fc._limitless>0) cond('💚','Limitless Power','+'+fc._limitless+'/+'+fc._limitless+' so far (max +4/+4).',null);
   if(isLassoed(fc)) cond('🪢','Lasso of Truth',"Can't attack until the end of its controller's next turn.",null);
@@ -13512,6 +13531,25 @@ function _dmgSrcIsGod(tuid){
 // resolveAttack / Herald fights / Life-mode blocks). Counters that fire inside combat (Inferno Reflex, Shielded Pressure, Godfire
 // Spillover, Hellfire Vengeance, Through the Horde) push their own context, so they count as abilities. One use per player-turn.
 function _braceTurnKey(){ return (G?G.turn:0)+':'+(G?G.activePlayer:0); }
+// HEAL HOOK — noteHeal(fc, amt) is called by every heal effect after it restores Health (amt = Health actually restored).
+// Today it powers ASTERIA's Aetherion Light: if the healed character's controller has an unbroken Herald with Aetherion Light,
+// the character gets +1 Attack until the end of that player's turn (fc._aeth / fc._aethBy; one +1 per heal; endTurnFx removes it).
+function _fcOwner(fc){ for(const q of [1,2,3,4]){ const P=G.players[q]; if(P&&P.field&&P.field.some(f=>f.uid===fc.uid)) return q; } return null; }
+function noteHeal(fc,amt){
+  try{
+    if(!fc||!(amt>0)||!isChar(DB[fc.cid])) return;
+    const q=_fcOwner(fc); if(q==null) return; const H=G.players[q].herald;
+    if(H&&!isHeraldBroken(H)&&hasAbilityLabel(H,'Aetherion Light')){
+      fc._aeth=(fc._aeth||0)+1; fc._aethBy=q; fc.currentATK=(fc.currentATK||0)+1; fc.atkBonus=(fc.atkBonus||0)+1;
+      log(`✨ Aetherion Light: ${DB[fc.cid]?.name} heals and gets +1 Attack until the end of the turn (now ${fc.currentATK}).`,'gain');
+    }
+  }catch(e){ console.warn('[noteHeal]',e); }
+}
+function healFc(fc,amt){ // heal up to max Health; returns the Health restored (and fires noteHeal)
+  const mx=(fc.baseHP||0)+(fc.hpBonus||0)+(fc.passiveHp||0), b=fc.currentHP||0, h=Math.max(0,Math.min(amt,mx-b));
+  if(h>0){ fc.currentHP=b+h; if(typeof fxHeal==='function') try{ fxHeal(fc.uid,h); }catch(e){} noteHeal(fc,h); }
+  return h;
+}
 function prismBarrierAbsorb(fc,dmg){
   const blk=Math.min(fc._prismShield||0,dmg); fc._prismShield=0; fc._prismBy=null;
   if(blk>0){ log(`💠 Prism Barrier: ${DB[fc.cid]?.name} is shielded — ${blk} damage prevented${dmg-blk>0?` (takes ${dmg-blk})`:''}.`,'gain');
@@ -15874,7 +15912,7 @@ function openFruitHealPicker(p, fco, chars, healAmt, atkAmt, cureMode, commit){
     if(commit && !commit()){ closeAllModals(); renderAll(); return; } // pay now that a target is chosen
     if(typeof fxHeal==='function') setTimeout(()=>fxHeal(target.uid),0);
     const mx=(target.baseHP||0)+(target.hpBonus||0)+(target.passiveHp||0);
-    target.currentHP=Math.min(mx,(target.currentHP||0)+healAmt);
+    { const _b=target.currentHP||0; target.currentHP=Math.min(mx,_b+healAmt); noteHeal(target,target.currentHP-_b); }
     let msg=`${c.name}: ${DB[target.cid].name} heals +${healAmt} HP (now ${target.currentHP})`;
     if(atkAmt>0){ target.currentATK=(target.currentATK||0)+atkAmt; target.atkBonus=(target.atkBonus||0)+atkAmt; msg+=` and gains +${atkAmt} ATK`; }
     if(cureMode==='all'){ if(target.statuses&&Object.keys(target.statuses).length){ cureAllStatuses(target); msg+=' and is cleansed of all status effects'; } }
@@ -17499,7 +17537,7 @@ function _activateAbilityCore(fc,abl){
     const doHeal=()=>{
       const chars=pl.field.filter(f=>isChar(DB[f.cid]) && f.uid!==fc.uid);
       if(!chars.length){ log("The Gift of the God's: no other character to heal.",'info'); return false; }
-      const heal=(t)=>{ const mx=(t.baseHP||0)+(t.hpBonus||0)+(t.passiveHp||0); t.currentHP=Math.min(mx,(t.currentHP||0)+2); log(`The Gift of the God's: ${DB[t.cid].name} heals +2 HP (now ${t.currentHP}).`,'gain'); commit(); renderAll(); };
+      const heal=(t)=>{ const mx=(t.baseHP||0)+(t.hpBonus||0)+(t.passiveHp||0); { const _b=t.currentHP||0; t.currentHP=Math.min(mx,_b+2); noteHeal(t,t.currentHP-_b); } log(`The Gift of the God's: ${DB[t.cid].name} heals +2 HP (now ${t.currentHP}).`,'gain'); commit(); renderAll(); };
       if(chars.length===1){ heal(chars[0]); return true; }
       const body=document.createElement('div');
       body.innerHTML='<div style="font-size:11px;color:#86efac;margin-bottom:8px">Choose another character to heal +2 HP.</div>';
@@ -17543,7 +17581,7 @@ function _activateAbilityCore(fc,abl){
       if(!heads){ // TAILS — heal + buff your whole field
         pl.field.filter(f=>isChar(DB[f.cid])).forEach(f=>{
           const mx=(f.baseHP||0)+(f.hpBonus||0)+(f.passiveHp||0);
-          f.currentHP=Math.min(mx,(f.currentHP||0)+2);
+          { const _b=f.currentHP||0; f.currentHP=Math.min(mx,_b+2); noteHeal(f,f.currentHP-_b); }
           f.currentATK=(f.currentATK||0)+1; f.atkBonus=(f.atkBonus||0)+1; f.ssbAtkBuff=(f.ssbAtkBuff||0)+1;
         });
         log('Etheric Strike: TAILS — your characters heal 2 and gain +1 Attack until end of turn.','gain');
@@ -17872,7 +17910,7 @@ function _activateAbilityCore(fc,abl){
     if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     if(!coinShow('Healing Hands','Tails = heal +2')){ // TAILS = success
-      const heal=(target)=>{ const mx=(target.baseHP||0)+(target.hpBonus||0)+(target.passiveHp||0); target.currentHP=Math.min(mx,(target.currentHP||0)+2); log(`Healing Hands: TAILS — ${DB[target.cid].name} heals +2 HP (now ${target.currentHP}).`,'gain'); renderAll(); };
+      const heal=(target)=>{ const mx=(target.baseHP||0)+(target.hpBonus||0)+(target.passiveHp||0); { const _b=target.currentHP||0; target.currentHP=Math.min(mx,_b+2); noteHeal(target,target.currentHP-_b); } log(`Healing Hands: TAILS — ${DB[target.cid].name} heals +2 HP (now ${target.currentHP}).`,'gain'); renderAll(); };
       const chars=pl.field.filter(f=>isChar(DB[f.cid]));
       if(!chars.length){ log('Healing Hands: TAILS — no characters on your field to heal.','info'); renderAll(); return; }
       if(chars.length===1){ heal(chars[0]); return; }
@@ -18457,7 +18495,7 @@ function runAbilityEffect(fc, abl, pl){
           doSacrifice(sacUid, Math.floor((DB[sf.cid]?.cost||0)/2), ap);
           const me=P.field.find(f=>f.uid===fc.uid);
           if(me){ me._bloodRite=(me._bloodRite||0)+3; me.currentATK=(me.currentATK||0)+3; me.atkBonus=(me.atkBonus||0)+3;
-            const mx=(me.baseHP||0)+(me.hpBonus||0)+(me.passiveHp||0), before=me.currentHP||0, h=Math.max(0,Math.min(3,mx-before)); me.currentHP=before+h;
+            const mx=(me.baseHP||0)+(me.hpBonus||0)+(me.passiveHp||0), before=me.currentHP||0, h=Math.max(0,Math.min(3,mx-before)); me.currentHP=before+h; noteHeal(me,h);
             if(h>0&&typeof fxHeal==='function') try{ fxHeal(me.uid,h); }catch(e){}
             log(`🩸 Blood Rite: ${DB[me.cid].name} gets +3 Attack until the end of the turn${h>0?` and heals ${h}`:''} (now ${me.currentATK}/${me.currentHP}).`,'gain'); }
         } finally { if(typeof fxPop==='function') fxPop(_fx); }
@@ -18519,6 +18557,46 @@ function runAbilityEffect(fc, abl, pl){
   // ── ZARIA BSE 127/150: Divine Command — 3⚡, once per GAME (generic lock), paid → no tap. Each of your characters (herself
   //    included) gets +2/+2 until the end of your turn (fc._dcmd; removed in the end-of-turn sweep next to King's Right Hand —
   //    the Health comes off but never drops a survivor below 1).
+  // ── ASTERIA (Herald) BSE 150/150: Radiant Blessing — 2⚡, once per turn, paid → no tap. One of your characters heals 3 and
+  //    loses one status (you pick which when it has several). Closing a chooser refunds it.
+  if(label==='Radiant Blessing'){
+    const ap=G.activePlayer, P=G.players[ap]; const _undo=_abilityUndo;
+    const stOf=(f)=>Object.keys(f.statuses||{}).filter(k=>f.statuses[k]>0);
+    const mxOf=(f)=>(f.baseHP||0)+(f.hpBonus||0)+(f.passiveHp||0);
+    const mine=P.field.filter(f=>isChar(DB[f.cid]));
+    if(!mine.length){ if(_undo) _undo(); log('Radiant Blessing: no characters — not used.','dmg'); renderAll(); return; }
+    const finish=(t,st)=>{ const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Radiant Blessing',fc.uid):null;
+      const h=healFc(t,3); if(st) cureStatus(t,st); if(typeof fxPop==='function') fxPop(_fx);
+      log(`🌟 Radiant Blessing: ${DB[t.cid].name} ${h>0?'heals '+h:'is already at full Health'}${st?` and loses ${STATUS_META[st]?.label||st}`:''}.`,'gain');
+      if(typeof recalcPassives==='function') recalcPassives(); renderAll(); };
+    const pickStatus=(t)=>{ const sts=stOf(t); if(sts.length<=1){ finish(t,sts[0]||null); return; }
+      if(seqIsLocalHuman(ap)&&!G._aiAuto){ seqChoose('🌟 Radiant Blessing','Which status does '+DB[t.cid].name+' lose?', sts.map(k=>({label:(STATUS_META[k]?.icon||'')+' '+(STATUS_META[k]?.label||k), val:k})), (k)=>finish(t,k), ()=>{ if(_undo) _undo(); log('Radiant Blessing: cancelled — Energy back.','info'); }); }
+      else { const order=['freeze','paralyze','confuse','poison','burn']; finish(t, sts.slice().sort((a,b)=>order.indexOf(a)-order.indexOf(b))[0]); } };
+    if(seqIsLocalHuman(ap)&&!G._aiAuto){
+      seqChoose('🌟 Radiant Blessing','Choose one of your characters: it heals 3 damage and loses one status.',
+        mine.map(f=>{ const sts=stOf(f); return {label:DB[f.cid].name, sub:'♥'+(f.currentHP||0)+' / '+mxOf(f)+(sts.length?' · '+sts.map(k=>STATUS_META[k]?.icon||k).join(' '):''), val:f.uid}; }),
+        (uid)=>{ const t=P.field.find(f=>f.uid===uid); if(!t){ if(_undo) _undo(); renderAll(); return; } pickStatus(t); },
+        ()=>{ if(_undo) _undo(); log('Radiant Blessing: cancelled — Energy back.','info'); });
+    } else {
+      const val=(f)=>Math.min(3,mxOf(f)-(f.currentHP||0))*2+(stOf(f).length?6:0)+aiFcValue(f)*.05;
+      pickStatus(mine.slice().sort((a,b)=>val(b)-val(a))[0]);
+    }
+    return;
+  }
+  // ── ASTERIA (Herald): Cosmic Radiance — 2 damage to EACH opposing character (not targeted). 4⚡, once per GAME, paid → no tap.
+  //    No opposing characters → refunded, not spent.
+  if(label==='Cosmic Radiance'){
+    const ap=G.activePlayer; const foes=[];
+    _fusionOpps(ap).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) foes.push({p:op,uid:f.uid}); }));
+    if(!foes.length){ if(_abilityUndo) _abilityUndo(); log('Cosmic Radiance: no opposing characters — not used.','dmg'); renderAll(); return; }
+    log(`🌌 Cosmic Radiance: every opposing character takes 2 damage!`,'dmg');
+    const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Cosmic Radiance',fc.uid):null;
+    try{ foes.forEach(t=>{ if((G.players[t.p]?.field||[]).some(x=>x.uid===t.uid)) dealDamage(t.p,t.uid,2); }); }
+    finally { if(typeof fxPop==='function') fxPop(_fx); }
+    if(typeof recalcPassives==='function') recalcPassives();
+    renderAll(); if(typeof checkWin==='function') checkWin();
+    return;
+  }
   if(label==='Divine Command'){
     const ap=G.activePlayer, P=G.players[ap]; const mine=P.field.filter(f=>isChar(DB[f.cid]));
     if(!mine.length){ if(_abilityUndo) _abilityUndo(); log('Divine Command: no characters — not used.','dmg'); renderAll(); return; }
@@ -18894,7 +18972,7 @@ function runAbilityEffect(fc, abl, pl){
   }
   // ── SENZU BEAN (equip): Full Restore — restore holder to full HP ──
   if(cid==='senzu_bean' && label==='Full Restore'){
-    const base=(fc.baseHP||0)+(fc.hpBonus||0); fc.currentHP=base;
+    const base=(fc.baseHP||0)+(fc.hpBonus||0); { const _b=fc.currentHP||0; fc.currentHP=base; noteHeal(fc,fc.currentHP-_b); }
     log('Full Restore: healed to full HP!','gain'); renderAll(); return;
   }
   // ── 73's CRYSTAL (equip): Enhanced Nullify — negate next enemy ability (flag) ──
@@ -19135,7 +19213,7 @@ function doPhase(ph){
       if(hasKW(fc,'regeneration')&&fc.markedDamage>0){
         const amt=DB[fc.cid]?.regenAmount||3;
         fc.markedDamage=Math.max(0,fc.markedDamage-amt);
-        fc.currentHP=Math.min(fc.baseHP+fc.hpBonus,fc.currentHP+amt);
+        { const _b=fc.currentHP||0; fc.currentHP=Math.min(fc.baseHP+fc.hpBonus,fc.currentHP+amt); noteHeal(fc,fc.currentHP-_b); }
         log('Regeneration: '+DB[fc.cid].name+' heals '+amt+' HP.','gain');
       }
     });
@@ -19475,12 +19553,18 @@ function startTurnFx(player){
     const bound = opps.some(op=>G.players[op] && G.players[op].herald && G.players[op].herald.cid==='surfacer_herald');
     if(bound) applySurfacerBinding(player);
   })();
+  // ✨ ASTERIA — Aetherion Light: each of your characters heals 1 (each heal also gives +1 Attack via noteHeal).
+  if(pl.herald&&!isHeraldBroken(pl.herald)&&hasAbilityLabel(pl.herald,'Aetherion Light')){
+    const _fx=(typeof fxPush==='function')?fxPush(pl.herald.cid,'Aetherion Light',pl.herald.uid):null;
+    pl.field.filter(f=>isChar(DB[f.cid])).forEach(f=>{ const h=healFc(f,1); if(h>0) log(`✨ Aetherion Light: ${DB[f.cid].name} heals ${h}.`,'gain'); });
+    if(typeof fxPop==='function') fxPop(_fx);
+  }
   const cards=[...pl.field]; if(pl.herald) cards.push(pl.herald);
   cards.forEach(fc=>{
     const c=DB[fc.cid]; if(!c) return;
     // ── DANNY RAND: Chi Mending — at the start of each of your turns, heal 3 damage.
     if(isChar(c)&&hasAbilityLabel(fc,'Chi Mending')){ const mx=(fc.baseHP||0)+(fc.hpBonus||0)+(fc.passiveHp||0);
-      if((fc.currentHP||0)<mx){ const h=Math.min(3,mx-fc.currentHP); fc.currentHP+=h; log(`🍀 Chi Mending: ${c.name} heals ${h}.`,'gain'); } }
+      if((fc.currentHP||0)<mx){ const h=Math.min(3,mx-fc.currentHP); fc.currentHP+=h; noteHeal(fc,h); log(`🍀 Chi Mending: ${c.name} heals ${h}.`,'gain'); } }
     // ── PHAROAH: Limitless Power — at the start of each of your turns +1/+1 until it leaves the field, up to +4/+4 in all.
     if(isChar(c)&&hasAbilityLabel(fc,'Limitless Power')&&(fc._limitless||0)<4){
       fc._limitless=(fc._limitless||0)+1; fc.atkBonus=(fc.atkBonus||0)+1; fc.currentATK=(fc.currentATK||0)+1; fc.hpBonus=(fc.hpBonus||0)+1; fc.currentHP=(fc.currentHP||0)+1;
@@ -19499,7 +19583,7 @@ function startTurnFx(player){
       if(fc._hosgTurns>=2){
         fc._hosgTurns=0;
         const mx=(fc.baseHP||0)+(fc.hpBonus||0)+(fc.passiveHp||0);
-        if((fc.currentHP||0)<mx){ fc.currentHP=Math.min(mx,(fc.currentHP||0)+2); log(`Heart of a Saiyan God: ${c.name} heals +2 HP.`,'gain'); }
+        if((fc.currentHP||0)<mx){ { const _b=fc.currentHP||0; fc.currentHP=Math.min(mx,_b+2); noteHeal(fc,fc.currentHP-_b); } log(`Heart of a Saiyan God: ${c.name} heals +2 HP.`,'gain'); }
       }
     }
     // ── DAREDEVIL (Herald): Godly Radar — every 2 of your turns, MAY tutor an energy card.
@@ -19544,7 +19628,7 @@ function startTurnFx(player){
             .map(f=>{const mx=(f.baseHP||0)+(f.hpBonus||0)+(f.passiveHp||0);return {f,mx,missing:mx-(f.currentHP||0)};})
             .filter(x=>x.missing>0).sort((a,b)=>b.missing-a.missing);
           if(!wounded.length){ log('Saiyan God Healing: HEADS — no wounded ally to heal.','info'); renderAll(); return; }
-          const heal=(x)=>{ x.f.currentHP=Math.min(x.mx,(x.f.currentHP||0)+2); log(`Saiyan God Healing: HEADS — ${DB[x.f.cid].name} regains +2 HP.`,'gain'); if(typeof fxHeal==='function') fxHeal(x.f.uid,2); renderAll(); };
+          const heal=(x)=>{ { const _b=x.f.currentHP||0; x.f.currentHP=Math.min(x.mx,_b+2); noteHeal(x.f,x.f.currentHP-_b); } log(`Saiyan God Healing: HEADS — ${DB[x.f.cid].name} regains +2 HP.`,'gain'); if(typeof fxHeal==='function') fxHeal(x.f.uid,2); renderAll(); };
           if(seqIsLocalHuman(_pp) && wounded.length>1){
             seqChoose('Saiyan God Healing','Heads! Choose one of your characters to regain +2 Health.', wounded.map(x=>({label:DB[x.f.cid].name, sub:'♥'+(x.f.currentHP||0)+' / '+x.mx, val:x})), heal);
           } else heal(wounded[0]);
@@ -19581,6 +19665,7 @@ function endTurnFx(p){
     if(f.surfacerHpDebuff){ f.hpBonus=(f.hpBonus||0)+f.surfacerHpDebuff; f.currentHP=(f.currentHP||0)+f.surfacerHpDebuff; f.surfacerHpDebuff=0; }
     if(f.krhAtk||f.krhHp){ f.currentATK=Math.max(0,(f.currentATK||0)-(f.krhAtk||0)); f.atkBonus=(f.atkBonus||0)-(f.krhAtk||0); f.hpBonus=(f.hpBonus||0)-(f.krhHp||0); f.currentHP=Math.max(1,(f.currentHP||0)-(f.krhHp||0)); f.krhAtk=0; f.krhHp=0; } // King's Right Hand +1/+3 ends
     if(f.ssbAtkBuff){ f.currentATK=(f.currentATK||0)-f.ssbAtkBuff; f.atkBonus=(f.atkBonus||0)-f.ssbAtkBuff; f.ssbAtkBuff=0; }
+    if(f._aeth&&f._aethBy===p){ const d=f._aeth; f.currentATK=Math.max(0,(f.currentATK||0)-d); f.atkBonus=(f.atkBonus||0)-d; f._aeth=0; f._aethBy=null; log(`✨ Aetherion Light on ${DB[f.cid]?.name} fades.`,'info'); } // ✨ Asteria
     if(f._dcmd){ const d=f._dcmd; f.currentATK=Math.max(0,(f.currentATK||0)-d); f.atkBonus=(f.atkBonus||0)-d; f.hpBonus=(f.hpBonus||0)-d; f.currentHP=Math.max(1,(f.currentHP||0)-d); f._dcmd=0; log(`⭐ Divine Command on ${DB[f.cid]?.name} wears off.`,'info'); } // ⭐ Zaria
     if(f._ph&&G.turn>=f._ph.until){ f.currentATK=(f.currentATK||0)+f._ph.atk; f.atkBonus=(f.atkBonus||0)+f._ph.atk; delete f._ph; log(`Pink Horizon on ${DB[f.cid]?.name} wears off.`,'info'); } // Pink Horizon expires
     if(f._kb&&G.turn>=f._kb.until){ f.currentATK=(f.currentATK||0)+f._kb.atk; f.atkBonus=(f.atkBonus||0)+f._kb.atk; delete f._kb; log(`Kinetic Bind on ${DB[f.cid]?.name} ends.`,'info'); } // Kinetic Bind (Magnus SSB) expires // Etheric Strike +1 ATK was "until end of turn"
@@ -20045,6 +20130,12 @@ function aiScoreAbility(p, fc, abl, src){
   if(abl.label==='Crimson Cataclysm'){ const es=aiEnemyChars(p); if(!es.length) return -1;
     const kills=es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,3-(e.fc.nullify||0))).length; if(es.length<2&&!kills) return -1;
     return 12+es.length*5+kills*14; }
+  if(abl.label==='Radiant Blessing'){ const _m=pl.field.filter(f=>isChar(DB[f.cid])); if(!_m.length) return -1;
+    const sc=_m.map(f=>Math.min(3,aiMaxHP(f)-(f.currentHP||0))*2+(Object.keys(f.statuses||{}).some(k=>f.statuses[k]>0)?6:0)); const best=Math.max(...sc);
+    return best>=4?3+best:-1; } // at least 2 missing Health or a status to clear
+  if(abl.label==='Cosmic Radiance'){ const es=aiEnemyChars(p); if(!es.length) return -1;
+    const kills=es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,2-(e.fc.nullify||0))).length; if(es.length<2&&!kills) return -1;
+    return 10+es.length*4+kills*12; }
   if(abl.label==='Divine Command'){ const _m=pl.field.filter(f=>isChar(DB[f.cid])); if(_m.length<2) return -1;
     const _atk=_m.some(f=>aiReady(f)&&canCharacterAttack(p,f)&&aiAttackOptionsFor(p,f).length>0); if(!_atk) return -1;
     return 6+_m.length*3; } // once per game: save it for a turn with a wide board and an attack to make
@@ -21775,7 +21866,7 @@ function tickTimedCuts(p){
 function applyPrismOrb(srcP, tfc){ applyTimedCut(srcP, tfc, 'Prism Orb', 2, '💠 '); }
 function healPrismOrb(tfc){
   const mx=_orbMax(tfc), before=tfc.currentHP||0;
-  tfc.currentHP=Math.min(mx,before+3);
+  tfc.currentHP=Math.min(mx,before+3); noteHeal(tfc,tfc.currentHP-before);
   if(typeof fxHeal==='function') try{ fxHeal(tfc.uid,3); }catch(e){}
   log(`💠 Prism Orb: ${DB[tfc.cid]?.name} heals ${tfc.currentHP-before} (now ${tfc.currentHP}/${mx}).`,'gain');
 }
