@@ -9818,6 +9818,8 @@ const GAME_BUILD='10.18'; // rules version — must match the opponent's client 
 const GODOT_SYNC=[
   { build:'10.18', date:'2026-11-02',
     cards:[
+      {id:'zaria_bse', set:'base_set', number:'127/150', rarity:'legend', scan:'Sets/BASE SET/127-150 (Zaria).png', newAbilities:['Combat Mastery','Tactical Authority','Divine Command'],
+        note:"Zaria · 'The Goddess of War' · Red · Character played from hand (standalone) · cost 7 · 7 ATK / 6 HP · subtypes Prime, God · race 'Prime God' · sym ZAR. Main menu art: 'Main Menu Images/Zaria.jpg'."},
       {id:'pharoah_bse', set:'base_set', number:'112/150', rarity:'legend', scan:'Sets/BASE SET/112-150 (Pharoah).png', newAbilities:['Limitless Power','Unbreakable'],
         note:"Pharoah · Green · Character played from hand (standalone, no line) · cost 8 · 6 ATK / 9 HP · subtypes Saiyan · race 'Saiyan' · sym PHA · keywords ['resolve']. Main menu art: 'Main Menu Images/pharoh1pharoah.jpg'."},
       {id:'wonder_woman_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/DC/Wonder Woman (Promo).png', newAbilities:['Bracelets of Submission','Lasso of Truth',"Amazon's Valor"],
@@ -9829,6 +9831,9 @@ const GODOT_SYNC=[
       {id:'virora_surfacer_mui_sr_bse', set:'base_set', number:'154/150', rarity:'secret', scan:'Sets/BASE SET/154-150 (Virora Surfacer MUI) (Secret Rare).png', newAbilities:['Mastered Instinct','Celestial Surge','Silent Horizon'],
         note:"Virora (Surfacer MUI) SECRET RARE · secretRare:true · Purple · Character (played from hand, NOT transformOnly) · cost 12 · 11 ATK / 8 HP · subtypes Royal, Saiyan, Celestial · race 'Royal Saiyan Celestial' · charName 'Virora' (Virora checks like Void Synergy count her) · charLine 'virora_mui' (her own line) · no formTier · nextForms [] · transforms [] — a standalone card: nothing transforms into or out of her. Main menu art (admin sets it per tab): Main Menu Images/vmuisurfacerSurfacer MUI virora.jpg."}],
     abilities:[
+      "COMBAT MASTERY (Zaria, triggered): in executeCombatDamage next to Sun's Judgment — when she is the attacker and the defender is a character whose PRINTED cost (DB cost) is higher than hers (7), atkDmg += 2. Attacks only (not her hit back).",
+      "TACTICAL AUTHORITY (Zaria, passive): recalcPassives next to Amazon's Valor — each of your OTHER characters with subtype Prime gets +1 Attack per source. Primes today: Theia, Alita, Alita (SSJ), Jalina, Kevin, Kevin (SSG).",
+      "DIVINE COMMAND (Zaria, activated): 3 Energy (Red), ONCE PER GAME (generic lock), paid → no tap. Each of your characters (herself included) +2 Attack / +2 Health (currentATK, atkBonus, currentHP, hpBonus; fc._dcmd). End-of-turn sweep (next to King's Right Hand): −_dcmd Attack/Health, Health never below 1. No characters → refunded. Chip ⭐. AI: 2+ characters and an attack to make; score 6 + 3 per character.",
       "LIMITLESS POWER (Pharoah, triggered): in startTurnFx's per-card loop (after Chi Mending): while fc._limitless < 4, +1 to _limitless, atkBonus, currentATK, hpBonus and currentHP (lasts until it leaves the field; first growth is the start of your turn after it's played). Status chip 💚.",
       "UNBREAKABLE (Pharoah, passive): Resolve — keywords ['resolve'] and KEYWORD_PASSIVES 'Unbreakable' → 'resolve' (a stolen copy works). Existing Resolve rule in dealDamage: the first lethal damage leaves it at 1 Health (fc.resolveUsed, once per game).",
       "BRACELETS OF SUBMISSION (Wonder Woman, passive): in dealDamage after Nullify / Inferno Ward / Diamond Calm / Half-Divine and BEFORE Prism Barrier: if the damage is > 0, it is NOT combat damage (current fx context isn't {combat:true}) and she hasn't used it this player-turn (key G.turn+':'+G.activePlayer), all of it is prevented and the key is stored on fc._braceTurn. Combat context is set by resolveAttack, resolveCharVsHerald, resolveHeraldAttackTarget, resolveHeraldVsField, resolveLocationAttack and NOW resolveLifeAttack too. In-combat counters push their own context, so they count as ability damage: NOW Inferno Reflex, Shielded Pressure and Godfire Spillover (Hellfire Vengeance and Through the Horde already did). Instants, Herald abilities and start-of-turn triggers (Silent Killer, Forbidden Power) count as ability damage. Burn/Poison chip doesn't go through dealDamage.",
@@ -10468,6 +10473,7 @@ const DEFAULTS={
   crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/113-150%20(Crystal%20Base).png',
   crystal_ssj_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/114-150%20(Crystal%20SSJ).png',
   pharoah_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/112-150%20(Pharoah).png',
+  zaria_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/127-150%20(Zaria).png',
   surana_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/028-150%20(Surana%20Base).png',
   surana_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/029-150%20(Surana%20SSG).png',
   surana_sss_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/030-150%20(Surana%20SSS).png',
@@ -10702,6 +10708,13 @@ const DB={
   // ── CRYSTAL (BSE 113/150) — build 9.7. Base of the new Blue Saiyan line (114 = her SSJ, planned).
   crystal_bse:{id:'crystal_bse',rarity:'common',name:'Crystal',color:'blue',charName:'Crystal',charLine:'crystal',formTier:'base',subtypes:['Saiyan'],type:'base_char',race:'Saiyan',cost:2,atk:2,hp:3,sym:'CRY',setId:'base_set',cardNumber:'113/150',keywords:[],nextForms:['ssj1'],
     abilities:[{label:'Prism Orb',type:'triggered',cost:0,text:'When this card enters your field, choose one: target opposing character gets −2 Attack until end of your next turn, or heal one of your characters for 3.'}]},
+  // ── ZARIA (BSE 127/150) — build 10.18. "The Goddess of War". RED. Standalone Character played from hand (no line).
+  //    Combat Mastery: +2 damage when she attacks a character whose printed cost is higher than hers. Tactical Authority: other Prime
+  //    characters +1 Attack. Divine Command: 3⚡ once per game — your characters +2/+2 until the end of your turn (fc._dcmd).
+  zaria_bse:{id:'zaria_bse',rarity:'legend',name:'Zaria',color:'red',charName:'Zaria',subtypes:['Prime','God'],type:'char',race:'Prime God',cost:7,atk:7,hp:6,sym:'ZAR',setId:'base_set',cardNumber:'127/150',keywords:[],nextForms:[],quote:'The Goddess of War',
+    abilities:[{label:'Combat Mastery',type:'triggered',cost:0,text:'When this card attacks a character with a higher cost, it deals +2 damage.'},
+      {label:'Tactical Authority',type:'passive',cost:0,text:'Your other Prime characters get +1 Attack.'},
+      {label:'Divine Command',type:'activated',cost:3,limit:'once_per_game',text:'Pay 3 Energy: Your characters get +2 Attack and +2 Health until the end of your turn. (Once per game)'}]},
   // ── PHAROAH (BSE 112/150) — build 10.18. GREEN (endurance / growth). Standalone Character played from hand (no line).
   //    Limitless Power: at the start of your turn +1/+1 until it leaves the field (fc._limitless, max +4/+4). Unbreakable = Resolve.
   pharoah_bse:{id:'pharoah_bse',rarity:'legend',name:'Pharoah',color:'green',charName:'Pharoah',subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:8,atk:6,hp:9,sym:'PHA',setId:'base_set',cardNumber:'112/150',keywords:['resolve'],nextForms:[],
@@ -12558,6 +12571,7 @@ function fxEffectsOf(fc){
   if(hasAbilityLabel(fc,'Through the Horde')&&fc._hordeTurn===(G&&G.turn)) cond('🌊','Through the Horde','Already used this turn.',null);
   if(fc._ironFist>0) cond('👊','The Iron Fist','+'+fc._ironFist+' Attack until the end of this turn.',null);
   if(fc._bloodRite>0) cond('🩸','Blood Rite','+'+fc._bloodRite+' Attack until the end of this turn.',null);
+  if(fc._dcmd>0) cond('⭐','Divine Command','+'+fc._dcmd+'/+'+fc._dcmd+' until the end of this turn.',null);
   if(fc._limitless>0) cond('💚','Limitless Power','+'+fc._limitless+'/+'+fc._limitless+' so far (max +4/+4).',null);
   if(isLassoed(fc)) cond('🪢','Lasso of Truth',"Can't attack until the end of its controller's next turn.",null);
   if(fc._prismShield>0) cond('💠','Prism Barrier','Prevents '+fc._prismShield+' of the next damage it would be dealt (ends at the start of its owner\'s next turn).',null);
@@ -12666,6 +12680,8 @@ function recalcPassives(){
       // One +1 for each Tag Division source other than this character (Ivan, or a thief of his ability).
       pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'Tag Division')).forEach(f=>add(1,0,f.cid,'Tag Division',f.uid));
       // WONDER WOMAN — Amazon's Valor: your OTHER Hero characters get +1 Attack (one +1 per source).
+      // ZARIA — Tactical Authority: your OTHER Prime characters get +1 Attack (one +1 per source).
+      if((c.subtypes||[]).some(t=>/^prime$/i.test(String(t).trim()))) pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'Tactical Authority')).forEach(f=>add(1,0,f.cid,'Tactical Authority',f.uid));
       if((c.subtypes||[]).some(t=>/^hero$/i.test(String(t).trim()))) pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,"Amazon's Valor")).forEach(f=>add(1,0,f.cid,"Amazon's Valor",f.uid));
       // BEAST BOND (Voraxis): while you control a Virora, this card and each Virora you control get +2/+2.
       //   "a Virora" = a character with Virora in its name (every Virora form, Darkspine Virora, Virora (Surface
@@ -14603,6 +14619,8 @@ function executeCombatDamage(ap,auid,dp,duid){
   atkDmg=applyWaterStance(dfc, afc, atkDmg); // 🌊 Nisha: an attack on her is 3 weaker
   // ☀️ SUN'S JUDGMENT (Falcore): its attack on a Paralyzed character deals +2.
   if(hasAbilityLabel(afc,"Sun's Judgment")&&statusActive(dfc,'paralyze')){ atkDmg+=2; log(`☀️ Sun's Judgment: ${DB[afc.cid]?.name} strikes the Paralyzed ${DB[dfc.cid]?.name} for +2!`,'dmg'); }
+  // ⚔ COMBAT MASTERY (Zaria): her attack on a character with a higher printed cost deals +2.
+  if(hasAbilityLabel(afc,'Combat Mastery')&&isChar(dc)&&(dc.cost||0)>(ac.cost||0)){ atkDmg+=2; log(`⚔ Combat Mastery: ${ac.name} strikes the costlier ${dc.name} (${dc.cost||0} > ${ac.cost||0}) for +2!`,'dmg'); }
   { const _ki=killingIntent(afc,dfc); if(_ki){ atkDmg+=_ki; log(`🩸 Killing Intent: ${DB[dfc.cid]?.name} is already wounded — +2!`,'dmg'); } }
 
   // Power Struggle result override
@@ -18498,6 +18516,19 @@ function runAbilityEffect(fc, abl, pl){
   }
   // ── VIRORA (SURFACER MUI): Silent Horizon — Freeze every opposing character. 4⚡, once per GAME (the lock survives
   //    resetPerTurnAbilityLocks because the def says limit:'once_per_game'). Nothing to Freeze → refunded, not spent.
+  // ── ZARIA BSE 127/150: Divine Command — 3⚡, once per GAME (generic lock), paid → no tap. Each of your characters (herself
+  //    included) gets +2/+2 until the end of your turn (fc._dcmd; removed in the end-of-turn sweep next to King's Right Hand —
+  //    the Health comes off but never drops a survivor below 1).
+  if(label==='Divine Command'){
+    const ap=G.activePlayer, P=G.players[ap]; const mine=P.field.filter(f=>isChar(DB[f.cid]));
+    if(!mine.length){ if(_abilityUndo) _abilityUndo(); log('Divine Command: no characters — not used.','dmg'); renderAll(); return; }
+    const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Divine Command',fc.uid):null;
+    mine.forEach(f=>{ f._dcmd=(f._dcmd||0)+2; f.currentATK=(f.currentATK||0)+2; f.atkBonus=(f.atkBonus||0)+2; f.currentHP=(f.currentHP||0)+2; f.hpBonus=(f.hpBonus||0)+2; });
+    if(typeof fxPop==='function') fxPop(_fx);
+    log(`⭐ Divine Command: ${pname(ap)}'s ${mine.length} character${mine.length===1?'':'s'} get +2/+2 until the end of the turn!`,'gain');
+    if(typeof SFX!=='undefined'&&SFX.ability) try{ SFX.ability(); }catch(e){}
+    if(typeof recalcPassives==='function') recalcPassives(); renderAll(); return;
+  }
   if(label==='Silent Horizon'){
     const ap=G.activePlayer; const foes=[];
     _fusionOpps(ap).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) foes.push(f); }));
@@ -19550,6 +19581,7 @@ function endTurnFx(p){
     if(f.surfacerHpDebuff){ f.hpBonus=(f.hpBonus||0)+f.surfacerHpDebuff; f.currentHP=(f.currentHP||0)+f.surfacerHpDebuff; f.surfacerHpDebuff=0; }
     if(f.krhAtk||f.krhHp){ f.currentATK=Math.max(0,(f.currentATK||0)-(f.krhAtk||0)); f.atkBonus=(f.atkBonus||0)-(f.krhAtk||0); f.hpBonus=(f.hpBonus||0)-(f.krhHp||0); f.currentHP=Math.max(1,(f.currentHP||0)-(f.krhHp||0)); f.krhAtk=0; f.krhHp=0; } // King's Right Hand +1/+3 ends
     if(f.ssbAtkBuff){ f.currentATK=(f.currentATK||0)-f.ssbAtkBuff; f.atkBonus=(f.atkBonus||0)-f.ssbAtkBuff; f.ssbAtkBuff=0; }
+    if(f._dcmd){ const d=f._dcmd; f.currentATK=Math.max(0,(f.currentATK||0)-d); f.atkBonus=(f.atkBonus||0)-d; f.hpBonus=(f.hpBonus||0)-d; f.currentHP=Math.max(1,(f.currentHP||0)-d); f._dcmd=0; log(`⭐ Divine Command on ${DB[f.cid]?.name} wears off.`,'info'); } // ⭐ Zaria
     if(f._ph&&G.turn>=f._ph.until){ f.currentATK=(f.currentATK||0)+f._ph.atk; f.atkBonus=(f.atkBonus||0)+f._ph.atk; delete f._ph; log(`Pink Horizon on ${DB[f.cid]?.name} wears off.`,'info'); } // Pink Horizon expires
     if(f._kb&&G.turn>=f._kb.until){ f.currentATK=(f.currentATK||0)+f._kb.atk; f.atkBonus=(f.atkBonus||0)+f._kb.atk; delete f._kb; log(`Kinetic Bind on ${DB[f.cid]?.name} ends.`,'info'); } // Kinetic Bind (Magnus SSB) expires // Etheric Strike +1 ATK was "until end of turn"
   }); });
@@ -20013,6 +20045,9 @@ function aiScoreAbility(p, fc, abl, src){
   if(abl.label==='Crimson Cataclysm'){ const es=aiEnemyChars(p); if(!es.length) return -1;
     const kills=es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,3-(e.fc.nullify||0))).length; if(es.length<2&&!kills) return -1;
     return 12+es.length*5+kills*14; }
+  if(abl.label==='Divine Command'){ const _m=pl.field.filter(f=>isChar(DB[f.cid])); if(_m.length<2) return -1;
+    const _atk=_m.some(f=>aiReady(f)&&canCharacterAttack(p,f)&&aiAttackOptionsFor(p,f).length>0); if(!_atk) return -1;
+    return 6+_m.length*3; } // once per game: save it for a turn with a wide board and an attack to make
   if(abl.label==='Silent Horizon'){ const es=aiEnemyChars(p).filter(e=>!statusActive(e.fc,'freeze')&&!hasAbilityLabel(e.fc,'Vortex Shield')); if(es.length<2) return -1;
     const rdy=es.filter(e=>e.fc.turnPlayed<G.turn||hasKW(e.fc,'burst_speed')).length; return 10+es.length*5+rdy*3; }
   if(AIB.noop.has(abl.label)) return -1; // learned: this ability has no coded effect
