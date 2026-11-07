@@ -9818,6 +9818,14 @@ const GAME_BUILD='10.18'; // rules version — must match the opponent's client 
 const GODOT_SYNC=[
   { build:'10.18', date:'2026-11-02',
     cards:[
+      {id:'veynaria_bse', set:'base_set', number:'115/150', rarity:'common', scan:'Sets/BASE SET/115-150 (Veynaria Base).png', newAbilities:['Royal Matriarch'],
+        note:"Veynaria · White · BASE · charLine 'veynaria' · formTier 'base' · nextForms ['ssj1','ssg'] · cost 3 · 2/4 · Royal, Saiyan · race 'Royal Saiyan'. Main menu art: 'Main Menu Images/veynaria base.jpg'."},
+      {id:'veynaria_ssj_bse', set:'base_set', number:'116/150', rarity:'uncommon', scan:'Sets/BASE SET/116-150 (Veynaria SSJ).png', newAbilities:['Royal Matriarch',"A Mother's Strength"],
+        note:"Veynaria (SSJ) · White · transformOnly · formTier 'ssj1' · path 'saiyan' · cost 6 · 4/5 · Royal, Saiyan. Main menu art: 'Main Menu Images/veynaria ssj.jpg'."},
+      {id:'veynaria_ssg_bse', set:'base_set', number:'111/150', rarity:'rare', scan:'Sets/BASE SET/111-150 (Veynaria SSG).png', newAbilities:['Royal Matriarch','Starbreaker Blast'],
+        note:"Veynaria (SSG) · White · transformOnly · formTier 'ssg' · path 'god' · cost 7 · 4/5 · Royal, Saiyan, God · race 'Royal Saiyan God'. Main menu art: 'Main Menu Images/veynaria ssg.jpg'."},
+      {id:'vildrex_herald', set:'base_set', number:'149/150', rarity:'mythic', scan:'Sets/BASE SET/149-150 (Vildrex).png', newAbilities:['Void Gate','Void Collapse','Arch-Nemesis'],
+        note:"Vildrex · HERALD · Purple · Void Celestial · 12/12 · subtypes Void, Celestial. Main menu art: 'Main Menu Images/vildrex.jpg'. Paradox's Void Synergy now also sees an unbroken Vildrex Herald."},
       {id:'vuruna_ssj4_bse', set:'base_set', number:'131/150', rarity:'mythic', scan:'Sets/BASE SET/131-150 (Vuruna SSJ4).png', newAbilities:['Great Ape Roar','Primal Chain','Primal Instinct'],
         note:"Vuruna (SSJ4) · Red · transformOnly · charLine 'vuruna' · formTier 'ssj4' (Saiyan rank 4) · path 'saiyan' · cost 9 · 9/9 · Royal, Saiyan. vuruna_ssj_bse.nextForms [] → ['ssj4'] (explicit; the ladder would find it anyway). Main menu art: 'Main Menu Images/ssj4 vurunagrok-image-9d96b1f5-e854-4600-a141-a17b9080bb92.jpg'."},
       {id:'keon_bse', set:'base_set', number:'110/150', rarity:'common', scan:'Sets/BASE SET/110-150 (Keon Base).png', newAbilities:['Legendary Escalation'],
@@ -9839,6 +9847,12 @@ const GODOT_SYNC=[
       {id:'virora_surfacer_mui_sr_bse', set:'base_set', number:'154/150', rarity:'secret', scan:'Sets/BASE SET/154-150 (Virora Surfacer MUI) (Secret Rare).png', newAbilities:['Mastered Instinct','Celestial Surge','Silent Horizon'],
         note:"Virora (Surfacer MUI) SECRET RARE · secretRare:true · Purple · Character (played from hand, NOT transformOnly) · cost 12 · 11 ATK / 8 HP · subtypes Royal, Saiyan, Celestial · race 'Royal Saiyan Celestial' · charName 'Virora' (Virora checks like Void Synergy count her) · charLine 'virora_mui' (her own line) · no formTier · nextForms [] · transforms [] — a standalone card: nothing transforms into or out of her. Main menu art (admin sets it per tab): Main Menu Images/vmuisurfacerSurfacer MUI virora.jpg."}],
     abilities:[
+      "ROYAL MATRIARCH (Veynaria, every form, passive): your OTHER Royal Saiyan characters (isRoyalSaiyan: Saiyan + Royal) get the source's bonus, read from its own text by royalMatriarchSpec: base '+1 Health' → +0/+1, SSJ '+1 Attack' → +1/+0, SSG '+1 Attack and +1 Health' → +1/+1. recalcPassives, one bonus per source (two Veynarias stack; she never buffs herself).",
+      "A MOTHER'S STRENGTH (Veynaria SSJ, passive): +2/+2 while you control a character whose charName is 'Violet' (any Violet form).",
+      "STARBREAKER BLAST (Veynaria SSG, activated): 3 Energy (pays White), once every 2 turns (abilityUsed.starbreaker_turn; Water Whip convention G.turn − last ≥ 2), paid → no tap. 3 damage (dealDamage, under fxPush so it has a source) to a target opposing character (normal picker: Godly Evasion toll, Drunken Stance; closing refunds). Recharge chip 🌠.",
+      "VOID GATE (Vildrex Herald, triggered): once per player-turn (H._vgKey = _braceTurnKey()), after one of your characters attacks (hook: triggerFlameSpiral → triggerVoidGate), you may pay 2 Energy: G.bonusAttackers +1 (another character that hasn't attacked may attack). Offered only when it matters: you have 2⚡ and more of your characters that haven't attacked (untapped, not Fatigued/Frozen/Paralyzed/Lassoed, not summoning sick) than free attack slots (maxAttackersAllowed − distinctAttackersUsed). Person: Use / Skip banner (seqAbility optional) queued after the attack resolves; Skip doesn't spend it (offered again after the next attack). AI: pays at once when one of those characters is ready with an attack option. Broken Herald → nothing.",
+      "VOID COLLAPSE (Vildrex Herald, activated): 5 Energy, ONCE PER GAME (generic once_per_game lock), paid → no tap. Target an opposing character whose PRINTED cost (DB cost of its current form) is 4 or less, not a token, not Rift-immune (Power of Securement): it leaves the field (attachments to the discard pile, fusionLeaves) and goes to the Rift — no Prize (Event Horizon removal). No valid target → refunded. AI: only for a target worth ≥ 8 (aiFcValue).",
+      "ARCH-NEMESIS (Vildrex Herald, passive): +1 to any damage dealt to a Saiyan character (isSaiyanChar) whose source is the Vildrex Herald or one of its controller's characters — combat both ways (attack and hit back) and ability damage under fxPush. Added at the top of dealDamage (archNemesisBonus, before Nullify / Inferno Ward / Prism etc.); source = _dmgSourceFc; self-damage never counts; 0 damage stays 0. Heralds never attack characters, so the Herald's own +1 shows on its retaliation against a Saiyan attacker (resolveCharVsHerald now sets G._curDef = the Herald). Broken Herald → nothing.",
       "TRANSFORMATION LADDERS (ENGINE — replaces 'follow nextForms only'): FORM_PATHS = saiyan {chain; ssj/ssj1 1, ssj2 2, ssj3 3, ssj4 4, ssj5 5; skip 1:5 2:7 3:8 4:9 5:10}, god {chain; ssg 1, ssge 2, ssb 3, sss 3, ssbe 4, ssbm 5; same skip prices}, legendary {chain; lssj 1, lssj2 2, lssj3 3; skip 1:6 2:8 3:10}, avatar {chain; avatar_state 1; skip 1:8}, chakra {OPEN; root_chakra 1 … crown_chakra 7}. Unknown tiers can set card.formRank. getTransformTargets(cid) = explicit nextForms + legacy transforms[] + LADDER: a Base goes to any form of its charLine on any path; a chain form goes to any HIGHER rank on its own path; an open form goes to any other form of its open path; same-rung variants are never targets; a chain form with transformsFrom is only reachable from that card or another printing of the same rung (charLine + formTier); paths never cross unless crossPath.",
       "SKIP PRICE: transformCostFor(p, fc, tid) = printed cost → Lazarus+Saiyan Blood 0 / Calm Clarity 3 (not fusion forms) → Royal Clarity −2 → PLUS, for a chain move, the fixed price of every rank strictly between the two that EXISTS for that charLine on that path in ANY set (tfSkipSteps). Prices never depend on which cards a player owns. Admin override: app_settings 'tf_ladder' = {skip:{saiyan:{'2':7,…},…}} (Admin → Transform Ladder), loaded at boot (tfLoadCfg). The transform menu shows '9⚡ + skip SSJ2 7 + SSJ3 8 = 24⚡'. Used by the menu and the AI.",
       "ONE TRANSFORMATION PER CHARACTER PER TURN: fc._tfKey = G.turn+':'+activePlayer set in doTransform (and Prism Shift); a second transform is refused (menu button 'Already transformed this turn', AI skips, chip ⬆). The form you transform into must still be in hand.",
@@ -10502,6 +10516,10 @@ const DEFAULTS={
   keon_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/110-150%20(Keon%20Base).png',
   keon_lssj_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/139-150%20(Keon%20LSSJ).png',
   vuruna_ssj4_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/131-150%20(Vuruna%20SSJ4).png',
+  veynaria_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/115-150%20(Veynaria%20Base).png',
+  veynaria_ssj_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/116-150%20(Veynaria%20SSJ).png',
+  veynaria_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/111-150%20(Veynaria%20SSG).png',
+  vildrex_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/149-150%20(Vildrex).png',
   surana_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/028-150%20(Surana%20Base).png',
   surana_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/029-150%20(Surana%20SSG).png',
   surana_sss_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/030-150%20(Surana%20SSS).png',
@@ -11076,6 +11094,18 @@ const DB={
   //    017/150 Legend. Counter-on-hit, slow self-heal, coin-flip lockdown. ──
   violet_ssg_bse:{id:'violet_ssg_bse',rarity:'legend',name:'Violet (SSG)',color:'white',charName:'Violet',charLine:'violet',formTier:'ssg',transformOnly:true,subtypes:['Royal','Saiyan'],type:'char',race:'Royal Saiyan',cost:8,atk:6,hp:10,sym:'VSSG',setId:'base_set',cardNumber:'017/150',
     abilities:[{label:'Inferno Reflex',type:'triggered',cost:0,text:"Every time this card is attacked from an opponent's character, Violet (SSG) counters for 2 damage."},{label:'Heart of a Saiyan God',type:'passive',cost:0,text:'After every 2 turns this card heals for +2 HP.'},{label:'Godly Restriction',type:'activated',cost:0,text:"Flip a coin. If heads, choose one character on your opponent's field. They cannot attack or use abilities for their upcoming turn."}]},
+  // ── VEYNARIA (BSE 115 base · 116 SSJ · 111 SSG) — build 10.18. WHITE Royal Saiyan line (Violet's mother). Royal Matriarch is one
+  //    label on every form; the amounts come from each form's own text (royalMatriarchSpec): base +0/+1, SSJ +1/+0, SSG +1/+1 to your
+  //    OTHER Royal Saiyans. A Mother's Strength (SSJ): +2/+2 while you control a Violet. Starbreaker Blast (SSG): 3⚡, once every 2 turns,
+  //    3 damage to a target opposing character.
+  veynaria_bse:{id:'veynaria_bse',rarity:'common',name:'Veynaria',color:'white',charName:'Veynaria',charLine:'veynaria',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:3,atk:2,hp:4,sym:'VEY',setId:'base_set',cardNumber:'115/150',nextForms:['ssj1','ssg'],
+    abilities:[{label:'Royal Matriarch',type:'passive',cost:0,text:'Your other Royal Saiyan characters get +1 Health.'}]},
+  veynaria_ssj_bse:{id:'veynaria_ssj_bse',rarity:'uncommon',name:'Veynaria (SSJ)',color:'white',charName:'Veynaria',charLine:'veynaria',formTier:'ssj1',path:'saiyan',transformOnly:true,subtypes:['Royal','Saiyan'],type:'char',race:'Royal Saiyan',cost:6,atk:4,hp:5,sym:'VEYSSJ',setId:'base_set',cardNumber:'116/150',
+    abilities:[{label:'Royal Matriarch',type:'passive',cost:0,text:'Your other Royal Saiyan characters get +1 Attack.'},
+      {label:"A Mother's Strength",type:'passive',cost:0,text:'While you control a Violet character, this card gets +2/+2.'}]},
+  veynaria_ssg_bse:{id:'veynaria_ssg_bse',rarity:'rare',name:'Veynaria (SSG)',color:'white',charName:'Veynaria',charLine:'veynaria',formTier:'ssg',path:'god',transformOnly:true,subtypes:['Royal','Saiyan','God'],type:'char',race:'Royal Saiyan God',cost:7,atk:4,hp:5,sym:'VEYSSG',setId:'base_set',cardNumber:'111/150',
+    abilities:[{label:'Royal Matriarch',type:'passive',cost:0,text:'Your other Royal Saiyan characters get +1 Attack and +1 Health.'},
+      {label:'Starbreaker Blast',type:'activated',cost:3,limit:'every_2_turns',text:'Pay 3 Energy: Deal 3 damage to an opponent character. (Once every 2 turns)'}]},
   // ── Ghost Hulk (PROMO / PRM) — Legend standalone. GREEN+RED: green energy ramp + red dice damage. ──
   ghost_hulk_promo:{id:'ghost_hulk_promo',rarity:'legend',name:'Ghost Hulk',color:'green',colors:['green','red'],charName:'Ghost Hulk',subtypes:['Gamma','Spirit'],type:'char',race:'Gamma Spirit',cost:9,atk:8,hp:14,sym:'GH',setId:'promo',cardNumber:'PROMO',
     abilities:[{label:'Gamma Absorption',type:'triggered',cost:0,text:'When entering the field you gain +2 Green Energy for each card that has a cost above 5.'},{label:'Spirit of Smash',type:'activated',cost:0,limit:'once_per_turn',text:"Choose a character on your opponent's field. Roll a 5 dye, if it lands on 2 this attack does +3 damage. If it lands on 4 it does +6 damage."}]},
@@ -11270,6 +11300,17 @@ const DB={
       {type:'triggered',label:'Aetherion Light',cost:0,text:'At the start of your turn, each of your characters heals 1 damage. Whenever one of your characters heals, it gets +1 Attack until the end of your turn.'},
       {type:'activated',label:'Radiant Blessing',cost:2,limit:'once_per_turn',text:'Pay 2 Energy: One of your characters heals 3 damage and loses one status. (Once per turn)'},
       {type:'activated',label:'Cosmic Radiance',cost:4,limit:'once_per_game',text:'Pay 4 Energy: Deal 2 damage to each opponent character. (Once per game)'}
+    ],transforms:[]},
+  // ── VILDREX (BSE 149/150) — build 10.18. HERALD, Void Celestial, Purple. "I am the strongest in the multiverse.."
+  //    Void Gate: once per turn, after one of your characters attacks, you may pay 2⚡ → another character that hasn't attacked may attack.
+  //    Void Collapse: 5⚡, once per game — an opposing character with a printed cost of 4 or less goes to the Rift.
+  //    Arch-Nemesis: Vildrex and your characters deal +1 damage to Saiyan characters (dealDamage → archNemesisBonus).
+  vildrex_herald:{id:'vildrex_herald',rarity:'mythic',name:'Vildrex',type:'herald',race:'Void Celestial',cost:0,atk:12,hp:12,sym:'👑',subtypes:['Void','Celestial'],color:'purple',keywords:[],
+    heraldFlip:null,autoFlip:false,setId:'base_set',cardNumber:'149/150',
+    abilities:[
+      {type:'triggered',label:'Void Gate',cost:2,text:"Once per turn, after one of your characters attacks, you may pay 2 Energy. If you do, another of your characters that hasn't attacked this turn may attack."},
+      {type:'activated',label:'Void Collapse',cost:5,limit:'once_per_game',text:'Pay 5 Energy: Send an opponent character with a cost of 4 or less to the Rift. (Once per game)'},
+      {type:'passive',label:'Arch-Nemesis',cost:0,text:'This card and your characters deal +1 damage to Saiyan characters.'}
     ],transforms:[]},
   // ── PRAXUS (BSE 148/150) — build 10.13. HERALD, Darkness God, Black.
   //    Devouring Dark: whenever one of your characters is destroyed or sacrificed, +1 Energy (max 2 per turn).
@@ -12254,10 +12295,69 @@ function triggerHeavenlyRelay(afc){
   G.bonusAttackers=(G.bonusAttackers||0)+1;
   log(`🌙 Heavenly Relay: another of ${pname(p)}'s characters that hasn't attacked may attack this turn!`,'gain');
 }
+// ROYAL MATRIARCH (Veynaria): the +Attack / +Health come from the source form's own text ("+1 Health", "+1 Attack",
+// "+1 Attack and +1 Health"), so a future form only needs its text.
+function royalMatriarchSpec(f){
+  const a=((DB[f.cid]&&DB[f.cid].abilities)||[]).concat(Array.isArray(f.gainedAbilities)?f.gainedAbilities:[]).find(x=>x&&x.label==='Royal Matriarch');
+  const t=(a&&a.text)||''; const A=t.match(/\+(\d+)\s*Attack/i), H=t.match(/\+(\d+)\s*Health/i);
+  return {atk:A?+A[1]:0, hp:H?+H[1]:0};
+}
+// ARCH-NEMESIS (Vildrex, Herald): Vildrex and its controller's characters deal +1 damage to Saiyan characters — any damage through
+// dealDamage whose source is known (_dmgSourceFc: the combat attacker/defender, or the ability's card). Self-damage never counts.
+function archNemesisBonus(tp,tuid){
+  try{
+    const s=_dmgSourceFc(tuid); if(!s||String(s.uid)===String(tuid)) return 0;
+    const q=fxOwnerOf(s); if(q==null) return 0; const H=G.players[q]&&G.players[q].herald;
+    if(!H||isHeraldBroken(H)||!hasAbilityLabel(H,'Arch-Nemesis')) return 0;
+    if(String(H.uid)!==String(s.uid)&&!isChar(DB[s.cid])) return 0;
+    return 1;
+  }catch(e){ return 0; }
+}
+// VOID GATE (Vildrex, Herald): once per turn (per player-turn, _braceTurnKey), after one of your characters attacks, you may pay 2⚡:
+// another of your characters that hasn't attacked this turn may attack (G.bonusAttackers +1). Only offered when it would matter
+// (a character that hasn't attacked is left without an attack slot) and you have 2⚡. People get Use / Skip once the attack has
+// finished (sequencer); skipping doesn't use it. The AI pays when one of those characters has an attack to make.
+function voidGateReady(p){ const H=G.players[p]&&G.players[p].herald; return !!(H&&!isHeraldBroken(H)&&hasAbilityLabel(H,'Void Gate')&&H._vgKey!==_braceTurnKey()); }
+function _voidGateOthers(p){
+  return G.players[p].field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken&&!(f.attacksThisTurn>0)&&!f.tapped&&!((f.fatigue||0)>0)
+    &&(f.turnPlayed<G.turn||hasKW(f,'burst_speed'))&&!statusActive(f,'freeze')&&!statusActive(f,'paralyze')&&!isLassoed(f)&&!stanceNoAttack(f)&&!(f._overloadLock&&f._overloadLock===_braceTurnKey()));
+}
+function voidGateUseful(p){
+  if(!G||G.gameOver||G.activePlayer!==p||G.phase!=='attack'||!voidGateReady(p)||(G.players[p].energy||0)<2) return false;
+  const free=Math.max(0,maxAttackersAllowed()-distinctAttackersUsed(p));
+  return _voidGateOthers(p).length>free;
+}
+function resolveVoidGate(p){
+  const H=G.players[p].herald; if(!voidGateUseful(p)) return false;
+  if(!spendEnergyAbility(p,2,DB[H.cid]?.color||null)) return false;
+  H._vgKey=_braceTurnKey(); G.bonusAttackers=(G.bonusAttackers||0)+1; G.players[p]._vgTurn=_braceTurnKey();
+  log(`🌀 Void Gate: ${pname(p)} pays 2 Energy — another character that hasn't attacked may attack this turn!`,'gain');
+  if(typeof renderAll==='function') renderAll(); return true;
+}
+function triggerVoidGate(afc){
+  if(!afc||!G||!isChar(DB[afc.cid])) return;
+  const p=[1,2,3,4].find(x=>G.players[x]&&G.players[x].field.some(f=>f.uid===afc.uid)); if(!p||p!==G.activePlayer) return;
+  if(!voidGateReady(p)) return; const H=G.players[p].herald; const key=_braceTurnKey();
+  if(H._vgPend===key) return; // an offer is already waiting
+  const ai=!seqIsLocalHuman(p)||G._aiAuto;
+  if(ai){
+    if(!voidGateUseful(p)) return;
+    if(!_voidGateOthers(p).some(f=>aiReady(f)&&aiAttackOptionsFor(p,f).length>0)) return;
+    if(resolveVoidGate(p)&&typeof seqAbility==='function') seqAbility(p,H.cid,'Void Gate',null,{},()=>{});
+    return;
+  }
+  H._vgPend=key;
+  setTimeout(()=>{ // after the attack has resolved
+    if(!G||G.gameOver||H._vgPend!==key){ return; }
+    if(!voidGateUseful(p)){ H._vgPend=null; return; }
+    seqAbility(p,H.cid,'Void Gate',null,{optional:true,useLabel:'Pay 2⚡',canUse:()=>voidGateUseful(p)},(use)=>{ H._vgPend=null; if(use) resolveVoidGate(p); });
+  },0);
+}
 function triggerFlameSpiral(afc){
   if(afc&&G){ G._curAtk=afc.uid; G._curDef=null; } // who is attacking (Half-Divine's damage-source check)
   triggerCrimsonRampage(afc);
   triggerHeavenlyRelay(afc);
+  triggerVoidGate(afc);
   if(!afc||!hasAbilityLabel(afc,'Flame Spiral')) return;
   if(afc._flame){ afc._flame.ends=2; return; }
   afc._flame={amt:2,ends:2}; afc.currentATK=(afc.currentATK||0)+2; afc.atkBonus=(afc.atkBonus||0)+2;
@@ -12650,7 +12750,7 @@ function fxEffectsOf(fc){
   if(Array.isArray(fc.attachments)&&fc.attachments.includes('the_dark_hold_bse')) cond('📕','The Dark Hold','Takes 1 damage at the start of each of your turns'+(fc._sinTurn===(G&&G.turn)?' · Pages of Sin used this turn':'')+'.',null);
   { const l=fc.abilityUsed&&fc.abilityUsed.sandstorm_turn; if(l!=null&&G&&G.turn-l<4&&hasAbilityLabel(fc,'Sandstorm')) cond('🏜','Sandstorm','Recharging: ready again in '+(4-(G.turn-l))+' turn(s).',null); }
   if(hasAbilityLabel(fc,'Chaos Tithe')&&fc._titheTurn===(G&&G.turn)) cond('🌀','Chaos Tithe','Already used this turn.',null);
-  ['web_snare_turn:Web Snare:🕸','get_over_here_turn:Get Over Here!:🔥'].forEach(s=>{ const [k,L,i]=s.split(':'); const l=fc.abilityUsed&&fc.abilityUsed[k];
+  ['web_snare_turn:Web Snare:🕸','get_over_here_turn:Get Over Here!:🔥','starbreaker_turn:Starbreaker Blast:🌠'].forEach(s=>{ const [k,L,i]=s.split(':'); const l=fc.abilityUsed&&fc.abilityUsed[k];
     if(l!=null&&G&&G.turn-l<2&&hasAbilityLabel(fc,L)) cond(i,L,'Recharging: ready again in '+(2-(G.turn-l))+' turn(s).',null); });
   if(fc.nextAttackBonus>0) cond('💥','+'+fc.nextAttackBonus+' next attack','Its next attack deals +'+fc.nextAttackBonus+' damage.',null);
   if(fc._frostRune&&fc._frostRune.turns>0) cond('❄️','Frost Rune','Freezes after the player who set it ends '+fc._frostRune.turns+' more turn'+(fc._frostRune.turns>1?'s':'')+'.',byLabel('Frost Rune'));
@@ -12755,6 +12855,10 @@ function recalcPassives(){
       // ZARIA — Tactical Authority: your OTHER Prime characters get +1 Attack (one +1 per source).
       if((c.subtypes||[]).some(t=>/^prime$/i.test(String(t).trim()))) pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'Tactical Authority')).forEach(f=>add(1,0,f.cid,'Tactical Authority',f.uid));
       if((c.subtypes||[]).some(t=>/^hero$/i.test(String(t).trim()))) pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,"Amazon's Valor")).forEach(f=>add(1,0,f.cid,"Amazon's Valor",f.uid));
+      // VEYNARIA — Royal Matriarch: your OTHER Royal Saiyans get the source form's +Attack / +Health (one bonus per source).
+      if(isRoyalSaiyan(c)) pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'Royal Matriarch')).forEach(f=>{ const m=royalMatriarchSpec(f); if(m.atk||m.hp) add(m.atk,m.hp,f.cid,'Royal Matriarch',f.uid); });
+      // VEYNARIA (SSJ) — A Mother's Strength: +2/+2 while you control a Violet character.
+      if(abils.some(a=>a.label==="A Mother's Strength") && pl.field.some(f=>f.uid!==fc.uid&&isChar(DB[f.cid])&&/^violet$/i.test(String(DB[f.cid].charName||'')))) add(2,2,fc.cid,"A Mother's Strength",fc.uid);
       // BEAST BOND (Voraxis): while you control a Virora, this card and each Virora you control get +2/+2.
       //   "a Virora" = a character with Virora in its name (every Virora form, Darkspine Virora, Virora (Surface
       //   Technique), Magnus & Virora). Each Beast Bond source adds its own +2/+2 to every Virora.
@@ -13624,6 +13728,7 @@ function dealDamage(tp,tuid,amt){
   if(amt<=0)return;
   const fc=G.players[tp].field.find(f=>f.uid===tuid);if(!fc)return;
   const c=DB[fc.cid];if(!c)return;
+  if(isSaiyanChar(c)){ const _an=archNemesisBonus(tp,tuid); if(_an>0){ amt+=_an; log(`🌀 Arch-Nemesis: +${_an} damage to ${c.name} (Saiyan).`,'dmg'); } } // Vildrex
   let dmg=isChar(c)?Math.max(0,amt-(fc.nullify||0)-(hasAbilityLabel(fc,'Inferno Ward')?1:0)-(hasAbilityLabel(fc,'Diamond Calm')?2:0)-((hasAbilityLabel(fc,'Half-Divine')&&_dmgSrcIsGod(tuid))?2:0)):amt; // Inferno Ward (Crystora) −1 · Diamond Calm (Crystora SSBM) −2 · Half-Divine (Asa) −2 vs Gods
   if(isChar(c)&&dmg>0&&hasAbilityLabel(fc,'Bracelets of Submission')&&!(typeof _fxCtx!=='undefined'&&_fxCtx&&_fxCtx.combat)&&fc._braceTurn!==_braceTurnKey()){ // 🛡 Wonder Woman
     fc._braceTurn=_braceTurnKey(); log(`🛡 Bracelets of Submission: ${DB[fc.cid]?.name} deflects it — all ${dmg} damage prevented.`,'gain');
@@ -15010,7 +15115,7 @@ function resolveCharVsHerald(ap, auid, dp){
   else {
     log(`${DB[h.cid].name} Herald: ${h.currentHP} HP — retaliates for ${retaliate} (½ ATK)!`,'dmg');
     claimPrizeOnHeraldHit(ap);
-    if(retaliate>0) dealDamage(ap, afc.uid, retaliate);
+    if(retaliate>0){ G._curDef=h.uid; dealDamage(ap, afc.uid, retaliate); }
   }
   renderAll(); return true;
 }
@@ -17574,6 +17679,33 @@ function _activateAbilityCore(fc,abl){
     openEnemyTargetPicker(foes.map(x=>x.fc),hit,{sourcePlayer:ap,title:abl.label,desc:isWeb?'Choose an opposing character to Paralyze.':'Choose an opposing character: 2 damage, then it is Burned.'});
     return;
   }
+  // ── VEYNARIA (SSG) BSE 111/150: Starbreaker Blast — 3⚡, once every 2 turns (abilityUsed.starbreaker_turn, Water Whip convention),
+  //    paid → no tap. 3 damage (dealDamage) to a target opposing character. Closing the picker refunds it.
+  if(abl.label==='Starbreaker Blast'){
+    const key='starbreaker_turn', cost=3;
+    const last=fc.abilityUsed && fc.abilityUsed[key];
+    if(last!=null && (G.turn-last)<2){ log(`Starbreaker Blast: wait ${2-(G.turn-last)} more turn(s).`,'dmg'); return; }
+    const ap=G.activePlayer, pl=G.players[ap];
+    const foes=[]; _fusionOpps(ap).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) foes.push({fc:f,p:op}); }));
+    if(!foes.length){ log('Starbreaker Blast: no opposing character to target.','dmg'); return; }
+    if(pl.energy<cost){ log(`Not enough energy (need ${cost}⚡).`,'dmg'); return; }
+    if(!spendEnergyAbility(ap,cost,DB[fc.cid]?.color||null)) return;
+    if(!fc.abilityUsed) fc.abilityUsed={}; fc.abilityUsed[key]=G.turn; pl.usedAbilityThisTurn=true;
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    const hit=(uid)=>{ const t=foes.find(x=>x.fc.uid===uid); const tf=t&&G.players[t.p].field.find(f=>f.uid===uid); if(!tf){ renderAll(); return; }
+      log(`🌠 Starbreaker Blast: ${DB[fc.cid].name} blasts ${DB[tf.cid].name} — 3 damage!`,'dmg');
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Starbreaker Blast',fc.uid):null;
+      try{ dealDamage(t.p,uid,3); } finally { if(typeof fxPop==='function') fxPop(_fx); }
+      if(typeof SFX!=='undefined'&&SFX.ability) try{ SFX.ability(); }catch(e){}
+      if(typeof recalcPassives==='function') recalcPassives(); renderAll(); if(typeof checkWin==='function') checkWin(); };
+    if(seqIsLocalHuman(ap)&&!G._aiAuto){ openEnemyTargetPicker(foes.map(x=>x.fc),hit,{sourcePlayer:ap,title:'🌠 Starbreaker Blast',desc:'Choose an opposing character: 3 damage.'}); }
+    else { // AI: a kill first (best one), otherwise its most valuable target
+      const kill=(x)=>(x.fc.currentHP||0)<=Math.max(0,3-(x.fc.nullify||0))?1:0;
+      const pool=foes.filter(x=>!hasDrunkenStance(x.fc)&&(!hasGodlyEvasion(x.fc)||pl.energy>=2)); const best=(pool.length?pool:foes).slice().sort((a,b)=>(kill(b)-kill(a))||(aiFcValue(b.fc)-aiFcValue(a.fc)))[0];
+      openEnemyTargetPicker([best.fc],hit,{sourcePlayer:ap,title:'Starbreaker Blast'}); }
+    return;
+  }
   // ── WONDER WOMAN: Lasso of Truth — 2⚡, once every 2 turns (fc.abilityUsed.lasso_turn, Water Whip convention), no tap. Choose an
   //    opposing character: it can't attack until the end of its controller's next turn, and you see that player's hand.
   if(abl.label==='Lasso of Truth'){
@@ -18546,7 +18678,8 @@ function _activateAbilityCore(fc,abl){
   // VOID SYNERGY (Paradox): Paradox's ability costs 0 if Vildrex or Virora is on your field.
   let _cost = abl.cost||0;
   if(fc.cid==='paradox'){
-    const voidAlly=pl.field.some(f=>{const d=DB[f.cid];return d&&(/vildrex/i.test(d.charName||'')||/virora/i.test(d.charName||''));});
+    const voidAlly=pl.field.some(f=>{const d=DB[f.cid];return d&&(/vildrex/i.test(d.charName||'')||/virora/i.test(d.charName||''));})
+      ||!!(pl.herald&&!isHeraldBroken(pl.herald)&&/vildrex/i.test(DB[pl.herald.cid]?.name||'')); // the Vildrex Herald counts (build 10.18)
     if(voidAlly && _cost>0){ _cost=0; log('Void Synergy: Paradox ability cost reduced to 0!','gain'); }
   }
   if(pl.energy<_cost){log('Not enough energy!','dmg');return;}
@@ -18793,6 +18926,27 @@ function runAbilityEffect(fc, abl, pl){
     finally { if(typeof fxPop==='function') fxPop(_fx); }
     if(typeof recalcPassives==='function') recalcPassives();
     renderAll(); if(typeof checkWin==='function') checkWin();
+    return;
+  }
+  // ── VILDREX (Herald): Void Collapse — 5⚡, once per GAME, paid → no tap. An opposing character with a PRINTED cost of 4 or less
+  //    (not a token, not Rift-immune) goes to the Rift (Event Horizon removal: attachments to the discard pile, no Prize).
+  //    No such character → refunded. Closing the picker refunds it.
+  if(label==='Void Collapse'){
+    const ap=G.activePlayer; const foes=[];
+    _fusionOpps(ap).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ const d=DB[f.cid]; if(isChar(d)&&!d.isToken&&(d.cost||0)<=4&&!isRiftImmune(f)) foes.push({p:op,fc:f}); }));
+    if(!foes.length){ if(_abilityUndo) _abilityUndo(); log('Void Collapse: no opposing character costs 4 or less — not used.','dmg'); renderAll(); return; }
+    const go=(uid)=>{ const t=foes.find(x=>x.fc.uid===uid); const tf=t&&G.players[t.p].field.find(f=>f.uid===uid); if(!tf){ renderAll(); return; }
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Void Collapse',fc.uid):null;
+      try{ G.players[t.p].field=G.players[t.p].field.filter(x=>x.uid!==uid); (tf.attachments||[]).forEach(eq=>G.players[t.p].discard.push(eq));
+        fusionLeaves(G.players[t.p],tf); sendToRift(t.p,tf.cid,'Void Collapse'); log(`🕳 Void Collapse: ${DB[tf.cid].name} is swallowed by the void!`,'dmg'); }
+      finally { if(typeof fxPop==='function') fxPop(_fx); }
+      if(typeof recalcPassives==='function') recalcPassives(); renderAll(); if(typeof checkWin==='function') checkWin(); };
+    if(seqIsLocalHuman(ap)&&!G._aiAuto){
+      openEnemyTargetPicker(foes.map(x=>x.fc),go,{sourcePlayer:ap,title:'🕳 Void Collapse',desc:'Send an opposing character with a cost of 4 or less to the Rift.'});
+    } else {
+      const pool=foes.filter(x=>!hasDrunkenStance(x.fc)); const best=(pool.length?pool:foes).slice().sort((a,b)=>aiFcValue(b.fc)-aiFcValue(a.fc))[0];
+      openEnemyTargetPicker([best.fc],go,{sourcePlayer:ap,title:'Void Collapse'});
+    }
     return;
   }
   if(label==='Divine Command'){
@@ -20319,6 +20473,12 @@ function aiScoreAbility(p, fc, abl, src){
   if(abl.label==='Web Snare'||abl.label==='Get Over Here!'){ const _k=abl.label==='Web Snare'?'web_snare_turn':'get_over_here_turn', _l=fc.abilityUsed&&fc.abilityUsed[_k];
     if(_l!=null&&G.turn-_l<2) return -1;
     const _es=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&(abl.label!=='Web Snare'||!statusActive(e.fc,'paralyze'))); if(!_es.length) return -1; }
+  if(abl.label==='Starbreaker Blast'){ const _l=fc.abilityUsed&&fc.abilityUsed.starbreaker_turn; if(_l!=null&&G.turn-_l<2) return -1;
+    const _es=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)); if(!_es.length) return -1;
+    const _k=_es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,3-(e.fc.nullify||0))).length; return 8+_k*12+Math.min(6,_es.length*2); }
+  if(abl.label==='Void Collapse'){ if(fc.abilityUsed&&fc.abilityUsed['Void Collapse']) return -1;
+    const _t=aiEnemyChars(p).filter(e=>{ const d=DB[e.fc.cid]||{}; return !d.isToken&&(d.cost||0)<=4&&!isRiftImmune(e.fc)&&!hasDrunkenStance(e.fc); }); if(!_t.length) return -1;
+    const _b=Math.max(..._t.map(e=>aiFcValue(e.fc))); if(_b<8) return -1; return 14+Math.min(20,_b); } // save it for a real threat
   if(abl.label==='Rewind'){ const _l=fc.abilityUsed&&fc.abilityUsed.rewind_turn; if((_l!=null&&G.turn-_l<2)||!fc.tapped||(fc.attacksThisTurn||0)>0) return -1;
     return ((fc.turnPlayed<G.turn||hasKW(fc,'burst_speed'))&&!statusActive(fc,'freeze')&&!((fc.fatigue||0)>0))?6:-1; }
   if((fc.fatigue||0)>0) return -1; // 💤 Fatigued
