@@ -9818,6 +9818,10 @@ const GAME_BUILD='10.18'; // rules version — must match the opponent's client 
 const GODOT_SYNC=[
   { build:'10.18', date:'2026-11-02',
     cards:[
+      {id:'keon_bse', set:'base_set', number:'110/150', rarity:'common', scan:'Sets/BASE SET/110-150 (Keon Base).png', newAbilities:['Legendary Escalation'],
+        note:"Keon · Green · BASE · charLine 'keon' · formTier 'base' · nextForms ['lssj'] · cost 4 · 3/5 · subtypes Prime, Saiyan · race 'Prime Saiyan'. Main menu art: 'Main Menu Images/keon1grok-image-3cde93dd-241f-4bde-92f2-bcac22aaffff.jpg'."},
+      {id:'keon_lssj_bse', set:'base_set', number:'139/150', rarity:'legend', scan:'Sets/BASE SET/139-150 (Keon LSSJ).png', newAbilities:['Legendary Wall','Legendary Escalation','Legendary Overload'],
+        note:"Keon (LSSJ) · Green · transformOnly · charLine 'keon' · formTier 'lssj' · path 'saiyan' · cost 9 · 8/12 · Prime, Saiyan · keywords ['guardian']. Main menu art: 'Main Menu Images/keon legendary ssjgrok-image-dde4d06e-dd0e-4689-9f6b-5c6d671327ae.jpg'."},
       {id:'asteria_herald', set:'base_set', number:'150/150', rarity:'mythic', scan:'Sets/BASE SET/150-150 (Asteria).png', newAbilities:['Aetherion Light','Radiant Blessing','Cosmic Radiance'],
         note:"Asteria · HERALD · Green (the plan's Green Herald slot) · 10 ATK / 14 HP · subtypes Prime, God · race 'Prime God'. Main menu art: 'Main Menu Images/Asteria.jpg'. NEW ENGINE: a shared heal hook noteHeal(fc, amt) + healFc(fc, amt)."},
       {id:'zaria_bse', set:'base_set', number:'127/150', rarity:'legend', scan:'Sets/BASE SET/127-150 (Zaria).png', newAbilities:['Combat Mastery','Tactical Authority','Divine Command'],
@@ -9833,6 +9837,9 @@ const GODOT_SYNC=[
       {id:'virora_surfacer_mui_sr_bse', set:'base_set', number:'154/150', rarity:'secret', scan:'Sets/BASE SET/154-150 (Virora Surfacer MUI) (Secret Rare).png', newAbilities:['Mastered Instinct','Celestial Surge','Silent Horizon'],
         note:"Virora (Surfacer MUI) SECRET RARE · secretRare:true · Purple · Character (played from hand, NOT transformOnly) · cost 12 · 11 ATK / 8 HP · subtypes Royal, Saiyan, Celestial · race 'Royal Saiyan Celestial' · charName 'Virora' (Virora checks like Void Synergy count her) · charLine 'virora_mui' (her own line) · no formTier · nextForms [] · transforms [] — a standalone card: nothing transforms into or out of her. Main menu art (admin sets it per tab): Main Menu Images/vmuisurfacerSurfacer MUI virora.jpg."}],
     abilities:[
+      "LEGENDARY ESCALATION (Keon + Keon LSSJ, triggered): one label, numbers parsed from the ability's own text (escalationSpec: '+N damage (up to +M)', and 'Frozen or Paralyzed removes' → lockClears). Base +1 up to +2; LSSJ +2 up to +4 + lockClears. End of dealDamage: damage > 0 and it's still on the field with Health > 0 (Resolve saves count) → fc._esc = min(cap, _esc + step). executeCombatDamage (attacker only): atkDmg += _esc, then _esc = 0. applyStatus: a successful Freeze/Paralyze on a lockClears card zeroes _esc. Chip 💥.",
+      "LEGENDARY WALL (Keon LSSJ, passive): Guardian — keywords ['guardian'] + KEYWORD_PASSIVES 'Legendary Wall' → 'guardian' (existing rule: opponents must attack a Guardian first).",
+      "LEGENDARY OVERLOAD (Keon LSSJ, triggered): startTurnFx per-card loop (turn already advanced; before the Draw phase's +1 Energy): with ≥1 Energy it pays 1 automatically (spendEnergy, its color first); with 0 → fc._overloadLock = G.turn+':'+activePlayer → canCharacterAttack false for this turn (click message + chip ⚡).",
       "HEAL HOOK (engine): noteHeal(fc, amt) runs after every heal effect with the Health actually restored — now wired into Crimson Gale, Scarlet Siphon, healing Instants (Fruits / Matcha), The Gift of the God's, Etheric Strike, Healing Hands, Blood Rite, Regeneration, Chi Mending, Heart of a Saiyan God, Saiyan God Healing, Prism Orb, Senzu Bean, plus Asteria's own heals. healFc(fc, amt) = heal up to max Health (baseHP + hpBonus + passiveHp) + fxHeal + noteHeal. Gaining Health (hpBonus buffs) is NOT a heal.",
       "AETHERION LIGHT (Asteria Herald, triggered): (1) startTurnFx, after Burn/Poison chip and before the per-card effects: each of your characters healFc(f, 1). (2) noteHeal: when one of your characters heals (amt > 0) and your Herald is unbroken with Aetherion Light → +1 Attack (fc._aeth += 1, fc._aethBy = you; one +1 per heal, they stack), removed in endTurnFx when YOU end your turn. Chip ✨.",
       "RADIANT BLESSING (Asteria Herald, activated): 2 Energy (Green), once per turn (generic lock), paid → no tap. Choose one of your characters (shows ♥ and status icons) → healFc(t, 3) and cureStatus on one status; with 2+ statuses a second chooser picks which (AI order: Freeze, Paralyze, Confusion, Poison, Burn). Closing either chooser refunds. AI: uses it when a character is missing 2+ Health or has a status.",
@@ -10481,6 +10488,8 @@ const DEFAULTS={
   pharoah_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/112-150%20(Pharoah).png',
   zaria_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/127-150%20(Zaria).png',
   asteria_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/150-150%20(Asteria).png',
+  keon_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/110-150%20(Keon%20Base).png',
+  keon_lssj_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/139-150%20(Keon%20LSSJ).png',
   surana_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/028-150%20(Surana%20Base).png',
   surana_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/029-150%20(Surana%20SSG).png',
   surana_sss_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/030-150%20(Surana%20SSS).png',
@@ -10715,6 +10724,16 @@ const DB={
   // ── CRYSTAL (BSE 113/150) — build 9.7. Base of the new Blue Saiyan line (114 = her SSJ, planned).
   crystal_bse:{id:'crystal_bse',rarity:'common',name:'Crystal',color:'blue',charName:'Crystal',charLine:'crystal',formTier:'base',subtypes:['Saiyan'],type:'base_char',race:'Saiyan',cost:2,atk:2,hp:3,sym:'CRY',setId:'base_set',cardNumber:'113/150',keywords:[],nextForms:['ssj1'],
     abilities:[{label:'Prism Orb',type:'triggered',cost:0,text:'When this card enters your field, choose one: target opposing character gets −2 Attack until end of your next turn, or heal one of your characters for 3.'}]},
+  // ── KEON (BSE 110/150) + KEON (LSSJ) (BSE 139/150) — build 10.18. GREEN Prime Saiyan line: Keon → Keon (LSSJ) (Legendary Super
+  //    Saiyan, saiyan path). Legendary Escalation (both, numbers read from each card's own text): taking damage and surviving banks
+  //    +N damage for its next attack (fc._esc, capped); LSSJ loses the bank when Frozen or Paralyzed. LSSJ: Legendary Wall = Guardian;
+  //    Legendary Overload = at the start of your turn it pays 1 Energy, or it can't attack this turn.
+  keon_bse:{id:'keon_bse',rarity:'common',name:'Keon',color:'green',charName:'Keon',charLine:'keon',formTier:'base',subtypes:['Prime','Saiyan'],type:'base_char',race:'Prime Saiyan',cost:4,atk:3,hp:5,sym:'KEO',setId:'base_set',cardNumber:'110/150',keywords:[],nextForms:['lssj'],
+    abilities:[{label:'Legendary Escalation',type:'triggered',cost:0,text:'Whenever this card takes damage and survives, its next attack deals +1 damage (up to +2).'}]},
+  keon_lssj_bse:{id:'keon_lssj_bse',rarity:'legend',name:'Keon (LSSJ)',color:'green',charName:'Keon',charLine:'keon',formTier:'lssj',path:'saiyan',transformOnly:true,subtypes:['Prime','Saiyan'],type:'char',race:'Prime Saiyan',cost:9,atk:8,hp:12,sym:'KEOL',setId:'base_set',cardNumber:'139/150',keywords:['guardian'],nextForms:[],
+    abilities:[{label:'Legendary Wall',type:'passive',cost:0,text:'Guardian. Opponents must attack this card first if able.'},
+      {label:'Legendary Escalation',type:'triggered',cost:0,text:'Whenever this card takes damage and survives, its next attack deals +2 damage (up to +4). Being Frozen or Paralyzed removes this bonus.'},
+      {label:'Legendary Overload',type:'triggered',cost:0,text:"At the start of your turn, pay 1 Energy. If you don't, this card can't attack this turn."}]},
   // ── ZARIA (BSE 127/150) — build 10.18. "The Goddess of War". RED. Standalone Character played from hand (no line).
   //    Combat Mastery: +2 damage when she attacks a character whose printed cost is higher than hers. Tactical Authority: other Prime
   //    characters +1 Attack. Divine Command: 3⚡ once per game — your characters +2/+2 until the end of your turn (fc._dcmd).
@@ -12589,6 +12608,8 @@ function fxEffectsOf(fc){
   if(hasAbilityLabel(fc,'Through the Horde')&&fc._hordeTurn===(G&&G.turn)) cond('🌊','Through the Horde','Already used this turn.',null);
   if(fc._ironFist>0) cond('👊','The Iron Fist','+'+fc._ironFist+' Attack until the end of this turn.',null);
   if(fc._bloodRite>0) cond('🩸','Blood Rite','+'+fc._bloodRite+' Attack until the end of this turn.',null);
+  if(fc._esc>0) cond('💥','Legendary Escalation','Next attack deals +'+fc._esc+' damage.',null);
+  if(fc._overloadLock&&fc._overloadLock===_braceTurnKey()) cond('⚡','Legendary Overload',"Unpaid: can't attack this turn.",null);
   if(fc._aeth>0) cond('✨','Aetherion Light','+'+fc._aeth+' Attack until the end of the turn.',null);
   if(fc._dcmd>0) cond('⭐','Divine Command','+'+fc._dcmd+'/+'+fc._dcmd+' until the end of this turn.',null);
   if(fc._limitless>0) cond('💚','Limitless Power','+'+fc._limitless+'/+'+fc._limitless+' so far (max +4/+4).',null);
@@ -13550,6 +13571,14 @@ function healFc(fc,amt){ // heal up to max Health; returns the Health restored (
   if(h>0){ fc.currentHP=b+h; if(typeof fxHeal==='function') try{ fxHeal(fc.uid,h); }catch(e){} noteHeal(fc,h); }
   return h;
 }
+// LEGENDARY ESCALATION (Keon / Keon LSSJ): step, cap and "Frozen or Paralyzed removes it" come from the ability's OWN text, so the
+// base (+1, up to +2) and LSSJ (+2, up to +4, cleared by Freeze/Paralyze) share one label, and a stolen copy keeps its numbers.
+function escalationSpec(fc){
+  const ab=[...(DB[fc?.cid]?.abilities||[]),...((fc&&fc.gainedAbilities)||[])].find(a=>a&&a.label==='Legendary Escalation'); if(!ab) return null;
+  const m=/\+(\d+) damage \(up to \+(\d+)\)/i.exec(ab.text||''); return {step:m?+m[1]:1, cap:m?+m[2]:2, lockClears:/frozen or paralyzed removes/i.test(ab.text||'')};
+}
+function escalationBank(fc){ const sp=escalationSpec(fc); if(!sp) return; const was=fc._esc||0; fc._esc=Math.min(sp.cap,was+sp.step);
+  if(fc._esc>was) log(`💥 Legendary Escalation: ${DB[fc.cid]?.name} survives — its next attack deals +${fc._esc}.`,'gain'); }
 function prismBarrierAbsorb(fc,dmg){
   const blk=Math.min(fc._prismShield||0,dmg); fc._prismShield=0; fc._prismBy=null;
   if(blk>0){ log(`💠 Prism Barrier: ${DB[fc.cid]?.name} is shielded — ${blk} damage prevented${dmg-blk>0?` (takes ${dmg-blk})`:''}.`,'gain');
@@ -13617,6 +13646,7 @@ function dealDamage(tp,tuid,amt){
       log('Resolve: '+DB[fc.cid].name+' survives with 1 HP!','gain');
     } else { killCard(tp,fc); }
   }
+  if(isChar(c)&&dmg>0&&fc.currentHP>0&&hasAbilityLabel(fc,'Legendary Escalation')&&(G.players[tp]?.field||[]).some(f=>f.uid===fc.uid)) escalationBank(fc); // 💥 Keon
 }
 
 // DEVOURING DARK (Praxus, Herald): one of your characters is destroyed or sacrificed → +1 Energy, at most 2 per turn.
@@ -14657,6 +14687,8 @@ function executeCombatDamage(ap,auid,dp,duid){
   atkDmg=applyWaterStance(dfc, afc, atkDmg); // 🌊 Nisha: an attack on her is 3 weaker
   // ☀️ SUN'S JUDGMENT (Falcore): its attack on a Paralyzed character deals +2.
   if(hasAbilityLabel(afc,"Sun's Judgment")&&statusActive(dfc,'paralyze')){ atkDmg+=2; log(`☀️ Sun's Judgment: ${DB[afc.cid]?.name} strikes the Paralyzed ${DB[dfc.cid]?.name} for +2!`,'dmg'); }
+  // 💥 LEGENDARY ESCALATION (Keon): the banked bonus goes into this attack, then it's spent.
+  if(afc._esc>0&&hasAbilityLabel(afc,'Legendary Escalation')){ atkDmg+=afc._esc; log(`💥 Legendary Escalation: ${ac.name} unloads +${afc._esc} damage!`,'dmg'); afc._esc=0; }
   // ⚔ COMBAT MASTERY (Zaria): her attack on a character with a higher printed cost deals +2.
   if(hasAbilityLabel(afc,'Combat Mastery')&&isChar(dc)&&(dc.cost||0)>(ac.cost||0)){ atkDmg+=2; log(`⚔ Combat Mastery: ${ac.name} strikes the costlier ${dc.name} (${dc.cost||0} > ${ac.cost||0}) for +2!`,'dmg'); }
   { const _ki=killingIntent(afc,dfc); if(_ki){ atkDmg+=_ki; log(`🩸 Killing Intent: ${DB[dfc.cid]?.name} is already wounded — +2!`,'dmg'); } }
@@ -15052,6 +15084,7 @@ function lassoUntilFor(ctrl){
 function canCharacterAttack(p, fc){
   if(!fc || !isChar(DB[fc.cid])) return false;
   if(isLassoed(fc)) return false; // 🪢 Lasso of Truth
+  if(fc._overloadLock&&fc._overloadLock===_braceTurnKey()) return false; // ⚡ Legendary Overload unpaid
   if(fc.tapped) return false; // tapped cards (used a free ability) can't attack
   if(stanceNoAttack(fc)) return false; // Earth Stance / Bloodstone Skin: "can't attack"
   if((fc.fatigue||0)>0) return false; // 💤 Fatigued (split fusion materials)
@@ -15083,6 +15116,7 @@ function onFieldClick(p,uid,fc){
       if((fc.fatigue||0)>0){log(`💤 ${DB[fc.cid].name} is Fatigued — it can't attack for ${fc.fatigue} more of your turn${fc.fatigue>1?'s':''}.`,'dmg');return;}
       if(stanceNoAttack(fc)){log(`${DB[fc.cid].name} is in ${STANCE_META[fc.stance].label} and can't attack.`,'dmg');return;}
       if(isLassoed(fc)){log(`🪢 ${DB[fc.cid].name} is bound by the Lasso of Truth — it can't attack this turn.`,'dmg');return;}
+      if(fc._overloadLock&&fc._overloadLock===_braceTurnKey()){log(`⚡ ${DB[fc.cid].name}'s Legendary Overload wasn't paid — it can't attack this turn.`,'dmg');return;}
       // ENFORCE: only one character may attack per phase (unless ability grants more)
       if(!canCharacterAttack(p, fc)){
         if((fc.attacksThisTurn||0)>0){log(`${DB[fc.cid].name} already attacked this turn.`,'dmg');}
@@ -19432,6 +19466,7 @@ function applyStatus(fc,type,turns){
   const m=STATUS_META[type];
   if(typeof showStatusFx==='function')showStatusFx(fc.uid,type);
   log(`${m.icon} ${DB[fc.cid]?.name} is afflicted with ${m.label} (${fc.statuses[type]} turn${fc.statuses[type]>1?'s':''})!`,'dmg');
+  if((type==='freeze'||type==='paralyze')&&fc._esc>0){ const _sp=escalationSpec(fc); if(_sp&&_sp.lockClears){ fc._esc=0; log(`💥 Legendary Escalation: ${DB[fc.cid]?.name} loses its banked damage (${m.label}).`,'dmg'); } }
   return true;
 }
 function cureStatus(fc,type){
@@ -19565,6 +19600,11 @@ function startTurnFx(player){
     // ── DANNY RAND: Chi Mending — at the start of each of your turns, heal 3 damage.
     if(isChar(c)&&hasAbilityLabel(fc,'Chi Mending')){ const mx=(fc.baseHP||0)+(fc.hpBonus||0)+(fc.passiveHp||0);
       if((fc.currentHP||0)<mx){ const h=Math.min(3,mx-fc.currentHP); fc.currentHP+=h; noteHeal(fc,h); log(`🍀 Chi Mending: ${c.name} heals ${h}.`,'gain'); } }
+    // ── KEON (LSSJ): Legendary Overload — at the start of your turn it pays 1 Energy (automatically); with none, it can't attack this turn.
+    if(isChar(c)&&hasAbilityLabel(fc,'Legendary Overload')){
+      if((pl.energy||0)>=1&&spendEnergy(player,1,c.color||null)){ fc._overloadLock=null; log(`⚡ Legendary Overload: ${pname(player)} pays 1 Energy to power ${c.name}.`,'info'); }
+      else { fc._overloadLock=_braceTurnKey(); log(`⚡ Legendary Overload: no Energy to pay — ${c.name} can't attack this turn.`,'dmg'); }
+    }
     // ── PHAROAH: Limitless Power — at the start of each of your turns +1/+1 until it leaves the field, up to +4/+4 in all.
     if(isChar(c)&&hasAbilityLabel(fc,'Limitless Power')&&(fc._limitless||0)<4){
       fc._limitless=(fc._limitless||0)+1; fc.atkBonus=(fc.atkBonus||0)+1; fc.currentATK=(fc.currentATK||0)+1; fc.hpBonus=(fc.hpBonus||0)+1; fc.currentHP=(fc.currentHP||0)+1;
@@ -20563,7 +20603,7 @@ function hasKW(fc, kw){ if(DB[fc.cid]?.keywords?.includes(kw))return true; if(Ar
   if(fc&&fc.stance&&(kw==='onslaught'||kw==='guardian')&&stanceGrantsKW(fc,kw)) return true;
   return false; }
 // Passive abilities that are really a keyword in disguise — stealing one grants the keyword.
-const KEYWORD_PASSIVES={'Blue Tempest':'onslaught','Rage of Sparta':'burst_speed','Flash Step':'burst_speed','Spider Agility':'burst_speed','Hulk Smash':'breakthrough','Four as One':'onslaught','Four Elements Unbound':'onslaught','Muladhara':'resolve','Unbreakable':'resolve'};
+const KEYWORD_PASSIVES={'Blue Tempest':'onslaught','Rage of Sparta':'burst_speed','Flash Step':'burst_speed','Spider Agility':'burst_speed','Hulk Smash':'breakthrough','Four as One':'onslaught','Four Elements Unbound':'onslaught','Muladhara':'resolve','Unbreakable':'resolve','Legendary Wall':'guardian'};
 function renderKeywordBadges(fc){
   const kws=DB[fc.cid]?.keywords; if(!kws||!kws.length) return '';
   return kws.map(kw=>{ const k=KEYWORDS[kw]; if(!k) return ''; return '<span class="kw-badge '+k.cls+'" title="'+k.desc+'">'+k.label+'</span>'; }).join('');
