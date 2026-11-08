@@ -2756,6 +2756,40 @@ input:focus,select:focus,textarea:focus,
   background:rgba(35,22,65,.75) !important;
 }
 
+/* END-OF-MATCH STATS (build 10.18) */
+#win-modal .modal{ width:min(560px,94vw); max-width:min(560px,94vw); max-height:calc(100dvh - 72px); margin-top:52px; overflow-y:auto; } /* clears the top bar */
+#win-stats{ text-align:left; margin:0 0 14px; }
+#win-stats:empty{ display:none; }
+.ms-tabs{ display:flex; gap:6px; margin-bottom:10px; }
+.ms-tab{ flex:1; padding:7px 0; border-radius:8px; border:1px solid rgba(251,191,36,.35); background:rgba(15,10,30,.6); color:#cbd5e1; font-size:12px; font-weight:700; cursor:pointer; }
+.ms-tab.on{ background:rgba(251,191,36,.18); color:#fbbf24; border-color:#fbbf24; }
+.ms-meta{ font-size:11px; color:#94a3b8; text-align:center; margin-bottom:10px; }
+.ms-mvps{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+.ms-mvp{ display:flex; gap:8px; align-items:center; padding:8px; border-radius:10px; background:rgba(10,8,24,.7); border:1px solid rgba(148,163,184,.25); min-width:0; }
+.ms-mvp.mine{ border-color:rgba(251,191,36,.55); }
+.ms-mvp img,.ms-mvp .ms-noimg{ width:54px; height:76px; object-fit:cover; border-radius:6px; flex-shrink:0; background:#1e1b3a; }
+.ms-mvp .ms-noimg{ display:flex; align-items:center; justify-content:center; font-size:22px; }
+.ms-mvp .k{ font-size:9px; letter-spacing:.08em; text-transform:uppercase; color:#94a3b8; }
+.ms-mvp .n{ font-size:13px; font-weight:800; color:#f8fafc; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ms-mvp .v{ font-size:11px; color:#fbbf24; }
+.ms-table{ width:100%; border-collapse:collapse; font-size:12px; }
+.ms-table th{ font-size:10px; color:#94a3b8; font-weight:700; text-transform:uppercase; letter-spacing:.06em; padding:4px 6px; text-align:center; }
+.ms-table th:first-child{ text-align:left; }
+.ms-table td{ padding:5px 6px; border-top:1px solid rgba(148,163,184,.12); color:#e2e8f0; text-align:center; font-variant-numeric:tabular-nums; }
+.ms-table td:first-child{ text-align:left; color:#cbd5e1; }
+.ms-table td.best{ color:#fbbf24; font-weight:800; }
+.ms-table .sub{ display:block; font-size:9.5px; color:#94a3b8; font-weight:400; }
+.ms-cards h4{ font-size:11px; color:#fbbf24; text-transform:uppercase; letter-spacing:.06em; margin:10px 0 6px; }
+.ms-row{ display:grid; grid-template-columns:34px 1fr auto auto auto; gap:8px; align-items:center; padding:5px 4px; border-top:1px solid rgba(148,163,184,.12); font-size:12px; }
+.ms-row img,.ms-row .ms-noimg{ width:34px; height:48px; object-fit:cover; border-radius:4px; background:#1e1b3a; display:flex; align-items:center; justify-content:center; }
+.ms-row .nm{ min-width:0; } .ms-row .nm b{ display:block; color:#f8fafc; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .ms-row .nm span{ font-size:10px; color:#94a3b8; }
+.ms-row .num{ text-align:right; color:#e2e8f0; font-variant-numeric:tabular-nums; min-width:38px; } .ms-row .num small{ display:block; font-size:9px; color:#94a3b8; }
+.ms-st{ font-size:10px; padding:2px 6px; border-radius:999px; white-space:nowrap; }
+.ms-st.alive{ background:rgba(34,197,94,.15); color:#86efac; } .ms-st.destroyed{ background:rgba(239,68,68,.15); color:#fca5a5; }
+.ms-st.other{ background:rgba(148,163,184,.15); color:#cbd5e1; }
+.ms-empty{ font-size:11px; color:#94a3b8; padding:6px 4px; }
+@media(max-width:480px){ .ms-mvps{ gap:6px; } .ms-mvp{ padding:6px; gap:6px; } .ms-mvp img,.ms-mvp .ms-noimg{ width:40px; height:56px; } .ms-mvp .n{ font-size:12px; } .ms-mvp .v{ font-size:10px; } .ms-mvp .k{ font-size:8.5px; } .ms-table{ font-size:11.5px; } .ms-row{ gap:6px; } }
+
 /* Game over / win modal touchup */
 #win-modal .modal{
   background:linear-gradient(180deg,
@@ -6183,7 +6217,7 @@ textarea{
   #game-screen .sheet-tabs{ display:flex; margin:-4px 0 10px; }
   #game-screen #game-menu-cluster{ display:none; }
   #game-screen .side .prize-claim-pop{ position:fixed; left:50%; right:auto; top:50%; bottom:auto; transform:translate(-50%,-50%); }
-  #game-screen > .prize-claim-pop.pc-float{ position:fixed; left:50%; right:auto; top:50%; bottom:auto; transform:translate(-50%,-50%); z-index:100050; max-width:calc(100vw - 20px); max-height:calc(100dvh - 40px); overflow:auto; box-shadow:0 0 0 100vmax rgba(0,0,0,.55),0 0 32px rgba(251,191,36,.3); }
+  #game-screen > .prize-claim-pop.pc-float{ position:fixed; left:50%; right:auto; top:50%; bottom:auto; transform:translate(-50%,-50%); z-index:99; /* above the board, below every popup */ max-width:calc(100vw - 20px); max-height:calc(100dvh - 40px); overflow:auto; box-shadow:0 0 0 100vmax rgba(0,0,0,.55),0 0 32px rgba(251,191,36,.3); }
   #game-screen .prize-claim-pop .pc-grid{ grid-template-columns:repeat(3,minmax(54px,74px)); }
   /* compact top HUD on phones */
   .hud-identity{ display:none; }
@@ -9783,6 +9817,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
     <h2 id="win-text" style="color:#fbbf24;font-size:22px;margin-bottom:6px"></h2>
     <p id="win-reason" style="color:#6b7280;font-size:12px;margin-bottom:16px"></p>
     <div id="win-celestium" style="font-size:11px;color:#fbbf24;margin-bottom:16px"></div>
+    <div id="win-stats"></div>
     <div id="win-buttons" style="display:flex;flex-direction:column;gap:8px">
       <div id="win-rematch-note" role="status"></div>
       <button class="btn-primary" id="win-rematch-btn" style="width:100%;padding:11px;font-size:13px;display:none" onclick="requestRematch()">🔄 Rematch</button>
@@ -9864,6 +9899,7 @@ const GODOT_SYNC=[
       {id:'virora_surfacer_mui_sr_bse', set:'base_set', number:'154/150', rarity:'secret', scan:'Sets/BASE SET/154-150 (Virora Surfacer MUI) (Secret Rare).png', newAbilities:['Mastered Instinct','Celestial Surge','Silent Horizon'],
         note:"Virora (Surfacer MUI) SECRET RARE · secretRare:true · Purple · Character (played from hand, NOT transformOnly) · cost 12 · 11 ATK / 8 HP · subtypes Royal, Saiyan, Celestial · race 'Royal Saiyan Celestial' · charName 'Virora' (Virora checks like Void Synergy count her) · charLine 'virora_mui' (her own line) · no formTier · nextForms [] · transforms [] — a standalone card: nothing transforms into or out of her. Main menu art (admin sets it per tab): Main Menu Images/vmuisurfacerSurfacer MUI virora.jpg."}],
     abilities:[
+      "END-OF-MATCH STATS (all modes): G.mstats = {t0, p:{seat:{turns,dmg,taken,kills,lost,lf,played,chars,instants,equips,locs,tf,fus,abl,spent,big,bigCid}}, c:{uid:{cid,p,dmg,kills,st,t}}}, created lazily (not in the tutorial). Hooks: startTurnFx → turns; dealDamage after Health comes off → damage (source = _dmgSourceFc; sourceless Burn/Poison → the opponent in 1v1), fc._msHit = last hitter; killCard → lost + kill credit (ability context source, else last hitter, else the active player); trackCardPlayed → cards played by type; onEntry → card row; doTransform / Prism Shift → tf; performFusion → fus (materials st 'fused'); activateAbility (fired) → abl; spendEnergy → spent; damageLifeForce → lf for the opponent; doSacrifice → st 'sacrificed'. Prizes and Herald damage are read from the final board. Online 1v1: canonical.mstats in the host's view (guest swaps seats 1⇄2 both ways, msSwap); 2v2 ships it as-is. Shown inside the win/lose popup (#win-stats): Summary tab = MVP card per side (score dmg + 4×KOs, art) + side-by-side table (better value gold); Cards tab = every character (and Herald that dealt damage) per side with turn played, damage, KOs and status (On field / Destroyed / Sacrificed / Fused / Left field). 2v2 compares teams.",
       "CARRY-OVER RULE (engine fix): when a character changes card in place — transformation (doTransform), Surfacer Ignition's revert (reformStats), fusion (performFusion) and split (splitFusion) — it keeps (1) Equipment: re-applied with applyEquip (Infinity Bond flag reset first so its +2/+2 re-applies; Instants are not passed to applyEquip); (2) Instant bonuses: fc.carry [{src,atk,hp}] — Vermynth Fruit's +2 Attack via grantCarry; fusions take both materials' lists, a split gives each material its own back and the fusion's own to the first material; (3) attached Instants re-derived from attachments (fillAttachedCarry): Saiyan Blood +2 Health, +3 if the holder is a Saiyan; (4) temporary buffs/debuffs (tempStatDelta: Iron Fist, Blood Rite, Rampage, Flame, King's Right Hand, SSB buff, Aetherion, Stone Power, Divine Command, Surface Depletion, Pink Horizon, Kinetic Bind, Will of the Ring, Earth Wall) on transform/revert, so their end-of-turn removal stays balanced. A form's own ability counters still reset (a form has only what's printed on it).",
       "SEISMIC SENSE (Toph, passive): her attacks ignore Guardian (may attack anything), Godly Evasion and Velocity Blitz tolls (nothing paid), and the dodge flips Godly Reflexes / Godly Movement (her attacks can't miss). Her own abilities ignore targeting limits (Metalbending lists every equipped foe). AI attack options use the same rules for her.",
       "EARTH WALL (Toph, activated): 2 Energy, once per turn, paid → no tap. One of your characters: +3 Health (hpBonus and current) until the START of your next turn (fc._ewall [{by,hp}]); then it comes off and Health 0 → destroyed. Closing the chooser refunds.",
@@ -14009,6 +14045,7 @@ function dealDamage(tp,tuid,amt){
   }
   fc.currentHP-=dmg;
   if(isChar(c))fc.damagedThisTurn=true;
+  msDamage(tp,fc,dmg,tuid); // end-of-match stats
   // WORLDBREAKER HULK — Endless Rage: each time it takes damage and survives, +2 Attack permanently (max +6).
   if(isChar(c)&&dmg>0&&fc.currentHP>0&&hasAbilityLabel(fc,'Endless Rage')&&(fc._rage||0)<6){ const g=Math.min(2,6-(fc._rage||0)); fc._rage=(fc._rage||0)+g; fc.atkBonus=(fc.atkBonus||0)+g; fc.currentATK=(fc.currentATK||0)+g;
     log(`💢 Endless Rage: ${c.name} survives and gets +${g} Attack (now ${fc.currentATK}; +${fc._rage}/6).`,'gain'); }
@@ -14069,6 +14106,7 @@ function killCard(p,fc){
   }
   log(`☠ ${c.name} destroyed!`,'death');
   triggerInevitable(fc); // ♾ Thanos
+  msKill(p,fc); // end-of-match stats
   devouringDark(p, fc);
   if(hasAbilityLabel(fc,'The Horde Rises')) createZombieTokens(p,2,'The Horde Rises');
   if(typeof SFX!=='undefined')SFX.death();
@@ -14323,6 +14361,8 @@ function showWinScreen(p,r,forfeited){
     text.style.color=iWon?'#fbbf24':'#fca5a5';
   }
   if(reason)reason.textContent=r;
+  document.querySelectorAll('.prize-claim-pop.pc-float').forEach(x=>x.remove()); // a floating Prize pick never sits over the result
+  _msTab='sum'; try{ renderMatchStats(); }catch(e){ console.warn('[match stats]',e); const _b=document.getElementById('win-stats'); if(_b) _b.innerHTML=''; }
   const is2v2 = G&&G.is2v2;
   if(celEl){
     if(is2v2){
@@ -14429,6 +14469,7 @@ function openSacrificeModal(){
 }
 
 function doSacrifice(uid,energyGain,pOverride){
+  try{ const _p=pOverride||G.activePlayer; const _f=G.players[_p]&&G.players[_p].field.find(f=>f.uid===uid); if(_f){ const e=msC(_f,_p); if(e) e.st='sacrificed'; } }catch(e){} // end-of-match stats
   const sp=pOverride||((typeof actingPlayer==='function')?(actingPlayer()||1):1);
   const pl=G.players[sp];
   const fc=pl.field.find(f=>f.uid===uid);if(!fc)return;
@@ -16631,6 +16672,7 @@ function swapHandFieldFlow(opts){
 }
 function onEntry(p,fc){
   const c=DB[fc.cid];if(!c)return;
+  if(isChar(c)) msC(fc,p); // end-of-match stats: this card's row
   if(typeof fxCtx==='function') fxCtx(fc.cid, _fxEntryLabel(c), fc.uid);
   // ── AVATAR'S BALANCE (Pavi): choose Air or Earth as she enters (a re-entry starts with no stance).
   if(stanceChooserOf(fc)){ fc.stance=null; fc._stanceAsk=false; stanceAsk(p,fc,'entry'); } // Avatar's Balance / Avatar's Harmony
@@ -17325,6 +17367,7 @@ function executePrismShift(targetFc,volarisFc,newCid){
   targetFc.attachments=prevAttachments.filter(eqId=>{const eq=DB[eqId];return eq&&eq.persistent!==false;});
   reformStats(targetFc,nc); // printed stats + Equipment + Instant bonuses + this turn's effects (build 10.18: Equipment used to drop here)
   grantCarry(targetFc,'prism_shift',2,2); // Prism Shift's +2/+2 stays with it through later form changes
+  { const _o=_volarisOwner(volarisFc.uid); const _m=msP(_o); if(_m) _m.tf++; msC(targetFc,_o); } // end-of-match stats
   targetFc.abilityUsed={};
   targetFc.damagedThisTurn=false;
   targetFc.markedDamage=0;
@@ -17492,6 +17535,7 @@ function doTransform(fieldUid,newCid,handUid,cost,ownerOverride){
     if(_shift){ fc.currentHP=Math.max(1,(fc.baseHP||0)+(fc.hpBonus||0)-_dmgTaken); fc.statuses=_keepSt; fc.statusSrc=_keepSrc; fc.abilityUsed=_keepUsed;
       log(`↔ ${nc.name}: a shift along the ${FORM_PATHS[formPathOf(nc)]?.label||''} path — damage and statuses stay.`,'info'); }
     if(fc.fusion){ fc.fusion.cards=(fc.fusion.cards||[]).concat([newCid]); } // FUSION: the form joins the stack (Dance timer / Relic carry on)
+    { const _m=msP(owner); if(_m) _m.tf++; msC(fc,owner); } // end-of-match stats
     // First Transformation achievement + lifetime stat — only when YOU transform (not the AI / P2).
     if(isMe(owner)){
       if(!_achData.has_transformed){
@@ -17639,6 +17683,7 @@ function activateAbility(fc,abl){
   finally{
     _abilityUndo=null;
     const fired=!!(_pl&&_pl.usedAbilityThisTurn);
+    if(fired) msAbility(G.activePlayer); // end-of-match stats
     if(_pl) _pl.usedAbilityThisTurn=_prev||fired;
     if(fired && fc && !_wasTapped){
       const want=abilityTapRule(fc,abl);
@@ -20330,6 +20375,7 @@ function rollAttackStatuses(p, fc){
   return true;
 }
 function startTurnFx(player){
+  msTurn(player); // end-of-match stats
   if(typeof fxCtx==='function') fxCtx(null,'Turn',null,{turn:true});
   if(G&&G.trial&&typeof trTurnStart==='function') trTurnStart(player);   // build 10.18: Energy Font
   tickPrismBarrier(player); // 💠 Crystal (SSJ): Prism Barriers this player placed last ran "before your next turn"
@@ -21413,6 +21459,7 @@ function renderKeywordBadges(fc){
 function spendEnergy(p, amount, cardColor){
   const pl=G.players[p];
   if(pl.energy<amount){log('Not enough energy!','dmg');return false;}
+  msSpent(p,amount); // end-of-match stats
   let remaining=amount;
   // Auto-spend matching color energy first
   if(cardColor&&cardColor!=='white'&&pl.colorEnergy&&pl.colorEnergy[cardColor]>0){
@@ -22575,6 +22622,7 @@ function performFusion(p, handUid, aUid, bUid, method){
   pl.field.splice(Math.max(0,Math.min(at,pl.field.length)),0,nf);
   nf.attachments.forEach(eq=>{ const d=DB[eq]; if(d&&d.type!=='instant') applyEquip(nf,d); });
   reapplyCarry(nf,[].concat(carryOf(a),carryOf(b))); // both materials' Instant bonuses (and attached Saiyan Blood) join the fusion
+  { const _m=msP(p); if(_m) _m.fus++; [a,b].forEach(x=>{ const e=G.mstats&&G.mstats.c[String(x.uid)]; if(e) e.st='fused'; }); msC(nf,p); } // end-of-match stats
   log(`🔗 ${pname(p)} fuses ${DB[a.cid].name} + ${DB[b.cid].name} into ${c.name}! (${M.icon} ${M.name}, ${o.cost}⚡)`,'gain');
   if(method==='dance') log(`💫 The Dance lasts ${FUSION_DANCE_TURNS} of ${pname(p)}'s turns (this one counts), then ${c.name} splits.`,'info');
   if(method==='relic') log(`💍 ${DB[o.relicId]?.name||'The Relic'} holds the fusion — if it is removed or hexed, ${c.name} splits.`,'info');
@@ -25140,6 +25188,7 @@ function damageLifeForce(p, amount, source){
   if(G.gameMode==='prize')return; // no LF in prize-only mode
   const oldLF=G.players[p].lifeForce;
   G.players[p].lifeForce=Math.max(0,oldLF-amount);
+  msLF(p,oldLF-G.players[p].lifeForce); // end-of-match stats
   log(`💔 P${p} Life Force: ${oldLF} → ${G.players[p].lifeForce} (-${amount} from ${source||'damage'})`, 'dmg');
   renderLifeForce();
   if(G.players[p].lifeForce<=0){
@@ -26068,11 +26117,111 @@ function bumpCount(mapKey,id,n){
   m[id]=(m[id]||0)+(n||1);
   saveStatsDebounced();
 }
+// ═══ END-OF-MATCH STATS (build 10.18) ═══════════════════════════════════════════════════════════════════════════════
+// One tracker per match: G.mstats = {t0, p:{seat:{…}}, c:{uid:{cid,p,dmg,kills,st,t}}}. Created lazily by the first event, so every
+// mode (AI, online 1v1 / 2v2, Trial, campaign, local) has it. It lives in G, so online games ship it in the shared state (seat-
+// swapped for the guest). Final numbers that the board already knows (Prizes, Heralds) are read when the match ends.
+function MS(){ if(!G||G.tutorialMode) return null; if(!G.mstats||typeof G.mstats!=='object') G.mstats={v:1,t0:Date.now(),p:{},c:{}}; return G.mstats; }
+function msP(p){ const m=MS(); if(!m||!p) return null; const k=String(p);
+  return m.p[k]||(m.p[k]={turns:0,dmg:0,taken:0,kills:0,lost:0,lf:0,played:0,chars:0,instants:0,equips:0,locs:0,tf:0,fus:0,abl:0,spent:0,big:0,bigCid:null}); }
+function msC(fc,owner){ const m=MS(); if(!m||!fc||fc.uid==null) return null; const k=String(fc.uid);
+  let e=m.c[k]; if(!e){ const _o=owner?msP(owner):null; e=m.c[k]={cid:fc.cid,p:owner||null,dmg:0,kills:0,st:'field',t:(_o&&_o.turns)||1}; }
+  if(fc.cid) e.cid=fc.cid; if(owner) e.p=owner; return e; }
+function msSameSide(a,b){ return G&&G.is2v2?teamOf(a)===teamOf(b):a===b; }
+function msOwnerOfUid(uid){ const m=G&&G.mstats; const e=m&&m.c[String(uid)]; if(e&&e.p) return e.p; const f=(typeof fxFindFc==='function')?fxFindFc(uid):null; return f?fxOwnerOf(f):null; }
+function msTurn(p){ try{ const P=msP(p); if(P) P.turns++; }catch(e){} }
+function msDamage(tp,fc,dmg,tuid){ try{
+  if(!(dmg>0)||!MS()) return; const c=DB[fc.cid];
+  const s=(typeof _dmgSourceFc==='function')?_dmgSourceFc(tuid):null; const sp=s?fxOwnerOf(s):null;
+  if(isChar(c)){ const T=msP(tp); if(T) T.taken+=dmg; }
+  let q=(sp!=null&&!msSameSide(sp,tp))?sp:null;
+  if(q==null&&!s&&!G.is2v2) q=(tp===1?2:1); // Burn / Poison and other sourceless damage: the opponent's
+  if(q!=null){ const P=msP(q); P.dmg+=dmg; if(dmg>P.big){ P.big=dmg; P.bigCid=s?s.cid:null; } if(s){ const e=msC(s,q); if(e) e.dmg+=dmg; } }
+  fc._msHit=(q!=null)?{uid:s?s.uid:null,p:q}:null;
+}catch(e){} }
+function msKill(p,fc){ try{
+  if(!MS()||!isChar(DB[fc.cid])) return; const L=msP(p); if(L) L.lost++; const e=msC(fc,p); if(e) e.st='destroyed';
+  const cx=(typeof _fxCtx!=='undefined')?_fxCtx:null; let k=null;
+  if(cx&&!cx.combat&&cx.uid!=null){ const o=msOwnerOfUid(cx.uid); if(o!=null&&!msSameSide(o,p)) k={uid:cx.uid,p:o}; }
+  if(!k&&fc._msHit&&fc._msHit.p!=null&&!msSameSide(fc._msHit.p,p)) k=fc._msHit;
+  if(!k&&!G.is2v2&&G.activePlayer!==p) k={uid:null,p:G.activePlayer};
+  if(k){ msP(k.p).kills++; if(k.uid!=null){ const ke=MS().c[String(k.uid)]; if(ke) ke.kills++; } }
+}catch(e){} }
+function msPlayed(p,c){ try{ if(!c||c.isToken||c.type==='energy_card'||!MS()) return; const P=msP(p); if(!P) return; P.played++;
+  if(isChar(c)) P.chars++; else if(c.type==='instant') P.instants++; else if(isEquip(c)) P.equips++; else if(isLoc(c)) P.locs++; }catch(e){} }
+function msLF(p,amt){ try{ if(!(amt>0)||!MS()||G.is2v2) return; const P=msP(p===1?2:1); if(P) P.lf+=amt; }catch(e){} }
+function msSpent(p,amt){ try{ if(amt>0&&MS()){ const P=msP(p); if(P) P.spent+=amt; } }catch(e){} }
+function msAbility(p){ try{ const P=MS()&&msP(p); if(P) P.abl++; }catch(e){} }
+// online 1v1: the canonical state is the host's view — the guest swaps seats 1 ⇄ 2 both ways
+function msSwap(m){ if(!m||typeof m!=='object') return m; const o=JSON.parse(JSON.stringify(m)); const P={}; Object.keys(o.p||{}).forEach(k=>{ P[k==='1'?'2':k==='2'?'1':k]=o.p[k]; }); o.p=P;
+  Object.values(o.c||{}).forEach(e=>{ if(e.p===1) e.p=2; else if(e.p===2) e.p=1; }); return o; }
+function msCanon(isHost){ const m=G&&G.mstats; if(!m) return undefined; return isHost?m:msSwap(m); }
+function msAdopt(m,isHost){ if(m&&typeof m==='object') G.mstats=isHost?JSON.parse(JSON.stringify(m)):msSwap(m); }
+let _msTab='sum';
+function msSetTab(t){ _msTab=t; const w=G&&G.winner; renderMatchStats(w); }
+function renderMatchStats(){
+  const box=document.getElementById('win-stats'); if(!box) return;
+  const m=G&&G.mstats; if(!m||G.tutorialMode){ box.innerHTML=''; return; }
+  const seats=[1,2,3,4].filter(x=>G.players&&G.players[x]&&(G.is2v2||x<=2));
+  const mine=seats.filter(x=>!isEnemyOfMe(x)), foes=seats.filter(x=>isEnemyOfMe(x));
+  const sum=(side,k)=>side.reduce((a,x)=>a+((m.p[String(x)]||{})[k]||0),0);
+  const big=(side)=>{ let b={v:0,cid:null}; side.forEach(x=>{ const P=m.p[String(x)]; if(P&&P.big>b.v) b={v:P.big,cid:P.bigCid}; }); return b; };
+  const onField=(uid)=>seats.some(x=>(G.players[x].field||[]).some(f=>String(f.uid)===String(uid)));
+  const heraldDmg=(side)=>side.reduce((a,x)=>{ return a+([1,2,3,4].filter(y=>G.players[y]&&!msSameSide(y,x)&&(G.is2v2||y<=2)).reduce((b,y)=>{ const h=G.players[y].herald; if(!h) return b;
+      const mx=(h.baseHP||DB[h.cid]?.hp||0)+(h.hpBonus||0); return b+(h.broken?mx:Math.max(0,mx-Math.max(0,h.currentHP||0))); },0)); },0)/(G.is2v2?2:1);
+  // per-card rows
+  const rows=Object.entries(m.c||{}).map(([uid,e])=>{ const c=DB[e.cid]; if(!c) return null; const isH=c.type==='herald';
+    let st=e.st; if(isH){ const hp=seats.find(x=>G.players[x].herald&&String(G.players[x].herald.uid)===uid); st=(hp&&G.players[hp].herald.broken)?'broken':'herald'; }
+    else if(onField(uid)) st='alive'; else if(st==='field') st='left';
+    return {uid,e,c,st,score:(e.dmg||0)+4*(e.kills||0)}; }).filter(r=>r&&(!r.c.isToken||r.e.dmg||r.e.kills)&&(r.c.type!=='herald'||r.e.dmg||r.e.kills));
+  const mvp=(side)=>rows.filter(r=>side.includes(r.e.p)&&r.score>0).sort((a,b)=>b.score-a.score||b.e.dmg-a.e.dmg)[0]||null;
+  const img=(cid,cls)=>{ const u=getImg(cid); return u?`<img src="${u}" alt="" loading="lazy">`:`<div class="ms-noimg">${(DB[cid]&&DB[cid].sym)||'?'}</div>`; };
+  const esc=(t)=>String(t==null?'':t).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+  const names=(side)=>side.length===1?(isEnemyOfMe(side[0])?esc(pname(side[0])):'You'):(isEnemyOfMe(side[0])?'Enemy team':'Your team');
+  const mvpTile=(side,isMine)=>{ const r=mvp(side); const who=names(side);
+    if(!r) return `<div class="ms-mvp ${isMine?'mine':''}"><div class="ms-noimg">—</div><div style="min-width:0"><div class="k">${who} · MVP</div><div class="n">No standout</div><div class="v">&nbsp;</div></div></div>`;
+    return `<div class="ms-mvp ${isMine?'mine':''}">${img(r.e.cid)}<div style="min-width:0"><div class="k">${who} · MVP</div><div class="n">${esc(r.c.name)}</div><div class="v">${r.e.dmg} dmg · ${r.e.kills} KO${r.e.kills===1?'':'s'}</div></div></div>`; };
+  const secs=Math.max(0,Math.round((Date.now()-(m.t0||Date.now()))/1000)); const dur=Math.floor(secs/60)+':'+String(secs%60).padStart(2,'0');
+  const turns=sum(seats,'turns'); const mode=G.is2v2?'2v2':(G.gameMode==='lifeforce'?'Life Force':(G.gameMode==='both'?'Prize + Life Force':'Prize'));
+  let html=`<div class="ms-tabs"><button class="ms-tab ${_msTab==='sum'?'on':''}" onclick="msSetTab('sum')">📊 Summary</button><button class="ms-tab ${_msTab==='cards'?'on':''}" onclick="msSetTab('cards')">🃏 Cards</button></div>`;
+  html+=`<div class="ms-meta">${mode} · ${turns} turn${turns===1?'':'s'} · ${dur}</div>`;
+  if(_msTab==='sum'){
+    html+=`<div class="ms-mvps">${mvpTile(mine,true)}${mvpTile(foes,false)}</div>`;
+    const R=[]; const row=(label,a,b,hiLow,subA,subB)=>{ const best=(a===b)?0:((hiLow?a<b:a>b)?1:2);
+      R.push(`<tr><td>${label}</td><td class="${best===1?'best':''}">${a}${subA?`<span class="sub">${subA}</span>`:''}</td><td class="${best===2?'best':''}">${b}${subB?`<span class="sub">${subB}</span>`:''}</td></tr>`); };
+    const bm=big(mine), bf=big(foes);
+    row('Damage dealt',sum(mine,'dmg'),sum(foes,'dmg'));
+    row('Damage taken',sum(mine,'taken'),sum(foes,'taken'),true);
+    row('Biggest hit',bm.v,bf.v,false,bm.cid?esc(DB[bm.cid]?.name||''):'',bf.cid?esc(DB[bf.cid]?.name||''):'');
+    row('Characters destroyed',sum(mine,'kills'),sum(foes,'kills'));
+    row('Characters lost',sum(mine,'lost'),sum(foes,'lost'),true);
+    if(!G.is2v2&&G.gameMode!=='lifeforce') row('Prizes taken',mine.reduce((a,x)=>a+(G.players[x].prizesClaimed||0),0),foes.reduce((a,x)=>a+(G.players[x].prizesClaimed||0),0));
+    if(!G.is2v2&&G.gameMode!=='prize') row('Life Force dealt',sum(mine,'lf'),sum(foes,'lf'));
+    row('Herald damage',Math.round(heraldDmg(mine)),Math.round(heraldDmg(foes)));
+    const pb=(side)=>{ const a=[['chars','char'],['instants','inst'],['equips','equip'],['locs','loc']].map(([k,l])=>{ const n=sum(side,k); return n?n+' '+l:''; }).filter(Boolean); return a.join(' · '); };
+    row('Cards played',sum(mine,'played'),sum(foes,'played'),false,pb(mine),pb(foes));
+    row('Transformations',sum(mine,'tf'),sum(foes,'tf'));
+    row('Fusions',sum(mine,'fus'),sum(foes,'fus'));
+    row('Abilities used',sum(mine,'abl'),sum(foes,'abl'));
+    row('Energy spent',sum(mine,'spent'),sum(foes,'spent'));
+    html+=`<table class="ms-table"><thead><tr><th></th><th>${names(mine)}</th><th>${names(foes)}</th></tr></thead><tbody>${R.join('')}</tbody></table>`;
+  } else {
+    const stTxt={alive:['On field','alive'],destroyed:['Destroyed','destroyed'],sacrificed:['Sacrificed','other'],fused:['Fused','other'],left:['Left field','other'],broken:['Broken','destroyed'],herald:['Herald','alive']};
+    const list=(side,title)=>{ const rs=rows.filter(r=>side.includes(r.e.p)).sort((a,b)=>b.score-a.score||b.e.dmg-a.e.dmg||(a.e.t||0)-(b.e.t||0));
+      let h=`<h4>${title}</h4>`; if(!rs.length) return h+'<div class="ms-empty">No cards on the field this match.</div>';
+      rs.forEach(r=>{ const t=stTxt[r.st]||['—','other']; const who=(G.is2v2?' · '+esc(pname(r.e.p)):'');
+        h+=`<div class="ms-row">${img(r.e.cid)}<div class="nm"><b>${esc(r.c.name)}</b><span>${r.c.type==='herald'?'Herald':'Turn '+(r.e.t||1)}${who}</span></div><div class="num">${r.e.dmg}<small>dmg</small></div><div class="num">${r.e.kills}<small>KO</small></div><span class="ms-st ${t[1]}">${t[0]}</span></div>`; });
+      return h; };
+    html+=`<div class="ms-cards">${list(mine,names(mine)==='You'?'Your cards':names(mine)+' cards')}${list(foes,names(foes)+(names(foes).endsWith('team')?' cards':"'s cards"))}</div>`;
+  }
+  box.innerHTML=html;
+}
 // Count a card the LOCAL player (player 1) plays. Called at each card-type play
 // site (character / location / equipment / instant) because non-character cards
 // never reach onEntry. Tokens and energy are excluded. Favorite Card =
 // non-character & non-energy; Favorite Character = character cards.
 function trackCardPlayed(p,c){
+  msPlayed(p,c); // end-of-match stats (every player)
   if(!isMe(p) || !c || c.isToken)return;
   if(typeof bumpStat!=='function')return;
   bumpStat('cards_played',1);
@@ -29929,6 +30078,7 @@ function broadcastGameState(){
     winner:G.winner?(isHost?G.winner:(G.winner===1?2:1)):null,
     winReason:G.winReason||null,
     forfeited:G.forfeited||false,
+    mstats:msCanon(isHost), // end-of-match stats (host view)
     cos:(typeof COS_TYPES!=='undefined'&&typeof cosEquipped==='function')?Object.fromEntries(Object.keys(COS_TYPES).map(t=>[t,cosEquipped(t,1)])):undefined,
     av:(typeof window._playerAvatarUrl==='string'&&window._playerAvatarUrl.length<800)?window._playerAvatarUrl:null,
     players:{}
@@ -29999,6 +30149,7 @@ function onReceiveGameState(payload){
   G.heraldAttacking=incoming.heraldAttacking||false;
   // Sync the game log so both players see the same play-by-play
   if(incoming.log)G.log=incoming.log;
+  if(incoming.mstats) msAdopt(incoming.mstats,isHost); // end-of-match stats
 
   if(incoming.players){
     if(isHost){
@@ -30264,7 +30415,7 @@ function broadcastGameState2v2(){
     teamLife:G.teamLife, startingTeamLife:G.startingTeamLife,
     blockCaptain:G.blockCaptain,
     selectedAttacker:G.selectedAttacker, heraldAttacking:G.heraldAttacking,
-    gameOver:G.gameOver, winner:G.winner||null, winReason:G.winReason||null,
+    gameOver:G.gameOver, winner:G.winner||null, winReason:G.winReason||null, mstats:G.mstats||undefined,
     log:(G.log||[]).slice(-30), players
   };
   try{ _onlineChannel.send({type:'broadcast',event:'game_state_2v2',payload:{state:snap,from:_onlineRole}}); }catch(e){ console.warn('[2v2 BCAST]',e); }
@@ -30282,6 +30433,7 @@ function onReceiveGameState2v2(payload){
     G.selectedAttacker=s.selectedAttacker||null; G.heraldAttacking=!!s.heraldAttacking;
     G.gameOver=s.gameOver||false; G.winner=s.winner||null; G.winReason=s.winReason||null;
     if(s.log)G.log=s.log;
+    if(s.mstats&&typeof s.mstats==='object') G.mstats=s.mstats; // end-of-match stats (2v2 seats are absolute)
     [1,2,3,4].forEach(p=>{ if(s.players&&s.players[p]){ Object.assign(G.players[p], s.players[p]); } });
     if(G.waitingForHostState){ G.waitingForHostState=false; log('✓ Connected — match synced.','gain'); }
   }finally{ _applyingRemoteState=false; }
