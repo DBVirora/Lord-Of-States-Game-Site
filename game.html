@@ -9861,6 +9861,10 @@ const GAME_BUILD='10.18'; // rules version — must match the opponent's client 
 const GODOT_SYNC=[
   { build:'10.18', date:'2026-11-02',
     cards:[
+      {id:'tynie_bse', set:'base_set', number:'038/150', rarity:'common', scan:'Sets/BASE SET/038-150 (Tynie Base).png', newAbilities:['Primal Breaker'],
+        note:"Tynie · Red · BASE · cost 4 · 3/4 · Prime, Saiyan, God of Destruction (counts as a God for God checks) · charLine 'tynie' · nextForms ['primal_destroyer']. Main menu art: 'Main Menu Images/tynie1grok-image-0fe00142-954e-4e06-9ae4-079d253ae277.jpg'."},
+      {id:'tynie_pd_bse', set:'base_set', number:'039/150', rarity:'rare', scan:'Sets/BASE SET/039-150 (Tynie Primal Destroyer).png', newAbilities:['Primal Breaker','Primal Erasure'],
+        note:"Tynie (Primal Destroyer) · Purple · transformOnly · formTier 'primal_destroyer' (no ladder path; reached from Tynie by nextForms) · cost 7 · 7/4. Main menu art: 'Main Menu Images/tynie112grok-image-4462a15b-968c-48d4-b782-1c6064d19c80.jpg'."},
       {id:'toph_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/Avatar TLAB/Toph (Promo).png', newAbilities:['Seismic Sense','Earth Wall','Metalbending'],
         note:"Toph · Green · cost 7 · 5/7 · Bender, Earth · race 'Earth Bender'. No main menu art yet."},
       {id:'worldbreaker_hulk_promo', set:'promo', number:'PROMO', rarity:'mythic', scan:'Characters/Series/Marvel/Worldbreaker Hulk (Promo).png', newAbilities:['Endless Rage','Worldbreaker','Shatter the World'],
@@ -9906,6 +9910,8 @@ const GODOT_SYNC=[
       {id:'virora_surfacer_mui_sr_bse', set:'base_set', number:'154/150', rarity:'secret', scan:'Sets/BASE SET/154-150 (Virora Surfacer MUI) (Secret Rare).png', newAbilities:['Mastered Instinct','Celestial Surge','Silent Horizon'],
         note:"Virora (Surfacer MUI) SECRET RARE · secretRare:true · Purple · Character (played from hand, NOT transformOnly) · cost 12 · 11 ATK / 8 HP · subtypes Royal, Saiyan, Celestial · race 'Royal Saiyan Celestial' · charName 'Virora' (Virora checks like Void Synergy count her) · charLine 'virora_mui' (her own line) · no formTier · nextForms [] · transforms [] — a standalone card: nothing transforms into or out of her. Main menu art (admin sets it per tab): Main Menu Images/vmuisurfacerSurfacer MUI virora.jpg."}],
     abilities:[
+      "PRIMAL BREAKER (Tynie, triggered): when it attacks (a character — executeCombatDamage, before Water Stance — or a Herald), roll a d4 (dieShow: synchronous, shown in the roll panel). Read from its text: base 'On a 2' = exactly 2 → +1 damage; Primal Destroyer 'On a 2 or higher' → +2 and the hit ignores damage reduction (G._pierceHit around that dealDamage: Nullify, Inferno Ward, Diamond Calm, Half-Divine, Titan's Armor, Bracelets of Submission, Prism Barrier, plus Water Stance and Mastered Instinct's −2 in combat). Hit backs are not rolled.",
+      "PRIMAL ERASURE (Tynie Primal Destroyer, activated): 5 Energy, once per game, paid → no tap. Target an opposing character with 4 or less CURRENT Health, not Rift-immune → Rift (no Prize). None → refunded. AI: only for a target worth ≥ 8.",
       "END-OF-MATCH STATS (all modes): G.mstats = {t0, p:{seat:{turns,dmg,taken,kills,lost,lf,played,chars,instants,equips,locs,tf,fus,abl,spent,big,bigCid}}, c:{uid:{cid,p,dmg,kills,st,t}}}, created lazily (not in the tutorial). Hooks: startTurnFx → turns; dealDamage after Health comes off → damage (source = _dmgSourceFc; sourceless Burn/Poison → the opponent in 1v1), fc._msHit = last hitter; killCard → lost + kill credit (ability context source, else last hitter, else the active player); trackCardPlayed → cards played by type; onEntry → card row; doTransform / Prism Shift → tf; performFusion → fus (materials st 'fused'); activateAbility (fired) → abl; spendEnergy → spent; damageLifeForce → lf for the opponent; doSacrifice → st 'sacrificed'. Prizes and Herald damage are read from the final board. Online 1v1: canonical.mstats in the host's view (guest swaps seats 1⇄2 both ways, msSwap); 2v2 ships it as-is. Shown inside the win/lose popup (#win-stats): Summary tab = MVP card per side (score dmg + 4×KOs, art) + side-by-side table (better value gold); Cards tab = every character (and Herald that dealt damage) per side with turn played, damage, KOs and status (On field / Destroyed / Sacrificed / Fused / Left field). 2v2 compares teams.",
       "CARRY-OVER RULE (engine fix): when a character changes card in place — transformation (doTransform), Surfacer Ignition's revert (reformStats), fusion (performFusion) and split (splitFusion) — it keeps (1) Equipment: re-applied with applyEquip (Infinity Bond flag reset first so its +2/+2 re-applies; Instants are not passed to applyEquip); (2) Instant bonuses: fc.carry [{src,atk,hp}] — Vermynth Fruit's +2 Attack via grantCarry; fusions take both materials' lists, a split gives each material its own back and the fusion's own to the first material; (3) attached Instants re-derived from attachments (fillAttachedCarry): Saiyan Blood +2 Health, +3 if the holder is a Saiyan; (4) temporary buffs/debuffs (tempStatDelta: Iron Fist, Blood Rite, Rampage, Flame, King's Right Hand, SSB buff, Aetherion, Stone Power, Divine Command, Surface Depletion, Pink Horizon, Kinetic Bind, Will of the Ring, Earth Wall) on transform/revert, so their end-of-turn removal stays balanced. A form's own ability counters still reset (a form has only what's printed on it).",
       "SEISMIC SENSE (Toph, passive): her attacks ignore Guardian (may attack anything), Godly Evasion and Velocity Blitz tolls (nothing paid), and the dodge flips Godly Reflexes / Godly Movement (her attacks can't miss). Her own abilities ignore targeting limits (Metalbending lists every equipped foe). AI attack options use the same rules for her.",
@@ -10609,6 +10615,8 @@ const DEFAULTS={
   storm_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Storm%20Weather%20Goddess%20(Herald)%20PROMO.png',
   sauron_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Lord%20Of%20The%20Rings/Sauron%20(Herald)%20PROMO.png',
   toph_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Toph%20(Promo).png',
+  tynie_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/038-150%20(Tynie%20Base).png',
+  tynie_pd_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/039-150%20(Tynie%20Primal%20Destroyer).png',
   surana_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/028-150%20(Surana%20Base).png',
   surana_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/029-150%20(Surana%20SSG).png',
   surana_sss_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/030-150%20(Surana%20SSS).png',
@@ -11390,6 +11398,15 @@ const DB={
       {type:'activated',label:'Radiant Blessing',cost:2,limit:'once_per_turn',text:'Pay 2 Energy: One of your characters heals 3 damage and loses one status. (Once per turn)'},
       {type:'activated',label:'Cosmic Radiance',cost:4,limit:'once_per_game',text:'Pay 4 Energy: Deal 2 damage to each opponent character. (Once per game)'}
     ],transforms:[]},
+  // ── TYNIE (BSE 038 base · 039 Primal Destroyer) — build 10.18. Prime Saiyan, God of Destruction. Base Red Common 4 · 3/4; Primal Destroyer
+  //    Purple Rare 7 · 7/4, transform-only (its own form: formTier 'primal_destroyer', reached from the base by nextForms).
+  //    Primal Breaker: when it attacks, roll a d4 — base: on a 2, +1 damage; Primal Destroyer: on 2+, +2 damage that ignores damage
+  //    reduction. Primal Erasure (PD): 5⚡ once per game — an opposing character with 4 or less Health goes to the Rift.
+  tynie_bse:{id:'tynie_bse',rarity:'common',name:'Tynie',color:'red',charName:'Tynie',charLine:'tynie',formTier:'base',subtypes:['Prime','Saiyan','God of Destruction'],type:'base_char',race:'Prime Saiyan',cost:4,atk:3,hp:4,sym:'TYN',setId:'base_set',cardNumber:'038/150',nextForms:['primal_destroyer'],
+    abilities:[{label:'Primal Breaker',type:'triggered',cost:0,text:'When this card attacks, roll a 4-sided die. On a 2, it deals +1 damage.'}]},
+  tynie_pd_bse:{id:'tynie_pd_bse',rarity:'rare',name:'Tynie (Primal Destroyer)',color:'purple',charName:'Tynie',charLine:'tynie',formTier:'primal_destroyer',transformOnly:true,subtypes:['Prime','Saiyan','God of Destruction'],type:'char',race:'Prime Saiyan',cost:7,atk:7,hp:4,sym:'TYNPD',setId:'base_set',cardNumber:'039/150',
+    abilities:[{label:'Primal Breaker',type:'triggered',cost:0,text:'When this card attacks, roll a 4-sided die. On a 2 or higher, it deals +2 damage and ignores effects that reduce damage.'},
+      {label:'Primal Erasure',type:'activated',cost:5,limit:'once_per_game',text:'Pay 5 Energy: Send an opponent character with 4 or less Health to the Rift. (Once per game)'}]},
   // ── PROMO batch (build 10.18) ─────────────────────────────────────────────────────────────────────────────────────
   //    WORLDBREAKER HULK — Endless Rage (+2 ATK per survived hit, max +6; dealDamage) · Worldbreaker (Breakthrough + can attack
   //    Locations) · Shatter the World (5⚡ once per game: 3 to each opposing character AND Location).
@@ -12561,6 +12578,25 @@ function reformStats(fc,nc){
   fc.currentHP=nc.hp; fc.currentATK=nc.atk; fc.baseHP=nc.hp; fc.baseATK=nc.atk; fc.hpBonus=0; fc.atkBonus=0; fc.passiveAtk=0; fc.passiveHp=0; fc.nullify=0; fc._infBond=false;
   (fc.attachments||[]).forEach(id=>{ const eq=DB[id]; if(eq&&eq.type!=='instant') applyEquip(fc,eq); });
   reapplyCarry(fc,carry); applyTempDelta(fc,tmp);
+}
+// DICE (synchronous, shown in the roll panel): a d<sides> result for effects that resolve inside combat.
+function dieShow(title,sides,desc){
+  const r=(G&&G.tutorialMode&&typeof _tutRig!=='undefined'&&_tutRig.dice&&_tutRig.dice.length)?_tutRig.dice.shift():Math.floor(Math.random()*sides)+1;
+  log('🎲 '+(title||'Dice')+': d'+sides+' → '+r,'info');
+  if(typeof _rollPush==='function') _rollPush({kind:'dice',title,desc,sides,results:[r],callback:null,auto:!_rollIsMine(),who:_rollWho()});
+  return r;
+}
+// PRIMAL BREAKER (Tynie): read from the card's own text — "On a 2" (exactly 2) or "On a 2 or higher", "+N damage", and whether the
+// hit "ignores effects that reduce damage". Rolled once per attack (character or Herald).
+function primalBreakerRoll(afc){
+  if(!afc||!hasAbilityLabel(afc,'Primal Breaker')) return {bonus:0,pierce:false};
+  const a=(DB[afc.cid]?.abilities||[]).concat(Array.isArray(afc.gainedAbilities)?afc.gainedAbilities:[]).find(x=>x&&x.label==='Primal Breaker'); const t=(a&&a.text)||'';
+  const m=t.match(/On a (\d+)( or higher)?/i), need=m?+m[1]:2, orHigher=!!(m&&m[2]); const b=t.match(/\+(\d+) damage/i), bonus=b?+b[1]:1;
+  const pierce=/ignores effects that reduce damage/i.test(t);
+  const r=dieShow('Primal Breaker — '+(DB[afc.cid]?.name||''),4,(orHigher?need+' or higher':'On a '+need)+': +'+bonus+' damage'+(pierce?', ignores damage reduction':''));
+  const hit=orHigher?r>=need:r===need;
+  log(hit?`💥 Primal Breaker: rolled ${r} — ${DB[afc.cid]?.name} deals +${bonus} damage${pierce?' and ignores damage reduction':''}!`:`Primal Breaker: rolled ${r} — no bonus.`,hit?'dmg':'info');
+  return hit?{bonus,pierce}:{bonus:0,pierce:false};
 }
 // SEISMIC SENSE (Toph): her attacks ignore Guardian, Godly Evasion / Velocity Blitz tolls and dodge flips (Godly Reflexes, Godly Movement).
 function seismicSense(fc){ return !!(fc&&hasAbilityLabel(fc,'Seismic Sense')); }
@@ -14023,10 +14059,11 @@ function dealDamage(tp,tuid,amt){
   if(isChar(c)&&statusActive(fc,'burn')){ const _s=_dmgSourceFc(tuid); if(_s&&String(_s.uid)!==String(tuid)&&hasAbilityLabel(_s,'Inferno Fist')){ amt+=2; log(`🔥 Inferno Fist: +2 damage to the Burned ${c.name}.`,'dmg'); } } // Red She-Hulk
   if(isSaiyanChar(c)){ const _an=archNemesisBonus(tp,tuid); if(_an>0){ amt+=_an; log(`🌀 Arch-Nemesis: +${_an} damage to ${c.name} (Saiyan).`,'dmg'); } } // Vildrex
   let dmg=isChar(c)?Math.max(0,amt-(fc.nullify||0)-(hasAbilityLabel(fc,'Inferno Ward')?1:0)-(hasAbilityLabel(fc,'Diamond Calm')?2:0)-((hasAbilityLabel(fc,'Half-Divine')&&_dmgSrcIsGod(tuid))?2:0)-((hasAbilityLabel(fc,"Titan's Armor")&&typeof _fxCtx!=='undefined'&&_fxCtx&&_fxCtx.combat)?1:0)):amt; // Inferno Ward (Crystora) −1 · Diamond Calm (Crystora SSBM) −2 · Half-Divine (Asa) −2 vs Gods
-  if(isChar(c)&&dmg>0&&hasAbilityLabel(fc,'Bracelets of Submission')&&!(typeof _fxCtx!=='undefined'&&_fxCtx&&_fxCtx.combat)&&fc._braceTurn!==_braceTurnKey()){ // 🛡 Wonder Woman
+  if(G._pierceHit&&isChar(c)&&dmg<amt){ log(`💥 Primal Breaker ignores ${c.name}'s damage reduction (${amt}).`,'dmg'); dmg=amt; } // Tynie (Primal Destroyer)
+  if(isChar(c)&&dmg>0&&!G._pierceHit&&hasAbilityLabel(fc,'Bracelets of Submission')&&!(typeof _fxCtx!=='undefined'&&_fxCtx&&_fxCtx.combat)&&fc._braceTurn!==_braceTurnKey()){ // 🛡 Wonder Woman
     fc._braceTurn=_braceTurnKey(); log(`🛡 Bracelets of Submission: ${DB[fc.cid]?.name} deflects it — all ${dmg} damage prevented.`,'gain');
     if(typeof showStatusFx==='function') try{ showStatusFx(fc.uid,'freeze'); }catch(e){} dmg=0; }
-  if(isChar(c)&&fc._prismShield>0&&dmg>0) dmg=prismBarrierAbsorb(fc,dmg); // 💠 Prism Barrier (Crystal SSJ): prevents up to 3 of the next damage, then it's gone
+  if(isChar(c)&&fc._prismShield>0&&dmg>0&&!G._pierceHit) dmg=prismBarrierAbsorb(fc,dmg); // 💠 Prism Barrier (Crystal SSJ): prevents up to 3 of the next damage, then it's gone
   // Track marked damage silently for future parry/defense mechanics
   if(isChar(c))fc.markedDamage=(fc.markedDamage||0)+dmg;
   // Omega Judgment: attacker loses 3 ATK when hitting Darkseid herald,
@@ -15123,7 +15160,8 @@ function executeCombatDamage(ap,auid,dp,duid){
   G._curAtk=afc.uid; G._curDef=dfc.uid;
   let atkDmg=afc.currentATK+(afc.nextAttackBonus||0);
   afc.nextAttackBonus=0;
-  atkDmg=applyWaterStance(dfc, afc, atkDmg); // 🌊 Nisha: an attack on her is 3 weaker
+  const _pb=primalBreakerRoll(afc); atkDmg+=_pb.bonus; const _pierce=_pb.pierce; // 🎲 Tynie
+  if(!_pierce) atkDmg=applyWaterStance(dfc, afc, atkDmg); // 🌊 Nisha: an attack on her is 3 weaker (Primal Breaker ignores it)
   // ☀️ SUN'S JUDGMENT (Falcore): its attack on a Paralyzed character deals +2.
   if(hasAbilityLabel(afc,"Sun's Judgment")&&statusActive(dfc,'paralyze')){ atkDmg+=2; log(`☀️ Sun's Judgment: ${DB[afc.cid]?.name} strikes the Paralyzed ${DB[dfc.cid]?.name} for +2!`,'dmg'); }
   // 💥 LEGENDARY ESCALATION (Keon): the banked bonus goes into this attack, then it's spent.
@@ -15168,9 +15206,10 @@ function executeCombatDamage(ap,auid,dp,duid){
   if(hasAbilityLabel(dfc,'Mastered Instinct')&&isChar(dc)){
     const _h=coinFlipShow('Mastered Instinct — '+dc.name,'Heads: the attack misses · Tails: she takes 2 less damage');
     if(_h){ _miMiss=true; log(`🌌 Mastered Instinct: HEADS — ${ac.name}'s attack misses ${dc.name}!`,'gain'); atkDmg=0; }
+    else if(_pierce){ log(`🌌 Mastered Instinct: TAILS — but Primal Breaker ignores the reduction.`,'dmg'); }
     else { const _cut=Math.min(2,Math.max(0,atkDmg)); log(`🌌 Mastered Instinct: TAILS — ${dc.name} takes 2 less (${atkDmg}→${atkDmg-_cut}).`,'gain'); atkDmg-=_cut; }
   }
-  if(!_miMiss) dealDamage(dp,dfc.uid,atkDmg);
+  if(!_miMiss){ G._pierceHit=_pierce; try{ dealDamage(dp,dfc.uid,atkDmg); } finally { G._pierceHit=false; } }
   const _pursuitKill=!_miMiss && hasKW(afc,'pursuit') && !(G.players[dp].field.some(f=>f.uid===dfc.uid) && dfc.currentHP>0);
 
   // INHERIT TANK (Paradox): the DEFENDER gains 2 Purple Energy when dealt combat damage.
@@ -15404,7 +15443,7 @@ function resolveCharVsHerald(ap, auid, dp){
   if(typeof fxStrikeAt==='function') fxStrikeAt(afc.uid,{herald:dp},afc.cid);
   afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc); if(afc._rampKO){ renderAll(); return true; }
   if(hasAbilityLabel(afc,'Bloodline Rise')){ afc.hpBonus=(afc.hpBonus||0)+2; afc.currentHP=(afc.currentHP||0)+2; log(`Bloodline Rise: ${DB[afc.cid]?.name} gains +2 Health (now ${afc.currentHP}).`,'gain'); }
-  const dmg=effPower(afc); const retaliate=Math.floor((h.currentATK||0)*HERALD_RULES.charRetaliation);
+  const dmg=effPower(afc)+primalBreakerRoll(afc).bonus; const retaliate=Math.floor((h.currentATK||0)*HERALD_RULES.charRetaliation); // 🎲 Tynie
   log(`⚔ ${DB[afc.cid].name}(${dmg}) → ${DB[h.cid].name} [Herald] (${h.currentHP}HP)`,'info');
   h.currentHP=Math.max(0,h.currentHP-dmg);
   if(typeof showDmgPopup==='function') try{ showDmgPopup(dp,'-'+dmg,h.uid); }catch(e){}
@@ -19420,6 +19459,26 @@ function runAbilityEffect(fc, abl, pl){
     finally { if(typeof fxPop==='function') fxPop(_fx); }
     renderAll(); return;
   }
+  // ── TYNIE (Primal Destroyer): Primal Erasure — 5⚡ once per game: an opposing character with 4 or less (current) Health, not
+  //    Rift-immune, goes to the Rift (Event Horizon removal, no Prize). None → refunded. Closing the picker refunds.
+  if(label==='Primal Erasure'){
+    const ap=G.activePlayer; const foes=[];
+    _fusionOpps(ap).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ const d=DB[f.cid]; if(isChar(d)&&(f.currentHP||0)<=4&&!isRiftImmune(f)) foes.push({p:op,fc:f}); }));
+    if(!foes.length){ if(_abilityUndo) _abilityUndo(); log('Primal Erasure: no opposing character has 4 or less Health — not used.','dmg'); renderAll(); return; }
+    const go=(uid)=>{ const t=foes.find(x=>x.fc.uid===uid); const tf=t&&G.players[t.p].field.find(f=>f.uid===uid); if(!tf){ renderAll(); return; }
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Primal Erasure',fc.uid):null;
+      try{ G.players[t.p].field=G.players[t.p].field.filter(x=>x.uid!==uid); (tf.attachments||[]).forEach(eq=>G.players[t.p].discard.push(eq));
+        fusionLeaves(G.players[t.p],tf); if(!DB[tf.cid]?.isToken) sendToRift(t.p,tf.cid,'Primal Erasure'); log(`💜 Primal Erasure: ${DB[tf.cid].name} is erased into the Rift!`,'dmg'); }
+      finally { if(typeof fxPop==='function') fxPop(_fx); }
+      if(typeof recalcPassives==='function') recalcPassives(); renderAll(); if(typeof checkWin==='function') checkWin(); };
+    if(seqIsLocalHuman(ap)&&!G._aiAuto){
+      openEnemyTargetPicker(foes.map(x=>x.fc),go,{sourcePlayer:ap,title:'💜 Primal Erasure',desc:'Send an opposing character with 4 or less Health to the Rift.'});
+    } else {
+      const pool=foes.filter(x=>!hasDrunkenStance(x.fc)&&!spaceShielded(x.fc)); const best=(pool.length?pool:foes).slice().sort((a,b)=>aiFcValue(b.fc)-aiFcValue(a.fc))[0];
+      openEnemyTargetPicker([best.fc],go,{sourcePlayer:ap,title:'Primal Erasure'});
+    }
+    return;
+  }
   // ── VILDREX (Herald): Void Collapse — 5⚡, once per GAME, paid → no tap. An opposing character with a PRINTED cost of 4 or less
   //    (not a token, not Rift-immune) goes to the Rift (Event Horizon removal: attachments to the discard pile, no Prize).
   //    No such character → refunded. Closing the picker refunds it.
@@ -20977,6 +21036,9 @@ function aiScoreAbility(p, fc, abl, src){
   if(abl.label==='Web Snare'||abl.label==='Get Over Here!'){ const _k=abl.label==='Web Snare'?'web_snare_turn':'get_over_here_turn', _l=fc.abilityUsed&&fc.abilityUsed[_k];
     if(_l!=null&&G.turn-_l<2) return -1;
     const _es=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&(abl.label!=='Web Snare'||!statusActive(e.fc,'paralyze'))); if(!_es.length) return -1; }
+  if(abl.label==='Primal Erasure'){ if(fc.abilityUsed&&fc.abilityUsed['Primal Erasure']) return -1;
+    const _t=aiEnemyChars(p).filter(e=>(e.fc.currentHP||0)<=4&&!isRiftImmune(e.fc)&&!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)); if(!_t.length) return -1;
+    const _b=Math.max(..._t.map(e=>aiFcValue(e.fc))); if(_b<8) return -1; return 14+Math.min(20,_b); } // save it for a real threat
   if(abl.label==='Earth Wall'){ const _m=pl.field.filter(f=>isChar(DB[f.cid])); const _thr=Math.max(0,...aiEnemyChars(p).map(e=>effPower(e.fc))); if(!_m.length||!_thr) return -1;
     const _at=_m.filter(f=>(f.currentHP||0)<=_thr&&(f.currentHP||0)+3>_thr); if(!_at.length) return -1; return 4+Math.min(8,Math.max(..._at.map(f=>aiFcValue(f)))*.4); }
   if(abl.label==='Metalbending'){ const _eq=[]; _fusionOpps(p).forEach(op=>(G.players[op]?.field||[]).forEach(f=>(f.attachments||[]).forEach(e=>{ if(isEquip(DB[e])) _eq.push(e); })));
