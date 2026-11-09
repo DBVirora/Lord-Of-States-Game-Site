@@ -6421,6 +6421,13 @@ textarea{
 #coin-toss .ct-stage{ perspective:900px; height:150px; display:flex; align-items:center; justify-content:center; margin:6px 0 16px; }
 #coin-toss .ct-coin{ --end:0deg; width:120px; height:120px; position:relative; transform-style:preserve-3d; transform:rotateX(0deg); transition:none; }
 #coin-toss .ct-coin.spin{ animation:ct-flip 1.7s cubic-bezier(.25,.6,.3,1) forwards, ct-arc 1.7s ease-in-out forwards; }
+#coin-toss .ct-coin.spin.land-heads{ animation:ct-flip-h 1.7s cubic-bezier(.25,.6,.3,1) forwards, ct-arc 1.7s ease-in-out forwards; }
+#coin-toss .ct-coin.spin.land-tails{ animation:ct-flip-t 1.7s cubic-bezier(.25,.6,.3,1) forwards, ct-arc 1.7s ease-in-out forwards; }
+#coin-toss .ct-coin.landed-heads{ animation:none; transform:rotateX(0deg); }
+#coin-toss .ct-coin.landed-tails{ animation:none; transform:rotateX(180deg); }
+@keyframes ct-flip-h{ from{ transform:rotateX(0deg); } to{ transform:rotateX(1800deg); } }
+@keyframes ct-flip-t{ from{ transform:rotateX(0deg); } to{ transform:rotateX(1980deg); } }
+#coin-toss .ct-who{ margin-top:6px; font-size:13px; color:#e2e8f0; letter-spacing:.04em; }
 #coin-toss .ct-coin.idle{ animation:ct-idle 3s ease-in-out infinite; }
 @keyframes ct-flip{ from{ transform:rotateX(0deg); } to{ transform:rotateX(var(--end)); } }
 @keyframes ct-arc{ 0%{ translate:0 0; } 45%{ translate:0 -70px; } 100%{ translate:0 0; } }
@@ -22963,7 +22970,7 @@ function _ctOtherRole(r){ if(CT&&CT.mode==='2v2online') return r==='teamA'?'team
 function _ctEl(id){ return document.getElementById(id); }
 function _ctShow(){ const o=_ctEl('coin-toss'); if(o)o.classList.add('open'); }
 function _ctHide(){ const o=_ctEl('coin-toss'); if(o)o.classList.remove('open'); if(CT){ if(CT._resend)clearInterval(CT._resend); if(CT._resend2)clearInterval(CT._resend2); } }
-function _ctSetCoin(idle){ const c=_ctEl('ct-coin'); if(!c)return; c.classList.remove('spin'); c.classList.toggle('idle',!!idle); c.style.setProperty('--end','0deg'); }
+function _ctSetCoin(idle){ const c=_ctEl('ct-coin'); if(!c)return; c.classList.remove('spin','land-heads','land-tails','landed-heads','landed-tails'); c.classList.toggle('idle',!!idle); c.style.setProperty('--end','0deg'); }
 function _ctBtns(html){ const b=_ctEl('ct-btns'); if(b)b.innerHTML=html; }
 function _ctSub(html){ const e=_ctEl('ct-sub'); if(e)e.innerHTML=html; }
 function _ctTitle(t){ const e=_ctEl('ct-title'); if(e)e.textContent=t; }
@@ -22992,7 +22999,8 @@ function startCoinToss(cfg){
     playHeraldEntrances(()=>{ if(!G||G.gameOver)return; startCoinToss(cfg); const q=G._ctQueue||[]; G._ctQueue=null; q.forEach(([a,d])=>{ try{ ctOnRemote(a,d); }catch(e){} }); });
     return;
   }
-  CT=Object.assign({stage:'call',call:null,result:null,winner:null,first:null,applied:false},cfg);
+  if(CT&&CT.g===G&&!CT.applied){ _ctShow(); return; } // this match's toss is already running — never restart it mid-flip
+  CT=Object.assign({stage:'call',call:null,result:null,winner:null,first:null,applied:false,g:G},cfg);
   const o=_ctEl('coin-toss'); if(!o){ _ctApply(CT.first||'me'); return; }
   G.coinTossPending=true;
   _ctSetCoin(true); _ctTitle('COIN TOSS'); _ctShow();
@@ -23005,6 +23013,7 @@ function startCoinToss(cfg){
     _ctBtns(`<div class="ct-wait">WAITING FOR THE CALL</div>`);
     if(CT.mode==='ai'||CT.mode==='2v2'){ /* AI never calls in these modes */ }
   }
+  if(G._ctQueue&&G._ctQueue.length&&!G._entrancePlaying){ const q=G._ctQueue; G._ctQueue=null; q.forEach(([a,d])=>{ try{ ctOnRemote(a,d); }catch(e){} }); }
 }
 
 function ctCall(call){
@@ -23040,26 +23049,31 @@ function ctHostFlip(call){
 }
 
 function ctAnimateFlip(call,result,winner){
-  CT.call=call; CT.result=result; CT.winner=winner; CT.stage='flip';
-  const callerName = CT.iCall ? CT.names.me : CT.names.opp;
+  const tok=CT; if(!tok) return;
+  tok.call=call; tok.result=result; tok.winner=winner; tok.stage='flip';
+  const callerName = tok.iCall ? tok.names.me : tok.names.opp;
   _ctSub(`<b>${callerName}</b> called <b>${call.toUpperCase()}</b>…`);
   _ctBtns('');
   const c=_ctEl('ct-coin'); if(c){
-    c.classList.remove('idle','spin'); void c.offsetWidth;
+    c.classList.remove('idle','spin','land-heads','land-tails','landed-heads','landed-tails'); void c.offsetWidth;
     const spins=5; c.style.setProperty('--end',(spins*360+(result==='tails'?180:0))+'deg');
-    c.classList.add('spin');
+    c.classList.add('spin','land-'+result); // fixed heads / tails animations — the face shown always matches the result
   }
   if(typeof SFX!=='undefined'&&SFX.coin)try{SFX.coin();}catch(e){}
   setTimeout(()=>{
-    const won = winner==='me';
-    _ctSub(`<span class="ct-result ${won?'win':'lose'}">${result.toUpperCase()}!</span>`);
-    log(`🪙 Coin toss: ${callerName} called ${call}, it landed ${result} — ${won?CT.names.me:CT.names.opp} wins the toss.`,'info');
-    setTimeout(()=>ctChooseStage(),900);
+    if(CT!==tok) return; // a newer toss replaced this one
+    if(c){ c.classList.remove('spin','land-heads','land-tails'); c.classList.add('landed-'+result); }
+    const won = tok.winner==='me';
+    _ctSub(`<span class="ct-result ${won?'win':'lose'}">${result.toUpperCase()}!</span><div class="ct-who">${won?'You win the toss!':`${tok.names.opp} wins the toss.`}</div>`);
+    log(`🪙 Coin toss: ${callerName} called ${call}, it landed ${result} — ${won?tok.names.me:tok.names.opp} wins the toss.`,'info');
+    setTimeout(()=>{ if(CT===tok) ctChooseStage(); },900);
   },1750);
 }
 
 function ctChooseStage(){
-  if(!CT)return; CT.stage='choose';
+  if(!CT||CT.stage==='choose'||CT.applied)return;
+  if(CT.winner==null&&CT.call&&CT.result&&CT.mode!=='online'&&CT.mode!=='2v2online') CT.winner=(CT.call===CT.result)?'me':'opp'; // local caller = me
+  CT.stage='choose';
   const won = CT.winner==='me';
   _ctTitle(won?'YOU WON THE TOSS':'TOSS LOST');
   if(won){
@@ -23067,11 +23081,17 @@ function ctChooseStage(){
     _ctBtns(`<button class="ct-btn" onclick="ctChoose('me')">⚡ GO FIRST</button><button class="ct-btn alt" onclick="ctChoose('opp')">🃏 GO SECOND</button>`);
     return;
   }
+  if(CT.mode==='pvp'){
+    _ctSub(`<b>${CT.names.opp}</b> — choose who takes the first turn.`);
+    _ctBtns(`<button class="ct-btn" onclick="ctChoose('opp')">⚡ ${CT.names.opp} FIRST</button><button class="ct-btn alt" onclick="ctChoose('me')">🃏 ${CT.names.opp} SECOND</button>`);
+    return;
+  }
   _ctSub(`<b>${CT.names.opp}</b> is choosing who goes first…`);
   _ctBtns(`<div class="ct-wait">DECIDING</div>`);
   if(CT.mode==='ai'||CT.mode==='2v2'||(CT.mode==='2v2online'&&_onlineRole==='host')){
-    const aiP=2;
+    const aiP=2; const tok=CT;
     setTimeout(()=>{
+      if(CT!==tok||tok.stage!=='choose'||tok.applied||tok.winner==='me') return; // only the AI that actually won picks
       const d=aiChooseGoFirst(aiP);
       log(`AI chooses to go ${d.first?'FIRST':'SECOND'} (${d.reason}).`,'info');
       ctChoose(d.first?'opp':'me');
@@ -23140,8 +23160,9 @@ function _ctApply(firstWho){
 
 // Online message handlers (called from onReceiveGameAction)
 function ctOnRemote(action,d){
-  if(!CT){
-    // Late client (overlay not opened yet) — set up a passive toss so it can follow along.
+  if(!CT||CT.g!==G){
+    // This match's toss isn't open yet (or CT is the previous match's): keep the message until it is.
+    if(G){ (G._ctQueue=G._ctQueue||[]).push([action,d]); }
     return;
   }
   if(action==='coin_call'){ if(_onlineRole==='host')ctHostFlip(d.call); }
