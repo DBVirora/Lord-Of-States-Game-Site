@@ -13182,6 +13182,9 @@ function recalcPassives(){
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a;}
 
 function startGame(mode,deck1,deck2,foils1,foils2){
+  // One match per click: a double-click on Start / Rematch used to start the match twice, which restarted the coin toss after
+  // you had already called it (build 10.18). A second start of the same mode within 1.5s is ignored.
+  { const _now=Date.now(); if(startGame._t&&_now-startGame._t<1500&&startGame._m===mode&&!window._allowFastRestart){ console.warn('[startGame] double start ignored'); return; } startGame._t=_now; startGame._m=mode; }
   if(typeof loadGameSettings==="function")loadGameSettings();
   // a new match never keeps the last match's pictures (opponent avatar is re-filled below by renderBanner)
   ['p1-avatar','p2-avatar'].forEach(id=>{ const el=document.getElementById(id); if(el){ el.dataset.set=''; el.dataset.spav=''; if(id==='p2-avatar') el.textContent=(mode==='online'||mode==='pvp')?'👤':'🤖'; } });
@@ -22999,7 +23002,7 @@ function startCoinToss(cfg){
     playHeraldEntrances(()=>{ if(!G||G.gameOver)return; startCoinToss(cfg); const q=G._ctQueue||[]; G._ctQueue=null; q.forEach(([a,d])=>{ try{ ctOnRemote(a,d); }catch(e){} }); });
     return;
   }
-  if(CT&&CT.g===G&&!CT.applied){ _ctShow(); return; } // this match's toss is already running — never restart it mid-flip
+  if(CT&&CT.g===G){ if(!CT.applied) _ctShow(); return; } // one toss per match — never restart it (mid-flip or after the choice)
   CT=Object.assign({stage:'call',call:null,result:null,winner:null,first:null,applied:false,g:G},cfg);
   const o=_ctEl('coin-toss'); if(!o){ _ctApply(CT.first||'me'); return; }
   G.coinTossPending=true;
