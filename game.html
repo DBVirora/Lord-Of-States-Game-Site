@@ -8808,6 +8808,110 @@ body.po2-open #fullcard-modal{z-index:400}
 .gc-item img.th{width:24px;height:33px;object-fit:cover;border-radius:3px;flex:none}
 @media (max-width:820px){ .gcp{padding:12px} .gcp-body{grid-template-columns:1fr;grid-template-rows:1fr auto} .gcp-side{max-height:50vh} .gcp-side img.big{max-width:150px;align-self:center} .gcp-grid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))} }
 </style>
+<style id="party-css">
+/* ═══ GAME INVITES + PARTY (build 10.19) ═══ */
+.hud-party{font-size:15px}
+.hud-party.in{border-color:rgba(52,211,153,.7);box-shadow:0 0 10px rgba(52,211,153,.3)}
+.hud-party .badge.pt{background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,.7)}
+/* phones: the extra 👥 icon has to fit — tighten the logo; on the narrowest phones show just "COURTS" */
+@media (max-width:440px){ #auth-bar .hud-logo{font-size:0;letter-spacing:0} #auth-bar .hud-logo span{font-size:11px;letter-spacing:2px} #auth-bar > div:last-child{gap:5px} }
+@media (max-width:340px){ #auth-bar .hud-logo{display:none} #auth-bar > div:last-child{margin-left:auto} }
+/* the invite popup — styled after the "Virora has invited you to play" card */
+#iv-pop{position:fixed;left:50%;top:58px;transform:translate(-50%,-14px) scale(.97);opacity:0;pointer-events:none;z-index:100006;width:min(540px,calc(100vw - 24px));box-sizing:border-box;
+  padding:16px 18px 20px;border-radius:18px;background:linear-gradient(135deg,rgba(28,12,52,.97),rgba(12,6,26,.97));border:2px solid rgba(214,140,255,.85);
+  box-shadow:0 0 0 1px rgba(255,255,255,.07) inset,0 0 34px rgba(190,80,255,.55),0 14px 34px rgba(0,0,0,.6);display:grid;grid-template-columns:auto 1fr;gap:12px 16px;align-items:center;
+  transition:opacity .22s,transform .22s;color:#fff;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif}
+#iv-pop.on{opacity:1;transform:translate(-50%,0) scale(1);pointer-events:auto}
+#iv-pop.party{border-color:rgba(232,197,112,.9);box-shadow:0 0 0 1px rgba(255,255,255,.07) inset,0 0 34px rgba(255,190,70,.45),0 14px 34px rgba(0,0,0,.6)}
+.iv-av{position:relative;width:72px;height:72px;flex:none}
+.iv-img{position:relative;width:100%;height:100%;border-radius:50%;box-sizing:border-box;border:3px solid #c77dff;box-shadow:0 0 16px rgba(199,125,255,.75);display:grid;place-items:center;
+  background:linear-gradient(135deg,#3b1d6e,#1a0d33);font-family:'Cinzel',serif;font-weight:900;font-size:30px;color:#f0b6ff;overflow:hidden}
+.iv-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+#iv-pop.party .iv-img{border-color:#e8c570;box-shadow:0 0 16px rgba(232,197,112,.6);color:#f0d58a}
+.iv-dot{position:absolute;right:1px;bottom:3px;width:17px;height:17px;border-radius:50%;background:#3ddc6a;border:3px solid #160a2c;box-sizing:border-box}
+.iv-tx{min-width:0}
+.iv-tag{display:flex;align-items:center;gap:7px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:3px;color:#e6c3ff;text-transform:uppercase}
+.iv-tag i{width:7px;height:7px;border-radius:50%;background:#ff5ad8;box-shadow:0 0 8px #ff5ad8;flex:none}
+#iv-pop.party .iv-tag{color:#f5dfa0} #iv-pop.party .iv-tag i{background:#ffd35a;box-shadow:0 0 8px #ffd35a}
+.iv-sec{margin-left:auto;color:#ffd35a;letter-spacing:1px}
+.iv-l1{font-size:17px;line-height:1.25;margin-top:3px;color:#fff;overflow-wrap:anywhere}
+.iv-l1 b{color:#f0b6ff;font-weight:700} #iv-pop.party .iv-l1 b{color:#ffe08a}
+.iv-game{display:flex;align-items:center;gap:8px;margin-top:5px}
+.iv-crown{font-size:22px;line-height:1;color:#ffcf5a;filter:drop-shadow(0 0 6px rgba(255,200,90,.6))}
+.iv-gname{font-family:'Cinzel',serif;font-weight:900;font-size:24px;letter-spacing:1px;line-height:1;white-space:nowrap;
+  background:linear-gradient(180deg,#fff3c4 0%,#ffcf5a 45%,#d8901a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 0 rgba(90,30,0,.9))}
+.iv-mode{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;color:#b9a8dc;margin-top:6px}
+.iv-more{color:#ffd35a}
+.iv-btns{grid-column:1/-1;display:flex;gap:10px}
+.iv-btns button{flex:1;height:46px;border-radius:12px;font-family:'Orbitron',sans-serif;font-weight:900;font-size:15px;letter-spacing:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:transform .08s,box-shadow .15s,color .15s,border-color .15s}
+.iv-acc{color:#1a0830;background:linear-gradient(180deg,#ffe48a,#ffb53a);border:2px solid #fff2c0;box-shadow:0 0 22px rgba(255,190,70,.6),0 4px 0 #9a5a10}
+.iv-acc .k{width:26px;height:26px;border-radius:50%;background:#1a0830;color:#ffd35a;font-size:15px;display:grid;place-items:center}
+.iv-acc:hover{box-shadow:0 0 30px rgba(255,200,90,.8),0 4px 0 #9a5a10}
+.iv-acc:active{transform:translateY(2px);box-shadow:0 0 16px rgba(255,190,70,.5),0 2px 0 #9a5a10}
+.iv-dec{color:rgba(255,255,255,.62);background:rgba(20,10,36,.85);border:1px solid rgba(255,255,255,.16)}
+.iv-dec:hover{color:#fca5a5;border-color:rgba(239,68,68,.45)}
+.iv-bar{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.06)}
+.iv-bar i{display:block;height:100%;background:linear-gradient(90deg,#ffb53a,#ffe48a);transform-origin:left;animation:ivBar linear forwards}
+@keyframes ivBar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@media (max-width:560px){
+  #iv-pop{top:50px;padding:12px 12px 16px;gap:10px 12px;border-radius:14px}
+  .iv-av{width:54px;height:54px} .iv-img{font-size:22px} .iv-dot{width:13px;height:13px;border-width:2px}
+  .iv-tag{font-size:10px;letter-spacing:2px} .iv-l1{font-size:14px} .iv-gname{font-size:18px} .iv-crown{font-size:17px} .iv-mode{font-size:10px}
+  .iv-btns button{height:44px;font-size:13px;letter-spacing:1px} .iv-acc .k{width:22px;height:22px;font-size:13px}
+}
+/* the party panel */
+@media (max-width:560px){ .settings-inv-row{flex-wrap:wrap;gap:10px} .settings-inv-row .settings-size-btns{width:100%} .settings-inv-row .settings-size-btn{flex:1} }
+#pt-ov{position:fixed;inset:0;z-index:9500;display:none;place-items:center;background:rgba(4,3,14,.72);backdrop-filter:blur(5px);padding:16px;box-sizing:border-box}
+#pt-ov.open{display:grid}
+#pt-ov .pt-box{width:min(560px,100%);max-height:min(86vh,100%);display:flex;flex-direction:column;background:linear-gradient(180deg,#1a1236,#0c0a1f);border:1px solid rgba(232,197,112,.55);border-radius:16px;box-shadow:0 30px 80px rgba(0,0,0,.7);overflow:hidden;color:#e9e4ff;font-family:'Segoe UI',system-ui,sans-serif}
+#pt-ov .pt-hd{display:flex;align-items:center;gap:8px;padding:12px 14px 12px 16px;border-bottom:1px solid rgba(232,197,112,.25);flex-wrap:wrap}
+#pt-ov .pt-hd>b{font-family:'Cinzel',serif;letter-spacing:.12em;color:#f0d58a;font-size:17px;white-space:nowrap}
+#pt-ov .pt-hdx{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+#pt-ov .pt-chip{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;padding:4px 8px;border-radius:7px;border:1px dashed rgba(232,197,112,.5);color:#fff0b8;background:rgba(232,197,112,.08);cursor:pointer;white-space:nowrap}
+#pt-ov .pt-chip.dim{border-style:solid;border-color:rgba(255,255,255,.14);color:#b9b0d8;background:rgba(255,255,255,.04);cursor:default;letter-spacing:1px}
+#pt-ov .pt-x{margin-left:auto;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;font-size:15px;cursor:pointer;flex:none}
+#pt-ov .pt-body{overflow:auto;padding:12px 16px 16px;display:flex;flex-direction:column;gap:16px}
+#pt-ov #pt-main{display:flex;flex-direction:column;gap:16px} #pt-ov #pt-main:empty,#pt-ov #pt-missed:empty{display:none}
+#pt-ov .pt-sec h4{margin:0 0 8px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:#9d93c4;font-weight:400}
+#pt-ov .pt-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}
+#pt-ov .pt-row+.pt-row{margin-top:6px}
+#pt-ov .pt-row.me{border-color:rgba(232,197,112,.3)}
+#pt-ov .pt-row.off{opacity:.6}
+#pt-ov .pt-av{position:relative;width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;background:linear-gradient(135deg,#2a2050,#1a1430);border:1px solid rgba(232,197,112,.35);font-family:'Cinzel',serif;font-weight:700;font-size:14px;color:#f0d58a;box-sizing:border-box}
+#pt-ov .pt-av img{position:absolute;inset:0;width:100%;height:100%;border-radius:50%;object-fit:cover}
+#pt-ov .pt-av .d{position:absolute;right:-2px;bottom:-2px;width:11px;height:11px;border-radius:50%;background:#34d399;border:2px solid #120d26;box-sizing:border-box}
+#pt-ov .pt-av .d.off{background:#555}
+#pt-ov .pt-nm{flex:1;min-width:0}
+#pt-ov .pt-nm b{display:block;font-family:'Cinzel',serif;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#f0e6c8}
+#pt-ov .pt-nm small{display:block;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:#9a92b4;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pt-ov .pt-nm small .ld{color:#ffd35a} #pt-ov .pt-nm small .warn{color:#fca5a5}
+#pt-ov .pt-acts{display:flex;gap:5px;flex:none;flex-wrap:wrap;justify-content:flex-end}
+#pt-ov .pt-b{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;padding:7px 9px;border-radius:7px;border:1px solid rgba(232,197,112,.35);color:#fff0b8;background:rgba(255,255,255,.03);cursor:pointer;white-space:nowrap;line-height:1.1}
+#pt-ov .pt-b:hover:not(:disabled){border-color:#e8c570;box-shadow:0 0 8px rgba(232,197,112,.3)}
+#pt-ov .pt-b.go{background:linear-gradient(180deg,#ffe48a,#ffb53a);color:#1a0830;border-color:#fff2c0;font-weight:700}
+#pt-ov .pt-b.red{color:#fca5a5;border-color:rgba(239,68,68,.4)}
+#pt-ov .pt-b.on{background:rgba(232,197,112,.2);border-color:#e8c570;color:#fff}
+#pt-ov .pt-b:disabled{opacity:.5;cursor:default}
+#pt-ov .pt-big{width:100%;padding:12px;font-size:12px;letter-spacing:2px}
+#pt-ov .pt-line{display:flex;gap:6px;align-items:center}
+#pt-ov .pt-line+.pt-line{margin-top:8px}
+#pt-ov .pt-seg{display:flex;gap:6px} #pt-ov .pt-seg .pt-b{flex:1}
+#pt-ov .pt-in{flex:1;min-width:0;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.3);color:#fff;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:1px;box-sizing:border-box}
+#pt-ov .pt-in.code{text-transform:uppercase;letter-spacing:4px}
+#pt-ov .pt-note{font-size:11px;color:#9a92b4;line-height:1.5;margin-top:7px}
+#pt-ov .pt-note b{color:#e9e4ff;font-weight:600}
+#pt-ov .pt-banner{padding:10px 12px;border-radius:10px;border:1px solid rgba(232,197,112,.55);background:rgba(232,197,112,.1);display:flex;align-items:center;gap:10px;font-size:12px;color:#fff0b8}
+#pt-ov .pt-banner span{flex:1}
+#pt-ov .pt-empty{font-size:11px;color:#8a82a8;padding:6px 2px}
+#pt-ov .pt-foot{display:flex;gap:8px;padding:12px 16px;border-top:1px solid rgba(232,197,112,.2)}
+#pt-ov .pt-foot:empty{display:none}
+@media (max-width:560px){
+  #pt-ov{padding:0;place-items:end stretch}
+  #pt-ov .pt-box{width:100%;max-height:92vh;max-height:92dvh;border-radius:16px 16px 0 0;border-bottom:0}
+  #pt-ov .pt-body{padding:12px}
+  #pt-ov .pt-row.mem{flex-wrap:wrap} #pt-ov .pt-row.mem .pt-acts{width:100%;justify-content:flex-start;padding-left:44px}
+}
+</style>
 </head>
 <body>
 <!-- BOOT VEIL: hides the main menu until we know whether this is a brand-new player (they go straight into the tutorial). -->
@@ -8819,7 +8923,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.18 · Virora (Surfacer MUI)</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.19 · Party &amp; Invites</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -8838,6 +8942,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
         <div class="xp-bar-track"><div class="xp-bar-fill" id="hud-xp-fill" style="width:0%"></div></div>
       </div>
     </div>
+    <div class="hud-mail hud-party" id="hud-party" onclick="ptOpen()" title="Party & invites" role="button" aria-label="Party and invites">👥<span class="badge" id="hud-party-badge"></span></div>
     <div class="hud-mail" id="hud-mail" onclick="openMailbox()" title="Mailbox — messages, gifts and codes" role="button" aria-label="Mailbox">✉<span class="badge" id="hud-mail-badge"></span></div>
     <div class="cel-badge" id="hud-celestium" onclick="showScreen('profile-screen');refreshProfileScreen()" title="Celestium — click to view profile" style="cursor:pointer">
       <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" class="cel-icon" alt="C"/>
@@ -9857,7 +9962,7 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.18'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.19'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
   { build:'10.18', date:'2026-11-02',
     cards:[
@@ -20665,7 +20770,8 @@ let _gameSettings = {
   aiPace: 'human',   // 'human' = 1–3s between CPU moves (watchable) · 'fast' = snappy
   textScale: 1,      // Text Size slider: 0.9 – 1.3
   speed: 'normal',   // Game Speed: 'normal' · 'fast' · 'instant' (card zoom, ability banners, coin/dice panels)
-  entrances: true    // Herald entrance cinematic before the coin toss
+  entrances: true,   // Herald entrance cinematic before the coin toss
+  invites: 'friends' // Game Invites (build 10.19): who can send you match / party invites — 'friends' · 'anyone' · 'off'
 };
 // TEXT SIZE (build 9.6): scales menu pages, panels, card views and the match side rail (90%–130%).
 function applyTextScale(){
@@ -20816,6 +20922,7 @@ function syncSettingsUI(){
   if(typeof applyTextScale==='function') applyTextScale();
   document.querySelectorAll('.settings-ent-btn').forEach(b=>b.classList.toggle('active', (b.dataset.ent==='on')===(_gameSettings.entrances!==false)));
   document.querySelectorAll('.settings-prv-btn').forEach(b=>b.classList.toggle('active', b.dataset.prv===(_gameSettings.packReveal==='stack'?'stack':'fan')));
+  document.querySelectorAll('.settings-inv-btn').forEach(b=>b.classList.toggle('active', b.dataset.inv===(_gameSettings.invites||'friends')));
 }
 
 function toggleSetting(key){
@@ -23638,12 +23745,13 @@ function mmShowStep(d){ _ms.i+=d; mmShowFill(); }
 // ── ledger / plinth / loadout / friends ──
 function mmRenderLedger(){
   const el=document.getElementById('mm-ledger'); if(!el)return;
-  const packs=(typeof totalUnopenedPacks==='function')?totalUnopenedPacks():0, pend=(typeof _pendingRequests!=='undefined')?_pendingRequests.length:0, regNew=(typeof registryNewCount==='function')?registryNewCount():0;
-  el.innerHTML=`<h3 class="mm-h3">COURT LEDGER</h3>
+  const missed=(typeof ivMissedCount==='function')?ivMissedCount():0, packs=(typeof totalUnopenedPacks==='function')?totalUnopenedPacks():0, pend=(typeof _pendingRequests!=='undefined')?_pendingRequests.length:0, regNew=(typeof registryNewCount==='function')?registryNewCount():0;
+  el.innerHTML=`<h3 class="mm-h3">COURT LEDGER</h3>${missed?`<div class="mm-row" onclick="ptOpen()"><span class="mm-ico">📨</span><b>Missed invites</b><span class="mm-n">${missed}</span></div>`:''}
     <div class="mm-row" onclick="showScreen('profile-screen');refreshProfileScreen();setTimeout(()=>{const p=document.getElementById('packs-panel');if(p&&p.style.display==='none'&&typeof togglePacks==='function')togglePacks();},50)"><span class="mm-ico">🎁</span><b>Packs to open</b><span class="mm-n${packs?'':' ok'}">${packs}</span></div>
     <div class="mm-row" onclick="showScreen('friends-screen');openFriends()"><span class="mm-ico">👥</span><b>Friend requests</b><span class="mm-n${pend?'':' ok'}">${pend}</span></div>
     <div class="mm-row" onclick="openRegistry()"><span class="mm-ico">📜</span><b>New in Registry</b><span class="mm-n${regNew?'':' ok'}">${regNew?regNew+' NEW':'0'}</span></div>
     <div class="mm-row" onclick="openTradeScreen()"><span class="mm-ico">🔄</span><b>Trade</b><span class="mm-n ok">OPEN</span></div>`;
+  if(typeof ivLedgerNudge==='function') ivLedgerNudge();
 }
 function mmOwnedHeralds(){ return Object.keys(DB).filter(cid=>DB[cid]&&DB[cid].type==='herald'&&!DB[cid].isToken&&((typeof _collection!=='undefined'&&_collection[cid])||false)); }
 function mmDisplayHerald(){
@@ -23686,7 +23794,7 @@ function mmRenderLoadout(){
 function mmRenderFriends(){
   const el=document.getElementById('mm-friends'); if(!el)return; const list=(typeof _friendsList!=='undefined')?_friendsList.slice():[];
   list.sort((a,b)=>(isUserOnline(b.last_active)?1:0)-(isUserOnline(a.last_active)?1:0)); const on=list.filter(f=>isUserOnline(f.last_active)).length;
-  const rows=list.slice(0,6).map(f=>{ const o=isUserOnline(f.last_active); return `<div class="mm-fr"><span class="mm-st${o?'':' off'}"></span><span class="mm-av">${escapeHtml((f.username||'?')[0].toUpperCase())}</span><b>${escapeHtml(f.username||'Unknown')}</b>${o?'':`<small>${mmAgo(f.last_active)}</small>`}<button class="mm-ml" title="Message ${escapeHtml(f.username||'')}" aria-label="Message ${escapeHtml(f.username||'')}" onclick="event.stopPropagation();mlMessageFriend('${f.user_id}','${escapeHtml(f.username||'').replace(/'/g,'')}')">✉</button>${o?`<button class="mm-ch mm-ch-i" title="Challenge ${escapeHtml(f.username||'')}" aria-label="Challenge ${escapeHtml(f.username||'')}" onclick="inviteFriendToMatch('${f.user_id}','${escapeHtml(f.username||'')}')">⚔</button>`:''}</div>`; }).join('');
+  const rows=list.slice(0,6).map(f=>{ const o=isUserOnline(f.last_active); return `<div class="mm-fr"><span class="mm-st${o?'':' off'}"></span><span class="mm-av">${escapeHtml((f.username||'?')[0].toUpperCase())}</span><b>${escapeHtml(f.username||'Unknown')}</b>${o?'':`<small>${mmAgo(f.last_active)}</small>`}<button class="mm-ml" title="Message ${escapeHtml(f.username||'')}" aria-label="Message ${escapeHtml(f.username||'')}" onclick="event.stopPropagation();mlMessageFriend('${f.user_id}','${escapeHtml(f.username||'').replace(/'/g,'')}')">✉</button>${o?`<button class="mm-ch mm-ch-i" title="Invite ${escapeHtml(f.username||'')} to your party" aria-label="Invite ${escapeHtml(f.username||'')} to your party" data-u="${escapeHtml(f.user_id)}" data-n="${escapeHtml(f.username||'')}" onclick="event.stopPropagation();ptInvite(this.dataset.u,this.dataset.n)">👥</button>`:''}${o?`<button class="mm-ch mm-ch-i" title="Challenge ${escapeHtml(f.username||'')}" aria-label="Challenge ${escapeHtml(f.username||'')}" onclick="inviteFriendToMatch('${f.user_id}','${escapeHtml(f.username||'')}')">⚔</button>`:''}</div>`; }).join('');
   el.innerHTML=`<h3 class="mm-h3" style="cursor:pointer" onclick="showScreen('friends-screen');openFriends()">FRIENDS · ${on} ONLINE</h3>`+(rows||'<div class="mm-sub">No friends yet — add some from the Court tab.</div>');
 }
 function mmOpenProfile(){ showScreen('profile-screen'); if(typeof refreshProfileScreen==='function') refreshProfileScreen(); }
@@ -29280,6 +29388,7 @@ function renderFriendsList(){
       +'<div class="friend-info"><div class="friend-name">'+f.username+'</div><div class="friend-meta">'+(online?'<span style="color:#22c55e">● ONLINE</span>':'OFFLINE')+'</div></div>'
       +'<div class="friend-actions">'
       +(_lm?'<button class="friend-btn" onclick="spWatchId(\''+_lm.w+'\',\'friends-screen\')" title="Watch their live match">👁 WATCH</button>':'')
+      +(online?'<button class="friend-btn" data-u="'+escapeHtml(f.user_id)+'" data-n="'+escapeHtml(f.username||'')+'" onclick="ptInvite(this.dataset.u,this.dataset.n)" title="Invite to your party">👥 PARTY</button>':'')
       +'<button class="friend-btn accept" onclick="inviteFriendToMatch(\''+f.user_id+'\',\''+f.username+'\')" title="Invite to Online Match">⚔ INVITE</button>'
       +'<button class="friend-btn" onclick="mlMessageFriend(\''+f.user_id+'\',\''+(f.username||'').replace(/[\\\\\']/g,'')+'\')" title="Send a message">✉</button>'
       +'<button class="friend-btn danger" onclick="removeFriend(\''+f.id+'\',\''+(f.username||'').replace(/[\\\\\']/g,'')+'\')">✕</button>'
@@ -30580,33 +30689,29 @@ function enterOnlineGame2v2(room){
     log('Connecting to host… waiting for game state.','info');
   }
 }
-async function inviteFriendTo2v2(friendId,friendName){
+async function inviteFriendTo2v2(friendId,friendName,opts){
+  opts=opts||{};   // opts.party: the party leader is bringing a member in (no invite popup — they're moved straight in)
   if(typeof _gr!=='undefined'&&_gr) grLeave(true);
   const validDeck=onlineDefaultDeck();
-  if(!validDeck){ alert('You need at least one 60-card deck to host a match. Build one in the Deck Builder.'); return; }
+  if(!validDeck){ alert('You need at least one 60-card deck to host a match. Build one in the Deck Builder.'); return null; }
   _onlineDeckId=validDeck;
   const myName=document.getElementById('hud-username')?.textContent||'Player';
   const sb=getOnlineSB(); const code=generateRoomCode();
   const teamLife=(typeof _v2Setup!=='undefined'&&_v2Setup.teamLife)?_v2Setup.teamLife:130;
   try{
-    const {data}=await sb.from('online_rooms').insert({
+    const {data,error}=await sb.from('online_rooms').insert({
       code,host_id:_celUserId,host_name:myName,host_deck:validDeck,
       status:'waiting',game_mode:'2v2',prize_count:6,created_at:new Date().toISOString()
     }).select().single();
+    if(error) throw error;
     _onlineRoom={...data,is_2v2:true,team_life:teamLife}; _onlineRole='host';
-    const friendNotifChannel=sb.channel('invites:'+friendId);
-    await friendNotifChannel.subscribe();
-    setTimeout(()=>{
-      friendNotifChannel.send({type:'broadcast',event:'friend_invite',payload:{
-        from_name:myName, from_id:_celUserId, room_code:code, host_deck_id:validDeck,
-        is_2v2:true, team_life:teamLife
-      }});
-    },600);
+    if(!opts.party) ivSendInvite(friendId,friendName,'friend_invite',Object.assign(ivBase('2v2'),{room_code:code,host_deck_id:validDeck,is_2v2:true,team_life:teamLife}));
     closeAllModals();
     showScreen('online-lobby-screen');
     showWaitingRoom(code,myName,true);
     subscribeToRoom(code);
-  }catch(e){ alert('Failed to create 2v2 invite: '+(e.message||e)); }
+    return code;
+  }catch(e){ alert('Failed to create 2v2 invite: '+(e.message||e)); return null; }
 }
 function open2v2FriendPicker(){
   if(typeof loadFriends==='function'){ try{ loadFriends(); }catch(e){} }
@@ -30631,40 +30736,33 @@ function open2v2FriendPicker(){
 }
 
 
-async function inviteFriendToMatch(friendId,friendName){
-  if(!confirm('Invite '+friendName+' to an online match?'))return;
+async function inviteFriendToMatch(friendId,friendName,opts){
+  opts=opts||{};   // opts.party: the party leader is bringing a member in (no confirm, no invite popup)
+  if(!opts.party&&!confirm('Invite '+friendName+' to an online match?'))return null;
   if(typeof _gr!=='undefined'&&_gr) grLeave(true);
   const validDeck=onlineDefaultDeck();
-  if(!validDeck){alert('You need a 60-card deck to create a match!');return;}
+  if(!validDeck){alert('You need a 60-card deck to create a match!');return null;}
   _onlineDeckId=validDeck;
   const myName=document.getElementById('hud-username')?.textContent||'Player';
   const sb=getOnlineSB();
   const code=generateRoomCode();
   try{
     // Create the room
-    const {data}=await sb.from('online_rooms').insert({
+    const {data,error}=await sb.from('online_rooms').insert({
       code,host_id:_celUserId,host_name:myName,host_deck:validDeck,
       status:'waiting',game_mode:'prize',prize_count:6,
       created_at:new Date().toISOString()
     }).select().single();
+    if(error) throw error;
     _onlineRoom=data;_onlineRole='host';
-    // Send invite notification to friend via their personal channel
-    const friendNotifChannel=sb.channel('invites:'+friendId);
-    await friendNotifChannel.subscribe();
-    setTimeout(()=>{
-      friendNotifChannel.send({type:'broadcast',event:'friend_invite',payload:{
-        from_name:myName,
-        from_id:_celUserId,
-        room_code:code,
-        host_deck_id:validDeck
-      }});
-      console.log('[INVITE] Sent invite to',friendName,'on channel invites:'+friendId);
-    },600);
+    // Send the invite to the friend's personal channel (build 10.19: they answer back — accepted / declined / busy / timed out)
+    if(!opts.party) ivSendInvite(friendId,friendName,'friend_invite',Object.assign(ivBase('1v1'),{room_code:code,host_deck_id:validDeck}));
     // Show waiting room for host
     showScreen('online-lobby-screen');
     showWaitingRoom(code,myName,true);
     subscribeToRoom(code);
-  }catch(e){alert('Failed to create invite: '+e.message);}
+    return code;
+  }catch(e){alert('Failed to create invite: '+e.message);return null;}
 }
 
 
@@ -30990,51 +31088,184 @@ function createPublicRoom(){
 
 
 // ═══════════════════════════════════════════════════
-// INVITE NOTIFICATION SYSTEM
+// GAME INVITES + PARTY (build 10.19)
 // ═══════════════════════════════════════════════════
+// Invites ride each player's personal channel 'invites:<uid>' (broadcast, no SQL):
+//   friend_invite {kind:'1v1'|'2v2', from_id, from_name, av, iid, b, room_code, host_deck_id, is_2v2, team_life}
+//   party_invite  {kind:'party', from_id, from_name, av, iid, b, party_id, pn (party size), lname (leader)}
+//   invite_reply  {iid, from_id, name, kind, status:'accepted'|'declined'|'expired'|'busy'|'blocked'|'off'} → back to the sender
+//   mail {}
+// The receiver filters by Settings → Game Invites (friends · anyone · off). An invite shows for 30 s; one that arrives
+// during an online match — or runs out — waits in the Court Ledger (Missed invites) for 30 minutes.
 let _notifChannel=null;
+const IV_TTL=30000, IV_MISSED_TTL=30*60000;
+const _iv={q:[],cur:null,seen:{},sent:{},out:{},missed:null,unseen:0,frT:0,tick:null,tmo:null,sweepT:null};
 
 function startInviteListener(){
   if(!_celUserId)return;
   const sb=getOnlineSB();
   if(_notifChannel)sb.removeChannel(_notifChannel);
   _notifChannel=sb.channel('invites:'+_celUserId,{config:{broadcast:{self:false}}})
-    .on('broadcast',{event:'friend_invite'},(payload)=>{
-      showInviteNotification(payload.payload);
-    })
+    .on('broadcast',{event:'friend_invite'},p=>ivOnInvite(p&&p.payload,'game'))
+    .on('broadcast',{event:'party_invite'},p=>ivOnInvite(p&&p.payload,'party'))
+    .on('broadcast',{event:'invite_reply'},p=>ivOnReply(p&&p.payload))
     .on('broadcast',{event:'mail'},()=>{ if(typeof mlRefresh==='function') mlRefresh(false); })
     .subscribe();
   console.log('[INVITE] Listening for invites on channel: invites:'+_celUserId);
+  ivLoadMissed(); ptBadge();
+  if(!_iv.sweepT) _iv.sweepT=setInterval(ivSweep,60000);
+  ptResume();
 }
 
-function showInviteNotification(data){
-  const old=document.getElementById('invite-notif-popup');if(old)old.remove();
-  const popup=document.createElement('div');
-  popup.id='invite-notif-popup';
-  popup.style.cssText='position:fixed;top:56px;left:50%;transform:translateX(-50%);z-index:9999;background:rgba(8,8,28,.97);border:1px solid var(--violet2);border-radius:12px;padding:16px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;box-shadow:0 0 30px rgba(124,58,237,.3);min-width:280px;max-width:360px';
-  // Build content
-  const title=document.createElement('div');title.style.cssText='font-size:9px;color:var(--violet2);letter-spacing:2px';title.textContent=data.is_2v2?'2v2 TEAM INVITE':'MATCH INVITE';
-  const msg=document.createElement('div');msg.style.cssText='font-size:13px;font-weight:700;color:#e2e8f0;text-align:center';
-  msg.innerHTML='<span style="color:#c4b5fd">'+data.from_name+'</span> wants you to '+(data.is_2v2?'team up for 2v2':'join their match')+'!';
-  const codeEl=document.createElement('div');codeEl.style.cssText='font-size:10px;color:#6b7280';
-  codeEl.textContent='Room Code: '+data.room_code+(data.is_2v2?(' · Team HP '+(data.team_life||130)):'');
-  const btnRow=document.createElement('div');btnRow.style.cssText='display:flex;gap:8px;width:100%';
-  const acceptBtn=document.createElement('button');
-  acceptBtn.style.cssText='flex:1;padding:9px;background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.5);border-radius:7px;color:#86efac;font-size:11px;letter-spacing:2px;cursor:pointer';
-  acceptBtn.textContent='ACCEPT';
-  acceptBtn.onclick=()=>acceptInvite(data.room_code,data.host_deck_id,data.is_2v2,data.team_life);
-  const declineBtn=document.createElement('button');
-  declineBtn.style.cssText='flex:1;padding:9px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35);border-radius:7px;color:#fca5a5;font-size:11px;letter-spacing:2px;cursor:pointer';
-  declineBtn.textContent='DECLINE';
-  declineBtn.onclick=declineInvite;
-  btnRow.appendChild(acceptBtn);btnRow.appendChild(declineBtn);
-  popup.appendChild(title);popup.appendChild(msg);popup.appendChild(codeEl);popup.appendChild(btnRow);
-  document.body.appendChild(popup);
-  setTimeout(()=>{if(popup.parentNode)popup.remove();},30000);
+// ── helpers ──
+function ivEsc(s){ return escapeHtml(s); }
+function ivMyName(){ return (typeof grName==='function')?grName():(document.getElementById('hud-username')?.textContent||'Player'); }
+function ivMyAv(){ const a=window._playerAvatarUrl; return (typeof a==='string'&&a.length<800)?a:null; }
+function ivId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function ivIsFriend(u){ return (typeof _friendsList!=='undefined')&&_friendsList.some(f=>f.user_id===u); }
+function ivAvHtml(url,name,cls){ const l=ivEsc(String(name||'?').trim().charAt(0).toUpperCase()||'?'); return `<span class="${cls}">${l}${url?`<img src="${ivEsc(url)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">`:''}</span>`; }
+// in a live match (CPU or online, 1v1 or 2v2) — not spectating, not over
+function ivInMatch(){
+  try{ const a=id=>{ const e=document.getElementById(id); return !!(e&&e.classList.contains('active')); };
+    return !!((a('game-screen')||a('game-screen-2v2'))&&typeof G!=='undefined'&&G&&G.players&&!G.gameOver&&!G.spectating); }catch(e){ return false; }
 }
+function ivBusy(){ return ivInMatch()&&!!G.onlineMode; }   // online match → invites wait in the ledger instead of popping up
+function ivChime(soft){
+  if(typeof _gameSettings!=='undefined'&&!_gameSettings.sfx) return;
+  try{ if(soft){ _playTone(784,.14,'sine',.09); setTimeout(()=>_playTone(1175,.2,'sine',.08),110); return; }
+    _playTone(659,.18,'sine',.13); setTimeout(()=>_playTone(880,.18,'sine',.13),120); setTimeout(()=>_playTone(1319,.34,'triangle',.11),240); }catch(e){}
+}
+function ivAgo(t){ const m=Math.round((Date.now()-t)/60000); return m<1?'just now':m+'m ago'; }
+function ivKindLabel(k){ return k==='party'?'party invite':(k==='2v2'?'2v2 co-op invite':'1v1 match invite'); }
+
+// ── sending: one cached channel per player, swept after 3 idle minutes ──
+function ivChan(uid){
+  let o=_iv.out[uid];
+  if(o&&o.p&&o.ok!==false){ o.t=Date.now(); return o.p; }
+  const sb=getOnlineSB(); o=_iv.out[uid]={t:Date.now(),ok:null,ch:null};
+  o.p=new Promise(res=>{
+    let done=false; const fin=v=>{ if(done) return; done=true; clearInterval(poll); o.ok=!!v; res(v?o.ch:null); };
+    let poll=null;
+    try{
+      o.ch=sb.channel('invites:'+uid);
+      if(o.ch.state==='joined'){ fin(true); return; }
+      if(o.ch.state==='closed') o.ch.subscribe(st=>{ if(st==='SUBSCRIBED') fin(true); else if(st==='CHANNEL_ERROR'||st==='TIMED_OUT') fin(false); });
+    }catch(e){}
+    poll=setInterval(()=>{ if(o.ch&&o.ch.state==='joined') fin(true); },250);   // someone else already subscribed this topic
+    setTimeout(()=>fin(!!(o.ch&&o.ch.state==='joined')),7000);
+  });
+  return o.p;
+}
+function ivSweep(){
+  const sb=getOnlineSB(), now=Date.now();
+  Object.keys(_iv.out).forEach(u=>{ const o=_iv.out[u]; if(now-o.t>180000){ delete _iv.out[u]; if(o.ch&&o.ch!==_notifChannel) try{ sb.removeChannel(o.ch); }catch(e){} } });
+  Object.keys(_iv.seen).forEach(k=>{ if(now-_iv.seen[k]>IV_MISSED_TTL) delete _iv.seen[k]; });
+  Object.keys(_iv.sent).forEach(k=>{ if(now-_iv.sent[k].t>IV_MISSED_TTL) delete _iv.sent[k]; });
+}
+async function ivSend(uid,event,payload){
+  if(!uid) return false;
+  let ch=await ivChan(uid);
+  if(!ch){ const o=_iv.out[uid]; delete _iv.out[uid]; try{ if(o&&o.ch&&o.ch!==_notifChannel) getOnlineSB().removeChannel(o.ch); }catch(e){} ch=await ivChan(uid); }
+  if(!ch) return false;
+  try{ const r=await ch.send({type:'broadcast',event,payload:payload||{}}); return r!=='error'; }catch(e){ return false; }
+}
+function ivBase(kind){ return {kind,from_id:_celUserId,from_name:ivMyName(),av:ivMyAv(),iid:ivId(),b:GAME_BUILD}; }
+async function ivSendInvite(uid,name,event,payload){
+  _iv.sent[payload.iid]={uid,name,kind:payload.kind,t:Date.now(),st:'sent'};
+  if(typeof ptRender==='function') ptRender();
+  const ok=await ivSend(uid,event,payload);
+  if(!ok){ _iv.sent[payload.iid].st='failed'; ptRender(); spToast(`Couldn't reach <b>${ivEsc(name)}</b> — check your connection and try again.`); return false; }
+  console.log('[INVITE] sent',payload.kind,'invite to',name);
+  setTimeout(()=>{ const x=_iv.sent[payload.iid]; if(x&&x.st==='sent'){ x.st='noanswer'; spToast(`⏱ No answer from <b>${ivEsc(name)}</b> — they may be away or offline.`); ptRender(); } },IV_TTL+6000);
+  return true;
+}
+function ivReply(d,status){ if(!d||!d.from_id||!d.iid) return; ivSend(d.from_id,'invite_reply',{iid:d.iid,from_id:_celUserId,name:ivMyName(),kind:d.kind,status}); }
+function ivOnReply(r){
+  if(!r||!r.status) return;
+  const x=r.iid&&_iv.sent[r.iid]; if(x){ if(x.st!=='sent'&&x.st!=='noanswer'&&r.status!=='accepted') return; x.st=r.status; }
+  const nm=ivEsc(r.name||(x&&x.name)||'Your friend'), party=r.kind==='party'||(x&&x.kind==='party');
+  const msg={accepted:party?'':`✅ <b>${nm}</b> accepted — they're joining you now.`,
+    declined:`<b>${nm}</b> declined your ${party?'party ':''}invite.`,
+    expired:`⏱ <b>${nm}</b> didn't answer your ${party?'party ':''}invite.`,
+    busy:`🎮 <b>${nm}</b> is in a match — they'll see your invite when it ends.`,
+    blocked:`🔒 <b>${nm}</b> only takes invites from friends.`,
+    off:`🔕 <b>${nm}</b> has game invites turned off.`}[r.status];
+  if(msg) spToast(msg,5000);
+  ptRender();
+}
+
+// ── receiving ──
+async function ivOnInvite(d,cls){
+  if(!d||!d.from_id||d.from_id===_celUserId) return;
+  if(d.iid){ if(_iv.seen[d.iid]) return; _iv.seen[d.iid]=Date.now(); }
+  d.kind=cls==='party'?'party':(d.is_2v2?'2v2':'1v1');
+  const mode=(typeof _gameSettings!=='undefined'&&_gameSettings.invites)||'friends';
+  if(mode==='off') return ivReply(d,'off');
+  if(mode!=='anyone'&&!ivIsFriend(d.from_id)){
+    if(Date.now()-_iv.frT>15000&&typeof loadFriends==='function'){ _iv.frT=Date.now(); try{ await loadFriends(); }catch(e){} }   // a brand-new friend
+    if(!ivIsFriend(d.from_id)) return ivReply(d,'blocked');
+  }
+  if(d.kind==='party'&&_pt&&_pt.id===d.party_id) return;   // already in that party
+  if(ivBusy()){
+    ivAddMissed(d,'busy'); ivReply(d,'busy');
+    spToast(`📨 <b>${ivEsc(d.from_name||'A friend')}</b> sent you a ${ivKindLabel(d.kind)} — it's in the Court Ledger after this match.`,5000);
+    return;
+  }
+  _iv.q.push({d,at:Date.now()});
+  if(!_iv.cur) ivNext(); else { ivRenderMore(); ivChime(true); }
+}
+function ivNext(){
+  clearInterval(_iv.tick); clearTimeout(_iv.tmo);
+  const nx=_iv.q.shift(); _iv.cur=nx||null;
+  let el=document.getElementById('iv-pop');
+  if(!nx){ if(el) el.classList.remove('on'); return; }
+  const left=IV_TTL-(Date.now()-nx.at), d=nx.d;
+  if(left<3000||ivBusy()){ ivAddMissed(d,ivBusy()?'busy':'expired'); ivReply(d,ivBusy()?'busy':'expired'); return ivNext(); }
+  if(!el){ el=document.createElement('div'); el.id='iv-pop'; el.setAttribute('role','alertdialog'); el.setAttribute('aria-live','assertive'); el.setAttribute('aria-label','Game invite'); document.body.appendChild(el); }
+  const nm=ivEsc(d.from_name||'A friend'), party=d.kind==='party';
+  const tag=party?'Party Invite':(d.kind==='2v2'?'2v2 Team Invite':'Game Invite');
+  const l1=party?`<b>${nm}</b> invited you to their party`:`<b>${nm}</b> has invited you to play`;
+  const mode=party?`👥 ${(+d.pn||1)>1?(+d.pn)+' in the party':'party'} · play together`:(d.kind==='2v2'?`🤝 2v2 co-op vs AI · team HP ${+d.team_life||130}`:'⚔ 1v1 online match');
+  el.className=party?'party':'';
+  el.innerHTML=`<div class="iv-av">${ivAvHtml(d.av,d.from_name,'iv-img')}<i class="iv-dot"></i></div>
+    <div class="iv-tx"><div class="iv-tag"><i></i>${tag}<span class="iv-sec" id="iv-sec">${Math.ceil(left/1000)}s</span></div>
+      <div class="iv-l1">${l1}</div>
+      <div class="iv-game"><span class="iv-crown">♛</span><span class="iv-gname">LORD OF COURTS</span></div>
+      <div class="iv-mode">${mode}<span class="iv-more" id="iv-more"></span></div></div>
+    <div class="iv-btns"><button class="iv-acc" onclick="ivAnswer(true)"><span class="k">✓</span>ACCEPT</button><button class="iv-dec" onclick="ivAnswer(false)">DECLINE</button></div>
+    <div class="iv-bar"><i style="animation-duration:${left}ms"></i></div>`;
+  ivRenderMore();
+  void el.offsetWidth; el.classList.add('on');
+  ivChime();
+  if(document.hidden){ const t0=document.title; document.title='📨 '+(d.from_name||'Someone')+' invited you'; const back=()=>{ if(!document.hidden){ document.title=t0; document.removeEventListener('visibilitychange',back); } }; document.addEventListener('visibilitychange',back); }
+  const end=Date.now()+left;
+  _iv.tick=setInterval(()=>{ const s=document.getElementById('iv-sec'); if(s) s.textContent=Math.max(0,Math.ceil((end-Date.now())/1000))+'s';
+    if(ivBusy()&&_iv.cur===nx){ ivAddMissed(d,'busy'); ivReply(d,'busy'); ivHide(); } },500);   // a match started under it → park it
+  _iv.tmo=setTimeout(()=>{ if(_iv.cur!==nx) return; ivAddMissed(d,'expired'); ivReply(d,'expired'); ivHide(); },left);
+}
+function ivRenderMore(){ const m=document.getElementById('iv-more'); if(m) m.textContent=_iv.q.length?` · +${_iv.q.length} more`:''; }
+function ivHide(){ clearInterval(_iv.tick); clearTimeout(_iv.tmo); _iv.cur=null; const el=document.getElementById('iv-pop'); if(el) el.classList.remove('on'); setTimeout(()=>{ if(!_iv.cur) ivNext(); },300); }
+function ivAnswer(yes){
+  const nx=_iv.cur; if(!nx) return; const d=nx.d;
+  if(typeof SFX!=='undefined'&&_gameSettings.sfx) SFX.click();
+  ivHide();
+  if(!yes){ ivReply(d,'declined'); return; }
+  ivAccept(d);
+}
+function ivAccept(d){
+  if(ivInMatch()){
+    if(G.onlineMode){ spToast('Finish your match first.'); return; }
+    if(!confirm('Leave your CPU match and join '+(d.from_name||'your friend')+'?')){ ivReply(d,'declined'); return; }
+    try{ abandonMatch(); }catch(e){}
+  }
+  ivReply(d,'accepted');
+  if(d.kind==='party'){ ptJoin(d.party_id,{from:d.from_name}); return; }
+  acceptInvite(d.room_code,d.host_deck_id,d.kind==='2v2',d.team_life);
+}
+// legacy name (older code paths call it)
+function showInviteNotification(data){ ivOnInvite(data,'game'); }
 
 async function acceptInvite(roomCode, hostDeckId, is2v2, teamLife){
-  const popup=document.getElementById('invite-notif-popup');if(popup)popup.remove();
   if(typeof _gr!=='undefined'&&_gr) grLeave(true);
   // Need a valid deck (your last online pick, a 60-card deck, or 🎲 Random when it's switched on)
   const validDeck=onlineDefaultDeck();
@@ -31050,6 +31281,7 @@ async function acceptInvite(roomCode, hostDeckId, is2v2, teamLife){
     const {data:room}=await sb.from('online_rooms').select('*').eq('code',roomCode).maybeSingle();
     if(!room){alert('Room not found — it may have been cancelled.');return;}
     if(room.host_deck==='__lobby__'){ grEnter(roomCode,{role:'line',deck:validDeck}); return; }
+    if(room.guest_id&&room.guest_id!==_celUserId&&room.status!=='waiting'){alert('That match already has a second player.');return;}
     const is2 = is2v2 || room.game_mode==='2v2';
     // Update room with guest
     await sb.from('online_rooms').update({
@@ -31064,8 +31296,458 @@ async function acceptInvite(roomCode, hostDeckId, is2v2, teamLife){
   }catch(e){alert('Failed to join: '+e.message);}
 }
 
-function declineInvite(){
-  const popup=document.getElementById('invite-notif-popup');if(popup)popup.remove();
+function declineInvite(){ ivAnswer(false); }
+
+// ── missed invites (Court Ledger) — kept per account in this browser for 30 minutes ──
+function ivMissKey(){ return 'loc_missed_inv_'+(_celUserId||''); }
+function ivLoadMissed(){ try{ _iv.missed=JSON.parse(localStorage.getItem(ivMissKey())||'[]')||[]; }catch(e){ _iv.missed=[]; } ivPruneMissed(); }
+function ivPruneMissed(){ const now=Date.now(); _iv.missed=(Array.isArray(_iv.missed)?_iv.missed:[]).filter(m=>m&&m.d&&now-m.at<IV_MISSED_TTL).slice(-12); return _iv.missed; }
+function ivSaveMissed(){ try{ localStorage.setItem(ivMissKey(),JSON.stringify(_iv.missed||[])); }catch(e){} }
+function ivMissedCount(){ return _iv.missed?ivPruneMissed().length:0; }
+function ivAddMissed(d,why){
+  if(!_iv.missed) ivLoadMissed();
+  _iv.missed=_iv.missed.filter(m=>!(d.iid&&m.d.iid===d.iid)&&!(m.d.from_id===d.from_id&&m.d.kind===d.kind));   // newest per sender + kind
+  _iv.missed.push({d,why,at:Date.now()}); ivPruneMissed(); ivSaveMissed();
+  if(why==='busy') _iv.unseen++;
+  ptBadge(); ptRender(); try{ if(typeof mmRenderLedger==='function') mmRenderLedger(); }catch(e){}
+}
+function ivMissedChanged(){ ivSaveMissed(); ptBadge(); ptRender(); try{ mmRenderLedger(); }catch(e){} }
+function ivDropMissed(i){ ivPruneMissed(); _iv.missed.splice(i,1); ivMissedChanged(); }
+function ivClearMissed(){ _iv.missed=[]; ivMissedChanged(); }
+function ivJoinMissed(i){ ivPruneMissed(); const m=_iv.missed[i]; if(!m) return; _iv.missed.splice(i,1); ivMissedChanged(); ptClose(); ivAccept(m.d); }
+function ivInviteBack(i){
+  ivPruneMissed(); const m=_iv.missed[i]; if(!m) return; const d=m.d; _iv.missed.splice(i,1); ivMissedChanged();
+  if(d.kind==='party'){ ptInvite(d.from_id,d.from_name); return; }
+  ptClose();
+  if(d.kind==='2v2') inviteFriendTo2v2(d.from_id,d.from_name); else inviteFriendToMatch(d.from_id,d.from_name);
+}
+// called by the Court Ledger: once you're back from a match, say what you missed
+function ivLedgerNudge(){
+  if(_iv.unseen>0&&!ivInMatch()){ const n=_iv.unseen; _iv.unseen=0; setTimeout(()=>spToast(`📨 You got ${n>1?n+' invites':'an invite'} during your match — tap <b>Missed invites</b> in the Court Ledger.`,6000),700); }
+}
+function setInvitePrivacy(v){
+  _gameSettings.invites=(v==='anyone'||v==='off')?v:'friends';
+  document.querySelectorAll('.settings-inv-btn').forEach(b=>b.classList.toggle('active',b.dataset.inv===_gameSettings.invites));
+  if(typeof SFX!=='undefined'&&_gameSettings.sfx) SFX.click();
+  saveGameSettings(); ptRender();
+}
+
+// ═══ PARTY ═══════════════════════════════════════════
+// A party is a group of up to 8 that stays together between matches. The LEADER can take everyone into a private group
+// room (winner stays on, the rest watch — tournament style), or start a 2v2 co-op / 1v1 match with one member.
+// Members can leave any time; the leader can kick, hand over the crown, and set who may join with the code
+// (friends only = the leader's friends + anyone invited · public = anyone with the code).
+// Wire format — channel 'pt:<party code>' (presence key = user id):
+//   presence meta {u, n, av, b (build), t0, st:'menu'|'lobby'|'room'|'match'|'cpu'|'watch', rc (group room code|null)}
+//   'pt_state' {s} from the leader: s = {v, id, leader, lname, pub, ok:{uid:joinedAt}, names:{uid:n}, avs:{uid:url},
+//        inv:{uid:ts} (invited), kick:{uid:ts}, room:{code,t}|null}. Everyone keeps the highest s.v. If the leader is gone
+//        for 4 s, the present member who joined earliest takes over. Members who stay gone 90 s drop out.
+//   to the leader: pt_hello {u,n,av,b} · pt_bye {u,n} · pt_inv {u}
+//   from the leader: pt_reject {to, why:'full'|'build'|'private'|'kicked', build} · pt_kick {u} · pt_go {kind:'gr'|'2v2'|'1v1', code, to, tl, from}
+const PT_MAX=8;
+let _pt=null;
+const _ptUI={open:false,res:null,q:'',searching:false};
+function ptMe(){ return _celUserId; }
+function ptIsLeader(){ return !!(_pt&&_pt.s&&!_pt.joining&&_pt.s.leader===ptMe()); }
+function ptStatus(){
+  if(ivInMatch()) return G.onlineMode?'match':'cpu';
+  if(typeof G!=='undefined'&&G&&G.spectating&&!G.gameOver) return 'watch';
+  if(typeof _gr!=='undefined'&&_gr) return 'room';
+  if(typeof _onlineRoom!=='undefined'&&_onlineRoom) return 'lobby';
+  return 'menu';
+}
+function ptMeta(){ return {u:ptMe(),n:ivMyName(),av:ivMyAv(),b:GAME_BUILD,t0:_pt.t0,st:ptStatus(),rc:(typeof _gr!=='undefined'&&_gr)?_gr.code:null}; }
+function ptTrack(){ if(_pt&&_pt.ch&&_pt.ready){ const m=ptMeta(); _pt.lastMeta=JSON.stringify(m); try{ _pt.ch.track(m); }catch(e){} } }
+function ptSend(ev,p){ if(_pt&&_pt.ch&&_pt.ready) try{ _pt.ch.send({type:'broadcast',event:ev,payload:p||{}}); }catch(e){} }
+function ptPublish(){ if(!ptIsLeader()) return; ptSend('pt_state',{s:_pt.s}); ptSave(); ptRender(); ptBadge(); }
+function ptBump(){ if(!_pt||!_pt.s) return; _pt.s.v=(_pt.s.v||0)+1; ptPublish(); }
+function ptKey(){ return 'loc_party_'+(ptMe()||''); }
+function ptSave(){ try{ if(_pt) localStorage.setItem(ptKey(),JSON.stringify({id:_pt.id,t:Date.now()})); else localStorage.removeItem(ptKey()); }catch(e){} }
+function ptSize(){ return (_pt&&_pt.s&&!_pt.joining)?Object.keys(_pt.s.ok||{}).length:0; }
+function ptOrder(s){ return Object.keys(s.ok||{}).sort((a,b)=>((s.ok[a]||0)-(s.ok[b]||0))||String(a).localeCompare(String(b))); }
+function ptMembers(){
+  if(!_pt||!_pt.s) return [];
+  const s=_pt.s, P=_pt.pres;
+  return ptOrder(s).map(u=>{ const m=P[u]; return {u,n:(m&&m.n)||(s.names&&s.names[u])||'Player',av:(m&&m.av)||(s.avs&&s.avs[u])||null,on:!!m,st:m?m.st:'off',rc:m?m.rc:null,b:m?m.b:null,lead:u===s.leader}; })
+    .sort((a,b)=>(b.lead?1:0)-(a.lead?1:0));
+}
+
+// ── create / join / leave ──
+function ptCreate(){
+  if(_pt) return Promise.resolve(true);
+  if(!_celUserId){ spToast('Sign in to make a party.'); return Promise.resolve(false); }
+  const me=ptMe(), id=generateRoomCode(), nm=ivMyName();
+  return ptOpenChannel(id,{v:1,id,leader:me,lname:nm,pub:false,ok:{[me]:Date.now()},names:{[me]:nm},avs:{[me]:ivMyAv()},inv:{},kick:{},room:null},{});
+}
+async function ptJoin(id,opts){
+  id=String(id||'').trim().toUpperCase(); opts=opts||{};
+  if(!/^[A-Z]{6}$/.test(id)){ spToast('Party codes are 6 letters.'); return; }
+  if(!_celUserId){ spToast('Sign in first.'); return; }
+  if(_pt&&_pt.id===id){ if(!opts.quiet) ptOpen(); return; }
+  if(_pt) ptLeave(true);
+  // a channel for this code from a moment ago (left, kicked, retried) must be fully gone before we subscribe again
+  try{ const sb=getOnlineSB(), old=sb.getChannels().find(c=>c.topic==='realtime:pt:'+id); if(old) await Promise.race([sb.removeChannel(old),new Promise(r=>setTimeout(r,1500))]); }catch(e){}
+  await ptOpenChannel(id,null,opts);
+  if(!opts.quiet) ptOpen();
+}
+function ptOpenChannel(id,s0,opts){
+  opts=opts||{};
+  const sb=getOnlineSB(), me=ptMe();
+  const P={id,ch:null,ready:false,t0:Date.now(),s:s0||null,pres:{},gone:{},joining:!s0,quiet:!!opts.quiet,lastMeta:'',pendingGo:null};
+  _pt=P;
+  const hello=()=>ptSend('pt_hello',{u:me,n:ivMyName(),av:ivMyAv(),b:GAME_BUILD});
+  const done=new Promise(res=>{
+    let fin=false; const end=v=>{ if(!fin){ fin=true; res(v); } };
+    try{
+    P.ch=sb.channel('pt:'+id,{config:{broadcast:{self:false},presence:{key:me}}})
+      .on('presence',{event:'sync'},ptOnPresence)
+      .on('broadcast',{event:'pt_state'},p=>ptOnState(p&&p.payload&&p.payload.s))
+      .on('broadcast',{event:'pt_hello'},p=>ptOnHello((p&&p.payload)||{}))
+      .on('broadcast',{event:'pt_bye'},p=>ptOnBye((p&&p.payload)||{}))
+      .on('broadcast',{event:'pt_inv'},p=>ptOnInv((p&&p.payload)||{}))
+      .on('broadcast',{event:'pt_reject'},p=>{ const d=(p&&p.payload)||{}; if(d.to===me&&_pt===P) ptFail(d.why,d.build); })
+      .on('broadcast',{event:'pt_kick'},p=>{ const d=(p&&p.payload)||{}; if(d.u===me&&_pt===P){ ptLeave(true); spToast('You were removed from the party.'); } })
+      .on('broadcast',{event:'pt_go'},p=>ptOnGo((p&&p.payload)||{}))
+      .subscribe(st=>{
+        if(_pt!==P) return;
+        if(st==='SUBSCRIBED'){ P.ready=true; ptTrack(); if(P.joining) hello(); else ptPublish(); end(true); }
+        else if((st==='CHANNEL_ERROR'||st==='TIMED_OUT')&&!P.ready){ ptFail('net'); end(false); }
+      });
+    }catch(e){ console.warn('[PARTY] channel',e); setTimeout(()=>{ if(_pt===P) ptFail('net'); end(false); },0); }
+    setTimeout(()=>end(P.ready),8000);
+  });
+  if(P.joining){
+    P.helloT=setTimeout(()=>{ if(_pt!==P||!P.joining) return;
+      if(!Object.keys(P.pres).some(u=>u!==me)) return ptFail('gone');
+      hello(); P.helloT=setTimeout(()=>{ if(_pt===P&&P.joining) ptFail('noanswer'); },6000);
+    },6000);
+  }
+  P.trackT=setInterval(()=>{ if(_pt!==P){ clearInterval(P.trackT); return; }
+    if(JSON.stringify(ptMeta())!==P.lastMeta) ptTrack();
+    if(ptIsLeader()) ptPrune();
+    if(_ptUI.open) ptRender(); },4000);
+  ptSave(); ptBadge(); ptRender();
+  return done;
+}
+function ptLeave(quiet){
+  if(!_pt) return; const P=_pt, s=P.s, me=ptMe(), sb=getOnlineSB();
+  if(s&&!P.joining){
+    if(ptIsLeader()){
+      delete s.ok[me];
+      const succ=ptOrder(s).filter(u=>P.pres[u])[0];
+      if(succ){ s.leader=succ; s.lname=(P.pres[succ]&&P.pres[succ].n)||(s.names&&s.names[succ])||'Player'; s.v=(s.v||0)+1; ptSend('pt_state',{s}); }
+    } else ptSend('pt_bye',{u:me,n:ivMyName()});
+  }
+  _pt=null; clearTimeout(P.helloT); clearTimeout(P.ownT); clearInterval(P.trackT);
+  setTimeout(()=>{ try{ P.ch.untrack(); }catch(e){} try{ sb.removeChannel(P.ch); }catch(e){} },250);
+  ptSave(); ptBadge(); ptRender();
+  if(!quiet) spToast('You left the party.');
+}
+function ptFail(why,build){
+  const P=_pt; if(!P) return; const quiet=P.quiet;
+  ptLeave(true);
+  const msg={full:`That party is full (${PT_MAX} people).`,
+    build:`That party is on build ${ivEsc(build||'?')} and you're on ${GAME_BUILD}. Refresh the page to update.`,
+    private:'That party is friends-only — ask the leader to invite you or make the party public.',
+    kicked:'You were removed from that party. Ask the leader for a new invite.',
+    gone:'That party is empty or has closed.',
+    noanswer:'The party leader didn\'t answer. Try again in a moment.',
+    net:'Couldn\'t connect to the party. Check your connection.'}[why]||'Couldn\'t join that party.';
+  if(!quiet||why==='private'||why==='kicked'||why==='full'||why==='build') spToast(msg,6500);
+}
+// after a reload: slip back into the party you were in (silently gives up if it's gone)
+function ptResume(){
+  if(_pt||!_celUserId) return;
+  let sv=null; try{ sv=JSON.parse(localStorage.getItem(ptKey())||'null'); }catch(e){}
+  if(sv&&sv.id&&Date.now()-(sv.t||0)<3*3600000) ptJoin(sv.id,{quiet:true});
+}
+
+// ── events ──
+function ptOnPresence(){
+  if(!_pt||!_pt.ch) return; let st={}; try{ st=_pt.ch.presenceState()||{}; }catch(e){}
+  const P={}; Object.keys(st).forEach(k=>{ const m=(st[k]||[])[0]; if(m&&m.u) P[m.u]=m; });
+  _pt.pres=P;
+  const s=_pt.s;
+  if(s&&!_pt.joining&&!P[s.leader]&&!ptIsLeader()){ clearTimeout(_pt.ownT); _pt.ownT=setTimeout(ptCheckLeader,4000); }
+  if(ptIsLeader()) ptPrune();
+  ptRender(); ptBadge();
+}
+function ptCheckLeader(){
+  if(!_pt||!_pt.s||_pt.joining||ptIsLeader()) return; const s=_pt.s, P=_pt.pres;
+  if(P[s.leader]) return;
+  const succ=ptOrder(s).filter(u=>P[u])[0];
+  if(succ===ptMe()){ s.leader=ptMe(); s.lname=ivMyName(); ptBump(); spToast('👑 The party leader left — you lead the party now.'); }
+}
+function ptPrune(){
+  if(!ptIsLeader()) return; const s=_pt.s, P=_pt.pres, now=Date.now(); let changed=false;
+  Object.keys(s.ok).forEach(u=>{ if(u===ptMe()) return;
+    if(P[u]){ delete _pt.gone[u]; return; }
+    if(!_pt.gone[u]) _pt.gone[u]=now; else if(now-_pt.gone[u]>90000){ delete s.ok[u]; delete _pt.gone[u]; changed=true; } });
+  if(changed) ptBump();
+}
+function ptOnState(ns){
+  if(!_pt||!ns||ns.id!==_pt.id) return;
+  const cur=_pt.s; if(cur&&!_pt.joining&&(ns.v||0)<(cur.v||0)) return;
+  const me=ptMe(), wasLead=ptIsLeader();
+  if(!ns.ok||!ns.ok[me]){
+    if(_pt.joining) return;                       // not let in yet — a pt_reject or a state with me in it follows
+    ptLeave(true); spToast('You were removed from the party.'); return;
+  }
+  _pt.s=ns;
+  if(_pt.joining){ _pt.joining=false; clearTimeout(_pt.helloT);
+    if(!_pt.quiet){ spToast(ns.leader===me?'👥 You\'re back in your party.':`👥 You joined <b>${ivEsc(ns.lname||'the')}</b>'s party.`); ivChime(true); } }
+  else if(!wasLead&&ptIsLeader()) spToast('👑 You lead the party now.');
+  ptSave(); ptRender(); ptBadge();
+}
+function ptGate(u,d){
+  const s=_pt.s, now=Date.now();
+  if(Object.keys(s.ok).length>=PT_MAX) return 'full';
+  if(d.b&&d.b!==GAME_BUILD) return 'build';
+  const invited=!!(s.inv[u]&&now-s.inv[u]<IV_MISSED_TTL);
+  if(s.kick[u]&&now-s.kick[u]<10*60000&&!invited) return 'kicked';
+  if(s.pub||invited||ivIsFriend(u)) return '';
+  return 'private';
+}
+function ptOnHello(d){
+  if(!_pt||!_pt.s||!d.u) return; const s=_pt.s, u=d.u;
+  if(!ptIsLeader()){                               // the leader reloaded and is asking back in → hand them the state
+    if(!_pt.joining&&u===s.leader) ptSend('pt_state',{s});
+    return;
+  }
+  if(s.ok[u]){ if(d.n) s.names[u]=d.n; if(d.av!==undefined) s.avs[u]=d.av; ptPublish(); return; }   // back after a reload
+  const why=ptGate(u,d);
+  if(why){ ptSend('pt_reject',{to:u,why,build:GAME_BUILD}); return; }
+  s.ok[u]=Date.now(); s.names[u]=d.n||'Player'; s.avs[u]=d.av||null; delete s.inv[u]; delete s.kick[u];
+  ptBump(); spToast(`👥 <b>${ivEsc(d.n||'Someone')}</b> joined the party.`); ivChime(true);
+}
+function ptOnBye(d){
+  if(!_pt||!_pt.s||!d.u||!_pt.s.ok[d.u]) return;
+  spToast(`<b>${ivEsc(d.n||_pt.s.names[d.u]||'Someone')}</b> left the party.`,3500);
+  if(ptIsLeader()){ delete _pt.s.ok[d.u]; delete _pt.gone[d.u]; ptBump(); }
+}
+function ptOnInv(d){ if(ptIsLeader()&&d.u){ _pt.s.inv[d.u]=Date.now(); ptBump(); } }
+function ptOnGo(d){
+  if(!_pt||!_pt.s||_pt.joining||d.from!==_pt.s.leader||!d.code) return;   // only the leader moves people
+  if(d.to&&d.to!==ptMe()) return;
+  if(ivInMatch()){
+    _pt.pendingGo=d; ptRender(); ptBadge();
+    spToast(`👥 Your party leader started ${d.kind==='gr'?'a private room':(d.kind==='2v2'?'a 2v2 co-op match':'a 1v1')} — join from the 👥 party panel when you're done.`,6500);
+    return;
+  }
+  ptDoGo(d);
+}
+function ptDoGo(d){
+  if(!d) return; if(_pt) _pt.pendingGo=null;
+  const ln=ivEsc((_pt&&_pt.s&&_pt.s.lname)||'Your leader');
+  ptClose(); ptBadge();
+  if(d.kind==='gr'){
+    if(typeof _gr!=='undefined'&&_gr&&_gr.code===d.code){ grShowUI(); return; }
+    spToast(`👥 <b>${ln}</b> brought the party into private room <b>${ivEsc(d.code)}</b>.`,5000);
+    joinOnlineRoom(d.code,null,'line');
+  } else {
+    spToast(`👥 <b>${ln}</b> started a ${d.kind==='2v2'?'2v2 co-op':'1v1'} match with you.`,5000);
+    acceptInvite(d.code,null,d.kind==='2v2',d.tl);
+  }
+}
+
+// ── actions ──
+async function ptInvite(uid,name){
+  if(!uid||uid===ptMe()) return;
+  name=name||'Player';
+  if(!_pt){ const ok=await ptCreate(); if(!ok||!_pt) return; }
+  else if(_pt.joining){ spToast('Still joining the party — try again in a second.'); return; }
+  const s=_pt.s;
+  if(s.ok[uid]){ spToast(`<b>${ivEsc(name)}</b> is already in your party.`); return; }
+  if(Object.keys(s.ok).length>=PT_MAX){ spToast(`Your party is full (${PT_MAX}).`); return; }
+  if(ptIsLeader()){ s.inv[uid]=Date.now(); ptBump(); } else ptSend('pt_inv',{u:uid});
+  const ok=await ivSendInvite(uid,name,'party_invite',Object.assign(ivBase('party'),{party_id:_pt.id,pn:Object.keys(s.ok).length,lname:s.lname}));
+  if(ok) spToast(`📨 Party invite sent to <b>${ivEsc(name)}</b>.`,3500);
+}
+function ptKick(u){
+  if(!ptIsLeader()||u===ptMe()) return; const s=_pt.s; if(!s.ok[u]) return;
+  const n=s.names[u]||'this player';
+  if(!confirm('Remove '+n+' from the party?')) return;
+  delete s.ok[u]; delete _pt.gone[u]; s.kick[u]=Date.now(); delete s.inv[u];
+  ptBump(); ptSend('pt_kick',{u});
+  spToast(`Removed <b>${ivEsc(n)}</b> from the party.`,3500);
+}
+function ptPromote(u){
+  if(!ptIsLeader()||u===ptMe()) return; const s=_pt.s; if(!s.ok[u]||!_pt.pres[u]) return;
+  s.leader=u; s.lname=(_pt.pres[u]&&_pt.pres[u].n)||s.names[u]||'Player'; s.v=(s.v||0)+1;
+  ptSend('pt_state',{s}); ptRender(); ptBadge();
+  spToast(`👑 <b>${ivEsc(s.lname)}</b> leads the party now.`,3500);
+}
+function ptSetPub(on){ if(!ptIsLeader()) return; _pt.s.pub=!!on; ptBump(); }
+async function ptBringRoom(){
+  if(!ptIsLeader()) return;
+  if(!ptMembers().some(m=>!m.lead&&m.on)){ spToast('Invite someone to the party first.'); return; }
+  if(ivInMatch()){ spToast('Finish your match first.'); return; }
+  let code=(typeof _gr!=='undefined'&&_gr)?_gr.code:null;
+  if(!code){
+    ptClose();
+    await createOnlineRoom({public:false});
+    code=(typeof _gr!=='undefined'&&_gr)?_gr.code:null;
+    if(!code) return;                                   // createOnlineRoom already said why (no 60-card deck, network)
+    for(let i=0;i<30&&_gr&&!_gr.ready;i++) await new Promise(r=>setTimeout(r,200));   // be in the room before they arrive
+    if(!_pt||!ptIsLeader()) return;
+  }
+  _pt.s.room={code,t:Date.now()}; ptBump();
+  ptSend('pt_go',{kind:'gr',code,from:ptMe()});
+  ptClose();
+  spToast(`👥 Bringing your party into private room <b>${ivEsc(code)}</b>…`,5000);
+}
+async function ptBringMatch(u,kind){
+  if(!ptIsLeader()) return;
+  const m=ptMembers().find(x=>x.u===u); if(!m||!m.on){ spToast('They\'re not online right now.'); return; }
+  if(ivInMatch()){ spToast('Finish your match first.'); return; }
+  const tl=(typeof _v2Setup!=='undefined'&&_v2Setup.teamLife)?_v2Setup.teamLife:130;
+  ptClose();
+  const code=kind==='2v2'?await inviteFriendTo2v2(u,m.n,{party:true}):await inviteFriendToMatch(u,m.n,{party:true});
+  if(!code||!_pt) return;
+  ptSend('pt_go',{kind,code,to:u,tl,from:ptMe()});
+  if(m.st==='match'||m.st==='cpu') spToast(`<b>${ivEsc(m.n)}</b> is in a match — they can join from their party panel when it ends.`,5500);
+}
+function ptJoinRoom(){
+  const r=_pt&&_pt.s&&_pt.s.room; if(!r) return;
+  if(ivInMatch()){ spToast('Finish your match first.'); return; }
+  ptClose(); joinOnlineRoom(r.code,null,'line');
+}
+function ptCopyCode(){
+  if(!_pt) return; const c=_pt.id;
+  const ok=()=>spToast(`Party code <b>${c}</b> copied.`,2500);
+  try{ navigator.clipboard.writeText(c).then(ok,()=>spToast(`Party code: <b>${c}</b>`,4000)); }catch(e){ spToast(`Party code: <b>${c}</b>`,4000); }
+}
+async function ptSearch(){
+  const inp=document.getElementById('pt-q'); const q=(inp&&inp.value||'').trim(); _ptUI.q=q;
+  if(q.length<3){ _ptUI.res={err:'Type at least 3 letters of their username.'}; ptRender(); return; }
+  _ptUI.searching=true; ptRender();
+  try{
+    const {data,error}=await _celSB.from('profiles').select('id,username,last_active').ilike('username',q.replace(/[%_]/g,'')+'%').limit(8);
+    _ptUI.res=error?{err:'Search failed — try again.'}:{list:(data||[]).filter(p=>p.id!==_celUserId)};
+  }catch(e){ _ptUI.res={err:'Search failed — try again.'}; }
+  _ptUI.searching=false; ptRender();
+}
+function ptBadge(){
+  const b=document.getElementById('hud-party-badge'), h=document.getElementById('hud-party'); if(!b) return;
+  const n=ptSize(), mi=ivMissedCount()+((_pt&&_pt.pendingGo)?1:0);
+  if(mi){ b.textContent=mi; b.classList.add('on'); b.classList.remove('pt'); }
+  else if(n>1){ b.textContent=n; b.classList.add('on','pt'); }
+  else b.classList.remove('on','pt');
+  if(h){ h.classList.toggle('in',!!_pt); h.title=_pt?(_pt.joining?'Joining a party…':`Party · ${n} member${n===1?'':'s'}`):'Party & invites'; }
+}
+
+// ── the panel ──
+function ptOpen(){
+  let ov=document.getElementById('pt-ov');
+  if(!ov){
+    ov=document.createElement('div'); ov.id='pt-ov';
+    ov.innerHTML=`<div class="pt-box" role="dialog" aria-label="Party"><div class="pt-hd"><b>👥 PARTY</b><span class="pt-hdx" id="pt-hdx"></span><button class="pt-x" data-a="close" aria-label="Close">✕</button></div>
+      <div class="pt-body"><div id="pt-main"></div>
+        <div class="pt-sec"><h4 id="pt-invh">INVITE FRIENDS</h4><div id="pt-friends"></div>
+          <div class="pt-line" style="margin-top:8px"><input id="pt-q" class="pt-in" maxlength="24" placeholder="Find a player by username" autocomplete="off"><button class="pt-b" data-a="search">SEARCH</button></div>
+          <div id="pt-res"></div><div class="pt-note" id="pt-invnote"></div></div>
+        <div id="pt-missed"></div></div>
+      <div class="pt-foot" id="pt-foot"></div></div>`;
+    ov.addEventListener('click',e=>{ if(e.target===ov){ ptClose(); return; } const b=e.target.closest('[data-a]'); if(!b) return; if(b.tagName==='A') e.preventDefault(); if(!b.disabled) ptAct(b.dataset.a,b.dataset); });
+    ov.addEventListener('keydown',e=>{ if(e.key==='Escape'){ ptClose(); return; } if(e.key!=='Enter') return; if(e.target.id==='pt-q') ptSearch(); else if(e.target.id==='pt-code') ptAct('join',{}); });
+    document.body.appendChild(ov);
+  }
+  _ptUI.open=true; ov.classList.add('open'); ptRender();
+  if(typeof loadFriends==='function'&&Date.now()-_iv.frT>15000){ _iv.frT=Date.now(); Promise.resolve(loadFriends()).then(()=>ptRender()).catch(()=>{}); }
+  if(typeof SFX!=='undefined'&&_gameSettings.sfx) SFX.click();
+}
+function ptClose(){ const ov=document.getElementById('pt-ov'); if(ov) ov.classList.remove('open'); _ptUI.open=false; }
+function ptAct(a,ds){
+  ds=ds||{};
+  switch(a){
+    case 'close': ptClose(); break;
+    case 'create': ptCreate().then(()=>ptRender()); break;
+    case 'join': { const v=document.getElementById('pt-code'); ptJoin(v&&v.value); break; }
+    case 'cancel': ptLeave(true); break;
+    case 'leave': if(confirm(ptIsLeader()&&ptSize()>1?'Leave the party? The crown passes to the next member.':'Leave the party?')) ptLeave(); break;
+    case 'copy': ptCopyCode(); break;
+    case 'inv': ptInvite(ds.u,ds.n); break;
+    case 'kick': ptKick(ds.u); break;
+    case 'lead': ptPromote(ds.u); break;
+    case '1v1': case '2v2': ptBringMatch(ds.u,a); break;
+    case 'room': ptBringRoom(); break;
+    case 'jroom': ptJoinRoom(); break;
+    case 'go': if(_pt&&_pt.pendingGo){ if(ivInMatch()) spToast('Finish your match first.'); else ptDoGo(_pt.pendingGo); } break;
+    case 'pub': ptSetPub(ds.v==='1'); break;
+    case 'search': ptSearch(); break;
+    case 'mjoin': ivJoinMissed(+ds.i); break;
+    case 'mback': ivInviteBack(+ds.i); break;
+    case 'mdel': ivDropMissed(+ds.i); break;
+    case 'mclr': ivClearMissed(); break;
+    case 'settings': ptClose(); if(typeof openGameSettings==='function') openGameSettings(); break;
+  }
+}
+function ptSet(id,html){ const el=document.getElementById(id); if(el&&el._h!==html){ el._h=html; el.innerHTML=html; } }
+function ptSentSt(uid){ let best=null; Object.values(_iv.sent).forEach(x=>{ if(x.uid===uid&&Date.now()-x.t<90000&&(!best||x.t>best.t)) best=x; }); return best&&best.st; }
+function ptInvBtn(uid,name,online){
+  const inParty=!!(_pt&&_pt.s&&!_pt.joining&&_pt.s.ok[uid]);
+  if(inParty) return `<button class="pt-b" disabled>IN PARTY</button>`;
+  const st=ptSentSt(uid);
+  const lab={sent:'SENT…',accepted:'✓ ACCEPTED',declined:'DECLINED',expired:'NO ANSWER',noanswer:'NO ANSWER',busy:'IN A MATCH',blocked:'FRIENDS ONLY',off:'INVITES OFF',failed:'RETRY'}[st];
+  return `<button class="pt-b${st?'':' go'}" data-a="inv" data-u="${ivEsc(uid)}" data-n="${ivEsc(name)}"${st==='sent'||!online?' disabled':''}>${lab||'👥 INVITE'}</button>`;
+}
+function ptStLabel(m){
+  if(!m.on) return 'reconnecting…';
+  return ({menu:'in the menus',lobby:'in a lobby',room:'in room '+ivEsc(m.rc||''),match:'in an online match',cpu:'playing vs CPU',watch:'watching a match'})[m.st]||'online';
+}
+function ptRender(){
+  if(!_ptUI.open||!document.getElementById('pt-ov')) return;
+  const me=ptMe(), lead=ptIsLeader(), s=_pt&&_pt.s;
+  // header chips
+  ptSet('pt-hdx',_pt?(_pt.joining?`<span class="pt-chip dim">JOINING ${ivEsc(_pt.id)}…</span>`
+    :`<span class="pt-chip" data-a="copy" title="Copy the party code">${ivEsc(_pt.id)} ⧉</span><span class="pt-chip dim">${s.pub?'🌐 PUBLIC':'🔒 FRIENDS'}</span><span class="pt-chip dim">${ptSize()}/${PT_MAX}</span>`):'');
+  // main
+  let main='';
+  if(!_pt){
+    main=`<div class="pt-sec"><button class="pt-b go pt-big" data-a="create">👥 START A PARTY</button>
+      <div class="pt-note">Team up and stay together between matches. The party leader can bring everyone into a <b>private room</b> (up to ${PT_MAX} — two play, the rest watch, winner stays on) or start a <b>2v2 co-op</b> match with a member.</div>
+      <div class="pt-line" style="margin-top:12px"><input id="pt-code" class="pt-in code" maxlength="6" placeholder="PARTY CODE" autocomplete="off"><button class="pt-b" data-a="join">JOIN</button></div></div>`;
+  } else if(_pt.joining){
+    main=`<div class="pt-banner"><span>Joining party <b>${ivEsc(_pt.id)}</b>…</span><button class="pt-b" data-a="cancel">CANCEL</button></div>`;
+  } else {
+    const mem=ptMembers(), others=mem.filter(m=>!m.lead&&m.on).length;
+    if(_pt.pendingGo){ const g=_pt.pendingGo; main+=`<div class="pt-banner"><span>Your leader started ${g.kind==='gr'?'private room <b>'+ivEsc(g.code)+'</b>':(g.kind==='2v2'?'a 2v2 co-op match':'a 1v1')} with you.</span><button class="pt-b go" data-a="go">JOIN NOW</button></div>`; }
+    else if(s.room&&!lead&&!(typeof _gr!=='undefined'&&_gr&&_gr.code===s.room.code)&&Date.now()-s.room.t<3*3600000){ main+=`<div class="pt-banner"><span>Party room <b>${ivEsc(s.room.code)}</b></span><button class="pt-b go" data-a="jroom">JOIN ROOM</button></div>`; }
+    main+=`<div class="pt-sec"><h4>MEMBERS · ${mem.length}/${PT_MAX}</h4>`+mem.map(m=>{
+      const acts=(lead&&m.u!==me)?(m.on?`<button class="pt-b" data-a="1v1" data-u="${ivEsc(m.u)}" title="1v1 match with ${ivEsc(m.n)}">⚔ 1V1</button><button class="pt-b" data-a="2v2" data-u="${ivEsc(m.u)}" title="2v2 co-op with ${ivEsc(m.n)} vs two AI">🤝 2V2</button><button class="pt-b" data-a="lead" data-u="${ivEsc(m.u)}" title="Make ${ivEsc(m.n)} the leader">👑</button>`:'')+`<button class="pt-b red" data-a="kick" data-u="${ivEsc(m.u)}" title="Remove ${ivEsc(m.n)}">✕</button>`:'';
+      const warn=(m.on&&m.b&&m.b!==GAME_BUILD)?` · <span class="warn">build ${ivEsc(m.b)}</span>`:'';
+      return `<div class="pt-row mem${m.u===me?' me':''}${m.on?'':' off'}">${ivAvHtml(m.av,m.n,'pt-av')}<div class="pt-nm"><b>${ivEsc(m.n)}${m.u===me?' (you)':''}</b><small>${m.lead?'<span class="ld">👑 LEADER</span> · ':''}${ptStLabel(m)}${warn}</small></div>${acts?`<div class="pt-acts">${acts}</div>`:''}</div>`;
+    }).join('')+`</div>`;
+    if(lead){
+      const inRoom=(typeof _gr!=='undefined'&&_gr)?_gr.code:null;
+      main+=`<div class="pt-sec"><h4>PLAY TOGETHER</h4><button class="pt-b go pt-big" data-a="room"${others?'':' disabled'}>🏟 ${inRoom?'BRING EVERYONE TO ROOM '+ivEsc(inRoom):'PRIVATE ROOM — BRING EVERYONE'}</button>
+        <div class="pt-note">${others?'':'<b>Invite someone first.</b> '}A private group room seats up to ${GR_MAX}: two play while the rest watch, and the winner stays on — good for tournament nights. For <b>2v2</b> (you and a partner vs two AI) or a <b>1v1</b>, use the buttons on a member.</div></div>
+        <div class="pt-sec"><h4>WHO CAN JOIN WITH THE CODE</h4><div class="pt-seg"><button class="pt-b${s.pub?'':' on'}" data-a="pub" data-v="0">🔒 FRIENDS ONLY</button><button class="pt-b${s.pub?' on':''}" data-a="pub" data-v="1">🌐 PUBLIC</button></div>
+        <div class="pt-note">${s.pub?'Anyone with the code can join.':'Your friends and anyone you invite can join with the code.'}</div></div>`;
+    } else {
+      main+=`<div class="pt-note">${ivEsc(s.lname||'The leader')} leads the party. When they start a room or a match, you're brought in automatically (unless you're mid-match).</div>`;
+    }
+  }
+  ptSet('pt-main',main);
+  // invite list — online friends first
+  const fl=(typeof _friendsList!=='undefined'?_friendsList:[]).slice().sort((a,b)=>(isUserOnline(b.last_active)?1:0)-(isUserOnline(a.last_active)?1:0)||String(a.username||'').localeCompare(String(b.username||'')));
+  const onl=fl.filter(f=>isUserOnline(f.last_active)), offN=fl.length-onl.length;
+  ptSet('pt-invh',_pt?'INVITE TO THE PARTY':'INVITE FRIENDS');
+  ptSet('pt-friends',(onl.length?onl.map(f=>`<div class="pt-row">${ivAvHtml(null,f.username,'pt-av')}<div class="pt-nm"><b>${ivEsc(f.username||'Unknown')}</b><small>online</small></div><div class="pt-acts">${ptInvBtn(f.user_id,f.username,true)}</div></div>`).join('')
+    :`<div class="pt-empty">${fl.length?'None of your friends are online right now.':'No friends yet — add some from the Court tab, or find a player below.'}</div>`)+(offN&&onl.length?`<div class="pt-empty">${offN} friend${offN>1?'s':''} offline</div>`:''));
+  const R=_ptUI.res;
+  ptSet('pt-res',_ptUI.searching?'<div class="pt-empty">Searching…</div>':(!R?'':(R.err?`<div class="pt-empty">${ivEsc(R.err)}</div>`:(!R.list.length?`<div class="pt-empty">No players found for "${ivEsc(_ptUI.q)}".</div>`
+    :R.list.map(p=>{ const o=isUserOnline(p.last_active); return `<div class="pt-row">${ivAvHtml(null,p.username,'pt-av')}<div class="pt-nm"><b>${ivEsc(p.username||'Unknown')}</b><small>${o?'online':'offline'}${ivIsFriend(p.id)?' · friend':''}</small></div><div class="pt-acts">${ptInvBtn(p.id,p.username,o)}</div></div>`; }).join('')))));
+  const mode=_gameSettings.invites||'friends';
+  ptSet('pt-invnote',`Invites last 30 seconds. Players who only take invites from friends turn others down automatically. Yours: <b>${mode==='anyone'?'anyone':(mode==='off'?'off':'friends only')}</b> — <a href="#" data-a="settings" style="color:#f0d58a">change</a>.`);
+  // missed invites
+  const ms=ivMissedCount()?_iv.missed.slice().reverse():[];
+  const base=_iv.missed?_iv.missed.length-1:0;
+  ptSet('pt-missed',ms.length?`<div class="pt-sec"><h4>MISSED INVITES</h4>`+ms.map((m,k)=>{ const i=base-k, d=m.d;
+      const acts=d.kind==='party'?`<button class="pt-b go" data-a="mjoin" data-i="${i}">JOIN</button>`:`<button class="pt-b go" data-a="mback" data-i="${i}">↩ INVITE BACK</button><button class="pt-b" data-a="mjoin" data-i="${i}" title="Try their room — it may have closed">JOIN</button>`;
+      return `<div class="pt-row mem">${ivAvHtml(d.av,d.from_name,'pt-av')}<div class="pt-nm"><b>${ivEsc(d.from_name||'Someone')}</b><small>${ivKindLabel(d.kind)} · ${m.why==='busy'?'during a match':'timed out'} · ${ivAgo(m.at)}</small></div><div class="pt-acts">${acts}<button class="pt-b red" data-a="mdel" data-i="${i}" title="Dismiss">✕</button></div></div>`; }).join('')
+    +`<div class="pt-line" style="justify-content:flex-end;margin-top:8px"><button class="pt-b" data-a="mclr">CLEAR ALL</button></div></div>`:'');
+  ptSet('pt-foot',(_pt&&!_pt.joining)?`<button class="pt-b red pt-big" data-a="leave">LEAVE PARTY</button>`:'');
 }
 
 
@@ -34208,6 +34890,21 @@ window.addEventListener('load',async()=>{
           <div class="settings-label-desc">Big "Your Turn" announcements</div>
         </div>
         <div class="settings-toggle on" id="set-banners" onclick="toggleSetting('banners')"><div class="settings-toggle-knob"></div></div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">🌐 Online</div>
+      <div class="settings-row settings-inv-row">
+        <div>
+          <div class="settings-label">Game Invites</div>
+          <div class="settings-label-desc">Who can send you match and party invites</div>
+        </div>
+        <div class="settings-size-btns">
+          <button class="settings-size-btn settings-inv-btn active" data-inv="friends" onclick="setInvitePrivacy('friends')">Friends</button>
+          <button class="settings-size-btn settings-inv-btn" data-inv="anyone" onclick="setInvitePrivacy('anyone')">Anyone</button>
+          <button class="settings-size-btn settings-inv-btn" data-inv="off" onclick="setInvitePrivacy('off')">Off</button>
+        </div>
       </div>
     </div>
 
