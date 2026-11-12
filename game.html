@@ -8808,6 +8808,49 @@ body.po2-open #fullcard-modal{z-index:400}
 .gc-item img.th{width:24px;height:33px;object-fit:cover;border-radius:3px;flex:none}
 @media (max-width:820px){ .gcp{padding:12px} .gcp-body{grid-template-columns:1fr;grid-template-rows:1fr auto} .gcp-side{max-height:50vh} .gcp-side img.big{max-width:150px;align-self:center} .gcp-grid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))} }
 </style>
+<style id="cosview-css">
+/* tap-to-view (reward cards + cosmetics) */
+[data-zc],[data-zcos]{cursor:zoom-in}
+.hv-thumb[data-zc]{transition:transform .15s,box-shadow .15s}
+.hv-thumb[data-zc]:hover,.hv-thumb[data-zc]:focus-visible{transform:translateY(-2px) scale(1.07);box-shadow:0 0 0 1px #f0c56a,0 6px 14px rgba(0,0,0,.55);z-index:2;outline:none}
+.hv-cmini[data-zcos]{transition:box-shadow .15s}
+.hv-cmini[data-zcos]:hover,.hv-cmini[data-zcos]:focus-visible{box-shadow:0 0 0 1px #f0c56a,0 4px 12px rgba(0,0,0,.5);outline:none}
+.hv-ca[data-zcos]{transition:transform .15s,filter .15s}
+.hv-ca[data-zcos]:hover,.hv-ca[data-zcos]:focus-visible{transform:scale(1.04);filter:none!important;outline:none}
+.hv-rv-img[data-zc]{transition:transform .15s}
+.hv-rv-img[data-zc]:hover,.hv-rv-img[data-zc]:focus-visible{transform:translateY(-3px);outline:none}
+.cos-prev[data-zcos]:hover,.cos-prev[data-zcos]:focus-visible{filter:none!important;box-shadow:inset 0 0 0 1px rgba(232,197,112,.55);outline:none}
+.cosv-ov{position:fixed;inset:0;z-index:10400;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(4,3,12,.84);backdrop-filter:blur(3px)}
+.cosv-ov.on{display:flex}
+.cosv{position:relative;width:min(900px,100%);max-height:calc(100vh - 32px);overflow:auto;box-sizing:border-box;padding:22px 20px 18px;border-radius:16px;border:1px solid rgba(232,197,112,.35);background:linear-gradient(180deg,#171230,#0b0a1c);box-shadow:0 30px 80px rgba(0,0,0,.7);text-align:center;color:#ece4ff;animation:cosv-in .22s ease-out}
+@keyframes cosv-in{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.cosv{animation:none}}
+.cosv-x{position:absolute;top:10px;right:10px;z-index:3;width:34px;height:34px;border-radius:50%;border:1px solid rgba(232,197,112,.35);background:rgba(0,0,0,.45);color:#f0e6c8;font-size:15px;cursor:pointer}
+.cosv-x:hover{background:rgba(232,197,112,.18)}
+.cosv-stage{display:flex;align-items:center;justify-content:center;min-height:180px;margin:6px 0 16px}
+.cosv-back{height:min(58vh,460px,calc((100vw - 80px)*1.4));aspect-ratio:5/7;object-fit:cover;border-radius:14px;box-shadow:0 18px 46px rgba(0,0,0,.65)}
+.cosv-mat{width:min(100%,calc(62vh*2));aspect-ratio:2/1;border-radius:12px;border:1px solid rgba(232,197,112,.3);box-shadow:0 18px 46px rgba(0,0,0,.6)}
+.cosv-s-frame{padding:9% 0}
+.cosv-av{position:relative;width:min(210px,46vw);aspect-ratio:1;border-radius:50%;background:linear-gradient(135deg,#2a2050,#1a1430) center/cover;display:grid;place-items:center;font-size:clamp(60px,14vw,96px)}
+.cosv-av.framed::after{content:'';position:absolute;inset:-16%;background:var(--frame-img) center/contain no-repeat;pointer-events:none}
+.cosv-av.ring{border:3px solid var(--ring1,#e8c570);box-shadow:0 0 0 3px var(--ring2,rgba(232,197,112,.35)),0 0 24px var(--ring2,rgba(232,197,112,.35))}
+.cosv-plate{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15;padding:14px 34px;border-radius:10px;background:var(--plate-bg);background-size:cover;border:1px solid var(--plate-line,rgba(232,197,112,.3))}
+.cosv-plate.img{width:min(660px,100%);aspect-ratio:15/4;padding:0;border:0;border-radius:0;background-size:100% 100%;background-repeat:no-repeat}
+.cosv-plate b{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(16px,3.6vw,32px);letter-spacing:.06em;color:#fff7e6;text-shadow:0 2px 4px #000}
+.cosv-plate i{font-style:normal;font-family:'Share Tech Mono',monospace;font-size:clamp(6.5px,1.45vw,13px);letter-spacing:clamp(.08em,.45vw,.24em);color:var(--tc,#e8c570);margin-top:2px;max-width:62%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cosv-ttl{font-family:'Cinzel',serif;font-weight:900;font-size:clamp(20px,4.4vw,38px);letter-spacing:.18em;color:var(--title-c);text-shadow:0 0 22px var(--title-glow);padding:30px 8px}
+.cosv-ent{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;font-size:76px;color:var(--c);background:radial-gradient(circle,var(--c2),transparent 70%);box-shadow:0 0 40px var(--c2)}
+.cosv-big{font-size:80px}
+.cosv h4{margin:0 0 6px;font-family:'Cinzel',serif;font-weight:900;font-size:clamp(18px,3vw,24px);letter-spacing:.06em;color:#f6dc9a}
+.cosv-meta{display:flex;gap:8px;justify-content:center;align-items:center;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.22em;color:#a99fd0}
+.cosv-tier{color:var(--tc);border:1px solid var(--tc);border-radius:999px;padding:2px 9px}
+.cosv p{margin:10px auto 0;max-width:520px;font-size:13px;line-height:1.5;color:#c9c1e6}
+.cosv-act{margin-top:14px;min-height:34px;display:flex;justify-content:center;align-items:center}
+.cosv-st{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.12em;color:#d8cfa8}
+.cosv-st.on{color:#86efac}
+.cosv-btn{font-family:'Cinzel',serif;font-weight:700;letter-spacing:.2em;font-size:13px;padding:9px 26px;border-radius:8px;border:1px solid #e8c570;background:linear-gradient(180deg,#e8c570,#b98a2e);color:#1a1206;cursor:pointer}
+.cosv-btn:hover{filter:brightness(1.08)}
+</style>
 <style id="harvest-css">
 /* ═══ 🍂 HARVEST OF COURTS — event page (build 10.20) ═══ */
 #harvest-screen{--hv-ink:#f7ead5;--hv-mute:#c9ab8a;--hv-dim:#8a6a52;--hv-gold:#f0c56a;--hv-gold2:#ffe3a3;--hv-amber:#e8913a;--hv-ember:#c2410c;--hv-line:rgba(240,197,106,.24);--hv-panel:rgba(22,8,6,.84);
@@ -8900,7 +8943,7 @@ body.po2-open #fullcard-modal{z-index:400}
 .hv-cos small{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.22em;color:var(--hv-amber);text-transform:uppercase}
 .hv-cos>span{font-size:11px;color:var(--hv-mute);min-height:28px;display:flex;align-items:center}
 .hv-cos>span button{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.14em;padding:6px 12px;border-radius:6px;border:1px solid var(--hv-line);background:rgba(240,197,106,.14);color:var(--hv-gold2);cursor:pointer}
-.hv-cos:not(.own) .hv-ca{filter:grayscale(.75) brightness(.55)}
+.hv-cos:not(.own) .hv-ca{filter:grayscale(.35) brightness(.8)}
 .hv-ca{height:120px;width:100%;display:flex;align-items:center;justify-content:center;position:relative}
 .hv-ca.back img{height:100%;aspect-ratio:5/7;object-fit:cover;border-radius:6px;box-shadow:0 6px 16px rgba(0,0,0,.6)}
 .hv-ca.mat{background-size:cover;background-position:center;border-radius:8px;border:1px solid rgba(240,197,106,.3)}
@@ -9113,7 +9156,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.20 · Harvest of Courts</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.21 · Jiren</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10082,6 +10125,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
   <div class="fu-flash"></div>
   <div class="fu-name" id="fu-name"></div>
 </div>
+<div class="cosv-ov" id="cos-view" onclick="if(event.target===this)cosViewClose()"></div>
 <div class="modal-overlay" id="fullcard-modal" onclick="if(event.target===this)closeFullCard()">
   <div class="modal" style="max-width:520px;width:90vw;padding:18px;background:#0a0a12;border:2px solid #7c3aed;max-height:92vh;overflow-y:auto">
     <div id="fullcard-content"></div>
@@ -10167,8 +10211,23 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.20'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.21'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.21', date:'2026-11-12',
+    cards:[
+      {id:'jiren_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/Dragon Ball/Jiren (Promo).png', newAbilities:['Strength Is Justice','Power Impact'],
+        note:"Jiren · Red · cost 8 · 8/8 · Pride Trooper · race 'Pride Trooper'. Main menu art: 'Main Menu Images/jiren.jpg'. New series folder 'Characters/Series/Dragon Ball/'."}],
+    abilities:[
+      "STRENGTH IS JUSTICE (Jiren, passive): +3 ATK / +3 HP while he is the ONLY character on his owner's field (count field cards that are characters, tokens included; the Herald and Locations/Equipment don't count). Passive layer (recalcPassives add(3,3,...,'Strength Is Justice')), so it switches on/off as characters enter/leave. 'Defense' = Health (same as Earth Stance).",
+      "POWER IMPACT (Jiren, triggered): when he is attacked, the damage he deals back is +3 — normal retaliation (only when he survives and isn't frozen/muzzled/no-retaliation, as usual) AND a Power Struggle won as the defender. executeCombatDamage: defenderATK = dfc.currentATK + powerImpactBonus(dfc), so Receipt / Olympian Blood / Inherit Tank / combatDamageHooks see the same number. CPU: aiAttackOptionsFor counts +3 in its expected retaliation."],
+    screens:[], data:["Also contains 10.20.1 (Freeze Over fixes + tap-to-view)."] },
+  { build:'10.20.1', date:'2026-11-11',
+    cards:[], abilities:[
+      "Freeze Over (web fix): the CPU's end of turn (_aiEndTurn) now checks the human's skipNextTurn — on heads the human's turn is skipped and the CPU takes another turn (aiLater(runAI)). Before, the flag was never read on that path.",
+      "Freeze Over in 2v2: the target is the paired opposing seat (1↔2, 3↔4 — the PC's opp()), and execEnd2v2 steps past a seat with skipNextTurn (same loop as the PC's end_turn).",
+      "PC BUG (soft-lock after the CPU's Freeze Over skips you): AI.take_turn calls Game.end_turn(p) while AI.running is still true; end_turn hands the turn straight back to the CPU and emits turn_changed(2) synchronously → Battle._on_turn → AI.take_turn(2) returns on 'if running' → nobody restarts the CPU (TURN n · OPPONENT'S TURN · DRAW, nothing clickable). Fix: call _done() BEFORE Game.end_turn(p) at the end of take_turn (and/or defer AI.take_turn in Battle._on_turn like Battle2v2 does with its 0.8 s timer)."],
+    screens:["Tap-to-view: every reward card on the Harvest page (Road stops, mission panel, challenges, the reward reveal with its finish) opens the full card viewer (showFullCard(cid,null,finish)); tapping a card on a Road stop opens the card, not the mission. Every cosmetic (event page art, challenge minis, reveal, the Locker tiles and set tiles) opens a new cosmetic viewer (cosView): big card back / playmat / your avatar in the ring / the name plate with your name + its paired title / title text / entrance, plus type, tier, how to earn or price, and EQUIP when owned. Locked event cosmetics are less dimmed (grayscale .35, brightness .8)."],
+    data:["No rules change for online play: GAME_BUILD stays '10.20' (both fixes match what the PC already does)."] },
   { build:'10.20', date:'2026-11-11',
     cards:[
       {id:'booni_hoc', set:'hoc', number:'01/13', rarity:'mythic', scan:'Special Events/Harvest of Courts/001-13 (Booni Uninvited Guest).png', newAbilities:['Crash the Feast','Alley Troll Dance','Fed and Happy'],
@@ -10957,6 +11016,7 @@ const DEFAULTS={
   veynaria_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/111-150%20(Veynaria%20SSG).png',
   vildrex_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/149-150%20(Vildrex).png',
   worldbreaker_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Worldbreaker%20Hulk%20(Promo).png',
+  jiren_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Dragon%20Ball/Jiren%20(Promo).png',
   red_she_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Red%20She-Hulk%20(Promo).png',
   thanos_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Thanos%20(Promo).png',
   infinity_gauntlet_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/The%20Infinity%20Gauntlet%20(Promo).png',
@@ -11814,6 +11874,9 @@ const DB={
       {label:'Worldbreaker',type:'passive',cost:0,keyword:'breakthrough',text:'Breakthrough. This card can attack Locations.'},
       {label:'Shatter the World',type:'activated',cost:5,limit:'once_per_game',text:'Pay 5 Energy: Deal 3 damage to each opponent character and each opponent Location. (Once per game)'}],transforms:[]},
   //    RED SHE-HULK — Gamma Heat (her combat damage Burns a character) · Inferno Fist (+2 damage to Burned characters; dealDamage).
+  jiren_promo:{id:'jiren_promo',rarity:'legend',name:'Jiren',color:'red',charName:'Jiren',subtypes:['Pride Trooper'],type:'char',race:'Pride Trooper',cost:8,atk:8,hp:8,sym:'JRN',setId:'promo',cardNumber:'PROMO',keywords:[],
+    abilities:[{label:'Strength Is Justice',type:'passive',cost:0,text:'While Jiren is your only character on the field, he gets +3 Attack and +3 Defense.'},
+      {label:'Power Impact',type:'triggered',cost:0,text:'When Jiren is attacked, he retaliates with +3 Attack.'}],transforms:[]},
   red_she_hulk_promo:{id:'red_she_hulk_promo',rarity:'rare',name:'Red She-Hulk',color:'red',charName:'Red She-Hulk',subtypes:['Gamma','Hero'],type:'char',race:'Gamma Hero',cost:5,atk:5,hp:4,sym:'RSH',setId:'promo',cardNumber:'PROMO',keywords:[],
     abilities:[{label:'Gamma Heat',type:'triggered',cost:0,text:'Whenever this card deals combat damage to a character, Burn it.'},
       {label:'Inferno Fist',type:'passive',cost:0,text:'This card deals +2 damage to Burned characters.'}],transforms:[]},
@@ -13542,6 +13605,9 @@ function recalcPassives(){
       if(abils.some(a=>a.label==='Rooted Oath')&&harvestOn(p)) add(0,2,fc.cid,'Rooted Oath',fc.uid);
       if(abils.some(a=>a.label==='Weight of the Court')){ const _n=(pl.discard||[]).filter(id=>DB[id]&&isChar(DB[id])&&!DB[id].isToken&&DB[id].type!=='herald').length; const _b=Math.min(4,Math.floor(_n/3)); if(_b) add(_b,0,fc.cid,'Weight of the Court',fc.uid); }
 
+      // STRENGTH IS JUSTICE (Jiren promo, build 10.21): +3 ATK / +3 HP ("Defense" = Health) while he is the only character
+      // on YOUR field (Heralds aren't on the field; tokens are characters; Locations / Equipment aren't).
+      if(abils.some(a=>a.label==='Strength Is Justice')&&fc!==pl.herald&&pl.field.filter(f=>DB[f.cid]&&isChar(DB[f.cid])).length===1) add(3,3,fc.cid,'Strength Is Justice',fc.uid);
       // SSB Synergy (Virora SSB): +4 ATK for each SSB-subtype char you control
       if(abils.some(a=>a.label==='SSB Synergy')){
         const ssbCount=pl.field.filter(f=>DB[f.cid]?.subtypes?.includes('SSB')).length;
@@ -13860,15 +13926,26 @@ function startGame2v2(mode, decks, seatNames, teamLife, humanSeats){
 
 // 2v2 turn advancement: step through [1,2,3,4]. (AI boards currently pass — the
 // per-board AI and the 4-board interactive UI are the next slices.)
+// FREEZE OVER target: 1v1 → the opponent; 2v2 → the paired opposing seat (1↔2, 3↔4), same as the PC port's opp().
+function freezeOverTarget(p){
+  if(G&&G.is2v2) return ({1:2,2:1,3:4,4:3})[p]||2;
+  return p===1?2:1;
+}
 function execEnd2v2(p){
   G._aiTurn=false; G._aiAuto=false; if(typeof aiThinking==='function')aiThinking(false);
   endTurnFx(p); // (ticks Title Defense, Flame Spiral and Prism Orb once — don't tick them again here)
   log((G.players[p]?.name||('P'+p))+' ends turn.','info');
   (G.players[p]?.field||[]).forEach(f=>{ if(f.krhAtk||f.krhHp){ f.currentATK=Math.max(0,(f.currentATK||0)-(f.krhAtk||0)); f.atkBonus=(f.atkBonus||0)-(f.krhAtk||0); f.hpBonus=(f.hpBonus||0)-(f.krhHp||0); f.currentHP=Math.max(1,(f.currentHP||0)-(f.krhHp||0)); f.krhAtk=0; f.krhHp=0; } });
-  G.turnIndex=((G.turnIndex||0)+1)%G.turnOrder.length;
-  const nx=G.turnOrder[G.turnIndex];
+  // Step the rotation; a seat hit by Freeze Over is stepped past (a wrap = a new round).
+  let nx=G.turnOrder[G.turnIndex||0];
+  for(let guard=0;guard<G.turnOrder.length;guard++){
+    G.turnIndex=((G.turnIndex||0)+1)%G.turnOrder.length;
+    if(G.turnIndex===0)G.turn++;
+    nx=G.turnOrder[G.turnIndex];
+    if(G.players[nx]&&G.players[nx].skipNextTurn){ G.players[nx].skipNextTurn=false; log(`${G.players[nx]?.name||('P'+nx)}'s turn is SKIPPED (Freeze Over)!`,'dmg'); continue; }
+    break;
+  }
   G.activePlayer=nx;
-  if(G.turnIndex===0)G.turn++;
   G.phase='draw';G.phasesDone=[];G.selectedAttacker=null;G.heraldAttacking=false;
   if(typeof startTurnFx==='function')startTurnFx(nx);
   renderAll2v2();
@@ -15587,6 +15664,9 @@ function finishPowerStruggle(){
 }
 
 // ── EXECUTE FINAL COMBAT DAMAGE ─────────────────
+// 💥 POWER IMPACT (Jiren promo, build 10.21): when he is attacked he hits back with +3 Attack — his retaliation and the
+// damage he deals when he wins a Power Struggle as the defender. Only the damage he deals back; his printed/current ATK is unchanged.
+function powerImpactBonus(dfc){ return (dfc&&hasAbilityLabel(dfc,'Power Impact'))?3:0; }
 function executeCombatDamage(ap,auid,dp,duid){
   const afc=G.players[ap]?.field.find(f=>f.uid===auid);
   const dfc=G.players[dp]?.field.find(f=>f.uid===duid);
@@ -15616,7 +15696,8 @@ function executeCombatDamage(ap,auid,dp,duid){
   }
   if(kcWinner==='defender'){
     // Defender wins — deal defender's ATK to attacker, no damage to defender
-    const defenderATK=dfc.currentATK;
+    const _jPI=powerImpactBonus(dfc); const defenderATK=dfc.currentATK+_jPI;
+    if(_jPI) log(`💥 Power Impact: ${dc.name} hits back with +${_jPI} Attack!`,'dmg');
     log(`Power Struggle: ${dc.name} wins — deals ${defenderATK} to ${ac.name}!`,'dmg');
     dealDamage(ap,auid,defenderATK+killingIntent(dfc,afc));
     // INHERIT TANK (Paradox): gains 2 Purple Energy whenever dealt combat damage.
@@ -15633,7 +15714,7 @@ function executeCombatDamage(ap,auid,dp,duid){
   }
 
   // Attacker wins OR no power struggle — normal damage resolution
-  const defenderATK=dfc.currentATK;
+  const _jPI=powerImpactBonus(dfc); const defenderATK=dfc.currentATK+_jPI; // 💥 Power Impact (Jiren)
   // 🌌 MASTERED INSTINCT (Virora Surfacer MUI): when she's attacked, flip a coin (full panel, both players).
   //    HEADS → the attack misses: no damage and no on-hit effects, and she still hits back (normal retaliation).
   //    TAILS → she takes 2 less damage from it. Checked here, so it covers every attack that reaches combat damage
@@ -15713,6 +15794,7 @@ function executeCombatDamage(ap,auid,dp,duid){
   } else if(tgtAlive&&primalMuzzled(dfc,afc)){
     log(`🦍 Primal Instinct: ${dc.name} can't hit back against ${ac.name}.`,'info');
   } else if(tgtAlive&&!statusActive(dfc,'freeze')){
+    if(_jPI) log(`💥 Power Impact: ${dc.name} hits back with +${_jPI} Attack!`,'dmg');
     if(hasKW(afc,'pursuit')){
       log(`${dc.name} retaliates ${defenderATK} (Pursuit: target survived).`,'info');
       dealDamage(ap,auid,defenderATK+killingIntent(dfc,afc));
@@ -20207,7 +20289,7 @@ function runAbilityEffect(fc, abl, pl){
   // ── VIRORA: Freeze Over — opponent flips coin; heads = they skip their turn ──
   if(label==='Freeze Over'){
     flipCoinFor({title:'Freeze Over', desc:'Opponent flips a coin. Heads = they skip their next turn.'}, (heads)=>{
-      const oppNum = G.activePlayer===1?2:1;
+      const oppNum = freezeOverTarget(G.activePlayer);
       if(heads){
         G.players[oppNum].skipNextTurn = true;
         log('Freeze Over: HEADS — opponent will skip their next turn!','gain');
@@ -21834,7 +21916,7 @@ function aiAttackOptionsFor(p, afc){
   pool.forEach(({fc:t,p:tp})=>{
     const toll=seismicSense(afc)?0:((hasGodlyEvasion(t)||hasAbilityLabel(t,'Velocity Blitz'))?2:0); if(toll&&pl.energy<toll) return;
     const kills=power>=t.currentHP&&!(hasKW(t,'resolve')&&t.currentHP>1);
-    const retaliation=(kills&&hasKW(afc,'pursuit'))||primalMuzzled(t,afc)?0:effPower(t);
+    const retaliation=(kills&&hasKW(afc,'pursuit'))||primalMuzzled(t,afc)?0:effPower(t)+powerImpactBonus(t);
     const dies=retaliation>=afc.currentHP;
     let s=power*.6; if(kills) s+=14+aiFcValue(t)*.9; if(dies) s-=10+atkVal*.9; else s+=4;
     if(!kills&&retaliation>0) s-=retaliation*.4;
@@ -21978,6 +22060,17 @@ function runAI(){
           { const ap2=G.players[2]; const didAtk=ap2.field.some(f=>(f.attacksThisTurn||0)>0)||((ap2.herald&&ap2.herald.attacksThisTurn)||0)>0;
             if(!didAtk&&!ap2.usedAbilityThisTurn){ ap2.energy+=2; log('⚡ AI Power Up! Attack skipped — +2 Energy.','gain'); } }
           endTurnFx(2);log('AI ends.','info');
+          // FREEZE OVER: the CPU flipped heads on you — your turn is skipped and the CPU goes again
+          // (the human-ends-turn path in execEnd already handled the other direction).
+          if(G.players[1]&&G.players[1].skipNextTurn){
+            G.players[1].skipNextTurn=false;
+            log(`${pname(1)}'s turn is SKIPPED (Freeze Over)!`,'dmg');
+            G.turn++;G.phase='draw';G.phasesDone=[];G.selectedAttacker=null;G.heraldAttacking=false;
+            if(typeof startTurnFx==='function')startTurnFx(2);
+            renderAll(); if(typeof showTurnBanner==='function')showTurnBanner(false);
+            aiLater(runAI,700);
+            return;
+          }
           G.activePlayer=1;G.turn++;G.phase='draw';G.phasesDone=[];G.selectedAttacker=null;G.heraldAttacking=false;
           if(typeof startTurnFx==='function')startTurnFx(1);
           renderAll();
@@ -24561,7 +24654,7 @@ function renderCosShop(){
     else if(owned) btn=`<button class="cos-btn" onclick="cosEquip('${it.id}')">EQUIP</button>`;
     else if(locked) btn=`<button class="cos-btn lock" title="${cosUnlockText(it)}">🔒 ${cosUnlockText(it).toUpperCase()}</button>`;
     else btn=`<button class="cos-btn" onclick="buyCosmetic('${it.id}')" ${(_celData.celestium||0)<price?'disabled':''}>BUY · ${price.toLocaleString()} <img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" alt="C" style="height:12px;vertical-align:-2px"></button>`;
-    return `<div class="cos-tile${eq?' equipped':''}${locked?' locked':''}">${_cos.newest===it.id&&owned?'<span class="cos-new">NEW</span>':''}<div class="cos-prev">${cosPreviewHtml(it)}</div>
+    return `<div class="cos-tile${eq?' equipped':''}${locked?' locked':''}">${_cos.newest===it.id&&owned?'<span class="cos-new">NEW</span>':''}<div class="cos-prev" data-zcos="${it.id}" role="button" tabindex="0" title="Tap to view">${cosPreviewHtml(it)}</div>
       <div><div class="cos-name">${escapeHtml(it.name)}</div><span class="cos-tier" style="--tc:${tier.hex}">${tier.label}</span></div>
       <div class="cos-desc">${escapeHtml(it.desc||'')}</div>${btn}</div>`;
   }).join('');
@@ -24577,7 +24670,7 @@ function cosSetTile(s){
   const cel='<img src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" alt="C" style="height:12px;vertical-align:-2px">';
   const btn=eq?'<button class="cos-btn eq">✓ SET EQUIPPED</button>':owned?`<button class="cos-btn" onclick="cosEquipSet('${s.id}')">EQUIP SET</button>`:`<button class="cos-btn" onclick="buyCosSet('${s.id}')" ${(_celData.celestium||0)<price?'disabled':''}>BUY SET · ${price.toLocaleString()} ${cel}</button>`;
   const missingVal=s.items.filter(id=>!cosOwned(id)).reduce((a,id)=>a+cosPrice(cosItem(id)),0); const save=!owned&&missingVal>price?`<span class="cos-save">SAVE ${(missingVal-price).toLocaleString()}</span>`:'';
-  return `<div class="cos-tile cos-set${eq?' equipped':''}">${save}<div class="cos-prev">${mat?`<div class="mat" style="background:${(_cosMatBg(mat.id)||'').replace(/"/g,'&quot;')}"></div>`:''}${back?`<img class="back" src="${cosBackUrl(back.id)}" alt="" style="position:relative;z-index:1">`:''}</div>
+  return `<div class="cos-tile cos-set${eq?' equipped':''}">${save}<div class="cos-prev">${mat?`<div class="mat" data-zcos="${mat.id}" title="Tap to view" style="background:${(_cosMatBg(mat.id)||'').replace(/"/g,'&quot;')}"></div>`:''}${back?`<img class="back" data-zcos="${back.id}" title="Tap to view" src="${cosBackUrl(back.id)}" alt="" style="position:relative;z-index:1">`:''}</div>
     <div><div class="cos-name">${escapeHtml(s.name)}</div><span class="cos-tier" style="--tc:#e8c570">CARD BACK + PLAYMAT</span></div>
     <div class="cos-desc">${s.items.map(id=>(cosOwned(id)?'✓ ':'')+escapeHtml(cosItem(id).name)+' · '+(COS_TYPES[cosItem(id).type]||{}).label.toLowerCase().replace(/s$/,'')).join('<br>')}</div>${btn}</div>`;
 }
@@ -24604,6 +24697,61 @@ function cosPreviewHtml(it){
   }
   return '';
 }
+// ── COSMETIC VIEWER: tap a cosmetic anywhere (Locker, event page, rewards) to see it full size ──
+function _cosvQ(v){ return String(v==null?'':v).replace(/"/g,'&quot;'); }
+function _cosvU(u){ return String(u||'').replace(/'/g,'%27'); }
+function cosViewArt(it){
+  const nm=escapeHtml(((window._playerName||'PLAYER')+'').toUpperCase().slice(0,18));
+  switch(it.type){
+    case 'back': { const u=cosBackUrl(it.id); return u?`<img class="cosv-back" src="${u}" alt="">`:'<span class="cosv-big">🂠</span>'; }
+    case 'mat': { const bg=it.img?`url('${_cosvU(it.img)}') center/cover no-repeat`:(_cosMatBg(it.id)||'linear-gradient(180deg,#1a1230,#0c0b22)'); return `<div class="cosv-mat" style="background:${_cosvQ(bg)}"></div>`; }
+    case 'frame': { const av=window._playerAvatarUrl; const img=(typeof av==='string'&&/^(https?:|data:image)/.test(av))?_cosvU(av):'';
+      const cls=it.img?' framed':(it.ring?' ring':'');
+      const st=(img?`background-image:url('${img}');`:'')+(it.img?`--frame-img:url('${_cosvU(it.img)}');`:'')+(it.ring?`--ring1:${it.ring[0]};--ring2:${it.ring[1]};`:'');
+      return `<div class="cosv-av${cls}" style="${_cosvQ(st)}">${img?'':'👤'}</div>`; }
+    case 'plate': { const t=cosItem('title_'+String(it.id).replace(/^plate_/,'')); const sub=t?escapeHtml(t.text||t.name):'';
+      if(it.img) return `<div class="cosv-plate img" style="background-image:url('${_cosvU(it.img)}');--tc:${_cosvQ((t&&t.color)||'#e8c570')}"><b>${nm}</b>${sub?`<i>${sub}</i>`:''}</div>`;
+      return `<div class="cosv-plate" style="--plate-bg:${_cosvQ(it.bg||'rgba(0,0,0,.3)')};--plate-line:${_cosvQ(it.line||'rgba(232,197,112,.3)')}"><b>${nm}</b></div>`; }
+    case 'title': return `<div class="cosv-ttl${it.fx==='playtest'?' ttl-fx-playtest':''}" style="--title-c:${_cosvQ(it.color||'#e8c570')};--title-glow:${_cosvQ((it.color||'#e8c570')+'88')}">${escapeHtml(it.text||'—')}</div>`;
+    case 'entrance': return `<div class="cosv-ent" style="--c:${_cosvQ(it.c||'#e8c570')};--c2:${_cosvQ(it.glow||'rgba(232,197,112,.5)')}">${it.icon||'👑'}</div>`;
+  }
+  return '<span class="cosv-big">✨</span>';
+}
+function cosView(id){
+  const it=cosItem(id); const ov=document.getElementById('cos-view'); if(!it||!ov) return;
+  const owned=cosOwned(id), eq=cosEquipped(it.type,1)===id, tier=COS_TIERS[it.tier]||COS_TIERS.common;
+  const typeLbl=((COS_TYPES[it.type]||{}).label||'COSMETIC').replace(/S$/,'');
+  const ev=(typeof EV_COS_REWARDS!=='undefined')?EV_COS_REWARDS.find(r=>r.id===id||('title_'+String(r.id).replace(/^plate_/,''))===id):null;
+  const locked=!owned&&(it.tier==='exclusive'||!!it.unlock);
+  let act;
+  if(eq) act='<span class="cosv-st on">✓ EQUIPPED</span>';
+  else if(owned) act=`<button type="button" class="cosv-btn" onclick="cosViewEquip('${id}')">EQUIP</button>`;
+  else if(locked) act=`<span class="cosv-st">🔒 ${escapeHtml(ev?ev.how:cosUnlockText(it))}</span>`;
+  else act=`<span class="cosv-st">${cosPrice(it).toLocaleString()} Celestium · find it in THE MARKET</span>`;
+  ov.innerHTML=`<div class="cosv" role="dialog" aria-label="${_cosvQ(it.name)}"><button type="button" class="cosv-x" onclick="cosViewClose()" aria-label="Close">✕</button>
+    <div class="cosv-stage cosv-s-${it.type}">${cosViewArt(it)}</div>
+    <h4>${escapeHtml(it.name)}</h4><div class="cosv-meta"><span>${typeLbl}</span><span class="cosv-tier" style="--tc:${tier.hex}">${tier.label}</span></div>
+    ${it.desc?`<p>${escapeHtml(it.desc)}</p>`:''}<div class="cosv-act">${act}</div></div>`;
+  ov.classList.add('on');
+  if(typeof SFX!=='undefined'&&SFX.click) try{ SFX.click(); }catch(e){}
+}
+function cosViewClose(){ const ov=document.getElementById('cos-view'); if(ov){ ov.classList.remove('on'); ov.innerHTML=''; } }
+function cosViewEquip(id){
+  if(id==='plate_herald_falling_leaf'&&typeof evEquip==='function') evEquip(id); else cosEquip(id);
+  try{ const h=document.getElementById('cos-shop'); if(h&&h.offsetParent&&typeof renderCosShop==='function') renderCosShop(); }catch(e){}
+  try{ if(document.getElementById('harvest-screen')?.classList.contains('active')&&typeof evRender==='function') evRender(); }catch(e){}
+  cosView(id);
+}
+// Shared tap-to-view: any element with data-zc (a card id; data-zf = finish) or data-zcos (a cosmetic id).
+// Capture phase, so a thumbnail inside a bigger button (a Harvest Road stop) opens the viewer instead of the button.
+(function(){
+  const pick=e=>(e.target&&e.target.closest)?e.target.closest('[data-zc],[data-zcos]'):null;
+  const open=t=>{ if(t.dataset.zcos){ cosView(t.dataset.zcos); return; } const cid=t.dataset.zc; if(cid&&typeof DB!=='undefined'&&DB[cid]&&typeof showFullCard==='function') showFullCard(cid,null,t.dataset.zf||'none'); };
+  document.addEventListener('click',e=>{ const t=pick(e); if(!t) return; e.preventDefault(); e.stopPropagation(); open(t); },true);
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){ const ov=document.getElementById('cos-view'); if(ov&&ov.classList.contains('on')){ cosViewClose(); e.stopPropagation(); } return; }
+    if(e.key!=='Enter'&&e.key!==' ') return; const t=pick(e); if(!t||t!==e.target) return; e.preventDefault(); e.stopPropagation(); open(t); },true);
+})();
 // ── ADMIN: catalogue manager ──
 function cosManage(){
   if(!isAdmin()) return;
@@ -38477,7 +38625,7 @@ function evLeaves(){
     h+=`<i style="left:${x}%;--d:${d}s;--dl:${dl}s;--s:${s};--c:${hue}"></i>`; }
   L.innerHTML=h;
 }
-function evThumb(cid,opt){ opt=opt||{}; const u=typeof getImg==='function'?getImg(cid):''; return `<span class="hv-thumb${opt.big?' big':''}" title="${evEsc(DB[cid]?.name||cid)}">${u?`<img src="${u}" alt="" loading="lazy">`:''}${opt.n?`<em>×${opt.n}</em>`:''}${opt.holo?'<b class="hv-spark" title="2nd copy rolls for a holo">✨</b>':''}</span>`; }
+function evThumb(cid,opt){ opt=opt||{}; const u=typeof getImg==='function'?getImg(cid):''; const nm=evEsc(DB[cid]?.name||cid); return `<span class="hv-thumb${opt.big?' big':''}" data-zc="${cid}"${opt.inBtn?'':' role="button" tabindex="0"'} title="${nm} — tap to view">${u?`<img src="${u}" alt="${nm}" loading="lazy">`:''}${opt.n?`<em>×${opt.n}</em>`:''}${opt.holo?'<b class="hv-spark" title="2nd copy rolls for a holo">✨</b>':''}</span>`; }
 function evRoadPts(){ return [[60,210],[205,90],[350,215],[500,95],[645,215],[795,95],[935,170]]; }
 function evRender(){
   const B=document.getElementById('hv-body'); if(!B) return; const D=evData(); const S=evStats(D);
@@ -38490,7 +38638,7 @@ function evRender(){
     return `<button type="button" class="hv-node ${st}${m.boss?' boss':''}" style="--x:${pts[i][0]/10}%;--y:${(pts[i][1]/3).toFixed(2)}" onclick="evOpenMission(${i})" aria-label="Mission ${i+1}: ${evEsc(m.n)}">
       <span class="hv-lantern" style="background-image:url('${evArt(m.art)}')">${done?'<i class="hv-ok">✓</i>':!open?'<i class="hv-lk">🔒</i>':''}${m.boss?'<i class="hv-crown">♛</i>':''}</span>
       <span class="hv-nl"><small>${['I','II','III','IV','V','VI','VII'][i]}${m.boss?' · BOSS':''}</small><b>${evEsc(m.n)}</b></span>
-      <span class="hv-nr">${m.cards.map(c=>evThumb(c,{n:2})).join('')}</span></button>`; }).join('');
+      <span class="hv-nr">${m.cards.map(c=>evThumb(c,{n:2,inBtn:true})).join('')}</span></button>`; }).join('');
   const chs=EV_CHALLENGES.map(c=>{ const v=Math.min(c.goal,D.ch[c.id]||0), done=v>=c.goal, cl=!!D.claimed[c.id];
     const rw=(c.cards||[]).map(id=>evThumb(id,{n:2,holo:true})).join('')+(c.cos||[]).map(id=>evCosMini(id)).join('');
     const btn=cl?'<span class="hv-cl">✓ CLAIMED</span>':done?(evClaimOpen()?`<button type="button" class="hv-claim" onclick="evClaim('${c.id}')">CLAIM</button>`:'<span class="hv-cl">CLOSED</span>'):`<span class="hv-pg">${v} / ${c.goal}</span>`;
@@ -38505,7 +38653,7 @@ function evRender(){
       ${ended?`<div class="hv-end">The event has ended. ${evClaimOpen()?'Finished challenges can still be claimed for a few more days.':''}</div>`:''}${evAdmin()&&!evFlag()?'<div class="hv-end adm">ADMIN PREVIEW — the event is switched off for players (Admin → Game switches).</div>':''}</div>
     <div class="hv-hero-art" aria-hidden="true"></div>
   </section>
-  <section class="hv-sec"><header class="hv-h"><h3>THE HARVEST ROAD</h3><span>BEAT A MISSION THE FIRST TIME · 2 COPIES OF ITS CARDS</span></header>
+  <section class="hv-sec"><header class="hv-h"><h3>THE HARVEST ROAD</h3><span>BEAT A MISSION THE FIRST TIME · 2 COPIES OF ITS CARDS · TAP A CARD TO VIEW IT</span></header>
     <div class="hv-road"><svg class="hv-path" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true"><path class="base" d="${path}"/><path class="lit" d="${litPath}"/></svg>${nodes}</div></section>
   <section class="hv-sec"><header class="hv-h"><h3>CHALLENGES</h3><span>COUNT IN ANY MATCH · ✨ THE 2ND COPY CAN BE A HOLO${S.ready?` · <b>${S.ready} READY TO CLAIM</b>`:''}</span></header>
     <div class="hv-chs">${chs}</div></section>
@@ -38514,13 +38662,14 @@ function evRender(){
 function evCosEquipped(id){ const it=typeof cosItem==='function'?cosItem(id):null; return !!(it&&typeof _cos!=='undefined'&&_cos.equipped&&_cos.equipped[it.type]===id); }
 function evEquip(id){ if(typeof cosEquip==='function') cosEquip(id); if(id==='plate_herald_falling_leaf'&&typeof cosOwned==='function'&&cosOwned('title_herald_falling_leaf')) cosEquip('title_herald_falling_leaf'); evRender(); }
 function evCosArt(it){ if(!it) return '<div class="hv-ca"></div>';
-  if(it.type==='back') return `<div class="hv-ca back"><img src="${it.img}" alt="" loading="lazy"></div>`;
-  if(it.type==='mat') return `<div class="hv-ca mat" style="background-image:url('${it.img}')"></div>`;
-  if(it.type==='frame') return `<div class="hv-ca frame"><span class="av" style="background-image:url('${EV_ART_HERO}')"></span><img src="${it.img}" alt="" loading="lazy"></div>`;
-  if(it.type==='plate') return `<div class="hv-ca plate"><span style="background-image:url('${it.img}')"><b>${evEsc(((window._playerName||'PLAYER')+'').toUpperCase().slice(0,14))}</b><i>HERALD OF THE FALLING LEAF</i></span></div>`;
-  return '<div class="hv-ca"></div>'; }
+  const z=`data-zcos="${it.id}" role="button" tabindex="0" title="${evEsc(it.name)} — tap to view"`;
+  if(it.type==='back') return `<div class="hv-ca back" ${z}><img src="${it.img}" alt="" loading="lazy"></div>`;
+  if(it.type==='mat') return `<div class="hv-ca mat" ${z} style="background-image:url('${it.img}')"></div>`;
+  if(it.type==='frame') return `<div class="hv-ca frame" ${z}><span class="av" style="background-image:url('${EV_ART_HERO}')"></span><img src="${it.img}" alt="" loading="lazy"></div>`;
+  if(it.type==='plate') return `<div class="hv-ca plate" ${z}><span style="background-image:url('${it.img}')"><b>${evEsc(((window._playerName||'PLAYER')+'').toUpperCase().slice(0,14))}</b><i>HERALD OF THE FALLING LEAF</i></span></div>`;
+  return `<div class="hv-ca" ${z}></div>`; }
 function evCosMini(id){ const it=typeof cosItem==='function'?cosItem(id):null; if(!it) return ''; const ic=(COS_TYPES[it.type]||{}).icon||'✨';
-  return `<span class="hv-cmini" title="${evEsc(it.name)}">${it.img?`<img src="${it.img}" alt="" loading="lazy">`:`<i>${ic}</i>`}</span>`; }
+  return `<span class="hv-cmini" data-zcos="${it.id}" role="button" tabindex="0" title="${evEsc(it.name)} — tap to view">${it.img?`<img src="${it.img}" alt="" loading="lazy">`:`<i>${ic}</i>`}</span>`; }
 
 // ── mission panel ──
 function evDecks(){ return (typeof trDeckChoices==='function')?trDeckChoices():[]; }
@@ -38650,7 +38799,7 @@ function evShowReveal(r){
   const holoHit=r.items.some(x=>x.roll&&x.finish!=='none');
   const tiles=r.items.map((x,k)=>{
     if(x.cid){ const vm=VARIANT_META[x.finish]||VARIANT_META.none; const u=getImg(x.cid);
-      return `<div class="hv-rv-c${x.finish!=='none'?' holo':''}" style="--k:${k};--acc:${vm.accent}"><div class="hv-rv-img" data-holo="${x.finish}">${u?`<img src="${u}" alt="">`:''}</div><b>${evEsc(DB[x.cid]?.name||x.cid)}${x.n>1?' ×'+x.n:''}</b><small>${x.roll?(x.finish!=='none'?'✨ '+vm.label.toUpperCase()+'!':'2ND COPY · REGULAR'):vm.label}</small></div>`; }
+      return `<div class="hv-rv-c${x.finish!=='none'?' holo':''}" style="--k:${k};--acc:${vm.accent}"><div class="hv-rv-img" data-holo="${x.finish}" data-zc="${x.cid}" data-zf="${x.finish}" role="button" tabindex="0" title="Tap to view">${u?`<img src="${u}" alt="">`:''}</div><b>${evEsc(DB[x.cid]?.name||x.cid)}${x.n>1?' ×'+x.n:''}</b><small>${x.roll?(x.finish!=='none'?'✨ '+vm.label.toUpperCase()+'!':'2ND COPY · REGULAR'):vm.label}</small></div>`; }
     if(x.cos){ const it=cosItem(x.cos); return `<div class="hv-rv-c cos" style="--k:${k}">${evCosArt(it)}<b>${evEsc(it?it.name:x.cos)}</b><small>${evEsc((EV_TYPE[it&&it.type]||'Cosmetic').toUpperCase())}</small></div>`; }
     if(x.cel) return `<div class="hv-rv-c cel" style="--k:${k}"><div class="hv-rv-cel">+${x.cel}</div><b>Celestium</b><small>MISSION REWARD</small></div>`;
     return ''; }).join('');
