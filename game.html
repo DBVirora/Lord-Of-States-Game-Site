@@ -6934,6 +6934,19 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 #sp-toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,12px);z-index:100002;max-width:min(420px,calc(100vw - 32px));padding:11px 16px;border-radius:12px;
   background:rgba(10,8,24,.95);border:1px solid rgba(240,213,138,.45);color:#e9e4ff;font-size:12px;box-shadow:0 8px 28px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
 #sp-toast.on{opacity:1;transform:translate(-50%,0)}
+.ec-wrap{display:flex;flex-direction:column;gap:12px;max-width:640px;font-size:14px}
+.ec-card{border:1px solid rgba(240,213,138,.22);border-radius:12px;padding:12px 14px;background:rgba(20,14,34,.6)}
+.ec-card h4{margin:0 0 6px;font-size:15px;letter-spacing:.04em;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ec-card p{margin:0 0 10px;opacity:.88;line-height:1.45}.ec-sub{font-size:12.5px;opacity:.75!important}
+.ec-pill{font-size:10.5px;letter-spacing:.08em;padding:2px 8px;border-radius:99px;border:1px solid currentColor}
+.ec-pill.ok{color:#86efac}.ec-pill.warn{color:#fbbf24}.ec-pill.off{color:#9ca3af}
+.ec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-bottom:8px}
+.ec-grid label{display:flex;flex-direction:column;gap:4px;font-size:12px;opacity:.9}
+.ec-grid input{padding:6px 8px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.35);color:inherit;font:inherit}
+.ec-ro{padding:6px 0;font-weight:600}.ec-chk{display:flex;gap:8px;align-items:center;cursor:pointer;margin-bottom:4px}
+.ec-rej{display:flex;flex-direction:column;gap:4px;max-height:220px;overflow:auto;font-size:12.5px}
+.ec-rej div{display:grid;grid-template-columns:minmax(80px,1fr) 2fr auto;gap:8px;padding:4px 6px;border-radius:6px;background:rgba(255,255,255,.04)}
+.ec-rej i{opacity:.6;font-style:normal}
 #sp-toast b{color:#f0d58a;font-weight:600}
 #game-screen.spectating .hand-card.spec-back .hand-art-area{height:100%}
 #spec-bar{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:9000;display:flex;align-items:center;gap:10px;padding:7px 8px 7px 12px;
@@ -9283,7 +9296,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.22 · Burst + Daily</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.23 · Economy</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10340,6 +10353,19 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.22'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.23', date:'2026-11-16',
+    cards:[], abilities:[],
+    screens:[
+      "ECONOMY LOCKDOWN · PIECE 1 (server rewards). NEW SQL: VCU_Economy_Setup.sql (after VCU_Mailbox_Setup.sql). Call econ_status() once after login: {ok, today:'YYYY-MM-DD' (America/New_York), lock (this player), cfg:{matchesPerDay 40, matchGapSec 90, matchCelCap 6000, winCel 75, forfeitCel 50, firstWinCel 100, daily:[7 rewards]}, daily:{d,last,claimed}, match:{n,cel,firstWinToday}, catalogAt/Build/Hash, crafting}. ok=false or an error = SQL not installed → keep the old in-game rewards.",
+      "EVERY CALL BELOW returns the player's balances merged into the result: celestium, court_shards, collection {cid:n}, collection_foil {cid:{finish:n}}, holo_owned {cid:best}, pack_inventory [{key,kind,type,setId,name,qty}], cos_owned {id:ms}. Lock ON (econ_status.lock) → replace the local copies with these. Lock OFF → add what was paid (result.given = {celestium, shards, packs[], cards[{cid,foil,qty,rolled?}], cosmetics[]}) to the local copies and save as before (both agree).",
+      "MATCH: econ_match(p_won bool, p_kind 'win'|'forfeit', p_room text|null) instead of +75 / +50 / +100. → {ok, cel (paid), first (part of cel that was the first-win bonus), capped:null|'gap'|'matches'|'cel'}. Losses: don't call (or p_won=false → cel 0). Show 'Match Win' = cel − first and 'First Win of the Day' = first; capped and cel 0 → 'You've reached today's Celestium limit from matches. Matches still count for XP, the Battle Pass and challenges.' ('gap' → 'Match rewards need 90 seconds between wins.'). Stats/XP/BP/challenges still count locally.",
+      "DAILY: econ_daily() instead of the local 7-day calendar → {ok, day, today, reward, given} or {ok:false, error:'claimed'}. Show the calendar from econ_status.daily (d, last). Still write campaign_progress.daily {d,last} + last_login for older clients.",
+      "ONE-TIME REWARDS: econ_claim(p_key) → {ok, key, given} | {ok:false, error:'already'|'unknown'|'daily_limit'}. Keys: 'ach:<achievementId>', 'camp:<campaignMatchId>', 'tutorial' (2 Basic packs), 'cos:starter' (all starter cosmetics), 'cos:<id>' (Registry-set / achievement / event unlock cosmetics), 'bp3:<BP_CONFIG.seasonId>:<rewardId>', 'bp:<seasonId>:<tier>:<track>' (old pass, Celestium only), 'ev:hoc:m:<missionId>', 'ev:hoc:road', 'ev:hoc:c:<challengeId>' (the holo copy is rolled on the server with EV_HOLO odds — show given.cards), 'ev:hoc:allch'. 'unknown' while the lock is off → fall back to the old in-game grant. The amounts come from app_settings 'econ_catalog' (Admin → Economy → PUBLISH on the web); the PC never writes it.",
+      "TRIAL OF COURTS: econ_trial(p_run run.id, p_tier squire|knight|lord, p_path ladder|tower, p_wins, p_clear) → {ok, cel, shards, packs:[{type,qty}]|null, given} | 'already' | 'daily_limit' (10 runs a day). Same formula as the game (wins capped at 8 ladder / 9 tower; a clear needs all of them).",
+      "MAIL: econ_mail_claim(p_id) instead of mail_claim + applying locally → {ok, attachments, given} | {ok:false, error:'claimed'}. XP in attachments is still applied by the game. With the lock on for a player, the old mail_claim raises 'Update the game to claim this gift.'",
+      "THE LOCK (off now; the switch for everyone comes after purchases/packs/crafting/trades move to the server): a trigger on profiles undoes client writes to celestium, collection, collection_foil, holo_owned, pack_inventory, court_shards and cosmetics.owned while app_settings 'econ_config'.lock is true or the player is in econ_config.lockUsers. Equipped cosmetics, stats, decks etc. still save. Rejected writes are logged (econ_rejects). The first econ call records every one-time reward the player already took (achievements, campaign, events, Battle Pass, tutorial, owned cosmetics) so nothing pays twice.",
+      "ADMIN (web only): Admin → Economy — publish the catalog, edit the three match limits, test the lock on your own account, see blocked writes. Admin Celestium / Court Shards / cosmetic grants go through econ_admin_grant(p_user, p_pay, p_note)."],
+    data:["No rules change for online play: GAME_BUILD stays '10.22'. SQL: VCU_Economy_Setup.sql."] },
   { build:'10.22', date:'2026-11-16',
     cards:[], abilities:[
       "ABILITY AUDIT FIXES (rules changes — port them): SENZU BEAN (senzu_bean): attaching no longer heals; its activated ability Full Restore heals ONE of your field characters (owner picks; CPU = most wounded) to full, then the bean is discarded. BLINDING POWER (Virora SSJ, virora_ssj1_bse): at the start of your turn, if it took damage since the start of your last turn (fc._hurtTurn >= turn-2, set in dealDamage), you may search your deck for an Energy card (human: deck search; CPU: first Energy). VEELDEN KINGDOM (veelden_kingdom_bse, not while frozen): start of your turn — Saiyan Banner: 2+ Saiyans you control → draw 1; Royal Restoration: each of your characters heals 1 per Saiyan you control. MASTERY RAMP (Virora SSBM, virora_ssbm): every 2nd turn of yours on the field, +2 ATK / +4 HP permanently (fc._ramp counter).",
@@ -24922,6 +24948,7 @@ function cosEnsureStarter(celebrate){
     if(!done) return false;
     let any=false; cosCatalog().filter(it=>it.starter&&!_cos.owned[it.id]).forEach(it=>{ _cos.owned[it.id]=Date.now(); any=true; });
     if(any){ saveCosmetics(); if(document.getElementById('mm-loadout')) mmRenderLoadout(); }
+    if(any&&econReady()) econClaim('cos:starter',null).then(()=>{ try{ if(document.getElementById('mm-loadout')) mmRenderLoadout(); }catch(e){} });   // record it on the server
     return any;
   }catch(e){ return false; }
 }
@@ -24930,7 +24957,7 @@ function cosCheckUnlocks(){
   try{
     cosCatalog().filter(it=>it.unlock&&it.unlock.kind==='registry_set'&&!cosOwned(it.id)).forEach(it=>{
       const set=it.unlock.set; const ids=Object.keys(DB).filter(cid=>registryEligible(cid)&&getCardSet(cid)===set);
-      if(ids.length&&ids.every(cid=>registryState(cid)==='registered')) grantCosmetic(it.id,'Registry complete',true);
+      if(ids.length&&ids.every(cid=>registryState(cid)==='registered')){ grantCosmetic(it.id,'Registry complete',true); if(econReady()) econClaim('cos:'+it.id,null); }
     });
   }catch(e){}
 }
@@ -25149,7 +25176,7 @@ async function cosAdminSave(ev){
   return false;
 }
 async function cosAdminToggle(id){ const prev=_cosCatalogExtra[id]||{}; _cosCatalogExtra[id]=Object.assign({},prev,{enabled:prev.enabled===false}); if(await saveCosCatalog()){ cosManage(); renderCosShop(); } }
-function cosAdminGrant(id){ grantCosmetic(id,'admin',false); renderCosShop(); cosManage(); }
+function cosAdminGrant(id){ grantCosmetic(id,'admin',false); if(typeof econAdminSelf==='function'&&econReady()) econAdminSelf({cosmetics:[id]},null); renderCosShop(); cosManage(); }
 // ── HERALD ENTRANCE ──
 let _he={timers:[],done:null};
 function setEntrances(v){ _gameSettings.entrances=!!v; document.querySelectorAll('.settings-ent-btn').forEach(b=>b.classList.toggle('active',(b.dataset.ent==='on')===!!v)); if(typeof SFX!=='undefined')SFX.click(); saveGameSettings(); }
@@ -27561,6 +27588,7 @@ async function loadCelestium(){
     }
     updateCelDisplay();
     await loadStats();
+    try{ await econInit(); }catch(e){}
     await checkDailyLogin();
   }catch(e){console.warn('[CEL] load error:',e);}
 }
@@ -27582,13 +27610,209 @@ async function saveCelestium(){
 
 async function awardCelestium(amount,reason){
   _celData.celestium+=amount;
+  await celNote(amount,reason);
+}
+// Everything awardCelestium does except adding the amount (used when the server already paid it).
+async function celNote(amount,reason,opts){
+  opts=opts||{};
   // Profile stat: lifetime total Celestium earned (only positive awards).
-  if(amount>0 && typeof bumpStat==='function') bumpStat('celestium_earned',amount);
+  if(amount>0 && !opts.noStat && typeof bumpStat==='function') bumpStat('celestium_earned',amount);
   const entry={amount,reason,ts:new Date().toISOString()};
   _celLog.unshift(entry);
   updateCelDisplay();
-  showCelEarnPopup(amount,reason);
+  if(!opts.noPopup) showCelEarnPopup(amount,reason);
   await saveCelestium();
+}
+
+// ── ECONOMY ON THE SERVER (build 10.23 · piece 1) ──────────────────────────────────────────────────────────
+// VCU_Economy_Setup.sql adds server functions that own Celestium, cards, packs, Court Shards and owned cosmetics.
+// When they are installed, rewards are paid by the server: match wins (40 rewarded matches a day, 90 s apart,
+// 6,000 Celestium a day from matches, first win once per Eastern day), the daily calendar, one-time rewards from the
+// published catalog (achievements, campaign, tutorial, Battle Pass, Harvest of Courts, unlock cosmetics), Trial of
+// Courts payouts and mail gifts. Without the SQL the game behaves exactly as before.
+// While the lock is OFF the game also adds what the server paid to its own copy and saves as usual (both agree).
+// While the lock is ON for this player, the server's balances replace the game's copy.
+// Purchases, pack opening, crafting and trades still run in the game until pieces 2–3 (the lock stays off until then).
+const ECON={on:false,lock:false,st:null,tried:false};
+function econReady(){ return !!(ECON.on&&typeof _celSB!=='undefined'&&_celSB&&_celUserId); }
+async function econInit(){
+  ECON.tried=true; ECON.on=false;
+  if(typeof _celSB==='undefined'||!_celSB||!_celUserId) return false;
+  try{ const {data,error}=await _celSB.rpc('econ_status');
+    if(error||!data||!data.ok) return false;
+    ECON.on=true; ECON.st=data; ECON.lock=!!data.lock;
+    if(data.match&&data.match.firstWinToday) _celData.first_win_date=new Date().toDateString();
+    return true;
+  }catch(e){ return false; }
+}
+async function econRpc(fn,args){
+  if(!econReady()) return null;
+  try{ const {data,error}=await _celSB.rpc(fn,args||{});
+    if(error){ console.warn('[ECON]',fn,error.message); return null; }
+    return data;
+  }catch(e){ console.warn('[ECON]',fn,e); return null; }
+}
+function econToast(msg){ if(typeof spToast==='function') spToast(msg,5200); else console.log('[ECON]',msg); }
+// Lock ON: copy the server's balances over the game's.
+function econSnap(d){
+  if(!d||typeof d!=='object') return;
+  try{
+    if(d.celestium!=null) _celData.celestium=Number(d.celestium)||0;
+    if(d.court_shards!=null&&typeof _craft!=='undefined'&&_craft) _craft.shards=Number(d.court_shards)||0;
+    if(d.collection&&typeof d.collection==='object') _collection=d.collection;
+    if(d.collection_foil&&typeof d.collection_foil==='object') _collectionFoil=d.collection_foil;
+    if(d.holo_owned&&typeof d.holo_owned==='object') _holoOwned=d.holo_owned;
+    if(Array.isArray(d.pack_inventory)) _packInventory=d.pack_inventory.map(e=>Object.assign({},e,{name:(e.name&&!/^(Basic|Premium|Event) Pack$/.test(e.name))?e.name:packDisplayName(e.kind,e.type,e.setId)}));
+    if(d.cos_owned&&typeof d.cos_owned==='object'&&typeof _cos!=='undefined'&&_cos) _cos.owned=Object.assign({},d.cos_owned);
+  }catch(e){ console.warn('[ECON] snap',e); }
+}
+// Lock OFF: add what the server paid to the game's own copy (the normal saves then write the same totals).
+function econAddLocal(g){
+  if(!g) return;
+  const cel=Number(g.celestium)||0; if(cel) _celData.celestium=(_celData.celestium||0)+cel;
+  const sh=Number(g.shards)||0; if(sh&&typeof _craft!=='undefined'&&_craft) _craft.shards=(_craft.shards||0)+sh;
+  (g.packs||[]).forEach(p=>grantPack(p.kind||'pack',p.type||'basic',p.setId||'base_set',Math.max(1,Number(p.qty)||1),p.name));
+  (g.cards||[]).forEach(c=>{ if(c&&c.cid) addVariantToCollection(c.cid,c.foil||'none',Math.max(1,Number(c.qty)||1)); });
+  if(typeof _cos!=='undefined'&&_cos) (g.cosmetics||[]).forEach(id=>{ if(!_cos.owned[id]){ _cos.owned[id]=Date.now(); _cos.newest=id; } });
+}
+// Land a server payout: update the game's copy, save, refresh. reason = the Celestium popup/log line (null = log only).
+async function econLand(r,g,reason,opts){
+  g=g||{}; opts=opts||{};
+  if(ECON.lock&&r) econSnap(r); else econAddLocal(g);
+  const cel=Number(g.celestium)||0;
+  if(cel) await celNote(cel,reason||opts.log||'Reward',{noPopup:!reason||opts.noPopup,noStat:opts.noStat});
+  else if(ECON.lock&&r) updateCelDisplay();
+  try{
+    if(Number(g.shards)){ if(typeof craftSaveShards==='function') await craftSaveShards(); if(typeof craftRefresh==='function') craftRefresh(); }
+    if((g.packs||[]).length){ await savePackInventory(); if(typeof renderPackInventory==='function') renderPackInventory(); if(typeof updatePackBadge==='function') updatePackBadge(); }
+    if((g.cards||[]).length){ if(!ECON.lock&&typeof recomputeHoloOwned==='function') recomputeHoloOwned();
+      await Promise.all([saveCollection(),saveCollectionFoil(),(typeof saveHoloOwned==='function'?saveHoloOwned():null)]);
+      if(typeof markRegistered==='function') g.cards.forEach(c=>{ try{ markRegistered(c.cid); }catch(e){} }); }
+    if((g.cosmetics||[]).length){ if(typeof saveCosmetics==='function') saveCosmetics(); if(typeof applyCosmetics==='function') applyCosmetics(); }
+  }catch(e){ console.warn('[ECON] land',e); }
+}
+// One-time reward by catalog key. local() = the old in-game grant: used when the server functions aren't installed, or
+// (lock off) when the key isn't in the published catalog yet. → {ok, via:'server'|'local', given?, error?}
+async function econClaim(key,local,reason){
+  if(econReady()){
+    const r=await econRpc('econ_claim',{p_key:key});
+    if(r&&r.ok){ await econLand(r,r.given,reason); return {ok:true,via:'server',given:r.given||{}}; }
+    if(r&&(r.error==='already'||r.error==='daily_limit')){ if(ECON.lock) econSnap(r); return {ok:false,via:'server',error:r.error}; }
+    if(ECON.lock){ econToast(r&&r.error==='unknown'?'This reward isn’t available yet. Try again later.':'Couldn’t reach the server. Try again.'); return {ok:false,via:'server',error:(r&&r.error)||'offline'}; }
+  }
+  if(local) await local();
+  return {ok:true,via:'local'};
+}
+function econCapText(c){ return c==='gap'?'Match rewards need 90 seconds between wins.':'You’ve reached today’s Celestium limit from matches. Matches still count for XP, the Battle Pass and challenges.'; }
+// Match rewards (server: caps + first win of the day; legacy: 75 / 50 forfeit / +100 first win).
+async function econMatchPay(kind){
+  if(econReady()){
+    const room=(typeof _onlineRoom!=='undefined'&&_onlineRoom&&(_onlineRoom.code||_onlineRoom.id))||null;
+    const r=await econRpc('econ_match',{p_won:true,p_kind:kind,p_room:room?String(room):null});
+    if(r&&r.ok){
+      const paid=Number(r.cel)||0, first=Number(r.first)||0, base=paid-first;
+      if(ECON.lock) econSnap(r); else _celData.celestium=(_celData.celestium||0)+paid;
+      if(first) _celData.first_win_date=new Date().toDateString();
+      if(base>0) await celNote(base,kind==='forfeit'?'Forfeit Win':'Match Win');
+      if(first>0) await celNote(first,'First Win of the Day');
+      if(!paid){ updateCelDisplay(); await saveCelestium(); }
+      if(r.capped&&(r.capped!=='gap'||!paid)) econToast(econCapText(r.capped));
+      try{ if(ECON.st&&ECON.st.match){ ECON.st.match.n=(ECON.st.match.n||0)+(paid?1:0); ECON.st.match.cel=(ECON.st.match.cel||0)+paid; if(first) ECON.st.match.firstWinToday=true; } }catch(e){}
+      try{ const ce=document.getElementById('win-celestium'); if(ce&&G&&G.onlineMode&&!G.is2v2) ce.textContent=paid?('+'+paid+' Celestium'+(first?' (incl. first win of the day)':'')):econCapText(r.capped); }catch(e){}
+      return;
+    }
+    if(ECON.lock){ await saveCelestium(); econToast('Couldn’t reach the server — this win’s Celestium wasn’t paid.'); return; }
+  }
+  if(kind==='forfeit'){ await awardCelestium(50,'Forfeit Win'); return; }
+  await awardCelestium(75,'Match Win');
+  const today=new Date().toDateString();
+  if(_celData.first_win_date!==today){ _celData.first_win_date=today; await awardCelestium(100,'First Win of the Day'); }
+}
+
+// ── the published catalog (Admin → Economy → PUBLISH): every one-time reward the server may pay, by key ──
+function econHash(str){ let h=0x811c9dc5; for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,0x01000193)>>>0; } return h.toString(16); }
+function econBp3Pay(r){
+  if(!r) return null;
+  if(r.type==='card'&&r.cid) return {cards:[{cid:r.cid,qty:1,foil:r.finish||'none'}]};
+  if(r.type==='cosmetic'&&r.cos&&r.cos.id) return {cosmetics:[r.cos.id]};
+  if(r.type==='celestium') return {celestium:+r.amount||0};
+  if(r.type==='shards') return {shards:+r.amount||0};
+  if(r.type==='pack') return {packs:[{kind:'pack',type:r.pack||'basic',setId:r.set||'base_set',qty:+r.amount||1}]};
+  return null;
+}
+function econBuildRewards(){
+  const rw={}; const add=(k,p)=>{ const o={}; Object.keys(p).forEach(x=>{ const v=p[x]; if(v==null) return; if(Array.isArray(v)&&!v.length) return; if(typeof v==='number'&&!v&&x!=='celestium') return; o[x]=v; }); rw[k]=o; };
+  try{ Object.entries(ACHIEVEMENTS).forEach(([id,a])=>add('ach:'+id,{celestium:Math.max(0,+a.reward||0)})); }catch(e){}
+  try{ const C=(typeof CAMPAIGN_DATA!=='undefined'&&CAMPAIGN_DATA)||CAMPAIGN_DEFAULT; (C.worlds||[]).forEach(w=>(w.chapters||[]).forEach(c=>(c.matches||[]).forEach(m=>{ if(m&&m.id) add('camp:'+m.id,{celestium:Math.max(0,+(m.rewards&&m.rewards.celestium)||0)}); }))); }catch(e){}
+  add('tutorial',{packs:[{kind:'pack',type:'basic',setId:'base_set',qty:2,name:'Base Set Booster'}]});
+  try{ const cat=cosCatalog(); add('cos:starter',{cosmetics:cat.filter(it=>it.starter).map(it=>it.id)});
+    cat.filter(it=>it.unlock&&['registry_set','achievement','event'].includes(it.unlock.kind)).forEach(it=>add('cos:'+it.id,{cosmetics:[it.id]})); }catch(e){}
+  try{ const sid=(typeof BP_CONFIG!=='undefined'&&BP_CONFIG&&BP_CONFIG.seasonId)||'season';
+    bp3Pages().forEach(pg=>pg.rewards.forEach(r=>{ const p=econBp3Pay(r); if(p&&r.id) add('bp3:'+sid+':'+r.id,p); }));
+    ((typeof BP_CONFIG!=='undefined'&&BP_CONFIG&&BP_CONFIG.rewards)||[]).forEach(t=>['free','standard','premium'].forEach(tr=>{ const x=t&&t[tr]; if(x&&x.type==='celestium') add('bp:'+sid+':'+t.tier+':'+tr,{celestium:+x.amount||0}); })); }catch(e){}
+  try{ EV_MISSIONS.forEach(m=>add('ev:hoc:m:'+m.id,{celestium:+m.cel||0,cards:(m.cards||[]).map(cid=>({cid,qty:2}))}));
+    add('ev:hoc:road',{cosmetics:['back_harvest_of_courts']});
+    EV_CHALLENGES.forEach(c=>add('ev:hoc:c:'+c.id,{cards:[].concat(...(c.cards||[]).map(cid=>[{cid,qty:1},{cid,qty:1,foil:'roll'}])),cosmetics:c.cos||[],roll:(c.cards||[]).length?EV_HOLO:null}));
+    add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
+  return rw;
+}
+const WEB_BUILD='10.23';   // display build (GAME_BUILD = the rules version for online play)
+function econBuildCatalog(){ const rewards=econBuildRewards(); return {v:1,build:WEB_BUILD,at:new Date().toISOString(),hash:econHash(JSON.stringify(rewards)),rewards}; }
+async function econPublish(btn){
+  if(!isAdmin()) return;
+  const cat=econBuildCatalog(); if(btn){ btn.disabled=true; btn.textContent='PUBLISHING…'; }
+  try{ const {error}=await _celSB.from('app_settings').upsert({key:'econ_catalog',value:JSON.stringify(cat),updated_at:new Date().toISOString()},{onConflict:'key'});
+    if(error) throw error; if(ECON.st){ ECON.st.catalogAt=cat.at; ECON.st.catalogBuild=cat.build; ECON.st.catalogHash=cat.hash; }
+    econToast(`Economy catalog published · <b>${Object.keys(cat.rewards).length}</b> rewards.`); }
+  catch(e){ alert('Publish failed: '+(e.message||e)); }
+  econManage();
+}
+
+// ── Admin → Economy ──
+async function econManage(){
+  if(!isAdmin()) return;
+  const body=document.createElement('div'); body.className='ec-wrap'; body.innerHTML='<div class="ec-note">Loading…</div>';
+  showModalEl('💠 Economy',body,{forceHuman:true});
+  if(!ECON.tried||!ECON.on) await econInit();
+  if(!ECON.on){ body.innerHTML=`<div class="ec-card"><h4>Server functions not installed</h4><p>Run <b>VCU_Economy_Setup.sql</b> in the Supabase SQL Editor (after the Mailbox SQL), then reopen this panel. Until then the game pays rewards itself, as before.</p></div>`; return; }
+  const [st,ad]=await Promise.all([econRpc('econ_status'),econRpc('econ_admin_status',{p_limit:50})]);
+  if(st){ ECON.st=st; ECON.lock=!!st.lock; }
+  const c=(ad&&ad.cfg)||{}, cur=econBuildRewards(), curHash=econHash(JSON.stringify(cur));
+  const pubAt=ad&&ad.catalogAt, fresh=!!pubAt&&ad.catalogHash===curHash;
+  const me=(c.lockUsers||[]).includes(_celUserId);
+  const fmt=t=>{ try{ return new Date(t).toLocaleString(); }catch(e){ return t||''; } };
+  const esc=x=>typeof escapeHtml==='function'?escapeHtml(String(x==null?'':x)):String(x==null?'':x);
+  const m=(st&&st.match)||{};
+  body.innerHTML=`
+    <div class="ec-card"><h4>Reward catalog <span class="ec-pill ${fresh?'ok':'warn'}">${pubAt?(fresh?'UP TO DATE':'OUT OF DATE'):'NOT PUBLISHED'}</span></h4>
+      <p>The server pays one-time rewards (achievements, campaign, tutorial, Battle Pass, Harvest of Courts, unlock cosmetics) from this list. ${pubAt?`Published ${esc(fmt(pubAt))} · build ${esc(ad.catalogBuild||'?')} · ${ad.rewardKeys||0} rewards.`:'Not published yet: until you publish, the game pays those rewards itself.'} Publish again after changing achievements, the campaign, the Battle Pass or an event.</p>
+      <button type="button" class="btn-primary" onclick="econPublish(this)">PUBLISH ECONOMY CATALOG · ${Object.keys(cur).length}</button></div>
+    <div class="ec-card"><h4>Match rewards</h4>
+      <div class="ec-grid">
+        <label>Rewarded matches a day<input type="number" min="1" max="500" id="ec-mpd" value="${+c.matchesPerDay||40}"></label>
+        <label>Seconds between rewards<input type="number" min="0" max="3600" id="ec-gap" value="${c.matchGapSec!=null?+c.matchGapSec:90}"></label>
+        <label>Celestium a day from matches<input type="number" min="0" max="1000000" step="100" id="ec-cap" value="${c.matchCelCap!=null?+c.matchCelCap:6000}"></label>
+        <label>Win / forfeit win / first win<span class="ec-ro">${+c.winCel||75} / ${+c.forfeitCel||50} / ${+c.firstWinCel||100}</span></label></div>
+      <p class="ec-sub">Not counted toward the cap: achievements, events, the Battle Pass, the campaign, Trial of Courts, the daily calendar, mail gifts and codes, wagers. Your matches today: <b>${m.n||0}</b> rewarded · <b>${(m.cel||0).toLocaleString()}</b> Celestium${m.firstWinToday?' · first win taken':''}.</p>
+      <button type="button" class="btn-primary" onclick="econSaveCaps(this)">SAVE LIMITS</button></div>
+    <div class="ec-card"><h4>The lock <span class="ec-pill ${c.lock?'warn':'off'}">${c.lock?'ON FOR EVERYONE':'OFF'}</span></h4>
+      <p>When the lock is on, the game can no longer write Celestium, cards, packs, Court Shards or owned cosmetics itself: only the server can. The switch for everyone comes once buying, opening packs, crafting and trades also run on the server (the next economy builds) and the PC version has the same calls.</p>
+      <label class="ec-chk"><input type="checkbox" id="ec-me" ${me?'checked':''} onchange="econLockMe(this.checked)"> Test the lock on my account only</label>
+      <p class="ec-sub">While testing: rewards still arrive, but purchases, pack opening, crafting and trades won’t save yet.</p></div>
+    <div class="ec-card"><h4>Blocked writes <span class="ec-pill off">${((ad&&ad.rejects)||[]).length}</span></h4>
+      ${((ad&&ad.rejects)||[]).length?`<div class="ec-rej">${ad.rejects.map(x=>`<div><b>${esc(x.username||String(x.user_id||'').slice(0,8))}</b><span>${esc((x.cols||[]).join(', '))}</span><i>${esc(fmt(x.at))}</i></div>`).join('')}</div>`:'<p class="ec-sub">None. A row appears when the lock undoes a direct write (an old game version, or someone editing their balance).</p>'}</div>`;
+}
+async function econSaveCaps(btn){
+  const v=id=>Math.max(0,Math.round(+document.getElementById(id).value||0));
+  const r=await econRpc('econ_admin_config',{p_patch:{matchesPerDay:Math.max(1,v('ec-mpd')),matchGapSec:v('ec-gap'),matchCelCap:v('ec-cap')}});
+  econToast(r&&r.ok?'Match limits saved.':'Save failed.'); econManage();
+}
+async function econLockMe(on){
+  const ad=await econRpc('econ_admin_status',{p_limit:1}); const list=((ad&&ad.cfg&&ad.cfg.lockUsers)||[]).filter(x=>x!==_celUserId); if(on) list.push(_celUserId);
+  const r=await econRpc('econ_admin_config',{p_patch:{lockUsers:list}});
+  if(r&&r.ok){ ECON.lock=on||!!(r.cfg&&r.cfg.lock); if(on){ const me=await econRpc('econ_me'); if(me&&me.ok){ econSnap(me); updateCelDisplay(); } } econToast(on?'The lock is on for your account.':'The lock is off for your account.'); }
+  else econToast('Could not change the lock.');
+  econManage();
 }
 
 function updateCelDisplay(){
@@ -27623,7 +27847,9 @@ const DAILY_DEF=[{cel:100},{shards:25,alt:{cel:150}},{cel:150},{shards:50,alt:{c
 function dailyToday(){ try{ return new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()); }catch(e){ return new Date().toISOString().slice(0,10); } }
 function dailyPrev(d){ const t=new Date(d+'T12:00:00Z'); t.setUTCDate(t.getUTCDate()-1); return t.toISOString().slice(0,10); }
 function dailyState(){
-  const cp=(typeof _campaignProgress==='object'&&_campaignProgress)||{}; const s=cp.daily||{d:0,last:null}; const today=dailyToday();
+  const cp=(typeof _campaignProgress==='object'&&_campaignProgress)||{}; const today=dailyToday();
+  let s=(econReady()&&ECON.st&&ECON.st.daily)?{d:ECON.st.daily.d||0,last:ECON.st.daily.last||null}:(cp.daily||{d:0,last:null});
+  if(econReady()&&cp.daily&&cp.daily.pc&&cp.daily.last===today&&s.last!==today) s=cp.daily;   // took the old daily bonus on the PC today: nothing more today
   const claimed=s.last===today, cont=s.last===dailyPrev(today)&&(s.d||0)<7;
   return {today, claimed, day: claimed?s.d:(cont?(s.d||0)+1:1), pcClaimed: claimed&&!!s.pc};
 }
@@ -27659,6 +27885,26 @@ function dailyClose(){ const ov=document.getElementById('daily-ov'); if(ov) ov.c
 async function dailyClaim(btn){
   const st=dailyState(); if(st.claimed){ dailyOpen(); return; }
   if(btn){ btn.disabled=true; btn.textContent='CLAIMING…'; }
+  if(econReady()){   // the server keeps the day and the streak, and pays
+    const x=await econRpc('econ_daily');
+    if(x&&(x.ok||x.error==='claimed')){
+      const day=x.ok?x.day:(x.day||st.day), today=x.today||st.today;
+      ECON.st.daily={d:day,last:today,claimed:true};
+      _campaignProgress.daily={d:day,last:today}; _celData.last_login=new Date().toDateString();
+      try{ await saveCampaignProgress(); }catch(e){}
+      if(!x.ok){ if(ECON.lock) econSnap(x); dailyOpen(); return; }
+      const g=x.given||{};
+      await econLand(x,g,'Daily Reward · Day '+day);
+      if(!Number(g.celestium)) try{ await saveCelestium(); }catch(e){}
+      if(typeof bpOnDailyLogin==='function') try{ await bpOnDailyLogin(); }catch(e){}
+      dailyOpen();
+      try{ if(typeof mmRenderLedger==='function') mmRenderLedger(); if(typeof refreshProfileScreen==='function'&&document.getElementById('profile-screen')?.classList.contains('active')) refreshProfileScreen(); }catch(e){}
+      if(typeof showRewardsCelebration==='function'){ const items=[]; if(g.celestium) items.push({icon:'✦',amount:'+'+g.celestium,label:'Celestium'}); if(g.shards) items.push({icon:'🔷',amount:'+'+g.shards,label:'Court Shards'}); (g.packs||[]).forEach(p=>items.push({icon:'🎴',amount:'+'+(p.qty||1),label:'Basic Pack'}));
+        try{ showRewardsCelebration(items,null,{title:'DAY '+day+' REWARD'}); }catch(e){} }
+      return;
+    }
+    if(ECON.lock){ if(btn){ btn.disabled=false; btn.textContent='TRY AGAIN'; } econToast('Couldn’t reach the server. Try again.'); return; }
+  }
   const r=dailyReward(st.day);
   _campaignProgress.daily={d:st.day,last:st.today};
   _celData.last_login=new Date().toDateString();
@@ -27704,7 +27950,7 @@ async function onMatchEnd(won){
     _celData.matches++;
     _celData.wins++;
     if(typeof _bumpWinStreak==='function')_bumpWinStreak(true);
-    await awardCelestium(50,'Forfeit Win');
+    await econMatchPay('forfeit');
     setTimeout(()=>checkAchievements(),800);
     return;
   }
@@ -27714,13 +27960,7 @@ async function onMatchEnd(won){
   if(won){
     _celData.wins++;
     if(typeof _bumpWinStreak==='function')_bumpWinStreak(true);
-    await awardCelestium(75,'Match Win');
-    // First win of the day bonus
-    const today=new Date().toDateString();
-    if(_celData.first_win_date!==today){
-      _celData.first_win_date=today;
-      await awardCelestium(100,'First Win of the Day');
-    }
+    await econMatchPay('win');   // Match Win + First Win of the Day (server caps when installed)
     // Check First Light achievement
     setTimeout(()=>checkAchievements(),800);
   } else {
@@ -27954,7 +28194,7 @@ async function checkAchievements(){
       _achData['ach_'+id]=new Date().toISOString();
       anyNew=true;
       showAchievementPopup(ach);
-      await awardCelestium(ach.reward,'Achievement: '+ach.title);
+      await econClaim('ach:'+id,()=>awardCelestium(ach.reward,'Achievement: '+ach.title),'Achievement: '+ach.title);
       // Bonus XP reward (Battle Pass) if the achievement grants it
       if(ach.xpReward && typeof awardBPXp==='function'){
         await awardBPXp(ach.xpReward,'Achievement: '+ach.title);
@@ -30040,7 +30280,7 @@ async function onTutorialFinished(p){
   if(typeof markCutsceneWatched==='function') try{ markCutsceneWatched('welcome_tutorial'); }catch(e){}
   _tutMarkKnownLocal();
   if(firstTime){
-    try{ if(typeof awardPack==='function') await awardPack('pack','basic','base_set',2,'Base Set Booster'); }catch(e){}
+    try{ if(typeof awardPack==='function') await econClaim('tutorial',()=>awardPack('pack','basic','base_set',2,'Base Set Booster')); }catch(e){}
     try{ if(typeof checkAchievements==='function') await checkAchievements(); }catch(e){} // First Steps (+200 Celestium)
     try{ if(typeof cosEnsureStarter==='function') cosEnsureStarter(); }catch(e){}
   }
@@ -30260,13 +30500,20 @@ function applyAdminToggleEffects(){
   }
 }
 
+async function econAdminSelf(pay,reason){
+  if(!econReady()) return false;
+  const r=await econRpc('econ_admin_grant',{p_user:_celUserId,p_pay:pay,p_note:reason||'admin'});
+  if(!r||!r.ok) return false; await econLand(r,r.given,reason); return true;
+}
 async function adminGrantCelestium(){
   if(!isAdmin())return;
+  if(await econAdminSelf({celestium:1000},'Admin Grant')){ alert('✓ +1000 Celestium added.'); return; }
   await awardCelestium(1000,'Admin Grant');
   alert('✓ +1000 Celestium added.');
 }
 async function adminGrantCelestium50k(){
   if(!isAdmin())return;
+  if(await econAdminSelf({celestium:50000},'Admin Grant')){ alert('✓ +50,000 Celestium added.'); return; }
   await awardCelestium(50000,'Admin Grant');
   alert('✓ +50,000 Celestium added.');
 }
@@ -33442,7 +33689,8 @@ async function onCampaignMatchWin(){
     // Award rewards (only on first completion)
     if(G_campaignActiveMatch.rewards){
       const cel=G_campaignActiveMatch.rewards.celestium||0;
-      if(cel>0)await awardCelestium(cel,'Campaign: '+G_campaignActiveMatch.name);
+      const _cn='Campaign: '+G_campaignActiveMatch.name;
+      if(cel>0)await econClaim('camp:'+matchId,()=>awardCelestium(cel,_cn),_cn);
     }
   }
   // Play post-match cutscene if defined and not yet watched
@@ -33932,7 +34180,7 @@ async function claimBPReward(tier,track){
   const reward=rewardData[track];
   // Grant the reward
   if(reward.type==='celestium'){
-    await awardCelestium(reward.amount,'BP Tier '+tier+' ('+track+')');
+    await econClaim('bp:'+((BP_CONFIG&&BP_CONFIG.seasonId)||'season')+':'+tier+':'+track,()=>awardCelestium(reward.amount,'BP Tier '+tier+' ('+track+')'),'BP Tier '+tier+' ('+track+')');
   } else if(reward.type==='pack'){
     // Add a placeholder note — pack opening logic deferred to admin filling
     _celLog.unshift({amount:0,reason:'BP Pack reward (Tier '+tier+')',ts:new Date().toISOString()});
@@ -35127,6 +35375,7 @@ window.addEventListener('load',async()=>{
           <button type="button" class="adm-tile" onclick="if(typeof openNewsEditor==='function')openNewsEditor()"><span class="adm-ico">📰</span><b>News</b><span>Edit the main menu news slides</span></button>
           <button type="button" class="adm-tile" onclick="if(typeof mmArtManage==='function')mmArtManage()"><span class="adm-ico">🖼</span><b>Menu Art</b><span>Menu card art and backdrop</span></button>
           <button type="button" class="adm-tile" onclick="if(typeof sfxManage==='function')sfxManage()"><span class="adm-ico">🔊</span><b>Sound Effects</b><span>Use your own sound files</span></button>
+          <button type="button" class="adm-tile" onclick="if(typeof econManage==='function')econManage()"><span class="adm-ico">💠</span><b>Economy</b><span>Server rewards, limits and the lock</span></button>
           <button type="button" class="adm-tile" onclick="openTfLadderEditor()"><span class="adm-ico">⬆</span><b>Transform Ladder</b><span>Skip prices for chain paths</span></button>
           <button type="button" class="adm-tile" onclick="openBPEditor()"><span class="adm-ico">⚔</span><b>Battle Pass Editor</b><span>Season, XP, costs and tier rewards</span></button>
           <button type="button" class="adm-tile" onclick="openMarket();setTimeout(()=>mkEditOpen(),40)"><span class="adm-ico">🏪</span><b>Market Editor</b><span>Rotation, sales, sections and pack art</span></button>
@@ -36635,13 +36884,27 @@ function mlRewardLines(att){
   return out;
 }
 function mlHasRewards(att){ return !!(att&&(att.celestium||att.xp||(att.packs||[]).length||(att.cards||[]).length||(att.cosmetics||[]).length)); }
-async function mlApplyRewards(att,source){
+// srv = the econ_mail_claim result: the server already added everything; only show it (+ XP, which stays in the game)
+async function mlApplyRewards(att,source,srv){
+  if(srv) return mlShowServerRewards(att,source||'Gift',srv);
   const items=[]; source=source||'Gift';
   if(att.celestium){ const n=Math.floor(Number(att.celestium)||0); if(n){ _celData.celestium=(_celData.celestium||0)+n; try{ _celLog.unshift({amount:n,reason:source,ts:new Date().toISOString()}); }catch(e){} if(n>0&&!att.wager&&typeof bumpStat==='function') bumpStat('celestium_earned',n); if(typeof updateCelDisplay==='function') updateCelDisplay(); await saveCelestium(); items.push({icon:'💠',amount:'+'+n.toLocaleString(),label:'Celestium'}); } }
   if(att.xp&&typeof awardBPXp==='function'){ const n=Math.floor(Number(att.xp)||0); if(n){ await awardBPXp(n,source); items.push({icon:'⭐',amount:'+'+n.toLocaleString(),label:'XP'}); } }
   if((att.packs||[]).length){ att.packs.forEach(p=>{ grantPack(p.kind||'pack',p.type||'basic',p.setId||'base_set',Math.max(1,Number(p.qty)||1)); items.push({icon:p.kind==='box'?'📦':'🎴',amount:'×'+(p.qty||1),label:packDisplayName(p.kind||'pack',p.type||'basic',p.setId||'base_set')}); }); await savePackInventory(); if(typeof renderPackInventory==='function') try{renderPackInventory();}catch(e){} if(typeof updatePackBadge==='function') try{updatePackBadge();}catch(e){} }
   if((att.cards||[]).length){ att.cards.forEach(c=>{ if(!DB[c.cid]) return; const q=Math.max(1,Number(c.qty)||1); for(let i=0;i<q;i++) addCardToCollection(c.cid,c.foil||'none'); const v=(c.foil&&c.foil!=='none')?((VARIANT_META[c.foil]||{}).label||c.foil):''; items.push({img:getImg(c.cid),amount:'×'+q,label:DB[c.cid].name+(v?' · '+v:'')}); }); try{ await saveCollection(); saveHoloOwned(); saveCollectionFoil(); }catch(e){ console.warn('[MAIL] card save',e); } }
   (att.cosmetics||[]).forEach(id=>{ const it=cosItem(id); if(!it) return; grantCosmetic(id,source,false); items.push({icon:(COS_TYPES[it.type]||{}).icon||'✨',label:it.name}); });
+  if(typeof applyCosmetics==='function') try{ applyCosmetics(); }catch(e){}
+  if(typeof renderMainMenu==='function'&&document.getElementById('menu-screen')?.classList.contains('active')) try{ renderMainMenu(); }catch(e){}
+  return items;
+}
+async function mlShowServerRewards(att,source,srv){
+  const items=[], g=srv.given||{};
+  await econLand(srv,g,null,{log:source,noStat:!!att.wager});
+  const n=Math.floor(Number(g.celestium)||0); if(n) items.push({icon:'💠',amount:'+'+n.toLocaleString(),label:'Celestium'});
+  if(att.xp&&typeof awardBPXp==='function'){ const x=Math.floor(Number(att.xp)||0); if(x){ await awardBPXp(x,source); items.push({icon:'⭐',amount:'+'+x.toLocaleString(),label:'XP'}); } }
+  (g.packs||[]).forEach(p=>items.push({icon:p.kind==='box'?'📦':'🎴',amount:'×'+(p.qty||1),label:packDisplayName(p.kind||'pack',p.type||'basic',p.setId||'base_set')}));
+  (g.cards||[]).forEach(c=>{ if(!DB[c.cid]) return; const v=(c.foil&&c.foil!=='none')?((VARIANT_META[c.foil]||{}).label||c.foil):''; items.push({img:getImg(c.cid),amount:'×'+(c.qty||1),label:DB[c.cid].name+(v?' · '+v:'')}); });
+  (g.cosmetics||[]).forEach(id=>{ const it=cosItem(id); if(!it) return; items.push({icon:(COS_TYPES[it.type]||{}).icon||'✨',label:it.name}); });
   if(typeof applyCosmetics==='function') try{ applyCosmetics(); }catch(e){}
   if(typeof renderMainMenu==='function'&&document.getElementById('menu-screen')?.classList.contains('active')) try{ renderMainMenu(); }catch(e){}
   return items;
@@ -36656,14 +36919,21 @@ async function mlFlushPending(){ // re-apply rewards that were claimed but not s
 async function mlClaim(id,opts){
   opts=opts||{};
   const m=_mail.inbox.find(x=>x.id===id); if(!m||m.claimed_at) return false;
-  const {data,error}=await _celSB.rpc('mail_claim',{p_id:id});
+  let data=null, error=null, srv=null;
+  if(econReady()){   // build 10.23: the server claims AND adds the gift
+    const x=await econRpc('econ_mail_claim',{p_id:id});
+    if(x&&x.ok){ srv=x; data=x.attachments||{}; }
+    else if(x&&x.error==='claimed'){ m.claimed_at=new Date().toISOString(); mlRender(); return false; }
+    else if(ECON.lock){ alert('Could not claim right now. Try again.'); return false; }
+  }
+  if(!srv){ ({data,error}=await _celSB.rpc('mail_claim',{p_id:id})); }
   if(error){ alert('Could not claim: '+error.message); return false; }
   if(!data){ m.claimed_at=new Date().toISOString(); mlRender(); return false; }
   const src=opts.src||('Gift from '+(m.sender_name||'Virora'));
   let list=[]; try{ list=JSON.parse(localStorage.getItem(mlPendingKey())||'[]'); }catch(e){}
-  list.push({id,att:data,src}); try{ localStorage.setItem(mlPendingKey(),JSON.stringify(list)); }catch(e){}
-  const items=await mlApplyRewards(data,src);
-  try{ localStorage.setItem(mlPendingKey(),JSON.stringify(list.filter(x=>x.id!==id))); }catch(e){}
+  if(!srv){ list.push({id,att:data,src}); try{ localStorage.setItem(mlPendingKey(),JSON.stringify(list)); }catch(e){} }
+  const items=await mlApplyRewards(data,src,srv);
+  if(!srv) try{ localStorage.setItem(mlPendingKey(),JSON.stringify(list.filter(x=>x.id!==id))); }catch(e){}
   m.claimed_at=new Date().toISOString(); m.read_at=m.read_at||m.claimed_at;
   if(items.length&&!opts.quiet&&typeof showRewardsCelebration==='function'){ showRewardsCelebration(items); const t=document.querySelector('#rc-overlay .rc-title'), st=document.querySelector('#rc-overlay .rc-sub'); if(t) t.textContent=opts.title||'GIFT CLAIMED'; if(st) st.textContent=opts.sub||src; }
   mlRender(); mlBadge();
@@ -38720,7 +38990,7 @@ function craftAdminEdit(){
   };
   showModalEl('🔨 Crafting rates',body);
 }
-async function craftAdminGrant(n){ if(!isAdmin()) return; _craft.shards+=n; await craftSaveShards(); craftRefresh(); alert(`✓ +${csFmt(n)} Court Shards (you now have ${csFmt(_craft.shards)}).`); }
+async function craftAdminGrant(n){ if(!isAdmin()) return; if(typeof econAdminSelf==='function'&&await econAdminSelf({shards:n},'Admin Grant')){ craftRefresh(); alert(`✓ +${csFmt(n)} Court Shards (you now have ${csFmt(_craft.shards)}).`); return; } _craft.shards+=n; await craftSaveShards(); craftRefresh(); alert(`✓ +${csFmt(n)} Court Shards (you now have ${csFmt(_craft.shards)}).`); }
 
 </script>
 <script>
@@ -39265,10 +39535,21 @@ function evOnMatchEnd(iWon){
     const m=EV_MISSIONS[G.event.mi];
     if(m&&iWon&&!D.cleared[m.id]){
       D.cleared[m.id]=Date.now(); changed=true; const items=[];
+      if(!econReady()){
       m.cards.forEach(cid=>{ addVariantToCollection(cid,'none',2); items.push({cid,finish:'none',n:2}); if(typeof markRegistered==='function') try{ markRegistered(cid); }catch(e){} });
       try{ awardCelestium(m.cel,'Harvest of Courts'); }catch(e){} items.push({cel:m.cel});
       if(EV_MISSIONS.every(x=>D.cleared[x.id])&&!D.road){ D.road=Date.now(); if(typeof grantCosmetic==='function') grantCosmetic('back_harvest_of_courts','Harvest of Courts',false); items.push({cos:'back_harvest_of_courts'}); }
-      evSaveCollection(); _ev.reveal={title:m.final?'THE HARVEST ROAD IS YOURS':'MISSION CLEARED',sub:m.n,items};
+      evSaveCollection();
+      } else {   // build 10.23: the server pays (one-time keys); the reveal shows the same rewards right away
+      m.cards.forEach(cid=>{ items.push({cid,finish:'none',n:2}); if(typeof markRegistered==='function') try{ markRegistered(cid); }catch(e){} });
+      items.push({cel:m.cel});
+      const road=EV_MISSIONS.every(x=>D.cleared[x.id])&&!D.road; if(road){ D.road=Date.now(); items.push({cos:'back_harvest_of_courts'}); }
+      (async()=>{
+        await econClaim('ev:hoc:m:'+m.id,async()=>{ m.cards.forEach(cid=>addVariantToCollection(cid,'none',2)); evSaveCollection(); try{ await awardCelestium(m.cel,'Harvest of Courts'); }catch(e){} },'Harvest of Courts');
+        if(road) await econClaim('ev:hoc:road',()=>{ if(typeof grantCosmetic==='function') grantCosmetic('back_harvest_of_courts','Harvest of Courts',false); });
+      })().catch(e=>console.warn('[event] reward',e));
+      }
+      _ev.reveal={title:m.final?'THE HARVEST ROAD IS YOURS':'MISSION CLEARED',sub:m.n,items};
       lines.push('🍂 Mission cleared — '+m.cards.map(c=>'2× '+(DB[c]?.name||c)).join(', ')+' · +'+m.cel+' Celestium');
     } else if(m) lines.push(iWon?'🍂 Mission already cleared — practice win.':'🍂 Mission failed — try it again any time.');
     const btn=document.getElementById('win-event-btn'); if(btn){ btn.style.display='block'; btn.textContent=_ev.reveal?'🍂 CLAIM YOUR HARVEST':'🍂 BACK TO THE HARVEST ROAD'; }
@@ -39285,10 +39566,30 @@ function evOnMatchEnd(iWon){
   if(changed) evSave();
   if(lines.length){ const cel=document.getElementById('win-celestium'); if(cel){ const add=lines.join(' · '); cel.textContent=cel.textContent?cel.textContent+' · '+add:add; } }
 }
+async function evClaimSrv(id){
+  const c=EV_CHALLENGES.find(x=>x.id===id); const D=evData(); if(!c||D.claimed[id]||(D.ch[id]||0)<c.goal||!evClaimOpen()) return;
+  D.claimed[id]=Date.now(); let items=[];
+  const allch=EV_CHALLENGES.every(x=>D.claimed[x.id])&&!D.allch; if(allch) D.allch=Date.now();
+  evSave();
+  const res=await econClaim('ev:hoc:c:'+id,()=>{   // lock off + not in the catalog yet: the old in-game grant
+    (c.cards||[]).forEach(cid=>{ addVariantToCollection(cid,'none',1); items.push({cid,finish:'none'}); const f=evRollFinish(); addVariantToCollection(cid,f,1); items.push({cid,finish:f,roll:true}); if(typeof markRegistered==='function') try{ markRegistered(cid); }catch(e){} });
+    (c.cos||[]).forEach(cos=>{ if(typeof grantCosmetic==='function') grantCosmetic(cos,'Harvest of Courts',false); items.push({cos}); });
+    evSaveCollection();
+  });
+  if(res.via==='server'){
+    ((res.given&&res.given.cards)||[]).forEach(g=>items.push({cid:g.cid,finish:g.foil||'none',roll:!!g.rolled}));
+    ((res.given&&res.given.cosmetics)||[]).forEach(cos=>items.push({cos}));
+  }
+  if(allch){ items.push({cos:'mat_harvest_of_courts'}); await econClaim('ev:hoc:allch',()=>{ if(typeof grantCosmetic==='function') grantCosmetic('mat_harvest_of_courts','Harvest of Courts',false); }); }
+  evSave();
+  if(typeof SFX!=='undefined'&&SFX.energy) try{ SFX.energy(); }catch(e){}
+  evShowReveal({title:'CHALLENGE COMPLETE',sub:c.n,items}); evRender();
+}
 function evFromWin(){ const m=document.getElementById('win-modal'); if(m) m.classList.remove('open'); openHarvest(); }
 function evSaveCollection(){ try{ if(typeof recomputeHoloOwned==='function') recomputeHoloOwned(); saveCollection(); saveCollectionFoil(); if(typeof saveHoloOwned==='function') saveHoloOwned(); }catch(e){ console.warn('[event] save',e); } }
 // ── claiming a challenge ──
 function evClaim(id){
+  if(econReady()) return evClaimSrv(id);   // build 10.23: server-paid (the holo copy is rolled on the server)
   const c=EV_CHALLENGES.find(x=>x.id===id); const D=evData(); if(!c||D.claimed[id]||(D.ch[id]||0)<c.goal||!evClaimOpen()) return;
   D.claimed[id]=Date.now(); const items=[];
   (c.cards||[]).forEach(cid=>{ addVariantToCollection(cid,'none',1); items.push({cid,finish:'none'}); const f=evRollFinish(); addVariantToCollection(cid,f,1); items.push({cid,finish:f,roll:true}); if(typeof markRegistered==='function') try{ markRegistered(cid); }catch(e){} });
@@ -39627,6 +39928,13 @@ async function trPayout(){
   const packs=clear?(run.tier==='lord'?{type:'premium',n:2}:{type:'basic',n:run.tier==='knight'?2:1}):null;
   run.payout={cel,sh,packs}; run.ended=new Date().toISOString(); trSave();
   const key=run.path+'|'+run.rules+'|'+run.tier, rec=_tr.rec[key]||{best:0,clears:0,runs:0}; rec.runs++; rec.best=Math.max(rec.best,W); if(clear) rec.clears++; _tr.rec[key]=rec; trSaveRec();
+  if(econReady()){   // the server works out the same payout from the run (once per run, 10 runs a day)
+    const x=await econRpc('econ_trial',{p_run:String(run.id||''),p_tier:run.tier,p_path:run.path,p_wins:W,p_clear:clear});
+    if(x&&x.ok){ const pk=(x.packs||[])[0]; run.payout={cel:+x.cel||0,sh:+x.shards||0,packs:pk?{type:pk.type,n:+pk.qty||1}:null}; trSave();
+      await econLand(x,x.given,'Trial of Courts'); try{ if(typeof trRender==='function'&&document.getElementById('trial-screen')?.classList.contains('active')) trRender(); }catch(e){} return; }
+    if(x&&(x.error==='already'||x.error==='daily_limit')){ if(x.error==='daily_limit'){ run.payout={cel:0,sh:0,packs:null}; trSave(); econToast('Trial of Courts pays for 10 runs a day. This run’s rewards weren’t paid.'); } return; }
+    if(ECON.lock){ econToast('Couldn’t reach the server. The Trial rewards weren’t paid.'); return; }
+  }
   try{ if(cel>0&&typeof awardCelestium==='function') await awardCelestium(cel,'Trial of Courts'); }catch(e){}
   try{ if(sh>0){ _craft.shards+=sh; await craftSaveShards(); if(typeof craftRefresh==='function') craftRefresh(); } }catch(e){}
   try{ if(packs&&typeof awardPack==='function') await awardPack('pack',packs.type,'base_set',packs.n); }catch(e){}
@@ -40038,7 +40346,8 @@ function bp3Choose(pid){ bp3UseTokenAsk(pid); }
 async function bp3Claim(rid){
   const {pg,r}=bp3Find(rid); if(!pg||!r) return; const st=bp3RewardState(pg,r); if(st.s!=='ready') return;
   const P=bp3P(); P.claimed[rid]=new Date().toISOString();
-  try{ await bp3Grant(r); }catch(e){ console.warn('[BP] grant',e); }
+  try{ const sid=(typeof BP_CONFIG!=='undefined'&&BP_CONFIG&&BP_CONFIG.seasonId)||'season';
+    const res=await econClaim('bp3:'+sid+':'+rid,()=>bp3Grant(r),'Battle Pass'); if(res.via==='server'&&r.type==='cosmetic') bp3Reset(); }catch(e){ console.warn('[BP] grant',e); }
   try{ await saveBPPlayerData(); }catch(e){}
   bp3Sfx('powerup'); bp3RenderPage(); bp3RenderMain(); bp3Celebrate(rid);
 }
