@@ -8808,6 +8808,51 @@ body.po2-open #fullcard-modal{z-index:400}
 .gc-item img.th{width:24px;height:33px;object-fit:cover;border-radius:3px;flex:none}
 @media (max-width:820px){ .gcp{padding:12px} .gcp-body{grid-template-columns:1fr;grid-template-rows:1fr auto} .gcp-side{max-height:50vh} .gcp-side img.big{max-width:150px;align-self:center} .gcp-grid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))} }
 </style>
+<style id="ps3-css">
+.ps3-ov{position:fixed;inset:0;z-index:9850;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(6,4,14,.78)}
+.ps3-ov.on{display:flex}
+.ps3-box{width:min(640px,100%);max-height:calc(100vh - 32px);overflow:auto;box-sizing:border-box;padding:18px 18px 14px;border-radius:16px;border:1px solid #e8c570;background:radial-gradient(120% 90% at 50% 0%,#33204f,#0e0a1e 70%);box-shadow:0 24px 70px rgba(0,0,0,.7),0 0 40px rgba(232,197,112,.2);text-align:center;color:#f3eaff;animation:cosv-in .18s ease-out}
+.ps3-k{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.32em;color:#e8c570}
+.ps3-t{font-family:'Cinzel',serif;font-weight:900;font-size:20px;color:#fff4d6;margin:4px 0 10px}
+.ps3-vs{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:10px}
+.ps3-side{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;max-width:40%}
+.ps3-side b{font-size:13px}
+.ps3-side i{font-style:normal;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.08em;color:#a99fd0}
+.ps3-c{width:70px;aspect-ratio:5/7;border-radius:6px;background:#1a1430 center/cover;box-shadow:0 6px 16px rgba(0,0,0,.6)}
+.ps3-x{font-family:'Cinzel',serif;font-weight:900;font-size:22px;color:#e8c570}
+.ps3-who{font-size:12px;color:#c9c0e8;margin:2px 0 10px}
+.ps3-picks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ps3-p{display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 6px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#fff;cursor:pointer}
+.ps3-p span{font-size:26px}
+.ps3-p b{font-family:'Cinzel',serif;letter-spacing:.14em;font-size:14px}
+.ps3-p i{font-style:normal;font-size:11px;color:#b8b0d8}
+.ps3-p:hover,.ps3-p:focus-visible{border-color:#e8c570;outline:none}
+.ps3-p.on{border-color:#e8c570;background:rgba(232,197,112,.16);box-shadow:0 0 0 2px rgba(232,197,112,.3)}
+.ps3-flav{margin-top:8px;font-size:11.5px;color:#fde68a;line-height:1.5}
+.ps3-bid{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:#d8cff5}
+.ps3-bid em{font-style:normal;color:#8f86b5;font-size:11px;margin-left:4px}
+.ps3-b{min-width:46px;padding:6px 8px;border-radius:8px;border:1px solid rgba(251,191,36,.35);background:rgba(251,191,36,.06);color:#fbbf24;cursor:pointer}
+.ps3-b.on{background:rgba(251,191,36,.22);border-color:#fbbf24}
+.ps3-b:disabled{opacity:.35;cursor:default}
+.ps3-how{margin-top:10px;text-align:left;font-size:12px;color:#c9c0e8}
+.ps3-how summary{cursor:pointer;color:#e8c570;text-align:center}
+.ps3-how table{width:100%;border-collapse:collapse;margin-top:6px;font-size:11px}
+.ps3-how th,.ps3-how td{border:1px solid rgba(255,255,255,.1);padding:4px 5px;text-align:center}
+.ps3-how th{color:#e8c570}
+.ps3-how p{margin:4px 0 0;font-size:10.5px;color:#8f86b5;text-align:center}
+.ps3-go{margin-top:12px;width:100%;padding:11px;border-radius:10px;border:1px solid #e8c570;background:linear-gradient(180deg,#e8c570,#b98a2e);color:#1a1206;font-family:'Cinzel',serif;font-weight:700;letter-spacing:.2em;cursor:pointer}
+.ps3-go:disabled{opacity:.45;cursor:default}
+.ps3-rev{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 10px}
+.ps3-r{display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 6px;border-radius:12px;border:1px solid rgba(232,197,112,.35);background:rgba(232,197,112,.08);animation:ps3-flip .35s ease-out}
+.ps3-r i{font-style:normal;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.12em;color:#a99fd0}
+.ps3-r span{font-size:30px}
+.ps3-r b{font-family:'Cinzel',serif;letter-spacing:.14em}
+.ps3-r em{font-style:normal;font-size:11px;color:#fbbf24}
+.ps3-out{font-size:14px;font-weight:700;color:#fff4d6;line-height:1.45}
+@keyframes ps3-flip{from{transform:rotateY(90deg);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.ps3-r{animation:none}}
+@media (max-width:460px){.ps3-p i{display:none}.ps3-c{width:54px}}
+</style>
 <style id="burst-css">
 .bw-ov{position:fixed;inset:0;z-index:9800;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(6,4,14,.74)}
 .bw-ov.on{display:flex}
@@ -10298,6 +10343,7 @@ const GODOT_SYNC=[
   { build:'10.22', date:'2026-11-16',
     cards:[], abilities:[
       "ABILITY AUDIT FIXES (rules changes — port them): SENZU BEAN (senzu_bean): attaching no longer heals; its activated ability Full Restore heals ONE of your field characters (owner picks; CPU = most wounded) to full, then the bean is discarded. BLINDING POWER (Virora SSJ, virora_ssj1_bse): at the start of your turn, if it took damage since the start of your last turn (fc._hurtTurn >= turn-2, set in dealDamage), you may search your deck for an Energy card (human: deck search; CPU: first Energy). VEELDEN KINGDOM (veelden_kingdom_bse, not while frozen): start of your turn — Saiyan Banner: 2+ Saiyans you control → draw 1; Royal Restoration: each of your characters heals 1 per Saiyan you control. MASTERY RAMP (Virora SSBM, virora_ssbm): every 2nd turn of yours on the field, +2 ATK / +4 HP permanently (fc._ramp counter).",
+      "POWER STRUGGLE v2 (Push / Guard / Counter — the first live Power Struggle; the old dice version was never reachable): on an attack where attacker ATK (+nextAttackBonus) == defender ATK and the defender could hit back (not frozen / muzzled / no-retaliation), both sides secretly pick PUSH, GUARD or COUNTER, plus an Energy bid 0–2 (+1 to the damage THEY deal, paid on the reveal). Results (attacker pick first): P/P normal exchange (bids add to each side's hit) · G/G and C/C no damage · P/G attacker deals half · G/P defender deals half to the attacker · P/C defender deals the full hit to the attacker, attacker deals none · C/P attacker deals full, no hit back · G/C attacker deals half, no hit back · C/G defender deals half. Guardian guarding vs a Push = 0; Onslaught pushing vs a Guard = full; both = half. One-sided results skip retaliation. executeCombatDamage reads G._psOutcome {kind:'none'|'atk'|'def'|'normal', factor, bonus, defBonus, why}. CPU pick: weighted (guards when a full hit would kill it, pushes when its hit would kill). 20 s per pick → Guard. vs CPU + local hotseat (picks one after the other); online and 2v2: not yet (a normal exchange). Order: Power Struggle, then the Burst window (if usable), then damage.",
       "BURST WINDOW v2: when the CPU (or the other local player) attacks one of YOUR characters (1v1, not online/2v2/tutorial) and you can afford an Instant in hand (not Art of Fusion) or a burst ability (Grove Bloom, Full Restore, Prism Barrier, Earth Wall, Radiant Blessing — available, affordable, holder not frozen/paralyzed/sealed), combat pauses (G._combatHold — the CPU's aiLater/_presentBusy wait without a time limit). One response per attack, 20 s timer, then LET IT HIT. The response runs through the normal play path (onHandClick / activateAbility) with the defender as the acting player for that moment, then the turn goes back and the hit lands (if both fighters are still there; otherwise 'the attack fizzles'). resolveAttack's executeCombatDamage now runs through combatGate(). Online: not yet."],
     screens:[
       "EMOTES: the arena Chat tab (rail + phone sheet) is now Quick Emotes — 8 lines (Good luck!, Well played, Nice move!, Hmm…, Oops!, Thanks!, Wow!, Is that all?), a bubble with your Herald's portrait next to your panel (opponent's under theirs), history, 'Mute opponent emotes' (localStorage loc_em_mute). Online: game_action 'emote' {id}. Anti-spam 2.5 s / max 3 per 10 s. The CPU says good luck sometimes, answers some emotes, reacts to big kills (cost 6+). 1v1 only.",
@@ -15483,11 +15529,107 @@ function burstOptions(dp){
 }
 function combatGate(ap,auid,dp,duid,finish){
   const go=()=>{ G._combatHold=false; const a=G.players[ap]?.field.find(f=>f.uid===auid), d=G.players[dp]?.field.find(f=>f.uid===duid);
-    if(!a||!d){ log('The attack fizzles — a fighter left the field.','info'); renderAll(); return; } finish(); };
+    if(!a||!d){ G._psOutcome=null; log('The attack fizzles — a fighter left the field.','info'); renderAll(); return; } finish(); };
+  const burstStep=()=>{ if(!burstHumanDefender(ap,dp)){ go(); return; } const opts=burstOptions(dp); if(!opts.length){ go(); return; } G._combatHold=true; burstShow(ap,auid,dp,duid,opts,go); };
+  const afc=G.players[ap]?.field.find(f=>f.uid===auid), dfc=G.players[dp]?.field.find(f=>f.uid===duid);
+  if(typeof psEligible==='function'&&psEligible(ap,afc,dp,dfc)){ G._combatHold=true; psStart(ap,auid,dp,duid,burstStep); return; }
   if(!burstHumanDefender(ap,dp)) return finish();
-  const opts=burstOptions(dp); if(!opts.length) return finish();
-  G._combatHold=true; burstShow(ap,auid,dp,duid,opts,go);
+  burstStep();
 }
+// ── POWER STRUGGLE v2 (build 10.22, Rulk's Push / Guard + the expansions). When an attack meets a defender with exactly the same
+//    Attack (and the defender could hit back), both sides secretly pick, then reveal:
+//      PUSH vs PUSH → a normal exchange · GUARD vs GUARD / COUNTER vs COUNTER → standoff, no damage
+//      PUSH vs GUARD → the Push lands for half (the guard deals nothing)
+//      COUNTER vs PUSH → the Push is turned back: the pusher takes its own full hit
+//      GUARD vs COUNTER → the counter overreaches: the guard lands half
+//    Flavor: a Guardian's Guard blocks a Push completely; an Onslaught's Push breaks a Guard for full (both → half).
+//    Energy bid: add 0–2 Energy to your pick for +1 to whatever damage YOU deal (paid on the reveal).
+//    vs CPU and local only (online later; online ties stay a normal exchange). 20 s to pick → Guard.
+const PS_PICKS={push:{n:'PUSH',i:'🗡',d:'Hit with everything'},guard:{n:'GUARD',i:'🛡',d:'Take less, hit nothing'},counter:{n:'COUNTER',i:'🔁',d:'Turn a Push back on them'}};
+let _ps=null;
+function psEligible(ap,afc,dp,dfc){
+  if(!G||G.onlineMode||G.is2v2||G.tutorialMode||G.gameOver||window._noBurst||!afc||!dfc) return false;
+  if(!isChar(DB[afc.cid])||!isChar(DB[dfc.cid])) return false;
+  const x=(afc.currentATK||0)+(afc.nextAttackBonus||0); if(x!==(dfc.currentATK||0)||x<=0) return false;
+  if(G._noRetaliation||statusActive(dfc,'freeze')||(typeof primalMuzzled==='function'&&primalMuzzled(dfc,afc))) return false;
+  const pvp=typeof gameMode!=='undefined'&&gameMode==='pvp'; return pvp||ap===1||dp===1;
+}
+function psHumans(ap,dp){ return (typeof gameMode!=='undefined'&&gameMode==='pvp')?[ap,dp]:[ap,dp].filter(p=>p===1); }
+function aiPsPick(me,opp,energy){
+  const x=me.currentATK||0, myHP=me.currentHP||0, oppHP=opp.currentHP||0;
+  let w={push:.4,guard:.3,counter:.3};
+  if(x>=myHP){ w.guard+=.25; w.counter+=.1; w.push-=.2; }
+  if(x>=oppHP) w.push+=.25;
+  if(Math.floor(x/2)>=oppHP) w.push+=.2;
+  if(hasKW(me,'onslaught')) w.push+=.15; if(hasKW(me,'guardian')) w.guard+=.15;
+  const t=w.push+w.guard+w.counter; let r=Math.random()*t, pick='push'; for(const k of ['push','guard','counter']){ r-=w[k]; if(r<=0){ pick=k; break; } }
+  let bid=0; if(pick!=='guard'&&energy>=3&&Math.random()<.5) bid=energy>=6&&Math.random()<.5?2:1;
+  return {pick,bid};
+}
+function psResolve(aP,dP,afc,dfc,aB,dB){
+  const an=DB[afc.cid]?.name||'Attacker', dn=DB[dfc.cid]?.name||'Defender';
+  const aO=hasKW(afc,'onslaught'), dO=hasKW(dfc,'onslaught'), aG=hasKW(afc,'guardian'), dG=hasKW(dfc,'guardian');
+  const guardHit=(pusherOns,guarderGuardian)=>pusherOns&&guarderGuardian?.5:pusherOns?1:guarderGuardian?0:.5;
+  const tag=k=>PS_PICKS[k].n;
+  if(aP==='push'&&dP==='push') return {kind:'normal',bonus:aB,defBonus:dB,why:'PUSH vs PUSH — a full exchange'};
+  if(aP===dP) return {kind:'none',why:`${tag(aP)} vs ${tag(dP)} — a standoff, no damage`};
+  if(aP==='push'&&dP==='guard'){ const f=guardHit(aO,dG); return f?{kind:'atk',factor:f,bonus:aB,why:`PUSH vs GUARD — ${an} pushes through for ${f===1?'full':'half'} damage${aO&&f===1?' (Onslaught)':''}`}:{kind:'none',why:`PUSH vs GUARD — ${dn}'s Guardian guard blocks the whole hit`}; }
+  if(aP==='guard'&&dP==='push'){ const f=guardHit(dO,aG); return f?{kind:'def',factor:f,bonus:dB,why:`GUARD vs PUSH — ${dn} pushes through for ${f===1?'full':'half'} damage${dO&&f===1?' (Onslaught)':''}`}:{kind:'none',why:`GUARD vs PUSH — ${an}'s Guardian guard blocks the whole hit`}; }
+  if(aP==='push'&&dP==='counter') return {kind:'def',factor:1,bonus:dB,why:`PUSH vs COUNTER — ${dn} turns the hit back on ${an}`};
+  if(aP==='counter'&&dP==='push') return {kind:'atk',factor:1,bonus:aB,why:`COUNTER vs PUSH — ${an} turns the hit back on ${dn}`};
+  if(aP==='guard'&&dP==='counter') return {kind:'atk',factor:.5,bonus:aB,why:`GUARD vs COUNTER — ${dn} overreaches and ${an}'s guard lands half`};
+  return {kind:'def',factor:.5,bonus:dB,why:`COUNTER vs GUARD — ${an} overreaches and ${dn}'s guard lands half`};
+}
+function psStart(ap,auid,dp,duid,done){
+  const afc=G.players[ap].field.find(f=>f.uid===auid), dfc=G.players[dp].field.find(f=>f.uid===duid);
+  const humans=psHumans(ap,dp);
+  _ps={ap,auid,dp,duid,done,picks:{},bids:{},queue:humans.slice(),x:(afc.currentATK||0)+(afc.nextAttackBonus||0)};
+  [ap,dp].forEach(p=>{ if(!humans.includes(p)){ const me=p===ap?afc:dfc, op=p===ap?dfc:afc; const r=aiPsPick(me,op,G.players[p].energy||0); _ps.picks[p]=r.pick; _ps.bids[p]=r.bid; } });
+  log(`⚔ POWER STRUGGLE! ${DB[afc.cid]?.name} and ${DB[dfc.cid]?.name} both have ${_ps.x} Attack.`,'gain');
+  if(typeof SFX!=='undefined'&&SFX.heraldStorm) try{ SFX.heraldStorm(); }catch(e){}
+  psAsk();
+}
+function psEl(){ let ov=document.getElementById('ps3-ov'); if(!ov){ ov=document.createElement('div'); ov.id='ps3-ov'; ov.className='ps3-ov'; document.body.appendChild(ov); } return ov; }
+function psCards(){ const a=G.players[_ps.ap].field.find(f=>f.uid===_ps.auid), d=G.players[_ps.dp].field.find(f=>f.uid===_ps.duid);
+  const c=(f,role)=>`<div class="ps3-side"><span class="ps3-c" style="background-image:url('${String(getImg(f.cid)||'').replace(/'/g,'%27')}')"></span><b>${escapeHtml(DB[f.cid]?.name||'')}</b><i>${role} · ${f.currentATK} ATK · ${f.currentHP} HP</i></div>`;
+  return `<div class="ps3-vs">${c(a,'ATTACKER')}<span class="ps3-x">VS</span>${c(d,'DEFENDER')}</div>`; }
+function psAsk(){
+  const p=_ps.queue.shift(); if(p==null){ psReveal(); return; }
+  const ov=psEl(), me=p===_ps.ap?G.players[_ps.ap].field.find(f=>f.uid===_ps.auid):G.players[_ps.dp].field.find(f=>f.uid===_ps.duid);
+  const pvp=typeof gameMode!=='undefined'&&gameMode==='pvp', en=G.players[p].energy||0;
+  const flav=[hasKW(me,'guardian')?'🛡 Guardian: your Guard blocks a Push completely.':'',hasKW(me,'onslaught')?'⚡ Onslaught: your Push breaks a Guard for full damage.':''].filter(Boolean).join('<br>');
+  _ps.cur={p,pick:null,bid:0};
+  ov.innerHTML=`<div class="ps3-box" role="dialog" aria-label="Power Struggle"><div class="ps3-k">⚔ POWER STRUGGLE</div><div class="ps3-t">Equal Attack — ${_ps.x} vs ${_ps.x}</div>${psCards()}
+    <div class="ps3-who">${pvp?escapeHtml(pname(p))+', pick in secret — the other player looks away.':'Pick your move. The CPU has already chosen.'}</div>
+    <div class="ps3-picks">${Object.keys(PS_PICKS).map(k=>`<button type="button" class="ps3-p" data-k="${k}" onclick="psChoose('${k}')"><span>${PS_PICKS[k].i}</span><b>${PS_PICKS[k].n}</b><i>${PS_PICKS[k].d}</i></button>`).join('')}</div>
+    ${flav?`<div class="ps3-flav">${flav}</div>`:''}
+    <div class="ps3-bid"><span>Energy bid <em>+1 damage each to what you deal</em></span>${[0,1,2].map(b=>`<button type="button" class="ps3-b${b===0?' on':''}" data-b="${b}" ${b>en?'disabled':''} onclick="psBid(${b})">${b?'+'+b+'⚡':'0'}</button>`).join('')}</div>
+    <details class="ps3-how"><summary>How it works</summary><table><tr><th></th><th>Push</th><th>Guard</th><th>Counter</th></tr>
+      <tr><th>Push</th><td>Full exchange</td><td>You hit half</td><td>Your hit comes back at you</td></tr>
+      <tr><th>Guard</th><td>You take half</td><td>Standoff</td><td>You hit half</td></tr>
+      <tr><th>Counter</th><td>Their hit goes back at them</td><td>You take half</td><td>Standoff</td></tr></table><p>Rows = your pick, columns = theirs.</p></details>
+    <button type="button" class="ps3-go" disabled onclick="psLock()">LOCK IN</button><div class="bw-timer"><i></i></div></div>`;
+  ov.classList.add('on');
+  const bar=ov.querySelector('.bw-timer i'); if(bar){ bar.style.transition='none'; bar.style.width='100%'; requestAnimationFrame(()=>{ bar.style.transition='width 20s linear'; bar.style.width='0%'; }); }
+  clearTimeout(psAsk._t); const cur=_ps.cur; psAsk._t=setTimeout(()=>{ if(_ps&&_ps.cur===cur){ cur.pick=cur.pick||'guard'; cur.bid=cur.pick==='guard'?cur.bid:cur.bid; log('Power Struggle: time ran out — Guard.','info'); psLock(); } },20000);
+}
+function psChoose(k){ if(!_ps||!_ps.cur) return; _ps.cur.pick=k; const ov=psEl(); ov.querySelectorAll('.ps3-p').forEach(b=>b.classList.toggle('on',b.dataset.k===k)); const go=ov.querySelector('.ps3-go'); if(go) go.disabled=false; if(typeof SFX!=='undefined'&&SFX.click) try{ SFX.click(); }catch(e){} }
+function psBid(b){ if(!_ps||!_ps.cur) return; if(b>(G.players[_ps.cur.p].energy||0)) return; _ps.cur.bid=b; psEl().querySelectorAll('.ps3-b').forEach(x=>x.classList.toggle('on',+x.dataset.b===b)); }
+function psLock(){ if(!_ps||!_ps.cur||!_ps.cur.pick) return; clearTimeout(psAsk._t); const c=_ps.cur; _ps.picks[c.p]=c.pick; _ps.bids[c.p]=c.bid||0; _ps.cur=null; psAsk(); }
+function psReveal(){
+  const b=_ps, afc=G.players[b.ap].field.find(f=>f.uid===b.auid), dfc=G.players[b.dp].field.find(f=>f.uid===b.duid);
+  [b.ap,b.dp].forEach(p=>{ let k=b.bids[p]||0; k=Math.min(k,G.players[p].energy||0); b.bids[p]=k; if(k>0){ G.players[p].energy-=k; log(`Power Struggle: ${pname(p)} bids ${k} Energy.`,'info'); } });
+  const out=psResolve(b.picks[b.ap],b.picks[b.dp],afc,dfc,b.bids[b.ap]||0,b.bids[b.dp]||0);
+  G._psOutcome=out; log(`⚔ Power Struggle: ${out.why}.`,'gain');
+  const ov=psEl(); const tile=(p,role)=>{ const k=b.picks[p]; return `<div class="ps3-r"><i>${role} · ${escapeHtml(pname(p))}</i><span>${PS_PICKS[k].i}</span><b>${PS_PICKS[k].n}</b>${b.bids[p]?`<em>+${b.bids[p]}⚡ bid</em>`:''}</div>`; };
+  ov.innerHTML=`<div class="ps3-box reveal"><div class="ps3-k">⚔ POWER STRUGGLE</div>${psCards()}<div class="ps3-rev">${tile(b.ap,'ATTACKER')}${tile(b.dp,'DEFENDER')}</div>
+    <div class="ps3-out">${escapeHtml(out.why)}</div><button type="button" class="ps3-go" onclick="psFinish()">CONTINUE</button></div>`;
+  ov.classList.add('on');
+  if(typeof SFX!=='undefined'){ try{ (out.kind==='none'?SFX.freeze:SFX.attack)&&(out.kind==='none'?SFX.freeze():SFX.attack()); }catch(e){} }
+  clearTimeout(psReveal._t); psReveal._t=setTimeout(()=>{ if(_ps===b) psFinish(); },3200);
+  renderAll();
+}
+function psFinish(){ if(!_ps) return; clearTimeout(psReveal._t); const done=_ps.done; _ps=null; const ov=document.getElementById('ps3-ov'); if(ov) ov.classList.remove('on'); done(); }
 let _bw=null;
 function burstShow(ap,auid,dp,duid,opts,go){
   const afc=G.players[ap].field.find(f=>f.uid===auid), dfc=G.players[dp].field.find(f=>f.uid===duid); if(!afc||!dfc){ go(); return; }
@@ -15848,16 +15990,19 @@ function executeCombatDamage(ap,auid,dp,duid){
   // Power Struggle result override
   const kcWinner=G._powerStruggleWinner;
   G._powerStruggleWinner=null;G._powerStruggleAp=null;G._powerStruggleAuid=null;
+  // POWER STRUGGLE v2 (build 10.22): {kind:'none'|'atk'|'def'|'normal', factor, bonus, defBonus, why}
+  const _pso=G._psOutcome; G._psOutcome=null;
+  if(_pso&&_pso.kind==='none'){ log(`⚔ Power Struggle: ${_pso.why||'no damage'}.`,'info'); renderAll(); return; }
 
   if(kcWinner==='tie'){
     log('Power Struggle tie — no damage dealt.','info');
     renderAll();return;
   }
-  if(kcWinner==='defender'){
+  if(kcWinner==='defender'||(_pso&&_pso.kind==='def')){
     // Defender wins — deal defender's ATK to attacker, no damage to defender
-    const _jPI=powerImpactBonus(dfc); const defenderATK=dfc.currentATK+_jPI;
+    const _jPI=powerImpactBonus(dfc); const defenderATK=(_pso&&_pso.kind==='def')?Math.max(0,Math.floor((dfc.currentATK+_jPI)*(_pso.factor==null?1:_pso.factor))+(_pso.bonus||0)):dfc.currentATK+_jPI;
     if(_jPI) log(`💥 Power Impact: ${dc.name} hits back with +${_jPI} Attack!`,'dmg');
-    log(`Power Struggle: ${dc.name} wins — deals ${defenderATK} to ${ac.name}!`,'dmg');
+    log(_pso?`⚔ Power Struggle: ${_pso.why} — ${dc.name} deals ${defenderATK} to ${ac.name}!`:`Power Struggle: ${dc.name} wins — deals ${defenderATK} to ${ac.name}!`,'dmg');
     dealDamage(ap,auid,defenderATK+killingIntent(dfc,afc));
     // INHERIT TANK (Paradox): gains 2 Purple Energy whenever dealt combat damage.
     if(hasAbilityLabel(afc,'Inherit Tank') && defenderATK>0 && G.players[ap].field.some(f=>f.uid===auid)){
@@ -15873,7 +16018,7 @@ function executeCombatDamage(ap,auid,dp,duid){
   }
 
   // Attacker wins OR no power struggle — normal damage resolution
-  const _jPI=powerImpactBonus(dfc); const defenderATK=dfc.currentATK+_jPI; // 💥 Power Impact (Jiren)
+  const _jPI=powerImpactBonus(dfc); const defenderATK=dfc.currentATK+_jPI+((_pso&&_pso.kind==='normal')?(_pso.defBonus||0):0); // 💥 Power Impact (Jiren) · Power Struggle bid
   // 🌌 MASTERED INSTINCT (Virora Surfacer MUI): when she's attacked, flip a coin (full panel, both players).
   //    HEADS → the attack misses: no damage and no on-hit effects, and she still hits back (normal retaliation).
   //    TAILS → she takes 2 less damage from it. Checked here, so it covers every attack that reaches combat damage
@@ -15885,6 +16030,8 @@ function executeCombatDamage(ap,auid,dp,duid){
     else if(_pierce){ log(`🌌 Mastered Instinct: TAILS — but Primal Breaker ignores the reduction.`,'dmg'); }
     else { const _cut=Math.min(2,Math.max(0,atkDmg)); log(`🌌 Mastered Instinct: TAILS — ${dc.name} takes 2 less (${atkDmg}→${atkDmg-_cut}).`,'gain'); atkDmg-=_cut; }
   }
+  if(_pso&&_pso.kind==='atk'){ atkDmg=Math.max(0,Math.floor(atkDmg*(_pso.factor==null?1:_pso.factor))+(_pso.bonus||0)); log(`⚔ Power Struggle: ${_pso.why} — ${ac.name} deals ${atkDmg}.`,'dmg'); }
+  else if(_pso&&_pso.kind==='normal'){ atkDmg+=(_pso.bonus||0); log(`⚔ Power Struggle: ${_pso.why}.`,'dmg'); }
   if(!_miMiss){ G._pierceHit=_pierce; try{ dealDamage(dp,dfc.uid,atkDmg); } finally { G._pierceHit=false; } }
   const _pursuitKill=!_miMiss && hasKW(afc,'pursuit') && !(G.players[dp].field.some(f=>f.uid===dfc.uid) && dfc.currentHP>0);
 
@@ -15948,8 +16095,8 @@ function executeCombatDamage(ap,auid,dp,duid){
     dfc.currentHP+=2;
     log(`Immortality: ${dc.name} gains +2 Health (now ${dfc.currentHP}HP).`,'gain');
   }
-  if(tgtAlive&&G._noRetaliation){
-    log(`${dc.name} can't block — no retaliation.`,'info');
+  if(tgtAlive&&(G._noRetaliation||(_pso&&_pso.kind==='atk'))){
+    log(_pso&&_pso.kind==='atk'?`⚔ Power Struggle: ${dc.name} doesn't hit back.`:`${dc.name} can't block — no retaliation.`,'info');
   } else if(tgtAlive&&primalMuzzled(dfc,afc)){
     log(`🦍 Primal Instinct: ${dc.name} can't hit back against ${ac.name}.`,'info');
   } else if(tgtAlive&&!statusActive(dfc,'freeze')){
