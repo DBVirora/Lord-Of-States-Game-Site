@@ -9296,7 +9296,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.24 · Economy 2</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.25 · Economy 3</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10353,6 +10353,13 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.22'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.25', date:'2026-11-16',
+    cards:[], abilities:[],
+    screens:[
+      "ECONOMY LOCKDOWN · PIECE 3 (trades + admin + the switch). Same SQL file VCU_Economy_Setup.sql (now parts 1–3, re-run).",
+      "TRADES: the realtime channel 'trade:<code>' stays for the screen, but the swap is on the server. hello / hello_ack payload gains srv:true when your game has the server functions. On entering: trade_open(p_code) → {ok, id, me:'a'|'b', partner, partnerName, mine, theirs, myOk, theirOk, status}. Every offer change (debounced ~250 ms): trade_offer(p_id, p_offer [{cid, v, n}]) — refused with 'owned' (+cid) if you don't own them; any change un-confirms both. CONFIRM: trade_confirm(p_id, p_mine, p_theirs) with the offers you SEE (normalized; a mismatch → 'changed'). → status 'open' (waiting: broadcast 'confirm', then poll trade_get every 3 s) or 'done' (the second confirm swapped everything in one step; result has the balances). On a partner's 'confirm' broadcast: trade_get(p_id) → if done, land it. Landing: lock ON → replace with the balances; lock OFF → remove `mine`, add `theirs` locally. Leave: trade_cancel(p_id). Errors: changed, owned (+cid, who), no_partner, empty, cancelled, trade. Partner without srv: old local swap while the lock is off; with the lock on → 'Your partner needs to update the game before you can trade.'",
+      "ADMIN: econ_admin_reset(p_user, 'collection'|'profile') (profile = Celestium 0 + no cards, and forgets that player's achievement claims). Grant-all-cards goes through econ_admin_grant. Admin → Economy has 'Lock for everyone' (econ_admin_config {lock:true}) with a warning — Rulk flips it once the PC has 10.23–10.25."],
+    data:["No rules change: GAME_BUILD stays '10.22'. SQL: re-run VCU_Economy_Setup.sql (parts 1–3)."] },
   { build:'10.24', date:'2026-11-16',
     cards:[], abilities:[],
     screens:[
@@ -27820,7 +27827,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.24';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.25';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -27903,9 +27910,10 @@ async function econManage(){
       <p class="ec-sub">Not counted toward the cap: achievements, events, the Battle Pass, the campaign, Trial of Courts, the daily calendar, mail gifts and codes, wagers. Your matches today: <b>${m.n||0}</b> rewarded · <b>${(m.cel||0).toLocaleString()}</b> Celestium${m.firstWinToday?' · first win taken':''}.</p>
       <button type="button" class="btn-primary" onclick="econSaveCaps(this)">SAVE LIMITS</button></div>
     <div class="ec-card"><h4>The lock <span class="ec-pill ${c.lock?'warn':'off'}">${c.lock?'ON FOR EVERYONE':'OFF'}</span></h4>
-      <p>When the lock is on, the game can no longer write Celestium, cards, packs, Court Shards or owned cosmetics itself: only the server can. The switch for everyone comes once trades also run on the server (the next economy build) and the PC version has the same calls.</p>
+      <p>When the lock is on, the game can no longer write Celestium, cards, packs, Court Shards or owned cosmetics itself: only the server can. Everything in the web game now goes through the server (rewards, the Market, packs, the Court Forge, trades).</p>
       <label class="ec-chk"><input type="checkbox" id="ec-me" ${me?'checked':''} onchange="econLockMe(this.checked)"> Test the lock on my account only</label>
-      <p class="ec-sub">While testing: rewards, the Market, packs and the Court Forge all work; trades won’t save yet.</p></div>
+      <label class="ec-chk"><input type="checkbox" id="ec-all" ${c.lock?'checked':''} onchange="econLockAll(this.checked,this)"> Lock for everyone</label>
+      <p class="ec-sub">Turn the lock on for everyone only once the PC version has the economy update (10.23–10.25). Until then, PC players’ rewards, purchases and trades wouldn’t save. Turning it off again restores the old behavior right away.</p></div>
     <div class="ec-card"><h4>Blocked writes <span class="ec-pill off">${((ad&&ad.rejects)||[]).length}</span></h4>
       ${((ad&&ad.rejects)||[]).length?`<div class="ec-rej">${ad.rejects.map(x=>`<div><b>${esc(x.username||String(x.user_id||'').slice(0,8))}</b><span>${esc((x.cols||[]).join(', '))}</span><i>${esc(fmt(x.at))}</i></div>`).join('')}</div>`:'<p class="ec-sub">None. A row appears when the lock undoes a direct write (an old game version, or someone editing their balance).</p>'}</div>`;
 }
@@ -27913,6 +27921,12 @@ async function econSaveCaps(btn){
   const v=id=>Math.max(0,Math.round(+document.getElementById(id).value||0));
   const r=await econRpc('econ_admin_config',{p_patch:{matchesPerDay:Math.max(1,v('ec-mpd')),matchGapSec:v('ec-gap'),matchCelCap:v('ec-cap')}});
   econToast(r&&r.ok?'Match limits saved.':'Save failed.'); econManage();
+}
+async function econLockAll(on,el){
+  if(on&&!confirm('Lock the economy for EVERYONE?\n\nOnly do this once the PC version has the economy update (10.23–10.25). Players on an older version won’t be able to save Celestium, cards, packs, shards or cosmetics.\n\nYou can turn it off again at any time.')){ if(el) el.checked=false; return; }
+  const r=await econRpc('econ_admin_config',{p_patch:{lock:!!on}});
+  if(r&&r.ok){ await econInit(); econToast(on?'The lock is ON for everyone.':'The lock is off for everyone.'); } else econToast('Could not change the lock.');
+  econManage();
 }
 async function econLockMe(on){
   const ad=await econRpc('econ_admin_status',{p_limit:1}); const list=((ad&&ad.cfg&&ad.cfg.lockUsers)||[]).filter(x=>x!==_celUserId); if(on) list.push(_celUserId);
@@ -30634,6 +30648,7 @@ async function adminGrantCelestium50k(){
 async function adminResetCollection(){
   if(!isAdmin())return;
   if(!confirm('⚠ Zero out ALL cards you own? Your admin unlimited 4-of-each deck-building access is unaffected. This cannot be undone.'))return;
+  if(econReady()){ const r=await econRpc('econ_admin_reset',{p_user:_celUserId,p_what:'collection'}); if(r&&r.ok&&ECON.lock) econSnap(r); }
   _collection={}; _collectionFoil={}; _holoOwned={};
   await Promise.all([saveCollection(),saveCollectionFoil(),saveHoloOwned()]);
   if(typeof renderProfileCollection==='function')renderProfileCollection();
@@ -30656,6 +30671,8 @@ async function adminUnlockAllAchievements(){
 async function adminGrantAllCards(){
   if(!isAdmin())return;
   if(!confirm('Grant 4 copies of every card to your collection?'))return;
+  if(econReady()){ const cards=getCardPool().map(cid=>({cid,qty:Math.max(0,4-(_collection[cid]||0))})).filter(x=>x.qty>0);
+    if(!cards.length||await econAdminSelf({cards},null)){ alert('✓ All cards granted (4 copies each).'); return; } }
   getCardPool().forEach(cid=>{
     _collection[cid]=4;
   });
@@ -30716,6 +30733,7 @@ async function adminResetProfile(){
   if(!isAdmin())return;
   if(!confirm('⚠ This will RESET your Celestium, achievements, and collection. Continue?'))return;
   if(!confirm('Are you absolutely sure? This cannot be undone.'))return;
+  if(econReady()){ const r=await econRpc('econ_admin_reset',{p_user:_celUserId,p_what:'profile'}); if(r&&r.ok&&ECON.lock) econSnap(r); }
   _celData={celestium:0,wins:0,losses:0,matches:0,last_login:null,first_win_date:null,stats:_defaultStats()};
   _celLog=[];
   _achData={};
@@ -31117,22 +31135,24 @@ function joinTrade(){
 }
 function _enterTrade(code, role){
   const sb=getOnlineSB();
-  _trade={code,role,channel:null,partnerName:null,myOffer:[],theirOffer:[],myReady:false,theirReady:false,myConfirm:false,theirConfirm:false,done:false};
+  _trade={code,role,channel:null,partnerName:null,myOffer:[],theirOffer:[],myReady:false,theirReady:false,myConfirm:false,theirConfirm:false,done:false,
+    srv:econReady(),partnerSrv:false,sid:null};
+  if(_trade.srv){ const T=_trade; econRpc('trade_open',{p_code:code}).then(r=>{ if(_trade!==T) return; if(r&&r.ok) T.sid=r.id; else T.srv=false; if(T.myOffer.length) econTradeOffer(true); _renderTrade(); }); }
   const ch=sb.channel('trade:'+code,{config:{broadcast:{self:false}}});
   ch.on('broadcast',{event:'hello'},(p)=>{
       if(!_trade)return;
-      _trade.partnerName=p.payload?.name||'Partner';
+      _trade.partnerName=p.payload?.name||'Partner'; _trade.partnerSrv=!!p.payload?.srv;
       // reply so the newcomer learns our name + current offer
-      _tradeSend('hello_ack',{name:_tradeMyName()});
+      _tradeSend('hello_ack',{name:_tradeMyName(),srv:!!_trade.srv});
       _tradeSend('offer',{offer:_trade.myOffer});
       _renderTrade();
     })
-    .on('broadcast',{event:'hello_ack'},(p)=>{ if(!_trade)return; _trade.partnerName=p.payload?.name||'Partner'; _renderTrade(); })
+    .on('broadcast',{event:'hello_ack'},(p)=>{ if(!_trade)return; _trade.partnerName=p.payload?.name||'Partner'; _trade.partnerSrv=!!p.payload?.srv; _renderTrade(); })
     .on('broadcast',{event:'offer'},(p)=>{ if(!_trade)return; _trade.theirOffer=p.payload?.offer||[]; _resetReady(); _renderTrade(); })
     .on('broadcast',{event:'ready'},(p)=>{ if(!_trade)return; _trade.theirReady=!!p.payload?.ready; _renderTrade(); })
     .on('broadcast',{event:'confirm'},(p)=>{ if(!_trade)return; _trade.theirConfirm=true; _maybeExecuteTrade(); _renderTrade(); })
     .on('broadcast',{event:'cancel'},(p)=>{ if(!_trade)return; if(_trade.done)return; alert('Your partner cancelled the trade.'); _teardownTrade(); openTradeScreen(); })
-    .subscribe((status)=>{ if(status==='SUBSCRIBED'){ _tradeSend('hello',{name:_tradeMyName()}); } });
+    .subscribe((status)=>{ if(status==='SUBSCRIBED'){ _tradeSend('hello',{name:_tradeMyName(),srv:!!(_trade&&_trade.srv)}); } });
   _trade.channel=ch;
   document.getElementById('trade-lobby').style.display='none';
   document.getElementById('trade-room').style.display='block';
@@ -31179,13 +31199,13 @@ function _addToOffer(cid,variant){
   if(_offerCount(_trade.myOffer,cid,variant) >= variantCount(cid,variant)) return; // can't offer more than owned
   const e=_trade.myOffer.find(o=>o.cid===cid&&o.variant===variant);
   if(e)e.n++; else _trade.myOffer.push({cid,variant,n:1});
-  _resetReady(); _tradeSend('offer',{offer:_trade.myOffer}); _tradeSend('ready',{ready:false}); _renderTrade();
+  _resetReady(); _tradeSend('offer',{offer:_trade.myOffer}); _tradeSend('ready',{ready:false}); econTradeOffer(); _renderTrade();
 }
 function _removeFromOffer(cid,variant){
   if(!_trade)return;
   const e=_trade.myOffer.find(o=>o.cid===cid&&o.variant===variant); if(!e)return;
   e.n--; if(e.n<=0)_trade.myOffer=_trade.myOffer.filter(o=>!(o.cid===cid&&o.variant===variant));
-  _resetReady(); _tradeSend('offer',{offer:_trade.myOffer}); _tradeSend('ready',{ready:false}); _renderTrade();
+  _resetReady(); _tradeSend('offer',{offer:_trade.myOffer}); _tradeSend('ready',{ready:false}); econTradeOffer(); _renderTrade();
 }
 function toggleTradeReady(){
   if(!_trade)return;
@@ -31193,12 +31213,49 @@ function toggleTradeReady(){
   if(!_trade.myReady){ _trade.myConfirm=false; }
   _tradeSend('ready',{ready:_trade.myReady}); _renderTrade();
 }
+// ── build 10.25: when both players' games have the server functions, the trade lives on the server (econ_trades):
+//    each offer is saved there (only cards you own), both confirm the exact offers they see, and the second confirm
+//    swaps everything in one step. A partner on an older game: the old in-game swap (only while the lock is off).
+function econTradeSrv(){ return !!(_trade&&_trade.srv&&_trade.partnerSrv&&_trade.sid); }
+const econTradeMap=o=>(o||[]).map(x=>({cid:x.cid,v:x.variant||x.v||'none',n:x.n}));
+let _econTradeT=null, _econTradeP=null;
+function econTradeOffer(now){
+  if(!_trade||!_trade.srv) return; clearTimeout(_econTradeT); _econTradeT=null;
+  const go=()=>{ _econTradeT=null; const T=_trade; if(!T||!T.sid) return Promise.resolve(); _econTradeP=econRpc('trade_offer',{p_id:T.sid,p_offer:econTradeMap(T.myOffer)}).then(r=>{
+    if(r&&!r.ok&&r.error==='owned') econToast('You don’t own enough copies of '+((DB[r.cid]||{}).name||r.cid)+' any more.'); }); return _econTradeP; };
+  if(now) return go(); _econTradeT=setTimeout(go,250);
+}
+function econTradeLand(r){
+  if(!_trade||_trade.done) return; _trade.done=true;
+  if(ECON.lock) econSnap(r);
+  else { (r.mine||[]).forEach(o=>removeVariantFromCollection(o.cid,o.v,o.n)); (r.theirs||[]).forEach(o=>addVariantToCollection(o.cid,o.v,o.n)); recomputeHoloOwned(); }
+  saveCollection(); saveCollectionFoil(); saveHoloOwned();
+  (r.theirs||[]).forEach(o=>{ try{ if(typeof markRegistered==='function') markRegistered(o.cid); }catch(e){} });
+  const msg=document.getElementById('trade-status-msg'); if(msg){ msg.textContent='✓ Trade complete! Cards added to your collection.'; msg.style.color='#86efac'; }
+  if(typeof renderProfileCollection==='function')renderProfileCollection();
+  setTimeout(()=>{ _teardownTrade(); alert('✓ Trade complete!'); showScreen('menu-screen'); },1400);
+}
+function econTradeErr(r){ const e=r&&r.error; return e==='changed'?'The offers changed — check them and confirm again.':e==='owned'?('A card in the trade is gone ('+((DB[r.cid]||{}).name||r.cid||'?')+'). Check the offers and try again.'):e==='no_partner'?'Your partner hasn’t joined on the server yet. Try again in a moment.':e==='empty'?'Add at least one card first.':e==='cancelled'?'This trade was cancelled.':'Couldn’t reach the server. Try again.'; }
+async function econTradeConfirm(){
+  const T=_trade; if(_econTradeT){ clearTimeout(_econTradeT); _econTradeT=null; await econTradeOffer(true); } try{ await _econTradeP; }catch(e){}
+  if(_trade!==T) return;
+  const r=await econRpc('trade_confirm',{p_id:T.sid,p_mine:econTradeMap(T.myOffer),p_theirs:econTradeMap(T.theirOffer)});
+  if(_trade!==T) return;
+  if(r&&r.ok&&r.status==='done'){ _tradeSend('confirm',{}); econTradeLand(r); return; }
+  if(r&&r.ok){ T.myConfirm=true; _tradeSend('confirm',{}); _renderTrade(); econTradePoll(T); return; }
+  econToast(econTradeErr(r)); if(r&&(r.error==='changed'||r.error==='owned')){ _resetReady(); _tradeSend('ready',{ready:false}); } _renderTrade();
+}
+async function econTradeCheck(){ const T=_trade; if(!T||!T.sid||T.done) return; const r=await econRpc('trade_get',{p_id:T.sid}); if(_trade===T&&r&&r.ok&&r.status==='done') econTradeLand(r); }
+function econTradePoll(T){ let n=0; const tick=()=>{ if(_trade!==T||T.done||++n>40) return; econTradeCheck().finally(()=>setTimeout(tick,3000)); }; setTimeout(tick,3000); }
 function confirmTrade(){
   if(!_trade||!_trade.myReady||!_trade.theirReady)return;
+  if(econTradeSrv()){ econTradeConfirm(); return; }
+  if(ECON.lock&&econReady()){ econToast('Your partner needs to update the game before you can trade.'); return; }
   _trade.myConfirm=true; _tradeSend('confirm',{}); _maybeExecuteTrade(); _renderTrade();
 }
 function _maybeExecuteTrade(){
   if(!_trade||_trade.done)return;
+  if(econTradeSrv()){ econTradeCheck(); return; }   // the swap happens on the server; just see whether it's done
   if(!(_trade.myConfirm&&_trade.theirConfirm))return;
   // Re-validate ownership of everything I'm giving.
   for(const o of _trade.myOffer){ if(variantCount(o.cid,o.variant) < o.n){ alert('Trade aborted — you no longer own '+(DB[o.cid]?.name||o.cid)+'.'); leaveTrade(); return; } }
@@ -31212,7 +31269,7 @@ function _maybeExecuteTrade(){
   setTimeout(()=>{ _teardownTrade(); alert('✓ Trade complete!'); showScreen('menu-screen'); },1400);
 }
 function leaveTrade(){
-  if(_trade&&!_trade.done){ _tradeSend('cancel',{}); }
+  if(_trade&&!_trade.done){ _tradeSend('cancel',{}); if(_trade.sid) econRpc('trade_cancel',{p_id:_trade.sid}); }
   _teardownTrade();
 }
 function _teardownTrade(){
