@@ -9296,7 +9296,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.23 · Economy</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.24 · Economy 2</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10353,6 +10353,16 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.22'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.24', date:'2026-11-16',
+    cards:[], abilities:[],
+    screens:[
+      "ECONOMY LOCKDOWN · PIECE 2 (purchases, packs, crafting). Same SQL file VCU_Economy_Setup.sql (re-run). Every call returns the balances (see 10.23: lock ON → replace, lock OFF → apply result.given / the same change locally).",
+      "BUY: econ_buy(p_kind, p_id, p_set, p_qty, p_price) → {ok, price, given} | {ok:false, error:'price'(+price)|'funds'|'owned'|'not_for_sale'|'no_set'|'catalog'}. kinds: 'pack' (p_id basic|premium, p_set setId, p_qty 1–99) · 'box' (p_id tier, p_set) → 36 packs · 'card' (p_id cid, a Market single) · 'cos' (p_id cosmetic id) · 'set' (p_id cosmetic set id; pays for the missing pieces) · 'bp_pass' (p_id = BP_CONFIG.seasonId || 'void_prism_s1') · 'bp_levels' (p_qty). p_price = the price you showed (server refuses a different one and sends its price); null = no check. Prices = the published catalog's base prices + live shop_config sales (round(base×(100−pct)/100/10)×10, pct 1–90, until) + live singlesPrice + live battle_pass_config prices. 'catalog'/'not_for_sale'/'no_set' while the lock is off → fall back to your old purchase.",
+      "OPEN PACKS: econ_open_pack(p_key 'pack|type|setId', p_n 1–200) → {ok, n, pulls:[{cid,foil,rarity}]}. The server rolls the cards (same slots/odds as generatePack) and removes the packs. Compute isNew before applying. An old 'box|…' item → {ok, converted:36} (36 Basic packs added). Buy & open = econ_buy pack then econ_open_pack.",
+      "COURT FORGE: econ_craft(p_cid) → {ok, cost} · econ_break(p_list [{cid, v finish, n}]) → {ok, gain, broke:[{cid,v,n,each}]} · econ_infuse(p_cid, p_from) → {ok, to, cost}. Errors: off, no, unsighted, pass_first, full, shards, none, top. Same rules and live crafting rates as the web.",
+      "BATTLE PASS: pass-only rewards (r.free false) are published with pass:true; econ_claim refuses them ('pass') until the player has bought the pass through econ_buy('bp_pass') — passes owned at install time were recorded once.",
+      "CATALOG v2 (admin publishes on the web): + cards {cid:[rarityIdx, flags(1 Herald, 2 basic Energy, 4 token, 8 craftable, 16 Battle Pass card, 32 Market single), craftRarityIdx?]}, packs {pools:{setId:{rarity:[cids], herald:[cids]}}, energy:[cids], odds}, shop {packs, box, singles, cos:{id:price}, sets:{id:{price, items:[[id,price,alwaysOwned]]}}}, bp {season, pass, level}."],
+    data:["No rules change: GAME_BUILD stays '10.22'. SQL: re-run VCU_Economy_Setup.sql (now parts 1–2), then Admin → Economy → PUBLISH."] },
   { build:'10.23', date:'2026-11-16',
     cards:[], abilities:[],
     screens:[
@@ -24926,8 +24936,9 @@ async function buyCosmetic(id){
   if(it.tier==='exclusive'||it.unlock){ alert('This item is unlocked by: '+cosUnlockText(it)); return; }
   const cost=cosPrice(it);
   if((_celData.celestium||0)<cost){ alert('Not enough Celestium!'); return; }
-  _celData.celestium-=cost;
-  grantCosmetic(id,null,false); _cos.equipped[it.type]=id; saveCosmetics(); applyCosmetics();
+  const _eb=econReady()?await econBuy('cos',id,null,1,null,'Shop: '+it.name):null; if(_eb&&!_eb.ok){ alert(_eb.msg); return; }
+  if(!_eb){ _celData.celestium-=cost; grantCosmetic(id,null,false); }
+  _cos.equipped[it.type]=id; saveCosmetics(); applyCosmetics();
   try{ await saveCelestium(); }catch(e){}
   if(typeof updateCelDisplay==='function') updateCelDisplay();
   const cel=document.getElementById('shop-cel-amount'); if(cel)cel.textContent=(_celData.celestium||0).toLocaleString();
@@ -25055,8 +25066,9 @@ function cosSetTile(s){
 async function buyCosSet(sid){
   const s=cosSetList().find(x=>x.id===sid); if(!s) return; const cost=cosSetPrice(s);
   if((_celData.celestium||0)<cost){ alert('Not enough Celestium!'); return; }
-  _celData.celestium-=cost;
-  s.items.forEach(id=>{ grantCosmetic(id,null,false); const it=cosItem(id); _cos.equipped[it.type]=id; }); _cos.newest=s.items[0]; saveCosmetics(); applyCosmetics();
+  const _eb=econReady()?await econBuy('set',sid,null,1,null,'Shop: '+s.name):null; if(_eb&&!_eb.ok){ alert(_eb.msg); return; }
+  if(!_eb) _celData.celestium-=cost;
+  s.items.forEach(id=>{ if(!_eb) grantCosmetic(id,null,false); const it=cosItem(id); if(cosOwned(id)) _cos.equipped[it.type]=id; }); _cos.newest=s.items[0]; saveCosmetics(); applyCosmetics();
   try{ await saveCelestium(); }catch(e){}
   if(typeof updateCelDisplay==='function') updateCelDisplay();
   const cel=document.getElementById('shop-cel-amount'); if(cel)cel.textContent=(_celData.celestium||0).toLocaleString();
@@ -27635,6 +27647,7 @@ async function celNote(amount,reason,opts){
 // Purchases, pack opening, crafting and trades still run in the game until pieces 2–3 (the lock stays off until then).
 const ECON={on:false,lock:false,st:null,tried:false};
 function econReady(){ return !!(ECON.on&&typeof _celSB!=='undefined'&&_celSB&&_celUserId); }
+function econBpSid(){ return (typeof BP_CONFIG!=='undefined'&&BP_CONFIG&&BP_CONFIG.seasonId)||'void_prism_s1'; }
 async function econInit(){
   ECON.tried=true; ECON.on=false;
   if(typeof _celSB==='undefined'||!_celSB||!_celUserId) return false;
@@ -27698,10 +27711,61 @@ async function econClaim(key,local,reason){
     const r=await econRpc('econ_claim',{p_key:key});
     if(r&&r.ok){ await econLand(r,r.given,reason); return {ok:true,via:'server',given:r.given||{}}; }
     if(r&&(r.error==='already'||r.error==='daily_limit')){ if(ECON.lock) econSnap(r); return {ok:false,via:'server',error:r.error}; }
-    if(ECON.lock){ econToast(r&&r.error==='unknown'?'This reward isn’t available yet. Try again later.':'Couldn’t reach the server. Try again.'); return {ok:false,via:'server',error:(r&&r.error)||'offline'}; }
+    if(ECON.lock){ econToast(r&&r.error==='unknown'?'This reward isn’t available yet. Try again later.':r&&r.error==='pass'?'Get the Battle Pass to claim this reward.':'Couldn’t reach the server. Try again.'); return {ok:false,via:'server',error:(r&&r.error)||'offline'}; }
   }
   if(local) await local();
   return {ok:true,via:'local'};
+}
+// Buy through the server. → {ok:true,r} | {ok:false,msg,error} | null = use the old in-game purchase
+// (server functions not installed, or — lock off — the catalog doesn't list the item yet).
+async function econBuy(kind,id,set,qty,price,label){
+  if(!econReady()) return null;
+  const r=await econRpc('econ_buy',{p_kind:kind,p_id:id==null?null:String(id),p_set:set||null,p_qty:Math.max(1,qty|0||1),p_price:price==null?null:Math.round(+price)});
+  if(r&&r.ok){ await econLand(r,r.given,null,{log:label||'Market'}); return {ok:true,r}; }
+  if(!r) return ECON.lock?{ok:false,msg:'Couldn’t reach the server. Try again.',error:'offline'}:null;
+  if(!ECON.lock&&['catalog','not_for_sale','no_set'].includes(r.error)) return null;
+  if(ECON.lock) econSnap(r); updateCelDisplay();
+  const M={price:'The price is now '+(+r.price||0).toLocaleString()+' Celestium. Check it and try again.',funds:'Not enough Celestium.',owned:'You already own this.',not_for_sale:'This isn’t for sale right now.',no_set:'This set has no packs yet.',catalog:'The Market isn’t ready yet. Try again later.'};
+  return {ok:false,msg:M[r.error]||'The purchase didn’t go through. Try again.',error:r.error,r};
+}
+// Open n packs of one kind from Your Packs on the server. → pulls [{cid,foil,rarity,isNew}] | [] (an old box became 36 packs)
+//   | null = use the old in-game opening | false = failed (the player was told)
+async function econOpen(key,n){
+  if(!econReady()) return null;
+  let left=Math.max(1,n|0||1); const all=[]; const seen=new Set();
+  while(left>0){
+    const r=await econRpc('econ_open_pack',{p_key:key,p_n:Math.min(left,200)});
+    if(r&&r.ok&&r.converted){ if(ECON.lock) econSnap(r); else { const e=_packInventory.find(x=>x.key===key); if(e){ e.qty--; if(e.qty<=0) _packInventory=_packInventory.filter(x=>x.key!==key); } grantPack('pack','basic',(e&&e.setId)||'base_set',r.converted); }
+      await savePackInventory(); renderPackInventory(); updatePackBadge(); alert(r.converted+' packs were added to My Packs — open them individually.'); return []; }
+    if(!(r&&r.ok&&Array.isArray(r.pulls))){
+      if(all.length) break;
+      if((!r||r.error==='catalog')&&!ECON.lock) return null;
+      if(ECON.lock&&r) econSnap(r);
+      econToast(r&&r.error==='none'?'No packs of that kind left.':'Couldn’t open the pack. Try again.'); return false; }
+    const pulls=r.pulls.filter(p=>p&&p.cid).map(p=>{ const isNew=!_collection[p.cid]&&!seen.has(p.cid); seen.add(p.cid); return {cid:p.cid,foil:p.foil||'none',rarity:p.rarity||getRarity(p.cid),isNew}; });
+    if(ECON.lock){ econSnap(r); pulls.forEach(p=>{ try{ if(typeof markRegistered==='function') markRegistered(p.cid); }catch(e){} }); }
+    else { const e=_packInventory.find(x=>x.key===key); if(e){ e.qty-=r.n; if(e.qty<=0) _packInventory=_packInventory.filter(x=>x.key!==key); } pulls.forEach(p=>addCardToCollection(p.cid,p.foil)); }
+    all.push(...pulls); left-=r.n||0; if(!r.n) break;
+  }
+  try{ await Promise.all([savePackInventory(),saveCollection(),saveCollectionFoil(),(typeof saveHoloOwned==='function'?saveHoloOwned():null)]); }catch(e){}
+  try{ renderPackInventory(); updatePackBadge(); }catch(e){}
+  return all;
+}
+async function econOpenInv(key,context){
+  const e=_packInventory.find(x=>x.key===key); const type=e?e.type:'basic', setId=e?e.setId:'base_set';
+  const pulls=await econOpen(key,1);
+  if(pulls===null) return null; if(!pulls||!pulls.length) return true;
+  _shopSet=setId; showPackOpening(pulls,type,false,setId); _packState.context=context||'inventory'; _packState.invKey=key; return true;
+}
+function econCraftMsg(r){ const e=r&&r.error; return e==='shards'?'Not enough Court Shards.':e==='full'?'You already own a full playset.':e==='unsighted'?'Sight this card first — play against it or pull it.':e==='pass_first'?'Claim it from the Battle Pass first.':e==='off'?'The Court Forge is switched off right now.':e==='none'?'You don’t own that copy any more.':e==='top'?'Ruby is the top finish.':'The Court Forge couldn’t do that. Try again.'; }
+// Court Forge through the server. local(r) = the same change on the game's copy (lock off). → result | null (old in-game version) | false
+async function econForge(fn,args,local){
+  if(!econReady()) return null;
+  const r=await econRpc(fn,args);
+  if(r&&r.ok){ if(ECON.lock) econSnap(r); else local(r); try{ await craftSaveAll(); }catch(e){} return r; }
+  if(!ECON.lock&&(!r||r.error==='no')) return null;
+  if(ECON.lock&&r) econSnap(r);
+  econToast(econCraftMsg(r)); return false;
 }
 function econCapText(c){ return c==='gap'?'Match rewards need 90 seconds between wins.':'You’ve reached today’s Celestium limit from matches. Matches still count for XP, the Battle Pass and challenges.'; }
 // Match rewards (server: caps + first win of the day; legacy: 75 / 50 forfeit / +100 first win).
@@ -27741,14 +27805,14 @@ function econBp3Pay(r){
   return null;
 }
 function econBuildRewards(){
-  const rw={}; const add=(k,p)=>{ const o={}; Object.keys(p).forEach(x=>{ const v=p[x]; if(v==null) return; if(Array.isArray(v)&&!v.length) return; if(typeof v==='number'&&!v&&x!=='celestium') return; o[x]=v; }); rw[k]=o; };
+  const rw={}; const add=(k,p)=>{ const o={}; Object.keys(p).forEach(x=>{ const v=p[x]; if(v==null||v===false) return; if(Array.isArray(v)&&!v.length) return; if(typeof v==='number'&&!v&&x!=='celestium') return; o[x]=v; }); rw[k]=o; };
   try{ Object.entries(ACHIEVEMENTS).forEach(([id,a])=>add('ach:'+id,{celestium:Math.max(0,+a.reward||0)})); }catch(e){}
   try{ const C=(typeof CAMPAIGN_DATA!=='undefined'&&CAMPAIGN_DATA)||CAMPAIGN_DEFAULT; (C.worlds||[]).forEach(w=>(w.chapters||[]).forEach(c=>(c.matches||[]).forEach(m=>{ if(m&&m.id) add('camp:'+m.id,{celestium:Math.max(0,+(m.rewards&&m.rewards.celestium)||0)}); }))); }catch(e){}
   add('tutorial',{packs:[{kind:'pack',type:'basic',setId:'base_set',qty:2,name:'Base Set Booster'}]});
   try{ const cat=cosCatalog(); add('cos:starter',{cosmetics:cat.filter(it=>it.starter).map(it=>it.id)});
     cat.filter(it=>it.unlock&&['registry_set','achievement','event'].includes(it.unlock.kind)).forEach(it=>add('cos:'+it.id,{cosmetics:[it.id]})); }catch(e){}
-  try{ const sid=(typeof BP_CONFIG!=='undefined'&&BP_CONFIG&&BP_CONFIG.seasonId)||'season';
-    bp3Pages().forEach(pg=>pg.rewards.forEach(r=>{ const p=econBp3Pay(r); if(p&&r.id) add('bp3:'+sid+':'+r.id,p); }));
+  try{ const sid=econBpSid();
+    bp3Pages().forEach(pg=>pg.rewards.forEach(r=>{ const p=econBp3Pay(r); if(p&&r.id){ if(!r.free) p.pass=true; add('bp3:'+sid+':'+r.id,p); } }));
     ((typeof BP_CONFIG!=='undefined'&&BP_CONFIG&&BP_CONFIG.rewards)||[]).forEach(t=>['free','standard','premium'].forEach(tr=>{ const x=t&&t[tr]; if(x&&x.type==='celestium') add('bp:'+sid+':'+t.tier+':'+tr,{celestium:+x.amount||0}); })); }catch(e){}
   try{ EV_MISSIONS.forEach(m=>add('ev:hoc:m:'+m.id,{celestium:+m.cel||0,cards:(m.cards||[]).map(cid=>({cid,qty:2}))}));
     add('ev:hoc:road',{cosmetics:['back_harvest_of_courts']});
@@ -27756,8 +27820,51 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.23';   // display build (GAME_BUILD = the rules version for online play)
-function econBuildCatalog(){ const rewards=econBuildRewards(); return {v:1,build:WEB_BUILD,at:new Date().toISOString(),hash:econHash(JSON.stringify(rewards)),rewards}; }
+const WEB_BUILD='10.24';   // display build (GAME_BUILD = the rules version for online play)
+// Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
+function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
+function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
+function econPackPool(setId){ return Object.keys(DB).filter(id=>{ const c=DB[id]; if(!c||c.isToken||c.type==='token'||c.type==='system') return false;
+  if((c.type==='energy_card'&&!c.specialEnergy)||c.type==='herald') return false; if(!econPlayable(id)) return false; const cs=econSetOf(id); if(cs==='promo') return false; return !setId||cs===setId; }); }
+function econHeraldPool(setId){ return Object.keys(DB).filter(id=>{ const c=DB[id]; if(!c||c.type!=='herald'||!econPlayable(id)) return false; const cs=econSetOf(id); if(cs==='promo') return false; return !setId||cs===setId; }); }
+function econEnergyPool(){ return Object.keys(DB).filter(id=>{ const c=DB[id]; if(!c||c.isToken||c.transformOnly||c.type==='token'||c.type==='system'||!econPlayable(id)) return false;
+  return c.type==='energy_card'&&!c.specialEnergy&&!/choice|rainbow|wild|prism/i.test(id)&&!/choice|rainbow|wild|prism/i.test(c.name||''); }); }
+function econSinglesPool(){ return Object.keys(DB).filter(id=>{ const c=DB[id]; if(!c||c.exclusive||c.isToken||c.transformOnly||c.type==='token'||c.type==='system'||c.type==='herald') return false;
+  if(c.type==='energy_card'&&!c.specialEnergy) return false; if(typeof _disabledCards!=='undefined'&&_disabledCards[id]) return false; const set=econSetOf(id); if(!set||set==='promo') return false; return getRarity(id)!=='secret'; }); }
+// The pack odds below mirror generatePack / rollHoloType — change both together.
+const ECON_PACK_ODDS={
+  basic:{rev:{common:45,uncommon:35,rare:17,legend:3},top:{rare:71,legend:20,mythic:5,herald:3,secret:1},holo:0.30,finish:{classic:60,cosmic:25,gold:11,ruby:4},harder:{classic:50,cosmic:27,gold:16,ruby:7}},
+  premium:{rev:{common:38,uncommon:35,rare:22,legend:5},top:{rare:53,legend:30,mythic:10,herald:5,secret:2},holo:0.45,finish:{classic:50,cosmic:28,gold:15,ruby:7},harder:{classic:42,cosmic:28,gold:20,ruby:10}}};
+function econBuildCards(){
+  const ri=r=>Math.max(0,RARITY_ORDER.indexOf(r||'common')), singles=new Set(econSinglesPool()), packs={}, heralds={}, out={};
+  const inPacks=(id,set)=>{ if(!(set in packs)){ packs[set]=new Set(econPackPool(set)); heralds[set]=new Set(econHeraldPool(set)); } return DB[id].type==='herald'?heralds[set].has(id):packs[set].has(id); };
+  Object.keys(DB).forEach(id=>{ const c=DB[id]; if(!c) return; let f=0; const set=econSetOf(id);
+    if(c.type==='herald') f|=1; if(c.type==='energy_card'&&!c.specialEnergy) f|=2; if(c.isToken||c.type==='token'||c.type==='system') f|=4;
+    if(set&&set!=='promo'&&!c.exclusive&&!(f&6)&&econPlayable(id)&&inPacks(id,set)) f|=8;
+    try{ if(typeof craftIsPassCard==='function'&&craftIsPassCard(id)) f|=16; }catch(e){}
+    if(singles.has(id)) f|=32;
+    const r=ri(getRarity(id)), cr=ri(typeof craftRarity==='function'?craftRarity(id):getRarity(id));
+    out[id]=cr!==r?[r,f,cr]:[r,f]; });
+  return out;
+}
+function econBuildPacks(){
+  const pools={}, sets=new Set(((typeof _cardSets!=='undefined'&&_cardSets)||[]).map(x=>x.id).concat(Object.keys(DB).map(econSetOf)));
+  sets.forEach(set=>{ if(!set||set==='promo') return; const pp=econPackPool(set); if(!pp.length) return; const g={};
+    pp.forEach(id=>{ const r=DB[id].rarity||'common'; (g[r]=g[r]||[]).push(id); }); const hp=econHeraldPool(set); if(hp.length) g.herald=hp; pools[set]=g; });
+  return {pools,energy:econEnergyPool(),odds:ECON_PACK_ODDS};
+}
+function econBuildShop(){
+  const cos={}, sets={}; const always=it=>!!(it&&(it.free||(it.tier==='default'&&!it.starter)));
+  try{ cosCatalog().filter(it=>!it.free&&it.tier!=='default'&&it.tier!=='exclusive'&&!it.unlock&&!it.bpItem&&!it.starter&&cosPrice(it)>0).forEach(it=>{ cos[it.id]=cosPrice(it); }); }catch(e){}
+  try{ cosSetList().filter(st=>st.items.every(id=>{ const it=cosItem(id); return it&&!it.unlock&&it.tier!=='exclusive'&&!it.bpItem; })).forEach(st=>{ sets[st.id]={price:+st.price||0,items:st.items.map(id=>{ const it=cosItem(id); return [id,cosPrice(it),always(it)]; })}; }); }catch(e){}
+  const packs={}; Object.keys(PACK_COSTS).forEach(k=>{ if(+PACK_COSTS[k]>0) packs[k]=+PACK_COSTS[k]; });
+  return {packs,box:{packs:BOX_PACKS,discount:BOX_DISCOUNT},singles:Object.assign({},(typeof MK_DEFAULTS!=='undefined'&&MK_DEFAULTS.singlesPrice)||{}),cos,sets};
+}
+function econCatalogBody(){
+  let bp={season:econBpSid(),pass:3500,level:150}; try{ const C=bp3Cfg(); bp.pass=+C.prices.pass||0; bp.level=+C.prices.level||0; }catch(e){}
+  return {rewards:econBuildRewards(),cards:econBuildCards(),packs:econBuildPacks(),shop:econBuildShop(),bp};
+}
+function econBuildCatalog(){ const body=econCatalogBody(); return Object.assign({v:2,build:WEB_BUILD,at:new Date().toISOString(),hash:econHash(JSON.stringify(body))},body); }
 async function econPublish(btn){
   if(!isAdmin()) return;
   const cat=econBuildCatalog(); if(btn){ btn.disabled=true; btn.textContent='PUBLISHING…'; }
@@ -27777,7 +27884,7 @@ async function econManage(){
   if(!ECON.on){ body.innerHTML=`<div class="ec-card"><h4>Server functions not installed</h4><p>Run <b>VCU_Economy_Setup.sql</b> in the Supabase SQL Editor (after the Mailbox SQL), then reopen this panel. Until then the game pays rewards itself, as before.</p></div>`; return; }
   const [st,ad]=await Promise.all([econRpc('econ_status'),econRpc('econ_admin_status',{p_limit:50})]);
   if(st){ ECON.st=st; ECON.lock=!!st.lock; }
-  const c=(ad&&ad.cfg)||{}, cur=econBuildRewards(), curHash=econHash(JSON.stringify(cur));
+  const c=(ad&&ad.cfg)||{}, curBody=econCatalogBody(), cur=curBody.rewards, curHash=econHash(JSON.stringify(curBody));
   const pubAt=ad&&ad.catalogAt, fresh=!!pubAt&&ad.catalogHash===curHash;
   const me=(c.lockUsers||[]).includes(_celUserId);
   const fmt=t=>{ try{ return new Date(t).toLocaleString(); }catch(e){ return t||''; } };
@@ -27785,7 +27892,7 @@ async function econManage(){
   const m=(st&&st.match)||{};
   body.innerHTML=`
     <div class="ec-card"><h4>Reward catalog <span class="ec-pill ${fresh?'ok':'warn'}">${pubAt?(fresh?'UP TO DATE':'OUT OF DATE'):'NOT PUBLISHED'}</span></h4>
-      <p>The server pays one-time rewards (achievements, campaign, tutorial, Battle Pass, Harvest of Courts, unlock cosmetics) from this list. ${pubAt?`Published ${esc(fmt(pubAt))} · build ${esc(ad.catalogBuild||'?')} · ${ad.rewardKeys||0} rewards.`:'Not published yet: until you publish, the game pays those rewards itself.'} Publish again after changing achievements, the campaign, the Battle Pass or an event.</p>
+      <p>The server uses this list for one-time rewards (achievements, campaign, tutorial, Battle Pass, Harvest of Courts, unlock cosmetics), Market prices, cosmetic sets, the cards in each set’s packs and what can be crafted. ${pubAt?`Published ${esc(fmt(pubAt))} · build ${esc(ad.catalogBuild||'?')} · ${ad.rewardKeys||0} rewards.`:'Not published yet: until you publish, the game handles these itself.'} Publish again after adding cards or cosmetics, changing prices, achievements, the campaign, the Battle Pass or an event. (Sales, single-card prices, Battle Pass prices and crafting rates are read live.)</p>
       <button type="button" class="btn-primary" onclick="econPublish(this)">PUBLISH ECONOMY CATALOG · ${Object.keys(cur).length}</button></div>
     <div class="ec-card"><h4>Match rewards</h4>
       <div class="ec-grid">
@@ -27796,9 +27903,9 @@ async function econManage(){
       <p class="ec-sub">Not counted toward the cap: achievements, events, the Battle Pass, the campaign, Trial of Courts, the daily calendar, mail gifts and codes, wagers. Your matches today: <b>${m.n||0}</b> rewarded · <b>${(m.cel||0).toLocaleString()}</b> Celestium${m.firstWinToday?' · first win taken':''}.</p>
       <button type="button" class="btn-primary" onclick="econSaveCaps(this)">SAVE LIMITS</button></div>
     <div class="ec-card"><h4>The lock <span class="ec-pill ${c.lock?'warn':'off'}">${c.lock?'ON FOR EVERYONE':'OFF'}</span></h4>
-      <p>When the lock is on, the game can no longer write Celestium, cards, packs, Court Shards or owned cosmetics itself: only the server can. The switch for everyone comes once buying, opening packs, crafting and trades also run on the server (the next economy builds) and the PC version has the same calls.</p>
+      <p>When the lock is on, the game can no longer write Celestium, cards, packs, Court Shards or owned cosmetics itself: only the server can. The switch for everyone comes once trades also run on the server (the next economy build) and the PC version has the same calls.</p>
       <label class="ec-chk"><input type="checkbox" id="ec-me" ${me?'checked':''} onchange="econLockMe(this.checked)"> Test the lock on my account only</label>
-      <p class="ec-sub">While testing: rewards still arrive, but purchases, pack opening, crafting and trades won’t save yet.</p></div>
+      <p class="ec-sub">While testing: rewards, the Market, packs and the Court Forge all work; trades won’t save yet.</p></div>
     <div class="ec-card"><h4>Blocked writes <span class="ec-pill off">${((ad&&ad.rejects)||[]).length}</span></h4>
       ${((ad&&ad.rejects)||[]).length?`<div class="ec-rej">${ad.rejects.map(x=>`<div><b>${esc(x.username||String(x.user_id||'').slice(0,8))}</b><span>${esc((x.cols||[]).join(', '))}</span><i>${esc(fmt(x.at))}</i></div>`).join('')}</div>`:'<p class="ec-sub">None. A row appears when the lock undoes a direct write (an old game version, or someone editing their balance).</p>'}</div>`;
 }
@@ -28498,6 +28605,7 @@ function _openBoxNow(setId,context,invKey){
   _packState.context=context||'shop'; _packState.invKey=invKey||null;
 }
 async function openInventoryPack(key, context){
+  if(econReady()){ const done=await econOpenInv(key,context); if(done!==null) return; }   // build 10.24: rolled on the server
   context=context||'inventory';
   const e=_packInventory.find(x=>x.key===key);
   if(!e||e.qty<=0){ return; }
@@ -29253,9 +29361,10 @@ async function buyPack(type){
   if(_celData.celestium<cost){alert('Not enough Celestium!');return;}
   const setId=_shopSet||PACK_SETS[type]||'base_set';
   if(_packPool(setId).length===0){alert('This set has no cards yet.');return;}
-  _celData.celestium-=cost;
+  const _eb=econReady()?await econBuy('pack',type,setId,1,null,'Shop'):null; if(_eb&&!_eb.ok){ alert(_eb.msg); return; }
+  if(!_eb){ _celData.celestium-=cost;
   grantPack('pack',type,setId,1);
-  await Promise.all([saveCelestium(),savePackInventory()]);
+  await Promise.all([saveCelestium(),savePackInventory()]); }
   updateCelDisplay();
   updateShopButtons();
   updatePackBadge();
@@ -29272,10 +29381,11 @@ async function buyBox(tier){
   if(_celData.celestium<cost){ alert('Not enough Celestium!'); return; }
   const setId=_shopSet||'base_set';
   if(_packPool(setId).length===0){ alert('This set has no cards yet.'); return; }
-  _celData.celestium-=cost;
+  const _eb=econReady()?await econBuy('box',tier,setId,1,null,'Shop'):null; if(_eb&&!_eb.ok){ alert(_eb.msg); return; }
+  if(!_eb){ _celData.celestium-=cost;
   // A Booster Box grants 36 unopened packs of its tier — opened individually from My Packs.
   grantPack('pack',tier,setId,BOX_PACKS);
-  await Promise.all([saveCelestium(),savePackInventory()]);
+  await Promise.all([saveCelestium(),savePackInventory()]); }
   updateCelDisplay(); updateShopButtons(); updatePackBadge();
   const packName=packDisplayName('pack',tier,setId);
   const key='pack|'+tier+'|'+setId;
@@ -29338,6 +29448,8 @@ function promptOpenOrStore(kind,type,setId){
 
 function openAnotherBox(){
   const setId=_packState.setId||_shopSet||'base_set';
+  if(econReady()){ closePackOpenModal(); (async()=>{ const b=await econBuy('box','basic',setId,1,null,'Shop'); if(b&&!b.ok){ alert(b.msg); return; } if(b){ _shopSet=setId; poOpenAllInv('pack|basic|'+setId); return; }
+    if((_celData.celestium||0)<boxCost()){ alert('Not enough Celestium!'); return; } _celData.celestium-=boxCost(); saveCelestium(); updateCelDisplay(); _shopSet=setId; _openBoxNow(setId,'shop'); })(); return; }
   const cost=boxCost();
   if((_celData.celestium||0)<cost){ closePackOpenModal(); alert('Not enough Celestium!'); return; }
   _celData.celestium-=cost; saveCelestium(); updateCelDisplay();
@@ -29615,6 +29727,8 @@ function renderSingleCardsShop(){
 async function buySingleCard(cid,price){
   if(_celData.celestium<price)return;
   const isNew=!_collection[cid];
+  const _eb=econReady()?await econBuy('card',cid,null,1,null,'Shop'):null; if(_eb&&!_eb.ok){ alert(_eb.msg); return; }
+  if(_eb){ updateCelDisplay(); renderSingleCardsShop(); showPackOpening([{cid, foil:'none', rarity:getRarity(cid), isNew}], 'basic', true); return; }
   addCardToCollection(cid);
   _celData.celestium-=price;
   await Promise.all([saveCelestium(),saveCollection()]);
@@ -34147,7 +34261,8 @@ async function confirmPassPurchase(){
     cost=BP_CONFIG.standardCost||3000;
   }
   if((_celData.celestium||0)<cost){alert('Not enough Celestium!');return;}
-  _celData.celestium-=cost;
+  const _eb=econReady()?await econBuy('bp_pass',econBpSid(),null,1,null,'Battle Pass'):null; if(_eb&&!_eb.ok&&_eb.error!=='owned'){ alert(_eb.msg); return; }
+  if(!_eb) _celData.celestium-=cost;
   if(isPremium){
     _bpPlayerData.hasPremium=true;
     if(!hasStd)_bpPlayerData.hasStandard=true; // bundled
@@ -34180,7 +34295,7 @@ async function claimBPReward(tier,track){
   const reward=rewardData[track];
   // Grant the reward
   if(reward.type==='celestium'){
-    await econClaim('bp:'+((BP_CONFIG&&BP_CONFIG.seasonId)||'season')+':'+tier+':'+track,()=>awardCelestium(reward.amount,'BP Tier '+tier+' ('+track+')'),'BP Tier '+tier+' ('+track+')');
+    await econClaim('bp:'+econBpSid()+':'+tier+':'+track,()=>awardCelestium(reward.amount,'BP Tier '+tier+' ('+track+')'),'BP Tier '+tier+' ('+track+')');
   } else if(reward.type==='pack'){
     // Add a placeholder note — pack opening logic deferred to admin filling
     _celLog.unshift({amount:0,reason:'BP Pack reward (Tier '+tier+')',ts:new Date().toISOString()});
@@ -38853,6 +38968,12 @@ function craftRefresh(cid){
 async function craftBreak(cid,variant,n){
   n=Math.max(1,n|0); if(_craft.busy||!craftOn()) return false;
   if(variantCount(cid,variant)<n) return false;
+  if(econReady()){ _craft.busy=true; let x; try{ x=await econForge('econ_break',{p_list:[{cid,v:variant,n}]},r=>{ removeVariantFromCollection(cid,variant,n); if(typeof recomputeHoloOwned==='function') recomputeHoloOwned(); _craft.shards+=r.gain; }); } finally{ _craft.busy=false; }
+    if(x===false) return false;
+    if(x){ craftRefresh(cid); const g=+x.gain||0;
+      if(typeof fgShatterFx==='function') fgShatterFx([cid],n,g,_craft.shards-g);
+      else { if(typeof SFX!=='undefined'&&SFX.destroy) try{ SFX.destroy(); }catch(e){} if(typeof spToast==='function') spToast(`🔨 Broke ${n>1?n+'× ':''}${escapeHtml(DB[cid].name)} → +${csFmt(g)} Court Shards`,2600); }
+      return true; } }
   const gain=craftBreakValue(cid,variant)*n;
   _craft.busy=true;
   try{ removeVariantFromCollection(cid,variant,n); if(typeof recomputeHoloOwned==='function') recomputeHoloOwned(); _craft.shards+=gain; await craftSaveAll(); }
@@ -38865,6 +38986,12 @@ async function craftBreak(cid,variant,n){
 async function craftMake(cid){
   if(_craft.busy||!craftOn()) return false;
   const chk=craftCheck(cid); if(!chk.ok) return false;
+  if(econReady()){ _craft.busy=true; let x; try{ x=await econForge('econ_craft',{p_cid:cid},r=>{ _craft.shards-=r.cost; addVariantToCollection(cid,'none',1); if(typeof recomputeHoloOwned==='function') recomputeHoloOwned(); }); } finally{ _craft.busy=false; }
+    if(x===false) return false;
+    if(x){ if(typeof markRegistered==='function') markRegistered(cid); craftRefresh(cid); const cost=+x.cost||0;
+      if(typeof fgForgeFx==='function') fgForgeFx(cid,cost,_craft.shards+cost);
+      else if(typeof showRewardsCelebration==='function'){ showRewardsCelebration([{img:getImg(cid),label:DB[cid].name}],null,{title:'CRAFTED!',sub:`−${csFmt(cost)} Court Shards · ${csFmt(_craft.shards)} left`}); }
+      return true; } }
   _craft.busy=true;
   try{ _craft.shards-=chk.cost; addVariantToCollection(cid,'none',1); if(typeof recomputeHoloOwned==='function') recomputeHoloOwned(); await craftSaveAll(); if(typeof markRegistered==='function') markRegistered(cid); }
   finally{ _craft.busy=false; }
@@ -38875,6 +39002,9 @@ async function craftMake(cid){
 }
 async function craftBreakExtras(list,opt){
   if(_craft.busy||!craftOn()||!list||!list.length) return 0;
+  if(econReady()){ _craft.busy=true; let x; try{ x=await econForge('econ_break',{p_list:list.map(i=>({cid:i.cid,v:i.v,n:i.n}))},r=>{ (r.broke||[]).forEach(b=>removeVariantFromCollection(b.cid,b.v,b.n)); if(typeof recomputeHoloOwned==='function') recomputeHoloOwned(); _craft.shards+=r.gain; }); } finally{ _craft.busy=false; }
+    if(x===false) return 0;
+    if(x){ if(!(opt&&opt.quiet)&&typeof fgShatterFx!=='function'&&typeof SFX!=='undefined'&&SFX.destroy) try{ SFX.destroy(); }catch(e){} craftRefresh(); return +x.gain||0; } }
   let gain=0; _craft.busy=true;
   try{ list.forEach(x=>{ const n=Math.min(x.n,variantCount(x.cid,x.v)); if(n>0){ removeVariantFromCollection(x.cid,x.v,n); gain+=x.each*n; } });
     if(typeof recomputeHoloOwned==='function') recomputeHoloOwned(); _craft.shards+=gain; await craftSaveAll(); }
@@ -40346,7 +40476,7 @@ function bp3Choose(pid){ bp3UseTokenAsk(pid); }
 async function bp3Claim(rid){
   const {pg,r}=bp3Find(rid); if(!pg||!r) return; const st=bp3RewardState(pg,r); if(st.s!=='ready') return;
   const P=bp3P(); P.claimed[rid]=new Date().toISOString();
-  try{ const sid=(typeof BP_CONFIG!=='undefined'&&BP_CONFIG&&BP_CONFIG.seasonId)||'season';
+  try{ const sid=econBpSid();
     const res=await econClaim('bp3:'+sid+':'+rid,()=>bp3Grant(r),'Battle Pass'); if(res.via==='server'&&r.type==='cosmetic') bp3Reset(); }catch(e){ console.warn('[BP] grant',e); }
   try{ await saveBPPlayerData(); }catch(e){}
   bp3Sfx('powerup'); bp3RenderPage(); bp3RenderMain(); bp3Celebrate(rid);
@@ -40383,7 +40513,9 @@ function bp3PassCel(){ return bp3Cfg().pages.reduce((s,p)=>s+p.rewards.filter(r=
 async function bp3Buy(kind){
   const C=bp3Cfg(), P=bp3P(); if(bp3Ended()||bp3Has('battle')) return; const cost=C.prices.pass;
   if(((_celData&&_celData.celestium)||0)<cost){ bp3Toast('Not enough Celestium.'); return; }
-  _celData.celestium-=cost; try{ _celLog.unshift({amount:-cost,reason:'Battle Pass',ts:new Date().toISOString()}); }catch(e){}
+  const _eb=econReady()?await econBuy('bp_pass',econBpSid(),null,1,cost,'Battle Pass'):null;   // recorded on the server (pass-only rewards check it)
+  if(_eb&&!_eb.ok){ bp3Toast(_eb.msg); if(_eb.error!=='owned') return; }
+  if(!_eb){ _celData.celestium-=cost; try{ _celLog.unshift({amount:-cost,reason:'Battle Pass',ts:new Date().toISOString()}); }catch(e){} }
   P.pass='battle'; bp3P();
   try{ await Promise.all([saveCelestium(),saveBPPlayerData()]); }catch(e){}
   if(typeof updateCelDisplay==='function') updateCelDisplay(); if(typeof updateXpHud==='function') updateXpHud();
@@ -40406,7 +40538,8 @@ function bp3LevelsDlg(){
 }
 async function bp3BuyLevels(){
   const C=bp3Cfg(); const n=_b3lv, cost=n*C.prices.level; if(((_celData&&_celData.celestium)||0)<cost||bp3Ended()) return;
-  _celData.celestium-=cost; try{ _celLog.unshift({amount:-cost,reason:'Battle Pass levels ×'+n,ts:new Date().toISOString()}); }catch(e){}
+  const _eb=econReady()?await econBuy('bp_levels',null,null,n,cost,'Battle Pass levels ×'+n):null; if(_eb&&!_eb.ok){ bp3Toast(_eb.msg); return; }
+  if(!_eb){ _celData.celestium-=cost; try{ _celLog.unshift({amount:-cost,reason:'Battle Pass levels ×'+n,ts:new Date().toISOString()}); }catch(e){} }
   const g=bp3AddLevels(n);
   try{ await Promise.all([saveCelestium(),saveBPPlayerData()]); }catch(e){}
   if(typeof updateCelDisplay==='function') updateCelDisplay(); if(typeof updateXpHud==='function') updateXpHud();
@@ -41052,6 +41185,14 @@ async function mkConfirm(a){
   try{
     const o=mkOffer(a.dataset.k); if(!o) return; const qty=Math.max(1,+a.dataset.q||1);
     const cost=o.kind==='pack'?o.price*qty:o.price; if(mkCel()<cost){ if(typeof SFX!=='undefined') try{ SFX.error(); }catch(e){} return; }
+    let srv=null; const wasNew=o.kind==='card'&&!_collection[o.cid];
+    if(econReady()&&['cos','set','card','pack','box'].includes(o.kind)){   // build 10.24: the server charges and delivers
+      const id=(o.kind==='cos'||o.kind==='set')?o.id:o.kind==='card'?o.cid:o.kind==='pack'?o.type:o.tier;
+      srv=await econBuy(o.kind,id,(o.kind==='pack'||o.kind==='box')?o.setId:null,o.kind==='pack'?qty:1,cost,'Market: '+o.name);
+      if(srv&&!srv.ok){ if(typeof SFX!=='undefined') try{ SFX.error(); }catch(e){} econToast(srv.msg); if(srv.error==='price'){ try{ await mkLoadCfg(); }catch(e){} mkRefresh(); } return; }
+      if(srv){ if(o.kind==='set') _cos.newest=o.items[0].id; if(o.kind==='card') o._isNew=wasNew; }
+    }
+    if(!srv){
     _celData.celestium-=cost;
     if(o.kind==='cos'){ grantCosmetic(o.id,null,false); saveCosmetics(); }
     else if(o.kind==='set'){ o.items.forEach(i=>{ if(!cosOwned(i.id)) grantCosmetic(i.id,null,false); }); _cos.newest=o.items[0].id; saveCosmetics(); }
@@ -41059,6 +41200,7 @@ async function mkConfirm(a){
     else if(o.kind==='pack'){ grantPack('pack',o.type,o.setId,qty); await savePackInventory(); }
     else if(o.kind==='box'){ grantPack('pack',o.tier,o.setId,BOX_PACKS); await savePackInventory(); }
     try{ await saveCelestium(); }catch(e){}
+    }
     if(typeof updateCelDisplay==='function') updateCelDisplay(); if(typeof updatePackBadge==='function') updatePackBadge(); if(typeof renderPackInventory==='function') try{ renderPackInventory(); }catch(e){}
     if(typeof SFX!=='undefined') try{ SFX.energy(); }catch(e){}
     mkRefresh();
@@ -41473,22 +41615,26 @@ async function poNext(){
   if(e){ await openInventoryPack(e.key,'inventory'); return; }
   const cost=(typeof mkPackUnit==='function')?mkPackUnit(type):(PACK_COSTS[type]||0); if(!cost) return;
   if(((_celData&&_celData.celestium)||0)<cost){ poSfx('error'); return; }
+  if(econReady()){ const b=await econBuy('pack',type,setId,1,cost,'Market: '+packDisplayName('pack',type,setId));
+    if(b){ if(!b.ok){ poSfx('error'); econToast(b.msg); return; } _shopSet=setId; await openInventoryPack('pack|'+type+'|'+setId,'shop'); return; } }
   _celData.celestium-=cost; try{ saveCelestium(); }catch(_){} if(typeof updateCelDisplay==='function') updateCelDisplay();
   _shopSet=setId; _openPackNow(type,setId,'shop');
 }
 function poGen(type,setId,n){ let all=[]; for(let i=0;i<n;i++) all=all.concat(generatePack(type,setId)); all.forEach(p=>{ p.isNew=!_collection[p.cid]; addCardToCollection(p.cid,p.foil); }); try{ saveCollection(); saveHoloOwned(); saveCollectionFoil(); }catch(_){} return all; }
 // OPEN ALL from the pack screen (this pack + the rest of the same kind) or after a pack (the rest)
 async function poOpenAllHere(){
-  const e=poInv(); if(!e) return; const n=e.qty; e.qty=0; _packInventory=_packInventory.filter(x=>x.qty>0); try{ await savePackInventory(); }catch(_){}
-  const more=poGen(_packState.type,_packState.setId,n);
+  const e=poInv(); if(!e) return; let more=econReady()?await econOpen(e.key,e.qty):null; if(more===false) return;
+  if(more===null){ const n=e.qty; e.qty=0; _packInventory=_packInventory.filter(x=>x.qty>0); try{ await savePackInventory(); }catch(_){}
+  more=poGen(_packState.type,_packState.setId,n); }
   if(_po.st==='pack'&&!_po.busy){ _packState.pulls=(_packState.pulls||[]).concat(more); _packState.isBox=true; _po.box=true; const pc=Math.round(_packState.pulls.length/10);
     const h=poEl('po2-head'); if(h){ const bb=h.querySelector('b'); if(bb) bb.textContent=pc+' PACKS · '+_packState.pulls.length+' CARDS'; } poEl('po2-bar').innerHTML=''; poCharge(); return; }
   _packState={pulls:more,idx:0,type:_packState.type,setId:_packState.setId,isBox:true,context:'inventory',invKey:e.key}; poStart({box:true});
 }
 async function poOpenAllInv(key){
   const e=(_packInventory||[]).find(x=>x.key===key&&x.qty>0); if(!e) return; const n=e.qty, type=e.type, setId=e.setId;
-  e.qty=0; _packInventory=_packInventory.filter(x=>x.qty>0); try{ await savePackInventory(); }catch(_){}
-  const pulls=poGen(type,setId,n); _packState={pulls,idx:0,type,setId,isBox:true,context:'inventory',invKey:key}; poStart({box:n>1});
+  let pulls=econReady()?await econOpen(key,n):null; if(pulls===false||(pulls&&!pulls.length)) return;
+  if(pulls===null){ e.qty=0; _packInventory=_packInventory.filter(x=>x.qty>0); try{ await savePackInventory(); }catch(_){}
+  pulls=poGen(type,setId,n); } _packState={pulls,idx:0,type,setId,isBox:true,context:'inventory',invKey:key}; poStart({box:n>1});
 }
 function poKeys(){
   if(window._poKeys) return; window._poKeys=true;
@@ -41522,6 +41668,9 @@ function craftInfuseCheck(cid,from){
 function craftInfuseAny(cid){ return INFUSE_LADDER.slice(0,-1).some(v=>variantCount(cid,v)>0&&craftInfuseCheck(cid,v).ok); }
 async function craftInfuse(cid,from){
   if(_craft.busy||!craftOn()) return false; const chk=craftInfuseCheck(cid,from); if(!chk.ok) return false;
+  if(econReady()){ _craft.busy=true; const b0=_craft.shards; let x; try{ x=await econForge('econ_infuse',{p_cid:cid,p_from:from},r=>{ _craft.shards-=r.cost; removeVariantFromCollection(cid,from,1); addVariantToCollection(cid,r.to,1); if(typeof recomputeHoloOwned==='function') recomputeHoloOwned(); }); } finally{ _craft.busy=false; }
+    if(x===false) return false;
+    if(x){ if(typeof markRegistered==='function') markRegistered(cid); craftRefresh(cid); fgInfuseFx(cid,from,x.to,+x.cost||0,b0); return true; } }
   _craft.busy=true; const before=_craft.shards;
   try{ _craft.shards-=chk.cost; removeVariantFromCollection(cid,from,1); addVariantToCollection(cid,chk.to,1); if(typeof recomputeHoloOwned==='function') recomputeHoloOwned(); await craftSaveAll(); if(typeof markRegistered==='function') markRegistered(cid); }
   finally{ _craft.busy=false; }
