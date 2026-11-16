@@ -8808,6 +8808,88 @@ body.po2-open #fullcard-modal{z-index:400}
 .gc-item img.th{width:24px;height:33px;object-fit:cover;border-radius:3px;flex:none}
 @media (max-width:820px){ .gcp{padding:12px} .gcp-body{grid-template-columns:1fr;grid-template-rows:1fr auto} .gcp-side{max-height:50vh} .gcp-side img.big{max-width:150px;align-self:center} .gcp-grid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))} }
 </style>
+<style id="burst-css">
+.bw-ov{position:fixed;inset:0;z-index:9800;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(6,4,14,.74)}
+.bw-ov.on{display:flex}
+.bw-box{width:min(520px,100%);max-height:calc(100vh - 32px);overflow:auto;box-sizing:border-box;padding:18px 18px 14px;border-radius:16px;border:1px solid #f59e0b;background:linear-gradient(180deg,#24122e,#100a1d);box-shadow:0 0 0 1px rgba(245,158,11,.25),0 24px 70px rgba(0,0,0,.7),0 0 40px rgba(245,158,11,.25);text-align:center;color:#f3eaff;animation:cosv-in .18s ease-out}
+.bw-k{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.32em;color:#fbbf24}
+.bw-vs{display:flex;align-items:center;justify-content:center;gap:12px;margin:12px 0 6px}
+.bw-c{display:inline-block;width:64px;aspect-ratio:5/7;border-radius:6px;background:#1a1430 center/cover;box-shadow:0 6px 16px rgba(0,0,0,.6);flex:0 0 auto}
+.bw-c.sm{width:30px;border-radius:3px}
+.bw-mid{font-size:13px;line-height:1.45;color:#d8cff5}
+.bw-mid b{color:#fff}
+.bw-dmg{display:block;margin-top:4px;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.1em;color:#fca5a5}
+.bw-dmg.lethal{color:#f87171;font-weight:700}
+.bw-sub{font-size:12px;color:#b6acd6;margin:4px 0 10px}
+.bw-opts{display:flex;flex-direction:column;gap:6px}
+.bw-o{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:9px;border:1px solid rgba(251,191,36,.35);background:rgba(251,191,36,.07);color:#fff;cursor:pointer;text-align:left}
+.bw-o:hover,.bw-o:focus-visible{background:rgba(251,191,36,.16);border-color:#fbbf24;outline:none}
+.bw-on{flex:1;font-size:13px;font-weight:700}
+.bw-oc{font-family:'Share Tech Mono',monospace;font-size:12px;color:#fbbf24}
+.bw-pass{margin-top:10px;width:100%;padding:10px;border-radius:9px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);color:#e6def9;font-family:'Cinzel',serif;font-weight:700;letter-spacing:.18em;cursor:pointer}
+.bw-pass:hover{background:rgba(255,255,255,.1)}
+.bw-timer{margin-top:10px;height:4px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden}
+.bw-timer i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#f59e0b,#ef4444)}
+</style>
+<style id="daily-css">
+.daily-ov{position:fixed;inset:0;z-index:10300;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(4,3,12,.82);backdrop-filter:blur(3px)}
+.daily-ov.on{display:flex}
+.dl-box{position:relative;width:min(860px,100%);max-height:calc(100vh - 32px);overflow:auto;box-sizing:border-box;padding:24px 22px 20px;border-radius:16px;border:1px solid rgba(232,197,112,.35);background:radial-gradient(120% 80% at 50% 0%,#2a1f52,#0c0a1e 70%);box-shadow:0 30px 80px rgba(0,0,0,.7);text-align:center;color:#ece4ff;animation:cosv-in .22s ease-out}
+.dl-x{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:1px solid rgba(232,197,112,.35);background:rgba(0,0,0,.4);color:#f0e6c8;cursor:pointer}
+.dl-k{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.3em;color:#e8c570}
+.dl-box h3{margin:4px 0 4px;font-family:'Cinzel',serif;font-weight:900;font-size:clamp(20px,3.4vw,28px);color:#fff4d6}
+.dl-sub{margin:0 auto 16px;max-width:560px;font-size:12.5px;line-height:1.5;color:#b8b0d8}
+.dl-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.dl-t{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);min-height:126px}
+.dl-t.big{background:linear-gradient(180deg,rgba(232,197,112,.16),rgba(232,197,112,.04));border-color:rgba(232,197,112,.45)}
+.dl-t.now{border-color:#e8c570;box-shadow:0 0 0 2px rgba(232,197,112,.35),0 0 22px rgba(232,197,112,.35);transform:translateY(-3px)}
+.dl-t.done{opacity:.55}
+.dl-d{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.2em;color:#a99fd0}
+.dl-i{font-size:28px;line-height:1}
+.dl-r{font-size:11px;line-height:1.35;color:#e9e2ff}
+.dl-r b{color:#f6dc9a}
+.dl-ok{position:absolute;top:6px;right:8px;color:#86efac;font-weight:900}
+.dl-act{margin-top:18px;min-height:40px;display:flex;justify-content:center;align-items:center}
+.dl-claim{font-family:'Cinzel',serif;font-weight:700;letter-spacing:.14em;font-size:14px;padding:12px 26px;border-radius:10px;border:1px solid #e8c570;background:linear-gradient(180deg,#e8c570,#b98a2e);color:#1a1206;cursor:pointer}
+.dl-claim:disabled{opacity:.6}
+.dl-done{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:.12em;color:#86efac}
+@media (max-width:700px){.dl-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.dl-t.big{grid-column:span 2}}
+@media (max-width:420px){.dl-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.dl-t.big{grid-column:span 3}}
+</style>
+<style id="sfx-css">
+.sfx-intro{font-size:12px;color:#b8b0d8;line-height:1.5;margin-bottom:10px}
+.sfx-list{display:flex;flex-direction:column;gap:6px;max-height:58vh;overflow:auto;padding-right:4px}
+.sfx-row{display:grid;grid-template-columns:minmax(110px,170px) 1fr 34px;gap:8px;align-items:center}
+.sfx-n{font-size:12px;color:#e9e2ff}
+.sfx-in{min-width:0;padding:7px 9px;border-radius:7px;border:1px solid #3a3366;background:#0f0c20;color:#eee;font-size:12px}
+.sfx-t{height:32px;border-radius:7px;border:1px solid rgba(232,197,112,.4);background:rgba(232,197,112,.1);color:#f0e0b0;cursor:pointer}
+.sfx-act{margin-top:12px;display:flex;justify-content:flex-end}
+@media (max-width:520px){.sfx-row{grid-template-columns:1fr 34px}.sfx-n{grid-column:1/-1}}
+</style>
+<style id="emote-css">
+.em-pane{display:flex;flex-direction:column;gap:10px;padding:2px 0}
+.em-head{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.24em;color:#a99fd0}
+.em-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.em-b{display:flex;align-items:center;gap:6px;min-height:34px;padding:6px 8px;border-radius:8px;border:1px solid rgba(232,197,112,.25);background:rgba(20,16,40,.7);color:#e9e2ff;font-size:12px;text-align:left;cursor:pointer}
+.em-b span{font-size:16px}
+.em-b:hover:not(:disabled){border-color:#e8c570;background:rgba(232,197,112,.12)}
+.em-b:disabled{opacity:.45;cursor:default}
+.em-note,.em-empty{font-size:11px;color:#7d7898}
+.em-hist{display:flex;flex-direction:column;gap:4px;max-height:180px;overflow:auto;font-size:12px}
+.em-h{padding:4px 8px;border-radius:6px;background:rgba(255,255,255,.04);color:#d9d3f2}
+.em-h b{color:#e8c570;font-weight:700}
+.em-h.them b{color:#93c5fd}
+.em-mute{display:flex;gap:6px;align-items:center;font-size:11px;color:#a99fd0;cursor:pointer}
+#p1-panel,#p2-panel{position:relative}
+.em-bubble{position:absolute;left:8px;z-index:40;display:flex;align-items:center;gap:7px;max-width:260px;padding:6px 12px 6px 6px;border-radius:999px;background:linear-gradient(180deg,#221a44,#140f2c);border:1px solid #e8c570;box-shadow:0 8px 22px rgba(0,0,0,.55);color:#fff;font-size:13px;font-weight:700;white-space:nowrap;opacity:0;transform:translateY(6px) scale(.92);transition:opacity .22s,transform .22s;pointer-events:none}
+.em-bubble.on{opacity:1;transform:none}
+.em-bubble.me{bottom:calc(100% + 8px)}
+.em-bubble.them{top:calc(100% + 8px)}
+.em-av{width:28px;height:28px;border-radius:50%;background:#2a2050 center 20%/cover;flex:0 0 auto;border:1px solid rgba(232,197,112,.6)}
+.em-ic{font-size:17px}
+.em-tx{overflow:hidden;text-overflow:ellipsis}
+@media (prefers-reduced-motion:reduce){.em-bubble{transition:none}}
+</style>
 <style id="cosview-css">
 /* tap-to-view (reward cards + cosmetics) */
 [data-zc],[data-zcos]{cursor:zoom-in}
@@ -9156,7 +9238,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.21 · Jiren</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.22 · Burst + Daily</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -9729,7 +9811,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
         <div class="log-box" id="log-box"></div>
       </div>
       <div class="rail-pane" id="rail-chat">
-        <div class="rail-chat-note" id="rail-chat-note">Match chat is available in online matches.</div>
+        <div class="em-pane" id="rail-chat-em"></div>
       </div>
     </aside>
 
@@ -9886,7 +9968,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
     </div>
     <div id="mobile-card-sheet-content"></div>
     <div id="mobile-sheet-log" style="display:none"><div class="log-box mobile-log-box"></div></div>
-    <div id="mobile-sheet-chat" style="display:none"><div class="rail-chat-note">Match chat is available in online matches.</div></div>
+    <div id="mobile-sheet-chat" style="display:none"><div class="em-pane" id="mobile-chat-em"></div></div>
   </div>
   <!-- MOBILE-ONLY: quick access to card info / log / chat -->
   <div class="mobile-nav" id="mobile-nav">
@@ -10211,8 +10293,17 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.21'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.22'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.22', date:'2026-11-16',
+    cards:[], abilities:[
+      "ABILITY AUDIT FIXES (rules changes — port them): SENZU BEAN (senzu_bean): attaching no longer heals; its activated ability Full Restore heals ONE of your field characters (owner picks; CPU = most wounded) to full, then the bean is discarded. BLINDING POWER (Virora SSJ, virora_ssj1_bse): at the start of your turn, if it took damage since the start of your last turn (fc._hurtTurn >= turn-2, set in dealDamage), you may search your deck for an Energy card (human: deck search; CPU: first Energy). VEELDEN KINGDOM (veelden_kingdom_bse, not while frozen): start of your turn — Saiyan Banner: 2+ Saiyans you control → draw 1; Royal Restoration: each of your characters heals 1 per Saiyan you control. MASTERY RAMP (Virora SSBM, virora_ssbm): every 2nd turn of yours on the field, +2 ATK / +4 HP permanently (fc._ramp counter).",
+      "BURST WINDOW v2: when the CPU (or the other local player) attacks one of YOUR characters (1v1, not online/2v2/tutorial) and you can afford an Instant in hand (not Art of Fusion) or a burst ability (Grove Bloom, Full Restore, Prism Barrier, Earth Wall, Radiant Blessing — available, affordable, holder not frozen/paralyzed/sealed), combat pauses (G._combatHold — the CPU's aiLater/_presentBusy wait without a time limit). One response per attack, 20 s timer, then LET IT HIT. The response runs through the normal play path (onHandClick / activateAbility) with the defender as the acting player for that moment, then the turn goes back and the hit lands (if both fighters are still there; otherwise 'the attack fizzles'). resolveAttack's executeCombatDamage now runs through combatGate(). Online: not yet."],
+    screens:[
+      "EMOTES: the arena Chat tab (rail + phone sheet) is now Quick Emotes — 8 lines (Good luck!, Well played, Nice move!, Hmm…, Oops!, Thanks!, Wow!, Is that all?), a bubble with your Herald's portrait next to your panel (opponent's under theirs), history, 'Mute opponent emotes' (localStorage loc_em_mute). Online: game_action 'emote' {id}. Anti-spam 2.5 s / max 3 per 10 s. The CPU says good luck sometimes, answers some emotes, reacts to big kills (cost 6+). 1v1 only.",
+      "DAILY REWARDS: 7-day calendar replaces the flat 150 Celestium. Day 1 100 · Day 2 25 Court Shards · Day 3 150 · Day 4 50 Shards · Day 5 200 · Day 6 75 Shards · Day 7 1 Basic pack + 150 (Shard days pay 150/200/250 Celestium while crafting is off). Day turns at midnight America/New_York; skip a day → Day 1. State: profiles.campaign_progress.daily = {d, last:'YYYY-MM-DD', pc?}. Still writes _celData.last_login (toDateString) so the PC's old bonus doesn't pay twice; a day already claimed on the PC counts as kept (pc:true) and pays nothing on web. Opens on the first login of the day (not during a match); Court Ledger row + Profile tile open it. PORT IT so both pay the same.",
+      "SOUND FILES: Admin → Sound Effects — any SFX event can play an uploaded audio file (app_settings 'sfx_urls' = {event:url}; failed loads fall back to the synth). New sounds: heal (throttled), prize claim, Power Struggle roll, emote."],
+    data:["No SQL."] },
   { build:'10.21', date:'2026-11-12',
     cards:[
       {id:'jiren_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/Dragon Ball/Jiren (Promo).png', newAbilities:['Strength Is Justice','Power Impact'],
@@ -14536,7 +14627,8 @@ function noteHeal(fc,amt){
 }
 function healFc(fc,amt){ // heal up to max Health; returns the Health restored (and fires noteHeal)
   const mx=(fc.baseHP||0)+(fc.hpBonus||0)+(fc.passiveHp||0), b=fc.currentHP||0, h=Math.max(0,Math.min(amt,mx-b));
-  if(h>0){ fc.currentHP=b+h; if(typeof fxHeal==='function') try{ fxHeal(fc.uid,h); }catch(e){} noteHeal(fc,h); }
+  if(h>0){ fc.currentHP=b+h; if(typeof fxHeal==='function') try{ fxHeal(fc.uid,h); }catch(e){} noteHeal(fc,h);
+    const _n=Date.now(); if(typeof SFX!=='undefined'&&SFX.heal&&(!healFc._t||_n-healFc._t>300)){ healFc._t=_n; try{ SFX.heal(); }catch(e){} } }
   return h;
 }
 // LEGENDARY ESCALATION (Keon / Keon LSSJ): step, cap and "Frozen or Paralyzed removes it" come from the ability's OWN text, so the
@@ -14595,7 +14687,7 @@ function dealDamage(tp,tuid,amt){
     }
   }
   fc.currentHP-=dmg;
-  if(isChar(c))fc.damagedThisTurn=true;
+  if(isChar(c)){ fc.damagedThisTurn=true; fc._hurtTurn=G.turn; } // _hurtTurn: Blinding Power (Virora SSJ) looks back to the start of your last turn
   msDamage(tp,fc,dmg,tuid); // end-of-match stats
   // WORLDBREAKER HULK — Endless Rage: each time it takes damage and survives, +2 Attack permanently (max +6).
   if(isChar(c)&&dmg>0&&fc.currentHP>0&&hasAbilityLabel(fc,'Endless Rage')&&(fc._rage||0)<6){ const g=Math.min(2,6-(fc._rage||0)); fc._rage=(fc._rage||0)+g; fc.atkBonus=(fc.atkBonus||0)+g; fc.currentATK=(fc.currentATK||0)+g;
@@ -14636,6 +14728,7 @@ function devouringDark(p, fc){
 function killCard(p,fc){
   const c=DB[fc.cid];if(!c)return;
   if(!G.players[p]||!G.players[p].field.some(f=>f.uid===fc.uid)) return; // already gone (no double Prize / Energy)
+  if(typeof emCpuOnKill==='function') try{ emCpuOnKill(p,c); }catch(e){}
   // FINAL VERDICT (The Last Magistrate, build 10.20): a character it destroys in battle goes to the Rift instead of the discard pile.
   const _fv=(()=>{ try{ if(!isChar(c)||c.isToken) return false; const cx=(typeof _fxCtx!=='undefined')?_fxCtx:null; if(!cx||!cx.combat) return false; const s=_dmgSourceFc(fc.uid);
     return !!(s&&String(s.uid)!==String(fc.uid)&&hasAbilityLabel(s,'Final Verdict')&&!(typeof isRiftImmune==='function'&&isRiftImmune(fc))); }catch(e){ return false; } })();
@@ -14775,6 +14868,7 @@ function pickPrizeCard(victim, index){
   const claimer=_pendingPrizePick.claimer;
   const remaining=(_pendingPrizePick.remaining||1)-1;
   _pendingPrizePick = null;
+  if(typeof SFX!=='undefined'&&SFX.prize) try{ SFX.prize(); }catch(e){}
   resolvePrizeClaim(victim, claimer, index);
   // Multi-prize claims (Herald Break): keep picking until done or the pile is empty
   const vpl=G.players[victim]; const left=(G.prizeCount||6)-(vpl.prizesClaimed||0);
@@ -15361,6 +15455,70 @@ function openBurstWindow(ap, auid, dp, duid, phase){
   checkBurstClose();
 }
 
+// ── BURST WINDOW v2 (build 10.22). When the CPU (or the other local player) attacks one of YOUR characters and you hold
+//    something usable, combat pauses: play an Instant you can afford, or a burst ability (Grove Bloom, Full Restore, Prism
+//    Barrier, Earth Wall, Radiant Blessing), or let it hit. One response per attack; 20 s, then it lets the hit through.
+//    Your response really resolves (it runs through the normal play path with you as the acting player for that moment).
+//    Online matches: not yet (needs both screens in sync) — combat resolves directly there, as before.
+const BURST_ABILITIES=['Grove Bloom','Full Restore','Prism Barrier','Earth Wall','Radiant Blessing'];
+const BURST_SKIP_INSTANTS=['art_of_fusion_bse','unison_rite_test'];
+function burstHumanDefender(ap,dp){
+  if(!G||G.onlineMode||G.is2v2||G.tutorialMode||G.gameOver||ap===dp||window._noBurst) return false; // _noBurst: test-harness bypass (like _skipCoinToss)
+  if(typeof gameMode!=='undefined'&&gameMode==='pvp') return true;
+  return dp===1;
+}
+function burstCost(p,fc){ const c=DB[fc.cid]; return Math.max(0,(c.cost||0)+(fc.costMod||0)+(typeof handCostMod==='function'?handCostMod(p,fc):0)); }
+function burstOptions(dp){
+  const pl=G.players[dp], out=[]; if(!pl) return out;
+  (pl.hand||[]).forEach(fc=>{ const c=DB[fc.cid]; if(!c||c.type!=='instant'||BURST_SKIP_INSTANTS.includes(c.id)) return; const k=burstCost(dp,fc); if(pl.energy>=k) out.push({kind:'instant',fc,cost:k,label:c.name,cid:c.id}); });
+  const tax=(typeof crowsResidueTax==='function')?crowsResidueTax(dp):0;
+  const holders=pl.field.filter(f=>isChar(DB[f.cid])).concat(pl.herald?[pl.herald]:[]);
+  holders.forEach(f=>{ if(typeof isAbilitySealed==='function'&&isAbilitySealed(f)) return; if(statusActive(f,'freeze')||statusActive(f,'paralyze')) return;
+    const own=(DB[f.cid]?.abilities||[]).map(a=>({a,src:f.cid}));
+    const eq=(f.attachments||[]).filter(id=>!(typeof isEquipHexed==='function'&&isEquipHexed(f,id))).flatMap(id=>(DB[id]?.abilities||[]).map(a=>({a,src:id})));
+    own.concat(eq).forEach(({a,src})=>{ if(a.type!=='activated'||!BURST_ABILITIES.includes(a.label)) return; if(f.abilityUsed&&f.abilityUsed[a.label]) return;
+      const k=(a.cost||0)+((a.cost||0)>0?tax:0); if(pl.energy<k) return; if(a.label!=='Full Restore'&&a.label!=='Grove Bloom'&&f.tapped&&a.cost===0) return;
+      out.push({kind:'ability',fc:f,abl:a,cost:k,label:`${DB[f.cid]?.name}: ${a.label}`,cid:src}); }); });
+  return out;
+}
+function combatGate(ap,auid,dp,duid,finish){
+  const go=()=>{ G._combatHold=false; const a=G.players[ap]?.field.find(f=>f.uid===auid), d=G.players[dp]?.field.find(f=>f.uid===duid);
+    if(!a||!d){ log('The attack fizzles — a fighter left the field.','info'); renderAll(); return; } finish(); };
+  if(!burstHumanDefender(ap,dp)) return finish();
+  const opts=burstOptions(dp); if(!opts.length) return finish();
+  G._combatHold=true; burstShow(ap,auid,dp,duid,opts,go);
+}
+let _bw=null;
+function burstShow(ap,auid,dp,duid,opts,go){
+  const afc=G.players[ap].field.find(f=>f.uid===auid), dfc=G.players[dp].field.find(f=>f.uid===duid); if(!afc||!dfc){ go(); return; }
+  let ov=document.getElementById('bw-ov'); if(!ov){ ov=document.createElement('div'); ov.id='bw-ov'; ov.className='bw-ov'; document.body.appendChild(ov); }
+  const dmg=(afc.currentATK||0)+(afc.nextAttackBonus||0), lethal=dmg>=(dfc.currentHP||0);
+  const card=(cid,cls)=>`<span class="bw-c ${cls||''}" style="background-image:url('${String(getImg(cid)||'').replace(/'/g,'%27')}')"></span>`;
+  ov.innerHTML=`<div class="bw-box" role="dialog" aria-label="Burst window"><div class="bw-k">⚡ BURST WINDOW</div>
+    <div class="bw-vs">${card(afc.cid)}<div class="bw-mid"><b>${escapeHtml(DB[afc.cid]?.name||'')}</b> attacks<br><b>${escapeHtml(DB[dfc.cid]?.name||'')}</b><span class="bw-dmg${lethal?' lethal':''}">${dmg} damage${lethal?' · LETHAL':''}</span></div>${card(dfc.cid)}</div>
+    <div class="bw-sub">${typeof gameMode!=='undefined'&&gameMode==='pvp'?escapeHtml(pname(dp))+', respond before the hit lands.':'Respond before the hit lands, or let it through.'}</div>
+    <div class="bw-opts">${opts.map((o,i)=>`<button type="button" class="bw-o" onclick="burstPick(${i})">${card(o.cid,'sm')}<span class="bw-on">${escapeHtml(o.label)}</span><span class="bw-oc">${o.cost?o.cost+'⚡':'FREE'}</span></button>`).join('')}</div>
+    <button type="button" class="bw-pass" onclick="burstLetHit()">LET IT HIT</button><div class="bw-timer"><i></i></div></div>`;
+  ov.classList.add('on');
+  _bw={ap,auid,dp,duid,opts,go,t0:Date.now()};
+  const bar=ov.querySelector('.bw-timer i'); if(bar){ bar.style.transition='none'; bar.style.width='100%'; requestAnimationFrame(()=>{ bar.style.transition='width 20s linear'; bar.style.width='0%'; }); }
+  clearTimeout(burstShow._t); burstShow._t=setTimeout(()=>{ if(_bw&&_bw.go===go) burstLetHit(true); },20000);
+  if(typeof SFX!=='undefined'&&SFX.powerup) try{ SFX.powerup(); }catch(e){}
+}
+function burstHide(){ clearTimeout(burstShow._t); const ov=document.getElementById('bw-ov'); if(ov) ov.classList.remove('on'); }
+function burstLetHit(timeout){ if(!_bw) return; const go=_bw.go; _bw=null; burstHide(); if(timeout) log('Burst window: time ran out — the hit lands.','info'); go(); }
+function burstPick(i){
+  if(!_bw) return; const b=_bw, o=b.opts[i]; if(!o){ burstLetHit(); return; } _bw=null; burstHide();
+  const sw={ap:G.activePlayer, ph:G.phase, auto:G._aiAuto, sel:G.selectedAttacker};
+  G.activePlayer=b.dp; G.phase='main'; G._aiAuto=false; G._burstActing=true;
+  log(`⚡ Burst: ${pname(b.dp)} responds with ${o.label}!`,'gain');
+  try{ if(o.kind==='instant') onHandClick(b.dp,o.fc.uid,o.fc); else activateAbility(o.fc,o.abl); }catch(e){ console.warn('[Burst]',e); }
+  // wait until the response has fully resolved (pickers closed, reveals done), then give the turn back and land the hit
+  let n=0; const settle=()=>{ const busy=document.querySelector('.modal-overlay.open:not(#fullcard-modal)')||(typeof seqBusy==='function'&&seqBusy())||!!document.querySelector('#instant-reveal-overlay.open,#card-play-zoom.playing,#trig-ov.open')||Date.now()<(typeof _beatUntil!=='undefined'?_beatUntil:0);
+    if(busy&&n++<600){ setTimeout(settle,200); return; }
+    G.activePlayer=sw.ap; G.phase=sw.ph; G._aiAuto=sw.auto; G.selectedAttacker=sw.sel; G._burstActing=false; renderAll(); b.go(); };
+  setTimeout(settle,250);
+}
 function renderBurstActions(p, role){
   const actionsEl=document.getElementById('burst-'+role+'-actions');
   actionsEl.innerHTML='';
@@ -15620,6 +15778,7 @@ function doPowerStruggleRoll(){
   const d2El=document.getElementById('ps-p2-dice');
   // Animate dice
   d1El.classList.add('rolling');d2El.classList.add('rolling');
+  if(typeof SFX!=='undefined'&&SFX.coin) try{ SFX.coin(); }catch(e){}
   document.getElementById('ps-roll-btn').disabled=true;
   setTimeout(()=>{
     d1El.classList.remove('rolling');d2El.classList.remove('rolling');
@@ -16670,16 +16829,19 @@ function resolveAttack(ap,auid,dp,duid){
     const alts=G.players[dp].field.filter(f=>isChar(DB[f.cid])&&f.uid!==tgt.uid);
     if(alts.length>0){log(`Move Out The Way! → ${DB[alts[0].cid].name}!`,'gain');tgt.attachments=tgt.attachments.filter(a=>a!=='move_out');G.players[dp].discard.push('move_out');dealDamage(dp,alts[0].uid,atkDmg);renderAll();return;}
   }
-  // Execute combat damage directly (no burst window)
-  executeCombatDamage(ap,auid,dp,tgt.uid);
-  // Omega Judgment: restore the attacker's ATK after this (its next) attack.
-  if(_restoreOmega&&afc.omegaJudged){
-    afc.currentATK+=afc.omegaPenalty||0;
-    afc.atkBonus=(afc.atkBonus||0)+(afc.omegaPenalty||0);
-    afc.omegaJudged=false; afc.omegaPenalty=0;
-    log(`${ac.name} recovers from Omega Judgment.`,'info');
-    renderAll();
-  }
+  // Combat damage — through the Burst window first (build 10.22): a local human defender may answer with an Instant / burst ability.
+  const _finish=()=>{
+    executeCombatDamage(ap,auid,dp,tgt.uid);
+    // Omega Judgment: restore the attacker's ATK after this (its next) attack.
+    if(_restoreOmega&&afc.omegaJudged){
+      afc.currentATK+=afc.omegaPenalty||0;
+      afc.atkBonus=(afc.atkBonus||0)+(afc.omegaPenalty||0);
+      afc.omegaJudged=false; afc.omegaPenalty=0;
+      log(`${ac.name} recovers from Omega Judgment.`,'info');
+      renderAll();
+    }
+  };
+  if(typeof combatGate==='function') combatGate(ap,auid,dp,tgt.uid,_finish); else _finish();
 }
 
 function resolveLocationAttack(ap,auid,dp,duid){
@@ -17671,7 +17833,7 @@ function applyEquip(fc,eq){
 function _applyEquipCore(fc,eq){
   if(eq.id==='aquatic_hearth'){fc.currentHP+=5;fc.hpBonus+=5;log('Aquatic Hearth: +5 Defense (HP).','gain');}
   if(eq.id==='destroyers_gift'){fc.currentATK+=5;fc.atkBonus+=5;fc.currentHP+=12;fc.hpBonus+=12;log("+5ATK/+12HP!",'gain');}
-  if(eq.id==='senzu_bean'){fc.currentHP=fc.baseHP+fc.hpBonus;fc.markedDamage=0;log('Senzu Bean: full HP!','gain');}
+  if(eq.id==='senzu_bean'){log('Senzu Bean attached — use Full Restore to heal one of your characters to full.','info');} // audit 10.22: the heal is the Full Restore ability (was an auto-heal on attach, and the ability did nothing)
   if(eq.id==='crystal_73'){fc.nullify+=1;fc.currentHP+=5;fc.hpBonus+=5;log("73's Crystal: nullify+1, +5HP.",'gain');}
   if(eq.id==='wca_overdrive_belt_promo'){fc.currentATK+=2;fc.atkBonus+=2;fc.currentHP+=3;fc.hpBonus+=3;log('Main Event Glow: +2/+3!','gain');}
   if(eq.id==='void_crystal_bse'){fc.currentATK+=2;fc.atkBonus+=2;fc.currentHP+=2;fc.hpBonus+=2;log('Void Boost: +2/+2!','gain');}
@@ -19854,6 +20016,23 @@ function runAbilityEffect(fc, abl, pl){
     return;
   }
   // ── GROVE BLOOM (Grove Senzu, granted to the holder): discard it → heal the holder to full; Harvest: also cure its statuses.
+  // ── SENZU BEAN — Full Restore (audit fix, build 10.22): restore one of your field characters to full Health, then the Senzu Bean
+  //    is discarded. Human: choose; CPU / auto: the most wounded.
+  if(label==='Full Restore'){
+    const owner=(typeof _fcOwner==='function'?_fcOwner(fc):null)||G.activePlayer, P=G.players[owner];
+    const i=(fc.attachments||[]).indexOf('senzu_bean'); if(i<0){ log('Full Restore: no Senzu Bean attached.','dmg'); renderAll(); return; }
+    const mx=f=>(f.baseHP||0)+(f.hpBonus||0)+(f.passiveHp||0);
+    const chars=P.field.filter(f=>isChar(DB[f.cid]));
+    const use=(t)=>{ const j=(fc.attachments||[]).indexOf('senzu_bean'); if(j>-1){ fc.attachments.splice(j,1); P.discard.push('senzu_bean'); }
+      const h=healFc(t,999); log(`🫘 Full Restore: the Senzu Bean is eaten — ${DB[t.cid]?.name} ${h>0?'heals '+h+' (full Health)':'is already at full Health'}.`,'gain');
+      if(typeof recalcPassives==='function') recalcPassives(); renderAll(); };
+    const wounded=chars.slice().sort((a,b)=>(mx(b)-(b.currentHP||0))-(mx(a)-(a.currentHP||0)));
+    if(chars.length<=1||G._aiAuto||!(typeof seqIsLocalHuman==='function'?seqIsLocalHuman(owner):owner===1)){ use(wounded[0]||fc); return; }
+    seqChoose('Full Restore','Choose one of your characters to restore to full Health. The Senzu Bean is discarded.',
+      chars.map(t=>({label:DB[t.cid]?.name||'?',sub:`${t.currentHP}/${mx(t)} HP`,val:t.uid})),
+      (uid)=>{ const t=chars.find(f=>f.uid===uid); if(t) use(t); }, ()=>{ log('Full Restore: kept the Senzu Bean.','info'); renderAll(); });
+    return;
+  }
   if(label==='Grove Bloom'){
     const owner=(typeof _fcOwner==='function'?_fcOwner(fc):null)||G.activePlayer;
     const i=(fc.attachments||[]).indexOf('grove_senzu_hoc'); if(i<0){ log('Grove Bloom: no Grove Senzu attached.','dmg'); renderAll(); return; }
@@ -21089,6 +21268,28 @@ function startTurnFx(player){
   const cards=[...pl.field]; if(pl.herald) cards.push(pl.herald);
   cards.forEach(fc=>{
     const c=DB[fc.cid]; if(!c) return;
+    // ── AUDIT FIXES (build 10.22) — abilities that were printed but never ran ──
+    // BLINDING POWER (Virora SSJ): if it took damage since the start of your last turn, you may search your deck for an Energy card.
+    if(isChar(c)&&hasAbilityLabel(fc,'Blinding Power')&&fc._hurtTurn!=null&&fc._hurtTurn>=G.turn-2){
+      fc._hurtTurn=null; const _isE=cc=>!!cc&&/energy/i.test(cc.type||''); const _P=pl;
+      const _take=(cid,fromSearch)=>{ if(!fromSearch){ const i=_P.deck.indexOf(cid); if(i<0) return; _P.deck.splice(i,1); } const f=newFC(cid); if(f) _P.hand.push(f); shuffle(_P.deck);
+        log(`✨ Blinding Power: ${pname(player)} takes ${DB[cid]?.name} from the deck. Deck shuffled.`,'gain'); renderAll(); };
+      if(!(_P.deck||[]).some(cid=>_isE(DB[cid]))) log('Blinding Power: no Energy card left in the deck.','info');
+      else if(seqIsLocalHuman(player)&&!G._aiAuto) openDeckSearch('Blinding Power','Virora (SSJ) took damage — you may search your deck for an Energy card.',_isE,(cid)=>_take(cid,true));
+      else { const pick=(_P.deck||[]).find(cid=>_isE(DB[cid])); if(pick) _take(pick,false); }
+    }
+    // VEELDEN KINGDOM — Saiyan Banner (2+ Saiyans → draw 1) and Royal Restoration (each of your characters heals 1 per Saiyan you control).
+    if(isLoc(c)&&fc.cid==='veelden_kingdom_bse'&&!isLocationFrozen(fc)){
+      const _sai=pl.field.filter(f=>isSaiyanChar(DB[f.cid])).length;
+      if(_sai>=2&&hasAbilityLabel(fc,'Saiyan Banner')){ drawCard(player); log(`🏳 Saiyan Banner: ${pname(player)} controls ${_sai} Saiyans — draw 1.`,'gain'); }
+      if(_sai>0&&hasAbilityLabel(fc,'Royal Restoration')){ const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Royal Restoration',fc.uid):null; let _n=0;
+        pl.field.filter(f=>isChar(DB[f.cid])).forEach(f=>{ if(healFc(f,_sai)>0) _n++; });
+        if(_n) log(`👑 Royal Restoration: ${_n} of ${pname(player)}'s characters heal ${_sai} (${_sai} Saiyan${_sai>1?'s':''}).`,'gain'); if(typeof fxPop==='function') fxPop(_fx); }
+    }
+    // MASTERY RAMP (Virora SSBM): every 2nd turn of yours it's on the field, +2 ATK / +4 HP permanently.
+    if(isChar(c)&&hasAbilityLabel(fc,'Mastery Ramp')){ fc._ramp=(fc._ramp||0)+1;
+      if(fc._ramp%2===0){ fc.atkBonus=(fc.atkBonus||0)+2; fc.currentATK=(fc.currentATK||0)+2; fc.hpBonus=(fc.hpBonus||0)+4; fc.currentHP=(fc.currentHP||0)+4;
+        log(`🌀 Mastery Ramp: ${c.name} grows +2/+4 (now ${fc.currentATK}/${fc.currentHP}).`,'gain'); } }
     // ── HARVEST OF COURTS (build 10.20) ──
     if(isChar(c)&&hasAbilityLabel(fc,'Bountiful Yield')&&harvestOn(player)){ pl.energy+=1; log(`🌾 Bountiful Yield: ${c.name} reaps 1 Energy for ${pname(player)}.`,'gain'); }
     if(isLoc(c)&&hasAbilityLabel(fc,'Feast of the Court')&&!isLocationFrozen(fc)){
@@ -21574,7 +21775,7 @@ function aiSetAuto(on){ if(G) G._aiAuto=!!on; }
 // Match session: every CPU timer is tied to the match that scheduled it. Leaving the match
 // (quit to menu, new match) bumps the session so any pending AI step silently dies.
 let _matchSession=0;
-function aiLater(fn,ms){ const s=_matchSession; let waits=0; const run=()=>{ if(s!==_matchSession) return; if(typeof G!=='undefined'&&G&&G._abandoned) return; if(typeof _presentBusy==='function'&&_presentBusy()&&waits++<160){ setTimeout(run,150); return; } fn(); }; return setTimeout(run,ms); }
+function aiLater(fn,ms){ const s=_matchSession; let waits=0; const run=()=>{ if(s!==_matchSession) return; if(typeof G!=='undefined'&&G&&G._abandoned) return; if(typeof G!=='undefined'&&G&&G._combatHold){ setTimeout(run,200); return; } if(typeof _presentBusy==='function'&&_presentBusy()&&waits++<160){ setTimeout(run,150); return; } fn(); }; return setTimeout(run,ms); }
 function abandonMatch(){
   _matchSession++;
   try{ if(typeof seqReset==='function') seqReset(); }catch(e){}
@@ -22030,6 +22231,7 @@ function aiAttackPhase1v1(p, onDone){
 }
 
 function runAI(){
+  try{ if(G&&!G._emGl&&!G.is2v2&&!G.tutorialMode&&!G.onlineMode){ G._emGl=true; if(Math.random()<.55) emCpuSay('gl',600); } }catch(e){}
   if(!G||G.gameOver||G.activePlayer!==2)return;
   if(G.tutorialMode){ if(typeof runTutorialAI==='function')runTutorialAI(); return; }
   G.players[2].energy+=1;resetEnergyCardFlag(2);turnDraw(2);G.phasesDone.push('draw');G.phase='draw';
@@ -22708,6 +22910,7 @@ function holdBeat(ms){ _beatUntil=Math.max(_beatUntil, Date.now()+(ms||800)); _b
 function _inMatch(){ return !!document.querySelector('#game-screen.active,#game-screen-2v2.active') && typeof G!=='undefined' && G && !G.gameOver; }
 function _presentBusy(){
   if(!_inMatch()) return false;
+  if(G&&G._combatHold) return true; // build 10.22: Burst window / Power Struggle open
   if(Date.now()<_beatUntil) return true;
   if(typeof _rollBusy==='function'&&_rollBusy()) return true;
   if(typeof _tfAnimating!=='undefined'&&_tfAnimating) return true;
@@ -24300,7 +24503,8 @@ function mmShowStep(d){ _ms.i+=d; mmShowFill(); }
 function mmRenderLedger(){
   const el=document.getElementById('mm-ledger'); if(!el)return;
   const missed=(typeof ivMissedCount==='function')?ivMissedCount():0, packs=(typeof totalUnopenedPacks==='function')?totalUnopenedPacks():0, pend=(typeof _pendingRequests!=='undefined')?_pendingRequests.length:0, regNew=(typeof registryNewCount==='function')?registryNewCount():0;
-  el.innerHTML=`<h3 class="mm-h3">COURT LEDGER</h3>${missed?`<div class="mm-row" onclick="ptOpen()"><span class="mm-ico">📨</span><b>Missed invites</b><span class="mm-n">${missed}</span></div>`:''}
+  const _dst=(typeof dailyState==='function'&&typeof _campaignProgress!=='undefined')?dailyState():null;
+  el.innerHTML=`<h3 class="mm-h3">COURT LEDGER</h3>${_dst?`<div class="mm-row" onclick="dailyOpen()"><span class="mm-ico">📅</span><b>Daily reward</b><span class="mm-n${_dst.claimed?' ok':''}">${_dst.claimed?'✓ DAY '+_dst.day:'DAY '+_dst.day+' READY'}</span></div>`:''}${missed?`<div class="mm-row" onclick="ptOpen()"><span class="mm-ico">📨</span><b>Missed invites</b><span class="mm-n">${missed}</span></div>`:''}
     <div class="mm-row" onclick="showScreen('profile-screen');refreshProfileScreen();setTimeout(()=>{const p=document.getElementById('packs-panel');if(p&&p.style.display==='none'&&typeof togglePacks==='function')togglePacks();},50)"><span class="mm-ico">🎁</span><b>Packs to open</b><span class="mm-n${packs?'':' ok'}">${packs}</span></div>
     <div class="mm-row" onclick="showScreen('friends-screen');openFriends()"><span class="mm-ico">👥</span><b>Friend requests</b><span class="mm-n${pend?'':' ok'}">${pend}</span></div>
     <div class="mm-row" onclick="openRegistry()"><span class="mm-ico">📜</span><b>New in Registry</b><span class="mm-n${regNew?'':' ok'}">${regNew?regNew+' NEW':'0'}</span></div>
@@ -26586,7 +26790,104 @@ document.addEventListener('contextmenu',e=>{
   window.addEventListener('resize',()=>{ const gs=document.getElementById('game-screen'); if(gs&&gs.classList.contains('active')&&G&&G.players){ fitFields(); layoutHandFan(); } });
 })();
 // Left rail tabs (desktop) + bottom sheet tabs (phone)
+// ── SOUND FILES (build 10.22): any SFX event can play an uploaded audio file instead of the built-in synth sound.
+//    Admin → Sound Effects stores {event: url} in app_settings 'sfx_urls' (raw GitHub links, mp3/ogg/wav). A file that fails to
+//    load falls back to the synth. Volume = the Settings SFX volume.
+const SFX_LABELS={cardPlay:'Card played',attack:'Attack',damage:'Damage taken',heal:'Heal',death:'Character destroyed',destroy:'Destroy / shatter',
+  ability:'Ability used',instant:'Instant played',transform:'Transformation',powerup:'Power up',energy:'Energy',turnStart:'Your turn starts',
+  prize:'Prize claimed',coin:'Coin flip / dice',burn:'Burn',poison:'Poison',freeze:'Freeze',paralyze:'Paralyze',confuse:'Confusion',
+  win:'Victory',lose:'Defeat',click:'Button click',error:'Error',emote:'Emote',cardFlip:'Card flip',packOpen:'Pack open',mystical:'Mystic reveal',
+  heraldSlam:'Herald entrance — slam',heraldStorm:'Herald entrance — storm',heraldName:'Herald entrance — name'};
+let SFX_URLS={}; const _sfxCache={}, _sfxBad={}, _sfxWrapped=new Set();
+if(typeof SFX!=='undefined'){
+  if(!SFX.prize) SFX.prize=function(){ _playTone(659,0.12,'triangle',0.11,988); setTimeout(()=>_playTone(1319,0.18,'sine',0.08),90); };
+  if(!SFX.emote) SFX.emote=function(){ _playTone(880,0.06,'sine',0.06,1175); };
+  sfxWrapAll(); addEventListener('load',sfxWrapAll);
+}
+// Wrap each SFX event once (by name). Runs now and again on load for events defined later (pack opening). Other wrappers that
+// install later (the online FX relay) wrap OUR wrapper, so the file check stays innermost.
+function sfxWrapAll(){ if(typeof SFX==='undefined') return;
+  Object.keys(SFX).forEach(k=>{ if(_sfxWrapped.has(k)) return; const inner=SFX[k]; if(typeof inner!=='function') return; _sfxWrapped.add(k);
+    SFX[k]=function(...a){ const u=SFX_URLS&&SFX_URLS[k]; if(u&&_sfxEnabled&&!_sfxBad[u]&&_sfxPlayUrl(u)) return; return inner.apply(this,a); }; });
+}
+function _sfxPlayUrl(u){
+  try{ let base=_sfxCache[u]; if(!base){ base=new Audio(u); base.preload='auto'; base.addEventListener('error',()=>{ _sfxBad[u]=true; }); _sfxCache[u]=base; base.load(); }
+    if(_sfxBad[u]) return false;
+    const a=base.readyState>=2?base.cloneNode():base; a.volume=Math.max(0,Math.min(1,(typeof _gameSettings!=='undefined'&&_gameSettings.sfxVolume!=null)?_gameSettings.sfxVolume:0.6));
+    const pr=a.play(); if(pr&&pr.catch) pr.catch(()=>{}); return true; }catch(e){ return false; }
+}
+async function loadSfxUrls(){ if(!_celSB) return; try{ const {data}=await _celSB.from('app_settings').select('value').eq('key','sfx_urls').maybeSingle(); if(data&&data.value){ SFX_URLS=JSON.parse(data.value)||{}; } }catch(e){} }
+async function saveSfxUrls(){ if(!isAdmin()||!_celSB) return false;
+  try{ const {error}=await _celSB.from('app_settings').upsert({key:'sfx_urls',value:JSON.stringify(SFX_URLS),updated_at:new Date().toISOString()},{onConflict:'key'}); if(error){ alert('Save failed (sfx_urls): '+error.message); return false; } return true; }
+  catch(e){ alert('Failed to save sound effects: '+e.message); return false; } }
+function sfxManage(){
+  if(!isAdmin()) return;
+  const body=document.createElement('div');
+  body.innerHTML=`<div class="sfx-intro">Paste a raw GitHub link to an audio file (mp3, ogg or wav) for any sound. Empty = the built-in sound. Upload files to the Scans repo, e.g. a <b>Sounds</b> folder.</div>
+    <div class="sfx-list">${Object.keys(SFX_LABELS).map(k=>`<div class="sfx-row"><span class="sfx-n">${SFX_LABELS[k]}</span>
+      <input type="url" class="sfx-in" data-k="${k}" placeholder="built-in sound" value="${String(SFX_URLS[k]||'').replace(/"/g,'&quot;')}">
+      <button type="button" class="sfx-t" title="Play" onclick="sfxTest('${k}',this)">▶</button></div>`).join('')}</div>
+    <div class="sfx-act"><button type="button" class="btn-primary" onclick="sfxSaveFromModal(this)">SAVE SOUNDS</button></div>`;
+  showModalEl('🔊 Sound Effects', body, {forceHuman:true});
+}
+function sfxTest(k,btn){ const row=btn.closest('.sfx-row'); const u=row.querySelector('.sfx-in').value.trim(); const was=SFX_URLS[k];
+  if(u){ SFX_URLS[k]=u; delete _sfxBad[u]; } else delete SFX_URLS[k];
+  try{ const f=SFX[k]; if(typeof f==='function') f('royal'); }catch(e){}
+  if(was) SFX_URLS[k]=was; else delete SFX_URLS[k]; }
+async function sfxSaveFromModal(btn){ const next={}; document.querySelectorAll('.sfx-in').forEach(i=>{ const v=i.value.trim(); if(v) next[i.dataset.k]=v; });
+  const prev=SFX_URLS; SFX_URLS=next; btn.disabled=true; btn.textContent='SAVING…'; const ok=await saveSfxUrls(); btn.disabled=false; btn.textContent=ok?'SAVED ✓':'SAVE SOUNDS'; if(!ok) SFX_URLS=prev; }
+// ── EMOTES (build 10.22): quick reactions in the arena Chat tab instead of open chat. 1v1 only (vs CPU, local, online).
+//    Bubble next to the sender's panel (your Herald's portrait + the line), a short history, a mute switch for the opponent.
+//    Online: game_action 'emote' {id}. Anti-spam: 2.5 s between emotes, max 3 per 10 s. The CPU answers sometimes.
+const EMOTES=[{id:'gl',i:'🤝',t:'Good luck!'},{id:'wp',i:'👏',t:'Well played'},{id:'nice',i:'🔥',t:'Nice move!'},{id:'hmm',i:'🤔',t:'Hmm…'},
+  {id:'oops',i:'😅',t:'Oops!'},{id:'thx',i:'🙏',t:'Thanks!'},{id:'wow',i:'😮',t:'Wow!'},{id:'taunt',i:'😤',t:'Is that all?'}];
+let _emHist=[], _emSent=[], _emMatch=null;
+function emMuted(){ try{ return localStorage.getItem('loc_em_mute')==='1'; }catch(e){ return false; } }
+function emSetMute(v){ try{ localStorage.setItem('loc_em_mute',v?'1':'0'); }catch(e){} emRender(); }
+function emOk(){ return !!(G&&!G.is2v2&&!G.tutorialMode&&!G.gameOver); }
+function emSync(){ const k=G&&(G._emKey||(G._emKey=Date.now())); if(_emMatch!==k){ _emMatch=k; _emHist=[]; _emSent=[]; } }
+function emRender(){
+  emSync();
+  const mute=emMuted(), ok=emOk(), wait=_emWait();
+  const hist=_emHist.slice(-8).map(h=>`<div class="em-h ${h.p===1?'me':'them'}"><b>${h.p===1?'You':escapeHtml(pname(h.p))}</b> ${h.e.i} ${escapeHtml(h.e.t)}</div>`).join('')
+    ||'<div class="em-empty">No emotes yet. Tap one to send it.</div>';
+  const html=`<div class="em-head">QUICK EMOTES</div>
+    <div class="em-grid">${EMOTES.map(e=>`<button type="button" class="em-b" ${ok&&!wait?'':'disabled'} onclick="emSend('${e.id}')"><span>${e.i}</span>${escapeHtml(e.t)}</button>`).join('')}</div>
+    ${!ok?`<div class="em-note">${G&&G.is2v2?'Emotes are for 1v1 matches.':'Emotes work during a match.'}</div>`:''}
+    <div class="em-hist">${hist}</div>
+    <label class="em-mute"><input type="checkbox" ${mute?'checked':''} onchange="emSetMute(this.checked)"> Mute opponent emotes</label>`;
+  ['rail-chat-em','mobile-chat-em'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=html; });
+}
+function _emWait(){ const now=Date.now(); _emSent=_emSent.filter(t=>now-t<10000); return (_emSent.length&&now-_emSent[_emSent.length-1]<2500)||_emSent.length>=3; }
+function emSend(id){
+  const e=EMOTES.find(x=>x.id===id); if(!e||!emOk()) return; emSync();
+  if(_emWait()){ if(typeof SFX!=='undefined'&&SFX.error) try{ SFX.error(); }catch(x){} return; }
+  _emSent.push(Date.now()); emShow(1,e);
+  if(G.onlineMode&&typeof sendGameAction==='function') sendGameAction('emote',{id});
+  else if(typeof gameMode!=='undefined'&&gameMode!=='pvp') emCpuReply(id);
+  setTimeout(()=>{ try{ emRender(); }catch(x){} },2600);
+}
+function emRecv(d){ const e=d&&EMOTES.find(x=>x.id===d.id); if(!e||!emOk()) return; const now=Date.now(); G._emIn=(G._emIn||[]).filter(t=>now-t<10000); if(G._emIn.length>=4) return; G._emIn.push(now); emShow(2,e); }
+function emShow(p,e){
+  emSync(); _emHist.push({p,e}); if(_emHist.length>30) _emHist.shift();
+  if(p!==1&&emMuted()){ emRender(); return; }
+  const panel=document.getElementById(p===1?'p1-panel':'p2-panel'); if(!panel){ emRender(); return; }
+  panel.querySelectorAll('.em-bubble').forEach(b=>b.remove());
+  const h=G.players[p]&&G.players[p].herald; const art=h&&typeof getImg==='function'?getImg(h.cid):'';
+  const b=document.createElement('div'); b.className='em-bubble '+(p===1?'me':'them');
+  b.innerHTML=`${art?`<span class="em-av" style="background-image:url('${String(art).replace(/'/g,'%27')}')"></span>`:''}<span class="em-ic">${e.i}</span><span class="em-tx">${escapeHtml(e.t)}</span>`;
+  panel.appendChild(b); requestAnimationFrame(()=>b.classList.add('on'));
+  setTimeout(()=>{ b.classList.remove('on'); setTimeout(()=>b.remove(),300); },3200);
+  if(typeof SFX!=='undefined'&&SFX.emote) try{ SFX.emote(); }catch(x){}
+  emRender();
+}
+// CPU: answers some emotes, cheers on big kills, says good luck at the start. Never spams (one line per 8 s).
+function emCpuSay(id,delay){ if(!emOk()||G.onlineMode||(typeof gameMode!=='undefined'&&gameMode==='pvp')) return; const now=Date.now(); if(G._emCpuT&&now-G._emCpuT<8000) return; G._emCpuT=now;
+  setTimeout(()=>{ const e=EMOTES.find(x=>x.id===id); if(e&&emOk()) emShow(2,e); },delay||1100); }
+function emCpuReply(id){ const r=Math.random(); const map={gl:['gl',.7],wp:['thx',.7],nice:['thx',.5],thx:['wp',.25],taunt:[r<.5?'hmm':'taunt',.5],oops:['hmm',.3],wow:['nice',.25],hmm:['hmm',.2]}; const m=map[id]; if(m&&Math.random()<m[1]) emCpuSay(m[0],1300); }
+function emCpuOnKill(owner,c){ if(!G||G.onlineMode||G.is2v2||!isChar(c)||(c.cost||0)<6) return; if(owner===1&&G.activePlayer===2&&Math.random()<.22) emCpuSay('taunt',900); else if(owner===2&&G.activePlayer===1&&Math.random()<.22) emCpuSay('wow',900); }
 function railTab(pane){
+  if(pane==='rail-chat'&&typeof emRender==='function') emRender();
   document.querySelectorAll('#game-screen .info-rail .rail-tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.pane===pane));
   document.querySelectorAll('#game-screen .rail-pane').forEach(x=>x.classList.toggle('on',x.id===pane));
 }
@@ -26595,6 +26896,7 @@ function mobileSheetTab(pane){
   const c=document.getElementById('mobile-card-sheet-content'), l=document.getElementById('mobile-sheet-log'), ch=document.getElementById('mobile-sheet-chat');
   if(c)c.style.display=pane==='card'?'':'none'; if(l)l.style.display=pane==='log'?'':'none'; if(ch)ch.style.display=pane==='chat'?'':'none';
   if(pane==='log'&&typeof renderLog==='function'&&G&&G.log)renderLog();
+  if(pane==='chat'&&typeof emRender==='function') emRender();
 }
 function openMobileSheet(pane){
   const sheet=document.getElementById('mobile-card-sheet'); if(!sheet)return;
@@ -27165,13 +27467,63 @@ function showCelEarnPopup(amount,reason){
   setTimeout(()=>popup.remove(),3200);
 }
 
+// ── DAILY REWARDS (build 10.22): a 7-day calendar instead of a flat 150 Celestium. The day turns over at midnight Eastern.
+//    Claim once a day; skipping a day starts the week over at Day 1. Day 7 = a Basic pack + Celestium. Court Shard days pay
+//    Celestium instead while crafting is switched off. Progress: profiles.campaign_progress.daily = {d, last:'YYYY-MM-DD'}.
+//    _celData.last_login (legacy, toDateString) is still written so the PC version's old daily bonus doesn't pay twice;
+//    a day already claimed on the PC counts as kept but pays nothing here.
+const DAILY_DEF=[{cel:100},{shards:25,alt:{cel:150}},{cel:150},{shards:50,alt:{cel:200}},{cel:200},{shards:75,alt:{cel:250}},{pack:1,cel:150}];
+function dailyToday(){ try{ return new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()); }catch(e){ return new Date().toISOString().slice(0,10); } }
+function dailyPrev(d){ const t=new Date(d+'T12:00:00Z'); t.setUTCDate(t.getUTCDate()-1); return t.toISOString().slice(0,10); }
+function dailyState(){
+  const cp=(typeof _campaignProgress==='object'&&_campaignProgress)||{}; const s=cp.daily||{d:0,last:null}; const today=dailyToday();
+  const claimed=s.last===today, cont=s.last===dailyPrev(today)&&(s.d||0)<7;
+  return {today, claimed, day: claimed?s.d:(cont?(s.d||0)+1:1), pcClaimed: claimed&&!!s.pc};
+}
+function dailyReward(i){ const r=DAILY_DEF[(i||1)-1]||DAILY_DEF[0]; if(r.shards&&!(typeof craftOn==='function'&&craftOn())) return r.alt||{cel:150}; return r; }
+function dailyRewardText(r){ const p=[]; if(r.cel) p.push(`<b>${r.cel}</b> Celestium`); if(r.shards) p.push(`<b>${r.shards}</b> Court Shards`); if(r.pack) p.push(`<b>${r.pack}</b> Basic Pack`); return p.join(' + '); }
+function dailyIcon(r){ return r.pack?'🎴':r.shards?'🔷':'✦'; }
 async function checkDailyLogin(){
-  const today=new Date().toDateString();
-  if(_celData.last_login===today)return; // already claimed today
-  _celData.last_login=today;
-  await awardCelestium(150,'Daily Login Bonus');
-  // Battle Pass: award login XP
-  if(typeof bpOnDailyLogin==='function')await bpOnDailyLogin();
+  if(typeof loadCampaignProgress==='function') try{ await loadCampaignProgress(); }catch(e){}
+  const st=dailyState();
+  if(_celData&&_celData.last_login===new Date().toDateString()&&!st.claimed){
+    // already claimed on the PC today (legacy bonus): keep the streak alive, nothing to pay here
+    _campaignProgress.daily={d:st.day,last:st.today,pc:true}; try{ await saveCampaignProgress(); }catch(e){}
+    return;
+  }
+  if(st.claimed) return;
+  setTimeout(()=>{ try{ const inMatch=['game-screen','game-screen-2v2'].some(id=>document.getElementById(id)?.classList.contains('active')); if(!inMatch) dailyOpen(true); }catch(e){} },1400);
+  try{ if(typeof mmRenderLedger==='function') mmRenderLedger(); }catch(e){}
+}
+function dailyOpen(auto){
+  const st=dailyState(); let ov=document.getElementById('daily-ov');
+  if(!ov){ ov=document.createElement('div'); ov.id='daily-ov'; ov.className='daily-ov'; ov.onclick=e=>{ if(e.target===ov) dailyClose(); }; document.body.appendChild(ov); }
+  const tiles=DAILY_DEF.map((_,i)=>{ const n=i+1, r=dailyReward(n); const done=st.claimed?n<=st.day:n<st.day; const now=!st.claimed&&n===st.day;
+    return `<div class="dl-t${done?' done':''}${now?' now':''}${n===7?' big':''}"><span class="dl-d">DAY ${n}</span><span class="dl-i">${dailyIcon(r)}</span><span class="dl-r">${dailyRewardText(r)}</span>${done?'<span class="dl-ok">✓</span>':''}</div>`; }).join('');
+  const r=dailyReward(st.day);
+  ov.innerHTML=`<div class="dl-box" role="dialog" aria-label="Daily rewards"><button type="button" class="dl-x" onclick="dailyClose()" aria-label="Close">✕</button>
+    <div class="dl-k">DAILY REWARDS</div><h3>${st.claimed?'Come back tomorrow':'Day '+st.day+' of 7'}</h3>
+    <p class="dl-sub">${st.pcClaimed?'You already took today’s reward on the PC. Your streak is safe.':'Log in every day for a bigger reward. Miss a day and the week starts over. New day at midnight Eastern.'}</p>
+    <div class="dl-grid">${tiles}</div>
+    <div class="dl-act">${st.claimed?`<span class="dl-done">✓ Today's reward is claimed</span>`:`<button type="button" class="dl-claim" onclick="dailyClaim(this)">CLAIM ${dailyRewardText(r).replace(/<\/?b>/g,'')}</button>`}</div></div>`;
+  ov.classList.add('on');
+}
+function dailyClose(){ const ov=document.getElementById('daily-ov'); if(ov) ov.classList.remove('on'); }
+async function dailyClaim(btn){
+  const st=dailyState(); if(st.claimed){ dailyOpen(); return; }
+  if(btn){ btn.disabled=true; btn.textContent='CLAIMING…'; }
+  const r=dailyReward(st.day);
+  _campaignProgress.daily={d:st.day,last:st.today};
+  _celData.last_login=new Date().toDateString();
+  try{ await saveCampaignProgress(); }catch(e){}
+  if(r.cel) await awardCelestium(r.cel,'Daily Reward · Day '+st.day); else { try{ await saveCelestium(); }catch(e){} }
+  if(r.shards&&typeof _craft!=='undefined'){ _craft.shards+=r.shards; try{ await craftSaveShards(); }catch(e){} if(typeof craftRefresh==='function') try{ craftRefresh(); }catch(e){} }
+  if(r.pack&&typeof awardPack==='function') try{ await awardPack('pack','basic','base_set',r.pack); }catch(e){}
+  if(typeof bpOnDailyLogin==='function') try{ await bpOnDailyLogin(); }catch(e){}
+  dailyOpen();
+  try{ if(typeof mmRenderLedger==='function') mmRenderLedger(); if(typeof refreshProfileScreen==='function'&&document.getElementById('profile-screen')?.classList.contains('active')) refreshProfileScreen(); }catch(e){}
+  if(typeof showRewardsCelebration==='function'){ const items=[]; if(r.cel) items.push({icon:'✦',amount:'+'+r.cel,label:'Celestium'}); if(r.shards) items.push({icon:'🔷',amount:'+'+r.shards,label:'Court Shards'}); if(r.pack) items.push({icon:'🎴',amount:'+'+r.pack,label:'Basic Pack'});
+    try{ showRewardsCelebration(items,null,{title:'DAY '+st.day+' REWARD'}); }catch(e){} }
 }
 
 // Rewards (Celestium, XP, win/loss stats) are withheld ONLY for LOCAL
@@ -27252,9 +27604,9 @@ function refreshProfileScreen(){
   updatePackBadge(); renderPackInventory();
   // Daily status
   const today=new Date().toDateString();
-  const dlStatus=document.getElementById('daily-login-status');
-  if(dlStatus)dlStatus.textContent=_celData.last_login===today?'✓ Claimed today':'Available tomorrow';
-  if(dlStatus)dlStatus.style.color=_celData.last_login===today?'#22c55e':'#6b7280';
+  const dlStatus=document.getElementById('daily-login-status'); const _dst=(typeof dailyState==='function')?dailyState():null;
+  if(dlStatus)dlStatus.textContent=_dst?(_dst.claimed?`✓ Day ${_dst.day} claimed`:`Day ${_dst.day} ready — tap`):'—';
+  if(dlStatus)dlStatus.style.color=_dst&&_dst.claimed?'#22c55e':'#fbbf24';
   const fwStatus=document.getElementById('first-win-status');
   if(fwStatus)fwStatus.textContent=_celData.first_win_date===today?'✓ Claimed today':'Play to earn!';
   if(fwStatus)fwStatus.style.color=_celData.first_win_date===today?'#22c55e':'#6b7280';
@@ -30862,6 +31214,9 @@ function onReceiveGameAction(payload){
     case 'cos_hello':
       if(typeof cosHelloRecv==='function') cosHelloRecv(d);
       break;
+    case 'emote':
+      if(typeof emRecv==='function') emRecv(d);
+      break;
     default:
       break;
   }
@@ -34198,6 +34553,7 @@ window.addEventListener('load',async()=>{
       await loadCosmetics();
       if(typeof loadCrafting==='function') await loadCrafting();
       await loadMenuArt();
+      if(typeof loadSfxUrls==='function') await loadSfxUrls();
       await loadAdminHoloMode();
       updateAdminBadge();
       applyAdminToggleEffects();
@@ -34357,7 +34713,7 @@ window.addEventListener('load',async()=>{
         <div class="pf-card">
           <h3 class="pf-h">Daily Rewards</h3>
           <div class="pf-daily">
-            <div class="pf-dtile"><span class="pf-dname">Daily Login</span><b>+150</b><span class="pf-dstat" id="daily-login-status">—</span></div>
+            <div class="pf-dtile" role="button" tabindex="0" style="cursor:pointer" onclick="dailyOpen()"><span class="pf-dname">Daily Rewards</span><b>7-day</b><span class="pf-dstat" id="daily-login-status">—</span></div>
             <div class="pf-dtile"><span class="pf-dname">First Win of the Day</span><b>+100</b><span class="pf-dstat" id="first-win-status">—</span></div>
           </div>
           <h3 class="pf-h" style="margin-top:18px">Progress</h3>
@@ -34623,6 +34979,7 @@ window.addEventListener('load',async()=>{
           <button type="button" class="adm-tile" onclick="openGiftCenter()"><span class="adm-ico">🎁</span><b>Gift Center</b><span>Send rewards, messages and codes</span></button>
           <button type="button" class="adm-tile" onclick="if(typeof openNewsEditor==='function')openNewsEditor()"><span class="adm-ico">📰</span><b>News</b><span>Edit the main menu news slides</span></button>
           <button type="button" class="adm-tile" onclick="if(typeof mmArtManage==='function')mmArtManage()"><span class="adm-ico">🖼</span><b>Menu Art</b><span>Menu card art and backdrop</span></button>
+          <button type="button" class="adm-tile" onclick="if(typeof sfxManage==='function')sfxManage()"><span class="adm-ico">🔊</span><b>Sound Effects</b><span>Use your own sound files</span></button>
           <button type="button" class="adm-tile" onclick="openTfLadderEditor()"><span class="adm-ico">⬆</span><b>Transform Ladder</b><span>Skip prices for chain paths</span></button>
           <button type="button" class="adm-tile" onclick="openBPEditor()"><span class="adm-ico">⚔</span><b>Battle Pass Editor</b><span>Season, XP, costs and tier rewards</span></button>
           <button type="button" class="adm-tile" onclick="openMarket();setTimeout(()=>mkEditOpen(),40)"><span class="adm-ico">🏪</span><b>Market Editor</b><span>Rotation, sales, sections and pack art</span></button>
