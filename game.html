@@ -8646,6 +8646,48 @@ body.po2-open #fullcard-modal{z-index:400}
 
 /* pacing shield — blocks board clicks while an on-screen moment plays (see PACING BEATS) */
 #beat-shield{position:fixed;inset:0;z-index:95;display:none;cursor:progress;background:transparent}
+/* build 10.26 · docked choices */
+body.ch-dock #modal-overlay{background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;pointer-events:none;justify-content:flex-end;align-items:flex-end;padding:78px 16px 16px}
+body.ch-dock #modal-overlay .modal{pointer-events:auto;width:min(410px,34vw);max-width:none;max-height:calc(100vh - 100px)!important;box-shadow:0 0 0 1px rgba(200,164,74,.5),0 18px 44px rgba(0,0,0,.7),0 0 34px rgba(200,164,74,.22)!important}
+.ch-hint{display:none}
+body.ch-dock #modal-overlay .ch-hint{display:block;font:500 10.5px/1.4 system-ui,sans-serif;color:#c7d2fe;background:rgba(99,102,241,.13);border:1px solid rgba(129,140,248,.32);border-radius:8px;padding:6px 9px;margin:0 0 10px;letter-spacing:.01em;text-transform:none}
+body.ch-dock #modal-overlay #modal-title{cursor:pointer;user-select:none}
+body.ch-dock #modal-overlay #modal-title::after{content:' ▾';font-size:.75em;opacity:.55}
+body.ch-dock #modal-overlay .modal.ch-min #modal-title::after{content:' ▸ tap to open';font-size:.6em;opacity:.7;letter-spacing:.06em}
+body.ch-dock #modal-overlay .modal.ch-min{max-height:none!important;overflow:hidden}
+body.ch-dock #modal-overlay .modal.ch-min>*:not(#modal-title){display:none!important}
+@keyframes chNudge{0%,100%{transform:none}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.ch-nudge{animation:chNudge .45s ease}
+.ch-opt{text-transform:none!important;letter-spacing:.02em!important}
+.ch-opt .ch-sub{font:400 11.5px/1.4 system-ui,sans-serif;color:#fcd34d;text-transform:none;letter-spacing:0;white-space:normal}
+.ch-hl{outline:3px solid #67e8f9!important;outline-offset:2px;box-shadow:0 0 22px 6px rgba(103,232,249,.55)!important;z-index:5}
+.trig-ov.ask{background:transparent!important;pointer-events:none;justify-content:flex-end;align-items:flex-end;padding:78px 16px 16px}
+.trig-ov.ask .trig-card{pointer-events:auto;box-shadow:0 18px 44px rgba(0,0,0,.7)}
+.bw-ov.on,.ps3-ov.on{background:transparent!important;pointer-events:none;justify-content:flex-end;align-items:flex-end;padding:78px 16px 16px}
+.bw-ov.on>*,.ps3-ov.on>*{pointer-events:auto;box-shadow:0 18px 44px rgba(0,0,0,.72)}
+.bw-ov.on .bw-box{width:min(440px,40vw)}
+.ps3-ov.on .ps3-box{width:min(520px,44vw)}
+@media (max-width:760px){
+  body.ch-dock #modal-overlay,.trig-ov.ask,.bw-ov.on,.ps3-ov.on{justify-content:center;align-items:flex-end;padding:0 8px 8px}
+  body.ch-dock #modal-overlay .modal{width:100%;max-height:54vh!important}
+  .bw-ov.on .bw-box,.ps3-ov.on .ps3-box{width:100%;max-height:60vh}
+}
+/* build 10.26 · prize pick waiting */
+#prize-owed{position:fixed;left:50%;top:64px;transform:translateX(-50%);z-index:9500;display:none;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;background:linear-gradient(180deg,rgba(60,40,6,.95),rgba(30,20,4,.95));border:1px solid #fbbf24;color:#fde68a;font:600 12.5px/1.2 system-ui,sans-serif;box-shadow:0 0 18px rgba(251,191,36,.45);cursor:pointer;max-width:calc(100vw - 24px);text-align:center}
+#prize-owed.on{display:flex;animation:prizePulse 1.6s ease-in-out infinite}
+#prize-owed b{color:#fff7d6}
+#prize-owed.nudge{animation:chNudge .45s ease,prizePulse 1.6s ease-in-out .45s infinite}
+@keyframes prizePulse{0%,100%{box-shadow:0 0 12px rgba(251,191,36,.35)}50%{box-shadow:0 0 26px rgba(251,191,36,.8)}}
+/* build 10.26 · status badges */
+.st-badges{position:absolute;left:4px;top:24px;display:flex;flex-direction:column;align-items:flex-start;gap:3px;z-index:6}
+.st-b{display:inline-flex;align-items:center;gap:2px;font:800 12px/1 system-ui,sans-serif;padding:3px 7px 3px 5px;border-radius:999px;background:rgba(10,8,20,.9);border:1.5px solid var(--c);color:#fff;box-shadow:0 0 9px var(--c)}
+.st-b i{font-style:normal;color:var(--c);font-size:11px}
+/* build 10.26 · usable glow */
+@keyframes ablGlow{0%,100%{box-shadow:0 0 0 2px rgba(196,181,253,.9),0 0 10px 2px rgba(167,139,250,.55)}50%{box-shadow:0 0 0 2px rgba(253,224,71,.95),0 0 20px 6px rgba(250,204,21,.55)}}
+@keyframes playGlow{0%,100%{box-shadow:0 0 0 1px rgba(34,197,94,.6),0 0 6px rgba(34,197,94,.35)}50%{box-shadow:0 0 0 2px rgba(74,222,128,.95),0 0 16px 4px rgba(74,222,128,.5)}}
+body.use-glow .abl-ready{animation:ablGlow 1.8s ease-in-out infinite;border-radius:8px}
+body.use-glow #game-screen .hand-card.playable,body.use-glow #game-screen-2v2 .hand-card.playable{animation:playGlow 2.2s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){body.use-glow .abl-ready{animation:none;box-shadow:0 0 0 2px #fde047,0 0 12px rgba(250,204,21,.5)}body.use-glow .hand-card.playable{animation:none}#prize-owed.on{animation:none}}
 #beat-shield.on{display:block}
 /* ═══ COIN & DICE (build 9.0) ═══ */
 /* ═══ ABILITY BANNER / USE-SKIP (build 9.5) ═══ */
@@ -9296,7 +9338,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.25 · Economy 3</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.26 · Turn Flow</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10353,6 +10395,18 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.22'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.26', date:'2026-11-17',
+    cards:[], abilities:[
+      "WEATHER GODDESS chooser text (no rules change): Thunderstorm 'When one of your characters attacks and deals damage, the character it hit is Paralyzed. Lasts until your next turn.' · Tailwind 'Your characters get +1 Attack until your next turn.'"],
+    screens:[
+      "PRIZE PICK HOLD: while the human owes a Prize pick (_pendingPrizePick.claimer===1, 1v1), nothing moves on: doPhase refuses every phase INCLUDING end (checked before 'end' is added to phasesDone — the old order left End Turn stuck after the pick), onFieldClick refuses attackers, aiLater re-polls every 200 ms, and the CPU's own end-of-turn (_aiEndTurn) waits. A knock-out on the CPU's turn (hit-back, retaliation) used to let the CPU pass the turn with the pick still open. A pinned gold pill '🎖 Take your Prize — tap a glowing card on your opponent's Prize pile' (#prize-owed, tap = flash the pile) shows until it's taken.",
+      "AREA DAMAGE ONE BY ONE: seqAreaHits(list[{p,uid}], amt, src{cid,label,uid}, {skip,each,after}) queues one SEQ step per target (gap 560 ms normal / 320 fast; Instant = old all-at-once). Each step re-checks the target is still there, runs dealDamage under fxPush(src) (so damage rules see the source), renders, and the next hit waits for any death animation (holdBeat) and choice. Used by Gamma Detonation (Godly Evasion as skip), Frost Bite Collision, Absolute Power, Crimson Cataclysm, Cosmic Radiance, Shatter the World, Elemental Cataclysm (Burn via each), Sunfall, Chaos Tithe, Silent Killer. The CPU waits (aiLater already waits on seqBusy).",
+      "AUTO DRAW (setting autoDraw, default ON): every 250 ms, if it's the local human's turn, phase 'draw' not done, not tutorial / spectating / AI, no Prize owed, nothing presenting (_presentBusy), no open choice (modal, trigger panel, coin toss, turn banner, Burst, Power Struggle) and drawHoldReason(p) is null → doPhase('draw') then doPhase('main'), once per turn (G._autoDrew='turn:player'). drawHoldReason(p) is the hook for a future 'before you draw' card (today: player._drawHold). Surge Energy's skip still applies inside turnDraw. Settings row 'Auto Draw' (set-autodraw).",
+      "USABLE GLOW (setting useGlow, default ON): after each render, on the local human's turn in Main/Attack, field cards and the Herald with an activated ability usable right now get class abl-ready (pulsing violet→gold outline). usableAbilitiesOf(p,fc,isHerald) mirrors the ability menu: own + equipment (not hexed, bond) + gained abilities; attack phase → attackPhase only; not tapped (except Rewind), not frozen / sealed / fatigued / frozen location / broken herald; abilityUsed[label] not set; 'every N turns' / 'every other turn' cooldown (abilityUsed.<slug>_turn); Energy ≥ cost (+ Crow's Residue tax, as the menu). Playable hand cards (.hand-card.playable) pulse green. Settings row 'Highlight Usable Cards' (set-useglow). Reduced motion → static outline.",
+      "DOCKED CHOICES: in a match, #modal-overlay pop-ups (pick-one lists, target pickers, ability menus), the Use/Skip trigger panel (.trig-ov.ask), the Burst window and Power Struggle sit in a panel at the BOTTOM-RIGHT with no dark cover (phone ≤760px: bottom sheet ≤54vh). A hint line under the title: '👁 You can still look at the board: hover or tap any card to read it. Game actions wait until you choose.' Tap the title to fold it. While one is open: hover still drives Card Info; tapping a board card opens its full view (same as right-click); any other board click is swallowed (panel shakes + toast 'Make your choice first…'), so no default pick happens by accident (Weather Goddess used to pick Tailwind when you clicked outside). Card Info / Battle Log / Chat tabs, the phone Card/Log/Chat buttons and the menu cluster still work. Exception: a menu the player opened themselves (no SEQ step running, no combat hold, no armed cancel) still closes when the empty board is tapped. The beat-shield stays off while the human is choosing (the CPU still waits). Options show their description under the name; hovering an option that names a board card outlines that card (cyan).",
+      "PARALYZE WARNING: clicking a Paralyzed attacker in the Attack phase first shows '⚡ <name> is Paralyzed. If it attacks, you flip a coin first. Tails: the attack fizzles — no damage, and it counts as its attack this turn.' [⚡ Attack anyway (flip the coin)] / [Don't attack with it]. Asked once per turn per card (fc._parAsk=turn). Not in the tutorial.",
+      "STATUS BADGES: every status on a field card also shows as a chip on the card art (top-left, under the cost line): icon + turns left, in the status color, hover = what it does (Paralyze / Confusion: 'attacking needs a coin flip first…', Freeze: 'can't attack or use abilities'). The tiny icon under the Health bar stays."],
+    data:["No rules change: GAME_BUILD stays '10.22'. Settings gain autoDraw / useGlow (both default true)."] },
   { build:'10.25', date:'2026-11-16',
     cards:[], abilities:[],
     screens:[
@@ -13175,7 +13229,7 @@ function chooseWeather(p){
   if(seqIsLocalHuman(p)&&!G._aiAuto&&typeof seqPush==='function'){
     seqPush(done=>{ if(!G||G.gameOver){ done(); return; }
       seqChoose('🌩 Weather Goddess','Choose the weather until your next turn.',
-        [{label:'⛈ Thunderstorm',sub:'Your combat damage Paralyzes the defender',val:'thunderstorm'},{label:'🌬 Tailwind',sub:'Your characters get +1 Attack',val:'tailwind'}],
+        [{label:'⛈ Thunderstorm',sub:'When one of your characters attacks and deals damage, the character it hit is Paralyzed. Lasts until your next turn.',val:'thunderstorm'},{label:'🌬 Tailwind',sub:'Your characters get +1 Attack until your next turn.',val:'tailwind'}],
         (w)=>{ set(w); done(); }, ()=>{ set('tailwind'); done(); }); });
   } else set(aiPickWeather(p));
 }
@@ -14922,6 +14976,23 @@ function killCard(p,fc){
 }
 
 let _pendingPrizePick = null; // {victim, claimer} when the claimer must choose a prize from victim's pile
+// build 10.26: while YOU owe a Prize pick, the game waits — no phase changes, no End Turn, and the CPU pauses
+// (a knock-out on the CPU's turn, e.g. a hit-back, used to let its turn end with your pick still open).
+function prizeOwed(){ return !!(typeof G!=='undefined'&&G&&G.players&&!G.gameOver&&!G.is2v2&&_pendingPrizePick&&_pendingPrizePick.claimer===1); }
+function prizeNag(){
+  if(!prizeOwed()) return;
+  log('🎖 Take your Prize card first — tap a glowing card on your opponent\'s Prize pile.','dmg');
+  if(typeof renderPrizes==='function') renderPrizes(_pendingPrizePick.victim);
+  const pz=document.getElementById('p'+_pendingPrizePick.victim+'-prizes'); if(pz){ pz.style.transition='box-shadow .2s'; pz.style.boxShadow='0 0 0 3px #fbbf24, 0 0 18px 4px rgba(251,191,36,.8)'; setTimeout(()=>{ if(pz) pz.style.boxShadow=''; },1400); }
+  const pill=document.getElementById('prize-owed'); if(pill){ pill.classList.remove('nudge'); void pill.offsetWidth; pill.classList.add('nudge'); }
+}
+function prizeOwedUI(){
+  let el=document.getElementById('prize-owed'); const on=prizeOwed()&&!!document.querySelector('#game-screen.active');
+  if(!on){ if(el) el.classList.remove('on'); return; }
+  if(!el){ el=document.createElement('div'); el.id='prize-owed'; el.setAttribute('role','status'); el.onclick=()=>prizeNag(); document.body.appendChild(el); }
+  const n=(_pendingPrizePick&&_pendingPrizePick.remaining)||1;
+  el.innerHTML='🎖 <b>Take your Prize'+(n>1?'s ('+n+')':'')+'</b> — tap a glowing card on your opponent\'s Prize pile'; el.classList.add('on');
+}
 
 // New prize model: when CLAIMER kills VICTIM's character, claimer takes a prize
 // card FROM the victim's pile. The victim's prizes shrink; claimer gains the card.
@@ -15238,10 +15309,8 @@ function chaosTithe(p, gone){
     const foes=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) foes.push({uid:f.uid,p:op}); }));
     r._titheTurn=G.turn;
     if(!foes.length){ log('Chaos Tithe: no opposing characters.','info'); return; }
-    const _fx=(typeof fxPush==='function')?fxPush(r.cid,'Chaos Tithe',r.uid):null;
     log(`🌀 Chaos Tithe: ${DB[r.cid]?.name} feeds on the sacrifice — 2 damage to each opposing character!`,'dmg');
-    foes.forEach(x=>{ if(G.players[x.p].field.some(f=>f.uid===x.uid)) dealDamage(x.p,x.uid,2); });
-    if(typeof fxPop==='function') fxPop(_fx); renderAll();
+    seqAreaHits(foes,2,{cid:r.cid,label:'Chaos Tithe',uid:r.uid}); renderAll();
   });
 }
 // "When you sacrifice this card" payoffs. DEATH'S OFFERING (Surana SSG): choose one of your other characters —
@@ -16450,6 +16519,7 @@ function canCharacterAttack(p, fc){
 // COMBAT
 // ═══════════════════════════════════════════════════
 function onFieldClick(p,uid,fc){
+  if(prizeOwed()&&p===G.activePlayer&&iControlActive()){ prizeNag(); return; }
   if(G.phase==='attack'){
     // Online 2v2: you may only act when it's your own seat's turn — otherwise inspect.
     if(G.is2v2 && G.onlineMode2v2 && !iControlActive()){ showFullCard(fc.cid,fc); return; }
@@ -16469,6 +16539,15 @@ function onFieldClick(p,uid,fc){
         if((fc.attacksThisTurn||0)>0){log(`${DB[fc.cid].name} already attacked this turn.`,'dmg');}
         else {log('Only one character may attack per turn.','dmg');}
         return;
+      }
+      if(fc.statuses&&fc.statuses.paralyze>0&&fc._parAsk!==G.turn&&!G.tutorialMode){   // build 10.26: say what Paralyze does before the flip
+        const nm=DB[fc.cid]?.name||'This character', body=document.createElement('div');
+        body.innerHTML=`<div style="font-size:12.5px;line-height:1.45;color:#e5e7eb;margin-bottom:10px">⚡ <b>${nm} is Paralyzed.</b> If it attacks, you flip a coin first. <b>Tails: the attack fizzles</b> — no damage, and it counts as its attack this turn.</div>`;
+        const go=document.createElement('button'); go.className='btn-primary'; go.style.cssText='width:100%;padding:9px;margin-bottom:6px'; go.textContent='⚡ Attack anyway (flip the coin)';
+        go.onclick=()=>{ takeModalCancel(); closeAllModals(); fc._parAsk=G.turn; onFieldClick(p,uid,fc); };
+        const no=document.createElement('button'); no.className='btn-gray'; no.style.cssText='width:100%;padding:8px'; no.textContent="Don't attack with it";
+        no.onclick=()=>{ takeModalCancel(); closeAllModals(); };
+        body.appendChild(go); body.appendChild(no); showModalEl('⚡ Paralyzed',body); return;
       }
       if(!rollAttackStatuses(p,fc)){ renderAll(); return; }
       G.selectedAttacker=uid;log(`${DB[fc.cid].name} ready — click target.`,'info');renderAll();
@@ -18932,7 +19011,7 @@ function _activateAbilityCore(fc,abl){
     pl.usedAbilityThisTurn=true; if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
     closeAllModals();
     if(sand){ log(`🏜 Sandstorm: every opposing character is caught in the storm!`,'gain'); foes.forEach(x=>applyStatus(x.fc,'paralyze')); }
-    else { log(`🌅 Sunfall: 3 damage to each Paralyzed opposing character!`,'dmg'); foes.forEach(x=>{ if(G.players[x.p].field.some(f=>f.uid===x.fc.uid)) dealDamage(x.p,x.fc.uid,3); }); }
+    else { log(`🌅 Sunfall: 3 damage to each Paralyzed opposing character!`,'dmg'); seqAreaHits(foes.map(x=>({p:x.p,uid:x.fc.uid})),3,{cid:fc.cid,label:'Sunfall',uid:fc.uid}); }
     if(typeof SFX!=='undefined'&&SFX.ability) try{ SFX.ability(); }catch(e){}
     renderAll(); return;
   }
@@ -20270,11 +20349,8 @@ function runAbilityEffect(fc, abl, pl){
     _fusionOpps(ap).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) foes.push({p:op,uid:f.uid}); }));
     if(!foes.length){ if(_abilityUndo) _abilityUndo(); log('Crimson Cataclysm: no opposing characters — not used.','dmg'); renderAll(); return; }
     log(`🩸 Crimson Cataclysm: every opposing character takes 3 damage!`,'dmg');
-    const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Crimson Cataclysm',fc.uid):null;
-    try{ foes.forEach(t=>{ if((G.players[t.p]?.field||[]).some(x=>x.uid===t.uid)) dealDamage(t.p,t.uid,3); }); }
-    finally { if(typeof fxPop==='function') fxPop(_fx); }
-    if(typeof recalcPassives==='function') recalcPassives();
-    renderAll(); if(typeof checkWin==='function') checkWin();
+    seqAreaHits(foes,3,{cid:fc.cid,label:'Crimson Cataclysm',uid:fc.uid},{after:()=>{ if(typeof recalcPassives==='function') recalcPassives(); if(typeof checkWin==='function') checkWin(); }});
+    renderAll();
     return;
   }
   // ── VIRORA (SURFACER MUI) BSE 154/150 SR: Celestial Surge — 5 damage to an opposing character; if that destroys it,
@@ -20358,11 +20434,8 @@ function runAbilityEffect(fc, abl, pl){
     _fusionOpps(ap).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) foes.push({p:op,uid:f.uid}); }));
     if(!foes.length){ if(_abilityUndo) _abilityUndo(); log('Cosmic Radiance: no opposing characters — not used.','dmg'); renderAll(); return; }
     log(`🌌 Cosmic Radiance: every opposing character takes 2 damage!`,'dmg');
-    const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Cosmic Radiance',fc.uid):null;
-    try{ foes.forEach(t=>{ if((G.players[t.p]?.field||[]).some(x=>x.uid===t.uid)) dealDamage(t.p,t.uid,2); }); }
-    finally { if(typeof fxPop==='function') fxPop(_fx); }
-    if(typeof recalcPassives==='function') recalcPassives();
-    renderAll(); if(typeof checkWin==='function') checkWin();
+    seqAreaHits(foes,2,{cid:fc.cid,label:'Cosmic Radiance',uid:fc.uid},{after:()=>{ if(typeof recalcPassives==='function') recalcPassives(); if(typeof checkWin==='function') checkWin(); }});
+    renderAll();
     return;
   }
   // ── TOPH: Earth Wall — 2⚡ once per turn: one of your characters gets +3 Health until your next turn (fc._ewall; startTurnFx removes).
@@ -20403,10 +20476,8 @@ function runAbilityEffect(fc, abl, pl){
     _fusionOpps(ap).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ const d=DB[f.cid]; if(isChar(d)||isLoc(d)) foes.push({p:op,uid:f.uid}); }));
     if(!foes.length){ if(_abilityUndo) _abilityUndo(); log('Shatter the World: nothing on the opposing field — not used.','dmg'); renderAll(); return; }
     log(`🌋 Shatter the World: every opposing character and Location takes 3 damage!`,'dmg');
-    const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Shatter the World',fc.uid):null;
-    try{ foes.forEach(t=>{ if((G.players[t.p]?.field||[]).some(x=>x.uid===t.uid)) dealDamage(t.p,t.uid,3); }); }
-    finally { if(typeof fxPop==='function') fxPop(_fx); }
-    if(typeof recalcPassives==='function') recalcPassives(); renderAll(); if(typeof checkWin==='function') checkWin();
+    seqAreaHits(foes,3,{cid:fc.cid,label:'Shatter the World',uid:fc.uid},{after:()=>{ if(typeof recalcPassives==='function') recalcPassives(); if(typeof checkWin==='function') checkWin(); }});
+    renderAll();
     return;
   }
   // ── STORM (Herald): Thunderclap — 2⚡ once per turn: 2 damage to a target opposing character, 4 if it's Paralyzed.
@@ -20604,13 +20675,10 @@ function runAbilityEffect(fc, abl, pl){
     const foes=[]; _fusionOpps(ap).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) foes.push({p:op,uid:f.uid}); }));
     if(!foes.length){ log('Elemental Cataclysm: no opposing characters.','info'); renderAll(); return; }
     log(`🌀 Elemental Cataclysm: every opposing character takes 3 damage and is Burned!`,'dmg');
-    const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Elemental Cataclysm',fc.uid):null;
-    try{
-      foes.forEach(t=>dealDamage(t.p,t.uid,3));
-      foes.forEach(t=>{ const f=(G.players[t.p]?.field||[]).find(x=>x.uid===t.uid); if(f&&f.currentHP>0){ applyStatus(f,'burn'); if(typeof showStatusFx==='function') showStatusFx(f.uid,'burn'); } });
-    } finally { if(typeof fxPop==='function') fxPop(_fx); }
-    if(typeof recalcPassives==='function') recalcPassives();
-    renderAll(); if(typeof checkWin==='function') checkWin();
+    seqAreaHits(foes,3,{cid:fc.cid,label:'Elemental Cataclysm',uid:fc.uid},{
+      each:t=>{ const f=(G.players[t.p]?.field||[]).find(x=>x.uid===t.uid); if(f&&f.currentHP>0){ applyStatus(f,'burn'); if(typeof showStatusFx==='function') showStatusFx(f.uid,'burn'); } },
+      after:()=>{ if(typeof recalcPassives==='function') recalcPassives(); if(typeof checkWin==='function') checkWin(); }});
+    renderAll();
     return;
   }
   // ── DOCTOR DOOM (Herald): Mystic Bolt — 2 damage to target opposing character, 3 if you control a character
@@ -20812,13 +20880,10 @@ function runAbilityEffect(fc, abl, pl){
   if(cid==='hulk_gs_herald' && label==='Gamma Detonation'){
     const targets=[...opp.field.filter(f=>isChar(DB[f.cid]))];
     if(!targets.length){ log('Gamma Detonation: no opponent characters.','dmg'); renderAll(); return; }
-    targets.forEach(tfc=>{
-      if(hasGodlyEvasion(tfc) && !canPayEvasionToll(G.activePlayer, tfc)){
-        log(`${DB[tfc.cid].name} evades Gamma Detonation (Godly Evasion).`,'info'); return;
-      }
-      dealDamage(oppNum,tfc.uid,4);
-    });
     log('Gamma Detonation: 4 damage to all opponent characters!','dmg');
+    const _gap=G.activePlayer;
+    seqAreaHits(targets.map(t=>({p:oppNum,uid:t.uid})),4,{cid:fc.cid,label:'Gamma Detonation',uid:fc.uid},{skip:t=>{ const tfc=G.players[t.p].field.find(f=>f.uid===t.uid);
+      if(tfc&&hasGodlyEvasion(tfc)&&!canPayEvasionToll(_gap,tfc)){ log(`${DB[tfc.cid].name} evades Gamma Detonation (Godly Evasion).`,'info'); return true; } return false; }});
     renderAll(); return;
   }
 
@@ -20888,8 +20953,8 @@ function runAbilityEffect(fc, abl, pl){
   if(cid==='virora_ssbm' && label==='FROST BITE COLLISION'){
     const targets=[...opp.field.filter(f=>isChar(DB[f.cid]))];
     if(!targets.length){ log('Frost Bite Collision: no targets.','dmg'); renderAll(); return; }
-    targets.forEach(tfc=>dealDamage(oppNum,tfc.uid,4));
-    log('FROST BITE COLLISION: 4 damage to all opponent characters!','dmg'); renderAll(); return;
+    log('FROST BITE COLLISION: 4 damage to all opponent characters!','dmg');
+    seqAreaHits(targets.map(t=>({p:oppNum,uid:t.uid})),4,{cid:fc.cid,label:'FROST BITE COLLISION',uid:fc.uid}); renderAll(); return;
   }
   // ── VIRORA (Surface): Surface Technique — gain +2 energy ──
   if(cid==='virora_st' && label==='Surface Technique'){
@@ -21073,6 +21138,7 @@ function doPhase(ph){
       return;
     }
   }
+  if(prizeOwed()){ prizeNag(); return; }   // build 10.26: take your Prize first
   const mp = G.is2v2 ? G.activePlayer : 1; // "my player" — the active human board
   // End turn is always allowed — skip directly regardless of phase order
   if(ph==='end'){
@@ -21123,6 +21189,42 @@ function gainLocationEnergy(p){
 
 let _endingTurn=false;
 
+// ── AUTOMATIC DRAW (build 10.26) ── When your turn starts (after the turn banner, start-of-turn effects and any choice
+// they open), the game draws for you and moves on to your Main Phase. It holds when a card effect says to act first:
+// drawHoldReason(p) is the hook a "before you draw / instead of drawing" card returns a reason from (MTG-style priority).
+// Surge Energy's "skip your next draw" still applies (turnDraw). Off in the tutorial (Virora walks you through Draw)
+// and when Settings → Auto Draw is off.
+function drawHoldReason(p){
+  const P=G&&G.players&&G.players[p]; if(!P) return null;
+  if(P._drawHold) return P._drawHold;                 // a card effect asked to hold the draw this turn
+  return null;
+}
+function autoDrawHuman(){
+  if(G.onlineMode||G.onlineMode2v2) return iControlActive();
+  if(typeof gameMode!=='undefined'&&gameMode==='pvp') return !G._aiTurn;
+  return iControlActive();
+}
+function autoDrawReady(){
+  if(typeof G==='undefined'||!G||!G.players||G.gameOver||G.tutorialMode||G.spectating) return false;
+  if(typeof _gameSettings!=='undefined'&&_gameSettings.autoDraw===false) return false;
+  if(typeof _inMatch==='function'&&!_inMatch()) return false;
+  if(G.phase!=='draw'||(G.phasesDone||[]).includes('draw')) return false;
+  if(G._aiTurn||G._aiAuto||G._combatHold) return false;
+  if(!autoDrawHuman()) return false;
+  if(G._autoDrew===G.turn+':'+G.activePlayer) return false;
+  if(typeof prizeOwed==='function'&&prizeOwed()) return false;
+  if(typeof _presentBusy==='function'&&_presentBusy()) return false;
+  if(document.querySelector('.modal-overlay.open:not(#fullcard-modal),#trig-ov.open,#coin-toss.open,#turn-banner.show,#bw-ov.on,#ps3-ov.on')) return false;
+  if(drawHoldReason(G.activePlayer)) return false;
+  return true;
+}
+function autoDrawTick(){
+  if(!autoDrawReady()) return;
+  G._autoDrew=G.turn+':'+G.activePlayer;
+  try{ doPhase('draw'); if(!G.gameOver&&G.phase==='draw'&&(G.phasesDone||[]).includes('draw')&&!prizeOwed()) doPhase('main'); }catch(e){ console.warn('[auto draw]',e); }
+}
+setInterval(()=>{ try{ autoDrawTick(); }catch(e){} },250);
+
 // ═══════════════════════════════════════════════════
 // TURN TRANSITION BANNER
 // ═══════════════════════════════════════════════════
@@ -21167,12 +21269,7 @@ function checkStallLoss(p){
 function execEnd(){
   if(_endingTurn)return;
   // MANDATORY PRIZE CLAIM: you knocked out an enemy — you must take a Prize before ending your turn.
-  if(_pendingPrizePick && _pendingPrizePick.claimer===1){
-    log('🎖 You must claim your Prize card first! Tap a glowing Prize on your opponent\'s side.','dmg');
-    if(typeof renderPrizes==='function')renderPrizes(_pendingPrizePick.victim);
-    const _pz=document.getElementById('p2-prizes'); if(_pz){ _pz.style.transition='box-shadow .2s'; _pz.style.boxShadow='0 0 0 3px #fbbf24, 0 0 18px 4px rgba(251,191,36,.8)'; setTimeout(()=>{ if(_pz)_pz.style.boxShadow=''; },1400); }
-    return;
-  }
+  if(prizeOwed()){ prizeNag(); if(G.phasesDone) G.phasesDone=G.phasesDone.filter(x=>x!=='end'); return; }
   _endingTurn=true;
   const p=G.activePlayer;
   try {
@@ -21591,7 +21688,7 @@ function startTurnFx(player){
       }
       if(targets.length){
         log(`Silent Killer: each enemy character takes ${dmg} damage (1 +${saiyans} Saiyan).`,'dmg');
-        targets.forEach(t=>dealDamage(t.p,t.uid,dmg));
+        seqAreaHits(targets,dmg,null);
       }
     }
   });
@@ -21691,6 +21788,8 @@ let _gameSettings = {
   textScale: 1,      // Text Size slider: 0.9 – 1.3
   speed: 'normal',   // Game Speed: 'normal' · 'fast' · 'instant' (card zoom, ability banners, coin/dice panels)
   entrances: true,   // Herald entrance cinematic before the coin toss
+  autoDraw: true,    // build 10.26: draw automatically at the start of your turn (unless a card effect holds it)
+  useGlow: true,     // build 10.26: pulse cards you can still play / use this turn
   invites: 'friends' // Game Invites (build 10.19): who can send you match / party invites — 'friends' · 'anyone' · 'off'
 };
 // TEXT SIZE (build 9.6): scales menu pages, panels, card views and the match side rail (90%–130%).
@@ -21829,6 +21928,8 @@ function syncSettingsUI(){
   t('set-anim', _gameSettings.animations);
   t('set-reveals', _gameSettings.reveals);
   t('set-banners', _gameSettings.banners);
+  t('set-autodraw', _gameSettings.autoDraw!==false);
+  t('set-useglow', _gameSettings.useGlow!==false);
   const vol=document.getElementById('set-sfx-vol');
   if(vol)vol.value=Math.round(_gameSettings.sfxVolume*100);
   const mvol=document.getElementById('set-music-vol');
@@ -21870,6 +21971,15 @@ function toggleSetting(key){
     case 'banners':
       _gameSettings.banners = !_gameSettings.banners;
       document.getElementById('set-banners').classList.toggle('on', _gameSettings.banners);
+      break;
+    case 'autodraw':
+      _gameSettings.autoDraw = _gameSettings.autoDraw===false;
+      document.getElementById('set-autodraw').classList.toggle('on', _gameSettings.autoDraw);
+      break;
+    case 'useglow':
+      _gameSettings.useGlow = _gameSettings.useGlow===false;
+      document.getElementById('set-useglow').classList.toggle('on', _gameSettings.useGlow);
+      if(typeof useGlowSync==='function') try{ useGlowSync(); }catch(e){}
       break;
   }
   saveGameSettings();
@@ -21965,7 +22075,7 @@ function aiSetAuto(on){ if(G) G._aiAuto=!!on; }
 // Match session: every CPU timer is tied to the match that scheduled it. Leaving the match
 // (quit to menu, new match) bumps the session so any pending AI step silently dies.
 let _matchSession=0;
-function aiLater(fn,ms){ const s=_matchSession; let waits=0; const run=()=>{ if(s!==_matchSession) return; if(typeof G!=='undefined'&&G&&G._abandoned) return; if(typeof G!=='undefined'&&G&&G._combatHold){ setTimeout(run,200); return; } if(typeof _presentBusy==='function'&&_presentBusy()&&waits++<160){ setTimeout(run,150); return; } fn(); }; return setTimeout(run,ms); }
+function aiLater(fn,ms){ const s=_matchSession; let waits=0; const run=()=>{ if(s!==_matchSession) return; if(typeof G!=='undefined'&&G&&G._abandoned) return; if(typeof G!=='undefined'&&G&&G._combatHold){ setTimeout(run,200); return; } if(typeof prizeOwed==='function'&&prizeOwed()){ setTimeout(run,200); return; } if(typeof _presentBusy==='function'&&_presentBusy()&&waits++<160){ setTimeout(run,150); return; } fn(); }; return setTimeout(run,ms); }
 function abandonMatch(){
   _matchSession++;
   try{ if(typeof seqReset==='function') seqReset(); }catch(e){}
@@ -22446,6 +22556,7 @@ function runAI(){
         // End the AI's turn and hand back to the human (also fires the human's
         // start-of-turn effects, which this path previously skipped).
         const _aiEndTurn=()=>{
+          if(typeof prizeOwed==='function'&&prizeOwed()){ setTimeout(_aiEndTurn,250); return; }   // your Prize pick first
           G._aiTurn=false; G._aiAuto=false; if(typeof aiThinking==='function')aiThinking(false);
           if(G.gameOver)return;
           // Power Up parity: the AI gets +2⚡ for a passive turn exactly like the human.
@@ -23039,7 +23150,8 @@ function triggerHeraldFlipAbilities(p,cid){
     const targets=[...G.players[o].field.filter(f=>isChar(DB[f.cid]))];
     if(targets.length){
       log(`Absolute Power: 10 damage to all opponent characters!`,'dmg');
-      targets.forEach(f=>dealDamage(o,f.uid,10));
+      const _h=G.players[p]&&G.players[p].herald;
+      seqAreaHits(targets.map(f=>({p:o,uid:f.uid})),10,_h?{cid:_h.cid,label:'Absolute Power',uid:_h.uid}:null);
     }
   }
 }
@@ -23096,6 +23208,26 @@ function _diceFace(n){ const f={1:'⚀',2:'⚁',3:'⚂',4:'⚃',5:'⚄',6:'⚅'}
 // Each moment holds for about a second (the bigger reveals up to ~2s). Popups that need YOUR
 // input (roll CONTINUE, target pickers, prize picks) sit above the shield and stay clickable.
 let _beatUntil=0, _beatIv=null;
+// build 10.26: area damage resolves ONE target at a time — each hit (and any knock-out it causes, with its death
+// animation and Prize) plays on its own before the next. list [{p,uid}] · amt number|fn(t) · src {cid,label,uid} = the
+// damage source for card rules · opts {skip(t), each(t), after()} · Instant game speed keeps the old all-at-once.
+function seqAreaHits(list, amt, src, opts){
+  opts=opts||{}; list=(list||[]).slice();
+  const gap=({normal:560,fast:320,instant:0})[(typeof gameSpeed==='function'?gameSpeed():'normal')]||0;
+  const one=(t)=>{
+    if(!G||G.gameOver||!t) return;
+    if(!(G.players[t.p]?.field||[]).some(x=>String(x.uid)===String(t.uid))) return;
+    if(opts.skip&&opts.skip(t)) return;
+    const _fx=(src&&typeof fxPush==='function')?fxPush(src.cid,src.label,src.uid):null;
+    try{ dealDamage(t.p,t.uid,typeof amt==='function'?amt(t):amt); if(opts.each) opts.each(t); }
+    finally{ if(src&&typeof fxPop==='function') fxPop(_fx); }
+    if(typeof renderAll==='function') renderAll();
+  };
+  const fin=()=>{ if(opts.after) try{ opts.after(); }catch(e){ console.error('[areaHits]',e); } if(typeof renderAll==='function') renderAll(); };
+  if(gap<=0||list.length<2||typeof seqPush!=='function'){ list.forEach(one); fin(); return; }
+  list.forEach(t=>seqPush(done=>{ try{ one(t); }catch(e){ console.error('[areaHits]',e); } setTimeout(done,gap); }));
+  seqPush(done=>{ try{ fin(); } finally{ done(); } });
+}
 function holdBeat(ms){ _beatUntil=Math.max(_beatUntil, Date.now()+(ms||800)); _beatTick(); }
 function _inMatch(){ return !!document.querySelector('#game-screen.active,#game-screen-2v2.active') && typeof G!=='undefined' && G && !G.gameOver; }
 function _presentBusy(){
@@ -23113,9 +23245,9 @@ function _beatTick(){
   if(!sh){ sh=document.createElement('div'); sh.id='beat-shield'; sh.setAttribute('aria-hidden','true');
     ['click','mousedown','pointerdown','contextmenu','dblclick','touchstart'].forEach(ev=>sh.addEventListener(ev,e=>{ e.preventDefault(); e.stopPropagation(); },{passive:false}));
     document.body.appendChild(sh); }
-  const busy=_presentBusy();
-  sh.classList.toggle('on',busy);
-  if(busy&&!_beatIv) _beatIv=setInterval(()=>{ if(!_presentBusy()){ clearInterval(_beatIv); _beatIv=null; document.getElementById('beat-shield')?.classList.remove('on'); } },100);
+  const busy=_presentBusy(); const want=()=>_presentBusy()&&!(typeof chHumanOpen==='function'&&chHumanOpen());
+  sh.classList.toggle('on',want());
+  if(busy&&!_beatIv) _beatIv=setInterval(()=>{ if(!_presentBusy()){ clearInterval(_beatIv); _beatIv=null; document.getElementById('beat-shield')?.classList.remove('on'); } else document.getElementById('beat-shield')?.classList.toggle('on',want()); },100);
 }
 
 // ═══ ROLL QUEUE ═══
@@ -23989,10 +24121,13 @@ function seqChoose(title, desc, items, onPick, onSkip){
   const body=document.createElement('div');
   body.innerHTML='<div style="font-size:11px;color:#9ca3af;margin-bottom:8px"></div>'; body.firstChild.textContent=desc||'';
   const list=document.createElement('div'); list.style.cssText='display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto';
-  items.forEach(it=>{ const b=document.createElement('button'); b.className='btn-gray btn-sm'; b.style.cssText='display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;text-align:left;width:100%';
-    const a=document.createElement('span'); a.style.cssText='font-weight:700;color:#e2e8f0'; a.textContent=it.label; b.appendChild(a);
-    if(it.sub){ const z=document.createElement('span'); z.style.cssText='font-size:10px;color:#fbbf24'; z.textContent=it.sub; b.appendChild(z); }
-    b.onclick=()=>{ takeModalCancel(); closeAllModals(); onPick(it.val); renderAll(); }; list.appendChild(b); });
+  const _hlOff=()=>document.querySelectorAll('.ch-hl').forEach(e=>e.classList.remove('ch-hl'));
+  items.forEach(it=>{ const b=document.createElement('button'); b.className='btn-gray btn-sm ch-opt'; b.style.cssText='display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:9px 11px;text-align:left;width:100%';
+    const a=document.createElement('span'); a.className='ch-lbl'; a.style.cssText='font-weight:700;color:#e2e8f0'; a.textContent=it.label; b.appendChild(a);
+    if(it.sub){ const z=document.createElement('span'); z.className='ch-sub'; z.textContent=it.sub; b.appendChild(z); }
+    const v=it.val, tu=(v!=null&&typeof v!=='object')?v:(v&&(v.uid!=null?v.uid:(v.fc&&v.fc.uid)));
+    if(tu!=null){ b.onmouseenter=()=>{ _hlOff(); const el=(typeof fxElUid==='function')?fxElUid(tu):null; if(el) el.classList.add('ch-hl'); }; b.onmouseleave=_hlOff; }
+    b.onclick=()=>{ _hlOff(); takeModalCancel(); closeAllModals(); onPick(it.val); renderAll(); }; list.appendChild(b); });
   body.appendChild(list);
   const sk=document.createElement('button'); sk.className='btn-gray'; sk.style.cssText='margin-top:10px;width:100%;padding:8px;opacity:.8'; sk.textContent='Skip';
   sk.onclick=()=>{ takeModalCancel(); closeAllModals(); if(onSkip) onSkip(); renderAll(); }; body.appendChild(sk);
@@ -26506,6 +26641,59 @@ function showRiftZone(p){
 // ═══════════════════════════════════════════════════
 // RENDER
 // ═══════════════════════════════════════════════════
+// ── USABLE GLOW (build 10.26) ── On your turn, your field cards and Herald with an activated ability you can use right
+// now (affordable, not used yet / off cooldown, not tapped, frozen, sealed or fatigued) pulse, and so do the hand cards
+// you can play — so nothing gets forgotten before End Turn. Settings → Highlight Usable Cards turns it off.
+function ablCooldownLeft(fc, abl){
+  const t=String((abl&&abl.text)||''); let n=null; const m=t.match(/every\s+(\d+)\s+turns?/i); if(m) n=+m[1]; else if(/every other turn/i.test(t)) n=2;
+  if(!n) return 0;
+  const key=String(abl.label||'').toLowerCase().replace(/['’]/g,'').replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'')+'_turn';
+  const last=fc.abilityUsed&&fc.abilityUsed[key]; if(last==null) return 0;
+  return Math.max(0,n-(G.turn-last));
+}
+function usableAbilitiesOf(p, fc, isHerald){
+  const pl=G&&G.players&&G.players[p]; if(!pl||!fc) return [];
+  const c=DB[fc.cid]; if(!c) return [];
+  const atk=G.phase==='attack'; if(G.phase!=='main'&&!atk) return [];
+  if(isHerald){ if(typeof isHeraldBroken==='function'&&isHeraldBroken(fc)) return []; }
+  else { if(!isChar(c)&&!isLoc(c)) return []; if(isLoc(c)&&typeof isLocationFrozen==='function'&&isLocationFrozen(fc)) return []; }
+  if(typeof isAbilitySealed==='function'&&isAbilitySealed(fc)) return [];
+  if((fc.fatigue||0)>0||statusActive(fc,'freeze')) return [];
+  const tax=(typeof crowsResidueTax==='function')?crowsResidueTax(p):0;
+  const own=(c.abilities||[]).filter(a=>a&&a.type==='activated');
+  const eq=isHerald?[]:(fc.attachments||[]).flatMap(id=>{ const e=DB[id]; if(!e||!e.abilities||(typeof isEquipHexed==='function'&&isEquipHexed(fc,id))) return []; return e.abilities.filter(a=>a.type==='activated'&&(!a.requiresBond||(typeof infinityBond==='function'&&infinityBond(fc)))); });
+  const gained=isHerald?[]:(Array.isArray(fc.gainedAbilities)?fc.gainedAbilities:[]).filter(a=>a&&a.type==='activated');
+  return own.concat(eq,gained).filter(a=>{
+    if(atk&&!a.attackPhase) return false;
+    if(fc.tapped&&a.label!=='Rewind') return false;
+    if(fc.abilityUsed&&fc.abilityUsed[a.label]) return false;
+    if(ablCooldownLeft(fc,a)>0) return false;
+    const bc=isHerald?(a.cost||0):(typeof ablBaseCost==='function'?ablBaseCost(fc,a):(a.cost||0)); const cost=isHerald?bc+tax:bc+(bc>0?tax:0);
+    return pl.energy>=cost;
+  });
+}
+function useGlowSync(){
+  const on=!!(typeof _gameSettings==='undefined'||_gameSettings.useGlow!==false);
+  document.body.classList.toggle('use-glow',on);
+  document.querySelectorAll('.abl-ready').forEach(e=>e.classList.remove('abl-ready'));
+  if(!on||!G||!G.players||G.gameOver||G.spectating||G._aiTurn||G._aiAuto) return;
+  if(typeof autoDrawHuman==='function'&&!autoDrawHuman()) return;
+  const p=G.activePlayer, P=G.players[p]; if(!P) return;
+  (P.field||[]).forEach(fc=>{ if(usableAbilitiesOf(p,fc,false).length){ const el=fxElUid(fc.uid); if(el) el.classList.add('abl-ready'); } });
+  if(P.herald&&usableAbilitiesOf(p,P.herald,true).length){ const el=fxHeraldEl(p); if(el) el.classList.add('abl-ready'); }
+}
+// a clear status badge on the card art (the old tiny icon under the Health bar was easy to miss): icon + turns left,
+// in the status color; hover for what it does.
+const STATUS_TIP={paralyze:'attacking needs a coin flip first (tails = the attack fizzles)', confuse:'attacking needs a coin flip first (tails = it hits itself for 2)', freeze:"can't attack or use abilities"};
+function stBadgesSync(){
+  if(!G||!G.players||typeof STATUS_META==='undefined') return;
+  Object.keys(G.players).forEach(pp=>{ const P=G.players[pp]; if(!P||!Array.isArray(P.field)) return;
+    P.field.forEach(fc=>{ const st=fc.statuses||{}; const ks=Object.keys(STATUS_META).filter(t=>st[t]>0); const el=fxElUid(fc.uid); if(!el) return;
+      let w=el.querySelector(':scope > .st-badges'); if(!ks.length){ if(w) w.remove(); return; }
+      if(!w){ w=document.createElement('div'); w.className='st-badges'; el.appendChild(w); }
+      w.innerHTML=ks.map(t=>{ const m=STATUS_META[t], n=st[t]; return `<span class="st-b st-${t}" style="--c:${m.color}" title="${m.label} — ${n} turn${n>1?'s':''} left${STATUS_TIP[t]?': '+STATUS_TIP[t]:''}">${m.icon}<i>${n}</i></span>`; }).join(''); }); });
+}
+function postRenderUX(){ try{ prizeOwedUI(); }catch(e){} try{ useGlowSync(); }catch(e){} try{ stBadgesSync(); }catch(e){} }
 function renderAll(){
   if(G&&!G._aiTurn&&G._aiAuto) G._aiAuto=false;
   if(typeof registryScanBoard==='function') try{ registryScanBoard(); }catch(e){}
@@ -26513,7 +26701,7 @@ function renderAll(){
   if(typeof fxObserve==='function') try{ fxObserve(null); }catch(e){}
   if(typeof syncAdminTester==='function') syncAdminTester();
   if(typeof tutorialWatch==='function') tutorialWatch();
-  if(G.is2v2){ renderAll2v2(); return; }
+  if(G.is2v2){ renderAll2v2(); postRenderUX(); return; }
   if(!G.spectating) recalcPassives(); // spectators get the host's already-computed board
   [1,2].forEach(p=>{
     const pl=G.players[p];
@@ -26549,6 +26737,7 @@ function renderAll(){
   _rs(renderDeckPile,1);_rs(renderDeckPile,2);
   _rs(renderRiftZone,1);_rs(renderRiftZone,2);
   _rs(renderLifeForce);
+  _rs(postRenderUX);
   if(typeof fitFields==='function') fitFields();
   // Color identity pips
   [1,2].forEach(p=>{
@@ -27208,7 +27397,7 @@ function showOpponentHandModal(oppNum){
   }
   showModalEl(`👁 Opponent's Hand (${hand.length})`, body);
 }
-function showModal(title,html){if(G&&G._aiAuto){return;}_fireModalCancel();document.getElementById('modal-title').textContent=title;document.getElementById('modal-body').innerHTML=html;document.getElementById('modal-overlay').classList.add('open');}
+function showModal(title,html){if(G&&G._aiAuto){return;}_fireModalCancel();document.getElementById('modal-title').textContent=title;document.getElementById('modal-body').innerHTML=html;document.getElementById('modal-overlay').classList.add('open');chDockSync();}
 let _pendingBlockDefault=null;
 function showModalEl(title,bodyEl,opts){
   if(G&&G._aiAuto&&!(opts&&opts.forceHuman)){ // 🧠 AI: resolve choice modals by picking an option instead of opening them
@@ -27217,7 +27406,43 @@ function showModalEl(title,bodyEl,opts){
     return;
   }
   _fireModalCancel(); // the chooser this replaces was never answered
-  document.getElementById('modal-title').textContent=title;const b=document.getElementById('modal-body');b.innerHTML='';b.appendChild(bodyEl);document.getElementById('modal-overlay').classList.add('open');}
+  document.getElementById('modal-title').textContent=title;const b=document.getElementById('modal-body');b.innerHTML='';b.appendChild(bodyEl);document.getElementById('modal-overlay').classList.add('open');chDockSync();}
+// ── DOCKED CHOICES (build 10.26) ── In a match, pick-one pop-ups (#modal-overlay — Weather Goddess, target lists,
+// ability menus, block prompts…), the Use / Skip trigger panel, the Burst window and Power Struggle sit in a panel at
+// the side with no dark overlay. The board stays readable: hover a card for Card Info, tap or right-click one for the
+// full view, use the Battle Log. Game actions wait until you choose (chGuard). Tap the panel title to fold it away.
+function chDockSync(){ const mo=document.getElementById('modal-overlay'); const on=!!(mo&&mo.classList.contains('open')&&typeof _inMatch==='function'&&_inMatch());
+  document.body.classList.toggle('ch-dock',on); const m=mo&&mo.querySelector('.modal'); if(!m) return;
+  if(!on){ m.classList.remove('ch-min'); return; }
+  let h=m.querySelector('.ch-hint'); if(!h){ h=document.createElement('div'); h.className='ch-hint'; const t=m.querySelector('#modal-title'); if(t&&t.nextSibling) m.insertBefore(h,t.nextSibling); else m.appendChild(h); }
+  h.textContent='👁 You can still look at the board: hover or tap any card to read it. Game actions wait until you choose.'; }
+// a choice the game is waiting on (a step of a card effect, combat, or one with a default answer) — tapping the empty
+// board can't dismiss it; a menu you opened yourself (an ability list) still closes when you tap the empty board.
+function chForced(){ if(!document.body.classList.contains('ch-dock')) return true;
+  return !!((typeof seqBusy==='function'&&seqBusy())||(G&&G._combatHold)||(typeof _modalCancel!=='undefined'&&_modalCancel)); }
+function chHumanOpen(){
+  if(typeof _inMatch==='function'&&!_inMatch()) return false;
+  if(document.body.classList.contains('ch-dock')&&document.querySelector('#modal-overlay.open')) return true;
+  return !!document.querySelector('#trig-ov.ask.open,#bw-ov.on,#ps3-ov.on');
+}
+const CH_ALLOW='#modal-overlay .modal,.trig-card,#bw-ov>*,#ps3-ov>*,#fullcard-modal,#game-settings-modal,.modal-overlay:not(#modal-overlay),aside,.rail-tabs,.sheet-tabs,.em-pane,#prize-owed,.mobile-card-sheet,#mobile-nav,#game-menu-cluster';
+function chNudge(){
+  const m=document.querySelector('body.ch-dock #modal-overlay .modal')||document.querySelector('#trig-ov.ask .trig-card,#bw-ov.on>*,#ps3-ov.on>*');
+  if(m){ m.classList.remove('ch-nudge'); void m.offsetWidth; m.classList.add('ch-nudge'); }
+  if(typeof spToast==='function') spToast('Make your choice first — you can still hover or tap any card to read it.',2200);
+}
+function chInspect(el){
+  const card=el.closest('.card-slot[data-uid],.herald-slot[data-herald],.hand-card'); if(!card) return false;
+  card.dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,clientX:1,clientY:1})); return true;
+}
+['click','pointerdown','mousedown','touchstart','dblclick'].forEach(ev=>document.addEventListener(ev,e=>{
+  if(!chHumanOpen()) return; const t=e.target; if(!(t instanceof Element)) return;
+  if(t.closest(CH_ALLOW)) return;
+  if(!t.closest('#game-screen,#game-screen-2v2')) return;
+  e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+  if(ev==='click'){ if(!chInspect(t)){ if(chForced()) chNudge(); else closeAllModals(); } }
+},{capture:true,passive:false}));
+document.addEventListener('click',e=>{ const h=e.target&&e.target.closest&&e.target.closest('body.ch-dock #modal-overlay #modal-title'); if(!h) return; const m=h.closest('.modal'); if(m) m.classList.toggle('ch-min'); });
 // CANCEL-SAFE CHOOSERS (build 10.4): a chooser can arm ONE cancel handler. Closing the modal without choosing (Close,
 // clicking outside, another modal replacing it) runs it once; a real choice disarms it first (takeModalCancel).
 let _modalCancel=null;
@@ -27225,7 +27450,7 @@ function armModalCancel(fn){ _modalCancel=fn||null; }
 function takeModalCancel(){ const f=_modalCancel; _modalCancel=null; return f; }
 function _fireModalCancel(){ const f=takeModalCancel(); if(f){ try{ f(); }catch(e){ console.warn('[modal cancel]',e); } } }
 function closeAllModals(){document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('open'));_discardSearchState=null;
-  _fireModalCancel();
+  _fireModalCancel(); if(typeof chDockSync==='function') chDockSync();
   // A dismissed block prompt resolves as "no block" so the AI's turn can't hang.
   if(_pendingBlockDefault){ const f=_pendingBlockDefault; _pendingBlockDefault=null; setTimeout(f,0); }
 }
@@ -27827,7 +28052,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.25';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.26';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -36447,6 +36672,20 @@ window.addEventListener('load',async()=>{
           <div class="settings-label-desc">Big "Your Turn" announcements</div>
         </div>
         <div class="settings-toggle on" id="set-banners" onclick="toggleSetting('banners')"><div class="settings-toggle-knob"></div></div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Auto Draw</div>
+          <div class="settings-label-desc">Draw automatically when your turn starts</div>
+        </div>
+        <div class="settings-toggle on" id="set-autodraw" onclick="toggleSetting('autodraw')"><div class="settings-toggle-knob"></div></div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Highlight Usable Cards</div>
+          <div class="settings-label-desc">Cards you can still play or use this turn glow</div>
+        </div>
+        <div class="settings-toggle on" id="set-useglow" onclick="toggleSetting('useglow')"><div class="settings-toggle-knob"></div></div>
       </div>
     </div>
 
