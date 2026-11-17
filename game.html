@@ -9403,7 +9403,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.27 · Status FX</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.28 · Surge Rule</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10460,6 +10460,13 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.22'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.28', date:'2026-11-17',
+    cards:[], abilities:[
+      "SURGE ENERGY (Rulk's rule, card text unchanged — 'Skip your next draw step'): the skipped Draw step gives NO card and NO +1 Energy that turn. The step still happens otherwise (untap, regeneration, Location Energy, Power Drain) and still counts as the Draw step for 'draw first'. The turn after is back to normal. A skipped turn (Freeze Over) never reaches the Draw step, so it never gets the +1 either (unchanged).",
+      "ENGINE: turnDraw(p) now banks the Draw step's +1 Energy itself (only when it really draws). Every Draw-step site stopped adding the +1 on its own: the human Draw phase (log '+1⚡ (banked energy)' only on a real draw), the 1v1 CPU, the 2v2 CPU boards, the energy-card auto-advance and the tutorial CPU.",
+      "TUTORIAL text: Surge step '…you skip your next Draw step (no card, no +1 Energy)…'; the skipped draw step '…Surge skips this Draw step. No card, and no +1 Energy this turn. Next turn it's back to normal.' (the last round only duels Heralds, so no step needs that Energy)."],
+    screens:[],
+    data:["GAME_BUILD stays '10.22' on purpose: each game computes its own player's Draw step and sends the board, so a PC still on the old rule can't desync a match — it just gives its own player the +1 after Surge until it ports this."] },
   { build:'10.27', date:'2026-11-17',
     cards:[], abilities:[],
     screens:[
@@ -16876,9 +16883,9 @@ function resolveTeamLifeAttack(attackerPlayer, afc, blocker, enemyTeam){
 function runAI2v2(p){
   if(G.gameOver)return;
   const pl=G.players[p];
-  pl.energy+=1; if(typeof resetEnergyCardFlag==='function')resetEnergyCardFlag(p);
+  if(typeof resetEnergyCardFlag==='function')resetEnergyCardFlag(p);
   if(typeof untapAll==='function')untapAll(p);
-  turnDraw(p);
+  turnDraw(p);   // banks the +1 too (build 10.28)
   if(typeof isLockedDown==='function' && !isLockedDown(p)){ let g=0; pl.field.filter(f=>isLoc(DB[f.cid]) && !isLocationFrozen(f)).forEach(()=>g++); if(g>0)pl.energy+=g; }
   G.phase='main'; renderAll();
   aiLater(()=>{
@@ -21202,8 +21209,12 @@ function endTurnNow(){
   execEnd();
 }
 
-// Turn draw: Surge Energy makes you skip your NEXT draw step (you still bank the +1 Energy).
-function turnDraw(p){ const pl=G.players[p]; if(pl&&pl.skipNextDraw){ pl.skipNextDraw=false; log(`⚡ Surge Energy: ${pname(p)} skips this draw.`,'info'); return false; } drawCard(p); return true; }
+// Turn draw: the Draw step's card AND its +1 Energy (build 10.28). Surge Energy makes you skip your NEXT draw step:
+// no card and no +1 Energy that turn (Rulk's rule — a skipped draw or a skipped turn never gets the +1); the turn after is
+// back to normal. Location Energy and the untap still happen.
+function turnDraw(p){ const pl=G.players[p]; if(!pl) return false;
+  if(pl.skipNextDraw){ pl.skipNextDraw=false; log(`⚡ Surge Energy: ${pname(p)} skips this Draw step — no card and no +1 Energy this turn.`,'info'); return false; }
+  pl.energy+=1; drawCard(p); return true; }
 function doPhase(ph){
   if(!iControlActive())return;
   // TUTORIAL PHASE-LOCK: during a guided step, only the phase Virora is asking for works.
@@ -21232,7 +21243,7 @@ function doPhase(ph){
   if(G.phasesDone.includes(ph))return;
   G.phasesDone.push(ph);G.phase=ph;
   if(ph==='draw'){
-    G.players[mp].energy+=1;resetEnergyCardFlag(mp);turnDraw(mp);log('+1⚡ (banked energy)','gain');
+    resetEnergyCardFlag(mp); if(turnDraw(mp)) log('+1⚡ (banked energy)','gain');   // build 10.28: turnDraw banks the +1 (not on a skipped draw)
     gainLocationEnergy(mp); // auto resource — energy from your Locations
     G.phasesDone.push('resource'); // keep legacy flag consistent
     untapAll(mp);
@@ -21269,7 +21280,7 @@ let _endingTurn=false;
 // ── AUTOMATIC DRAW (build 10.26) ── When your turn starts (after the turn banner, start-of-turn effects and any choice
 // they open), the game draws for you and moves on to your Main Phase. It holds when a card effect says to act first:
 // drawHoldReason(p) is the hook a "before you draw / instead of drawing" card returns a reason from (MTG-style priority).
-// Surge Energy's "skip your next draw" still applies (turnDraw). Off in the tutorial (Virora walks you through Draw)
+// Surge Energy's "skip your next draw" still applies (turnDraw: no card, no +1 Energy). Off in the tutorial (Virora walks you through Draw)
 // and when Settings → Auto Draw is off.
 function drawHoldReason(p){
   const P=G&&G.players&&G.players[p]; if(!P) return null;
@@ -21279,7 +21290,7 @@ function drawHoldReason(p){
 // ── DRAW FIRST (build 10.27) ── On a turn you control, nothing moves on until your Draw step has happened — whether
 // Auto Draw did it or you pressed DRAW. Main, Attack and End Turn are refused with a nudge (the DRAW button pulses).
 // The only ways around it are card effects: a skipped turn (Freeze Over) never reaches the Draw step, and "skip your
-// next draw" (Surge Energy) still runs the step, just without the card. The guided tutorial keeps its own step order.
+// next draw" (Surge Energy) still runs the step, without the card or its +1 Energy. The guided tutorial keeps its own step order.
 function drawOwed(){
   if(typeof G==='undefined'||!G||!G.players||G.gameOver||G.spectating) return false;
   if(G.tutorialMode&&typeof _tutPlayMode!=='undefined'&&_tutPlayMode!=='free') return false;
@@ -22637,7 +22648,7 @@ function runAI(){
   try{ if(G&&!G._emGl&&!G.is2v2&&!G.tutorialMode&&!G.onlineMode){ G._emGl=true; if(Math.random()<.55) emCpuSay('gl',600); } }catch(e){}
   if(!G||G.gameOver||G.activePlayer!==2)return;
   if(G.tutorialMode){ if(typeof runTutorialAI==='function')runTutorialAI(); return; }
-  G.players[2].energy+=1;resetEnergyCardFlag(2);turnDraw(2);G.phasesDone.push('draw');G.phase='draw';
+  resetEnergyCardFlag(2);turnDraw(2);G.phasesDone.push('draw');G.phase='draw';   // turnDraw banks the +1 (build 10.28)
   untapAll(2);
   G.players[2].usedAbilityThisTurn=false;
   runPowerDrain(2);
@@ -22976,7 +22987,7 @@ function playEnergyCard(p, cid){
     // Auto-advance to main phase if not there yet
     if(G.activePlayer===p&&!G.phasesDone.includes('main')){
       // Push through to main phase
-      if(!G.phasesDone.includes('draw')){G.phasesDone.push('draw');G.players[p].energy+=1;resetEnergyCardFlag(p);turnDraw(p);gainLocationEnergy(p);}
+      if(!G.phasesDone.includes('draw')){G.phasesDone.push('draw');resetEnergyCardFlag(p);turnDraw(p);gainLocationEnergy(p);}
       if(!G.phasesDone.includes('resource'))G.phasesDone.push('resource');
       G.phasesDone.push('main');G.phase='main';
       log('Auto-advanced to Main Phase to play energy card.','info');
@@ -28238,7 +28249,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.27';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.28';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -30641,8 +30652,8 @@ function runTutorialAI(){
   if(!G||G.gameOver||G.activePlayer!==2) return;
   const pl=G.players[2];
   G.tut=G.tut||{shown:{}}; G.tut.aiTurn=(G.tut.aiTurn||0)+1;
-  pl.energy+=1; if(typeof resetEnergyCardFlag==='function') resetEnergyCardFlag(2);
-  if(typeof turnDraw==='function') turnDraw(2); else drawCard(2);
+  if(typeof resetEnergyCardFlag==='function') resetEnergyCardFlag(2);
+  turnDraw(2);   // banks the +1 too (build 10.28)
   if(typeof untapAll==='function') untapAll(2);
   G.phase='main'; G.phasesDone=['draw','main'];
   if(typeof renderAll==='function') renderAll();
@@ -30728,12 +30739,12 @@ function buildTutorialSteps(){
     {chapter:TUT_CH.ascend, waitBefore:_onMyTurn, target:()=>_tutViroraSel(), text:"My turn begins and the <b>Burn</b> ticks: −1. Statuses linger until they fade, or until something <b>cleanses</b> them. Watch this."},
     {target:'#ph-draw', act:'draw', doHint:'Tap DRAW', text:"<b>Draw</b>. Your Headquarters adds +1 Energy now too."},
     {target:'#ph-main', act:'main', doHint:'Tap MAIN', text:"<b>Main phase.</b>"},
-    {target:()=>TS.hand('surge_energy'), act:'play_energy', allow:'surge_energy', doHint:'Play Surge Energy', text:"<b>Surge Energy</b>: <b>+4 right now</b>, but you <b>skip your next draw</b>. It's a trade, and today it's worth it. Play it."},
+    {target:()=>TS.hand('surge_energy'), act:'play_energy', allow:'surge_energy', doHint:'Play Surge Energy', text:"<b>Surge Energy</b>: <b>+4 right now</b>, but you <b>skip your next Draw step</b> (no card, no +1 Energy). It's a trade, and today it's worth it. Play it."},
     {wide:true, text:"The heart of the Courts: <b>transformation lines</b>. A Base Character can evolve into higher forms, and some lines <b>branch</b>.", html:_tutTreeHtml()},
     {wide:true, choice:true, text:"You're holding <b>both</b> of my forms, but only one can happen, and whichever you pick, I stay on that path. <b>Choose your path:</b>", html:_tutPathsHtml()},
     // the chosen path's steps are spliced in right here by _tutChoosePath()
     // ── VII · CLASH OF HERALDS ──
-    {chapter:TUT_CH.heralds, waitBefore:_onMyTurn, target:'#ph-draw', act:'draw', doHint:'Tap DRAW', text:"<b>Draw</b>... or rather, don't: Surge skips this draw. You still bank your Energy."},
+    {chapter:TUT_CH.heralds, waitBefore:_onMyTurn, target:'#ph-draw', act:'draw', doHint:'Tap DRAW', text:"<b>Draw</b>... or rather, don't: Surge skips this Draw step. No card, and no +1 Energy this turn. Next turn it's back to normal."},
     {target:()=>[TS.herald(1),TS.herald(2)], text:"<b>Round 4.</b> Heralds never attack characters, but from now on, once per turn, your Herald may <b>duel</b> theirs. A Herald that survives hits back for <b>half</b> its ATK."},
     {target:()=>TS.herald(2), text:"A Herald at 0 DEF is <b>BROKEN</b>: every ability gone for good, and its breaker takes <b>TWO Prizes</b>. The Surfacer has <b>13 ATK</b>. Daredevil has <b>10 DEF</b>…"},
     {target:'#ph-attack', act:'attack_phase', doHint:'Tap ATTACK', text:"No need for the Main phase. Go straight to <b>Attack</b>."},
