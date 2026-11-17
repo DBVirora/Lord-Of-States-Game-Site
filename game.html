@@ -8682,6 +8682,71 @@ body.ch-dock #modal-overlay .modal.ch-min>*:not(#modal-title){display:none!impor
 .st-badges{position:absolute;left:4px;top:24px;display:flex;flex-direction:column;align-items:flex-start;gap:3px;z-index:6}
 .st-b{display:inline-flex;align-items:center;gap:2px;font:800 12px/1 system-ui,sans-serif;padding:3px 7px 3px 5px;border-radius:999px;background:rgba(10,8,20,.9);border:1.5px solid var(--c);color:#fff;box-shadow:0 0 9px var(--c)}
 .st-b i{font-style:normal;color:var(--c);font-size:11px}
+/* build 10.27 · tapped cards: badges stay upright at the card's visual top-left */
+.card-slot.tapped>.st-badges{top:auto;bottom:4px;left:4px;transform-origin:0 100%;transform:rotate(-90deg) translateY(100%)}
+@keyframes stPop{0%{transform:scale(1)}35%{transform:scale(1.45)}100%{transform:scale(1)}}
+.st-b.pop{animation:stPop .5s ease}
+/* build 10.27 · status auras */
+.st-aura{position:absolute;inset:0;pointer-events:none;z-index:5;border-radius:inherit;overflow:hidden}
+.st-aura>*{position:absolute;animation-delay:calc((var(--t,0) + var(--o,0)) * -1s)!important}
+.st-aura .sa-ring{inset:0;border-radius:inherit;box-shadow:inset 0 0 0 2px var(--c),inset 0 0 18px var(--c);animation:saRing 2s ease-in-out infinite}
+@keyframes saRing{0%,100%{opacity:.6}50%{opacity:1}}
+.st-aura .sa-bolt{top:6%;height:62%;width:22%;opacity:0;fill:none;stroke:#fffbe6;stroke-width:3.2;stroke-linejoin:round;filter:drop-shadow(0 0 3px #facc15) drop-shadow(0 0 6px #facc15)}
+.st-aura .sa-bolt.s1{left:8%;animation:saBolt 2.6s linear infinite}
+.st-aura .sa-bolt.s2{right:8%;top:24%;animation:saBolt 3.4s linear infinite;--o:1.2}
+@keyframes saBolt{0%,86%,100%{opacity:0}88%{opacity:1}90%{opacity:.15}92%{opacity:.95}95%{opacity:0}}
+.st-aura .sa-zap{inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(254,240,138,.0),rgba(250,204,21,.22));animation:saZap 2.6s linear infinite}
+@keyframes saZap{0%,86%,100%{opacity:.35}88%,92%{opacity:1}}
+.st-aura .sa-frost{inset:0;background:radial-gradient(circle at 0 0,rgba(224,242,254,.85),rgba(186,230,253,.35) 18%,transparent 34%),radial-gradient(circle at 100% 100%,rgba(224,242,254,.8),rgba(186,230,253,.3) 18%,transparent 36%),radial-gradient(circle at 100% 0,rgba(224,242,254,.6),transparent 26%),radial-gradient(circle at 0 100%,rgba(224,242,254,.6),transparent 26%);animation:saFrost 3.2s ease-in-out infinite}
+.st-aura .sa-rime{inset:0;background:rgba(125,211,252,.16);mix-blend-mode:screen}
+@keyframes saFrost{0%,100%{opacity:.75}50%{opacity:1}}
+.st-aura .sa-heat{left:0;right:0;bottom:0;height:46%;transform-origin:50% 100%;background:linear-gradient(0deg,rgba(249,115,22,.55),rgba(253,186,116,.18) 55%,transparent);animation:saHeat 1.1s ease-in-out infinite alternate}
+@keyframes saHeat{0%{opacity:.65;transform:scaleY(.86)}100%{opacity:1;transform:scaleY(1.06)}}
+.st-aura .sa-spark{left:var(--x);bottom:6%;width:4px;height:4px;border-radius:50%;background:#fdba74;box-shadow:0 0 6px 2px #f97316;animation:saSpark 2s ease-out infinite}
+@keyframes saSpark{0%{opacity:0;transform:translateY(0)}15%{opacity:1}100%{opacity:0;transform:translate(6px,-90px)}}
+.st-aura .sa-haze{left:0;right:0;bottom:0;height:52%;background:radial-gradient(ellipse at 50% 100%,rgba(132,204,22,.5),transparent 70%);animation:saFrost 2.4s ease-in-out infinite}
+.st-aura .sa-bub{left:var(--x);bottom:4%;width:8px;height:8px;border-radius:50%;border:1.5px solid rgba(190,242,100,.9);background:rgba(132,204,22,.25);animation:saBub 2.6s ease-in infinite}
+@keyframes saBub{0%{opacity:0;transform:translateY(0) scale(.6)}20%{opacity:1}90%{opacity:.8}100%{opacity:0;transform:translate(-4px,-70px) scale(1.1)}}
+.st-aura .sa-swirl{left:50%;top:50%;width:160%;aspect-ratio:1;margin:-80% 0 0 -80%;background:conic-gradient(from 0deg,transparent,rgba(192,132,252,.32),transparent 30%,rgba(192,132,252,.28),transparent 62%,rgba(192,132,252,.3),transparent);border-radius:50%;animation:saSwirl 7s linear infinite}
+@keyframes saSwirl{to{transform:rotate(360deg)}}
+.st-aura.still>*{animation:none!important}
+.st-aura.still .sa-bolt,.st-aura.still .sa-spark,.st-aura.still .sa-bub{display:none}
+/* build 10.27 · the quick effect over a card (start of turn / status landed) */
+.stb{position:fixed;pointer-events:none;z-index:305}
+.stb .stb-clip{position:absolute;inset:0;border-radius:10px;overflow:hidden}
+.stb .stb-clip>*{position:absolute}
+.stb-icon{position:absolute;left:50%;top:50%;font-size:34px;line-height:1;transform:translate(-50%,-50%);filter:drop-shadow(0 0 8px var(--c)) drop-shadow(0 0 2px #000);animation:stbIcon var(--d) ease-out forwards}
+@keyframes stbIcon{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.25)}70%{opacity:1;transform:translate(-50%,-55%) scale(1)}100%{opacity:0;transform:translate(-50%,-70%) scale(.9)}}
+.stb-paralyze{animation:stbJolt var(--d) linear}
+@keyframes stbJolt{0%,100%{transform:none}10%{transform:translate(-3px,1px)}20%{transform:translate(3px,-1px)}30%{transform:translate(-2px,0)}40%{transform:translate(2px,1px)}50%{transform:none}}
+.stb .stb-flash{inset:0;background:radial-gradient(ellipse at 50% 45%,rgba(255,255,255,.95),rgba(250,204,21,.6) 45%,rgba(250,204,21,0) 80%);opacity:0;animation:stbFlash var(--d) steps(1,end)}
+@keyframes stbFlash{0%{opacity:0}6%{opacity:.95}14%{opacity:.1}22%{opacity:.85}32%{opacity:0}46%{opacity:.6}54%,100%{opacity:0}}
+.stb .stb-bolt{position:absolute;top:0;height:100%;width:34%;fill:none;stroke:#fffde7;stroke-width:4.4;stroke-linejoin:round;filter:drop-shadow(0 0 4px #facc15) drop-shadow(0 0 10px #eab308);opacity:0;animation:stbBolt var(--d) linear forwards}
+.stb .stb-bolt.k0{left:2%}.stb .stb-bolt.k1{left:34%;animation-delay:calc(var(--d) * .12)}.stb .stb-bolt.k2{right:2%;animation-delay:calc(var(--d) * .26)}
+@keyframes stbBolt{0%{opacity:0}4%{opacity:1}12%{opacity:.2}18%{opacity:1}30%{opacity:0}100%{opacity:0}}
+.stb .stb-frost{inset:0;background:radial-gradient(circle at 50% 50%,rgba(240,249,255,.9),rgba(125,211,252,.55) 40%,rgba(56,189,248,.25) 70%,transparent);animation:stbFrost var(--d) ease-out forwards}
+@keyframes stbFrost{0%{opacity:0;transform:scale(.3)}30%{opacity:1;transform:scale(1.05)}70%{opacity:.8}100%{opacity:0;transform:scale(1.1)}}
+.stb .stb-crack{inset:0;width:100%;height:100%;fill:none;stroke:#f0f9ff;stroke-width:1.6;filter:drop-shadow(0 0 3px #7dd3fc);stroke-dasharray:70;stroke-dashoffset:70;animation:stbCrack var(--d) ease-out forwards}
+@keyframes stbCrack{0%{stroke-dashoffset:70;opacity:1}45%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:0;opacity:0}}
+.stb-snow{position:absolute;left:50%;top:50%;font-size:16px;color:#e0f2fe;text-shadow:0 0 6px #38bdf8;transform:translate(-50%,-50%);animation:stbSnow var(--d) ease-out forwards}
+@keyframes stbSnow{0%{opacity:0;transform:translate(-50%,-50%) rotate(var(--a)) translateY(0) scale(.5)}25%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) rotate(var(--a)) translateY(-78px) scale(1.1)}}
+.stb .stb-heat{left:0;right:0;bottom:0;height:70%;background:linear-gradient(0deg,rgba(234,88,12,.85),rgba(249,115,22,.45) 45%,transparent);animation:stbHeat var(--d) ease-out forwards}
+@keyframes stbHeat{0%{opacity:0;transform:translateY(30%)}25%{opacity:1;transform:none}75%{opacity:.8}100%{opacity:0}}
+.stb .stb-flame{left:var(--x);bottom:-10%;width:30%;height:calc(62% * var(--k));margin-left:-15%;border-radius:50% 50% 45% 45%/70% 70% 30% 30%;background:radial-gradient(ellipse at 50% 85%,#fff7ed 0,#fde047 22%,#f97316 52%,rgba(234,88,12,0) 74%);transform-origin:50% 100%;animation:stbFlame var(--d) ease-out forwards}
+@keyframes stbFlame{0%{opacity:0;transform:scaleY(.2)}25%{opacity:1;transform:scaleY(1.05) skewX(-4deg)}50%{transform:scaleY(.9) skewX(5deg)}75%{opacity:.9;transform:scaleY(1) skewX(-3deg)}100%{opacity:0;transform:scaleY(.6)}}
+.stb-ember{position:absolute;left:var(--x);bottom:12%;width:5px;height:5px;border-radius:50%;background:#fed7aa;box-shadow:0 0 8px 3px #f97316;opacity:0;animation:stbEmber var(--d) ease-out forwards;animation-delay:calc(var(--d) * var(--o))}
+@keyframes stbEmber{0%{opacity:0;transform:none}20%{opacity:1}100%{opacity:0;transform:translate(8px,-120px)}}
+.stb .stb-haze{inset:0;background:radial-gradient(ellipse at 50% 80%,rgba(132,204,22,.75),rgba(77,124,15,.3) 55%,transparent 80%);animation:stbHeat var(--d) ease-out forwards}
+.stb .stb-bub{left:var(--x);bottom:-6%;width:var(--z);height:var(--z);border-radius:50%;border:2px solid #d9f99d;background:rgba(163,230,53,.3);box-shadow:0 0 6px #84cc16;opacity:0;animation:stbBub var(--d) ease-in forwards;animation-delay:calc(var(--d) * var(--o))}
+@keyframes stbBub{0%{opacity:0;transform:translateY(0)}20%{opacity:1}80%{opacity:1}100%{opacity:0;transform:translate(-5px,-125px) scale(1.25)}}
+.stb .stb-swirl{left:50%;top:50%;width:150%;aspect-ratio:1;margin:-75% 0 0 -75%;border-radius:50%;background:conic-gradient(rgba(192,132,252,.0),rgba(192,132,252,.75),rgba(192,132,252,0) 34%,rgba(216,180,254,.7),rgba(192,132,252,0) 67%,rgba(192,132,252,.7),rgba(192,132,252,0));animation:stbSwirl var(--d) ease-in-out forwards}
+@keyframes stbSwirl{0%{opacity:0;transform:rotate(0) scale(.5)}30%{opacity:1}100%{opacity:0;transform:rotate(540deg) scale(1)}}
+.stb-star{position:absolute;left:50%;top:22%;font-size:15px;color:#f5d0fe;text-shadow:0 0 6px #c084fc;animation:stbStar var(--d) linear forwards}
+@keyframes stbStar{0%{opacity:0;transform:translate(-50%,-50%) rotate(var(--a)) translateX(30px) rotate(calc(var(--a) * -1))}20%{opacity:1}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) rotate(calc(var(--a) + 360deg)) translateX(30px) rotate(calc((var(--a) + 360deg) * -1))}}
+/* build 10.27 · draw first */
+@keyframes drawDue{0%,100%{box-shadow:0 0 0 2px rgba(251,191,36,.8),0 0 10px rgba(251,191,36,.45)}50%{box-shadow:0 0 0 3px #fbbf24,0 0 22px 6px rgba(251,191,36,.7)}}
+.phase-pill.draw-due{animation:drawDue 1.4s ease-in-out infinite;opacity:1!important;filter:none!important}
+.phase-pill.draw-nudge{animation:chNudge .45s ease,drawDue 1.4s ease-in-out .45s infinite}
 /* build 10.26 · usable glow */
 @keyframes ablGlow{0%,100%{box-shadow:0 0 0 2px rgba(196,181,253,.9),0 0 10px 2px rgba(167,139,250,.55)}50%{box-shadow:0 0 0 2px rgba(253,224,71,.95),0 0 20px 6px rgba(250,204,21,.55)}}
 @keyframes playGlow{0%,100%{box-shadow:0 0 0 1px rgba(34,197,94,.6),0 0 6px rgba(34,197,94,.35)}50%{box-shadow:0 0 0 2px rgba(74,222,128,.95),0 0 16px 4px rgba(74,222,128,.5)}}
@@ -9338,7 +9403,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.26 · Turn Flow</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.27 · Status FX</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10395,6 +10460,16 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.22'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.27', date:'2026-11-17',
+    cards:[], abilities:[],
+    screens:[
+      "STATUS AURA: every field card with a status keeps an aura while it lasts (child .st-aura over the art, under the badges, clipped to the card). All: an inset ring in the first status' color (2px + 18px inner glow, breathing 2 s). Paralyze: two thin white-gold lightning bolts that flash briefly every ~2.6 s / 3.4 s + a faint gold tint that flickers with them. Freeze: frost gradients creeping in from the four corners (breathing 3.2 s) + a light ice-blue tint. Burn: an orange heat gradient over the bottom half (flicker 1.1 s) + 3 embers rising. Poison: green haze at the bottom + 3 bubbles rising. Confusion: a slow purple swirl (conic gradient, 7 s per turn). Several statuses stack their layers. Animations keep their phase across re-renders (delay = −clock time). Settings off / reduced motion → only the steady ring (+ frost tint).",
+      "TURN EFFECT: when the turn changes (any player), every afflicted character — the new active player's side first — plays a ~0.8 s effect over its card (0.48 s on Fast), ONE AT A TIME, holding the game (CPU, auto draw, queued effects) until done. Waits for the turn banner, card reveal, transform/fusion, coin toss and any running hit animation. Paralyze: white-gold flash flickers + 3 lightning bolts striking down the card + the effect jolts. Freeze: an icy burst from the center + frost cracks drawing outward + 6 snowflakes flying out. Burn: 5 flame tongues rising from the bottom + heat wash + embers. Poison: green haze + 7 bubbles rising. Confusion: a purple spiral spinning 1.5 turns + 3 stars orbiting. All: the status icon pops big in the center and floats away, the card's badge for that status pops, the status sound plays (once per status type per turn change). Skipped for a card that left the field or whose status ended.",
+      "STATUS LANDED: showStatusFx(uid,type) now queues the same effect, so it plays after the hit's damage popup instead of on top of it (several statuses at once play one after another). Old quick flash only when the animations are off / Instant speed.",
+      "BADGES ON TAPPED CARDS: the status badges stay upright at the tapped card's visual top-left (Rulk's friend saw no status symbol on a tapped Paralyzed card).",
+      "SETTINGS: 'Status Effect Animations — Auras on afflicted cards and a quick effect each turn' (statusFx, default on). Instant game speed never plays the queued effects.",
+      "DRAW FIRST: on a turn the local player controls (not the guided tutorial), Main / Attack / End (phase buttons) and END TURN are refused until 'draw' is in phasesDone — whether Auto Draw ran it or the player pressed DRAW. Refusal logs + toasts '🎴 Draw your card first — tap DRAW.' (or 'Draw first — <reason>' when drawHoldReason holds it) and shakes the DRAW pill; the DRAW pill pulses gold (class draw-due) the whole time the draw is owed. Exceptions are card effects only: a skipped turn (Freeze Over) never reaches the Draw step; Surge Energy's skip still runs the step (energy, untap, regen) without the card."],
+    data:["No rules change: GAME_BUILD stays '10.22'."] },
   { build:'10.26', date:'2026-11-17',
     cards:[], abilities:[
       "WEATHER GODDESS chooser text (no rules change): Thunderstorm 'When one of your characters attacks and deals damage, the character it hit is Paralyzed. Lasts until your next turn.' · Tailwind 'Your characters get +1 Attack until your next turn.'"],
@@ -21123,6 +21198,7 @@ function endTurnNow(){
   // ending the turn on whichever human board is currently active. Online: only
   // this client's own seat.
   if(!iControlActive())return;
+  if(drawOwed()){ drawNag(); return; }   // build 10.27: you can't end your turn before your Draw step
   execEnd();
 }
 
@@ -21139,6 +21215,7 @@ function doPhase(ph){
     }
   }
   if(prizeOwed()){ prizeNag(); return; }   // build 10.26: take your Prize first
+  if(ph!=='draw'&&ph!=='resource'&&drawOwed()){ drawNag(); return; }   // build 10.27: the Draw step comes first
   const mp = G.is2v2 ? G.activePlayer : 1; // "my player" — the active human board
   // End turn is always allowed — skip directly regardless of phase order
   if(ph==='end'){
@@ -21199,6 +21276,24 @@ function drawHoldReason(p){
   if(P._drawHold) return P._drawHold;                 // a card effect asked to hold the draw this turn
   return null;
 }
+// ── DRAW FIRST (build 10.27) ── On a turn you control, nothing moves on until your Draw step has happened — whether
+// Auto Draw did it or you pressed DRAW. Main, Attack and End Turn are refused with a nudge (the DRAW button pulses).
+// The only ways around it are card effects: a skipped turn (Freeze Over) never reaches the Draw step, and "skip your
+// next draw" (Surge Energy) still runs the step, just without the card. The guided tutorial keeps its own step order.
+function drawOwed(){
+  if(typeof G==='undefined'||!G||!G.players||G.gameOver||G.spectating) return false;
+  if(G.tutorialMode&&typeof _tutPlayMode!=='undefined'&&_tutPlayMode!=='free') return false;
+  if(G._aiTurn||G._aiAuto) return false;
+  if(typeof iControlActive==='function'&&!iControlActive()) return false;
+  return !(G.phasesDone||[]).includes('draw');
+}
+function drawNag(){
+  const why=drawHoldReason(G.activePlayer);
+  const msg=why?('🎴 Draw first — '+why+'.'):'🎴 Draw your card first — tap DRAW.';
+  log(msg,'dmg'); if(typeof spToast==='function') spToast(msg,2200);
+  document.querySelectorAll('#ph-draw,#v2-ph-draw').forEach(b=>{ b.classList.remove('draw-nudge'); void b.offsetWidth; b.classList.add('draw-nudge'); });
+}
+function drawDueUI(){ const on=drawOwed(); document.querySelectorAll('#ph-draw,#v2-ph-draw').forEach(b=>b.classList.toggle('draw-due',on)); }
 function autoDrawHuman(){
   if(G.onlineMode||G.onlineMode2v2) return iControlActive();
   if(typeof gameMode!=='undefined'&&gameMode==='pvp') return !G._aiTurn;
@@ -21790,6 +21885,7 @@ let _gameSettings = {
   entrances: true,   // Herald entrance cinematic before the coin toss
   autoDraw: true,    // build 10.26: draw automatically at the start of your turn (unless a card effect holds it)
   useGlow: true,     // build 10.26: pulse cards you can still play / use this turn
+  statusFx: true,    // build 10.27: status auras animate + an effect over afflicted cards each turn
   invites: 'friends' // Game Invites (build 10.19): who can send you match / party invites — 'friends' · 'anyone' · 'off'
 };
 // TEXT SIZE (build 9.6): scales menu pages, panels, card views and the match side rail (90%–130%).
@@ -21930,6 +22026,7 @@ function syncSettingsUI(){
   t('set-banners', _gameSettings.banners);
   t('set-autodraw', _gameSettings.autoDraw!==false);
   t('set-useglow', _gameSettings.useGlow!==false);
+  t('set-statusfx', _gameSettings.statusFx!==false);
   const vol=document.getElementById('set-sfx-vol');
   if(vol)vol.value=Math.round(_gameSettings.sfxVolume*100);
   const mvol=document.getElementById('set-music-vol');
@@ -21975,6 +22072,12 @@ function toggleSetting(key){
     case 'autodraw':
       _gameSettings.autoDraw = _gameSettings.autoDraw===false;
       document.getElementById('set-autodraw').classList.toggle('on', _gameSettings.autoDraw);
+      break;
+    case 'statusfx':
+      _gameSettings.statusFx = _gameSettings.statusFx===false;
+      document.getElementById('set-statusfx').classList.toggle('on', _gameSettings.statusFx);
+      if(!_gameSettings.statusFx&&typeof stFxReset==='function') stFxReset();
+      if(typeof renderAll==='function'&&typeof G!=='undefined'&&G&&G.players) try{ renderAll(); }catch(e){}
       break;
     case 'useglow':
       _gameSettings.useGlow = _gameSettings.useGlow===false;
@@ -23238,6 +23341,7 @@ function _presentBusy(){
   if(typeof _tfAnimating!=='undefined'&&_tfAnimating) return true;
   if(typeof _fuAnimating!=='undefined'&&_fuAnimating) return true;
   if(typeof seqBusy==='function'&&seqBusy()) return true;
+  if(typeof stFxBusy==='function'&&stFxBusy()) return true;   // build 10.27: status effects play one at a time
   return !!document.querySelector('#instant-reveal-overlay.open,#card-play-zoom.playing,#herald-entrance.open,#trig-ov.open');
 }
 function _beatTick(){
@@ -23367,6 +23471,7 @@ function seqBusy(){ return SEQ.running||SEQ.q.length>0; }
 function seqReset(){ SEQ.q=[]; SEQ.running=false; SEQ.gen++; clearTimeout(SEQ.t); try{ trigHide(); }catch(e){} }
 function _seqIdle(){
   if(typeof _beatUntil!=='undefined'&&Date.now()<_beatUntil) return false;
+  if(typeof stFxBusy==='function'&&stFxBusy()) return false;   // build 10.27: let status effects finish first
   if(typeof _rollBusy==='function'&&_rollBusy()) return false;
   if(typeof _tfAnimating!=='undefined'&&_tfAnimating) return false;
   if(typeof _fuAnimating!=='undefined'&&_fuAnimating) return false;
@@ -25856,6 +25961,7 @@ function tutorialWatch(){
 //  • a floating status icon rising off the card
 //  • per-status card motion (paralyze jitters, confusion wobbles)
 function showStatusFx(targetUid, type){
+  if(typeof stBurst==='function'&&stBurst(targetUid,type,{apply:true})) return;   // build 10.27: queued, after the hit
   if(typeof holdBeat==='function') holdBeat(700);
   if(typeof STATUS_META==='undefined')return;
   const m=STATUS_META[type]; if(!m||!targetUid)return;
@@ -26682,18 +26788,98 @@ function useGlowSync(){
   (P.field||[]).forEach(fc=>{ if(usableAbilitiesOf(p,fc,false).length){ const el=fxElUid(fc.uid); if(el) el.classList.add('abl-ready'); } });
   if(P.herald&&usableAbilitiesOf(p,P.herald,true).length){ const el=fxHeraldEl(p); if(el) el.classList.add('abl-ready'); }
 }
+// ── STATUS EFFECTS YOU CAN SEE (build 10.27) ──
+// • AURA: while a card has a status it keeps a living aura in that status' color — ⚡ crackling sparks, ❄️ frost creeping
+//   in from the corners, 🔥 embers, ☠️ green haze and bubbles, 😵 a slow purple swirl (Settings off / reduced motion → a
+//   steady colored edge). Animations keep their phase across re-renders (--t = clock time), so nothing restarts.
+// • TURN EFFECT: at the start of every turn each afflicted character (the active player's side first) plays a quick effect
+//   over it — lightning zap, frost spreading, flame burst, poison bubbles, dizzy swirl — ONE CARD AT A TIME; the CPU, the
+//   auto draw and queued card effects wait until they're done.
+// • LANDED: when a status is applied, the same effect plays right after the hit's damage popup instead of on top of it.
+// Instant game speed / Settings → Status Effect Animations off → no queued effects (the old quick flash on apply).
+const STA_BOLT1='<svg class="sa-bolt s1" viewBox="0 0 40 100" preserveAspectRatio="none"><polyline points="24,0 13,40 25,45 9,100"/></svg>';
+const STA_BOLT2='<svg class="sa-bolt s2" viewBox="0 0 40 100" preserveAspectRatio="none"><polyline points="15,0 27,36 14,43 28,100"/></svg>';
+const STA_HTML={
+  paralyze: STA_BOLT1+STA_BOLT2+'<i class="sa-zap"></i>',
+  freeze:   '<i class="sa-frost"></i><i class="sa-rime"></i>',
+  burn:     '<i class="sa-heat"></i><b class="sa-spark" style="--x:22%;--o:0"></b><b class="sa-spark" style="--x:55%;--o:.7"></b><b class="sa-spark" style="--x:78%;--o:1.3"></b>',
+  poison:   '<i class="sa-haze"></i><b class="sa-bub" style="--x:26%;--o:0"></b><b class="sa-bub" style="--x:58%;--o:1.1"></b><b class="sa-bub" style="--x:74%;--o:.5"></b>',
+  confuse:  '<i class="sa-swirl"></i>'
+};
+const STFX={q:[],busy:false,t:null,end:null,turnKey:null};
+function stFxEnabled(){
+  if(typeof _gameSettings!=='undefined'&&_gameSettings.statusFx===false) return false;
+  if(typeof gameSpeed==='function'&&gameSpeed()==='instant') return false;
+  try{ if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches) return false; }catch(e){}
+  return true;
+}
+function stFxBusy(){ return STFX.busy||STFX.q.length>0; }
+function stFxReset(){ STFX.q=[]; STFX.busy=false; clearTimeout(STFX.t); clearTimeout(STFX.end); }
+function stHas(uid,type){ if(!G||!G.players) return false; return Object.keys(G.players).some(pp=>{ const P=G.players[pp]; return P&&Array.isArray(P.field)&&P.field.some(f=>String(f.uid)===String(uid)&&f.statuses&&f.statuses[type]>0); }); }
+function stBurst(uid,type,o){ if(!stFxEnabled()||!(typeof _inMatch==='function'&&_inMatch())||!STATUS_META[type]) return false; STFX.q.push({uid,type,o:o||{}}); stFxPump(); return true; }
+function stFxReady(){
+  if(typeof _beatUntil!=='undefined'&&Date.now()<_beatUntil) return false;            // let the hit / popup finish first
+  if(typeof _rollBusy==='function'&&_rollBusy()) return false;
+  if(typeof _tfAnimating!=='undefined'&&_tfAnimating) return false;
+  if(typeof _fuAnimating!=='undefined'&&_fuAnimating) return false;
+  return !document.querySelector('#turn-banner.show,#card-play-zoom.playing,#instant-reveal-overlay.open,#transform-overlay.active,#fusion-overlay.active,#herald-entrance.open,#coin-toss.open');
+}
+function stFxPump(){
+  if(STFX.busy||!STFX.q.length) return; clearTimeout(STFX.t);
+  if(!(typeof _inMatch==='function'&&_inMatch())){ stFxReset(); return; }
+  if(!stFxReady()){ STFX.t=setTimeout(stFxPump,90); return; }
+  const it=STFX.q.shift(); const el=fxElUid(it.uid);
+  if(!el||!stHas(it.uid,it.type)){ STFX.t=setTimeout(stFxPump,0); return; }     // card gone / status already over
+  const d=(typeof gameSpeed==='function'&&gameSpeed()==='fast')?480:780;
+  STFX.busy=true; if(typeof holdBeat==='function') holdBeat(d+60);
+  try{ stPlay(el,it.type,d,it.o); }catch(e){ console.warn('[status fx]',e); }
+  STFX.end=setTimeout(()=>{ STFX.busy=false; stFxPump(); },d);
+}
+const STB_HTML={
+  paralyze:()=>'<div class="stb-clip"><i class="stb-flash"></i>'+[0,1,2].map(i=>`<svg class="stb-bolt k${i}" viewBox="0 0 40 100" preserveAspectRatio="none"><polyline points="${['24,0 10,28 25,34 9,62 23,68 13,100','16,0 30,26 15,33 31,60 17,67 27,100','26,0 13,22 27,30 11,58 25,64 15,100'][i]}"/></svg>`).join('')+'</div>',
+  freeze:()=>'<div class="stb-clip"><i class="stb-frost"></i><svg class="stb-crack" viewBox="0 0 100 140" preserveAspectRatio="none"><polyline points="50,70 30,48 22,20"/><polyline points="50,70 74,52 86,30"/><polyline points="50,70 40,98 30,128"/><polyline points="50,70 70,96 80,124"/><polyline points="30,48 12,58"/><polyline points="74,52 92,64"/></svg></div>'+[0,60,120,180,240,300].map(a=>`<b class="stb-snow" style="--a:${a}deg">❄</b>`).join(''),
+  burn:()=>'<div class="stb-clip"><i class="stb-heat"></i>'+[[12,1],[32,1.25],[52,1.4],[72,1.2],[88,.95]].map(([x,k])=>`<b class="stb-flame" style="--x:${x}%;--k:${k}"></b>`).join('')+'</div>'+[18,38,58,78].map((x,i)=>`<b class="stb-ember" style="--x:${x}%;--o:${i*0.08}"></b>`).join(''),
+  poison:()=>'<div class="stb-clip"><i class="stb-haze"></i>'+[[14,10,0],[30,14,.1],[48,9,.04],[62,16,.16],[80,11,.07],[40,12,.22],[70,8,.26]].map(([x,z,o])=>`<b class="stb-bub" style="--x:${x}%;--z:${z}px;--o:${o}"></b>`).join('')+'</div>',
+  confuse:()=>'<div class="stb-clip"><i class="stb-swirl"></i></div>'+[0,120,240].map(a=>`<b class="stb-star" style="--a:${a}deg">✦</b>`).join('')
+};
+function stPlay(el,type,d,o){
+  const r=el.getBoundingClientRect(); if(!r||!r.width) return;
+  const m=STATUS_META[type];
+  if(!o.quiet&&typeof SFX!=='undefined'&&typeof SFX[type]==='function') try{ SFX[type](); }catch(e){}
+  const ov=document.createElement('div'); ov.className='stb stb-'+type;
+  ov.style.cssText=`left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;--d:${d}ms;--c:${m.color}`;
+  ov.innerHTML=(STB_HTML[type]?STB_HTML[type]():'')+`<b class="stb-icon">${m.icon}</b>`;
+  document.body.appendChild(ov); setTimeout(()=>ov.remove(),d+20);
+  const b=el.querySelector('.st-b.st-'+type); if(b){ b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
+}
 // a clear status badge on the card art (the old tiny icon under the Health bar was easy to miss): icon + turns left,
-// in the status color; hover for what it does.
+// in the status color; hover for what it does. Tapped cards keep it upright at their visual top-left.
 const STATUS_TIP={paralyze:'attacking needs a coin flip first (tails = the attack fizzles)', confuse:'attacking needs a coin flip first (tails = it hits itself for 2)', freeze:"can't attack or use abilities"};
 function stBadgesSync(){
   if(!G||!G.players||typeof STATUS_META==='undefined') return;
+  const anim=stFxEnabled(), now=(Date.now()/1000%3600).toFixed(2);
   Object.keys(G.players).forEach(pp=>{ const P=G.players[pp]; if(!P||!Array.isArray(P.field)) return;
     P.field.forEach(fc=>{ const st=fc.statuses||{}; const ks=Object.keys(STATUS_META).filter(t=>st[t]>0); const el=fxElUid(fc.uid); if(!el) return;
-      let w=el.querySelector(':scope > .st-badges'); if(!ks.length){ if(w) w.remove(); return; }
+      let w=el.querySelector(':scope > .st-badges'), a=el.querySelector(':scope > .st-aura');
+      if(!ks.length){ if(w) w.remove(); if(a) a.remove(); return; }
+      if(!a){ a=document.createElement('div'); el.appendChild(a); }
+      const key=ks.join(',')+(anim?'':'!');
+      a.className='st-aura '+ks.map(t=>'sa-'+t).join(' ')+(anim?'':' still'); a.style.setProperty('--c',STATUS_META[ks[0]].color); a.style.setProperty('--t',now);
+      if(a.dataset.k!==key){ a.dataset.k=key; a.innerHTML='<i class="sa-ring"></i>'+ks.map(t=>STA_HTML[t]||'').join(''); }
       if(!w){ w=document.createElement('div'); w.className='st-badges'; el.appendChild(w); }
       w.innerHTML=ks.map(t=>{ const m=STATUS_META[t], n=st[t]; return `<span class="st-b st-${t}" style="--c:${m.color}" title="${m.label} — ${n} turn${n>1?'s':''} left${STATUS_TIP[t]?': '+STATUS_TIP[t]:''}">${m.icon}<i>${n}</i></span>`; }).join(''); }); });
 }
-function postRenderUX(){ try{ prizeOwedUI(); }catch(e){} try{ useGlowSync(); }catch(e){} try{ stBadgesSync(); }catch(e){} }
+// start of every turn → each afflicted character plays its effect (active player's side first), one at a time
+function stTurnSync(){
+  if(!G||!G.players||G.gameOver) return;
+  const k=(typeof _matchSession!=='undefined'?_matchSession:'')+':'+G.turn+':'+G.activePlayer;
+  if(STFX.turnKey===k) return; STFX.turnKey=k;
+  if(!stFxEnabled()) return;
+  const ps=Object.keys(G.players).map(Number).filter(p=>G.players[p]&&Array.isArray(G.players[p].field));
+  const order=[G.activePlayer].concat(ps.filter(p=>p!==G.activePlayer)); const heard={};
+  order.forEach(pp=>(G.players[pp]?.field||[]).forEach(fc=>Object.keys(STATUS_META).forEach(t=>{ if(fc.statuses&&fc.statuses[t]>0){ stBurst(fc.uid,t,{turn:true,quiet:!!heard[t]}); heard[t]=1; } })));
+}
+function postRenderUX(){ try{ prizeOwedUI(); }catch(e){} try{ useGlowSync(); }catch(e){} try{ stBadgesSync(); }catch(e){} try{ stTurnSync(); }catch(e){} try{ drawDueUI(); }catch(e){} }
 function renderAll(){
   if(G&&!G._aiTurn&&G._aiAuto) G._aiAuto=false;
   if(typeof registryScanBoard==='function') try{ registryScanBoard(); }catch(e){}
@@ -28052,7 +28238,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.26';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.27';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -36686,6 +36872,13 @@ window.addEventListener('load',async()=>{
           <div class="settings-label-desc">Cards you can still play or use this turn glow</div>
         </div>
         <div class="settings-toggle on" id="set-useglow" onclick="toggleSetting('useglow')"><div class="settings-toggle-knob"></div></div>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Status Effect Animations</div>
+          <div class="settings-label-desc">Auras on afflicted cards and a quick effect each turn</div>
+        </div>
+        <div class="settings-toggle on" id="set-statusfx" onclick="toggleSetting('statusfx')"><div class="settings-toggle-knob"></div></div>
       </div>
     </div>
 
