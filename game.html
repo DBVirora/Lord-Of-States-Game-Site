@@ -9250,6 +9250,120 @@ body.use-glow #game-screen .hand-card.playable,body.use-glow #game-screen-2v2 .h
 .hv-rv-cel{width:140px;aspect-ratio:5/7;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:34px;color:#fde68a;border-radius:8px;border:1px solid var(--hv-line);background:rgba(58,13,13,.6)}
 .hv-rv .hv-go{max-width:320px;margin:16px auto 0}
 /* fight intro */
+/* build 10.29 · the secret battle */
+.hv-adm-sec{margin-top:8px;font:700 10px/1 'Share Tech Mono',monospace;letter-spacing:.16em;padding:7px 10px;border-radius:8px;border:1px dashed #f97316;background:rgba(124,45,18,.35);color:#fed7aa;cursor:pointer}
+.hv-secret-sec .hv-h h3{color:#fdba74;text-shadow:0 0 12px rgba(249,115,22,.55)}
+.hv-secret-node{position:relative;display:grid;grid-template-columns:150px 1fr auto;align-items:center;gap:14px;width:100%;min-height:118px;padding:12px 16px 12px 12px;border-radius:14px;border:1px solid rgba(249,115,22,.55);background:linear-gradient(90deg,rgba(40,8,4,.92),rgba(14,4,3,.92));color:inherit;cursor:pointer;text-align:left;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.6),0 0 26px rgba(249,115,22,.22);animation:hvSecGlow 2.6s ease-in-out infinite}
+.hv-secret-node::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(-45deg,rgba(249,115,22,.10) 0 14px,transparent 14px 28px);pointer-events:none}
+.hv-secret-node.done{animation:none;border-color:rgba(240,197,106,.4)}
+@keyframes hvSecGlow{0%,100%{box-shadow:0 0 0 1px rgba(0,0,0,.6),0 0 18px rgba(249,115,22,.2)}50%{box-shadow:0 0 0 1px rgba(0,0,0,.6),0 0 34px rgba(249,115,22,.5)}}
+.hv-sn-art{height:100px;border-radius:10px;background:var(--art) center 22%/cover;box-shadow:inset 0 0 0 1px rgba(255,237,213,.25),0 6px 18px rgba(0,0,0,.6)}
+.hv-sn-t{position:relative;display:flex;flex-direction:column;gap:4px}
+.hv-sn-t small{font:700 10px/1.2 'Share Tech Mono',monospace;letter-spacing:.2em;color:#fdba74}
+.hv-sn-t b{font:900 clamp(18px,2.6vw,26px)/1.1 'Cinzel',serif;letter-spacing:.1em;color:#ffedd5;text-shadow:0 0 14px rgba(249,115,22,.6)}
+.hv-sn-t i{font-style:normal;color:var(--hv-mute);font-size:12px}
+.hv-pan-art.secret{box-shadow:inset 0 0 0 2px rgba(249,115,22,.5),inset 0 0 60px rgba(124,45,18,.6)}
+@media (max-width:640px){.hv-secret-node{grid-template-columns:90px 1fr}.hv-secret-node .hv-nr{grid-column:1/-1}.hv-sn-art{height:80px}}
+#hv-secret{position:fixed;inset:0;z-index:12500;display:flex;align-items:center;justify-content:center;overflow:hidden;opacity:0;pointer-events:none;transition:opacity .35s;background:#050101;--mx:0;--my:0}
+#hv-secret.on{opacity:1;pointer-events:auto}
+#hv-secret:empty{display:none}
+#hv-secret>*{position:absolute}
+#hv-secret .hs-bg{inset:-6%;background-size:cover;background-position:center 18%;filter:brightness(.5) saturate(1.25) sepia(.22) hue-rotate(-12deg);transform:scale(1.22) translate(calc(var(--mx)*-14px),calc(var(--my)*-10px));opacity:0;transition:opacity 1.4s ease .9s,transform 3.2s cubic-bezier(.2,.7,.2,1) .9s}
+#hv-secret.on .hs-bg{opacity:1;transform:scale(1.05) translate(calc(var(--mx)*-14px),calc(var(--my)*-10px))}
+#hv-secret .hs-moon{width:min(46vw,460px);aspect-ratio:1;border-radius:50%;top:-8%;right:-6%;background:radial-gradient(circle at 42% 40%,#ffd7a0,#f97316 38%,#7c2d12 62%,rgba(124,45,18,0) 72%);filter:blur(1px);opacity:.55;mix-blend-mode:screen;animation:hsMoon 6s ease-in-out infinite}
+@keyframes hsMoon{0%,100%{opacity:.45}50%{opacity:.7}}
+#hv-secret .hs-fog{left:-20%;right:-20%;bottom:-10%;height:45%;background:radial-gradient(60% 60% at 30% 70%,rgba(120,53,15,.45),transparent 70%),radial-gradient(50% 60% at 75% 80%,rgba(68,20,8,.55),transparent 70%);animation:hsFog 14s ease-in-out infinite alternate}
+@keyframes hsFog{to{transform:translateX(6%)}}
+#hv-secret .hs-vig{inset:0;background:radial-gradient(ellipse at 50% 55%,transparent 30%,rgba(10,2,1,.82) 78%,#030000);animation:hsVig 3.4s ease-in-out infinite}
+@keyframes hsVig{0%,100%{opacity:.92}50%{opacity:1}}
+#hv-secret .hs-leaves,#hv-secret .hs-embers,#hv-secret .hs-bats{inset:0;pointer-events:none}
+#hv-secret .hs-leaves i{position:absolute;top:-8%;width:calc(16px*var(--s));height:calc(16px*var(--s));background:var(--c);border-radius:0 70% 0 70%;opacity:.85;animation:hsLeaf var(--d) linear var(--dl) infinite}
+@keyframes hsLeaf{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(40px,55vh) rotate(200deg)}100%{transform:translate(-20px,112vh) rotate(420deg)}}
+#hv-secret .hs-embers i{position:absolute;bottom:-4%;width:4px;height:4px;border-radius:50%;background:#fdba74;box-shadow:0 0 8px 2px #f97316;animation:hsEmber var(--d) ease-out var(--dl) infinite}
+@keyframes hsEmber{0%{opacity:0;transform:translate(0,0)}12%{opacity:1}100%{opacity:0;transform:translate(var(--x),-82vh)}}
+#hv-secret .hs-flash{inset:0;background:radial-gradient(ellipse at 60% 20%,rgba(255,237,213,.95),rgba(249,115,22,.4) 40%,transparent 75%);opacity:0;pointer-events:none}
+#hv-secret.on .hs-flash{animation:hsFlash 1.1s steps(1,end) .1s}
+@keyframes hsFlash{0%{opacity:0}8%{opacity:.95}16%{opacity:.1}26%{opacity:.75}38%,100%{opacity:0}}
+#hv-secret .hs-bat{position:absolute;top:var(--y);width:calc(96px*var(--s));height:calc(38px*var(--s));opacity:0;filter:drop-shadow(0 0 1.5px #fdba74) drop-shadow(0 0 7px rgba(249,115,22,.85)) drop-shadow(0 4px 6px rgba(0,0,0,.9))}
+#hv-secret .hs-bat svg{width:100%;height:100%;fill:#140805;animation:hsFlap var(--w) ease-in-out infinite alternate;transform-origin:50% 55%}
+#hv-secret .hs-bat.l{left:-12%}
+#hv-secret .hs-bat.r{right:-12%}
+#hv-secret.on .hs-bat.l{animation:hsBatL var(--d) cubic-bezier(.4,.1,.6,.9) var(--dl) forwards}
+#hv-secret.on .hs-bat.r{animation:hsBatR var(--d) cubic-bezier(.4,.1,.6,.9) var(--dl) forwards}
+@keyframes hsFlap{from{transform:scaleY(1)}to{transform:scaleY(.35) translateY(4px)}}
+@keyframes hsBatL{0%{opacity:0;transform:translate(0,0) scale(.6)}10%{opacity:1}50%{transform:translate(62vw,-9vh) scale(1.1)}90%{opacity:1}100%{opacity:0;transform:translate(128vw,4vh) scale(.8)}}
+@keyframes hsBatR{0%{opacity:0;transform:translate(0,0) scale(.6) scaleX(-1)}10%{opacity:1}50%{transform:translate(-62vw,-11vh) scale(1.1) scaleX(-1)}90%{opacity:1}100%{opacity:0;transform:translate(-128vw,3vh) scale(.8) scaleX(-1)}}
+#hv-secret .hs-stripe{left:-15%;right:-15%;height:clamp(64px,10vw,96px);display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(-45deg,#0d0604 0 26px,#f97316 26px 52px);box-shadow:0 0 0 3px #000,0 0 44px rgba(249,115,22,.55);pointer-events:none;opacity:0}
+#hv-secret .hs-stripe.a{top:calc(50% - 76px);transform:skewY(-7deg) translateX(-130%);z-index:2}
+#hv-secret .hs-stripe.b{top:calc(50% + 78px);height:clamp(34px,5vw,48px);transform:skewY(5deg) translateX(130%);background:repeating-linear-gradient(45deg,#0d0604 0 18px,#ea580c 18px 36px)}
+#hv-secret.on .hs-stripe.a{animation:hsSwipeA 2.4s cubic-bezier(.75,0,.2,1) .45s forwards}
+#hv-secret.on .hs-stripe.b{animation:hsSwipeB 2.4s cubic-bezier(.75,0,.2,1) .62s forwards}
+@keyframes hsSwipeA{0%{opacity:1;transform:skewY(-7deg) translateX(-130%)}20%{transform:skewY(-7deg) translateX(0)}74%{opacity:1;transform:skewY(-7deg) translateX(0)}100%{opacity:1;transform:skewY(-7deg) translateX(130%)}}
+@keyframes hsSwipeB{0%{opacity:1;transform:skewY(5deg) translateX(130%)}20%{transform:skewY(5deg) translateX(0)}74%{opacity:1;transform:skewY(5deg) translateX(0)}100%{opacity:1;transform:skewY(5deg) translateX(-130%)}}
+#hv-secret .hs-tape b{display:block;background:#0b0503;padding:10px clamp(14px,3vw,34px);border:2px solid #fbbf24;box-shadow:0 0 0 3px #000,0 0 26px rgba(249,115,22,.7);font:900 clamp(18px,4.2vw,44px)/1 'Cinzel',serif;letter-spacing:.14em;color:#ffedd5;text-shadow:0 0 16px #f97316,0 2px 0 #000;white-space:nowrap}
+#hv-secret .hs-tape span{display:block;background:#0b0503;padding:6px 0;font:700 clamp(10px,1.6vw,15px)/1 'Share Tech Mono',monospace;letter-spacing:.32em;color:#fdba74;white-space:nowrap;animation:hsMarq 6s linear infinite}
+@keyframes hsMarq{to{transform:translateX(-25%)}}
+#hv-secret .hs-panel{position:relative;width:min(720px,calc(100% - 24px));max-height:calc(100vh - 24px);overflow:auto;padding:20px clamp(14px,3vw,28px) 18px;border-radius:18px;text-align:center;background:linear-gradient(180deg,rgba(28,7,4,.9),rgba(10,3,2,.94));border:1px solid rgba(249,115,22,.6);box-shadow:0 0 0 1px #000,0 0 60px rgba(249,115,22,.28),inset 0 0 40px rgba(124,45,18,.45);opacity:0;transform:translateY(26px) scale(.96)}
+#hv-secret.on .hs-panel{animation:hsPanel .7s cubic-bezier(.2,.9,.25,1.15) 2.55s forwards,hsCandle 3.2s ease-in-out 3.3s infinite}
+@keyframes hsPanel{to{opacity:1;transform:none}}
+@keyframes hsCandle{0%,100%{box-shadow:0 0 0 1px #000,0 0 46px rgba(249,115,22,.24),inset 0 0 40px rgba(124,45,18,.45)}40%{box-shadow:0 0 0 1px #000,0 0 70px rgba(249,115,22,.4),inset 0 0 46px rgba(124,45,18,.55)}55%{box-shadow:0 0 0 1px #000,0 0 52px rgba(249,115,22,.3),inset 0 0 40px rgba(124,45,18,.45)}}
+#hv-secret .hs-web{position:absolute;width:64px;height:64px;opacity:.5;pointer-events:none}
+#hv-secret .hs-web svg{width:100%;height:100%;fill:none;stroke:#e7d5c0;stroke-width:.8}
+#hv-secret .hs-web.tl{left:4px;top:4px}
+#hv-secret .hs-web.tr{right:4px;top:4px;transform:scaleX(-1)}
+#hv-secret .hs-kick{display:block;font:700 11px/1.4 'Share Tech Mono',monospace;letter-spacing:.3em;color:#fdba74}
+#hv-secret .hs-title{margin:4px 0 6px;font-family:'Cinzel',serif;line-height:1}
+#hv-secret .hs-title span{display:block;font-weight:700;font-size:clamp(15px,2.6vw,22px);letter-spacing:.34em;color:#fed7aa}
+#hv-secret .hs-title b{display:block;font-weight:900;font-size:clamp(34px,7vw,64px);letter-spacing:.12em;color:#ffedd5;text-shadow:0 0 22px #f97316,0 0 48px rgba(194,65,12,.8),0 3px 0 #000;animation:hsFlicker 3.6s linear 3.3s infinite}
+@keyframes hsFlicker{0%,100%{opacity:1}46%{opacity:1}47%{opacity:.55}48%{opacity:1}72%{opacity:1}73%{opacity:.7}74%{opacity:1}}
+#hv-secret .hs-line{margin:0 auto 12px;max-width:540px;color:#e7cdb1;font-size:13px;line-height:1.5}
+#hv-secret .hs-boss{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center;text-align:left;margin:0 0 14px;padding:10px;border-radius:14px;cursor:pointer;background:linear-gradient(90deg,rgba(124,45,18,.35),rgba(0,0,0,.25));border:1px solid rgba(251,191,36,.35);position:relative;overflow:hidden}
+#hv-secret .hs-boss::after{content:'';position:absolute;left:0;right:0;top:0;height:4px;background:repeating-linear-gradient(-45deg,#0d0604 0 8px,#f97316 8px 16px)}
+#hv-secret .hs-port{width:96px;height:96px;border-radius:50%;background-size:cover;background-position:center 20%;box-shadow:0 0 0 2px #f97316,0 0 24px rgba(249,115,22,.7);animation:hsPort 2.2s ease-in-out infinite}
+@keyframes hsPort{0%,100%{box-shadow:0 0 0 2px #f97316,0 0 16px rgba(249,115,22,.5)}50%{box-shadow:0 0 0 2px #fbbf24,0 0 32px rgba(249,115,22,.9)}}
+#hv-secret .hs-bi small{display:block;font:700 10px/1.2 'Share Tech Mono',monospace;letter-spacing:.24em;color:#fdba74}
+#hv-secret .hs-bi>b{display:block;font:900 clamp(20px,3.4vw,30px)/1.1 'Cinzel',serif;letter-spacing:.1em;color:#ffedd5;text-shadow:0 0 14px rgba(249,115,22,.7)}
+#hv-secret .hs-hp{position:relative;height:16px;margin:6px 0 8px;border-radius:999px;background:#1a0705;border:1px solid rgba(251,191,36,.45);overflow:hidden}
+#hv-secret .hs-hp i{position:absolute;inset:0;background:linear-gradient(90deg,#7f1d1d,#ea580c,#fbbf24);transform-origin:left;transform:scaleX(0)}
+#hv-secret.on .hs-hp i{animation:hsHp 1.1s cubic-bezier(.2,.8,.2,1) 3.1s forwards}
+@keyframes hsHp{to{transform:scaleX(1)}}
+#hv-secret .hs-hp span{position:relative;display:block;text-align:center;font:700 10px/16px 'Share Tech Mono',monospace;letter-spacing:.14em;color:#fff7ed;text-shadow:0 1px 2px #000}
+#hv-secret .hs-hp em{font-style:normal;color:#fde68a}
+#hv-secret .hs-abs{display:flex;flex-wrap:wrap;gap:6px}
+#hv-secret .hs-ab{position:relative;font:600 10.5px/1.3 system-ui,sans-serif;padding:4px 8px;border-radius:999px;border:1px solid rgba(249,115,22,.5);background:rgba(10,3,2,.6);color:#fed7aa}
+#hv-secret .hs-ab b{color:#ffedd5}
+#hv-secret .hs-ab em{display:none}
+#hv-secret .hs-ab:hover em,#hv-secret .hs-ab:focus em{display:block;position:absolute;left:0;top:calc(100% + 4px);z-index:3;width:min(260px,70vw);padding:7px 9px;border-radius:8px;background:#0b0503;border:1px solid rgba(249,115,22,.6);font-style:normal;font-weight:400;color:#f5e6d3;white-space:normal}
+#hv-secret.roar .hs-panel{animation:hsShake .5s ease}
+#hv-secret.roar .hs-bg{filter:brightness(.6) saturate(1.4) sepia(.25) hue-rotate(-12deg)}
+@keyframes hsShake{0%,100%{transform:none}15%{transform:translate(-8px,3px) rotate(-.6deg)}30%{transform:translate(7px,-3px) rotate(.5deg)}45%{transform:translate(-5px,2px)}60%{transform:translate(4px,-2px)}80%{transform:translate(-2px,1px)}}
+#hv-secret .hs-lbl{font:700 10px/1 'Share Tech Mono',monospace;letter-spacing:.3em;color:#fdba74;margin:0 0 10px}
+#hv-secret .hs-cards{display:flex;justify-content:center;align-items:flex-end;gap:clamp(10px,2.4vw,22px);flex-wrap:wrap;perspective:900px}
+#hv-secret .hs-card{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;padding:0;color:inherit;cursor:pointer;width:clamp(120px,22vw,168px);transform:rotateY(var(--ry,0deg)) rotateX(var(--rx,0deg));transition:transform .12s ease-out;opacity:0}
+#hv-secret.on .hs-card{animation:hsDeal .7s cubic-bezier(.2,.9,.3,1.2) forwards}
+#hv-secret.on .hs-card:nth-child(1){animation-delay:3.05s}
+#hv-secret.on .hs-card:nth-child(2){animation-delay:3.3s}
+#hv-secret.on .hs-cel{animation:hsDeal .7s cubic-bezier(.2,.9,.3,1.2) 3.55s forwards}
+@keyframes hsDeal{0%{opacity:0;transform:translateY(40px) rotateY(180deg) scale(.7)}100%{opacity:1;transform:rotateY(var(--ry,0deg)) rotateX(var(--rx,0deg))}}
+#hv-secret .hs-cimg{position:relative;display:block;width:100%;aspect-ratio:5/7;border-radius:10px;overflow:hidden;box-shadow:0 0 0 2px #f97316,0 12px 30px rgba(0,0,0,.7),0 0 28px rgba(249,115,22,.45)}
+#hv-secret .hs-cimg img{width:100%;height:100%;object-fit:cover;display:block}
+#hv-secret .hs-sheen{position:absolute;inset:-40%;background:linear-gradient(115deg,transparent 40%,rgba(255,237,213,.55) 50%,transparent 60%);transform:translateX(-60%);animation:hsSheen 3.4s ease-in-out 4s infinite}
+@keyframes hsSheen{0%{transform:translateX(-60%)}35%,100%{transform:translateX(60%)}}
+#hv-secret .hs-card b{font:700 12.5px/1.2 'Cinzel',serif;color:#ffedd5}
+#hv-secret .hs-card b em{font-style:normal;color:#fbbf24}
+#hv-secret .hs-card small{font:700 9px/1 'Share Tech Mono',monospace;letter-spacing:.18em;color:#fdba74}
+#hv-secret .hs-cel{display:flex;flex-direction:column;align-items:center;justify-content:center;width:clamp(86px,14vw,110px);aspect-ratio:1;border-radius:50%;border:1px solid rgba(251,191,36,.6);background:radial-gradient(circle,rgba(124,45,18,.6),rgba(10,3,2,.8));box-shadow:0 0 22px rgba(249,115,22,.35);opacity:0;align-self:center}
+#hv-secret .hs-cel b{font:900 22px/1 'Cinzel',serif;color:#fde68a}
+#hv-secret .hs-cel small{font:700 9px/1.4 'Share Tech Mono',monospace;letter-spacing:.2em;color:#fdba74}
+#hv-secret .hs-meta{margin:14px 0 0;font:700 10px/1.5 'Share Tech Mono',monospace;letter-spacing:.16em;color:#c9ab8a}
+#hv-secret .hs-btns{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+#hv-secret .hs-go{font:900 15px/1 'Cinzel',serif;letter-spacing:.2em;padding:13px 26px;border-radius:10px;border:1px solid #ffedd5;background:linear-gradient(180deg,#fb923c,#c2410c);color:#1c0703;cursor:pointer;box-shadow:0 0 24px rgba(249,115,22,.55)}
+#hv-secret .hs-later{font:700 12px/1 'Share Tech Mono',monospace;letter-spacing:.2em;padding:13px 18px;border-radius:10px;border:1px solid rgba(240,197,106,.4);background:rgba(0,0,0,.4);color:#e7cdb1;cursor:pointer}
+#hv-secret.still .hs-bg{opacity:1;transform:none;transition:none}
+#hv-secret.still .hs-panel,#hv-secret.still .hs-card,#hv-secret.still .hs-cel{opacity:1;transform:none;animation:none!important}
+#hv-secret.still .hs-hp i{transform:none;animation:none}
+#hv-secret.still .hs-bats,#hv-secret.still .hs-stripe,#hv-secret.still .hs-leaves,#hv-secret.still .hs-embers,#hv-secret.still .hs-flash{display:none}
+@media (max-width:560px){#hv-secret .hs-boss{grid-template-columns:64px 1fr}#hv-secret .hs-port{width:64px;height:64px}}
 #hv-intro{position:fixed;inset:0;z-index:12000;display:none;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;background:#0b0302}
 #hv-intro.on{display:flex}
 #hv-intro .bg{position:absolute;inset:-4%;background-size:cover;background-position:center 25%;filter:brightness(.45) saturate(1.1);transform:scale(1.18);transition:transform 2.4s ease-out}
@@ -9403,7 +9517,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.28 · Surge Rule</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.29 · Harvest Update</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10458,8 +10572,20 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.22'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.29'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.29', date:'2026-11-18',
+    cards:[
+      {id:'harvest_curse_hoc', set:'hoc', number:'14/13', rarity:'secret', scan:"Special Events/Harvest of Courts/014-13 (The Harvest's Curse) (Secret Rare).png", newAbilities:['Choose Your Curse','Reap','Rise'],
+        note:"The Harvest's Curse · INSTANT · Curse · Black (dark cost circle) · cost 5 · secretRare · exclusive:'event' · eventSecret:'hoc'. Choose one: REAP — destroy target opposing character with 4 HP or less remaining (target picker; killCard, so Prizes / death as usual) or RISE — a character card (not a Herald or token) from your discard pile to your hand. Harvest (you control a Location): do both, Reap then Rise. Human: a seqChoose with both options described (notes when one has no target); CPU: Reap if a target exists else Rise. Main-menu art 'Main Menu Images/Harvest of Courts/The Harvests Curse.jpg'."},
+      {id:'oak_ripper_hoc', set:'hoc', number:'15/13', rarity:'secret', scan:'Special Events/Harvest of Courts/015-13 (Oak the Ripper) (Secret Rare).png', newAbilities:['King of the Harvest',"Ripper's Axe",'Night of the Reaping'],
+        note:"Oak the Ripper · HERALD · Harvest King · Black · 13 ATK / 12 HP · secretRare · exclusive:'event'. KING OF THE HARVEST (passive): Harvest — while you control a Location, your characters get +1 Attack (recalcPassives; not the Herald itself; off when broken). RIPPER'S AXE (2⚡, once per turn): 2 damage to target opposing character; if that destroys it, +1 Energy. NIGHT OF THE REAPING (6⚡, once per game): destroy each opposing character with 3 HP or less — one at a time (seqAreaKills: killCard per step, 560/320 ms, Instant = at once); none → refunded. CPU scoring for both. Main-menu art 'Main Menu Images/Harvest of Courts/Oak the Ripper.jpg'."}],
+    abilities:[],
+    screens:[
+      "SECRET BATTLE (a surprise — nothing about it may show before it unlocks: no locked node, no hint, no count): unlocks when ALL 7 Road missions are cleared AND ALL 9 challenges are CLAIMED (evSecretReady). Checked when a reward reveal closes and when the Harvest page opens; shown once (ev_hoc.secretSeen). Mission object EV_SECRET {id:'oak', n:'Night of the Reaping', foe 'Oak the Ripper', court shadow, CPU hard, 6 Prizes, rules feast + iron (both start with a Harvest Court; their Herald +8 Health), CPU Herald forced to oak_ripper_hoc, forced HOC cards {harvest_curse_hoc:3, reapers_scythe_hoc:3, withering_grove_hoc:3, last_magistrate_hoc:2, booni_hoc:2, thorne_hoc:2, courts_favor_hoc:2, winters_approach_hoc:2}, first-win rewards 2× The Harvest's Curse + 1× Oak the Ripper + 500 Celestium (one-time key ev:hoc:m:oak — Rulk re-publishes the economy catalog), playable while finished rewards can be claimed (evClaimOpen). After unlock, a '🎃 SECRET BATTLE' section under the Road (striped, glowing node; 'DEFEATED ✓' after the win). Its win reveal: 'THE HARVEST KING FALLS'.",
+      "THE UNLOCK POPUP (#hv-secret, full screen, ~3.5 s intro, then interactive): black → lightning flash (thunder + low bell + sour chord: SFX.secretUnlock) → 16 bats tear across both ways with a screech (SFX.batScreech; wings flap) → two hazard-stripe bands (black/orange, skewed) swipe in from opposite sides: '⚠ SECRET BATTLE UNLOCKED ⚠' and a marquee 'THE HARVEST KING AWAKENS ✦', hold, swipe out → Oak's art zooms in behind a blood-orange moon, fog, vignette, falling leaves, rising embers → the panel rises (cobweb corners, candle-flicker glow): '🎃 THE HARVEST IS NOT OVER 🎃' / 'SECRET BATTLE' / 'UNLOCKED' (flickers), a line, the BOSS plate (round portrait, 'BOSS · HARVEST KING', 'OAK THE RIPPER', an HP bar that fills, ⚔13 ♥12 '+8 in this battle', ability chips with their text on hover), 'DEFEAT HIM TO EARN' with the two card scans dealt in with a flip (tilt with the pointer, sheen sweep, tap = full card view) + '+500 CELESTIUM', the battle line, buttons '⚔ FACE HIM' (opens the battle panel) / 'LATER'. Pointer parallax on the art; tapping the boss plate = roar (SFX.secretRoar) + shake + a bat; a lone bat crosses every ~7 s. Reduced motion / animations off: the panel only. Admin-only button on the Harvest page '🎃 ADMIN: PREVIEW THE SECRET UNLOCK'.",
+      "RANDOM CPU DECKS (Rulk's rule): event / exclusive cards — Oak included — appear in random CPU decks only if the local player owns them (admins too; before, admins got every exclusive and owned exclusive characters never appeared). A card flagged noRandom never does. Online 'fair' decks: none. Event battles and online opponents can still use them."],
+    data:["GAME_BUILD '10.29' — new cards. Web and PC can't play each other online until the PC is on 10.29.", "Sounds: secretUnlock / batScreech / secretRoar (synth; Admin → Sounds can replace them)."] },
   { build:'10.28', date:'2026-11-17',
     cards:[], abilities:[
       "SURGE ENERGY (Rulk's rule, card text unchanged — 'Skip your next draw step'): the skipped Draw step gives NO card and NO +1 Energy that turn. The step still happens otherwise (untap, regeneration, Location Energy, Power Drain) and still counts as the Draw step for 'draw first'. The turn after is back to normal. A skipped turn (Freeze Over) never reaches the Draw step, so it never gets the +1 either (unchanged).",
@@ -11356,6 +11482,8 @@ const DEFAULTS={
   winters_approach_hoc: "https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Special%20Events/Harvest%20of%20Courts/011-13%20(Winter's%20Approach).png",
   gather_the_court_hoc: "https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Special%20Events/Harvest%20of%20Courts/012-13%20(Gather%20the%20Court).png",
   harvest_pie_hoc: "https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Special%20Events/Harvest%20of%20Courts/013-13%20(Harvest%20Pie).png",
+  harvest_curse_hoc: "https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Special%20Events/Harvest%20of%20Courts/014-13%20(The%20Harvest's%20Curse)%20(Secret%20Rare).png",
+  oak_ripper_hoc: "https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Special%20Events/Harvest%20of%20Courts/015-13%20(Oak%20the%20Ripper)%20(Secret%20Rare).png",
   surana_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/028-150%20(Surana%20Base).png',
   surana_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/029-150%20(Surana%20SSG).png',
   surana_sss_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/030-150%20(Surana%20SSS).png',
@@ -12182,6 +12310,19 @@ const DB={
     abilities:[{label:'Summon the Court',type:'instant',cost:0,text:'Search your deck for a character with cost 4 or less, reveal it and put it into your hand. Harvest — While you control a Location, also draw 1 card.'}],transforms:[]},
   harvest_pie_hoc:{id:'harvest_pie_hoc',rarity:'common',name:'Harvest Pie',color:'green',charName:'Harvest Pie',subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:3,atk:0,hp:0,sym:'🥧',setId:'hoc',exclusive:'event',cardNumber:'13/13',nextForms:[],
     abilities:[{label:'Shared Slices',type:'instant',cost:0,text:'Each of your characters heals 2 damage. Harvest — While you control a Location, they heal 3 instead.'}],transforms:[]},
+  // ── HARVEST OF COURTS · SECRET RARES (build 10.29) — earned only by beating the secret battle (clear the whole Road AND
+  //    claim every challenge first). Hidden from everyone who doesn't own them (exclusive:'event'); in random CPU decks only if you own them.
+  harvest_curse_hoc:{id:'harvest_curse_hoc',rarity:'secret',secretRare:true,name:"The Harvest's Curse",color:'black',charName:"The Harvest's Curse",subtypes:['Instant','Curse'],type:'instant',race:'Curse',cost:5,atk:0,hp:0,sym:'🎃',setId:'hoc',exclusive:'event',eventSecret:'hoc',cardNumber:'14/13',nextForms:[],
+    abilities:[{label:'Choose Your Curse',type:'instant',cost:0,text:'Choose one. Harvest — While you control a Location, do both instead.'},
+      {label:'Reap',type:'mode',cost:0,text:'Destroy target opposing character with 4 HP or less remaining.'},
+      {label:'Rise',type:'mode',cost:0,text:'Return a character card from your discard pile to your hand.'}],transforms:[]},
+  oak_ripper_hoc:{id:'oak_ripper_hoc',rarity:'secret',secretRare:true,name:'Oak the Ripper',type:'herald',race:'Harvest King',cost:0,atk:13,hp:12,sym:'🎃',subtypes:['Harvest King'],color:'black',keywords:[],setId:'hoc',exclusive:'event',eventSecret:'hoc',cardNumber:'15/13',
+    heraldFlip:null,autoFlip:false,
+    abilities:[
+      {type:'passive',label:'King of the Harvest',cost:0,text:'Harvest — While you control a Location, your characters get +1 Attack.'},
+      {type:'activated',label:"Ripper's Axe",cost:2,limit:'once_per_turn',text:'Pay 2 Energy: Deal 2 damage to target opposing character. If that destroys it, gain 1 Energy. (Once per turn)'},
+      {type:'activated',label:'Night of the Reaping',cost:6,limit:'once_per_game',text:'Pay 6 Energy: Destroy each opposing character with 3 HP or less remaining. (Once per game)'}
+    ],transforms:[]},
   // ── PROMO batch (build 10.18) ─────────────────────────────────────────────────────────────────────────────────────
   //    WORLDBREAKER HULK — Endless Rage (+2 ATK per survived hit, max +6; dealDamage) · Worldbreaker (Breakthrough + can attack
   //    Locations) · Shatter the World (5⚡ once per game: 3 to each opposing character AND Location).
@@ -12515,14 +12656,18 @@ function generateRandomDeck(opts){
   // opts.fair (online): deal from the public pool — no disabled or exclusive cards, even for admins.
   const _rdOk=(opts&&opts.fair)?(id=>!DB[id].exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id])):isCardPlayable;
   // Separate card pools
-  const heraldIds=Object.keys(DB).filter(id=>DB[id].type==='herald'&&!DB[id].isToken&&_rdOk(id));
+  // build 10.29 (Rulk): event / exclusive cards (Oak the Ripper included) show up in random CPU decks only if YOU own them —
+  // admins too. A card flagged noRandom never does. Event battles and online opponents can still bring them.
+  const _own=id=>((typeof _collection!=='undefined'&&_collection[id])||0)>0;
+  const _exOk=id=>!DB[id].noRandom&&(!DB[id].exclusive||(!(opts&&opts.fair)&&_own(id)));
+  const heraldIds=Object.keys(DB).filter(id=>DB[id].type==='herald'&&!DB[id].isToken&&_exOk(id)&&_rdOk(id));
   const charIds=Object.keys(DB).filter(id=>
     ['base_char','char','team'].includes(DB[id].type)&&
-    !DB[id].transformOnly&&!DB[id].isToken&&!DB[id].exclusive&&!DB[id].fusion&&_rdOk(id)
+    !DB[id].transformOnly&&!DB[id].isToken&&_exOk(id)&&!DB[id].fusion&&_rdOk(id)
   );
   const otherIds=Object.keys(DB).filter(id=>
     !['base_char','char','team','herald','token'].includes(DB[id].type)&&
-    !DB[id].isToken&&!DB[id].fusionMethodCard&&_rdOk(id)
+    !DB[id].isToken&&!DB[id].fusionMethodCard&&_exOk(id)&&_rdOk(id)
   );
 
   console.log('[DECK] generateRandomDeck: heralds='+heraldIds.length+' chars='+charIds.length+' other='+otherIds.length);
@@ -13919,6 +14064,7 @@ function recalcPassives(){
       // HARVEST OF COURTS (build 10.20): Fed and Happy (+2 ATK) / Rooted Oath (+2 HP) while you control a Location; Weight of the Court.
       if(abils.some(a=>a.label==='Fed and Happy')&&harvestOn(p)) add(2,0,fc.cid,'Fed and Happy',fc.uid);
       if(abils.some(a=>a.label==='Rooted Oath')&&harvestOn(p)) add(0,2,fc.cid,'Rooted Oath',fc.uid);
+      if(fc!==pl.herald&&pl.herald&&pl.herald.cid==='oak_ripper_hoc'&&!pl.herald.broken&&harvestOn(p)) add(1,0,'oak_ripper_hoc','King of the Harvest',pl.herald.uid);   // build 10.29
       if(abils.some(a=>a.label==='Weight of the Court')){ const _n=(pl.discard||[]).filter(id=>DB[id]&&isChar(DB[id])&&!DB[id].isToken&&DB[id].type!=='herald').length; const _b=Math.min(4,Math.floor(_n/3)); if(_b) add(_b,0,fc.cid,'Weight of the Court',fc.uid); }
 
       // STRENGTH IS JUSTICE (Jiren promo, build 10.21): +3 ATK / +3 HP ("Defense" = Health) while he is the only character
@@ -17284,6 +17430,33 @@ function executeInstantEffect(p, cardId){
       if(!(pl.deck||[]).some(cid=>ok(DB[cid]))){ log('Summon the Court: no character with cost 4 or less in the deck.','info'); after(null); break; }
       if(seqIsLocalHuman(p)&&!G._aiAuto&&G.activePlayer===p) openDeckSearch('Summon the Court','Search your deck for a character with cost 4 or less and put it into your hand.',ok,(cid)=>after(cid));
       else { const pick=(pl.deck||[]).filter(cid=>ok(DB[cid])).sort((a,b)=>(aiCardValue(DB[b])||0)-(aiCardValue(DB[a])||0))[0]; const i=pl.deck.indexOf(pick); if(i>-1) pl.deck.splice(i,1); after(pick); }
+      break;
+    }
+    // THE HARVEST'S CURSE (secret rare, build 10.29): choose Reap (destroy target opposing character with 4 HP or less) or
+    // Rise (a character card from your discard pile to your hand). Harvest — while you control a Location: both (Reap, then Rise).
+    case 'harvest_curse_hoc': {
+      const both=harvestOn(p);
+      const foes=[]; _fusionOpps(p).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])&&(f.currentHP||0)<=4) foes.push({p:op,fc:f}); }));
+      const riseOk=cc=>!!cc&&isChar(cc)&&cc.type!=='herald'&&!cc.isToken;
+      const canRise=(pl.discard||[]).some(cid=>riseOk(DB[cid]));
+      const human=seqIsLocalHuman(p)&&!G._aiAuto;
+      const doRise=()=>{ if(!(pl.discard||[]).some(cid=>riseOk(DB[cid]))){ log('🍂 Rise: no character card in the discard pile.','info'); renderAll(); return; }
+        openDiscardSearch('🍂 Rise','Return a character card from your discard pile to your hand.',riseOk,(cid)=>{ const f=newFC(cid); if(f) pl.hand.push(f);
+          log(`🍂 Rise: ${pname(p)} returns ${DB[cid]?.name} from the discard pile to hand.`,'gain'); if(!seqIsLocalHuman(p)&&typeof showCardReveal==='function') try{ showCardReveal(cid); }catch(e){} renderAll(); }); };
+      const doReap=(then)=>{ const live=foes.filter(x=>(G.players[x.p]?.field||[]).some(f=>f.uid===x.fc.uid));
+        if(!live.length){ log('🎃 Reap: no opposing character has 4 or less Health.','info'); renderAll(); if(then) then(); return; }
+        const go=(uid)=>{ const t=live.find(x=>x.fc.uid===uid); const tf=t&&G.players[t.p].field.find(f=>f.uid===uid);
+          if(tf){ log(`🎃 Reap: ${DB[tf.cid].name} is destroyed!`,'dmg'); const _fx=(typeof fxPush==='function')?fxPush('harvest_curse_hoc','Reap',null):null;
+            try{ killCard(t.p,tf); } finally { if(typeof fxPop==='function') fxPop(_fx); } }
+          if(typeof recalcPassives==='function') recalcPassives(); renderAll(); if(typeof checkWin==='function') checkWin(); if(then&&!G.gameOver) then(); };
+        if(human) openEnemyTargetPicker(live.map(x=>x.fc),go,{sourcePlayer:p,title:'🎃 Reap',desc:'Destroy an opposing character with 4 or less Health.'});
+        else { const pool=live.filter(x=>!hasDrunkenStance(x.fc)&&!spaceShielded(x.fc)); const best=(pool.length?pool:live).slice().sort((a,b)=>aiFcValue(b.fc)-aiFcValue(a.fc))[0]; openEnemyTargetPicker([best.fc],go,{sourcePlayer:p,title:'Reap'}); } };
+      if(both){ log("🎃 The Harvest's Curse: Harvest — Reap AND Rise!",'dmg'); doReap(doRise); }
+      else if(human){ seqChoose("🎃 Choose Your Curse","Choose one. (While you control a Location, you'd get both.)",[
+          {label:'🎃 Reap',sub:'Destroy target opposing character with 4 HP or less remaining.'+(foes.length?'':' (No target right now.)'),val:'reap'},
+          {label:'🍂 Rise',sub:'Return a character card from your discard pile to your hand.'+(canRise?'':' (Your discard pile has none.)'),val:'rise'}],
+          v=>{ if(v==='reap') doReap(); else doRise(); }, ()=>{ log("🎃 The Harvest's Curse fades without a curse.",'info'); }); }
+      else { if(foes.length) doReap(); else doRise(); }
       break;
     }
     default: {
@@ -20958,6 +21131,37 @@ function runAbilityEffect(fc, abl, pl){
   const oppNum = G.activePlayer===1?2:1;
   const opp = G.players[oppNum];
 
+  // ── OAK THE RIPPER (Herald, build 10.29) ──
+  //    Ripper's Axe: 2⚡ once per turn — 2 damage to target opposing character; if that destroys it, +1 Energy.
+  //    Night of the Reaping: 6⚡ once per game — destroy each opposing character with 3 HP or less, one at a time. None → refunded.
+  if(fc.cid==='oak_ripper_hoc'&&label==="Ripper's Axe"){
+    const ap=G.activePlayer; const enemies=[];
+    _fusionOpps(ap).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) enemies.push({p:op,fc:f}); }));
+    if(!enemies.length){ if(_abilityUndo) _abilityUndo(); log("🪓 Ripper's Axe: no opposing characters — not used.",'dmg'); renderAll(); return; }
+    const hit=(uid)=>{ const t=enemies.find(x=>x.fc.uid===uid); const tf=t&&G.players[t.p].field.find(f=>f.uid===uid); if(!tf){ renderAll(); return; }
+      log(`🪓 Ripper's Axe: ${DB[tf.cid].name} takes 2 damage!`,'dmg');
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,"Ripper's Axe",fc.uid):null;
+      try{ dealDamage(t.p,uid,2); } finally { if(typeof fxPop==='function') fxPop(_fx); }
+      if(!G.players[t.p].field.some(f=>f.uid===uid)){ G.players[ap].energy+=1; log(`🪓 Ripper's Axe: it fell — ${pname(ap)} gains 1 Energy.`,'gain'); }
+      if(typeof recalcPassives==='function') recalcPassives(); renderAll(); if(typeof checkWin==='function') checkWin(); };
+    if(seqIsLocalHuman(ap)&&!G._aiAuto){
+      openEnemyTargetPicker(enemies.map(x=>x.fc),hit,{sourcePlayer:ap,title:"🪓 Ripper's Axe",desc:'2 damage to an opposing character. If that destroys it, you gain 1 Energy.'});
+    } else {
+      const kill=(x)=>(x.fc.currentHP||0)<=Math.max(0,2-(x.fc.nullify||0))?1:0;
+      const pool=enemies.filter(x=>!hasDrunkenStance(x.fc)&&!spaceShielded(x.fc)); const P2=pool.length?pool:enemies;
+      const best=P2.slice().sort((a,b)=>(kill(b)-kill(a))||(aiFcValue(b.fc)-aiFcValue(a.fc)))[0];
+      openEnemyTargetPicker([best.fc],hit,{sourcePlayer:ap,title:"Ripper's Axe"});
+    }
+    return;
+  }
+  if(fc.cid==='oak_ripper_hoc'&&label==='Night of the Reaping'){
+    const ap=G.activePlayer; const foes=[];
+    _fusionOpps(ap).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])&&(f.currentHP||0)<=3) foes.push({p:op,uid:f.uid}); }));
+    if(!foes.length){ if(_abilityUndo) _abilityUndo(); log('🌕 Night of the Reaping: no opposing character has 3 or less Health — not used.','dmg'); renderAll(); return; }
+    log(`🌕 NIGHT OF THE REAPING: every opposing character with 3 or less Health is destroyed!`,'dmg');
+    seqAreaKills(foes,{cid:fc.cid,label:'Night of the Reaping',uid:fc.uid},'🌕 Night of the Reaping');
+    renderAll(); return;
+  }
   // ── HULK (GREEN SCAR) HERALD: Gamma Detonation — 4 dmg to all opp chars ──
   if(cid==='hulk_gs_herald' && label==='Gamma Detonation'){
     const targets=[...opp.field.filter(f=>isChar(DB[f.cid]))];
@@ -22310,6 +22514,11 @@ function aiScoreAbility(p, fc, abl, src){
     const _k=_es.filter(e=>(e.fc.currentHP||0)<=2); if(!_k.length&&!DB[_ch.cid]?.isToken) return -1; return 8+(_k.length?Math.min(14,Math.max(..._k.map(e=>aiFcValue(e.fc)))*.6):2); }
   if(abl.label==='Shatter the World'){ const _es=aiEnemyChars(p); const _locs=_fusionOpps(p).reduce((n,op)=>n+(G.players[op]?.field||[]).filter(f=>isLoc(DB[f.cid])).length,0); if(!_es.length&&!_locs) return -1;
     const _k=_es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,3-(e.fc.nullify||0))).length; if(_es.length+_locs<2&&!_k) return -1; return 12+_es.length*5+_locs*4+_k*14; }
+  if(abl.label==="Ripper's Axe"){ const _es=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)); if(!_es.length) return -1;   // build 10.29
+    const _k=_es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,2-(e.fc.nullify||0))).length; return 9+_k*14+Math.min(6,_es.length*2); }
+  if(abl.label==='Night of the Reaping'){ if(fc.abilityUsed&&fc.abilityUsed['Night of the Reaping']) return -1;
+    const _k=aiEnemyChars(p).filter(e=>(e.fc.currentHP||0)<=3); if(!_k.length) return -1; const _v=_k.reduce((a,e)=>a+aiFcValue(e.fc),0);
+    if(_k.length<2&&_v<10) return -1; return 18+_k.length*12+Math.min(16,_v*.4); }
   if(abl.label==='Thunderclap'){ const _es=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)); if(!_es.length) return -1;
     const _k=_es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,(statusActive(e.fc,'paralyze')?4:2)-(e.fc.nullify||0))).length; return 7+_k*12+(_es.some(e=>statusActive(e.fc,'paralyze'))?4:0); }
   if(abl.label==='Maelstrom'){ const _es=aiEnemyChars(p).filter(e=>!statusActive(e.fc,'paralyze')&&!hasAbilityLabel(e.fc,'Vortex Shield')); if(_es.length<2) return -1;
@@ -22472,6 +22681,9 @@ function aiEnumerateActions(p){
       else if(c.id==='courts_favor_hoc'){ if(pl._favorTurn!==G.turn){ const gain=harvestOn(p)?4:3; const next=pl.hand.some(h=>h.uid!==fc.uid&&DB[h.cid]&&DB[h.cid].type!=='energy_card'&&!DB[h.cid].transformOnly&&(DB[h.cid].cost||0)>pl.energy-1&&(DB[h.cid].cost||0)<=pl.energy-1+gain); s=next?48:20; } }
       else if(c.id==='winters_approach_hoc'){ if(enemies.length) s=30+Math.min(2,enemies.length)*4+(harvestOn(p)&&enemies.length>1?6:0); }
       else if(c.id==='harvest_pie_hoc'){ if(wounded.length) s=34+wounded.length*4+(harvestOn(p)?3:0); }
+      else if(c.id==='harvest_curse_hoc'){ const _r=enemies.filter(e=>(e.fc.currentHP||0)<=4&&!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)); const _rv=_r.length?Math.max(..._r.map(e=>aiFcValue(e.fc))):0;
+        const _up=(pl.discard||[]).some(id=>DB[id]&&isChar(DB[id])&&DB[id].type!=='herald'&&!DB[id].isToken&&(DB[id].cost||0)>=4);
+        if(harvestOn(p)) s=(_r.length||_up)?30+(_r.length?Math.min(24,_rv):0)+(_up?8:0):-1; else s=_r.length&&_rv>=6?32+Math.min(20,_rv):(_up?26:-1); }   // build 10.29
       else if(c.id==='gather_the_court_hoc'){ if((pl.deck||[]).some(id=>DB[id]&&isChar(DB[id])&&DB[id].type!=='herald'&&!DB[id].transformOnly&&(DB[id].cost||0)<=4)) s=28+(chars.length<2?8:0); }
       else if(c.id==='nature_focus'){ s=60; }
       else { s=(/damage|destroy|freeze|burn/.test(t)?(enemies.length?34:-1):(/heal/.test(t)?(wounded.length?34:-1):26)); }
@@ -23340,6 +23552,19 @@ function seqAreaHits(list, amt, src, opts){
   const fin=()=>{ if(opts.after) try{ opts.after(); }catch(e){ console.error('[areaHits]',e); } if(typeof renderAll==='function') renderAll(); };
   if(gap<=0||list.length<2||typeof seqPush!=='function'){ list.forEach(one); fin(); return; }
   list.forEach(t=>seqPush(done=>{ try{ one(t); }catch(e){ console.error('[areaHits]',e); } setTimeout(done,gap); }));
+  seqPush(done=>{ try{ fin(); } finally{ done(); } });
+}
+// build 10.29: "destroy each …" — one character at a time (death animation + Prize each), like seqAreaHits.
+function seqAreaKills(list, src, tag){
+  list=(list||[]).slice(); const gap=({normal:560,fast:320,instant:0})[(typeof gameSpeed==='function'?gameSpeed():'normal')]||0;
+  const one=(t)=>{ if(!G||G.gameOver||!t) return; const P=G.players[t.p]; const tf=P&&P.field.find(f=>String(f.uid)===String(t.uid)); if(!tf) return;
+    log(`${tag||'💀'}: ${DB[tf.cid]?.name} is destroyed!`,'dmg');
+    const _fx=(src&&typeof fxPush==='function')?fxPush(src.cid,src.label,src.uid):null;
+    try{ killCard(t.p,tf); } finally { if(src&&typeof fxPop==='function') fxPop(_fx); }
+    if(typeof recalcPassives==='function') recalcPassives(); if(typeof renderAll==='function') renderAll(); };
+  const fin=()=>{ if(typeof recalcPassives==='function') recalcPassives(); if(typeof renderAll==='function') renderAll(); if(typeof checkWin==='function') checkWin(); };
+  if(gap<=0||list.length<2||typeof seqPush!=='function'){ list.forEach(one); fin(); return; }
+  list.forEach(t=>seqPush(done=>{ try{ one(t); }catch(e){ console.error('[areaKills]',e); } setTimeout(done,gap); }));
   seqPush(done=>{ try{ fin(); } finally{ done(); } });
 }
 function holdBeat(ms){ _beatUntil=Math.max(_beatUntil, Date.now()+(ms||800)); _beatTick(); }
@@ -27376,11 +27601,19 @@ const SFX_LABELS={cardPlay:'Card played',attack:'Attack',damage:'Damage taken',h
   ability:'Ability used',instant:'Instant played',transform:'Transformation',powerup:'Power up',energy:'Energy',turnStart:'Your turn starts',
   prize:'Prize claimed',coin:'Coin flip / dice',burn:'Burn',poison:'Poison',freeze:'Freeze',paralyze:'Paralyze',confuse:'Confusion',
   win:'Victory',lose:'Defeat',click:'Button click',error:'Error',emote:'Emote',cardFlip:'Card flip',packOpen:'Pack open',mystical:'Mystic reveal',
-  heraldSlam:'Herald entrance — slam',heraldStorm:'Herald entrance — storm',heraldName:'Herald entrance — name'};
+  heraldSlam:'Herald entrance — slam',heraldStorm:'Herald entrance — storm',heraldName:'Herald entrance — name',
+  secretUnlock:'Event secret unlocked — thunder',batScreech:'Event secret unlocked — bats',secretRoar:'Event secret boss — roar'};
 let SFX_URLS={}; const _sfxCache={}, _sfxBad={}, _sfxWrapped=new Set();
 if(typeof SFX!=='undefined'){
   if(!SFX.prize) SFX.prize=function(){ _playTone(659,0.12,'triangle',0.11,988); setTimeout(()=>_playTone(1319,0.18,'sine',0.08),90); };
   if(!SFX.emote) SFX.emote=function(){ _playTone(880,0.06,'sine',0.06,1175); };
+  // build 10.29: the secret battle reveal — thunder, a low bell, a sour chord; bats; the Harvest King's roar
+  if(!SFX.secretUnlock) SFX.secretUnlock=function(){ _playNoise(1.6,0.34,260); _playTone(55,1.4,'sawtooth',0.16,41);
+    setTimeout(()=>{ _playTone(98,2.2,'sine',0.22,96); _playTone(196,1.8,'triangle',0.08,194); _playTone(277,1.6,'sine',0.06,275); },380);
+    setTimeout(()=>{ _playTone(220,1.2,'sine',0.07,218); _playTone(311,1.2,'sine',0.06,309); },900); };
+  if(!SFX.batScreech) SFX.batScreech=function(){ for(let i=0;i<9;i++) setTimeout(()=>{ const f=2600+Math.random()*1800; _playTone(f,0.05+Math.random()*0.04,'square',0.035,f*0.62); },i*55+Math.random()*40);
+    _playNoise(0.9,0.12,1800); };
+  if(!SFX.secretRoar) SFX.secretRoar=function(){ _playNoise(0.7,0.3,420); _playTone(82,0.8,'sawtooth',0.2,46); _playTone(123,0.6,'square',0.06,70); };
   sfxWrapAll(); addEventListener('load',sfxWrapAll);
 }
 // Wrap each SFX event once (by name). Runs now and again on load for events defined later (pack opening). Other wrappers that
@@ -28243,13 +28476,13 @@ function econBuildRewards(){
   try{ const sid=econBpSid();
     bp3Pages().forEach(pg=>pg.rewards.forEach(r=>{ const p=econBp3Pay(r); if(p&&r.id){ if(!r.free) p.pass=true; add('bp3:'+sid+':'+r.id,p); } }));
     ((typeof BP_CONFIG!=='undefined'&&BP_CONFIG&&BP_CONFIG.rewards)||[]).forEach(t=>['free','standard','premium'].forEach(tr=>{ const x=t&&t[tr]; if(x&&x.type==='celestium') add('bp:'+sid+':'+t.tier+':'+tr,{celestium:+x.amount||0}); })); }catch(e){}
-  try{ EV_MISSIONS.forEach(m=>add('ev:hoc:m:'+m.id,{celestium:+m.cel||0,cards:(m.cards||[]).map(cid=>({cid,qty:2}))}));
+  try{ EV_MISSIONS.concat([EV_SECRET]).forEach(m=>add('ev:hoc:m:'+m.id,{celestium:+m.cel||0,cards:(m.cards||[]).map(cid=>({cid,qty:evQty(m,cid)}))}));
     add('ev:hoc:road',{cosmetics:['back_harvest_of_courts']});
     EV_CHALLENGES.forEach(c=>add('ev:hoc:c:'+c.id,{cards:[].concat(...(c.cards||[]).map(cid=>[{cid,qty:1},{cid,qty:1,foil:'roll'}])),cosmetics:c.cos||[],roll:(c.cards||[]).length?EV_HOLO:null}));
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.28';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.29';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -39920,7 +40153,79 @@ const EV_COS_DIR=GH+'Special%20Events/Harvest%20of%20Courts/Cosmetics/';
 const EV_HOC_CARDS=['booni_hoc','thorne_hoc','mira_hoc','ashen_warden_hoc','last_magistrate_hoc','harvest_court_hoc','withering_grove_hoc','reapers_scythe_hoc','grove_senzu_hoc','courts_favor_hoc','winters_approach_hoc','gather_the_court_hoc','harvest_pie_hoc'];
 const EV_ART={booni_hoc:'Booni%20Uninvited%20Guest.jpg',thorne_hoc:'Thorne%20Court%20Harvester.jpg',mira_hoc:'Mira%20of%20the%20Grove.jpg',ashen_warden_hoc:'Ashen%20Warden.jpg',
   last_magistrate_hoc:'The%20Last%20Magistrate.jpg',harvest_court_hoc:'Harvest%20Court.jpg',withering_grove_hoc:'Withering%20Grove.jpg',reapers_scythe_hoc:'Reapers%20Scythe.jpg',
-  grove_senzu_hoc:'Grove%20Senzu.jpg',courts_favor_hoc:'Courts%20Favor.jpg',winters_approach_hoc:'Winters%20Approach.jpg',gather_the_court_hoc:'Gather%20the%20Court.jpg',harvest_pie_hoc:'Harvest%20Pie.jpg'};
+  grove_senzu_hoc:'Grove%20Senzu.jpg',courts_favor_hoc:'Courts%20Favor.jpg',winters_approach_hoc:'Winters%20Approach.jpg',gather_the_court_hoc:'Gather%20the%20Court.jpg',harvest_pie_hoc:'Harvest%20Pie.jpg',
+  oak_ripper_hoc:'Oak%20the%20Ripper.jpg',harvest_curse_hoc:'The%20Harvests%20Curse.jpg'};
+// ── THE SECRET BATTLE (build 10.29) — a surprise: nothing about it shows until the whole Road is cleared AND every challenge is
+//    claimed. Then a boss popup unlocks 'Night of the Reaping' vs Oak the Ripper (the node appears after the Road). It stays
+//    open as long as finished rewards can be claimed (evClaimOpen). First win: 2× The Harvest's Curse + Oak the Ripper + 500 Celestium.
+const EV_SECRET={id:'oak',n:'Night of the Reaping',foe:'Oak the Ripper',art:'oak_ripper_hoc',court:'shadow',ai:'hard',prizes:6,rules:['feast','iron'],boss:true,secret:true,herald:'oak_ripper_hoc',
+  hoc:{harvest_curse_hoc:3,reapers_scythe_hoc:3,withering_grove_hoc:3,last_magistrate_hoc:2,booni_hoc:2,thorne_hoc:2,courts_favor_hoc:2,winters_approach_hoc:2},
+  cards:['harvest_curse_hoc','oak_ripper_hoc'],qty:{harvest_curse_hoc:2,oak_ripper_hoc:1},cel:500,
+  line:"The feast is over, and the Harvest King has come to collect what's left. Every Harvest card wakes up — both sides start with a Harvest Court, and his Herald has +8 Health."};
+const EV_SECRET_I=7;   // its index after the 7 Road missions
+function evQty(m,cid){ return (m&&m.qty&&m.qty[cid])||2; }
+function evSecretReady(D){ D=D||evData(); return EV_MISSIONS.every(m=>D.cleared[m.id])&&EV_CHALLENGES.every(c=>D.claimed[c.id]); }
+function evSecretOpen(D){ return evSecretReady(D)||(evAdmin()&&!!_ev.secretPreview); }
+function evMAny(i){ return i===EV_SECRET_I?EV_SECRET:EV_MISSIONS[i]; }
+function evM(i){ return i===EV_SECRET_I?(evSecretOpen()?EV_SECRET:null):EV_MISSIONS[i]; }
+function evRoman(i){ return i===EV_SECRET_I?'SECRET':['I','II','III','IV','V','VI','VII'][i]; }
+function evSecretCheck(){
+  const sc=document.getElementById('harvest-screen'); if(!sc||!sc.classList.contains('active')) return;
+  if(document.querySelector('#hv-reveal.on,#hv-panel.on,#hv-secret.on')) return;
+  const D=evData(); if(D.secretSeen||!evSecretReady(D)||!evClaimOpen()) return;
+  D.secretSeen=Date.now(); evSave(); evRender(); evSecretPopup();
+}
+const EV_BAT='<svg viewBox="0 0 100 40" aria-hidden="true"><path d="M50 15C48 9 45 9 44 13C39 7 30 2 17 4C23 8 23 13 19 16C13 14 6 15 0 21C8 20 14 23 17 29C22 25 30 25 34 29C38 25 44 25 46 28L50 23L54 28C56 25 62 25 66 29C70 25 78 25 83 29C86 23 92 20 100 21C94 15 87 14 81 16C77 13 77 8 83 4C70 2 61 7 56 13C55 9 52 9 50 15Z"/></svg>';
+function evSecretPopup(){
+  let ov=document.getElementById('hv-secret'); if(!ov){ ov=document.createElement('div'); ov.id='hv-secret'; document.body.appendChild(ov); }
+  const motion=typeof trMotion!=='function'||trMotion();
+  const m=EV_SECRET, oak=DB.oak_ripper_hoc, art=evArt('oak_ripper_hoc');
+  let bats=''; for(let i=0;i<16;i++){ const y=(8+Math.random()*70).toFixed(1), d=(1.3+Math.random()*1.3).toFixed(2), dl=(0.1+Math.random()*0.9).toFixed(2), s=(0.45+Math.random()*0.9).toFixed(2), dir=i%3===2?'r':'l';
+    bats+=`<i class="hs-bat ${dir}" style="--y:${y}%;--d:${d}s;--dl:${dl}s;--s:${s};--w:${(0.10+Math.random()*0.08).toFixed(2)}s">${EV_BAT}</i>`; }
+  let leaves=''; for(let i=0;i<18;i++){ leaves+=`<i style="left:${Math.round(Math.random()*100)}%;--d:${(7+Math.random()*7).toFixed(1)}s;--dl:${(-Math.random()*12).toFixed(1)}s;--s:${(0.5+Math.random()*0.8).toFixed(2)};--c:${['#e8913a','#c2410c','#f0b84b','#9f1d1d','#d97706'][i%5]}"></i>`; }
+  let embers=''; for(let i=0;i<26;i++){ embers+=`<i style="left:${Math.round(Math.random()*100)}%;--d:${(3+Math.random()*4).toFixed(1)}s;--dl:${(-Math.random()*6).toFixed(1)}s;--x:${Math.round(Math.random()*80-40)}px"></i>`; }
+  const web='<svg viewBox="0 0 60 60" aria-hidden="true"><path d="M0 0L60 60M0 0L60 22M0 0L22 60M0 0L60 0M0 0L0 60M8 0Q10 10 0 8M20 0Q22 22 0 20M36 0Q36 36 0 36M52 0Q50 50 0 52"/></svg>';
+  const card=(cid,tag,n)=>`<button type="button" class="hs-card" data-zc="${cid}" onclick="showFullCard('${cid}')" title="Tap to read it"><span class="hs-cimg"><img src="${getImg(cid)}" alt=""><i class="hs-sheen"></i></span><b>${evEsc(DB[cid].name)}${n>1?` <em>×${n}</em>`:''}</b><small>${tag}</small></button>`;
+  const ab=(oak.abilities||[]).map(a=>`<span class="hs-ab" title="${evEsc(a.text)}"><b>${evEsc(a.label)}</b>${a.cost?` · ${a.cost}⚡`:''}<em>${evEsc(a.text)}</em></span>`).join('');
+  ov.className=motion?'':'still';
+  ov.innerHTML=`<div class="hs-bg" style="background-image:url('${art}')"></div><div class="hs-moon"></div><div class="hs-fog"></div><div class="hs-vig"></div>
+    <div class="hs-leaves" aria-hidden="true">${leaves}</div><div class="hs-embers" aria-hidden="true">${embers}</div><div class="hs-flash" aria-hidden="true"></div>
+    <div class="hs-bats" aria-hidden="true">${bats}</div>
+    <div class="hs-stripe a" aria-hidden="true"><div class="hs-tape"><b>⚠ SECRET BATTLE UNLOCKED ⚠</b></div></div>
+    <div class="hs-stripe b" aria-hidden="true"><div class="hs-tape"><span>THE HARVEST KING AWAKENS ✦ THE HARVEST KING AWAKENS ✦ THE HARVEST KING AWAKENS ✦ THE HARVEST KING AWAKENS ✦</span></div></div>
+    <div class="hs-panel" role="dialog" aria-label="Secret battle unlocked">
+      <i class="hs-web tl">${web}</i><i class="hs-web tr">${web}</i>
+      <small class="hs-kick">🎃 THE HARVEST IS NOT OVER 🎃</small>
+      <h2 class="hs-title"><span>SECRET BATTLE</span><b>UNLOCKED</b></h2>
+      <p class="hs-line">You cleared every mission and claimed every challenge. Something heard the feast end — and it wants the rest of the harvest.</p>
+      <div class="hs-boss" role="button" tabindex="0" onclick="evSecretRoar()" title="Tap him if you dare">
+        <span class="hs-port" style="background-image:url('${art}')"></span>
+        <div class="hs-bi"><small>BOSS · ${evEsc(oak.race.toUpperCase())}</small><b>${evEsc(oak.name.toUpperCase())}</b>
+          <div class="hs-hp"><i></i><span>⚔ ${oak.atk} &nbsp; ♥ ${oak.hp} <em>+8 in this battle</em></span></div>
+          <div class="hs-abs">${ab}</div></div>
+      </div>
+      <div class="hs-earn"><div class="hs-lbl">DEFEAT HIM TO EARN</div>
+        <div class="hs-cards">${card('harvest_curse_hoc','INSTANT · SECRET RARE',evQty(m,'harvest_curse_hoc'))}${card('oak_ripper_hoc','HERALD · SECRET RARE',evQty(m,'oak_ripper_hoc'))}
+          <div class="hs-cel"><b>+${m.cel}</b><small>CELESTIUM</small></div></div></div>
+      <div class="hs-meta">🍂 ${evEsc(m.n.toUpperCase())} · ${m.prizes} PRIZES · HARD CPU · BOTH SIDES START WITH A HARVEST COURT</div>
+      <div class="hs-btns"><button type="button" class="hs-go" onclick="evSecretFace()">⚔ FACE HIM</button><button type="button" class="hs-later" onclick="evSecretClose()">LATER</button></div>
+    </div>`;
+  ov.onpointermove=e=>{ const r=ov.getBoundingClientRect(); ov.style.setProperty('--mx',((e.clientX-r.left)/r.width*2-1).toFixed(3)); ov.style.setProperty('--my',((e.clientY-r.top)/r.height*2-1).toFixed(3)); };
+  ov.querySelectorAll('.hs-card').forEach(c=>{ c.onpointermove=e=>{ const r=c.getBoundingClientRect(); c.style.setProperty('--ry',(((e.clientX-r.left)/r.width-.5)*22).toFixed(1)+'deg'); c.style.setProperty('--rx',(-((e.clientY-r.top)/r.height-.5)*18).toFixed(1)+'deg'); };
+    c.onpointerleave=()=>{ c.style.removeProperty('--ry'); c.style.removeProperty('--rx'); }; });
+  requestAnimationFrame(()=>requestAnimationFrame(()=>ov.classList.add('on')));
+  if(motion){ trSfx('secretUnlock'); setTimeout(()=>trSfx('batScreech'),180); setTimeout(()=>{ if(ov.classList.contains('on')) trSfx('heraldSlam'); },2350);
+    clearInterval(_ev.batTick); _ev.batTick=setInterval(()=>{ if(!ov.classList.contains('on')){ clearInterval(_ev.batTick); return; } evSecretBat(ov); },7000); }
+  else trSfx('secretUnlock');
+}
+function evSecretBat(ov){ const b=document.createElement('i'); b.className='hs-bat solo '+(Math.random()<.5?'l':'r'); b.innerHTML=EV_BAT;
+  b.style.cssText=`--y:${(10+Math.random()*50).toFixed(1)}%;--d:${(1.8+Math.random()).toFixed(2)}s;--dl:0s;--s:${(0.6+Math.random()*0.5).toFixed(2)};--w:0.12s`;
+  const h=ov.querySelector('.hs-bats'); if(h){ h.appendChild(b); setTimeout(()=>b.remove(),3200); trSfx('batScreech'); } }
+function evSecretRoar(){ const ov=document.getElementById('hv-secret'); if(!ov) return; ov.classList.remove('roar'); void ov.offsetWidth; ov.classList.add('roar'); trSfx('secretRoar'); evSecretBat(ov); }
+function evSecretClose(scroll){ const ov=document.getElementById('hv-secret'); if(ov){ ov.classList.remove('on'); setTimeout(()=>{ if(!ov.classList.contains('on')) ov.innerHTML=''; },450); } clearInterval(_ev.batTick); evRender();
+  if(scroll!==false) setTimeout(()=>{ const n=document.querySelector('.hv-secret-sec'); if(n) try{ n.scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){} },350); }
+function evSecretFace(){ evSecretClose(false); setTimeout(()=>evOpenMission(EV_SECRET_I),260); }
+function evSecretPreview(){ if(!evAdmin()) return; _ev.secretPreview=true; evRender(); evSecretPopup(); }
 const EV_TYPE={back:'Card back',mat:'Playmat',frame:'Ring frame',plate:'Name plate',title:'Title'};
 function evArt(cid){ return EV_ART[cid]?EV_MM+EV_ART[cid]:(typeof getImg==='function'?getImg(cid):''); }
 // 2nd-copy holo roll on challenge rewards: 25% holo in all (checked rarest first).
@@ -40011,7 +40316,7 @@ function evSave(){
 function evOwned(cid){ return (typeof _collection!=='undefined'&&_collection[cid])||0; }
 function evStats(D){ D=D||evData(); return {cards:EV_HOC_CARDS.filter(id=>evOwned(id)>0).length, road:EV_MISSIONS.filter(m=>D.cleared[m.id]).length,
   ch:EV_CHALLENGES.filter(c=>D.claimed[c.id]).length, ready:EV_CHALLENGES.filter(c=>!D.claimed[c.id]&&(D.ch[c.id]||0)>=c.goal).length}; }
-function evUnlocked(i,D){ return i===0||!!(D||evData()).cleared[EV_MISSIONS[i-1].id]; }
+function evUnlocked(i,D){ if(i===EV_SECRET_I) return evSecretOpen(D); return i===0||!!(D||evData()).cleared[EV_MISSIONS[i-1].id]; }
 function evRollFinish(){ let r=Math.random(); for(const [f,p] of EV_HOLO){ if(r<p) return f; r-=p; } return 'none'; }
 function evEsc(s){ return typeof escapeHtml==='function'?escapeHtml(String(s==null?'':s)):String(s); }
 
@@ -40022,6 +40327,7 @@ async function openHarvest(){
   showScreen('harvest-screen'); evLeaves(); evRender(); await evLoad(); evRender();
   clearInterval(_ev.tick); _ev.tick=setInterval(()=>{ const s=document.getElementById('harvest-screen'); if(!s||!s.classList.contains('active')){ clearInterval(_ev.tick); return; } const t=document.getElementById('hv-timer'); if(t) t.textContent=evLeftText(); },30000);
   if(_ev.reveal){ const r=_ev.reveal; _ev.reveal=null; setTimeout(()=>evShowReveal(r),350); }
+  else setTimeout(evSecretCheck,650);
 }
 function evLeaves(){
   const L=document.getElementById('hv-leaves'); if(!L||L.dataset.on) return; L.dataset.on='1';
@@ -40050,15 +40356,20 @@ function evRender(){
       <div class="hv-bar"><i style="width:${Math.round(v/c.goal*100)}%"></i></div><div class="hv-rw">${rw}</div></div><div class="hv-cha">${btn}</div></div>`; }).join('');
   const cos=EV_COS_REWARDS.map(r=>{ const it=typeof cosItem==='function'?cosItem(r.id):null; const own=typeof cosOwned==='function'&&cosOwned(r.id);
     return `<div class="hv-cos${own?' own':''}">${evCosArt(it)}<b>${evEsc(it?it.name:r.id)}</b><small>${EV_TYPE[it&&it.type]||''}</small><span>${own?(evCosEquipped(r.id)?'✓ EQUIPPED':`<button type="button" onclick="evEquip('${r.id}')">EQUIP</button>`):'🔒 '+evEsc(r.how)}</span></div>`; }).join('');
+  const sec=evSecretOpen(D)?(()=>{ const m=EV_SECRET, done=!!D.cleared[m.id];
+    return `<section class="hv-sec hv-secret-sec"><header class="hv-h"><h3>🎃 SECRET BATTLE</h3><span>THE HARVEST KING AWAITS${done?' · <b>DEFEATED ✓</b>':''}</span></header>
+    <button type="button" class="hv-secret-node${done?' done':''}" onclick="evOpenMission(${EV_SECRET_I})" style="--art:url('${evArt(m.art)}')">
+      <span class="hv-sn-art"></span><span class="hv-sn-t"><small>${done?'DEFEATED — REPLAY FOR PRACTICE':'BOSS · '+m.prizes+' PRIZES · HARD CPU'}</small><b>${evEsc(m.n)}</b><i>vs ${evEsc(m.foe)}</i></span>
+      <span class="hv-nr">${m.cards.map(c=>evThumb(c,{n:evQty(m,c),inBtn:true})).join('')}</span></button></section>`; })():'';
   B.innerHTML=`
   <section class="hv-hero" style="--art:url('${EV_ART_HERO}')">
     <div class="hv-hero-t"><p>Nobody invited Booni to the Harvest Feast. Walk the Harvest Road, finish the challenges, and earn all 13 cards before the leaves fall.</p>
       <ul class="hv-stats"><li><b>${S.cards}<small>/13</small></b><span>CARDS</span></li><li><b>${S.road}<small>/7</small></b><span>ROAD</span></li><li><b>${S.ch}<small>/9</small></b><span>CHALLENGES</span></li></ul>
-      ${ended?`<div class="hv-end">The event has ended. ${evClaimOpen()?'Finished challenges can still be claimed for a few more days.':''}</div>`:''}${evAdmin()&&!evFlag()?'<div class="hv-end adm">ADMIN PREVIEW — the event is switched off for players (Admin → Game switches).</div>':''}</div>
+      ${ended?`<div class="hv-end">The event has ended. ${evClaimOpen()?'Finished challenges can still be claimed for a few more days.':''}</div>`:''}${evAdmin()&&!evFlag()?'<div class="hv-end adm">ADMIN PREVIEW — the event is switched off for players (Admin → Game switches).</div>':''}${evAdmin()?'<button type="button" class="hv-adm-sec" onclick="evSecretPreview()">🎃 ADMIN: PREVIEW THE SECRET UNLOCK</button>':''}</div>
     <div class="hv-hero-art" aria-hidden="true"></div>
   </section>
   <section class="hv-sec"><header class="hv-h"><h3>THE HARVEST ROAD</h3><span>BEAT A MISSION THE FIRST TIME · 2 COPIES OF ITS CARDS · TAP A CARD TO VIEW IT</span></header>
-    <div class="hv-road"><svg class="hv-path" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true"><path class="base" d="${path}"/><path class="lit" d="${litPath}"/></svg>${nodes}</div></section>
+    <div class="hv-road"><svg class="hv-path" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true"><path class="base" d="${path}"/><path class="lit" d="${litPath}"/></svg>${nodes}</div></section>${sec}
   <section class="hv-sec"><header class="hv-h"><h3>CHALLENGES</h3><span>COUNT IN ANY MATCH · ✨ THE 2ND COPY CAN BE A HOLO${S.ready?` · <b>${S.ready} READY TO CLAIM</b>`:''}</span></header>
     <div class="hv-chs">${chs}</div></section>
   <section class="hv-sec"><header class="hv-h"><h3>EVENT COSMETICS</h3><span>EARNED ONLY — NEVER SOLD</span></header><div class="hv-coss">${cos}</div></section>`;
@@ -40078,30 +40389,30 @@ function evCosMini(id){ const it=typeof cosItem==='function'?cosItem(id):null; i
 // ── mission panel ──
 function evDecks(){ return (typeof trDeckChoices==='function')?trDeckChoices():[]; }
 function evOpenMission(i){
-  const m=EV_MISSIONS[i]; if(!m) return; const D=evData(); const open=evUnlocked(i,D), done=!!D.cleared[m.id];
+  const m=evM(i); if(!m) return; const D=evData(); const open=evUnlocked(i,D), done=!!D.cleared[m.id];
   const decks=evDecks(); if(!_ev.deck||!decks.some(d=>d.id===_ev.deck)){ try{ _ev.deck=localStorage.getItem('loc_ev_deck'); }catch(e){} if(!decks.some(d=>d.id===_ev.deck)) _ev.deck=decks[0]?decks[0].id:null; }
   _ev.sel=i; const ov=document.getElementById('hv-panel'); if(!ov) return;
   const rules=m.rules.map(k=>`<span class="hv-rule">${EV_RULES[k].i} <b>${EV_RULES[k].n}</b> — ${EV_RULES[k].t}</span>`).join('');
   const deckHtml=decks.length?decks.map(d=>{ const h=d.cards.find(id=>DB[id]&&DB[id].type==='herald'); const img=h&&getImg(h);
     return `<button type="button" class="hv-deck${_ev.deck===d.id?' on':''}" onclick="evPickDeck('${d.id}')">${img?`<img src="${img}" alt="" loading="lazy">`:'<span>🂠</span>'}<b>${evEsc(d.name)}</b><small>${d.preset?'STARTER':'60 CARDS'}</small></button>`; }).join('')
     :'<div class="hv-none">You need a finished 60-card deck. Build one in LOCKER → Deck Builder.</div>';
-  const can=open&&decks.length&&evLive();
+  const live=m.secret?evClaimOpen():evLive(); const can=open&&decks.length&&live;
   ov.innerHTML=`<div class="hv-pan" role="dialog" aria-label="${evEsc(m.n)}">
     <button type="button" class="hv-x" onclick="evClosePanel()" aria-label="Close">✕</button>
-    <div class="hv-pan-art" style="background-image:url('${evArt(m.art)}')"><small>MISSION ${['I','II','III','IV','V','VI','VII'][i]}${m.boss?' · BOSS':''}</small></div>
+    <div class="hv-pan-art${m.secret?' secret':''}" style="background-image:url('${evArt(m.art)}')"><small>${m.secret?'🎃 SECRET BATTLE':'MISSION '+evRoman(i)}${m.boss?' · BOSS':''}</small></div>
     <div class="hv-pan-b"><h4>${evEsc(m.n)}</h4><div class="hv-foe">VS ${evEsc(m.foe.toUpperCase())} · ${m.prizes} PRIZES · ${({easy:'EASY',medium:'MEDIUM',hard:'HARD'})[m.ai]} CPU</div>
       <p>${evEsc(m.line)}</p>${rules?`<div class="hv-rules">${rules}</div>`:''}
       <div class="hv-lbl">${done?'CLEARED ✓ — REPLAY FOR PRACTICE':'FIRST-CLEAR REWARDS'}</div>
-      <div class="hv-prw">${m.cards.map(c=>`<div>${evThumb(c,{n:2,big:true})}<span>${evEsc(DB[c]?.name||c)}</span></div>`).join('')}<div class="cel"><b>+${m.cel}</b><span>CELESTIUM</span></div>${m.final?`<div>${evCosMini('back_harvest_of_courts')}<span>Card back (clear the Road)</span></div>`:''}</div>
+      <div class="hv-prw">${m.cards.map(c=>`<div>${evThumb(c,{n:evQty(m,c),big:true})}<span>${evQty(m,c)>1?evQty(m,c)+'× ':''}${evEsc(DB[c]?.name||c)}</span></div>`).join('')}<div class="cel"><b>+${m.cel}</b><span>CELESTIUM</span></div>${m.final?`<div>${evCosMini('back_harvest_of_courts')}<span>Card back (clear the Road)</span></div>`:''}</div>
       ${open?`<div class="hv-lbl">YOUR DECK</div><div class="hv-decks">${deckHtml}</div>`:`<div class="hv-none">🔒 Clear “${evEsc(EV_MISSIONS[i-1].n)}” first.</div>`}
-      <button type="button" class="hv-go" ${can?'':'disabled'} onclick="evFight(${i})">${!evLive()?'THE EVENT HAS ENDED':done?'REPLAY MISSION':'FIGHT'}</button></div></div>`;
+      <button type="button" class="hv-go" ${can?'':'disabled'} onclick="evFight(${i})">${!live?'THE EVENT HAS ENDED':done?(m.secret?'REPLAY THE BATTLE':'REPLAY MISSION'):(m.secret?'⚔ FACE THE HARVEST KING':'FIGHT')}</button></div></div>`;
   ov.classList.add('on');
 }
 function evPickDeck(id){ _ev.deck=id; try{ localStorage.setItem('loc_ev_deck',id); }catch(e){} if(_ev.sel!=null) evOpenMission(_ev.sel); }
 function evClosePanel(){ const ov=document.getElementById('hv-panel'); if(ov){ ov.classList.remove('on'); ov.innerHTML=''; } _ev.sel=null; }
 // CPU deck: the Trial's themed deck for the mission's Court, with the mission's Harvest cards swapped in.
 function evAiDeck(m,seed){
-  const base=trAiDeck({court:m.court,kind:m.boss?'boss':'duel',herald:null},seed);
+  const base=trAiDeck({court:m.court,kind:m.boss?'boss':'duel',herald:m.herald||null},seed);
   const forced=[]; Object.entries(m.hoc).forEach(([id,n])=>{ for(let k=0;k<Math.min(4,n);k++) forced.push(id); });
   const deck=base.slice(); const isE=id=>DB[id]&&DB[id].type==='energy_card', isH=id=>DB[id]&&DB[id].type==='herald';
   let need=forced.length-(60-deck.length);
@@ -40110,7 +40421,7 @@ function evAiDeck(m,seed){
   return deck.concat(forced).slice(0,60);
 }
 function evFight(i){
-  const m=EV_MISSIONS[i]; if(!m||!evLive()||!evUnlocked(i)) return;
+  const m=evM(i); if(!m||!(m.secret?evClaimOpen():evLive())||!evUnlocked(i)) return;
   const d=evDecks().find(x=>x.id===_ev.deck); if(!d) return;
   if(!d.preset&&typeof validateDeckForPlay==='function'&&!validateDeckForPlay(d.id)) return;
   const foils=(!d.preset&&typeof getDeckFoils==='function'&&getDeckFoils(d.id))||null;
@@ -40130,7 +40441,7 @@ function evFight(i){
 function evIntro(m,i,cb){
   if(typeof trMotion==='function'&&!trMotion()){ cb(); return; }
   let L=document.getElementById('hv-intro'); if(!L){ L=document.createElement('div'); L.id='hv-intro'; document.body.appendChild(L); }
-  L.innerHTML=`<div class="bg" style="background-image:url('${evArt(m.art)}')"></div><div class="band"></div><div class="txt"><small>HARVEST OF COURTS · MISSION ${['I','II','III','IV','V','VI','VII'][i]}${m.boss?' · BOSS':''}</small><b>${evEsc(m.n.toUpperCase())}</b><span>vs ${evEsc(m.foe)}</span>
+  L.innerHTML=`<div class="bg" style="background-image:url('${evArt(m.art)}')"></div><div class="band"></div><div class="txt"><small>HARVEST OF COURTS · ${m.secret?'🎃 SECRET BATTLE':'MISSION '+evRoman(i)}${m.boss?' · BOSS':''}</small><b>${evEsc(m.n.toUpperCase())}</b><span>vs ${evEsc(m.foe)}</span>
     ${m.rules.length?`<div class="r">${m.rules.map(k=>`<em>${EV_RULES[k].i} ${EV_RULES[k].n} — ${EV_RULES[k].t}</em>`).join('')}</div>`:''}</div>`;
   L.className='on'; if(typeof trSfx==='function') trSfx('heraldSlam');
   let done=false; const fin=()=>{ if(done) return; done=true; L.className=''; L.innerHTML=''; cb(); };
@@ -40148,7 +40459,7 @@ function evApplyStart(){
   if(R('iron')&&P2.herald){ P2.herald.hpBonus=(P2.herald.hpBonus||0)+8; P2.herald.currentHP+=8; notes.push('Iron Verdict: their Herald +8 Health'); }
   if(R('vanguard')) notes.push('Vanguard: their characters +1 Attack');
   if(R('bulwark')) notes.push('Ashen Wall: their characters +1 Health');
-  log(`🍂 Harvest of Courts — Mission ${E.mi+1}: ${EV_MISSIONS[E.mi].n}.`,'info'); notes.forEach(n=>log('🍂 '+n,'info'));
+  log(E.mi===EV_SECRET_I?`🎃 Harvest of Courts — SECRET BATTLE: ${EV_SECRET.n}.`:`🍂 Harvest of Courts — Mission ${E.mi+1}: ${EV_MISSIONS[E.mi].n}.`,'info'); notes.forEach(n=>log('🍂 '+n,'info'));
   if(typeof recalcPassives==='function') recalcPassives();
 }
 function evPassive(fc,p){
@@ -40162,26 +40473,26 @@ function evOnMatchEnd(iWon){
   if(!G.event&&!evLive()) return;
   const D=evData(); let changed=false; const lines=[];
   if(G.event&&G.event.ev==='hoc'){
-    const m=EV_MISSIONS[G.event.mi];
+    const m=evMAny(G.event.mi);
     if(m&&iWon&&!D.cleared[m.id]){
       D.cleared[m.id]=Date.now(); changed=true; const items=[];
       if(!econReady()){
-      m.cards.forEach(cid=>{ addVariantToCollection(cid,'none',2); items.push({cid,finish:'none',n:2}); if(typeof markRegistered==='function') try{ markRegistered(cid); }catch(e){} });
+      m.cards.forEach(cid=>{ addVariantToCollection(cid,'none',evQty(m,cid)); items.push({cid,finish:'none',n:evQty(m,cid)}); if(typeof markRegistered==='function') try{ markRegistered(cid); }catch(e){} });
       try{ awardCelestium(m.cel,'Harvest of Courts'); }catch(e){} items.push({cel:m.cel});
       if(EV_MISSIONS.every(x=>D.cleared[x.id])&&!D.road){ D.road=Date.now(); if(typeof grantCosmetic==='function') grantCosmetic('back_harvest_of_courts','Harvest of Courts',false); items.push({cos:'back_harvest_of_courts'}); }
       evSaveCollection();
       } else {   // build 10.23: the server pays (one-time keys); the reveal shows the same rewards right away
-      m.cards.forEach(cid=>{ items.push({cid,finish:'none',n:2}); if(typeof markRegistered==='function') try{ markRegistered(cid); }catch(e){} });
+      m.cards.forEach(cid=>{ items.push({cid,finish:'none',n:evQty(m,cid)}); if(typeof markRegistered==='function') try{ markRegistered(cid); }catch(e){} });
       items.push({cel:m.cel});
       const road=EV_MISSIONS.every(x=>D.cleared[x.id])&&!D.road; if(road){ D.road=Date.now(); items.push({cos:'back_harvest_of_courts'}); }
       (async()=>{
-        await econClaim('ev:hoc:m:'+m.id,async()=>{ m.cards.forEach(cid=>addVariantToCollection(cid,'none',2)); evSaveCollection(); try{ await awardCelestium(m.cel,'Harvest of Courts'); }catch(e){} },'Harvest of Courts');
+        await econClaim('ev:hoc:m:'+m.id,async()=>{ m.cards.forEach(cid=>addVariantToCollection(cid,'none',evQty(m,cid))); evSaveCollection(); try{ await awardCelestium(m.cel,'Harvest of Courts'); }catch(e){} },'Harvest of Courts');
         if(road) await econClaim('ev:hoc:road',()=>{ if(typeof grantCosmetic==='function') grantCosmetic('back_harvest_of_courts','Harvest of Courts',false); });
       })().catch(e=>console.warn('[event] reward',e));
       }
-      _ev.reveal={title:m.final?'THE HARVEST ROAD IS YOURS':'MISSION CLEARED',sub:m.n,items};
-      lines.push('🍂 Mission cleared — '+m.cards.map(c=>'2× '+(DB[c]?.name||c)).join(', ')+' · +'+m.cel+' Celestium');
-    } else if(m) lines.push(iWon?'🍂 Mission already cleared — practice win.':'🍂 Mission failed — try it again any time.');
+      _ev.reveal={title:m.secret?'THE HARVEST KING FALLS':m.final?'THE HARVEST ROAD IS YOURS':'MISSION CLEARED',sub:m.n,items};
+      lines.push((m.secret?'🎃 Secret battle won — ':'🍂 Mission cleared — ')+m.cards.map(c=>evQty(m,c)+'× '+(DB[c]?.name||c)).join(', ')+' · +'+m.cel+' Celestium');
+    } else if(m) lines.push(iWon?'🍂 Already cleared — practice win.':(m.secret?'🎃 The Harvest King stands. Try him again any time.':'🍂 Mission failed — try it again any time.'));
     const btn=document.getElementById('win-event-btn'); if(btn){ btn.style.display='block'; btn.textContent=_ev.reveal?'🍂 CLAIM YOUR HARVEST':'🍂 BACK TO THE HARVEST ROAD'; }
   }
   if(evLive()&&matchCountsStats()&&!G.spectating&&!G.tutorialMode){
@@ -40243,7 +40554,7 @@ function evShowReveal(r){
   ov.classList.add('on');
   if(holoHit&&typeof SFX!=='undefined'&&SFX.powerup) try{ SFX.powerup(); }catch(e){}
 }
-function evCloseReveal(){ const ov=document.getElementById('hv-reveal'); if(ov){ ov.classList.remove('on'); ov.innerHTML=''; } evRender(); }
+function evCloseReveal(){ const ov=document.getElementById('hv-reveal'); if(ov){ ov.classList.remove('on'); ov.innerHTML=''; } evRender(); setTimeout(evSecretCheck,280); }
 
 const TR_COURTS={
   crimson:{n:'The Crimson Court',c:['red','yellow'],s:'Blitz',hex:'#ef4444'},
