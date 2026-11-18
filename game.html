@@ -9599,7 +9599,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.30 · Settings Update</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.31 · Aang</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10654,8 +10654,18 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.29'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.31'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.31', date:'2026-11-18',
+    cards:[
+      {id:'aang_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/Avatar TLAB/Aang (Promo).png', newAbilities:['Air Scooter','Air Blast','Avatar State'],
+        note:"Aang · Yellow (gold cost circle) · cost 7 · 7 ATK / 6 HP · Avatar, Bender · race 'Avatar Bender' · Legend. Main menu art: 'Main Menu Images/aang.jpg' (Rulk sets menu art in Admin → Menu Art)."}],
+    abilities:[
+      "AIR SCOOTER (passive): opponents must pay 2 Energy to target Aang with an ABILITY — the Godly Evasion toll (2⚡, 'Paid 2⚡ to get past Air Scooter…'), but attacks on him are free. Web: hasAbilityToll(fc) = hasGodlyEvasion(fc) || Air Scooter; every ability-targeting check (target pickers, the toll payment, the CPU's target pools) uses hasAbilityToll, the attack checks keep hasGodlyEvasion. The picker row shows '🛡 2⚡ toll'; a row is disabled if the chooser can't pay.",
+      "AIR BLAST (activated): 2 Energy (pays Yellow), every other turn (abilityUsed.air_blast_turn, the Water Whip convention: usable again when G.turn − last ≥ 2; the menu shows the cooldown), paid → no tap. Target any opposing character (tapped ones too; the toll applies): it's tapped, and it can't attack until your next turn (fc._airBlastUntil = lassoUntilFor(its controller), checked in canCharacterAttack — same window as Lasso of Truth). Card view condition '💨 Air Blast — Tapped, it can't attack until its opponent's next turn.' Closing the picker refunds. CPU: targets the opposing character with the most Attack it can reach; uses it when that's 3+ Attack.",
+      "AVATAR STATE (activated): 6 Energy, once per game (generic lock, normal reveal), paid → no tap: +4 Attack and Onslaught until the end of the turn (fc._avState; hasKW grants 'onslaught' while set, so he can attack twice; tickAvatarState removes it at the end of the turn like The Iron Fist; it carries through a transform via tempStatDelta). Card view condition '🌀 Avatar State — +4 Attack and Onslaught until the end of this turn.' CPU: only when it opens the Herald or the +4 lets him destroy a character he otherwise couldn't."],
+    screens:[],
+    data:["GAME_BUILD '10.31' — new card. Web and PC can't play each other online until the PC is on 10.31."] },
   { build:'10.30', date:'2026-11-18',
     cards:[], abilities:[],
     screens:[
@@ -11559,6 +11569,7 @@ const DEFAULTS={
   storm_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Storm%20Weather%20Goddess%20(Herald)%20PROMO.png',
   sauron_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Lord%20Of%20The%20Rings/Sauron%20(Herald)%20PROMO.png',
   toph_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Toph%20(Promo).png',
+  aang_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Aang%20(Promo).png',
   tynie_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/038-150%20(Tynie%20Base).png',
   tynie_pd_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/039-150%20(Tynie%20Primal%20Destroyer).png',
   // ── HARVEST OF COURTS (event set 'hoc', build 10.20) ──
@@ -12477,6 +12488,15 @@ const DB={
     abilities:[{label:'Seismic Sense',type:'passive',cost:0,text:"This card can attack or target any character, ignoring effects that would stop it or make it pay extra. Its attacks can't miss."},
       {label:'Earth Wall',type:'activated',cost:2,limit:'once_per_turn',text:'Pay 2 Energy: Choose one of your characters. It gets +3 Health until your next turn. (Once per turn)'},
       {label:'Metalbending',type:'activated',cost:3,limit:'once_per_game',text:'Pay 3 Energy: Remove an Equipment from an opponent character and put it in the discard pile. (Once per game)'}],transforms:[]},
+  // ── AANG (Promo, Avatar TLAB) — build 10.31. Yellow (gold cost circle). Legend. Avatar · Bender.
+  //    Air Scooter: opponents pay 2⚡ to target him with an ability (hasAbilityToll — the Godly Evasion toll, abilities only, not attacks).
+  //    Air Blast: 2⚡, every other turn (abilityUsed.air_blast_turn, Water Whip convention), no tap: tap a target opposing character;
+  //      it can't attack until your next turn (fc._airBlastUntil, checked in canCharacterAttack).
+  //    Avatar State: 6⚡, once per game: +4 Attack and Onslaught until the end of the turn (fc._avState; tickAvatarState).
+  aang_promo:{id:'aang_promo',rarity:'legend',name:'Aang',color:'yellow',charName:'Aang',subtypes:['Avatar','Bender'],type:'char',race:'Avatar Bender',cost:7,atk:7,hp:6,sym:'AANG',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
+    abilities:[{label:'Air Scooter',type:'passive',cost:0,text:'Opponents must pay 2 Energy to target Aang with an ability.'},
+      {label:'Air Blast',type:'activated',cost:2,limit:'every_other_turn',text:"Pay 2 Energy: Tap target opposing character. It can't attack until your next turn. (Every other turn)"},
+      {label:'Avatar State',type:'activated',cost:6,limit:'once_per_game',text:'Pay 6 Energy: Until end of turn, Aang gets +4 Attack and Onslaught. (Once per game)'}],transforms:[]},
   // ── VILDREX (BSE 149/150) — build 10.18. HERALD, Void Celestial, Purple. "I am the strongest in the multiverse.."
   //    Void Gate: once per turn, after one of your characters attacks, you may pay 2⚡ → another character that hasn't attacked may attack.
   //    Void Collapse: 5⚡, once per game — an opposing character with a printed cost of 4 or less goes to the Rift.
@@ -13388,7 +13408,7 @@ function triggerThroughTheHorde(k, kp, vp, vuid){
   seqAbility(kp, k.cid, 'Through the Horde', null, {kind:'COMBAT'}, ()=>{
     const c=live(); if(!c.length) return;
     if(seqIsLocalHuman(kp)&&!(G&&G._aiAuto)) openEnemyTargetPicker(c.map(x=>x.fc), hit, {sourcePlayer:kp, title:'Through the Horde', desc:'Deal 2 damage to another opposing character.'});
-    else { const pool=c.filter(x=>!hasGodlyEvasion(x.fc)); if(!pool.length) return; const fin=pool.filter(x=>(x.fc.currentHP||0)<=2);
+    else { const pool=c.filter(x=>!hasAbilityToll(x.fc)); if(!pool.length) return; const fin=pool.filter(x=>(x.fc.currentHP||0)<=2);
       const t=fin.length?fin.sort((a,b)=>aiFcValue(b.fc)-aiFcValue(a.fc))[0].fc:((typeof aiPickEnemyTarget==='function')?aiPickEnemyTarget(pool.map(x=>x.fc),{sourcePlayer:kp}):pool[0].fc); if(t) hit(t.uid); }
   });
 }
@@ -13436,7 +13456,7 @@ function triggerReap(killerFc, killerP, victimP, victimUid){
   seqAbility(killerP, 'reapers_scythe_hoc', 'Reap', null, {kind:'COMBAT'}, ()=>{
     const c=live(); if(!c.length) return;
     if(seqIsLocalHuman(killerP)&&!(G&&G._aiAuto)) openEnemyTargetPicker(c.map(x=>x.fc), hit, {sourcePlayer:killerP, title:'Reap', desc:'Deal 2 damage to an opposing character.'});
-    else { const pool=c.filter(x=>!hasGodlyEvasion(x.fc)); if(!pool.length) return; const k=pool.filter(x=>(x.fc.currentHP||0)<=2).sort((a,b)=>aiFcValue(b.fc)-aiFcValue(a.fc))[0];
+    else { const pool=c.filter(x=>!hasAbilityToll(x.fc)); if(!pool.length) return; const k=pool.filter(x=>(x.fc.currentHP||0)<=2).sort((a,b)=>aiFcValue(b.fc)-aiFcValue(a.fc))[0];
       hit((k||pool.slice().sort((a,b)=>aiFcValue(b.fc)-aiFcValue(a.fc))[0]).fc.uid); }
   });
 }
@@ -13450,6 +13470,9 @@ function triggerCrimsonRampage(afc){
   const p=ownerOfCard(afc.uid)||G.activePlayer;
   dealDamage(p, afc.uid, 2);
   if(!G.players[p]?.field.some(f=>f.uid===afc.uid)){ afc._rampKO=true; log(`${DB[afc.cid]?.name} is destroyed by its own Crimson Rampage — the attack never lands.`,'dmg'); }
+}
+function tickAvatarState(p){
+  (G.players[p]?.field||[]).forEach(f=>{ if(f._avState){ f.currentATK=Math.max(0,(f.currentATK||0)-f._avState); f.atkBonus=(f.atkBonus||0)-f._avState; f._avState=0; log(`${DB[f.cid]?.name} leaves the Avatar State.`,'info'); } });
 }
 function tickIronFist(p){
   (G.players[p]?.field||[]).forEach(f=>{ if(f._ironFist){ f.currentATK=Math.max(0,(f.currentATK||0)-f._ironFist); f.atkBonus=(f.atkBonus||0)-f._ironFist; f._ironFist=0; log(`${DB[f.cid]?.name}'s Iron Fist fades.`,'info'); } });
@@ -13474,7 +13497,7 @@ function triggerGodfireSpillover(killerFc, killerP, victimP, victimUid){
     if(seqIsLocalHuman(killerP)&&!(G&&G._aiAuto)){
       openEnemyTargetPicker(c.map(x=>x.fc), hit, {sourcePlayer:killerP, title:'Godfire Spillover', desc:'Deal 3 damage to another opposing character.'});
     } else {
-      const pool=c.filter(x=>!hasGodlyEvasion(x.fc)); if(!pool.length) return;
+      const pool=c.filter(x=>!hasAbilityToll(x.fc)); if(!pool.length) return;
       const t=(typeof aiPickEnemyTarget==='function')?aiPickEnemyTarget(pool.map(x=>x.fc),{sourcePlayer:killerP}):pool[0].fc;
       if(t) hit(t.uid);
     }
@@ -13600,7 +13623,7 @@ function fillAttachedCarry(fc){
 }
 function reapplyCarry(fc,list){ fc.carry=[]; (list||[]).forEach(e=>grantCarry(fc,e.src,e.atk,e.hp)); fillAttachedCarry(fc); }
 function tempStatDelta(f){ let a=0,h=0;
-  a+=(f._ironFist||0)+(f._bloodRite||0)+(f._rampage||0)+((f._flame&&f._flame.amt)||0)+(f.krhAtk||0)+(f.ssbAtkBuff||0)+(f._aeth||0)+(f._stonePow||0)+(f._dcmd||0);
+  a+=(f._ironFist||0)+(f._avState||0)+(f._bloodRite||0)+(f._rampage||0)+((f._flame&&f._flame.amt)||0)+(f.krhAtk||0)+(f.ssbAtkBuff||0)+(f._aeth||0)+(f._stonePow||0)+(f._dcmd||0);
   h+=(f.krhHp||0)+(f._dcmd||0);
   a-=(f.surfacerAtkDebuff||0); h-=(f.surfacerHpDebuff||0);
   if(f._ph) a-=(f._ph.atk||0); if(f._kb) a-=(f._kb.atk||0);
@@ -14099,6 +14122,8 @@ function fxEffectsOf(fc){
   if(fc._dcmd>0) cond('⭐','Divine Command','+'+fc._dcmd+'/+'+fc._dcmd+' until the end of this turn.',null);
   if(fc._limitless>0) cond('💚','Limitless Power','+'+fc._limitless+'/+'+fc._limitless+' so far (max +4/+4).',null);
   if(isLassoed(fc)) cond('🪢','Lasso of Truth',"Can't attack until the end of its controller's next turn.",null);
+  if(airBlasted(fc)) cond('💨','Air Blast',"Tapped — it can't attack until its opponent's next turn.",null);
+  if(fc._avState>0) cond('🌀','Avatar State','+'+fc._avState+' Attack and Onslaught until the end of this turn.',null);
   if(fc._prismShield>0) cond('💠','Prism Barrier','Prevents '+fc._prismShield+' of the next damage it would be dealt (ends at the start of its owner\'s next turn).',null);
   if(Array.isArray(fc.attachments)&&fc.attachments.includes('the_dark_hold_bse')) cond('📕','The Dark Hold','Takes 1 damage at the start of each of your turns'+(fc._sinTurn===(G&&G.turn)?' · Pages of Sin used this turn':'')+'.',null);
   { const l=fc.abilityUsed&&fc.abilityUsed.sandstorm_turn; if(l!=null&&G&&G.turn-l<4&&hasAbilityLabel(fc,'Sandstorm')) cond('🏜','Sandstorm','Recharging: ready again in '+(4-(G.turn-l))+' turn(s).',null); }
@@ -16821,6 +16846,7 @@ function lassoUntilFor(ctrl){
 function canCharacterAttack(p, fc){
   if(!fc || !isChar(DB[fc.cid])) return false;
   if(isLassoed(fc)) return false; // 🪢 Lasso of Truth
+  if(airBlasted(fc)) return false; // 💨 Air Blast (Aang)
   if(fc._overloadLock&&fc._overloadLock===_braceTurnKey()) return false; // ⚡ Legendary Overload unpaid
   if(fc.tapped) return false; // tapped cards (used a free ability) can't attack
   if(stanceNoAttack(fc)) return false; // Earth Stance / Bloodstone Skin: "can't attack"
@@ -16912,11 +16938,16 @@ function hasDrunkenStance(fc){
 // Returns true if attackerPlayer may target targetFc, paying the 2⚡ toll if
 // Godly Evasion applies. Charges + logs when paid; returns false if unaffordable.
 function canPayEvasionToll(attackerPlayer, targetFc){
-  if(!hasGodlyEvasion(targetFc)) return true;
+  if(!hasAbilityToll(targetFc)) return true;
   const pl=G.players[attackerPlayer];
-  if(pl.energy>=2){ pl.energy-=2; log(`Paid 2⚡ to bypass Godly Evasion on ${DB[targetFc.cid].name}.`,'info'); return true; }
+  if(pl.energy>=2){ pl.energy-=2; log(`Paid 2⚡ to get past ${tollLabel(targetFc)} on ${DB[targetFc.cid].name}.`,'info'); return true; }
   return false;
 }
+// AIR SCOOTER (Aang): opponents pay 2⚡ to target him with an ABILITY (attacks are free). The Godly Evasion family charges both.
+function hasAbilityToll(fc){ return !!fc&&(hasGodlyEvasion(fc)||hasAbilityLabel(fc,'Air Scooter')); }
+function tollLabel(fc){ return ['Godly Evasion','God Step','Moonlit Veil','Air Scooter'].find(l=>hasAbilityLabel(fc,l))||'Godly Evasion'; }
+// AIR BLAST (Aang): fc._airBlastUntil = the last G.turn on which it can't attack (its controller's next turn).
+function airBlasted(fc){ return !!(fc&&fc._airBlastUntil!=null&&G&&G.turn<=fc._airBlastUntil); }
 
 // ── HEALTH MODE: combat-to-Life + Blocking (Phase 2a) ──────────────────────
 function effPower(fc){ return (fc.currentATK||0)+(fc.nextAttackBonus||0); }
@@ -17722,7 +17753,7 @@ function openEnemyTargetPicker(targets, callback, opts){
   if(G&&G._aiAuto){ // 🧠 AI: pick the best target and resolve immediately
     const t=aiPickEnemyTarget(targets,opts);
     if(!t){ log('AI: no valid target.','info'); return; }
-    if(hasGodlyEvasion(t)&&!canPayEvasionToll(opts.sourcePlayer||G.activePlayer||2,t)) return;
+    if(hasAbilityToll(t)&&!canPayEvasionToll(opts.sourcePlayer||G.activePlayer||2,t)) return;
     closeAllModals(); renderAll(); callback(t.uid); return;
   }
   const _undo=_abilityUndo; _abilityUndo=null; // an activated ability opened this picker: closing it refunds the ability
@@ -17740,7 +17771,7 @@ function openEnemyTargetPicker(targets, callback, opts){
   const _tutLock = !!(G.tutorialMode && _tutAttackTargetCid && targets.some(x=>x.cid===_tutAttackTargetCid));
   targets.forEach(cf=>{
     const c=DB[cf.cid];
-    const evasion=hasGodlyEvasion(cf);
+    const evasion=hasAbilityToll(cf);
     const canAfford=!evasion || G.players[sourcePlayer].energy>=2;
     const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:8px 10px;display:flex;justify-content:space-between;align-items:center'; btn.dataset.tuid=cf.uid;
     if(!canAfford){ btn.disabled=true; btn.style.opacity='.5'; }
@@ -17751,7 +17782,7 @@ function openEnemyTargetPicker(targets, callback, opts){
       // Enforce Godly Evasion: pay 2⚡ to target, or block if unaffordable.
       if(evasion){
         if(!canPayEvasionToll(sourcePlayer, cf)){
-          log(`${c.name} has Godly Evasion — need 2⚡ to target it.`,'dmg');
+          log(`${c.name} has ${tollLabel(cf)} — need 2⚡ to target it.`,'dmg');
           return;
         }
       }
@@ -18084,7 +18115,7 @@ function onEntry(p,fc){
       if(typeof fxPop==='function') fxPop(_fx); renderAll(); };
     if(!_foes.length) log('Skyfall: no opposing character.','info');
     else if(seqIsLocalHuman(p)&&!G._aiAuto) openEnemyTargetPicker(_foes.map(x=>x.fc), _hit, {sourcePlayer:p, title:'Skyfall', desc:'Deal 2 damage to an opposing character.'});
-    else { const pool=_foes.filter(x=>!hasDrunkenStance(x.fc)&&!hasGodlyEvasion(x.fc)); const kill=pool.filter(x=>(x.fc.currentHP||0)<=2).sort((a,b)=>aiFcValue(b.fc)-aiFcValue(a.fc))[0];
+    else { const pool=_foes.filter(x=>!hasDrunkenStance(x.fc)&&!hasAbilityToll(x.fc)); const kill=pool.filter(x=>(x.fc.currentHP||0)<=2).sort((a,b)=>aiFcValue(b.fc)-aiFcValue(a.fc))[0];
       const t=kill||pool.sort((a,b)=>aiFcValue(b.fc)-aiFcValue(a.fc))[0]; if(t) _hit(t.fc.uid); else log('Skyfall: no target it can reach.','info'); }
   }
   // ── CRASH THE FEAST (Booni): Freeze target opposing Location until the end of its owner's next turn, then gain 2 Energy.
@@ -19264,7 +19295,7 @@ function _activateAbilityCore(fc,abl){
         ()=>{});
     } else {
       const s=mine.slice().sort((a,b)=>aiFcValue(a)-aiFcValue(b))[0];
-      const pool=foes.filter(x=>!hasGodlyEvasion(x.fc)); const fresh=pool.filter(x=>!statusActive(x.fc,'poison'));
+      const pool=foes.filter(x=>!hasAbilityToll(x.fc)); const fresh=pool.filter(x=>!statusActive(x.fc,'poison'));
       const t=(fresh.length?fresh:pool).sort((a,b)=>aiFcValue(b.fc)-aiFcValue(a.fc))[0];
       if(s&&t) go(s.uid,t.fc.uid);
     }
@@ -19344,7 +19375,7 @@ function _activateAbilityCore(fc,abl){
           openEnemyTargetPicker(pool.map(x=>x.fc),(tUid)=>go(sacUid,tUid),{sourcePlayer:ap,title:'Event Horizon',desc:'Send an opposing character (cost '+costOf(sf)+' or less) to the Rift.'}); },
         ()=>{});
     } else {
-      let best=null; mine.forEach(f=>foes.filter(x=>costOf(x.fc)<=costOf(f)&&!hasGodlyEvasion(x.fc)).forEach(x=>{ const gain=aiFcValue(x.fc)-aiFcValue(f); if(!best||gain>best.gain) best={gain,s:f.uid,t:x.fc.uid}; }));
+      let best=null; mine.forEach(f=>foes.filter(x=>costOf(x.fc)<=costOf(f)&&!hasAbilityToll(x.fc)).forEach(x=>{ const gain=aiFcValue(x.fc)-aiFcValue(f); if(!best||gain>best.gain) best={gain,s:f.uid,t:x.fc.uid}; }));
       if(best) go(best.s,best.t);
     }
     return;
@@ -19431,7 +19462,7 @@ function _activateAbilityCore(fc,abl){
     if(seqIsLocalHuman(ap)&&!G._aiAuto){ openEnemyTargetPicker(foes.map(x=>x.fc),hit,{sourcePlayer:ap,title:'🌠 Starbreaker Blast',desc:'Choose an opposing character: 3 damage.'}); }
     else { // AI: a kill first (best one), otherwise its most valuable target
       const kill=(x)=>(x.fc.currentHP||0)<=Math.max(0,3-(x.fc.nullify||0))?1:0;
-      const pool=foes.filter(x=>!hasDrunkenStance(x.fc)&&(!hasGodlyEvasion(x.fc)||pl.energy>=2)); const best=(pool.length?pool:foes).slice().sort((a,b)=>(kill(b)-kill(a))||(aiFcValue(b.fc)-aiFcValue(a.fc)))[0];
+      const pool=foes.filter(x=>!hasDrunkenStance(x.fc)&&(!hasAbilityToll(x.fc)||pl.energy>=2)); const best=(pool.length?pool:foes).slice().sort((a,b)=>(kill(b)-kill(a))||(aiFcValue(b.fc)-aiFcValue(a.fc)))[0];
       openEnemyTargetPicker([best.fc],hit,{sourcePlayer:ap,title:'Starbreaker Blast'}); }
     return;
   }
@@ -19524,9 +19555,38 @@ function _activateAbilityCore(fc,abl){
         ()=>{});
     } else {
       const s=mine.slice().sort((a,b)=>(DB[b.cid]?.isToken?1:0)-(DB[a.cid]?.isToken?1:0)||aiFcValue(a)-aiFcValue(b))[0];
-      const pool=foes.filter(x=>!hasGodlyEvasion(x.fc)); const kills=pool.filter(x=>(x.fc.currentHP||0)<=2);
+      const pool=foes.filter(x=>!hasAbilityToll(x.fc)); const kills=pool.filter(x=>(x.fc.currentHP||0)<=2);
       const t=(kills.length?kills:pool).sort((a,b)=>aiFcValue(b.fc)-aiFcValue(a.fc))[0];
       if(s&&t) go(s.uid,t.fc.uid);
+    }
+    return;
+  }
+  // ── AANG: Air Blast — 2⚡, every other turn (fc.abilityUsed.air_blast_turn, Water Whip convention), no tap. Tap a target opposing
+  //    character; it can't attack until your next turn. Closing the picker refunds (activateAbility's undo snapshot).
+  if(abl.label==='Air Blast'){
+    const last=fc.abilityUsed && fc.abilityUsed.air_blast_turn;
+    if(last!=null && (G.turn-last)<2){ log(`Air Blast: wait ${2-(G.turn-last)} more turn(s).`,'dmg'); return; }
+    const ap=G.activePlayer, pl=G.players[ap]; const opps=_fusionOpps(ap);
+    const ownerOf=(uid)=>opps.find(o=>(G.players[o]?.field||[]).some(f=>f.uid===uid));
+    const enemies=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) enemies.push(f); }));
+    if(!enemies.length){ log('Air Blast: no opposing characters.','dmg'); return; }
+    if(pl.energy<2){ log('Not enough energy (need 2⚡).','dmg'); return; }
+    if(!spendEnergyAbility(ap,2,DB[fc.cid]?.color||null)) return;
+    if(!fc.abilityUsed) fc.abilityUsed={}; fc.abilityUsed.air_blast_turn=G.turn; pl.usedAbilityThisTurn=true;
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    const blast=(uid)=>{ const op=ownerOf(uid); const t=op&&G.players[op].field.find(f=>f.uid===uid); if(!t){ renderAll(); return; }
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Air Blast',fc.uid):null;
+      try{ t.tapped=true; t._airBlastUntil=lassoUntilFor(op); } finally { if(typeof fxPop==='function') fxPop(_fx); }
+      log(`💨 Air Blast: ${DB[t.cid].name} is tapped — it can't attack until ${pname(ap)}'s next turn.`,'gain');
+      if(typeof SFX!=='undefined'&&SFX.ability) try{ SFX.ability(); }catch(e){}
+      renderAll(); };
+    if(seqIsLocalHuman(ap)&&!G._aiAuto){
+      openEnemyTargetPicker(enemies,blast,{sourcePlayer:ap,title:'💨 Air Blast',desc:"Choose an opposing character: it's tapped and can't attack until your next turn."});
+    } else {
+      const pool=enemies.filter(f=>!hasDrunkenStance(f)&&!spaceShielded(f)&&!airBlasted(f)&&(!hasAbilityToll(f)||pl.energy>=2));
+      const best=(pool.length?pool:enemies).slice().sort((a,b)=>effPower(b)-effPower(a))[0];
+      openEnemyTargetPicker([best],blast,{sourcePlayer:ap,title:'Air Blast'});
     }
     return;
   }
@@ -19555,7 +19615,7 @@ function _activateAbilityCore(fc,abl){
     if(seqIsLocalHuman(ap)&&!G._aiAuto){
       openEnemyTargetPicker(enemies,bind,{sourcePlayer:ap,title:'Lasso of Truth',desc:"Choose an opposing character. It can't attack until the end of its controller's next turn, and they reveal their hand to you."});
     } else {
-      const pool=enemies.filter(f=>!hasDrunkenStance(f)&&!isLassoed(f)&&(!hasGodlyEvasion(f)||pl.energy>=2));
+      const pool=enemies.filter(f=>!hasDrunkenStance(f)&&!isLassoed(f)&&(!hasAbilityToll(f)||pl.energy>=2));
       const best=(pool.length?pool:enemies).slice().sort((a,b)=>effPower(b)-effPower(a))[0];
       openEnemyTargetPicker([best],bind,{sourcePlayer:ap,title:'Lasso of Truth'});
     }
@@ -20804,6 +20864,14 @@ function runAbilityEffect(fc, abl, pl){
       wall(((at.length?at:mine).slice().sort((a,b)=>aiFcValue(b)-aiFcValue(a))[0]).uid); }
     return;
   }
+  // ── AANG: Avatar State — 6⚡, once per game: +4 Attack and Onslaught until the end of the turn (fc._avState).
+  if(label==='Avatar State'){
+    if(!(G.players[G.activePlayer]?.field||[]).includes(fc)){ renderAll(); return; }
+    const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Avatar State',fc.uid):null;
+    try{ fc._avState=(fc._avState||0)+4; fc.currentATK=(fc.currentATK||0)+4; fc.atkBonus=(fc.atkBonus||0)+4; } finally { if(typeof fxPop==='function') fxPop(_fx); }
+    log(`🌀 Avatar State: ${DB[fc.cid]?.name} gets +4 Attack and Onslaught until the end of the turn!`,'gain');
+    renderAll(); return;
+  }
   // ── TOPH: Metalbending — 3⚡ once per game: an Equipment on an opposing character goes to its owner's discard pile (its attach bonuses
   //    come off: removeEquipFrom). Seismic Sense: no target restrictions. Nothing equipped → refunded. Closing the chooser refunds.
   if(label==='Metalbending'){
@@ -21103,10 +21171,10 @@ function runAbilityEffect(fc, abl, pl){
         openEnemyTargetPicker(targets, (chosenUid)=>{ dealDamage(oppNum, chosenUid, 4); log('Light Sphere: 4 damage!','dmg'); renderAll(); }, {sourcePlayer:G.activePlayer});
       } else {
         // Fallback: hit lowest-HP enemy that isn't evasion-protected (or pay toll)
-        const reachable=targets.filter(f=>!hasGodlyEvasion(f)||G.players[G.activePlayer].energy>=2);
+        const reachable=targets.filter(f=>!hasAbilityToll(f)||G.players[G.activePlayer].energy>=2);
         if(!reachable.length){ log('Light Sphere: target is protected by Godly Evasion (need 2⚡).','dmg'); renderAll(); return; }
         const tgt = reachable.reduce((a,b)=>b.currentHP<a.currentHP?b:a);
-        if(hasGodlyEvasion(tgt)) canPayEvasionToll(G.activePlayer,tgt);
+        if(hasAbilityToll(tgt)) canPayEvasionToll(G.activePlayer,tgt);
         dealDamage(oppNum, tgt.uid, 4); log(`Light Sphere: 4 damage to ${DB[tgt.cid].name}!`,'dmg'); renderAll();
       }
     });
@@ -21266,7 +21334,7 @@ function runAbilityEffect(fc, abl, pl){
     log('Gamma Detonation: 4 damage to all opponent characters!','dmg');
     const _gap=G.activePlayer;
     seqAreaHits(targets.map(t=>({p:oppNum,uid:t.uid})),4,{cid:fc.cid,label:'Gamma Detonation',uid:fc.uid},{skip:t=>{ const tfc=G.players[t.p].field.find(f=>f.uid===t.uid);
-      if(tfc&&hasGodlyEvasion(tfc)&&!canPayEvasionToll(_gap,tfc)){ log(`${DB[tfc.cid].name} evades Gamma Detonation (Godly Evasion).`,'info'); return true; } return false; }});
+      if(tfc&&hasAbilityToll(tfc)&&!canPayEvasionToll(_gap,tfc)){ log(`${DB[tfc.cid].name} evades Gamma Detonation (Godly Evasion).`,'info'); return true; } return false; }});
     renderAll(); return;
   }
 
@@ -22142,6 +22210,7 @@ function endTurnFx(p){
   tickFlameSpiral(p); // 🔥 Korra's Flame Spiral timers
   tickCrimsonRampage(p); // 🔥 Crystora (SSGE): Crimson Rampage ends with the turn
   tickIronFist(p); // 👊 Danny Rand: The Iron Fist ends with the turn
+  tickAvatarState(p); // 🌀 Aang: Avatar State ends with the turn
   tickBloodRite(p); // 🩸 Surana (SSS): Blood Rite's +3 Attack ends with the turn
   tickScorchedEarth(p); // count down any Scorched Earth timers this player set
   tickFusions(p); // 💤 Fatigue, then 💫 Dance timers (split at 0)
@@ -22612,7 +22681,7 @@ function aiTried(key){ return AIB.tried.has(key); }
 function aiPickEnemyTarget(targets, opts){
   const p=G.activePlayer; const pl=G.players[p]; opts=opts||{};
   const text=((opts.desc||'')+' '+(opts.title||'')).toLowerCase();
-  const pool=(targets||[]).filter(t=>t&&!hasDrunkenStance(t)&&(!hasGodlyEvasion(t)||pl.energy>=2));
+  const pool=(targets||[]).filter(t=>t&&!hasDrunkenStance(t)&&(!hasAbilityToll(t)||pl.energy>=2));
   if(!pool.length) return null;
   const m=text.match(/(\d+)\s*damage/); const d=m?+m[1]:0;
   if(d){ const kill=pool.filter(t=>t.currentHP<=d); if(kill.length) return kill.reduce((a,b)=>aiFcValue(b)>aiFcValue(a)?b:a); }
@@ -22661,15 +22730,21 @@ function aiScoreAbility(p, fc, abl, src){
   if(abl.label==="Doom's Design" && (!doomsDesignReady(fc) || !(pl.deck||[]).some(cid=>isEquip(DB[cid])))) return -1;
   if(abl.label==='The Iron Fist'){ const _l=fc.abilityUsed&&fc.abilityUsed.iron_fist_turn; if(_l!=null&&G.turn-_l<2) return -1;
     if(fc.tapped||!aiReady(fc)||!canCharacterAttack(p,fc)||!aiAttackOptionsFor(p,fc).length) return -1; return 24; }
+  if(abl.label==='Air Blast'){ if(ablCooldownLeft(fc,abl)>0) return -1;   // build 10.31: lock down their best attacker
+    const _pool=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)&&!airBlasted(e.fc)&&(!hasAbilityToll(e.fc)||pl.energy>=cost+2));
+    if(!_pool.length) return -1; const _b=Math.max(..._pool.map(e=>effPower(e.fc))); return _b>=3?10+Math.min(18,_b*2):-1; }
+  if(abl.label==='Avatar State'){ if(fc.tapped||!aiReady(fc)||!canCharacterAttack(p,fc)) return -1;   // build 10.31: save it for a swing that matters
+    const _pw=effPower(fc), _f=aiEnemyChars(p), _g=_f.filter(e=>hasKW(e.fc,'guardian')), _pool=_g.length?_g:_f;
+    if(!_pool.length) return 22; const _k=_pool.filter(e=>{ const h=e.fc.currentHP||0; return h>_pw&&h<=_pw+4; }).length; return _k?18+_k*6:-1; }
   if(abl.label==='Pages of Sin'){ if(fc._sinTurn===G.turn||(typeof isEquipHexed==='function'&&isEquipHexed(fc,'the_dark_hold_bse'))) return -1;
     const _o=pl.field.filter(f=>f.uid!==fc.uid&&isChar(DB[f.cid])&&!DB[f.cid]?.isToken); if(!_o.length) return -1;
-    const _cheap=Math.min(..._o.map(f=>aiFcValue(f))); const _t=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&!hasGodlyEvasion(e.fc)&&!statusActive(e.fc,'poison')&&!hasAbilityLabel(e.fc,'Vortex Shield'));
+    const _cheap=Math.min(..._o.map(f=>aiFcValue(f))); const _t=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&!hasAbilityToll(e.fc)&&!statusActive(e.fc,'poison')&&!hasAbilityLabel(e.fc,'Vortex Shield'));
     if(!_t.length||_cheap>12) return -1; return 22+Math.min(10,Math.max(..._t.map(e=>aiFcValue(e.fc)))*.3); }
   if(abl.label==='Rise from Darkness'){ const _l=fc.abilityUsed&&fc.abilityUsed.rise_turn; if(_l!=null&&G.turn-_l<4) return -1;
     if(pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken).length>=MAX_FIELD) return -1;
     if(!(pl.discard||[]).some(cid=>{ const cc=DB[cid]; return cc&&isChar(cc)&&!cc.isToken&&!cc.transformOnly&&!cc.fusion&&!cc.fusionForm&&cc.type!=='herald'&&(cc.cost||0)<=4&&(cc.cost||0)>=2; })) return -1; }
   if(abl.label==='Event Horizon'){ if(fc.abilityUsed&&fc.abilityUsed['Event Horizon']) return -1;
-    const _foes=aiEnemyChars(p).filter(e=>!DB[e.fc.cid]?.isToken&&!isRiftImmune(e.fc)&&!hasDrunkenStance(e.fc)&&!hasGodlyEvasion(e.fc));
+    const _foes=aiEnemyChars(p).filter(e=>!DB[e.fc.cid]?.isToken&&!isRiftImmune(e.fc)&&!hasDrunkenStance(e.fc)&&!hasAbilityToll(e.fc));
     const _mine=pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
     let _g=-99; _mine.forEach(f=>_foes.forEach(e=>{ if((DB[e.fc.cid]?.cost||0)<=(DB[f.cid]?.cost||0)) _g=Math.max(_g, aiFcValue(e.fc)-aiFcValue(f)); }));
     if(_g<4) return -1; return 20+Math.min(30,_g*1.5); } // the text reads as 'costly' to the generic scorer; score the trade itself
@@ -22701,7 +22776,7 @@ function aiScoreAbility(p, fc, abl, src){
     if(_gain-_lose<6) return -1; return 18+Math.min(30,_gain-_lose); }
   if(abl.label==='Will of the Ring'){ if(fc.abilityUsed&&fc.abilityUsed['Will of the Ring']) return -1; const _mn=pl.field.filter(f=>isChar(DB[f.cid])); if(!_mn.length) return -1;
     const _ch=_mn.slice().sort((a,b)=>(DB[b.cid]?.isToken?1:0)-(DB[a.cid]?.isToken?1:0)||aiFcValue(a)-aiFcValue(b))[0]; if(!DB[_ch.cid]?.isToken&&aiFcValue(_ch)>8) return -1;
-    const _es=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)&&!hasGodlyEvasion(e.fc)); if(!_es.length) return -1;
+    const _es=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)&&!hasAbilityToll(e.fc)); if(!_es.length) return -1;
     const _k=_es.filter(e=>(e.fc.currentHP||0)<=2); if(!_k.length&&!DB[_ch.cid]?.isToken) return -1; return 8+(_k.length?Math.min(14,Math.max(..._k.map(e=>aiFcValue(e.fc)))*.6):2); }
   if(abl.label==='Shatter the World'){ const _es=aiEnemyChars(p); const _locs=_fusionOpps(p).reduce((n,op)=>n+(G.players[op]?.field||[]).filter(f=>isLoc(DB[f.cid])).length,0); if(!_es.length&&!_locs) return -1;
     const _k=_es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,3-(e.fc.nullify||0))).length; if(_es.length+_locs<2&&!_k) return -1; return 12+_es.length*5+_locs*4+_k*14; }
@@ -23192,6 +23267,7 @@ const KEYWORDS = {
   warp:         {label:'Warp',         cls:'kw-warp',         desc:'Has an Enter-the-Field effect when played.'},
 };
 function hasKW(fc, kw){ if(DB[fc.cid]?.keywords?.includes(kw))return true; if(Array.isArray(fc&&fc.gainedKeywords)&&fc.gainedKeywords.includes(kw)) return true;
+  if(kw==='onslaught'&&fc&&fc._avState>0) return true; // 🌀 Aang: Avatar State
   // STANCES (Pavi): Air Stance grants Onslaught, Earth Stance grants Guardian — only while that stance is active.
   if(fc&&fc.stance&&(kw==='onslaught'||kw==='guardian')&&stanceGrantsKW(fc,kw)) return true;
   return false; }
@@ -24549,7 +24625,7 @@ function healPrismOrb(tfc){
 function aiChoosePrismOrb(p){
   const allies=(G.players[p]?.field||[]).filter(f=>isChar(DB[f.cid]));
   const hurt=allies.map(f=>({f,miss:_orbMax(f)-(f.currentHP||0)})).sort((a,b)=>b.miss-a.miss)[0];
-  const foes=_orbEnemies(p).filter(e=>!hasGodlyEvasion(e.fc)&&(e.fc.currentATK||0)>0&&!(e.fc._tcut&&e.fc._tcut['Prism Orb'])).sort((a,b)=>(b.fc.currentATK||0)-(a.fc.currentATK||0));
+  const foes=_orbEnemies(p).filter(e=>!hasAbilityToll(e.fc)&&(e.fc.currentATK||0)>0&&!(e.fc._tcut&&e.fc._tcut['Prism Orb'])).sort((a,b)=>(b.fc.currentATK||0)-(a.fc.currentATK||0));
   if(hurt && hurt.miss>=3) return {mode:'heal', fc:hurt.f};
   if(foes.length) return {mode:'atk', fc:foes[0].fc, p:foes[0].p};
   if(hurt) return {mode:'heal', fc:hurt.f};
@@ -28733,7 +28809,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.30';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.31';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
