@@ -9637,7 +9637,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.34 · King Theoden</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.35 · Grant All fix</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10694,6 +10694,10 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.34'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.35', date:'2026-11-18', cards:[], abilities:[],
+    screens:["PRISM ORB (Crystal) CANCEL FIX: on the 'Heal 3' list, Cancel/Skip (also the Tap-the-Board banner's Cancel) goes back to the −2 Attack / Heal 3 choice when there's an opposing character to target; when there isn't (heal is the only option), it now skips Prism Orb with no effect. Before, with no enemies it reopened the same heal list instantly, so Cancel looked dead.",
+      "ADMIN → GRANT ALL CARDS now grants EVERY card: it used the pack/shop pool (getCardPool), which skips event exclusives (all of Harvest of Courts 01–15, the two Secret Rares included), transformation forms and the PT-001 playtest promo. New pool adminGrantPool() = every DB card except tokens, type 'system' and exclusive:'devtest' test cards. Same server call (econ_admin_grant with {cards:[{cid,qty}]}, topping each up to 4). Tile text: '4 copies of every card, event and secret ones too'. Port the same pool to the PC admin."],
+    data:["GAME_BUILD stays '10.34' (no rules change)."] },
   { build:'10.34', date:'2026-11-18',
     cards:[
       {id:'king_theoden_bse', set:'base_set', number:'059/150', rarity:'legend', scan:'Sets/BASE SET/059-150 (King Theoden Base).png', newAbilities:['King of Sadala','Royal Summons (Theoden: search)'],
@@ -25177,7 +25181,7 @@ function prismOrbAsk(p, fc){
     const pickHeal=()=>{
       const allies=(G.players[p]?.field||[]).filter(f=>isChar(DB[f.cid]));
       if(!allies.length){ finish(null,'No effect'); return; }
-      _pendingBlockDefault=()=>{ if(!settled) choose(); };
+      _pendingBlockDefault=()=>{ if(settled) return; if(_orbEnemies(p).length) choose(); else finish(null,'No effect'); }; // Cancel: back to the choice, or skip when healing is the only option
       seqChoose('Prism Orb · Heal 3','Choose one of your characters to heal for 3.',
         allies.map(f=>({label:DB[f.cid]?.name||'', sub:'♥'+(f.currentHP||0)+' / '+_orbMax(f), val:f})),
         (f)=>finish(()=>healPrismOrb(f),'Heal 3: '+(DB[f.cid]?.name||'')), ()=>{} /* Skip → the dismiss default goes back to the choice */);
@@ -29577,7 +29581,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.34';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.35';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -32417,12 +32421,20 @@ async function adminUnlockAllAchievements(){
   alert('✓ All achievements unlocked.');
 }
 
+// Every card an admin can own: getCardPool() is the PACK / SHOP pool (no event exclusives, no transformation forms), so
+// Grant All Cards uses this instead — everything except tokens, system cards and dev-test cards (build 10.35).
+function adminGrantPool(){
+  return Object.keys(DB).filter(id=>{ const c=DB[id];
+    if(!c||c.isToken||c.type==='token'||c.type==='system') return false;
+    if(c.exclusive==='devtest') return false;
+    return true; });
+}
 async function adminGrantAllCards(){
   if(!isAdmin())return;
-  if(!confirm('Grant 4 copies of every card to your collection?'))return;
-  if(econReady()){ const cards=getCardPool().map(cid=>({cid,qty:Math.max(0,4-(_collection[cid]||0))})).filter(x=>x.qty>0);
+  if(!confirm('Grant 4 copies of every card to your collection? (Event exclusives, Secret Rares, promos and transformation forms included.)'))return;
+  if(econReady()){ const cards=adminGrantPool().map(cid=>({cid,qty:Math.max(0,4-(_collection[cid]||0))})).filter(x=>x.qty>0);
     if(!cards.length||await econAdminSelf({cards},null)){ alert('✓ All cards granted (4 copies each).'); return; } }
-  getCardPool().forEach(cid=>{
+  adminGrantPool().forEach(cid=>{
     _collection[cid]=4;
   });
   await saveCollection();
@@ -37328,7 +37340,7 @@ window.addEventListener('load',async()=>{
           <button type="button" class="adm-tile gold" onclick="adminGrantCelestium()"><span class="adm-ico">💎</span><b>+1,000 Celestium</b><span>Added to your balance</span></button>
           <button type="button" class="adm-tile gold" onclick="adminGrantCelestium50k()"><span class="adm-ico">💎</span><b>+50,000 Celestium</b><span>Added to your balance</span></button>
           <button type="button" class="adm-tile" onclick="adminUnlockAllAchievements()"><span class="adm-ico">🏅</span><b>Unlock All Achievements</b><span>Marks every achievement earned</span></button>
-          <button type="button" class="adm-tile" onclick="adminGrantAllCards()"><span class="adm-ico">🃏</span><b>Grant All Cards</b><span>4 copies of each card</span></button>
+          <button type="button" class="adm-tile" onclick="adminGrantAllCards()"><span class="adm-ico">🃏</span><b>Grant All Cards</b><span>4 copies of every card, event and secret ones too</span></button>
           <button type="button" class="adm-tile gold" onclick="craftAdminGrant(5000)"><span class="adm-ico">🔨</span><b>+5,000 Court Shards</b><span>For testing crafting</span></button>
         </div>
       </section>
