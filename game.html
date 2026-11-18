@@ -4729,6 +4729,61 @@ textarea{
   box-shadow:0 0 16px rgba(200,164,74,.3);
 }
 
+/* ═══ SETTINGS v2 (build 10.30): tabs, visual choice tiles, preview thumbnails ═══ */
+#game-settings-modal .settings-panel.stv{width:min(800px,94vw);max-width:none;padding:0;display:flex;flex-direction:column;overflow:hidden}
+.stv-head{position:relative;padding:20px 56px 12px;text-align:center}
+.stv-head .settings-title{margin:0}
+.stv-x{position:absolute;right:14px;top:14px;width:34px;height:34px;border-radius:9px;border:1px solid rgba(200,164,74,.32);background:rgba(22,22,42,.75);color:#e8c570;cursor:pointer;font-size:15px;line-height:1}
+.stv-x:hover{border-color:#e8c570;background:rgba(60,45,100,.6)}
+.stv-tabs{display:flex;gap:2px;padding:0 18px;border-bottom:1px solid rgba(200,164,74,.22)}
+.stv-tab{flex:1;padding:10px 6px 11px;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;color:#8b93a7;font:600 12px/1 'Cinzel',serif;letter-spacing:1.5px;cursor:pointer;text-transform:uppercase;transition:color .15s,border-color .15s}
+.stv-tab:hover{color:#e8c570}
+.stv-tab.active{color:#e8c570;border-bottom-color:#e8c570;text-shadow:0 0 10px rgba(232,197,112,.35)}
+.stv-body{overflow-y:auto;padding:14px 24px 4px;flex:1;min-height:0;overscroll-behavior:contain}
+.stv-page{display:none}
+.stv-page.active{display:block;animation:stvIn .18s ease-out}
+@keyframes stvIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.stv-page .settings-section{margin-bottom:16px}
+.stv-page .settings-section-title{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+.stv-sec-note{font:400 10.5px/1.3 system-ui,sans-serif;letter-spacing:0;color:#6b7280;text-transform:none}
+.stv-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 24px 15px;border-top:1px solid rgba(200,164,74,.15)}
+.stv-foot .settings-close-btn{margin:0;width:auto;padding:9px 30px}
+.stv-foot-note{font-size:11px;color:#6b7280}
+.stv-vrow{display:grid;grid-template-columns:minmax(160px,1fr) auto;gap:10px 18px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.stv-vrow:last-child,.stv-trow:last-child{border-bottom:none}
+.stv-vrow .settings-label-desc,.stv-trow .settings-label-desc{font-size:10.5px;line-height:1.4;color:#7c8496;margin-top:3px}
+.stv-tiles{display:flex;gap:8px;justify-content:flex-end}
+.stv-tile.settings-size-btn{display:flex;flex-direction:column;align-items:stretch;gap:5px;width:138px;padding:6px 6px 8px;text-align:left;border-radius:10px;letter-spacing:0;font-family:system-ui,sans-serif;position:relative;color:#aeb4c2}
+.stv-tile .stv-prev{display:block;width:100%;aspect-ratio:120/75;border-radius:6px;overflow:hidden;background:#0a1220;transition:opacity .15s,filter .15s}
+.stv-tile .stv-prev svg,.stv-thumb svg{display:block;width:100%;height:100%}
+.stv-tile b{font:700 11.5px/1.2 'Cinzel',serif;letter-spacing:.4px;color:inherit;padding:0 2px}
+.stv-tile small{font-size:10px;line-height:1.3;color:#6b7280;padding:0 2px}
+.stv-tile.active small{color:#cdb878}
+.stv-tile.settings-size-btn.active{box-shadow:0 0 0 1px #e8c570,0 0 16px rgba(232,197,112,.22)}
+.stv-tile.active::after{content:'✓';position:absolute;top:9px;right:9px;width:17px;height:17px;border-radius:50%;background:#e8c570;color:#1a1408;font:800 11px/17px system-ui,sans-serif;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.55)}
+.stv-tile:not(.active) .stv-prev{opacity:.82;filter:saturate(.7)}
+.stv-tile:hover .stv-prev{opacity:1;filter:none}
+.settings-row.stv-trow{display:grid;grid-template-columns:104px 1fr auto;gap:16px;align-items:center;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.stv-thumb{position:relative;display:block;width:104px;aspect-ratio:120/75;border-radius:7px;overflow:hidden;border:1px solid rgba(200,164,74,.28);background:#0a1220;transition:filter .2s}
+.stv-thumb .pv-fx{transition:opacity .2s}
+.stv-trow:has(.settings-toggle:not(.on)) .stv-thumb .pv-fx{opacity:0}
+.stv-trow:has(.settings-toggle:not(.on)) .stv-thumb{filter:saturate(.35) brightness(.8)}
+.stv-trow:has(.settings-toggle:not(.on)) .stv-thumb::after{content:'OFF';position:absolute;right:4px;bottom:4px;padding:1px 5px;border-radius:4px;background:rgba(0,0,0,.7);color:#cbd5e1;font:700 8.5px/1.4 system-ui,sans-serif;letter-spacing:.06em}
+.stv-slider-row{display:flex;align-items:center;gap:10px}
+@media (max-width:660px){
+  .stv-head{padding:16px 50px 10px}
+  .stv-tabs{padding:0 8px}
+  .stv-tab{font-size:10px;letter-spacing:.4px;padding:10px 2px}
+  .stv-body{padding:10px 14px 4px}
+  .stv-foot{padding:10px 14px 12px}
+  .stv-vrow{grid-template-columns:1fr}
+  .stv-tiles{justify-content:flex-start}
+  .stv-tile.settings-size-btn{width:calc(50% - 4px)}
+  .stv-tiles.three .stv-tile.settings-size-btn{width:calc(33.33% - 6px)}
+  .settings-row.stv-trow{grid-template-columns:84px 1fr auto;gap:10px}
+  .stv-thumb{width:84px}
+}
+
 /* Card size scaling classes (applied to #game-screen) */
 
 /* Disable animations class */
@@ -8661,17 +8716,44 @@ body.ch-dock #modal-overlay .modal.ch-min>*:not(#modal-title){display:none!impor
 .ch-opt{text-transform:none!important;letter-spacing:.02em!important}
 .ch-opt .ch-sub{font:400 11.5px/1.4 system-ui,sans-serif;color:#fcd34d;text-transform:none;letter-spacing:0;white-space:normal}
 .ch-hl{outline:3px solid #67e8f9!important;outline-offset:2px;box-shadow:0 0 22px 6px rgba(103,232,249,.55)!important;z-index:5}
-.trig-ov.ask{background:transparent!important;pointer-events:none;justify-content:flex-end;align-items:flex-end;padding:78px 16px 16px}
-.trig-ov.ask .trig-card{pointer-events:auto;box-shadow:0 18px 44px rgba(0,0,0,.7)}
-.bw-ov.on,.ps3-ov.on{background:transparent!important;pointer-events:none;justify-content:flex-end;align-items:flex-end;padding:78px 16px 16px}
-.bw-ov.on>*,.ps3-ov.on>*{pointer-events:auto;box-shadow:0 18px 44px rgba(0,0,0,.72)}
-.bw-ov.on .bw-box{width:min(440px,40vw)}
-.ps3-ov.on .ps3-box{width:min(520px,44vw)}
+/* build 10.30: Settings → Gameplay → Pop-ups decides Side (these rules) or Center (the classic overlay) */
+body.pop-pr-side .trig-ov.ask{background:transparent!important;pointer-events:none;justify-content:flex-end;align-items:flex-end;padding:78px 16px 16px}
+body.pop-pr-side .trig-ov.ask .trig-card{pointer-events:auto;box-shadow:0 18px 44px rgba(0,0,0,.7)}
+body.pop-cb-side .bw-ov.on,body.pop-cb-side .ps3-ov.on{background:transparent!important;pointer-events:none;justify-content:flex-end;align-items:flex-end;padding:78px 16px 16px}
+body.pop-cb-side .bw-ov.on>*,body.pop-cb-side .ps3-ov.on>*{pointer-events:auto;box-shadow:0 18px 44px rgba(0,0,0,.72)}
+body.pop-cb-side .bw-ov.on .bw-box{width:min(440px,40vw)}
+body.pop-cb-side .ps3-ov.on .ps3-box{width:min(520px,44vw)}
+body.ch-dock #modal-overlay .modal #modal-body{min-width:0}
 @media (max-width:760px){
-  body.ch-dock #modal-overlay,.trig-ov.ask,.bw-ov.on,.ps3-ov.on{justify-content:center;align-items:flex-end;padding:0 8px 8px}
+  body.ch-dock #modal-overlay,body.pop-pr-side .trig-ov.ask,body.pop-cb-side .bw-ov.on,body.pop-cb-side .ps3-ov.on{justify-content:center;align-items:flex-end;padding:0 8px 8px}
   body.ch-dock #modal-overlay .modal{width:100%;max-height:54vh!important}
-  .bw-ov.on .bw-box,.ps3-ov.on .ps3-box{width:100%;max-height:60vh}
+  body.pop-cb-side .bw-ov.on .bw-box,body.pop-cb-side .ps3-ov.on .ps3-box{width:100%;max-height:60vh}
 }
+/* build 10.30 · TAP-THE-BOARD TARGETING: the picker shrinks to a banner at the top, the cards you can pick glow */
+.btg-bar{display:none}
+body.btg-on #modal-overlay{justify-content:center!important;align-items:flex-start!important;padding:64px 12px 0!important}
+body.btg-on.btg-low #modal-overlay{align-items:flex-end!important;padding:0 12px 16px!important}
+body.btg-on #modal-overlay .modal.btg-mini{width:auto!important;min-width:min(320px,92vw);max-width:min(620px,94vw)!important;max-height:none!important;padding:10px 14px 11px!important;overflow:visible!important;animation:btgDrop .22s ease-out}
+#modal-overlay .modal.btg-mini>*:not(#modal-title):not(.btg-bar){display:none!important}
+body.ch-dock #modal-overlay .modal.btg-mini #modal-title{cursor:default;font-size:14px;margin:0 0 6px;text-align:center}
+body.ch-dock #modal-overlay .modal.btg-mini #modal-title::after{content:none}
+#modal-overlay .modal.btg-mini .btg-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
+.btg-bar .btg-msg{font:600 12px/1.4 system-ui,sans-serif;color:#fde68a;flex:1 1 230px;text-align:center}
+.btg-bar .btg-msg i{display:block;font-style:normal;font-weight:400;font-size:10.5px;color:#a5b4fc;margin-top:1px}
+.btg-bar button{padding:6px 12px!important;font-size:11px!important;letter-spacing:.08em!important;white-space:nowrap}
+@media (max-width:760px){
+  body.btg-on #modal-overlay{padding-top:50px!important}
+  body.btg-on.btg-low #modal-overlay{padding:0 8px 10px!important}
+  body.ch-dock #modal-overlay .modal.btg-mini #modal-title{font-size:12.5px;margin-bottom:4px}
+  .btg-bar .btg-msg{flex-basis:100%;font-size:11.5px}
+}
+@keyframes btgDrop{from{transform:translateY(-14px);opacity:0}to{transform:none;opacity:1}}
+.btg-target{cursor:pointer!important;outline:2px solid rgba(250,204,21,.95)!important;outline-offset:2px;box-shadow:0 0 0 2px rgba(0,0,0,.45),0 0 18px 5px rgba(250,204,21,.55)!important;animation:btgPulse 1.15s ease-in-out infinite!important;z-index:6;opacity:1!important}
+.btg-target:hover{outline-color:#fff!important;box-shadow:0 0 0 2px rgba(0,0,0,.45),0 0 28px 9px rgba(250,204,21,.85)!important}
+.btg-target.btg-off{outline:2px dashed rgba(148,163,184,.75)!important;box-shadow:none!important;animation:none!important;cursor:not-allowed!important;opacity:.6!important}
+@keyframes btgPulse{0%,100%{outline-color:rgba(250,204,21,.95)}50%{outline-color:rgba(250,204,21,.35)}}
+body.btg-on #game-screen .card-slot[data-uid]:not(.btg-target),body.btg-on #game-screen-2v2 .card-slot[data-uid]:not(.btg-target){opacity:.42;transition:opacity .2s}
+.hand-card.btg-src{outline:2px solid #67e8f9!important;outline-offset:2px;box-shadow:0 0 16px 4px rgba(103,232,249,.55)!important;cursor:pointer}
 /* build 10.26 · prize pick waiting */
 #prize-owed{position:fixed;left:50%;top:64px;transform:translateX(-50%);z-index:9500;display:none;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;background:linear-gradient(180deg,rgba(60,40,6,.95),rgba(30,20,4,.95));border:1px solid #fbbf24;color:#fde68a;font:600 12.5px/1.2 system-ui,sans-serif;box-shadow:0 0 18px rgba(251,191,36,.45);cursor:pointer;max-width:calc(100vw - 24px);text-align:center}
 #prize-owed.on{display:flex;animation:prizePulse 1.6s ease-in-out infinite}
@@ -9516,8 +9598,8 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 </script>
 
 <!-- AUTH HUD -->
-<script>try{var _ts=JSON.parse(localStorage.getItem('loc_game_settings')||'{}').textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));}catch(e){}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.29 · Harvest Update</div>
+<script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.30 · Settings Update</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10574,6 +10656,17 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.29'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.30', date:'2026-11-18',
+    cards:[], abilities:[],
+    screens:[
+      "SETTINGS v2: four tabs GAMEPLAY · VISUALS · AUDIO · ONLINE (remember the last one: setTab). Panel min(800px,94vw), header with ✕, footer 'Changes save automatically.' + CLOSE. Choices with a picture are TILES (138 px wide: a 120×75 preview on top, bold name, one-line description, gold ring + ✓ badge when selected, unselected previews slightly faded). On/off settings are rows [104×65 preview] [label + description] [toggle]; when off, the preview's effect layer hides, the picture desaturates and an 'OFF' tag shows. Phone (≤660 px): tiles 2 or 3 per row under the label.",
+      "GAMEPLAY tab — POP-UPS ('Where choices appear during a match'): Ability Prompts (Use / Skip, stance and start-of-turn choices like Avatar's Harmony) · Choice Menus (pick-one lists, ability menus) · Combat Panels (Burst Window, Power Struggle). Each: [Side Panel 'Docked at the side. The board stays in view.'] [Center 'The classic pop-up in the middle.']. Side = the 10.26 docked panel (no backdrop, board readable, tap a card for its full view). Center = the pre-10.26 centered pop-up with the dark backdrop. Defaults: Side. TARGETING: 'Equipment, Instants & Target Picks' [Tap the Board 'Click the character on the field.'] [Pick from a List 'Choose by name in a menu.'], default Tap the Board. YOUR TURN: Auto Draw, Highlight Usable Cards, Turn Banners, Status Effect Animations (toggle rows with previews). PACE: Game Speed (Normal / Fast / Instant tiles), CPU Pacing (Human / Fast tiles).",
+      "VISUALS tab: Board Look (Arena 3D / Flat), Card Size (Small / Medium / Large), Text Size slider, Animations + Card Reveals (toggle rows with previews), Herald Entrances (On / Off), Pack Reveal (Fan / One by One). AUDIO: Sound Effects, SFX Volume, Music, Music Volume. ONLINE: Game Invites (Friends / Anyone / Off).",
+      "PREVIEW PICTURES (flat, generic, 120×75, no real card art): a dark board with the opponent's row (3 red cards) on top, yours (3 blue cards) below a dashed line and your hand (5 small cards) at the bottom. Side = a gold-bordered panel bottom-right; Center = the board dimmed + the panel in the middle. Panel contents: prompt = card art + 2 lines + USE / SKIP; menu = title + 3 rows; combat = 2 cards with VS. Tap the Board = your row ringed in gold, a cyan-outlined hand card with a dashed arrow to a field card, a pointer, a banner 'TAP A GLOWING CARD'. List = a side panel with 4 name rows. Auto Draw = deck + a card flying to the hand ('DRAW'). Highlight = 2 hand cards + 1 field card ringed gold. Banners = a gold band 'YOUR TURN'. Status = a field card with a cyan aura, a bolt, frost and a status badge (the badge stays when off). Speed = a zoomed 'INSTANT' card + a bar (full 1× / half 2× / sliver ⚡). CPU Human = thought bubble + hourglass '1–3 s'; Fast = ». 3D = trapezoid table; Flat = rectangle. Card sizes = the board at 0.78 / 1 / 1.24. Animations = a sparkle arc. Reveals = a big 'INSTANT' card + 'INSTANT PLAYED'. Entrances On = two Heralds + VS + rays; Off = a coin 'COIN TOSS'. Pack Fan = 5 cards in an arc; One by One = a stack + one flipped card. Web source: STV_PREV in game.html.",
+      "TAP THE BOARD (targeting): when a picker's options are all cards on the board (equipment, Saiyan Blood, Zephyranth / Vermynth Fruit, every openEnemyTargetPicker use, and seqChoose steps whose options are field characters), the picker becomes a compact banner (title + '🎯 <instruction>' + 'Tap a glowing card on the board.' + [☰ List] [Cancel] — or the step's own Skip) at the top center; if it would cover a card you can pick (opposing targets), it sits at the bottom instead. The cards you can pick glow (pulsing gold outline; disabled ones = dashed gray, 'That card can't be picked right now.'), the other field cards dim to ~42%, the equipment / instant you're playing is outlined cyan in your hand. Click / tap a glowing card = exactly the same as its list button (same commit, cost, Godly Evasion toll, refunds). Clicking the source card again or the empty board cancels (the card stays in hand, nothing paid); an ability whose cost is refunded on cancel nudges instead of closing. Esc = Cancel. ☰ List shows the normal list for that pick (docked or centered per Choice Menus). The guided tutorial always uses the list. Hovering a list option highlights its card on the board (cyan).",
+      "PHONES: with a choice open, tapping a board card now opens its full view (the tap used to be swallowed)."],
+    data:["Settings keys: popPrompts / popChoices / popCombat = 'side' | 'center' (default 'side'), targetMode = 'board' | 'list' (default 'board'), setTab = 'gameplay' | 'visuals' | 'audio' | 'online'.",
+      "GAME_BUILD stays '10.29' (no rules change). Web and PC on 10.29+ still play each other."] },
   { build:'10.29', date:'2026-11-18',
     cards:[
       {id:'harvest_curse_hoc', set:'hoc', number:'14/13', rarity:'secret', scan:"Special Events/Harvest of Courts/014-13 (The Harvest's Curse) (Secret Rare).png", newAbilities:['Choose Your Curse','Reap','Rise'],
@@ -17643,12 +17736,13 @@ function openEnemyTargetPicker(targets, callback, opts){
   const sourcePlayer = opts.sourcePlayer || G.activePlayer || 1;
   const body=document.createElement('div');
   body.innerHTML=`<div style="font-size:11px;color:#9ca3af;margin-bottom:10px">${opts.desc||'Choose an opponent character.'}</div>`;
+  if(opts.sourceUid!=null) body.dataset.btgSrc=opts.sourceUid;
   const _tutLock = !!(G.tutorialMode && _tutAttackTargetCid && targets.some(x=>x.cid===_tutAttackTargetCid));
   targets.forEach(cf=>{
     const c=DB[cf.cid];
     const evasion=hasGodlyEvasion(cf);
     const canAfford=!evasion || G.players[sourcePlayer].energy>=2;
-    const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:8px 10px;display:flex;justify-content:space-between;align-items:center';
+    const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:8px 10px;display:flex;justify-content:space-between;align-items:center'; btn.dataset.tuid=cf.uid;
     if(!canAfford){ btn.disabled=true; btn.style.opacity='.5'; }
     const evasionTag = evasion ? `<span style="font-size:9px;color:#fbbf24;margin-left:6px">🛡 2⚡ toll</span>` : '';
     btn.innerHTML=`<span>${c.name}${evasionTag}</span><span style="color:#22c55e">♥${cf.currentHP}</span>`;
@@ -17699,9 +17793,10 @@ function openFruitHealPicker(p, fco, chars, healAmt, atkAmt, cureMode, commit){
   }
   const body=document.createElement('div');
   body.innerHTML=`<div style="font-weight:700;color:#86efac;margin-bottom:4px">${c.name}</div><div style="font-size:11px;color:#9ca3af;margin-bottom:10px">${c.abilities[0]?.text||''}</div><div style="font-size:11px;color:#c8a0ff;margin-bottom:6px">Choose one of your characters:</div>`;
+  body.dataset.btgHint=`Choose one of your characters for ${c.name}.`; body.dataset.btgSrc=fco.uid;
   chars.forEach(cf=>{
     const cc=DB[cf.cid]; const mx=(cf.baseHP||0)+(cf.hpBonus||0)+(cf.passiveHp||0);
-    const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:7px 10px;display:flex;justify-content:space-between;align-items:center';
+    const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:7px 10px;display:flex;justify-content:space-between;align-items:center'; btn.dataset.tuid=cf.uid;
     btn.innerHTML=`<span>${cc.name}</span><span style="color:#22c55e">♥${cf.currentHP}/${mx}${atkAmt>0?` ⚔${cf.currentATK}`:''}</span>`;
     if(G.tutorialMode && _tutTargetCid && cf.cid!==_tutTargetCid){ btn.disabled=true; btn.style.opacity='0.4'; btn.style.cursor='not-allowed'; btn.innerHTML+=' 🔒'; }
     else { btn.onclick=()=>apply(cf); }
@@ -17721,11 +17816,12 @@ function openInstantTargetPicker(ifc,chars,commit){
   }
   const body=document.createElement('div');
   body.innerHTML=`<div style="font-weight:700;color:#ef4444;margin-bottom:4px">${ic.name}</div><div style="font-size:11px;color:#9ca3af;margin-bottom:10px">${ic.abilities[0]?.text||''}</div><div style="font-size:11px;color:#c8a0ff;margin-bottom:6px">Attach to:</div>`;
+  body.dataset.btgHint=`Choose one of your characters to attach ${ic.name} to.`; body.dataset.btgSrc=ifc.uid;
   chars.forEach(cf=>{
     const c=DB[cf.cid];
     const isSaiyan=c.subtypes?.some(s=>s.toLowerCase().includes('saiyan'));
     const bonus=isSaiyan?3:2;
-    const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:6px 10px';
+    const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:6px 10px'; btn.dataset.tuid=cf.uid;
     btn.textContent=`${c.name} (+${bonus} DEF)`;
     btn.onclick=()=>{
       if(commit && !commit()){ closeAllModals(); renderAll(); return; }
@@ -17746,8 +17842,9 @@ function openEquipTargetPicker(efc,chars,commit){
     <div style="font-size:10px;color:${ec.persistent===false?'#fca5a5':ec.persistent==='until_used'?'#fde68a':'#86efac'};margin-bottom:6px">${ec.persistent===false?'Consumable':ec.persistent==='until_used'?'Until Used':'Persistent'}</div>
     <div style="font-size:11px;color:#9ca3af;margin-bottom:8px">${ec.abilities[0]?.text||''}</div>
     <div style="font-size:11px;color:#c8a0ff;margin-bottom:6px">Attach to:</div>`;
+  body.dataset.btgHint=`Choose one of your characters to equip ${ec.name}.`; body.dataset.btgSrc=efc.uid;
   chars.forEach(cf=>{
-    const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:6px 10px';
+    const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:6px 10px'; btn.dataset.tuid=cf.uid;
     btn.textContent=`${DB[cf.cid].name} (${cf.currentHP}/${cf.baseHP+cf.hpBonus} HP)`;
     if(G.tutorialMode && _tutTargetCid && cf.cid!==_tutTargetCid){ btn.disabled=true; btn.style.opacity='0.4'; btn.style.cursor='not-allowed'; btn.textContent+='  🔒'; }
     else { btn.onclick=()=>{ if(commit && !commit()){ closeAllModals(); renderAll(); return; } closeAllModals();applyEquipToTarget(efc,cf);}; }
@@ -22101,6 +22198,11 @@ let _gameSettings = {
   autoDraw: true,    // build 10.26: draw automatically at the start of your turn (unless a card effect holds it)
   useGlow: true,     // build 10.26: pulse cards you can still play / use this turn
   statusFx: true,    // build 10.27: status auras animate + an effect over afflicted cards each turn
+  popPrompts: 'side', // build 10.30: Use / Skip and start-of-turn ability prompts — 'side' (docked) · 'center' (classic)
+  popChoices: 'side', // build 10.30: pick-one lists, target lists, ability menus — 'side' · 'center'
+  popCombat: 'side',  // build 10.30: Burst Window + Power Struggle — 'side' · 'center'
+  targetMode: 'board',// build 10.30: equipment / instants / target picks — 'board' (tap the card) · 'list' (pick by name)
+  setTab: 'gameplay', // build 10.30: the Settings tab you looked at last
   invites: 'friends' // Game Invites (build 10.19): who can send you match / party invites — 'friends' · 'anyone' · 'off'
 };
 // TEXT SIZE (build 9.6): scales menu pages, panels, card views and the match side rail (90%–130%).
@@ -22224,6 +22326,7 @@ function _unlockMenuMusic(){
 function openGameSettings(){
   // Sync UI to current state
   syncSettingsUI();
+  stvShowTab(_gameSettings.setTab||'gameplay');
   document.getElementById('game-settings-modal').classList.add('open');
   if(typeof SFX!=='undefined')SFX.click();
 }
@@ -22246,7 +22349,7 @@ function syncSettingsUI(){
   if(vol)vol.value=Math.round(_gameSettings.sfxVolume*100);
   const mvol=document.getElementById('set-music-vol');
   if(mvol)mvol.value=Math.round(_gameSettings.musicVolume*100);
-  document.querySelectorAll('.settings-size-btn').forEach(b=>{
+  document.querySelectorAll('.settings-size-btn[data-size]').forEach(b=>{
     b.classList.toggle('active', b.dataset.size===_gameSettings.cardSize);
   });
   document.querySelectorAll('.settings-look-btn').forEach(b=>b.classList.toggle('active', b.dataset.look===(_gameSettings.boardLook||'3d')));
@@ -22256,7 +22359,94 @@ function syncSettingsUI(){
   document.querySelectorAll('.settings-ent-btn').forEach(b=>b.classList.toggle('active', (b.dataset.ent==='on')===(_gameSettings.entrances!==false)));
   document.querySelectorAll('.settings-prv-btn').forEach(b=>b.classList.toggle('active', b.dataset.prv===(_gameSettings.packReveal==='stack'?'stack':'fan')));
   document.querySelectorAll('.settings-inv-btn').forEach(b=>b.classList.toggle('active', b.dataset.inv===(_gameSettings.invites||'friends')));
+  stvSync(); stvFill();
 }
+// ── SETTINGS v2 (build 10.30) ── tabs (Gameplay · Visuals · Audio · Online), Pop-ups (Side / Center for each kind)
+// and Targeting (Tap the Board / Pick from a List). Every choice has a small generic picture (STV_PREV) of what it changes.
+const STV_TABS=['gameplay','visuals','audio','online'];
+function stvShowTab(t){ t=STV_TABS.includes(t)?t:'gameplay';
+  document.querySelectorAll('#game-settings-modal .stv-tab').forEach(b=>{ const on=b.dataset.tab===t; b.classList.toggle('active',on); b.setAttribute('aria-selected',on?'true':'false'); });
+  document.querySelectorAll('#game-settings-modal .stv-page').forEach(p=>p.classList.toggle('active',p.dataset.page===t));
+  const bd=document.querySelector('#game-settings-modal .stv-body'); if(bd) bd.scrollTop=0; return t; }
+function setSettingsTab(t){ _gameSettings.setTab=stvShowTab(t); if(typeof SFX!=='undefined')SFX.click(); saveGameSettings(); }
+const POP_KEYS={prompts:'popPrompts', choices:'popChoices', combat:'popCombat'};
+function popSide(key){ return !(typeof _gameSettings!=='undefined'&&_gameSettings[key]==='center'); }
+function popPosApply(){ const b=document.body; if(!b) return;
+  b.classList.toggle('pop-pr-side', popSide('popPrompts')); b.classList.toggle('pop-cb-side', popSide('popCombat'));
+  if(typeof chDockSync==='function') try{ chDockSync(); }catch(e){} }
+function setPopPos(kind,v){ const key=POP_KEYS[kind]; if(!key) return; _gameSettings[key]=(v==='center')?'center':'side';
+  popPosApply(); stvSync(); if(typeof SFX!=='undefined')SFX.click(); saveGameSettings(); }
+function setTargetMode(v){ _gameSettings.targetMode=(v==='list')?'list':'board';
+  if(typeof chDockSync==='function') try{ chDockSync(); }catch(e){} stvSync(); if(typeof SFX!=='undefined')SFX.click(); saveGameSettings(); }
+function stvSync(){
+  document.querySelectorAll('.settings-pop-btn').forEach(b=>{ const key=POP_KEYS[b.dataset.popk]; b.classList.toggle('active',(popSide(key)?'side':'center')===b.dataset.popv); });
+  document.querySelectorAll('.settings-tgt-btn').forEach(b=>b.classList.toggle('active', b.dataset.tgt===(_gameSettings.targetMode==='list'?'list':'board')));
+}
+function stvFill(){ document.querySelectorAll('#game-settings-modal [data-prev]').forEach(el=>{ if(el.firstChild) return; const f=STV_PREV[el.dataset.prev]; if(f) try{ el.innerHTML=f(); }catch(e){} }); }
+// Flat, generic pictures (120×75): a board with the opponent's row on top, yours below and your hand at the bottom.
+const STV_PREV=(function(){
+  const F='font-family="system-ui,-apple-system,Segoe UI,sans-serif"';
+  const W=i=>'<svg viewBox="0 0 120 75" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">'+i+'</svg>';
+  const T=(x,y,sz,txt,fill,wt,anchor)=>`<text x="${x}" y="${y}" font-size="${sz}" ${F} font-weight="${wt||700}" fill="${fill||'#f0e6c8'}" text-anchor="${anchor||'middle'}">${txt}</text>`;
+  const R=(x,y,w,h,fill,ex)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}" ${ex||''}/>`;
+  const G=(cls,inner)=>`<g class="${cls}">${inner}</g>`;
+  const card=(x,y,w,h,col,o)=>{ o=o||{}; return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${o.rx||1.6}" fill="${col||'#26365a'}" stroke="${o.st||'#c8a44a'}" stroke-opacity="${o.so!=null?o.so:.6}" stroke-width="${o.sw||.7}"/>`+(o.plain?'':`<rect x="${x+w*.12}" y="${y+h*.09}" width="${w*.76}" height="${h*.46}" rx=".8" fill="#fff" opacity=".1"/>`); };
+  const glow=(x,y,w,h,c,op)=>`<rect x="${x-1.7}" y="${y-1.7}" width="${w+3.4}" height="${h+3.4}" rx="2.6" fill="none" stroke="${c||'#facc15'}" stroke-width="1.3" opacity="${op||.95}"/>`;
+  const bg=()=>R(0,0,120,75,'#0b1626')+R(5,4,110,67,'#123049','rx="4" opacity=".6"')+'<line x1="9" y1="36.5" x2="111" y2="36.5" stroke="#c8a44a" stroke-opacity=".3" stroke-dasharray="2 2" stroke-width=".7"/>';
+  const OX=[37,53,69];
+  const rowO=()=>OX.map(x=>card(x,8,12,17,'#4a2433')).join('');
+  const rowP=()=>OX.map(x=>card(x,41,12,17,'#26365a')).join('');
+  const hand=()=>{ let o=''; for(let i=0;i<5;i++) o+=card(40+i*8.5,62,9,13,'#2e2a50',{sw:.6,so:.5,plain:true}); return o; };
+  const board=()=>bg()+rowO()+rowP()+hand();
+  const dim=a=>R(0,0,120,75,'#000',`opacity="${a||.55}"`);
+  const panel=(x,y,w,h)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="#18143a" stroke="#e8c570" stroke-width=".9"/>`;
+  const lines=(x,y,w,n,gap)=>{ let o=''; for(let i=0;i<n;i++) o+=R(x,y+i*(gap||4),w*(i===n-1?.6:1),1.5,'#94a3b8','rx=".75" opacity=".6"'); return o; };
+  const btn=(x,y,w,h,fill,txt,tf)=>R(x,y,w,h,fill,'rx="1.5"')+(txt?T(x+w/2,y+h*.74,Math.min(4.6,h*.72),txt,tf||'#1a1408',800):'');
+  const cursor=(x,y)=>`<path d="M${x} ${y} l0 9 l2.3 -2.1 l1.8 3.7 l1.5 -.7 l-1.8 -3.6 l3.2 0 z" fill="#fff" stroke="#0b1626" stroke-width=".6"/>`;
+  const cPrompt=(x,y,w,h)=>{ const a=Math.min(h*.44,w*.3); return panel(x,y,w,h)+card(x+3,y+3.5,a*.72,a,'#6b4a1d',{sw:.6})+R(x+6+a*.72,y+4,(w-a*.72-9)*.8,2,'#e8c570','rx="1"')+lines(x+6+a*.72,y+8.5,w-a*.72-9,2,3.6)+btn(x+3,y+h-9.5,(w-9)/2,6.5,'#e8c570','USE')+btn(x+6+(w-9)/2,y+h-9.5,(w-9)/2,6.5,'#3b3f5c','SKIP','#cbd5e1'); };
+  const cChoice=(x,y,w,h)=>{ let o=panel(x,y,w,h)+R(x+3,y+3.5,w*.55,2,'#e8c570','rx="1"'); const n=3, rh=(h-11)/n-1.6; for(let i=0;i<n;i++){ const yy=y+8+i*(rh+1.6); o+=R(x+3,yy,w-6,rh,i===0?'#2e3a66':'#232845','rx="1.3" stroke="#6b7bb0" stroke-width=".4"')+R(x+5,yy+rh/2-.75,(w-6)*.55,1.5,'#cbd5e1','rx=".75" opacity=".75"'); } return o; };
+  const cCombat=(x,y,w,h)=>{ const cw=Math.min(w*.28,h*.42), chh=cw*1.4, cy=y+5+(h-5-chh)/2; return panel(x,y,w,h)+R(x+3,y+3.5,w*.5,2,'#f87171','rx="1"')+card(x+w*.1,cy,cw,chh,'#26365a',{sw:.7})+card(x+w*.9-cw,cy,cw,chh,'#4a2433',{sw:.7})+T(x+w/2,cy+chh/2+2.5,Math.min(7,w*.14),'VS','#fca5a5',900); };
+  const side=fn=>W(board()+fn(76,25,40,45));
+  const center=fn=>W(board()+dim(.42)+fn(33,13,54,46));
+  const tz=(cx,y,w1,w2,h,col)=>`<path d="M${cx-w1/2} ${y} L${cx+w1/2} ${y} L${cx+w2/2} ${y+h} L${cx-w2/2} ${y+h} Z" fill="${col}" stroke="#c8a44a" stroke-opacity=".6" stroke-width=".7"/>`;
+  const sizes=sc=>{ const w=12*sc, h=17*sc, gap=4*sc, x0=60-(w*1.5+gap); let o=bg(); for(let i=0;i<3;i++){ o+=card(x0+i*(w+gap),21-h/2-2,w,h,'#4a2433')+card(x0+i*(w+gap),52-h/2-1,w,h,'#26365a'); } return W(o); };
+  const bigCard=(x,y,w,h,col,lab)=>card(x,y,w,h,col||'#6b4a1d',{sw:1.1,so:1})+(lab?R(x+w*.1,y+h*.66,w*.8,h*.14,'#0b1626','rx="1" opacity=".75"')+T(x+w/2,y+h*.77,Math.min(5,w*.2),lab,'#fde68a',800):'');
+  const bar=(frac,lab)=>R(14,66,92,4,'#0f172a','rx="2" stroke="#475569" stroke-width=".4"')+R(14,66,92*frac,4,'#e8c570','rx="2"')+T(110,70,5,lab,'#e8c570',800,'end');
+  return {
+    'pr-side':()=>side(cPrompt), 'pr-center':()=>center(cPrompt),
+    'ch-side':()=>side(cChoice), 'ch-center':()=>center(cChoice),
+    'cb-side':()=>side(cCombat), 'cb-center':()=>center(cCombat),
+    'tg-board':()=>{ let o=bg()+rowO(); OX.forEach(x=>{ o+=glow(x,41,12,17)+card(x,41,12,17,'#26365a'); }); o+=hand();
+      o+=card(56.5,57,10,14,'#6b4a1d',{st:'#67e8f9',so:1,sw:1,plain:true})+'<path d="M63 57 Q 66 49 70.5 46" fill="none" stroke="#67e8f9" stroke-width="1.1" stroke-dasharray="2 1.5"/>'+cursor(74,47);
+      o+=R(27,1.8,66,9,'#18143a','rx="2.2" stroke="#e8c570" stroke-width=".6"')+T(60,7.9,4.6,'TAP A GLOWING CARD','#fde68a',800); return W(o); },
+    'tg-list':()=>{ let o=board()+panel(74,18,42,52)+R(77,21.5,24,2,'#e8c570','rx="1"'); for(let i=0;i<4;i++){ const y=26+i*10.6; o+=R(77,y,36,8.6,i===1?'#2e3a66':'#232845','rx="1.3" stroke="#6b7bb0" stroke-width=".4"')+R(79,y+3.6,17,1.5,'#cbd5e1','rx=".75" opacity=".8"')+`<circle cx="109" cy="${y+4.3}" r="1.5" fill="#22c55e"/>`; } return W(o); },
+    'autodraw':()=>{ let o=bg()+rowO()+rowP()+hand(); o+=card(99,46,10,14,'#2e2a50',{plain:true,so:.5})+card(100,45,10,14,'#2e2a50',{plain:true,so:.5})+card(101,44,10,14,'#3a3366',{plain:true});
+      o+=G('pv-fx','<path d="M100 43 Q 96 33 90 46" fill="none" stroke="#67e8f9" stroke-width="1" stroke-dasharray="2 1.5"/>'+`<g transform="rotate(-18 88 58)">${card(83,51,10,14,'#3a3366',{st:'#67e8f9',so:1,sw:1,plain:true})}</g>`+T(104,40,4.6,'DRAW','#67e8f9',800)); return W(o); },
+    'useglow':()=>{ let o=bg()+rowO()+rowP(); o+=G('pv-fx',glow(53,41,12,17)); for(let i=0;i<5;i++){ const x=40+i*8.5; if(i===1||i===3) o+=G('pv-fx',glow(x,62,9,13)); o+=card(x,62,9,13,i===1||i===3?'#3a3366':'#2e2a50',{sw:.6,so:.5,plain:true}); } return W(o); },
+    'banners':()=>W(board()+G('pv-fx',R(0,26,120,22,'#000','opacity=".45"')+R(0,29.5,120,15,'#c8a44a','opacity=".95"')+R(0,29.5,120,1,'#fff3c4','opacity=".7"')+R(0,43.5,120,1,'#6b5420')+T(60,40.2,9,'YOUR TURN','#1a1408',900))),
+    'statusfx':()=>{ let o=bg()+rowO(); OX.forEach(x=>{ o+=card(x,41,12,17,'#26365a'); });
+      o+=G('pv-fx',`<rect x="49.6" y="37.6" width="18.8" height="23.8" rx="3.4" fill="none" stroke="#67e8f9" stroke-width="1.6" opacity=".55"/><rect x="51" y="39" width="16" height="21" rx="2.6" fill="#67e8f9" opacity=".18"/><path d="M61 36 L56.5 45 L60 45 L57.5 53 L64 42.5 L60.5 42.5 L63 36 Z" fill="#fde047" stroke="#a16207" stroke-width=".4"/>`+T(42,34,6,'❄','#a5f3fc',700)+T(76,64,5,'✦','#a5f3fc',700));
+      o+=`<circle cx="64" cy="56" r="3.4" fill="#0b1626" stroke="#67e8f9" stroke-width=".7"/>`+T(64,57.9,4.6,'❄','#a5f3fc',700); return W(o+hand()); },
+    'sp-normal':()=>W(bg()+rowO()+rowP()+dim(.45)+bigCard(47,8,26,36,null,'INSTANT')+bar(1,'1×')),
+    'sp-fast':()=>W(bg()+rowO()+rowP()+dim(.3)+bigCard(47,8,26,36,null,'INSTANT')+bar(.5,'2×')+T(83,24,9,'»','#e8c570',900)),
+    'sp-instant':()=>W(bg()+rowO()+rowP()+glow(69,41,12,17,'#fde047')+card(69,41,12,17,'#6b4a1d')+bar(.07,'⚡')+T(88,30,8,'⚡','#fde047',900)),
+    'pace-human':()=>{ let o=bg()+rowO()+rowP()+glow(53,8,12,17,'#f87171',.8); o+='<ellipse cx="88" cy="13.5" rx="13" ry="7" fill="#f0e6c8"/><circle cx="76.5" cy="21" r="1.6" fill="#f0e6c8"/><circle cx="73.5" cy="24" r="1" fill="#f0e6c8"/>'+T(88,15.6,7,'• • •','#1a1408',900);
+      o+='<g transform="translate(16 42)"><path d="M0 0 h9 M0 15 h9 M1 0 C1 6 8 8 8 15 M8 0 C8 6 1 8 1 15" fill="none" stroke="#e8c570" stroke-width="1"/><path d="M2.6 13.4 L6.4 13.4 L4.5 10.4 Z" fill="#e8c570"/></g>'+T(20.5,64,4.6,'1–3 s','#e8c570',800); return W(o); },
+    'pace-fast':()=>{ let o=bg()+rowO()+rowP()+glow(53,8,12,17,'#f87171',.8); o+=T(86,21,12,'»','#e8c570',900)+'<path d="M20 47 h10 M16 51 h14 M20 55 h10" stroke="#e8c570" stroke-width="1" stroke-linecap="round" opacity=".7"/>'; return W(o); },
+    'look-3d':()=>{ let o=R(0,0,120,75,'#0b1626')+'<path d="M28 5 L92 5 L114 71 L6 71 Z" fill="#123049" opacity=".75"/>'+'<line x1="17" y1="34" x2="103" y2="34" stroke="#c8a44a" stroke-opacity=".3" stroke-dasharray="2 2" stroke-width=".7"/>';
+      [46,60,74].forEach(c=>{ o+=tz(c,10,9.5,11,15,'#4a2433'); }); [41,60,79].forEach(c=>{ o+=tz(c,40,13.5,16,20,'#26365a'); }); return W(o); },
+    'look-flat':()=>W(bg()+rowO()+rowP()),
+    'size-small':()=>sizes(.78), 'size-medium':()=>sizes(1), 'size-large':()=>sizes(1.24),
+    'anim':()=>W(bg()+rowO()+rowP()+G('pv-fx','<path d="M30 52 Q 44 30 54 20" fill="none" stroke="#fde68a" stroke-width="1.2" stroke-dasharray="1 2" stroke-linecap="round"/>'+T(56,18,7,'✦','#fde68a')+T(64,27,5,'✦','#fca5a5')+T(50,13,4.5,'✦','#a5f3fc')+'<circle cx="59" cy="16.5" r="9" fill="none" stroke="#fde68a" stroke-width=".8" opacity=".7"/>')+hand()),
+    'reveals':()=>W(board()+G('pv-fx',dim(.5)+bigCard(45,6,30,42,null,'INSTANT')+R(38,51,44,7,'#18143a','rx="2" stroke="#e8c570" stroke-width=".6"')+T(60,56.2,4.4,'⚡ INSTANT PLAYED','#fde68a',800))),
+    'ent-on':()=>{ let o=R(0,0,120,75,'#0b0a1c'); for(let i=0;i<9;i++){ const a=(-80+i*20)*Math.PI/180; o+=`<line x1="60" y1="38" x2="${60+Math.cos(a)*70}" y2="${38+Math.sin(a)*70}" stroke="#c8a44a" stroke-opacity=".18" stroke-width="3"/>`; }
+      o+=card(18,15,24,34,'#26365a',{sw:1,so:1})+card(78,15,24,34,'#4a2433',{sw:1,so:1})+T(60,42,12,'VS','#e8c570',900)+R(16,54,28,6,'#18143a','rx="1.5"')+R(76,54,28,6,'#18143a','rx="1.5"')+R(19,56.3,22,1.5,'#93c5fd','rx=".75"')+R(79,56.3,22,1.5,'#fca5a5','rx=".75"'); return W(o); },
+    'ent-off':()=>W(R(0,0,120,75,'#0b1626')+'<circle cx="60" cy="37" r="14" fill="#c8a44a" stroke="#fff3c4" stroke-width="1"/><circle cx="60" cy="37" r="10" fill="none" stroke="#8a6e2e" stroke-width="1"/>'+T(60,40.5,9,'♛','#5c4513',900)+T(60,64,5,'COIN TOSS','#94a3b8',800)),
+    'prv-fan':()=>{ let o=R(0,0,120,75,'#120d26'); [-24,-12,0,12,24].forEach((a,i)=>{ o+=`<g transform="rotate(${a} 60 92)">${card(52,22,16,23,i===2?'#6b4a1d':'#2b2166',{sw:.8,so:.9,plain:i!==2})}${i===2?'':'<circle cx="60" cy="33.5" r="3" fill="none" stroke="#c8a44a" stroke-width=".6" opacity=".7"/>'}</g>`; }); return W(o); },
+    'prv-stack':()=>{ let o=R(0,0,120,75,'#120d26'); for(let i=4;i>=0;i--) o+=card(34+i*1.2,22-i*1.2,18,26,'#2b2166',{sw:.8,so:.8,plain:true}); o+='<circle cx="43" cy="35" r="3.4" fill="none" stroke="#c8a44a" stroke-width=".6" opacity=".7"/>';
+      o+=`<g transform="rotate(8 78 36)">${card(68,21,20,29,'#6b4a1d',{sw:1,so:1})}</g>`+'<path d="M56 30 Q 62 22 67 27" fill="none" stroke="#fde68a" stroke-width=".9" stroke-dasharray="1.6 1.4"/>'; return W(o); }
+  };
+})();
 
 function toggleSetting(key){
   if(typeof SFX!=='undefined')SFX.click();
@@ -22323,7 +22513,7 @@ function setCardSize(size){
     if(size!=='medium') screen.classList.add('cards-'+size);
   });
   if(typeof fitFields==='function'&&G&&G.players){ fitFields(); layoutHandFan(); }
-  document.querySelectorAll('.settings-size-btn').forEach(b=>{
+  document.querySelectorAll('.settings-size-btn[data-size]').forEach(b=>{
     b.classList.toggle('active', b.dataset.size===size);
   });
   if(typeof SFX!=='undefined')SFX.click();
@@ -22342,6 +22532,7 @@ function loadGameSettings(){
     if(window._gameSettingsCache){
       const s = JSON.parse(window._gameSettingsCache);
       Object.assign(_gameSettings, s);
+      if(typeof popPosApply==='function') popPosApply();
       _sfxEnabled = _gameSettings.sfx;
       if(typeof applyTextScale==='function') applyTextScale();
       // Apply card size + animations
@@ -24467,10 +24658,11 @@ function seqChoose(title, desc, items, onPick, onSkip){
     const a=document.createElement('span'); a.className='ch-lbl'; a.style.cssText='font-weight:700;color:#e2e8f0'; a.textContent=it.label; b.appendChild(a);
     if(it.sub){ const z=document.createElement('span'); z.className='ch-sub'; z.textContent=it.sub; b.appendChild(z); }
     const v=it.val, tu=(v!=null&&typeof v!=='object')?v:(v&&(v.uid!=null?v.uid:(v.fc&&v.fc.uid)));
-    if(tu!=null){ b.onmouseenter=()=>{ _hlOff(); const el=(typeof fxElUid==='function')?fxElUid(tu):null; if(el) el.classList.add('ch-hl'); }; b.onmouseleave=_hlOff; }
+    if(tu!=null){ b.onmouseenter=()=>{ _hlOff(); const el=(typeof fxElUid==='function')?fxElUid(tu):null; if(el) el.classList.add('ch-hl'); }; b.onmouseleave=_hlOff;
+      if(G&&G.players&&Object.values(G.players).some(pl=>pl&&(pl.field||[]).some(f=>f.uid===tu))) b.dataset.tuid=tu; }
     b.onclick=()=>{ _hlOff(); takeModalCancel(); closeAllModals(); onPick(it.val); renderAll(); }; list.appendChild(b); });
   body.appendChild(list);
-  const sk=document.createElement('button'); sk.className='btn-gray'; sk.style.cssText='margin-top:10px;width:100%;padding:8px;opacity:.8'; sk.textContent='Skip';
+  const sk=document.createElement('button'); sk.className='btn-gray'; sk.style.cssText='margin-top:10px;width:100%;padding:8px;opacity:.8'; sk.textContent='Skip'; sk.dataset.btgCancel='1';
   sk.onclick=()=>{ takeModalCancel(); closeAllModals(); if(onSkip) onSkip(); renderAll(); }; body.appendChild(sk);
   showModalEl(title, body, {forceHuman:true});
   if(onSkip) armModalCancel(()=>{ onSkip(); renderAll(); }); // closing the chooser = Skip
@@ -27115,7 +27307,7 @@ function stTurnSync(){
   const order=[G.activePlayer].concat(ps.filter(p=>p!==G.activePlayer)); const heard={};
   order.forEach(pp=>(G.players[pp]?.field||[]).forEach(fc=>Object.keys(STATUS_META).forEach(t=>{ if(fc.statuses&&fc.statuses[t]>0){ stBurst(fc.uid,t,{turn:true,quiet:!!heard[t]}); heard[t]=1; } })));
 }
-function postRenderUX(){ try{ prizeOwedUI(); }catch(e){} try{ useGlowSync(); }catch(e){} try{ stBadgesSync(); }catch(e){} try{ stTurnSync(); }catch(e){} try{ drawDueUI(); }catch(e){} }
+function postRenderUX(){ try{ if(document.body.classList.contains('btg-on')||document.querySelector('#modal-overlay.open')) chDockSync(); }catch(e){} try{ prizeOwedUI(); }catch(e){} try{ useGlowSync(); }catch(e){} try{ stBadgesSync(); }catch(e){} try{ stTurnSync(); }catch(e){} try{ drawDueUI(); }catch(e){} }
 function renderAll(){
   if(G&&!G._aiTurn&&G._aiAuto) G._aiAuto=false;
   if(typeof registryScanBoard==='function') try{ registryScanBoard(); }catch(e){}
@@ -27302,7 +27494,7 @@ function renderV2HandFor(hp){
     const div=document.createElement('div');
     const effectiveCost=Math.max(0,c.cost+(fc.costMod||0)+handCostMod(hp,fc));
     const playable=(c.fusion||c.fusionMethodCard==='dance')?(isActive&&G.phase==='main'&&fusionHandPlayable(hp,fc)):(isActive&&!c.transformOnly&&G.phase==='main'&&pl.energy>=effectiveCost);
-    div.className='hand-card '+(isInst(c)?'instant-card '+(playable?'playable':'not-playable'):playable?'playable':'not-playable');
+    div.className='hand-card '+(isInst(c)?'instant-card '+(playable?'playable':'not-playable'):playable?'playable':'not-playable'); div.dataset.huid=fc.uid;
     if(!isActive)div.style.opacity='0.5';
     const artWrap=document.createElement('div');artWrap.className='hand-art-area';
     const url=getImg(fc.cid);if(url){const img=document.createElement('img');img.src=url;artWrap.appendChild(img);}else artWrap.textContent=c.sym||'?';
@@ -27512,7 +27704,7 @@ function renderHand(){
     const div=document.createElement('div');
     const effectiveCost=Math.max(0,c.cost+(fc.costMod||0)+handCostMod(handP,fc));
     const playable=(c.fusion||c.fusionMethodCard==='dance')?(G.activePlayer===handP&&G.phase==='main'&&fusionHandPlayable(handP,fc)):(!c.transformOnly&&G.activePlayer===handP&&G.phase==='main'&&pl.energy>=effectiveCost);
-    div.className='hand-card '+(isInst(c)?'instant-card '+(playable?'playable':'not-playable'):playable?'playable':'not-playable');
+    div.className='hand-card '+(isInst(c)?'instant-card '+(playable?'playable':'not-playable'):playable?'playable':'not-playable'); div.dataset.huid=fc.uid;
     const artWrap=document.createElement('div');artWrap.className='hand-art-area';
     const url=getImg(fc.cid);if(url){const img=document.createElement('img');img.src=url;artWrap.appendChild(img);}else artWrap.textContent=c.sym||'?';
     applyHoloToArt(artWrap,fc.cid,fc);
@@ -27841,8 +28033,12 @@ function showModalEl(title,bodyEl,opts){
 // ability menus, block prompts…), the Use / Skip trigger panel, the Burst window and Power Struggle sit in a panel at
 // the side with no dark overlay. The board stays readable: hover a card for Card Info, tap or right-click one for the
 // full view, use the Battle Log. Game actions wait until you choose (chGuard). Tap the panel title to fold it away.
-function chDockSync(){ const mo=document.getElementById('modal-overlay'); const on=!!(mo&&mo.classList.contains('open')&&typeof _inMatch==='function'&&_inMatch());
-  document.body.classList.toggle('ch-dock',on); const m=mo&&mo.querySelector('.modal'); if(!m) return;
+// build 10.30: Settings → Choice Menus = Center keeps the classic centered overlay; Targeting = Tap the Board turns a
+// picker whose options are all cards on the board into a banner at the top while those cards glow (btgTargets).
+function chDockSync(){ const mo=document.getElementById('modal-overlay'); const open=!!(mo&&mo.classList.contains('open')&&typeof _inMatch==='function'&&_inMatch());
+  const tg=open?btgTargets():null; const on=open&&(!!tg||(typeof popSide!=='function'||popSide('popChoices')));
+  document.body.classList.toggle('ch-dock',on); document.body.classList.toggle('btg-on',!!tg); const m=mo&&mo.querySelector('.modal'); if(!m){ btgClear(); return; }
+  m.classList.toggle('btg-mini',!!tg); if(tg){ m.classList.remove('ch-min'); btgApply(tg); btgBar(m); btgPlace(m,tg); } else { btgClear(); document.body.classList.remove('btg-low'); }
   if(!on){ m.classList.remove('ch-min'); return; }
   let h=m.querySelector('.ch-hint'); if(!h){ h=document.createElement('div'); h.className='ch-hint'; const t=m.querySelector('#modal-title'); if(t&&t.nextSibling) m.insertBefore(h,t.nextSibling); else m.appendChild(h); }
   h.textContent='👁 You can still look at the board: hover or tap any card to read it. Game actions wait until you choose.'; }
@@ -27853,13 +28049,66 @@ function chForced(){ if(!document.body.classList.contains('ch-dock')) return tru
 function chHumanOpen(){
   if(typeof _inMatch==='function'&&!_inMatch()) return false;
   if(document.body.classList.contains('ch-dock')&&document.querySelector('#modal-overlay.open')) return true;
-  return !!document.querySelector('#trig-ov.ask.open,#bw-ov.on,#ps3-ov.on');
+  return !!document.querySelector('body.pop-pr-side #trig-ov.ask.open,body.pop-cb-side #bw-ov.on,body.pop-cb-side #ps3-ov.on');
 }
+// ── TAP-THE-BOARD TARGETING (build 10.30) ── A picker qualifies when every option button carries data-tuid (a card on
+// the board) and nothing else needs a click (a Skip carries data-btg-cancel). Tapping a glowing card clicks its button,
+// so costs, tolls, refunds and commits run exactly as before. ☰ List shows the normal list for this pick.
+let _btgListKey=null;
+function btgTargets(){
+  try{
+    if(typeof _gameSettings!=='undefined'&&_gameSettings.targetMode==='list') return null;
+    if(typeof G==='undefined'||!G||!G.players||G.tutorialMode||G._aiAuto) return null;
+    const body=document.getElementById('modal-body'); if(!body||!body.firstElementChild) return null;
+    if(body.firstElementChild===_btgListKey) return null;
+    const btns=[...body.querySelectorAll('button[data-tuid]')]; if(!btns.length) return null;
+    if(body.querySelector('button:not([data-tuid]):not([data-btg-cancel]),input,select,textarea')) return null;
+    const out=[]; for(const b of btns){ const el=fxElUid(b.dataset.tuid); if(!el||!el.getClientRects().length) return null; out.push({b,el}); }
+    return out;
+  }catch(e){ return null; }
+}
+function btgClear(){ document.querySelectorAll('.btg-target').forEach(e=>e.classList.remove('btg-target','btg-off')); document.querySelectorAll('.btg-src').forEach(e=>e.classList.remove('btg-src')); document.querySelectorAll('.ch-hl').forEach(e=>e.classList.remove('ch-hl')); }
+function btgApply(list){
+  document.querySelectorAll('.btg-target').forEach(e=>{ if(!list.some(x=>x.el===e)) e.classList.remove('btg-target','btg-off'); });
+  list.forEach(({b,el})=>{ el.classList.add('btg-target'); el.classList.toggle('btg-off',!!b.disabled); });
+  document.querySelectorAll('.btg-src').forEach(e=>e.classList.remove('btg-src'));
+  const src=document.querySelector('#modal-body [data-btg-src]'); const bd=fxBoard();
+  if(src&&bd){ const h=bd.querySelector(`.hand-card[data-huid="${src.dataset.btgSrc}"]`); if(h) h.classList.add('btg-src'); }
+}
+function btgBar(m){
+  let bar=m.querySelector('.btg-bar'); if(!bar){ bar=document.createElement('div'); bar.className='btg-bar'; const t=m.querySelector('#modal-title'); if(t&&t.nextSibling) m.insertBefore(bar,t.nextSibling); else m.appendChild(bar); }
+  const body=document.getElementById('modal-body'); const hintEl=body&&body.querySelector('[data-btg-hint]');
+  let msg=hintEl?hintEl.dataset.btgHint:''; if(!msg&&body){ const d=body.firstElementChild&&body.firstElementChild.querySelector(':scope > div'); msg=d?d.textContent.trim():''; }
+  const cancel=body&&body.querySelector('[data-btg-cancel]');
+  const key=(body&&body.firstElementChild)||null; if(bar._key===key&&bar._msg===msg) return; bar._key=key; bar._msg=msg;
+  bar.innerHTML='<div class="btg-msg"></div><button class="btn-gray btn-sm btg-list">☰ List</button><button class="btn-gray btn-sm btg-cancel"></button>';
+  const mm=bar.querySelector('.btg-msg'); mm.textContent='🎯 '+(msg||'Choose a card.'); const sub=document.createElement('i'); sub.textContent='Tap a glowing card on the board.'; mm.appendChild(sub);
+  bar.querySelector('.btg-cancel').textContent=cancel?(cancel.textContent||'Skip'):'Cancel';
+  bar.querySelector('.btg-list').onclick=()=>{ _btgListKey=(document.getElementById('modal-body')||{}).firstElementChild||null; chDockSync(); };
+  bar.querySelector('.btg-cancel').onclick=()=>{ const c=document.querySelector('#modal-body [data-btg-cancel]'); if(c) c.click(); else closeAllModals(); };
+}
+// the banner sits at the top; if it would cover a card you can pick (an opposing target), it moves to the bottom
+function btgPlace(m,tg){ const B=document.body; const hits=()=>{ const r=m.getBoundingClientRect(); return tg.filter(({el})=>{ const q=el.getBoundingClientRect(); return !(q.right<r.left||q.left>r.right||q.bottom<r.top||q.top>r.bottom); }).length; };
+  const was=B.classList.contains('btg-low'); B.classList.remove('btg-low'); const top=hits(); if(!top) return;
+  B.classList.add('btg-low'); const low=hits(); if(low>=top&&!(was&&low===top)) B.classList.remove('btg-low'); }
+function btgClick(t){
+  if(!document.body.classList.contains('btg-on')) return false;
+  const card=t.closest('.btg-target');
+  if(card){ const uid=card.getAttribute('data-uid'); const b=[...document.querySelectorAll('#modal-body button[data-tuid]')].find(x=>x.dataset.tuid===String(uid));
+    if(b&&!b.disabled){ b.click(); } else if(typeof spToast==='function') spToast("That card can't be picked right now.",1800);
+    return true; }
+  if(t.closest('.btg-src')){ if(chForced()) chNudge(); else closeAllModals(); return true; }
+  return false;
+}
+// a list option for a card on the board highlights that card while you hover it (Side or Center, any picker)
+document.addEventListener('mouseover',e=>{ const b=e.target&&e.target.closest&&e.target.closest('#modal-body button[data-tuid]'); if(!b) return; document.querySelectorAll('.ch-hl').forEach(x=>x.classList.remove('ch-hl')); const el=(typeof fxElUid==='function')?fxElUid(b.dataset.tuid):null; if(el) el.classList.add('ch-hl'); });
+document.addEventListener('mouseout',e=>{ const b=e.target&&e.target.closest&&e.target.closest('#modal-body button[data-tuid]'); if(b&&!(e.relatedTarget&&b.contains(e.relatedTarget))) document.querySelectorAll('.ch-hl').forEach(x=>x.classList.remove('ch-hl')); });
+document.addEventListener('keydown',e=>{ if(e.key!=='Escape'||!document.body.classList.contains('btg-on')) return; const c=document.querySelector('#modal-overlay .btg-cancel'); if(c){ e.preventDefault(); c.click(); } });
 const CH_ALLOW='#modal-overlay .modal,.trig-card,#bw-ov>*,#ps3-ov>*,#fullcard-modal,#game-settings-modal,.modal-overlay:not(#modal-overlay),aside,.rail-tabs,.sheet-tabs,.em-pane,#prize-owed,.mobile-card-sheet,#mobile-nav,#game-menu-cluster';
 function chNudge(){
   const m=document.querySelector('body.ch-dock #modal-overlay .modal')||document.querySelector('#trig-ov.ask .trig-card,#bw-ov.on>*,#ps3-ov.on>*');
   if(m){ m.classList.remove('ch-nudge'); void m.offsetWidth; m.classList.add('ch-nudge'); }
-  if(typeof spToast==='function') spToast('Make your choice first — you can still hover or tap any card to read it.',2200);
+  if(typeof spToast==='function') spToast(document.body.classList.contains('btg-on')?'Tap a glowing card, or press Cancel.':'Make your choice first — you can still hover or tap any card to read it.',2200);
 }
 function chInspect(el){
   const card=el.closest('.card-slot[data-uid],.herald-slot[data-herald],.hand-card'); if(!card) return false;
@@ -27869,10 +28118,12 @@ function chInspect(el){
   if(!chHumanOpen()) return; const t=e.target; if(!(t instanceof Element)) return;
   if(t.closest(CH_ALLOW)) return;
   if(!t.closest('#game-screen,#game-screen-2v2')) return;
-  e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation();
-  if(ev==='click'){ if(!chInspect(t)){ if(chForced()) chNudge(); else closeAllModals(); } }
+  // build 10.30: a tap on a card keeps its click (phones), every other default and handler is still blocked
+  if(!(ev==='touchstart'&&t.closest('.card-slot[data-uid],.herald-slot[data-herald],.hand-card'))) e.preventDefault();
+  e.stopPropagation(); if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+  if(ev==='click'){ if(btgClick(t)) return; if(!chInspect(t)){ if(chForced()) chNudge(); else closeAllModals(); } }
 },{capture:true,passive:false}));
-document.addEventListener('click',e=>{ const h=e.target&&e.target.closest&&e.target.closest('body.ch-dock #modal-overlay #modal-title'); if(!h) return; const m=h.closest('.modal'); if(m) m.classList.toggle('ch-min'); });
+document.addEventListener('click',e=>{ const h=e.target&&e.target.closest&&e.target.closest('body.ch-dock #modal-overlay #modal-title'); if(!h) return; const m=h.closest('.modal'); if(m&&!m.classList.contains('btg-mini')) m.classList.toggle('ch-min'); });
 // CANCEL-SAFE CHOOSERS (build 10.4): a chooser can arm ONE cancel handler. Closing the modal without choosing (Close,
 // clicking outside, another modal replacing it) runs it once; a real choice disarms it first (takeModalCancel).
 let _modalCancel=null;
@@ -28482,7 +28733,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.29';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.30';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -36971,177 +37222,150 @@ window.addEventListener('load',async()=>{
 
 <!-- ══════════════ GAME SETTINGS MODAL ══════════════ -->
 <div id="game-settings-modal" onclick="if(event.target===this)closeGameSettings()">
-  <div class="settings-panel">
-    <div class="settings-title">⚙ SETTINGS</div>
-    <div class="settings-subtitle">AUDIO · VISUALS · GAMEPLAY</div>
-
-    <div class="settings-section">
-      <div class="settings-section-title">🔊 Audio</div>
-      <div class="settings-row">
-        <div>
-          <div class="settings-label">Sound Effects</div>
-          <div class="settings-label-desc">Combat, cards, abilities</div>
+  <div class="settings-panel stv" role="dialog" aria-label="Settings">
+    <div class="stv-head"><div class="settings-title">⚙ SETTINGS</div><button class="stv-x" onclick="closeGameSettings()" aria-label="Close settings">✕</button></div>
+    <div class="stv-tabs" role="tablist">
+      <button class="stv-tab active" data-tab="gameplay" role="tab" onclick="setSettingsTab('gameplay')">🎮 Gameplay</button>
+      <button class="stv-tab" data-tab="visuals" role="tab" onclick="setSettingsTab('visuals')">✨ Visuals</button>
+      <button class="stv-tab" data-tab="audio" role="tab" onclick="setSettingsTab('audio')">🔊 Audio</button>
+      <button class="stv-tab" data-tab="online" role="tab" onclick="setSettingsTab('online')">🌐 Online</button>
+    </div>
+    <div class="stv-body">
+      <div class="stv-page" data-page="gameplay">
+       <div class="settings-section">
+        <div class="settings-section-title">Pop-ups<span class="stv-sec-note">Where choices appear during a match</span></div>
+        <div class="stv-vrow">
+          <div><div class="settings-label">Ability Prompts</div><div class="settings-label-desc">Use / Skip choices and start-of-turn picks, like Avatar&#39;s Harmony.</div></div>
+          <div class="stv-tiles"><button class="settings-size-btn stv-tile settings-pop-btn" data-popk="prompts" data-popv="side" onclick="setPopPos('prompts','side')"><span class="stv-prev" data-prev="pr-side"></span><b>Side Panel</b><small>Docked at the side. The board stays in view.</small></button><button class="settings-size-btn stv-tile settings-pop-btn" data-popk="prompts" data-popv="center" onclick="setPopPos('prompts','center')"><span class="stv-prev" data-prev="pr-center"></span><b>Center</b><small>The classic pop-up in the middle.</small></button></div>
         </div>
-        <div class="settings-toggle on" id="set-sfx" onclick="toggleSetting('sfx')"><div class="settings-toggle-knob"></div></div>
+        <div class="stv-vrow">
+          <div><div class="settings-label">Choice Menus</div><div class="settings-label-desc">Pick-one lists and ability menus.</div></div>
+          <div class="stv-tiles"><button class="settings-size-btn stv-tile settings-pop-btn" data-popk="choices" data-popv="side" onclick="setPopPos('choices','side')"><span class="stv-prev" data-prev="ch-side"></span><b>Side Panel</b><small>Docked at the side. The board stays in view.</small></button><button class="settings-size-btn stv-tile settings-pop-btn" data-popk="choices" data-popv="center" onclick="setPopPos('choices','center')"><span class="stv-prev" data-prev="ch-center"></span><b>Center</b><small>The classic pop-up in the middle.</small></button></div>
+        </div>
+        <div class="stv-vrow">
+          <div><div class="settings-label">Combat Panels</div><div class="settings-label-desc">The Burst Window and Power Struggle.</div></div>
+          <div class="stv-tiles"><button class="settings-size-btn stv-tile settings-pop-btn" data-popk="combat" data-popv="side" onclick="setPopPos('combat','side')"><span class="stv-prev" data-prev="cb-side"></span><b>Side Panel</b><small>Docked at the side. The board stays in view.</small></button><button class="settings-size-btn stv-tile settings-pop-btn" data-popk="combat" data-popv="center" onclick="setPopPos('combat','center')"><span class="stv-prev" data-prev="cb-center"></span><b>Center</b><small>The classic pop-up in the middle.</small></button></div>
+        </div>
+       </div>
+       <div class="settings-section">
+        <div class="settings-section-title">Targeting<span class="stv-sec-note">How you choose where a card goes</span></div>
+        <div class="stv-vrow">
+          <div><div class="settings-label">Equipment, Instants &amp; Target Picks</div><div class="settings-label-desc">Attaching equipment, instants that go on a character, and abilities that pick a target.</div></div>
+          <div class="stv-tiles"><button class="settings-size-btn stv-tile settings-tgt-btn" data-tgt="board" onclick="setTargetMode('board')"><span class="stv-prev" data-prev="tg-board"></span><b>Tap the Board</b><small>Click the character on the field.</small></button><button class="settings-size-btn stv-tile settings-tgt-btn" data-tgt="list" onclick="setTargetMode('list')"><span class="stv-prev" data-prev="tg-list"></span><b>Pick from a List</b><small>Choose by name in a menu.</small></button></div>
+        </div>
+       </div>
+       <div class="settings-section">
+        <div class="settings-section-title">Your Turn</div>
+        <div class="settings-row stv-trow">
+          <span class="stv-thumb" data-prev="autodraw"></span>
+          <div><div class="settings-label">Auto Draw</div><div class="settings-label-desc">Draw automatically when your turn starts.</div></div>
+          <div class="settings-toggle on" id="set-autodraw" onclick="toggleSetting('autodraw')"><div class="settings-toggle-knob"></div></div>
+        </div>
+        <div class="settings-row stv-trow">
+          <span class="stv-thumb" data-prev="useglow"></span>
+          <div><div class="settings-label">Highlight Usable Cards</div><div class="settings-label-desc">Cards you can still play or use this turn glow.</div></div>
+          <div class="settings-toggle on" id="set-useglow" onclick="toggleSetting('useglow')"><div class="settings-toggle-knob"></div></div>
+        </div>
+        <div class="settings-row stv-trow">
+          <span class="stv-thumb" data-prev="banners"></span>
+          <div><div class="settings-label">Turn Banners</div><div class="settings-label-desc">The big “YOUR TURN” announcement.</div></div>
+          <div class="settings-toggle on" id="set-banners" onclick="toggleSetting('banners')"><div class="settings-toggle-knob"></div></div>
+        </div>
+        <div class="settings-row stv-trow">
+          <span class="stv-thumb" data-prev="statusfx"></span>
+          <div><div class="settings-label">Status Effect Animations</div><div class="settings-label-desc">Auras on afflicted cards and a quick effect each turn. The status icons always show.</div></div>
+          <div class="settings-toggle on" id="set-statusfx" onclick="toggleSetting('statusfx')"><div class="settings-toggle-knob"></div></div>
+        </div>
+       </div>
+       <div class="settings-section">
+        <div class="settings-section-title">Pace</div>
+        <div class="stv-vrow">
+          <div><div class="settings-label">Game Speed</div><div class="settings-label-desc">How long card plays and ability banners stay up. Click any moment to speed it up.</div></div>
+          <div class="stv-tiles three"><button class="settings-size-btn stv-tile settings-speed-btn" data-speed="normal" onclick="setGameSpeed('normal')"><span class="stv-prev" data-prev="sp-normal"></span><b>Normal</b><small>Everything shown in order.</small></button><button class="settings-size-btn stv-tile settings-speed-btn" data-speed="fast" onclick="setGameSpeed('fast')"><span class="stv-prev" data-prev="sp-fast"></span><b>Fast</b><small>About twice as quick.</small></button><button class="settings-size-btn stv-tile settings-speed-btn" data-speed="instant" onclick="setGameSpeed('instant')"><span class="stv-prev" data-prev="sp-instant"></span><b>Instant</b><small>No zooms or banners. You still choose.</small></button></div>
+        </div>
+        <div class="stv-vrow">
+          <div><div class="settings-label">CPU Pacing</div><div class="settings-label-desc">How the computer plays its turn.</div></div>
+          <div class="stv-tiles"><button class="settings-size-btn stv-tile settings-pace-btn" data-pace="human" onclick="setAiPace('human')"><span class="stv-prev" data-prev="pace-human"></span><b>Human</b><small>Pauses 1–3 s between moves.</small></button><button class="settings-size-btn stv-tile settings-pace-btn" data-pace="fast" onclick="setAiPace('fast')"><span class="stv-prev" data-prev="pace-fast"></span><b>Fast</b><small>No pauses.</small></button></div>
+        </div>
+       </div>
       </div>
-      <div class="settings-row">
-        <div>
-          <div class="settings-label">SFX Volume</div>
-          <div class="settings-label-desc">Effect loudness</div>
+      <div class="stv-page" data-page="visuals">
+       <div class="settings-section">
+        <div class="settings-section-title">Board</div>
+        <div class="stv-vrow">
+          <div><div class="settings-label">Board Look</div><div class="settings-label-desc">How the table is drawn.</div></div>
+          <div class="stv-tiles"><button class="settings-size-btn stv-tile settings-look-btn" data-look="3d" onclick="setBoardLook('3d')"><span class="stv-prev" data-prev="look-3d"></span><b>Arena 3D</b><small>Tilted table and cards.</small></button><button class="settings-size-btn stv-tile settings-look-btn" data-look="flat" onclick="setBoardLook('flat')"><span class="stv-prev" data-prev="look-flat"></span><b>Flat</b><small>Lighter on older devices.</small></button></div>
         </div>
-        <input type="range" class="settings-slider" id="set-sfx-vol" min="0" max="100" value="60" oninput="setSfxVolume(this.value)"/>
+        <div class="stv-vrow">
+          <div><div class="settings-label">Card Size</div><div class="settings-label-desc">Field and hand card scale.</div></div>
+          <div class="stv-tiles three"><button class="settings-size-btn stv-tile " data-size="small" onclick="setCardSize('small')"><span class="stv-prev" data-prev="size-small"></span><b>Small</b><small>More room.</small></button><button class="settings-size-btn stv-tile " data-size="medium" onclick="setCardSize('medium')"><span class="stv-prev" data-prev="size-medium"></span><b>Medium</b><small>Default.</small></button><button class="settings-size-btn stv-tile " data-size="large" onclick="setCardSize('large')"><span class="stv-prev" data-prev="size-large"></span><b>Large</b><small>Easier to read.</small></button></div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Text Size</div><div class="settings-label-desc">Menus, your profile, card views and the match side panel. <span id="set-text-size-val" style="color:#f0d58a">100%</span></div></div>
+          <input type="range" class="settings-slider" id="set-text-size" min="90" max="130" step="5" value="100" oninput="setTextScale(this.value)" onchange="saveTextScale()" aria-label="Text size"/>
+        </div>
+       </div>
+       <div class="settings-section">
+        <div class="settings-section-title">Effects</div>
+        <div class="settings-row stv-trow">
+          <span class="stv-thumb" data-prev="anim"></span>
+          <div><div class="settings-label">Animations</div><div class="settings-label-desc">Card zooms, attacks and particles.</div></div>
+          <div class="settings-toggle on" id="set-anim" onclick="toggleSetting('anim')"><div class="settings-toggle-knob"></div></div>
+        </div>
+        <div class="settings-row stv-trow">
+          <span class="stv-thumb" data-prev="reveals"></span>
+          <div><div class="settings-label">Card Reveals</div><div class="settings-label-desc">The big display when an instant or ability is played.</div></div>
+          <div class="settings-toggle on" id="set-reveals" onclick="toggleSetting('reveals')"><div class="settings-toggle-knob"></div></div>
+        </div>
+        <div class="stv-vrow">
+          <div><div class="settings-label">Herald Entrances</div><div class="settings-label-desc">Before the coin toss (your equipped entrance style).</div></div>
+          <div class="stv-tiles"><button class="settings-size-btn stv-tile settings-ent-btn" data-ent="on" onclick="setEntrances(true)"><span class="stv-prev" data-prev="ent-on"></span><b>On</b><small>Both Heralds make an entrance.</small></button><button class="settings-size-btn stv-tile settings-ent-btn" data-ent="off" onclick="setEntrances(false)"><span class="stv-prev" data-prev="ent-off"></span><b>Off</b><small>Straight to the coin toss.</small></button></div>
+        </div>
+        <div class="stv-vrow">
+          <div><div class="settings-label">Pack Reveal</div><div class="settings-label-desc">How a booster pack opens.</div></div>
+          <div class="stv-tiles"><button class="settings-size-btn stv-tile settings-prv-btn" data-prv="fan" onclick="setPackReveal('fan')"><span class="stv-prev" data-prev="prv-fan"></span><b>Fan</b><small>All cards at once. Flip any.</small></button><button class="settings-size-btn stv-tile settings-prv-btn" data-prv="stack" onclick="setPackReveal('stack')"><span class="stv-prev" data-prev="prv-stack"></span><b>One by One</b><small>Flip them from a stack.</small></button></div>
+        </div>
+       </div>
       </div>
-      <div class="settings-row">
-        <div>
-          <div class="settings-label">Music</div>
-          <div class="settings-label-desc">Menu background theme</div>
+      <div class="stv-page" data-page="audio">
+       <div class="settings-section">
+        <div class="settings-section-title">Sound</div>
+        <div class="settings-row">
+          <div><div class="settings-label">Sound Effects</div><div class="settings-label-desc">Combat, cards, abilities</div></div>
+          <div class="settings-toggle on" id="set-sfx" onclick="toggleSetting('sfx')"><div class="settings-toggle-knob"></div></div>
         </div>
-        <div class="settings-toggle on" id="set-music" onclick="toggleSetting('music')"><div class="settings-toggle-knob"></div></div>
+        <div class="settings-row">
+          <div><div class="settings-label">SFX Volume</div><div class="settings-label-desc">Effect loudness</div></div>
+          <input type="range" class="settings-slider" id="set-sfx-vol" min="0" max="100" value="60" oninput="setSfxVolume(this.value)"/>
+        </div>
+       </div>
+       <div class="settings-section">
+        <div class="settings-section-title">Music</div>
+        <div class="settings-row">
+          <div><div class="settings-label">Music</div><div class="settings-label-desc">Menu and battle themes</div></div>
+          <div class="settings-toggle on" id="set-music" onclick="toggleSetting('music')"><div class="settings-toggle-knob"></div></div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Music Volume</div><div class="settings-label-desc">Theme loudness</div></div>
+          <input type="range" class="settings-slider" id="set-music-vol" min="0" max="100" value="40" oninput="setMusicVolume(this.value)"/>
+        </div>
+       </div>
       </div>
-      <div class="settings-row">
-        <div>
-          <div class="settings-label">Music Volume</div>
-          <div class="settings-label-desc">Theme loudness</div>
+      <div class="stv-page" data-page="online">
+       <div class="settings-section">
+        <div class="settings-section-title">Invites</div>
+        <div class="settings-row settings-inv-row">
+          <div><div class="settings-label">Game Invites</div><div class="settings-label-desc">Who can send you match and party invites</div></div>
+          <div class="settings-size-btns">
+            <button class="settings-size-btn settings-inv-btn active" data-inv="friends" onclick="setInvitePrivacy('friends')">Friends</button>
+            <button class="settings-size-btn settings-inv-btn" data-inv="anyone" onclick="setInvitePrivacy('anyone')">Anyone</button>
+            <button class="settings-size-btn settings-inv-btn" data-inv="off" onclick="setInvitePrivacy('off')">Off</button>
+          </div>
         </div>
-        <input type="range" class="settings-slider" id="set-music-vol" min="0" max="100" value="40" oninput="setMusicVolume(this.value)"/>
+       </div>
       </div>
     </div>
-
-    <div class="settings-section">
-      <div class="settings-section-title">✨ Visuals</div>
-      <div class="settings-row">
-        <div>
-          <div class="settings-label">Text Size</div>
-          <div class="settings-label-desc">Menus, your profile, card views and the match side panel. <span id="set-text-size-val" style="color:#f0d58a">100%</span></div>
-        </div>
-        <input type="range" class="settings-slider" id="set-text-size" min="90" max="130" step="5" value="100" oninput="setTextScale(this.value)" onchange="saveTextScale()" aria-label="Text size"/>
-      </div>
-      <div class="settings-row">
-        <div>
-          <div class="settings-label">Animations</div>
-          <div class="settings-label-desc">Card zooms, attacks, particles</div>
-        </div>
-        <div class="settings-toggle on" id="set-anim" onclick="toggleSetting('anim')"><div class="settings-toggle-knob"></div></div>
-      </div>
-      <div class="settings-row">
-        <div>
-          <div class="settings-label">Card Reveals</div>
-          <div class="settings-label-desc">Instant/ability popup displays</div>
-        </div>
-        <div class="settings-toggle on" id="set-reveals" onclick="toggleSetting('reveals')"><div class="settings-toggle-knob"></div></div>
-      </div>
-      <div class="settings-row">
-        <div>
-          <div class="settings-label">Card Size</div>
-          <div class="settings-label-desc">Field & hand card scale</div>
-        </div>
-        <div class="settings-size-btns">
-          <button class="settings-size-btn" data-size="small" onclick="setCardSize('small')">S</button>
-          <button class="settings-size-btn active" data-size="medium" onclick="setCardSize('medium')">M</button>
-          <button class="settings-size-btn" data-size="large" onclick="setCardSize('large')">L</button>
-        </div>
-      </div>
-      <div class="settings-row">
-        <div>
-          <div class="settings-label">Board Look</div>
-          <div class="settings-label-desc">Arena 3D tilts the table and cards; Flat is lighter on older devices</div>
-        </div>
-        <div class="settings-size-btns">
-          <button class="settings-size-btn settings-look-btn active" data-look="3d" onclick="setBoardLook('3d')">Arena 3D</button>
-          <button class="settings-size-btn settings-look-btn" data-look="flat" onclick="setBoardLook('flat')">Flat</button>
-        </div>
-      </div>
-      <div class="settings-row">
-        <div>
-          <div class="settings-label">Game Speed</div>
-          <div class="settings-label-desc">Normal: every card and ability is shown in order. Fast: about twice as quick. Instant: no zoom or ability banners (you still choose "you may" abilities). Click any moment to speed it up.</div>
-        </div>
-        <div class="settings-size-btns">
-          <button class="settings-size-btn settings-speed-btn active" data-speed="normal" onclick="setGameSpeed('normal')">Normal</button>
-          <button class="settings-size-btn settings-speed-btn" data-speed="fast" onclick="setGameSpeed('fast')">Fast</button>
-          <button class="settings-size-btn settings-speed-btn" data-speed="instant" onclick="setGameSpeed('instant')">Instant</button>
-        </div>
-      </div>
-      <div class="settings-row">
-        <div>
-          <div class="settings-label">CPU Pacing</div>
-          <div class="settings-label-desc">Human: the AI pauses 1–3s between moves so you can follow the board; Fast: no pauses</div>
-        </div>
-        <div class="settings-size-btns">
-          <button class="settings-size-btn settings-pace-btn active" data-pace="human" onclick="setAiPace('human')">Human</button>
-          <button class="settings-size-btn settings-pace-btn" data-pace="fast" onclick="setAiPace('fast')">Fast</button>
-        </div>
-      </div>
-      <div class="settings-row">
-        <div>
-          <div class="settings-label">Herald Entrances</div>
-          <div class="settings-label-desc">Cinematic reveal of both Heralds before the coin toss (your equipped entrance style)</div>
-        </div>
-        <div class="settings-size-btns">
-          <button class="settings-size-btn settings-ent-btn active" data-ent="on" onclick="setEntrances(true)">On</button>
-          <button class="settings-size-btn settings-ent-btn" data-ent="off" onclick="setEntrances(false)">Off</button>
-        </div>
-      </div>
-      <div class="settings-row">
-        <div>
-          <div class="settings-label">Pack Reveal</div>
-          <div class="settings-label-desc">Fan: every card lands face-down at once, flip any of them. One by one: flip them from a stack.</div>
-        </div>
-        <div class="settings-size-btns">
-          <button class="settings-size-btn settings-prv-btn active" data-prv="fan" onclick="setPackReveal('fan')">Fan</button>
-          <button class="settings-size-btn settings-prv-btn" data-prv="stack" onclick="setPackReveal('stack')">One by one</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="settings-section">
-      <div class="settings-section-title">🎮 Game</div>
-      <div class="settings-row">
-        <div>
-          <div class="settings-label">Turn Banners</div>
-          <div class="settings-label-desc">Big "Your Turn" announcements</div>
-        </div>
-        <div class="settings-toggle on" id="set-banners" onclick="toggleSetting('banners')"><div class="settings-toggle-knob"></div></div>
-      </div>
-      <div class="settings-row">
-        <div>
-          <div class="settings-label">Auto Draw</div>
-          <div class="settings-label-desc">Draw automatically when your turn starts</div>
-        </div>
-        <div class="settings-toggle on" id="set-autodraw" onclick="toggleSetting('autodraw')"><div class="settings-toggle-knob"></div></div>
-      </div>
-      <div class="settings-row">
-        <div>
-          <div class="settings-label">Highlight Usable Cards</div>
-          <div class="settings-label-desc">Cards you can still play or use this turn glow</div>
-        </div>
-        <div class="settings-toggle on" id="set-useglow" onclick="toggleSetting('useglow')"><div class="settings-toggle-knob"></div></div>
-      </div>
-      <div class="settings-row">
-        <div>
-          <div class="settings-label">Status Effect Animations</div>
-          <div class="settings-label-desc">Auras on afflicted cards and a quick effect each turn</div>
-        </div>
-        <div class="settings-toggle on" id="set-statusfx" onclick="toggleSetting('statusfx')"><div class="settings-toggle-knob"></div></div>
-      </div>
-    </div>
-
-    <div class="settings-section">
-      <div class="settings-section-title">🌐 Online</div>
-      <div class="settings-row settings-inv-row">
-        <div>
-          <div class="settings-label">Game Invites</div>
-          <div class="settings-label-desc">Who can send you match and party invites</div>
-        </div>
-        <div class="settings-size-btns">
-          <button class="settings-size-btn settings-inv-btn active" data-inv="friends" onclick="setInvitePrivacy('friends')">Friends</button>
-          <button class="settings-size-btn settings-inv-btn" data-inv="anyone" onclick="setInvitePrivacy('anyone')">Anyone</button>
-          <button class="settings-size-btn settings-inv-btn" data-inv="off" onclick="setInvitePrivacy('off')">Off</button>
-        </div>
-      </div>
-    </div>
-
-    <button class="settings-close-btn" onclick="closeGameSettings()">CLOSE</button>
+    <div class="stv-foot"><span class="stv-foot-note">Changes save automatically.</span><button class="settings-close-btn" onclick="closeGameSettings()">CLOSE</button></div>
   </div>
 </div>
 
