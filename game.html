@@ -9637,7 +9637,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.33 · Elise Forms</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.34 · King Theoden</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10692,8 +10692,39 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.33'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.34'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.34', date:'2026-11-18',
+    cards:[
+      {id:'king_theoden_bse', set:'base_set', number:'059/150', rarity:'legend', scan:'Sets/BASE SET/059-150 (King Theoden Base).png', newAbilities:['King of Sadala','Royal Summons (Theoden: search)'],
+        note:"King Theoden · BASE CHARACTER (type 'base_char') · Green · cost 6 · 4 ATK / 9 HP · Royal, Saiyan · charLine 'theoden', formTier 'base', nextForms ['ssbe'] · sym 'THEO'. King of the Royal Saiyans and the Saiyans of planet Sadala. Magnus (SSG)'s King's Right Hand already pays off when he enters (name match). Main menu art: 'Main Menu Images/thoden kingKing Theoden.jpg'."},
+      {id:'king_theoden_ssbe_sr_bse', set:'base_set', number:'155/150', rarity:'secret', scan:'Sets/BASE SET/155-150 (King Theoden SSBE) (Secret Rare).png', newAbilities:['Sovereign of Sadala',"Crown's Mercy",'Evolved Decree'],
+        note:"King Theoden (SSBE) · SECRET RARE (secretRare:true; it's his only printing of this form) · Green · cost 10 · 10 ATK / 13 HP · Royal, Saiyan · formTier 'ssbe', path 'god', transformOnly. Base → SSBE pays no skip price (no Theoden SSG/SSGE/SSB). Main menu art: 'Main Menu Images/thoden king SSBESSBE King Theoden.jpg'."},
+      {id:'prime_proving_ground_bse', set:'base_set', number:'066/150', rarity:'uncommon', scan:'Sets/BASE SET/066-150 (Prime Proving Ground).png', newAbilities:['Trial by Combat'], note:"LOCATION · Arena · Red · cost 3 · Toughness 5. Menu art 'prime provingground small.jpg'."},
+      {id:'aetherak_prison_bse', set:'base_set', number:'067/150', rarity:'rare', scan:'Sets/BASE SET/067-150 (Aetherak Prison).png', newAbilities:['Celestial Confinement','Breakout'], note:"LOCATION · Prison · Blue · cost 6 · Toughness 8. (Not the old unnumbered 'Aetherak Tree'.) Menu art 'aetherak prison.jpg'."},
+      {id:'mirage_sanctum_bse', set:'base_set', number:'068/150', rarity:'uncommon', scan:'Sets/BASE SET/068-150 (Mirage Sanctum).png', newAbilities:['Shifting Reflection'], note:"LOCATION · Sanctum · Purple · cost 3 · Toughness 6. Menu art 'mirage sactum.jpg'."},
+      {id:'frostbound_observatory_bse', set:'base_set', number:'069/150', rarity:'uncommon', scan:'Sets/BASE SET/069-150 (Frostbound Observatory).png', newAbilities:['Glacial Lens'], note:"LOCATION · Observatory · Blue · cost 4 · Toughness 7. Menu art 'Frost observatory.jpg'."},
+      {id:'skyrail_velocity_station_bse', set:'base_set', number:'108/150', rarity:'rare', scan:'Sets/BASE SET/108-150 (Skyrail Velocity Station).png', newAbilities:['Fast Lane','Express Return'], note:"LOCATION · Station · Yellow · cost 5 · Toughness 6. Menu art 'Skyrail Velocity.jpg'."},
+      {id:'crossroads_market_bse', set:'base_set', number:'109/150', rarity:'common', scan:'Sets/BASE SET/109-150 (Crossroads Market).png', newAbilities:["Wayfarer's Find"], note:"LOCATION · Market · White · cost 2 · Toughness 5 — the printed card has NO Toughness box; 5 is a placeholder until Rulk confirms. Menu art 'Crossroad.jpg'."},
+      {id:'red_hulk_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/Marvel/Red Hulk (Promo).png', newAbilities:['Heat Absorption','Thermal Smash','Meltdown'],
+        note:"Red Hulk · Red · cost 8 · 9 ATK / 7 HP · Gamma, Monster · race 'Gamma Monster' · standalone regular character (Rulk: not part of a Hulk line) · sym 'RHULK'. Menu art 'Main Menu Images/Red Hulk.jpg'."}],
+    abilities:[
+      "KING OF SADALA (Theoden, passive): your OTHER Royal Saiyan characters +1/+1 (one bonus per source, recalcPassives like Royal Matriarch). SOVEREIGN OF SADALA (Theoden SSBE): +2/+2 the same way.",
+      "ROYAL SUMMONS — SAME LABEL, TWO TEXTS: Virora & Volaris (060) = 'draw 2 cards'; King Theoden = 'search your deck for a Royal Saiyan character (any character card that is Royal + Saiyan, forms included), reveal it, put it into your hand, shuffle'. Web: onEntry branches on charLine 'theoden'. Key by card.",
+      "CROWN'S MERCY (Theoden SSBE, start of your turn): each of your Saiyan characters heals 2 (healFc, fires noteHeal).",
+      "EVOLVED DECREE (Theoden SSBE, 6⚡ once per game, no tap): each of your characters on the field +3/+3 and Resolve until the end of your next turn (f._decree {amt, by, ends:2, kw}; ticked at the end of its owner's turns; when it ends the Health comes off but never below 1, like Divine Command; Resolve is removed only if the Decree added it). Characters that enter later don't get it.",
+      "TRIAL BY COMBAT (Prime Proving Ground, passive): your Prime characters (subtype Prime, or Prime in the race) deal +1 damage when they attack, per Proving Ground that isn't frozen (executeCombatDamage next to Combat Mastery). It's a damage bonus on the attack, so it doesn't change Power Struggle ties.",
+      "CELESTIAL CONFINEMENT (Aetherak Prison, when it's placed): imprison target opposing character (2v2: either enemy board) with PRINTED cost ≤ 5 — targeted (tolls, Drunken Stance and Space apply). Imprisoned (f._prison {src: the Prison's uid}): can't attack (canCharacterAttack), can't retaliate (no retaliation, no Power Struggle — primalMuzzled), can't use activated abilities (isAbilitySealed). Lasts while that Prison is on the field (frozen or not). Blocking in Life modes isn't retaliation, so it can still block. BREAKOUT: on their own turn (Main Phase) the owner may pay 4 Energy to free it — a row at the top of the ✨ Abilities menu ('🔓 Breakout · Pay 4⚡'); it isn't an ability (no Power Up loss). CPU pays it for a character worth ≥8 with 5+ Energy.",
+      "SHIFTING REFLECTION (Mirage Sanctum): once per turn per Sanctum (not while frozen), when you transform one of your characters (onTransformedInto: climbing, skipping, Prism Shift), look at the top 3 cards of your deck, put 1 into your hand, the rest on the bottom (no ordering step).",
+      "WAYFARER'S FIND (Crossroads Market, when it's placed): look at the top 3, 1 into your hand, the rest on the bottom. Both use lookTopPick (the Future Perfect picker with its own title; the CPU keeps the most useful card).",
+      "GLACIAL LENS (Frostbound Observatory, 2⚡ every other turn — abilityUsed.glacial_lens_turn, the Air Blast convention): Freeze target opposing character with printed cost ≤ 3 (not already Frozen) until the end of YOUR next turn: applyStatus freeze 2 + f._lensThaw {by, ends:2}, removed at the end of your next turn — so it can't attack on their turn and can't hit back on your next turn. Paid → the Location doesn't tap. Cancel = refund.",
+      "FAST LANE (Skyrail Velocity Station, passive): your Yellow characters (color or colors include yellow) +1 Attack, per Station that isn't frozen.",
+      "EXPRESS RETURN (Skyrail, 3⚡ every other turn — abilityUsed.express_return_turn): return one of your characters to your hand; when you play it again it keeps the Attack and Health it had (hand card _kept {atk, max, hp} = its own stats without anthems or until-end-of-turn effects; applied as it enters). Its Equipment goes to the discard pile. Then you may search your deck for a Character or Transformation card (close = skip). Only characters you could play from hand can go back: no forms, fusions or tokens. Skipping the character choice refunds. The CPU doesn't use it yet.",
+      "HEAT ABSORPTION (Red Hulk, passive): can't be Burned (applyStatus refuses). Whenever an OPPOSING character is actually Burned (a new Burn, by anyone), each Red Hulk on the other side gets +1 Attack until the end of the turn (f._heatAbs, cleared in endTurnFx). THERMAL SMASH: whenever it attacks, Burn the defending character — the Fire Stance hook (the blocker in Life/Combined/2v2) — so its own Smash also feeds Heat Absorption before damage. MELTDOWN (5⚡ once per game): 4 damage to each Burned opposing character (not targeted); none → refund."],
+    screens:["CARD VIEW: '🔒 Imprisoned' (with the Prison as source), '👑 Evolved Decree', '🔭 Glacial Lens' (frozen until …), '🔥 Heat Absorption +N'.",
+      "ABILITIES MENU: a '🔓 Breakout' row for each of your imprisoned characters."],
+    data:["GAME_BUILD '10.34' (new cards).","Field-card fields: _prison {src,by}, _decree {amt,by,ends,kw}, _lensThaw {by,ends}, _heatAbs, Location _srKey; hand card _kept {atk,max,hp}.",
+      "Main menu art in 'Main Menu Images/' (Rulk sets it in Admin → Menu Art): thoden kingKing Theoden.jpg, thoden king SSBESSBE King Theoden.jpg, prime provingground small.jpg, aetherak prison.jpg, mirage sactum.jpg, Frost observatory.jpg, Skyrail Velocity.jpg, Crossroad.jpg, Red Hulk.jpg."] },
   { build:'10.33', date:'2026-11-18',
     cards:[
       {id:'elise_ssj_bse', set:'base_set', number:'036/150', rarity:'uncommon', scan:'Sets/BASE SET/036-150 (Elise SSJ).png', newAbilities:['Savage Instinct','Primal Theft'],
@@ -11601,6 +11632,15 @@ const DEFAULTS={
   elise_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/035-150%20(Elise%20Base).png',
   elise_ssj_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/036-150%20(Elise%20SSJ).png',
   elise_ssg_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/037-150%20(Elise%20SSG).png',
+  king_theoden_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/059-150%20(King%20Theoden%20Base).png',
+  king_theoden_ssbe_sr_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/155-150%20(King%20Theoden%20SSBE)%20(Secret%20Rare).png',
+  prime_proving_ground_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/066-150%20(Prime%20Proving%20Ground).png',
+  aetherak_prison_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/067-150%20(Aetherak%20Prison).png',
+  mirage_sanctum_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/068-150%20(Mirage%20Sanctum).png',
+  frostbound_observatory_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/069-150%20(Frostbound%20Observatory).png',
+  skyrail_velocity_station_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/108-150%20(Skyrail%20Velocity%20Station).png',
+  crossroads_market_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/109-150%20(Crossroads%20Market).png',
+  red_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Red%20Hulk%20(Promo).png',
   elise_ssbe_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/133-150%20(Elise%20SSBE).png',
   asa_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/063-150%20(Asa).png',
   falcore_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/136-150%20(Falcore).png',
@@ -12035,6 +12075,43 @@ const DB={
     abilities:[{label:'Azure Fury',type:'triggered',cost:0,text:'Whenever this card attacks, the defending character gets −3 Attack until end of turn and is Confused.'},
       {label:'Sapphire Nova',type:'activated',cost:4,limit:'once_per_turn',text:'Pay 4 Energy: Deal 3 damage to target opposing character. It gets −2 Attack until the end of your next turn. (Once per turn)'},
       {label:'Apex Predator',type:'activated',cost:6,limit:'once_per_game',text:'Pay 6 Energy: Each opposing character gets −3 Attack and is Confused until the end of your next turn. (Once per game)'}],transforms:[]},
+  // ── KING THEODEN (BSE 059/150) — build 10.34. Green Legend Base Character, Royal Saiyan, king of the Royal Saiyans and the
+  //    Saiyans of planet Sadala. charLine 'theoden'; his one form is the Secret Rare King Theoden (SSBE) 155/150 (God path rank 4,
+  //    no SSG/SSGE/SSB Theoden → no skip price). King of Sadala: other Royal Saiyans +1/+1 (recalcPassives). Royal Summons (his
+  //    version): on entry, search a Royal Saiyan character (onEntry branches on charLine 'theoden'; Virora & Volaris keep draw 2).
+  king_theoden_bse:{id:'king_theoden_bse',rarity:'legend',name:'King Theoden',color:'green',charName:'King Theoden',charLine:'theoden',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:6,atk:4,hp:9,sym:'THEO',setId:'base_set',cardNumber:'059/150',keywords:[],nextForms:['ssbe'],
+    abilities:[{label:'King of Sadala',type:'passive',cost:0,text:'Your other Royal Saiyan characters get +1/+1.'},
+      {label:'Royal Summons',type:'triggered',cost:0,text:'When this card enters your field, search your deck for a Royal Saiyan character, reveal it and put it into your hand. Shuffle your deck.'}],transforms:[]},
+  //    King Theoden (SSBE) — Secret Rare only. Sovereign of Sadala +2/+2 to other Royal Saiyans; Crown's Mercy (start of your turn,
+  //    each of your Saiyan characters heals 2); Evolved Decree (6⚡ once per game: your characters +3/+3 and Resolve until the end
+  //    of your next turn — fc._decree, ticked in endTurnFx).
+  king_theoden_ssbe_sr_bse:{id:'king_theoden_ssbe_sr_bse',rarity:'secret',secretRare:true,name:'King Theoden (SSBE)',color:'green',charName:'King Theoden',charLine:'theoden',formTier:'ssbe',path:'god',transformOnly:true,subtypes:['Royal','Saiyan'],type:'char',race:'Royal Saiyan',cost:10,atk:10,hp:13,sym:'THEOSSBE',setId:'base_set',cardNumber:'155/150',keywords:[],nextForms:[],
+    abilities:[{label:'Sovereign of Sadala',type:'passive',cost:0,text:'Your other Royal Saiyan characters get +2/+2.'},
+      {label:"Crown's Mercy",type:'triggered',cost:0,text:'At the start of your turn, heal 2 Health on each of your Saiyan characters.'},
+      {label:'Evolved Decree',type:'activated',cost:6,limit:'once_per_game',text:'Pay 6 Energy: Until the end of your next turn, each of your characters gets +3/+3 and Resolve. (Once per game)'}],transforms:[]},
+  // ── BASE SET LOCATIONS — build 10.34 ──
+  prime_proving_ground_bse:{id:'prime_proving_ground_bse',rarity:'uncommon',name:'Prime Proving Ground',color:'red',charName:'Prime Proving Ground',subtypes:['Arena','Location'],type:'location',race:'Arena',cost:3,atk:0,hp:5,sym:'🏟️',canBeAttackedBy:[],setId:'base_set',cardNumber:'066/150',
+    abilities:[{label:'Trial by Combat',type:'passive',cost:0,text:'Your Prime characters get +1 Attack while attacking.'}],transforms:[]},
+  aetherak_prison_bse:{id:'aetherak_prison_bse',rarity:'rare',name:'Aetherak Prison',color:'blue',charName:'Aetherak Prison',subtypes:['Prison','Location'],type:'location',race:'Prison',cost:6,atk:0,hp:8,sym:'🏛️',canBeAttackedBy:[],setId:'base_set',cardNumber:'067/150',
+    abilities:[{label:'Celestial Confinement',type:'triggered',cost:0,text:"When this card enters your field, imprison target opposing non-Herald character with cost 5 or less. While this Location stays on the field, it can't attack, retaliate or use abilities."},
+      {label:'Breakout',type:'passive',cost:0,text:"The imprisoned character's owner may pay 4 Energy during their turn to free it."}],transforms:[]},
+  mirage_sanctum_bse:{id:'mirage_sanctum_bse',rarity:'uncommon',name:'Mirage Sanctum',color:'purple',charName:'Mirage Sanctum',subtypes:['Sanctum','Location'],type:'location',race:'Sanctum',cost:3,atk:0,hp:6,sym:'🪞',canBeAttackedBy:[],setId:'base_set',cardNumber:'068/150',
+    abilities:[{label:'Shifting Reflection',type:'triggered',cost:0,text:'Once per turn, when you transform one of your characters, look at the top 3 cards of your deck. Put 1 into your hand and the rest on the bottom.'}],transforms:[]},
+  frostbound_observatory_bse:{id:'frostbound_observatory_bse',rarity:'uncommon',name:'Frostbound Observatory',color:'blue',charName:'Frostbound Observatory',subtypes:['Observatory','Location'],type:'location',race:'Observatory',cost:4,atk:0,hp:7,sym:'🔭',canBeAttackedBy:[],setId:'base_set',cardNumber:'069/150',
+    abilities:[{label:'Glacial Lens',type:'activated',cost:2,limit:'every_other_turn',text:'Pay 2 Energy: Freeze target opposing character with cost 3 or less until the end of your next turn. (Every other turn)'}],transforms:[]},
+  skyrail_velocity_station_bse:{id:'skyrail_velocity_station_bse',rarity:'rare',name:'Skyrail Velocity Station',color:'yellow',charName:'Skyrail Velocity Station',subtypes:['Station','Location'],type:'location',race:'Station',cost:5,atk:0,hp:6,sym:'🚄',canBeAttackedBy:[],setId:'base_set',cardNumber:'108/150',
+    abilities:[{label:'Fast Lane',type:'passive',cost:0,text:'Your Yellow characters get +1 Attack.'},
+      {label:'Express Return',type:'activated',cost:3,limit:'every_other_turn',text:'Pay 3 Energy: Return one of your characters to your hand. When you play it again, it keeps the Attack and Health it had. Then you may search your deck for a Character or Transformation card and put it into your hand. (Every other turn)'}],transforms:[]},
+  //    Crossroads Market: the printed card has no Toughness box — 5 (the Common band) until Rulk says otherwise.
+  crossroads_market_bse:{id:'crossroads_market_bse',rarity:'common',name:'Crossroads Market',color:'white',charName:'Crossroads Market',subtypes:['Market','Location'],type:'location',race:'Market',cost:2,atk:0,hp:5,sym:'🧭',canBeAttackedBy:[],setId:'base_set',cardNumber:'109/150',
+    abilities:[{label:"Wayfarer's Find",type:'triggered',cost:0,text:'When this Location enters your field, look at the top 3 cards of your deck. Put 1 into your hand and the rest on the bottom.'}],transforms:[]},
+  // ── RED HULK (Promo, Marvel) — build 10.34. Red Legend, standalone character (no line). Gamma Monster.
+  //    Heat Absorption: can't be Burned; whenever an opposing character is Burned, +1 Attack until end of turn (fc._heatAbs).
+  //    Thermal Smash: when it attacks, Burn the defending character (the Fire Stance hook). Meltdown: 5⚡ once per game.
+  red_hulk_promo:{id:'red_hulk_promo',rarity:'legend',name:'Red Hulk',color:'red',charName:'Red Hulk',subtypes:['Gamma','Monster'],type:'char',race:'Gamma Monster',cost:8,atk:9,hp:7,sym:'RHULK',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
+    abilities:[{label:'Heat Absorption',type:'passive',cost:0,text:"This card can't be Burned. Whenever an opposing character is Burned, this card gets +1 Attack until end of turn."},
+      {label:'Thermal Smash',type:'triggered',cost:0,text:'Whenever this card attacks, Burn the defending character.'},
+      {label:'Meltdown',type:'activated',cost:5,limit:'once_per_game',text:'Pay 5 Energy: Deal 4 damage to each Burned opposing character. (Once per game)'}],transforms:[]},
   // ── ASA (BSE 063/150) — build 10.12. Demigod, White.
   //    Half-Divine: damage from a character with God in its subtypes −2 (combat or ability; dealDamage).
   //    Skyfall: on entry, 2 damage to a target opposing character.
@@ -13724,6 +13801,7 @@ function tempStatDelta(f){ let a=0,h=0;
   a-=(f.surfacerAtkDebuff||0); h-=(f.surfacerHpDebuff||0);
   if(f._ph) a-=(f._ph.atk||0); if(f._kb) a-=(f._kb.atk||0);
   a-=(f._fury||0)+(f._theftDn||0); a+=(f._theftUp||0); // 🐾 Elise (build 10.33)
+  a+=(f._heatAbs||0); if(f._decree){ a+=f._decree.amt||0; h+=f._decree.amt||0; } // 🔥 Red Hulk · 👑 Evolved Decree (build 10.34)
   if(Array.isArray(f._wotr)) f._wotr.forEach(w=>{ a-=(w.atk||0); h-=(w.hp||0); });
   if(Array.isArray(f._ewall)) f._ewall.forEach(w=>{ h+=(w.hp||0); });
   return {a,h}; }
@@ -14022,6 +14100,7 @@ function isEquipHexed(tfc,eqId){
 // self-cleaning source-on-field pattern as isEquipHexed/isLocationFrozen.
 function isAbilitySealed(fc){
   if(fc&&fc._kb)return true; // Kinetic Bind (Magnus SSB)
+  if(isImprisoned(fc))return true; // 🔒 Aetherak Prison
   if(!fc||!fc._soulCage)return false;
   const sourceUid=fc._soulCage.sourceUid;
   for(const pn of [1,2]){
@@ -14195,6 +14274,10 @@ function fxEffectsOf(fc){
   if((fc.fatigue||0)>0) cond('💤','Fatigued',`Can't attack, use abilities or be a fusion material for ${fc.fatigue} more of its turn${fc.fatigue>1?'s':''}. It can still block, retaliate and transform.`,null);
   if(typeof hasTerrainScan==='function'&&hasTerrainScan(fc)) cond('📡','Terrain Scan','It may attack Location cards.',{cid:'geo_radar_bse',uid:null});
   if(fc._soulCage&&typeof isAbilitySealed==='function'&&isAbilitySealed(fc)) cond('🔒','Soul Cage',"It can't use activated abilities while its jailer stays on the field.",byUid(fc._soulCage.sourceUid));
+  if(isImprisoned(fc)) cond('🔒','Imprisoned',"Aetherak Prison holds it: it can't attack, retaliate or use abilities while the Prison stays. Its owner may pay 4 Energy on their turn to free it (Breakout).",{cid:'aetherak_prison_bse',uid:fc._prison.src});
+  if(fc._decree) cond('👑','Evolved Decree','+'+fc._decree.amt+'/+'+fc._decree.amt+(fc._decree.kw?' and Resolve':'')+' until the end of '+pname(fc._decree.by)+"'s next turn.",byLabel('Evolved Decree'));
+  if(fc._lensThaw&&statusActive(fc,'freeze')) cond('🔭','Glacial Lens','Frozen until the end of '+pname(fc._lensThaw.by)+"'s next turn.",null);
+  if(fc._heatAbs>0) cond('🔥','Heat Absorption','+'+fc._heatAbs+' Attack until the end of this turn.',null);
   if(fc._fury>0) cond('🐾',fc._furyL||'Fury','−'+fc._fury+' Attack until the end of this turn.',null);
   if(fc._theftDn>0) cond('🐾','Primal Theft','Its Attack was stolen: −'+fc._theftDn+' until the end of this turn.',byLabel('Primal Theft'));
   if(fc._theftUp) cond('🐾','Primal Theft','Its Attack is a stolen '+(fc.currentATK||0)+' until the end of this turn.',null);
@@ -14353,6 +14436,11 @@ function recalcPassives(){
       if((c.subtypes||[]).some(t=>/^prime$/i.test(String(t).trim()))) pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'Tactical Authority')).forEach(f=>add(1,0,f.cid,'Tactical Authority',f.uid));
       if((c.subtypes||[]).some(t=>/^hero$/i.test(String(t).trim()))) pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,"Amazon's Valor")).forEach(f=>add(1,0,f.cid,"Amazon's Valor",f.uid));
       // VEYNARIA — Royal Matriarch: your OTHER Royal Saiyans get the source form's +Attack / +Health (one bonus per source).
+      // KING THEODEN — King of Sadala (+1/+1) / Sovereign of Sadala (+2/+2): your OTHER Royal Saiyans (one bonus per source).
+      if(isRoyalSaiyan(c)){ pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'King of Sadala')).forEach(f=>add(1,1,f.cid,'King of Sadala',f.uid));
+        pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'Sovereign of Sadala')).forEach(f=>add(2,2,f.cid,'Sovereign of Sadala',f.uid)); }
+      // SKYRAIL VELOCITY STATION — Fast Lane: your Yellow characters get +1 Attack (each Station that isn't frozen).
+      if(fc!==pl.herald && (c.color==='yellow'||(c.colors||[]).includes('yellow'))) pl.field.filter(f=>isLoc(DB[f.cid])&&hasAbilityLabel(f,'Fast Lane')&&!isLocationFrozen(f)).forEach(f=>add(1,0,f.cid,'Fast Lane',f.uid));
       if(isRoyalSaiyan(c)) pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'Royal Matriarch')).forEach(f=>{ const m=royalMatriarchSpec(f); if(m.atk||m.hp) add(m.atk,m.hp,f.cid,'Royal Matriarch',f.uid); });
       // VEYNARIA (SSJ) — A Mother's Strength: +2/+2 while you control a Violet character.
       if(abils.some(a=>a.label==="A Mother's Strength") && pl.field.some(f=>f.uid!==fc.uid&&isChar(DB[f.cid])&&/^violet$/i.test(String(DB[f.cid].charName||'')))) add(2,2,fc.cid,"A Mother's Strength",fc.uid);
@@ -16545,6 +16633,7 @@ function executeCombatDamage(ap,auid,dp,duid){
   if(afc._esc>0&&hasAbilityLabel(afc,'Legendary Escalation')){ atkDmg+=afc._esc; log(`💥 Legendary Escalation: ${ac.name} unloads +${afc._esc} damage!`,'dmg'); afc._esc=0; }
   // ⚔ COMBAT MASTERY (Zaria): her attack on a character with a higher printed cost deals +2.
   if(hasAbilityLabel(afc,'Combat Mastery')&&isChar(dc)&&(dc.cost||0)>(ac.cost||0)){ atkDmg+=2; log(`⚔ Combat Mastery: ${ac.name} strikes the costlier ${dc.name} (${dc.cost||0} > ${ac.cost||0}) for +2!`,'dmg'); }
+  { const _tb=trialByCombatBonus(ap,afc); if(_tb){ atkDmg+=_tb; log(`🏟️ Trial by Combat: ${ac.name} (Prime) attacks with +${_tb}.`,'dmg'); } }
   { const _ki=killingIntent(afc,dfc); if(_ki){ atkDmg+=_ki; log(`🩸 Killing Intent: ${DB[dfc.cid]?.name} is already wounded — +2!`,'dmg'); } }
 
   // Power Struggle result override
@@ -16657,6 +16746,8 @@ function executeCombatDamage(ap,auid,dp,duid){
   }
   if(tgtAlive&&(G._noRetaliation||(_pso&&_pso.kind==='atk'))){
     log(_pso&&_pso.kind==='atk'?`⚔ Power Struggle: ${dc.name} doesn't hit back.`:`${dc.name} can't block — no retaliation.`,'info');
+  } else if(tgtAlive&&isImprisoned(dfc)){
+    log(`🔒 Celestial Confinement: ${dc.name} is imprisoned and can't hit back.`,'info');
   } else if(tgtAlive&&primalMuzzled(dfc,afc)){
     log(`🦍 Primal Instinct: ${dc.name} can't hit back against ${ac.name}.`,'info');
   } else if(tgtAlive&&!statusActive(dfc,'freeze')){
@@ -16949,6 +17040,7 @@ function canCharacterAttack(p, fc){
   if(!fc || !isChar(DB[fc.cid])) return false;
   if(isLassoed(fc)) return false; // 🪢 Lasso of Truth
   if(airBlasted(fc)) return false; // 💨 Air Blast (Aang)
+  if(isImprisoned(fc)) return false; // 🔒 Aetherak Prison
   if(fc._overloadLock&&fc._overloadLock===_braceTurnKey()) return false; // ⚡ Legendary Overload unpaid
   if(fc.tapped) return false; // tapped cards (used a free ability) can't attack
   if(stanceNoAttack(fc)) return false; // Earth Stance / Bloodstone Skin: "can't attack"
@@ -17742,6 +17834,7 @@ function onHandClick(p,uid,fc){
     const totalField=pl.field.filter(f=>!isLoc(DB[f.cid])).length;
     if(isChar(DB[fco.cid])&&!DB[fco.cid]?.isToken&&namedFighters>=MAX_FIELD){log('Fighter zone full! (max 8 named fighters).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     if(!isChar(DB[fco.cid])&&otherCards>=MAX_OTHER){log('Field full! (max 5 other cards on field).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
+    if(fco&&fco._kept) applyKeptStats(fco); // 🚄 Express Return
     pl.field.push(fco);log(`${pname(p)} plays ${c.name}.`,'info');playCardZoom(fco.cid,fco.variant);if(typeof fxMarkLand==='function')fxMarkLand(fco.uid,'char');if(typeof SFX!=='undefined')SFX.cardPlay();if(p===1)sendGameAction('card_play',{cardId:fco.cid,variant:fco.variant});seqEntry(p,fco);
     if(G.tutorialMode&&p===1&&isChar(c)&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('play');
     if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
@@ -17756,6 +17849,7 @@ function onHandClick(p,uid,fc){
     if(G.tutorialMode&&p===1&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('play_location');
     if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
     if(c.id==='time_chamber'){pl.energy+=5;log('Time Chamber: +5⚡!','gain');}
+    locationEntry(p,fco); // 🏛️ Aetherak Prison · 🧭 Crossroads Market (build 10.34)
   } else if(isEquip(c)){
     const chars=pl.field.filter(f=>isChar(DB[f.cid]));
     if(!chars.length){log('No field chars to equip!','dmg');return;}
@@ -18090,12 +18184,12 @@ function futurePerfect(p){
 }
 function tcCardTile(cid,extra){ const c=DB[cid]||{}; const u=(typeof getImg==='function')?getImg(cid):null;
   return `<div class="tc-tile${extra||''}" data-cid="${cid}">${u?`<img src="${u}" alt="">`:`<div class="tc-ph">${c.sym||'?'}</div>`}<div class="tc-nm">${(typeof escapeHtml==='function'?escapeHtml(c.name||cid):(c.name||cid))}</div></div>`; }
-function tcPickTop(top,onPick){
+function tcPickTop(top,onPick,title){
   const body=document.createElement('div');
   body.innerHTML=`<div class="tc-desc">The top ${top.length} cards of your deck (top card first). Choose <b>one</b> to put into your hand.</div><div class="tc-row">${top.map((cid,i)=>tcCardTile(cid).replace('class="tc-tile','data-i="'+i+'" class="tc-tile')).join('')}</div>`;
   let done=false; const pick=(i)=>{ if(done) return; done=true; if(typeof takeModalCancel==='function') takeModalCancel(); closeAllModals(); onPick(i); };
   body.querySelectorAll('.tc-tile').forEach(t=>{ t.onclick=()=>pick(+t.dataset.i); t.oncontextmenu=e=>{ e.preventDefault(); try{ showFullCard(t.dataset.cid,null); }catch(er){} }; });
-  showModalEl('⏳ Future Perfect',body,{forceHuman:true});
+  showModalEl(title||'⏳ Future Perfect',body,{forceHuman:true});
   if(typeof armModalCancel==='function') armModalCancel(()=>{ if(!done){ done=true; onPick(0); } }); // closing = take the top card
 }
 function tcOrderBottom(cards,onDone){
@@ -18202,7 +18296,7 @@ function onEntry(p,fc){
   // ── AVATAR'S BALANCE (Pavi): choose Air or Earth as she enters (a re-entry starts with no stance).
   if(stanceChooserOf(fc)){ fc.stance=null; fc._stanceAsk=false; stanceAsk(p,fc,'entry'); } // Avatar's Balance / Avatar's Harmony
   // ── ROYAL SUMMONS (Virora & Volaris): draw 2 as it enters.
-  if(hasAbilityLabel(fc,'Royal Summons')){ log(`👑 Royal Summons: ${pname(p)} draws 2 cards.`,'gain'); drawCard(p); drawCard(p); }
+  if(hasAbilityLabel(fc,'Royal Summons')){ if(DB[fc.cid]?.charLine==='theoden') royalSummonsSearch(p,fc); else { log(`👑 Royal Summons: ${pname(p)} draws 2 cards.`,'gain'); drawCard(p); drawCard(p); } }
   // ── PRISM ORB (Crystal): choose one as she enters — enemy −2 ATK until end of your next turn, or heal one of yours 3.
   if(hasAbilityLabel(fc,'Prism Orb')) prismOrbAsk(p,fc);
   // ── WILDBORN ADAPTATION (Elise): choose one as she enters — search your deck for a Transformation of her line, or +1/+1.
@@ -18702,6 +18796,9 @@ function onTransformedInto(owner,fc,oldCid){
   try{
     if(!fc||!(G.players[owner]?.field||[]).some(f=>f.uid===fc.uid)) return;
     if(hasAbilityLabel(fc,'Great Ape Roar')) greatApeRoar(owner,fc);
+    // 🪞 MIRAGE SANCTUM — Shifting Reflection: once per turn per Sanctum (not while frozen), look at the top 3, one to hand.
+    (G.players[owner]?.field||[]).filter(l=>isLoc(DB[l.cid])&&hasAbilityLabel(l,'Shifting Reflection')&&!isLocationFrozen(l)&&l._srKey!==_braceTurnKey()).forEach(l=>{
+      l._srKey=_braceTurnKey(); seqAbility(owner,l.cid,'Shifting Reflection',null,{kind:'LOCATION'},()=>lookTopPick(owner,3,'Shifting Reflection','🪞')); });
   }catch(e){ console.warn('[onTransformedInto]',e); }
 }
 // GREAT APE ROAR (Vuruna SSJ4): 2 damage to each opposing character (not targeted), then Burn one of the survivors (chosen:
@@ -18724,7 +18821,7 @@ function greatApeRoar(owner,fc){
   }
 }
 // PRIMAL INSTINCT (Vuruna SSJ4): the chosen foe can't hit back against that card this turn.
-function primalMuzzled(dfc,afc){ return !!(dfc&&afc&&dfc._muzzle&&typeof _braceTurnKey==='function'&&dfc._muzzle.key===_braceTurnKey()&&dfc._muzzle.by===afc.uid); }
+function primalMuzzled(dfc,afc){ if(isImprisoned(dfc)) return true; /* 🔒 imprisoned: never hits back */ return !!(dfc&&afc&&dfc._muzzle&&typeof _braceTurnKey==='function'&&dfc._muzzle.key===_braceTurnKey()&&dfc._muzzle.by===afc.uid); }
 // ADMIN: Transform Ladder (skip prices for chain paths) → app_settings 'tf_ladder' for everyone.
 function openTfLadderEditor(){
   if(typeof isAdmin==='function'&&!isAdmin()) return;
@@ -19172,6 +19269,11 @@ function openAbilityModal(){
   cards.forEach(fc=>{
     const c=DB[fc.cid];if(!c)return;
     if(isLoc(c) && isLocationFrozen(fc))return; // Frozen Domain: no abilities while frozen
+    if(isImprisoned(fc)&&!_atkPh){ anyFound=true;   // 🔓 Breakout (Aetherak Prison) — not an ability of the card; it's the owner's way out
+      const row=document.createElement('div'); row.style.cssText='background:#0f0f1e;border:1px solid #2563eb;border-radius:8px;padding:7px;margin-bottom:5px';
+      row.innerHTML=`<div style="font-weight:700;color:#93c5fd;font-size:11px">🔓 Breakout · ${c.name} (4⚡)</div><div style="font-size:11px;color:#9ca3af;margin:3px 0;line-height:1.4">${c.name} is imprisoned by Aetherak Prison. Pay 4 Energy to free it.</div>`;
+      const btn=document.createElement('button'); btn.className='btn-primary btn-sm'; btn.disabled=pl.energy<4; btn.style.opacity=pl.energy<4?'.4':'1'; btn.textContent=pl.energy<4?'Need 4⚡':'Pay 4⚡ · Free it';
+      btn.onclick=()=>prisonBreakout(actP,fc); row.appendChild(btn); body.appendChild(row); return; }
     if(isAbilitySealed(fc))return; // Soul Cage: no abilities while sealed
     if(!fc.abilityUsed)fc.abilityUsed={};
     // Combine the character's own activated abilities with any activated abilities
@@ -19662,6 +19764,49 @@ function _activateAbilityCore(fc,abl){
       const t=(kills.length?kills:pool).sort((a,b)=>aiFcValue(b.fc)-aiFcValue(a.fc))[0];
       if(s&&t) go(s.uid,t.fc.uid);
     }
+    return;
+  }
+  // ── FROSTBOUND OBSERVATORY: Glacial Lens — 2⚡ every other turn (abilityUsed.glacial_lens_turn): Freeze target opposing character
+  //    with printed cost 3 or less until the end of your next turn (Freeze 2 + t._lensThaw, thawed at the end of your next turn).
+  if(abl.label==='Glacial Lens'){
+    const last=fc.abilityUsed&&fc.abilityUsed.glacial_lens_turn;
+    if(last!=null&&(G.turn-last)<2){ log(`Glacial Lens: wait ${2-(G.turn-last)} more turn(s).`,'dmg'); return; }
+    const ap=G.activePlayer, pl=G.players[ap]; const opps=_fusionOpps(ap);
+    const ownerOf=(uid)=>opps.find(o=>(G.players[o]?.field||[]).some(f=>f.uid===uid));
+    const foes=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ const d=DB[f.cid]; if(isChar(d)&&(d.cost||0)<=3&&!statusActive(f,'freeze')) foes.push(f); }));
+    if(!foes.length){ log('Glacial Lens: no opposing character with cost 3 or less to Freeze.','dmg'); return; }
+    if(pl.energy<2){ log('Not enough energy (need 2⚡).','dmg'); return; }
+    if(!spendEnergyAbility(ap,2,'blue')) return;
+    if(!fc.abilityUsed) fc.abilityUsed={}; fc.abilityUsed.glacial_lens_turn=G.turn; pl.usedAbilityThisTurn=true;
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    const freeze=(uid)=>{ const op=ownerOf(uid); const t=op&&G.players[op].field.find(f=>f.uid===uid); if(!t){ renderAll(); return; }
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Glacial Lens',fc.uid):null;
+      try{ if(applyStatus(t,'freeze',2)){ t._lensThaw={by:ap,ends:2}; log(`🔭 Glacial Lens: ${DB[t.cid].name} is Frozen until the end of ${pname(ap)}'s next turn.`,'gain'); } } finally{ if(typeof fxPop==='function') fxPop(_fx); }
+      renderAll(); };
+    if(seqIsLocalHuman(ap)&&!G._aiAuto){ openEnemyTargetPicker(foes,freeze,{sourcePlayer:ap,title:'🔭 Glacial Lens',desc:'Freeze an opposing character with cost 3 or less until the end of your next turn.'}); }
+    else { const pool=foes.filter(f=>!hasDrunkenStance(f)&&!spaceShielded(f)&&(!hasAbilityToll(f)||pl.energy>=2)); const best=(pool.length?pool:foes).slice().sort((a,b)=>effPower(b)-effPower(a))[0];
+      openEnemyTargetPicker([best],freeze,{sourcePlayer:ap,title:'Glacial Lens'}); }
+    return;
+  }
+  // ── SKYRAIL VELOCITY STATION: Express Return — 3⚡ every other turn (abilityUsed.express_return_turn): one of your characters goes
+  //    back to your hand keeping its Attack and Health; then you may search your deck for a Character or Transformation card.
+  //    Forms, fusions and tokens can't go back (a form card can't be played from hand). Skipping the choice refunds it.
+  if(abl.label==='Express Return'){
+    const last=fc.abilityUsed&&fc.abilityUsed.express_return_turn;
+    if(last!=null&&(G.turn-last)<2){ log(`Express Return: wait ${2-(G.turn-last)} more turn(s).`,'dmg'); return; }
+    const ap=G.activePlayer, pl=G.players[ap];
+    const mine=pl.field.filter(f=>{ const d=DB[f.cid]; return isChar(d)&&d.type!=='token'&&!d.isToken&&!d.transformOnly&&!d.fusion&&!d.fusionForm&&!f.fusion; });
+    if(!mine.length){ log("Express Return: no character that can go back to your hand (forms, fusions and tokens can't).",'dmg'); return; }
+    if(pl.energy<3){ log('Not enough energy (need 3⚡).','dmg'); return; }
+    if(!spendEnergyAbility(ap,3,'yellow')) return;
+    if(!fc.abilityUsed) fc.abilityUsed={}; fc.abilityUsed.express_return_turn=G.turn; pl.usedAbilityThisTurn=true;
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    const _u=_abilityUndo; closeAllModals();
+    const go=(f)=>{ if(!expressReturn(ap,f)) return;
+      openDeckSearch('🚄 Express Return','You may search your deck for a Character or Transformation card and put it into your hand (close to skip).',cc=>!!cc&&isChar(cc)&&cc.type!=='token'&&!cc.isToken,(cid)=>{ const nf=newFC(cid); if(nf) pl.hand.push(nf); shuffle(pl.deck); log(`🚄 Express Return: ${pname(ap)} finds ${DB[cid]?.name}. Deck shuffled.`,'gain'); renderAll(); }); };
+    if(seqIsLocalHuman(ap)&&!G._aiAuto){ seqChoose('🚄 Express Return','Return one of your characters to your hand. It keeps its Attack and Health when you play it again.',mine.map(f=>({label:DB[f.cid].name,sub:'⚔'+(f.currentATK||0)+' · ♥'+(f.currentHP||0),val:f})),go,()=>{ if(_u) _u(); renderAll(); }); }
+    else { const best=mine.slice().sort((a,b)=>aiFcValue(a)-aiFcValue(b))[0]; go(best); }
     return;
   }
   // ── AANG: Air Blast — 2⚡, every other turn (fc.abilityUsed.air_blast_turn, Water Whip convention), no tap. Tap a target opposing
@@ -21243,6 +21388,24 @@ function runAbilityEffect(fc, abl, pl){
     finally { if(typeof fxPop==='function') fxPop(_fx); }
     renderAll(); return;
   }
+  // ── KING THEODEN (SSBE): Evolved Decree — 6⚡ once per game: each of your characters +3/+3 and Resolve until the end of your next turn.
+  if(label==='Evolved Decree'){
+    const ap=G.activePlayer; const mine=(G.players[ap]?.field||[]).filter(f=>isChar(DB[f.cid]));
+    if(!mine.length){ if(_abilityUndo) _abilityUndo(); log('Evolved Decree: no characters — not used.','dmg'); renderAll(); return; }
+    const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Evolved Decree',fc.uid):null;
+    try{ mine.forEach(f=>applyEvolvedDecree(f,ap)); } finally{ if(typeof fxPop==='function') fxPop(_fx); }
+    log(`👑 Evolved Decree: ${pname(ap)}'s characters get +3/+3 and Resolve until the end of ${pname(ap)}'s next turn!`,'gain');
+    renderAll(); return;
+  }
+  // ── RED HULK: Meltdown — 5⚡ once per game: 4 damage to each Burned opposing character (not targeted). None → refunded.
+  if(label==='Meltdown'){
+    const ap=G.activePlayer; const foes=[];
+    _fusionOpps(ap).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])&&statusActive(f,'burn')) foes.push({p:op,uid:f.uid}); }));
+    if(!foes.length){ if(_abilityUndo) _abilityUndo(); log('Meltdown: no Burned opposing character — not used.','dmg'); renderAll(); return; }
+    log(`🔥 Meltdown: every Burned opposing character takes 4 damage!`,'dmg');
+    seqAreaHits(foes,4,{cid:fc.cid,label:'Meltdown',uid:fc.uid},{after:()=>{ if(typeof recalcPassives==='function') recalcPassives(); if(typeof checkWin==='function') checkWin(); }});
+    renderAll(); return;
+  }
   // ── CRYSTORA: Thunder Light Sphere — 3 damage to target opposing character, then −2 Attack until the end of your
   //    next turn (applyTimedCut). Free, taps, once per turn.
   if(label==='Thunder Light Sphere'){
@@ -22042,6 +22205,95 @@ function energyIntake(p, copies){
   } finally { if(typeof fxPop==='function') fxPop(_fx); }
   renderAll(); return got;
 }
+// ═══ build 10.34 helpers: King Theoden, the Base Set Locations, Red Hulk ═══
+function isPrimeChar(c){ return !!c&&isChar(c)&&(((c.subtypes||[]).some(s=>/^prime$/i.test(String(s).trim())))||/\bprime\b/i.test(c.race||'')); }
+// TRIAL BY COMBAT (Prime Proving Ground): +1 damage on a Prime's attack per Proving Ground you control that isn't frozen.
+function trialByCombatBonus(ap,afc){ if(!afc||!isPrimeChar(DB[afc.cid])) return 0; return (G.players[ap]?.field||[]).filter(l=>isLoc(DB[l.cid])&&hasAbilityLabel(l,'Trial by Combat')&&!isLocationFrozen(l)).length; }
+// ROYAL SUMMONS (King Theoden): search your deck for a Royal Saiyan character, reveal it, put it into your hand, shuffle.
+function royalSummonsSearch(p,fc){
+  const P=G.players[p]; if(!P) return; const filt=cc=>!!cc&&isChar(cc)&&cc.type!=='token'&&isRoyalSaiyan(cc);
+  const got=(cid)=>{ const f=newFC(cid); if(f) P.hand.push(f); shuffle(P.deck); log(`👑 Royal Summons: ${pname(p)} reveals ${DB[cid]?.name} and puts it into hand. Deck shuffled.`,'gain');
+    if(!seqIsLocalHuman(p)&&typeof showCardReveal==='function') try{ showCardReveal(cid); }catch(e){} renderAll(); };
+  if(!(P.deck||[]).some(cid=>filt(DB[cid]))){ shuffle(P.deck); log('👑 Royal Summons: no Royal Saiyan character in the deck.','info'); return; }
+  if(seqIsLocalHuman(p)&&!(G&&G._aiAuto)&&G.activePlayer===p){ openDeckSearch('👑 Royal Summons','Search your deck for a Royal Saiyan character and put it into your hand.',filt,got); return; }
+  const pick=aiPickDeckCard(P,filt); if(pick){ P.deck.splice(P.deck.indexOf(pick),1); got(pick); }
+}
+// EVOLVED DECREE (King Theoden SSBE): f._decree = {amt, by, ends:2, kw}; +amt/+amt and Resolve; ends at the end of `by`'s next turn.
+function applyEvolvedDecree(f,by){
+  if(!f._decree) f._decree={amt:0,by,ends:2,kw:false};
+  f._decree.amt+=3; f._decree.ends=2; f._decree.by=by;
+  f.currentATK=(f.currentATK||0)+3; f.atkBonus=(f.atkBonus||0)+3; f.hpBonus=(f.hpBonus||0)+3; f.currentHP=(f.currentHP||0)+3;
+  if(!hasKW(f,'resolve')){ f.gainedKeywords=(Array.isArray(f.gainedKeywords)?f.gainedKeywords:[]).concat('resolve'); f._decree.kw=true; }
+}
+function endEvolvedDecree(f){
+  const d=f._decree; if(!d) return; delete f._decree;
+  f.currentATK=Math.max(0,(f.currentATK||0)-d.amt); f.atkBonus=(f.atkBonus||0)-d.amt; f.hpBonus=(f.hpBonus||0)-d.amt; f.currentHP=Math.max(1,(f.currentHP||0)-d.amt);
+  if(d.kw&&Array.isArray(f.gainedKeywords)){ const i=f.gainedKeywords.indexOf('resolve'); if(i>-1) f.gainedKeywords.splice(i,1); }
+  log(`👑 Evolved Decree on ${DB[f.cid]?.name} ends.`,'info');
+}
+// AETHERAK PRISON: f._prison = {src: the Prison's uid, by}. Imprisoned while that Location is still on any field.
+function isImprisoned(fc){ if(!fc||!fc._prison||!G||!G.players) return false; const src=fc._prison.src; return [1,2,3,4].some(q=>(G.players[q]?.field||[]).some(f=>f.uid===src)); }
+function prisonBreakout(p,fc){
+  if(!isImprisoned(fc)) return false; const pl=G.players[p]; if(!pl||(pl.energy||0)<4){ log('🔓 Breakout: you need 4 Energy.','dmg'); return false; }
+  spendEnergy(p,4,null); delete fc._prison; log(`🔓 Breakout: ${pname(p)} pays 4 Energy — ${DB[fc.cid]?.name} breaks out of Aetherak Prison.`,'gain');
+  if(typeof closeAllModals==='function') closeAllModals(); renderAll(); return true;
+}
+function celestialConfinement(p,loc){
+  const opps=_fusionOpps(p); const ownerOf=(uid)=>opps.find(o=>(G.players[o]?.field||[]).some(f=>f.uid===uid));
+  const foes=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ const d=DB[f.cid]; if(isChar(d)&&(d.cost||0)<=5) foes.push(f); }));
+  if(!foes.length){ log('🏛️ Celestial Confinement: no opposing character with cost 5 or less.','info'); return; }
+  const jail=(uid)=>{ const op=ownerOf(uid); const t=op&&G.players[op].field.find(f=>f.uid===uid); if(!t||!(G.players[p]?.field||[]).some(f=>f.uid===loc.uid)){ renderAll(); return; }
+    t._prison={src:loc.uid,by:p}; log(`🏛️ Celestial Confinement: ${DB[t.cid].name} is imprisoned — it can't attack, retaliate or use abilities while Aetherak Prison stands.`,'gain'); renderAll(); };
+  if(seqIsLocalHuman(p)&&!G._aiAuto){ openEnemyTargetPicker(foes,jail,{sourcePlayer:p,title:'🏛️ Celestial Confinement',desc:'Imprison an opposing character with cost 5 or less. While Aetherak Prison stays, it can\'t attack, retaliate or use abilities.'}); return; }
+  const pool=foes.filter(f=>!hasDrunkenStance(f)&&!spaceShielded(f)&&!isImprisoned(f)&&(!hasAbilityToll(f)||(G.players[p].energy||0)>=2)); const P2=pool.length?pool:foes;
+  const best=P2.slice().sort((a,b)=>aiFcValue(b)-aiFcValue(a))[0]; const _sv=G._aiAuto; G._aiAuto=true;
+  try{ openEnemyTargetPicker([best],jail,{sourcePlayer:p,title:'Celestial Confinement'}); } finally{ G._aiAuto=_sv; }
+}
+function locationEntry(p,loc){
+  if(!loc||!DB[loc.cid]) return;
+  if(hasAbilityLabel(loc,'Celestial Confinement')) seqAbility(p,loc.cid,'Celestial Confinement',null,{kind:'ON PLACE'},()=>celestialConfinement(p,loc));
+  if(hasAbilityLabel(loc,"Wayfarer's Find")) seqAbility(p,loc.cid,"Wayfarer's Find",null,{kind:'ON PLACE'},()=>lookTopPick(p,3,"Wayfarer's Find",'🧭'));
+}
+// LOOK AT THE TOP N, PUT 1 INTO YOUR HAND, THE REST ON THE BOTTOM (Wayfarer's Find, Shifting Reflection). TOP = end of the deck array.
+function _lookTopScore(pl,cid){ const c=DB[cid]; if(!c) return -9; const e=pl.energy||0;
+  if(isChar(c)&&!c.transformOnly) return 10+(c.cost<=e+2?6:0)+(c.atk||0)+(c.hp||0)*.5;
+  if(c.transformOnly) return pl.field.some(fc=>getTransformTargets(fc.cid).includes(cid))?14:1;
+  if(/energy/i.test(c.type||'')) return (pl.hand||[]).filter(h=>/energy/i.test(DB[h.cid]?.type||'')).length<2?9:3;
+  return 7+(c.cost<=e?2:0); }
+function lookTopPick(p,n,label,icon){
+  const pl=G.players[p]; if(!pl) return; n=Math.min(n,(pl.deck||[]).length);
+  if(!n){ log(`${icon} ${label}: the deck is empty.`,'info'); return; }
+  const top=pl.deck.splice(pl.deck.length-n,n).reverse();
+  log(`${icon} ${label}: ${pname(p)} looks at the top ${n} card${n>1?'s':''} of their deck.`,'info');
+  const finish=(i)=>{ const f=newFC(top[i]); if(f) pl.hand.push(f); const rest=top.filter((_,k)=>k!==i); pl.deck.unshift(...rest);
+    log(`${icon} ${label}: ${pname(p)} puts one into their hand${rest.length?' and '+rest.length+' on the bottom':''}.`,'gain'); renderAll(); };
+  if(!(seqIsLocalHuman(p)&&!(G&&G._aiAuto))){ let bi=0; top.forEach((cid,i)=>{ if(_lookTopScore(pl,cid)>_lookTopScore(pl,top[bi])) bi=i; }); finish(bi); return; }
+  tcPickTop(top,finish,icon+' '+label);
+}
+// EXPRESS RETURN (Skyrail Velocity Station): the hand card carries _kept = {atk, max, hp} (its own Attack / Health, without
+// anthems or until-end-of-turn effects); applyKeptStats puts them back when it's played again. Equipment goes to the discard pile.
+function expressReturn(ap,f){
+  const pl=G.players[ap]; if(!pl||!pl.field.includes(f)) return false;
+  const t=tempStatDelta(f); const max=Math.max(1,(f.baseHP||0)+(f.hpBonus||0)-t.h);
+  const kept={atk:Math.max(0,(f.currentATK||0)-(f.passiveAtk||0)-t.a), max, hp:Math.max(1,Math.min(max,(f.currentHP||0)-(f.passiveHp||0)-t.h))};
+  pl.field=pl.field.filter(x=>x.uid!==f.uid); (f.attachments||[]).forEach(id=>pl.discard.push(id));
+  const h=newFC(f.cid); if(h){ h.variant=f.variant||'none'; h._kept=kept; pl.hand.push(h); }
+  log(`🚄 Express Return: ${DB[f.cid]?.name} goes back to ${pname(ap)}'s hand (${kept.atk} Attack / ${kept.hp} Health kept).`,'gain');
+  if(typeof recalcPassives==='function') recalcPassives(); renderAll(); return true;
+}
+function applyKeptStats(fc){
+  const k=fc._kept; delete fc._kept; if(!k) return;
+  const maxNow=(fc.baseHP||0)+(fc.hpBonus||0); fc.hpBonus=(fc.hpBonus||0)+(k.max-maxNow); fc.currentHP=k.hp;
+  fc.atkBonus=(fc.atkBonus||0)+(k.atk-(fc.currentATK||0)); fc.currentATK=k.atk;
+  log(`🚄 Express Return: ${DB[fc.cid]?.name} keeps its ${k.atk} Attack and ${k.hp} Health.`,'info');
+}
+// HEAT ABSORPTION (Red Hulk): an opposing character was just Burned → each Red Hulk on the other side +1 Attack until end of turn.
+function heatAbsorptionTrigger(burned){
+  const o=ownerOfCard(burned.uid); if(o==null) return;
+  [1,2,3,4].forEach(q=>{ if(!G.players[q]||!_fusionOpps(q).includes(o)) return;
+    (G.players[q].field||[]).filter(f=>hasAbilityLabel(f,'Heat Absorption')).forEach(f=>{ f._heatAbs=(f._heatAbs||0)+1; f.currentATK=(f.currentATK||0)+1; f.atkBonus=(f.atkBonus||0)+1;
+      log(`🔥 Heat Absorption: ${DB[f.cid]?.name} feeds on the fire — +1 Attack until the end of the turn (now ${f.currentATK}).`,'gain'); }); });
+}
 function applySurfacerBinding(player){
   const pl=G.players[player]; if(!pl) return;
   const loseEnergy=()=>{ const lost=Math.min(2, pl.energy||0); pl.energy=Math.max(0,(pl.energy||0)-2); log(`🔮 Surfacer Binding: ${pname(player)} loses ${lost} Energy.`,'dmg'); renderAll(); };
@@ -22091,6 +22343,7 @@ function applyStatus(fc,type,turns){
   if(!fc||!STATUS_META[type])return false;
   // VORTEX SHIELD (Rapture of the Vortex): total status immunity.
   if(hasAbilityLabel(fc,'Vortex Shield')){ log(`🛡️ Vortex Shield: ${DB[fc.cid]?.name} is immune to status effects!`,'info'); return false; }
+  if(type==='burn'&&hasAbilityLabel(fc,'Heat Absorption')){ log(`🔥 Heat Absorption: ${DB[fc.cid]?.name} can't be Burned.`,'info'); return false; }
   if(!fc.statuses)fc.statuses={};
   if(fc.statuses[type]>0){ log(`${DB[fc.cid]?.name} is already ${STATUS_META[type].label}ed — it doesn't stack.`,'info'); return false; }
   fc.statuses[type]=turns||STATUS_META[type].dur;
@@ -22098,6 +22351,7 @@ function applyStatus(fc,type,turns){
   const m=STATUS_META[type];
   if(typeof showStatusFx==='function')showStatusFx(fc.uid,type);
   log(`${m.icon} ${DB[fc.cid]?.name} is afflicted with ${m.label} (${fc.statuses[type]} turn${fc.statuses[type]>1?'s':''})!`,'dmg');
+  if(type==='burn') try{ heatAbsorptionTrigger(fc); }catch(e){ console.warn('[Heat Absorption]',e); }
   if((type==='freeze'||type==='paralyze')&&fc._esc>0){ const _sp=escalationSpec(fc); if(_sp&&_sp.lockClears){ fc._esc=0; log(`💥 Legendary Escalation: ${DB[fc.cid]?.name} loses its banked damage (${m.label}).`,'dmg'); } }
   return true;
 }
@@ -22305,6 +22559,10 @@ function startTurnFx(player){
     if(isChar(c)){ const _vs=Array.isArray(fc.attachments)?fc.attachments.filter(a=>a==='void_siphon_device_bse').length:0;
       if(!_vs){ if(fc._siphonT) fc._siphonT=0; }
       else if(!(typeof isEquipHexed==='function'&&isEquipHexed(fc,'void_siphon_device_bse'))){ fc._siphonT=(fc._siphonT||0)+1; if(fc._siphonT%2===1) energyIntake(player,_vs); } }
+    // ── KING THEODEN (SSBE): Crown's Mercy — at the start of your turn each of your Saiyan characters heals 2.
+    if(isChar(c)&&hasAbilityLabel(fc,"Crown's Mercy")&&pl.field.some(f=>f.uid===fc.uid)){ const _fx=(typeof fxPush==='function')?fxPush(fc.cid,"Crown's Mercy",fc.uid):null; let _n=0;
+      pl.field.filter(f=>isSaiyanChar(DB[f.cid])).forEach(f=>{ if(healFc(f,2)>0) _n++; });
+      log(_n?`👑 Crown's Mercy: ${_n} of ${pname(player)}'s Saiyan characters heal 2.`:`👑 Crown's Mercy: no Saiyan needed healing.`,_n?'gain':'info'); if(typeof fxPop==='function') fxPop(_fx); }
     // ── VIOLET (SSG): Heart of a Saiyan God — heals +2 HP after every 2 of your turns.
     if(hasAbilityLabel(fc,'Heart of a Saiyan God')){
       fc._hosgTurns=(fc._hosgTurns||0)+1;
@@ -22395,6 +22653,9 @@ function endTurnFx(p){
     if(f._fury){ f.currentATK=(f.currentATK||0)+f._fury; f.atkBonus=(f.atkBonus||0)+f._fury; f._fury=0; f._furyL=null; } // 🐾 Elise's Fury ends with the turn
     if(f._theftDn){ f.currentATK=(f.currentATK||0)+f._theftDn; f.atkBonus=(f.atkBonus||0)+f._theftDn; f._theftDn=0; log(`🐾 ${DB[f.cid]?.name} gets its Attack back (Primal Theft ends).`,'info'); }
     if(f._theftUp){ f.currentATK=Math.max(0,(f.currentATK||0)-f._theftUp); f.atkBonus=(f.atkBonus||0)-f._theftUp; f._theftUp=0; }
+    if(f._heatAbs){ f.currentATK=Math.max(0,(f.currentATK||0)-f._heatAbs); f.atkBonus=(f.atkBonus||0)-f._heatAbs; f._heatAbs=0; } // 🔥 Red Hulk: Heat Absorption ends with the turn
+    if(f._decree&&f._decree.by===p&&--f._decree.ends<=0) endEvolvedDecree(f); // 👑 Theoden (SSBE): until the end of your next turn
+    if(f._lensThaw&&f._lensThaw.by===p&&--f._lensThaw.ends<=0){ delete f._lensThaw; if(statusActive(f,'freeze')){ delete f.statuses.freeze; if(f.statusSrc) delete f.statusSrc.freeze; log(`❄️ Glacial Lens: ${DB[f.cid]?.name} thaws.`,'info'); } }
     if(f.ssbAtkBuff){ f.currentATK=(f.currentATK||0)-f.ssbAtkBuff; f.atkBonus=(f.atkBonus||0)-f.ssbAtkBuff; f.ssbAtkBuff=0; }
     if(f._aeth&&f._aethBy===p){ const d=f._aeth; f.currentATK=Math.max(0,(f.currentATK||0)-d); f.atkBonus=(f.atkBonus||0)-d; f._aeth=0; f._aethBy=null; log(`✨ Aetherion Light on ${DB[f.cid]?.name} fades.`,'info'); } // ✨ Asteria
     if(f._stonePow&&f._stonePowBy===p){ const d=f._stonePow; f.currentATK=Math.max(0,(f.currentATK||0)-d); f.atkBonus=(f.atkBonus||0)-d; f._stonePow=0; f._stonePowBy=null; log(`💎 Stone Power (Power) on ${DB[f.cid]?.name} fades.`,'info'); }
@@ -23007,6 +23268,13 @@ function aiScoreAbility(p, fc, abl, src){
     const _k=_es.filter(e=>(e.fc.currentHP||0)<=2); if(!_k.length&&!DB[_ch.cid]?.isToken) return -1; return 8+(_k.length?Math.min(14,Math.max(..._k.map(e=>aiFcValue(e.fc)))*.6):2); }
   if(abl.label==='Shatter the World'){ const _es=aiEnemyChars(p); const _locs=_fusionOpps(p).reduce((n,op)=>n+(G.players[op]?.field||[]).filter(f=>isLoc(DB[f.cid])).length,0); if(!_es.length&&!_locs) return -1;
     const _k=_es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,3-(e.fc.nullify||0))).length; if(_es.length+_locs<2&&!_k) return -1; return 12+_es.length*5+_locs*4+_k*14; }
+  if(abl.label==='Evolved Decree'){ const _n=pl.field.filter(f=>isChar(DB[f.cid])).length; if(_n<3) return -1; return 14+_n*5; }   // build 10.34
+  if(abl.label==='Meltdown'){ const _b=aiEnemyChars(p).filter(e=>statusActive(e.fc,'burn')); if(!_b.length) return -1;   // build 10.34
+    const _k=_b.filter(e=>(e.fc.currentHP||0)<=Math.max(0,4-(e.fc.nullify||0))).length; if(_b.length<2&&!_k) return -1; return 12+_b.length*6+_k*12; }
+  if(abl.label==='Glacial Lens'){ if(ablCooldownLeft(fc,abl)>0) return -1;   // build 10.34
+    const _t=aiEnemyChars(p).filter(e=>(DB[e.fc.cid]?.cost||0)<=3&&!statusActive(e.fc,'freeze')&&!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)&&(!hasAbilityToll(e.fc)||pl.energy>=cost+2));
+    if(!_t.length) return -1; const _b=Math.max(..._t.map(e=>effPower(e.fc))); return _b>=2?8+_b*2:-1; }
+  if(abl.label==='Express Return') return -1;   // build 10.34: the CPU doesn't use it yet
   if(abl.label==='Primal Theft'){ if((fc.currentHP||0)<=2||fc.tapped||!aiReady(fc)||!canCharacterAttack(p,fc)||!aiAttackOptionsFor(p,fc).length) return -1;   // build 10.33: steal a big Attack, then swing
     const _es=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)&&(!hasAbilityToll(e.fc)||pl.energy>=cost+2)); if(!_es.length) return -1;
     const _g=Math.max(..._es.map(e=>e.fc.currentATK||0))-(fc.currentATK||0); return _g>=2?12+Math.min(18,_g*3):-1; }
@@ -23193,6 +23461,8 @@ function aiEnumerateActions(p){
       if(s>0) acts.push(Object.assign({score:s,label:'instant '+c.name},base()));
     }
   });
+  // 6b) 🔓 Breakout (Aetherak Prison, build 10.34): pay 4 to free a valuable imprisoned character.
+  pl.field.filter(f=>isImprisoned(f)).forEach(f=>{ const v=aiFcValue(f); if((pl.energy||0)>=5&&v>=8&&!aiTried('brk:'+f.uid)) acts.push({score:16+Math.min(14,v*.5),label:'breakout '+(DB[f.cid]?.name||''),run:()=>{ aiMark('brk:'+f.uid); prisonBreakout(p,f); }}); });
   // 7) Activated abilities — field characters/locations, equipment-granted, stolen, and the Herald
   const tax=(typeof crowsResidueTax==='function')?crowsResidueTax(p):0;
   const consider=(fc,abl,src)=>{
@@ -24497,6 +24767,7 @@ function stanceCheckPending(){
 // FOUR ELEMENTS UNBOUND (Nishvi Avatar State). At the declaration, before damage; in Life modes the blocker is Burned.
 function _attackBurnLabel(afc){
   if(stanceLabelActive(afc,'Fire Stance')) return ['Fire Stance','🔥'];
+  if(hasAbilityLabel(afc,'Thermal Smash')) return ['Thermal Smash','🔥'];
   if(hasAbilityLabel(afc,'Four Elements Unbound')) return ['Four Elements Unbound','🌀'];
   if(hasAbilityLabel(afc,'Four as One')) return ['Four as One','🌀'];
   return null;
@@ -29306,7 +29577,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.33';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.34';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
