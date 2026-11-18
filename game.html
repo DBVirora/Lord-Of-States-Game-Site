@@ -9637,7 +9637,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.35 · Grant All fix</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.36 · Buy & Open fix</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10694,6 +10694,9 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.34'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.36', date:'2026-11-18', cards:[], abilities:[],
+    screens:["MARKET BUY & OPEN FIX (first pack of a kind): with 0 packs of that kind, BUY & OPEN bought the pack (Your Packs ×1) but the open asked the server first, the server's copy of pack_inventory didn't have it yet, and the game toasted 'No packs of that kind left.' with no opening (a second purchase then worked). Now: (1) a pack bought in the game (econ_buy fell back because the catalog isn't published, lock off) opens in the game straight away — openInventoryPack(key, context, {local:true}) skips econ_open_pack (Market BUY & OPEN, old shop 'OPEN NOW', old Booster Box 'OPEN A PACK NOW'); (2) safety net in econOpen for every open while the lock is OFF: econ_open_pack → error 'none' while the local inventory still holds that key with qty>0 → save pack_inventory again, call econ_open_pack once more, and if it's still 'none' open in the game (return null → local opening). Lock ON keeps the server's answer (toast + econSnap). (3) savePackInventory now checks the update's error and retries once (it ignored failed writes). Check the PC's Buy & Open the same way: open from the copy that made the purchase, and never trust a server 'none' over a pack the client still holds while the lock is off."],
+    data:["GAME_BUILD stays '10.34' (no rules change)."] },
   { build:'10.35', date:'2026-11-18', cards:[], abilities:[],
     screens:["PRISM ORB (Crystal) CANCEL FIX: on the 'Heal 3' list, Cancel/Skip (also the Tap-the-Board banner's Cancel) goes back to the −2 Attack / Heal 3 choice when there's an opposing character to target; when there isn't (heal is the only option), it now skips Prism Orb with no effect. Before, with no enemies it reopened the same heal list instantly, so Cancel looked dead.",
       "ADMIN → GRANT ALL CARDS now grants EVERY card: it used the pack/shop pool (getCardPool), which skips event exclusives (all of Harvest of Courts 01–15, the two Secret Rares included), transformation forms and the PT-001 playtest promo. New pool adminGrantPool() = every DB card except tokens, type 'system' and exclusive:'devtest' test cards. Same server call (econ_admin_grant with {cards:[{cid,qty}]}, topping each up to 4). Tile text: '4 copies of every card, event and secret ones too'. Port the same pool to the PC admin."],
@@ -29491,7 +29494,7 @@ async function econBuy(kind,id,set,qty,price,label){
 //   | null = use the old in-game opening | false = failed (the player was told)
 async function econOpen(key,n){
   if(!econReady()) return null;
-  let left=Math.max(1,n|0||1); const all=[]; const seen=new Set();
+  let left=Math.max(1,n|0||1); const all=[]; const seen=new Set(); let resync=false;
   while(left>0){
     const r=await econRpc('econ_open_pack',{p_key:key,p_n:Math.min(left,200)});
     if(r&&r.ok&&r.converted){ if(ECON.lock) econSnap(r); else { const e=_packInventory.find(x=>x.key===key); if(e){ e.qty--; if(e.qty<=0) _packInventory=_packInventory.filter(x=>x.key!==key); } grantPack('pack','basic',(e&&e.setId)||'base_set',r.converted); }
@@ -29499,6 +29502,9 @@ async function econOpen(key,n){
     if(!(r&&r.ok&&Array.isArray(r.pulls))){
       if(all.length) break;
       if((!r||r.error==='catalog')&&!ECON.lock) return null;
+      // build 10.36: lock off and the game still holds this pack → the server's copy of Your Packs is behind (the save that
+      // added it hadn't landed, or an older save overwrote it). Save the game's copy again and ask once more; then open in the game.
+      if(r&&r.error==='none'&&!ECON.lock&&(_packInventory||[]).some(x=>x.key===key&&x.qty>0)){ if(!resync){ resync=true; await savePackInventory(); continue; } return null; }
       if(ECON.lock&&r) econSnap(r);
       econToast(r&&r.error==='none'?'No packs of that kind left.':'Couldn’t open the pack. Try again.'); return false; }
     const pulls=r.pulls.filter(p=>p&&p.cid).map(p=>{ const isNew=!_collection[p.cid]&&!seen.has(p.cid); seen.add(p.cid); return {cid:p.cid,foil:p.foil||'none',rarity:p.rarity||getRarity(p.cid),isNew}; });
@@ -29581,7 +29587,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.35';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.36';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -30331,9 +30337,14 @@ async function loadPackInventory(){
   }catch(e){ console.warn('[PACKINV] load error:',e); _packInventory=[]; }
 }
 async function savePackInventory(){
-  if(!_celSB||!_celUserId)return;
-  try{ await _celSB.from('profiles').update({pack_inventory:JSON.stringify(_packInventory)}).eq('id',_celUserId); }
-  catch(e){ console.warn('[PACKINV] save error:',e); }
+  if(!_celSB||!_celUserId)return false;
+  for(let t=0;t<2;t++){   // build 10.36: a failed write used to be ignored; check it and try once more
+    try{ const res=await _celSB.from('profiles').update({pack_inventory:JSON.stringify(_packInventory)}).eq('id',_celUserId);
+      if(!res||!res.error) return true; console.warn('[PACKINV] save error:',res.error.message||res.error); }
+    catch(e){ console.warn('[PACKINV] save error:',e); }
+    if(typeof ECON!=='undefined'&&ECON.lock) break;
+  }
+  return false;
 }
 function packDisplayName(kind,type,setId){
   const sn=(typeof setLabel==='function')?setLabel(setId):(setId||'');
@@ -30372,8 +30383,8 @@ function _openBoxNow(setId,context,invKey){
   showBoxOpening(all,setId);
   _packState.context=context||'shop'; _packState.invKey=invKey||null;
 }
-async function openInventoryPack(key, context){
-  if(econReady()){ const done=await econOpenInv(key,context); if(done!==null) return; }   // build 10.24: rolled on the server
+async function openInventoryPack(key, context, opts){
+  if(econReady()&&!(opts&&opts.local&&!ECON.lock)){ const done=await econOpenInv(key,context); if(done!==null) return; }   // build 10.24: rolled on the server (10.36: not for a pack just bought in the game)
   context=context||'inventory';
   const e=_packInventory.find(x=>x.key===key);
   if(!e||e.qty<=0){ return; }
@@ -31136,7 +31147,7 @@ async function buyPack(type){
   updateCelDisplay();
   updateShopButtons();
   updatePackBadge();
-  promptOpenOrStore('pack',type,setId);
+  promptOpenOrStore('pack',type,setId,!_eb);
 }
 
 // ── BOOSTER BOX: 36 packs, 10% off the per-pack price ──
@@ -31167,7 +31178,7 @@ async function buyBox(tier){
       +'<button class="btn-gray btn-sm" id="bb-done">DONE</button>'
     +'</div>';
   showModalEl('BOOSTER BOX', body);
-  body.querySelector('#bb-open').onclick=()=>{ closeAllModals(); openInventoryPack(key,'shop'); };
+  body.querySelector('#bb-open').onclick=()=>{ closeAllModals(); openInventoryPack(key,'shop',{local:!_eb}); };
   body.querySelector('#bb-done').onclick=()=>{ closeAllModals(); };
 }
 function renderPackInventory(){
@@ -31197,7 +31208,7 @@ function _oldTogglePacks(){
   if(open)renderPackInventory();
 }
 
-function promptOpenOrStore(kind,type,setId){
+function promptOpenOrStore(kind,type,setId,boughtHere){
   const key=kind+'|'+type+'|'+setId;
   const name=packDisplayName(kind,type,setId);
   const body=document.createElement('div');
@@ -31210,7 +31221,7 @@ function promptOpenOrStore(kind,type,setId){
       +'<button class="btn-gray btn-sm" id="poc-store">STORE FOR LATER</button>'
     +'</div>';
   showModalEl('PACK ACQUIRED', body);
-  body.querySelector('#poc-open').onclick=()=>{ closeAllModals(); openInventoryPack(key,'shop'); };
+  body.querySelector('#poc-open').onclick=()=>{ closeAllModals(); openInventoryPack(key,'shop',{local:!!boughtHere}); };
   body.querySelector('#poc-store').onclick=()=>{ closeAllModals(); };
 }
 
@@ -43103,7 +43114,7 @@ async function mkConfirm(a){
     if(typeof SFX!=='undefined') try{ SFX.energy(); }catch(e){}
     mkRefresh();
     if(o.kind==='card'){ mkDlgClose(); showPackOpening([{cid:o.cid,foil:'none',rarity:getRarity(o.cid),isNew:o._isNew}],'basic',true); _packState.context='single'; return; }
-    if(o.kind==='pack'&&a.dataset.open==='1'){ mkDlgClose(); _shopSet=o.setId; openInventoryPack('pack|'+o.type+'|'+o.setId,'inventory'); return; }
+    if(o.kind==='pack'&&a.dataset.open==='1'){ mkDlgClose(); _shopSet=o.setId; openInventoryPack('pack|'+o.type+'|'+o.setId,'inventory',{local:!srv}); return; }
     mkSuccess(o,qty);
   } finally { _mk.busy=false; }
 }
