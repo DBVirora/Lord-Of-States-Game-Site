@@ -861,6 +861,44 @@ body:has(#fullcard-modal.open) #tut-bubble.docked{opacity:0!important;pointer-ev
 .tut-confirm button{border:none;border-radius:10px;padding:10px 16px;font-weight:800;font-size:12px;letter-spacing:.8px;cursor:pointer}
 .tut-confirm .stay{background:linear-gradient(135deg,#c9a14a,#f5d77a);color:#1e1306}
 .tut-confirm .leave{background:rgba(255,255,255,.08);color:#c9ccd8;border:1px solid rgba(255,255,255,.15)}
+/* build 10.32 · TUTORIAL v3: ⓘ more chips + codex window */
+.tut-bubble .tb-more{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tut-bubble .tb-more button{background:rgba(168,85,247,.14);border:1px solid rgba(168,85,247,.5);color:#e9d5ff;border-radius:999px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.2px}
+.tut-bubble .tb-more button:hover{background:rgba(168,85,247,.32)}
+.tut-bubble.docked .tb-more{display:none}
+.tut-codex-ov{position:fixed;inset:0;z-index:100003;display:none;align-items:center;justify-content:center;background:rgba(4,2,12,.8);padding:16px}
+.tut-codex-ov.on{display:flex}
+.tut-codex-ov .tcx{width:min(900px,100%);max-height:calc(100vh - 32px);overflow:auto;background:linear-gradient(180deg,rgba(22,14,44,.99),rgba(9,6,22,.99));border:1px solid rgba(232,197,112,.55);border-radius:16px;padding:18px 20px 16px;box-shadow:0 20px 50px rgba(0,0,0,.6),0 0 30px rgba(168,85,247,.25)}
+.tut-codex-ov .tcx-h{font-family:'Cinzel',serif;color:#fde68a;letter-spacing:2px;font-size:16px;margin:0 0 6px}
+.tut-codex-ov .tcx-t{font-size:13.5px;color:#d4d7e3;line-height:1.5}
+.tut-codex-ov .tcx-t b{color:#fde68a}
+.tut-codex-ov .tcx-f{display:flex;justify-content:flex-end;margin-top:14px}
+.tut-codex-ov .tcx-close{background:linear-gradient(135deg,#c9a14a,#f5d77a);color:#1e1306;border:none;border-radius:9px;padding:8px 18px;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.8px}
+/* build 10.32 · the tutorial OFFER (new accounts): play, continue, or skip with a warning */
+.tut-offer{position:fixed;inset:0;z-index:100200;display:none;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 30%,rgba(76,29,149,.55),rgba(5,3,16,.97) 70%);padding:16px}
+.tut-offer.on{display:flex;animation:tofIn .35s ease-out}
+@keyframes tofIn{from{opacity:0}to{opacity:1}}
+.tut-offer .tof{position:relative;width:min(580px,100%);display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:center;background:linear-gradient(180deg,#1a1036,#0b0718);border:1px solid rgba(232,197,112,.5);border-radius:18px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 40px rgba(168,85,247,.25);animation:tofUp .4s ease-out}
+@keyframes tofUp{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
+.tut-offer .tof-face{width:150px;height:196px;border-radius:14px;overflow:hidden;border:2px solid #e8c570;background:#140c2a;box-shadow:0 0 22px rgba(168,85,247,.45)}
+.tut-offer .tof-face img{width:100%;height:100%;object-fit:cover;object-position:50% 12%}
+.tut-offer .tof-k{font:600 10px/1 'Share Tech Mono',monospace;letter-spacing:3px;color:#c4b5fd}
+.tut-offer .tof-h{font-family:'Cinzel',serif;font-size:22px;color:#fde68a;letter-spacing:2px;margin:7px 0 9px}
+.tut-offer .tof-p{font-size:13.5px;color:#e5e7eb;line-height:1.55;margin:0 0 10px}
+.tut-offer .tof-p b{color:#fde68a}
+.tut-offer .tof-meta{font-size:11.5px;color:#9ca3af;margin:0 0 12px}
+.tut-offer .tof-btns{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.tut-offer button{border:none;border-radius:11px;cursor:pointer;font-weight:800;letter-spacing:.8px}
+.tut-offer .tof-go{background:linear-gradient(135deg,#c9a14a,#f5d77a);color:#1e1306;padding:12px 16px;font-size:13px;box-shadow:0 6px 18px rgba(232,197,112,.35)}
+.tut-offer .tof-go:hover{filter:brightness(1.08)}
+.tut-offer .tof-alt{background:rgba(255,255,255,.07);color:#d6d9e6;border:1px solid rgba(255,255,255,.16);padding:10px 14px;font-size:12px}
+.tut-offer .tof-skip{background:none;color:#8b90a6;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:6px}
+.tut-offer .tof-skip:hover{color:#c4b5fd}
+@media (max-width:560px){ .tut-offer .tof{grid-template-columns:1fr;text-align:center;gap:12px;padding:18px} .tut-offer .tof-face{width:110px;height:142px;margin:0 auto} .tut-offer .tof-h{font-size:19px} }
+/* build 10.32 · MENU SPOTLIGHT (Court Tour + first-visit tips) — reuses the tutorial ring + bubble look */
+.spot-tip .tut-spot-ring{box-shadow:0 0 0 200vmax var(--spot-dim,rgba(5,3,16,.55)),0 0 0 5px rgba(168,85,247,.35),0 0 26px 6px rgba(232,197,112,.55)}
+.spot-tip .tut-spot-ring.free{border-color:transparent;box-shadow:0 0 0 200vmax var(--spot-dim,rgba(5,3,16,.55))}
+.spot-tip .tut-bubble{z-index:3}
 @media (max-width:760px){
   .tut-codex.types{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
   .tut-codex.colors{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -9599,7 +9637,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.31 · Aang</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.32 · Tutorial Update</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10656,6 +10694,20 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.31'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.32', date:'2026-11-18',
+    cards:[], abilities:[],
+    screens:[
+      "TUTORIAL v3 — 'The Royal Trial', shorter: 6 chapters (was 7) and ~44 steps on either path (was ~65). Same scripted board, same scripted opponent, same Virora coach engine. Full step list: claude/VCU_Tutorial_v3_Script.md (it replaces VCU_Tutorial_v2_Script.md). Chapters: I The Court · II Your Champion · III The Royal Court · IV Ascension · V The Warrior Path / The God Path · VI Clash of Heralds. Progress pill: 6 segments.",
+      "RIVAL HERALD = VILDREX (vildrex_herald, Base Set 149/150, 12/12) instead of Daredevil (promo). Rulk: no promo cards anywhere in the tutorial; the Fusion lesson uses Vildrex too. His Arch-Nemesis (+1 damage to Saiyans from his side) changes one number: the Heavy Warrior hits Virora for 6 (8 left → 2), the step says so; the duel is 13 ATK into 12 DEF.",
+      "ⓘ MORE CHIPS: the big codex panels (7 colors, Energy cards, Card types, Retaliation, Transformation lines) are no longer steps; they're pill buttons under the step text ('ⓘ The 7 colors'…) that open the same panel in a window ('Back to Virora ▸'). Enter/Space don't advance the step while it's open.",
+      "SAVE POINTS: at the start of chapters II–VI (Royal Trial only) the whole match state + step index + chosen path is saved (web: localStorage loc_tut_save_<uid>, v3, 14 days). OPTIONS → Tutorial → The Royal Trial then asks 'Continue · Chapter N' or 'Start over'; the new-account offer shows 'CONTINUE · CHAPTER N' first. The save is cleared on finishing; skipping keeps it. Resume = start the tutorial match as usual, overwrite the game state with the save, re-splice the chosen path's steps after the choice step, jump to the saved step (its chapter card plays again).",
+      "REWARDS PER CHAPTER (first completion only, same total): when chapter IV opens → 'CHAPTER III COMPLETE' + 1 Base Set Booster Pack (server key 'tut:pack1'); when chapter VI opens → 'CHAPTER V COMPLETE' + 1 pack ('tut:pack2'); the end → First Steps (+200 Celestium) + Lord Of Courts Blue card back, and the celebration also lists 'Booster Packs · earned along the way ×2'. A resumed chapter never pays twice (local flag + one-time server keys). The old 'tutorial' key (2 packs at once) is no longer used by the web client but stays in the catalog for older PC builds.",
+      "NEW ACCOUNTS — OFFERED, NOT FORCED: instead of starting the tutorial match, a welcome panel over the boot veil: Virora's portrait, 'WELCOME, CHALLENGER' / 'Enter the Courts', 'one guided match, about 8 minutes', [▶ PLAY THE TUTORIAL] and 'Skip, I know card games'. Skip → 'Skip the tutorial?' — 'Challengers who finish the tutorial earn rewards and bonuses that give them a head start in the world of Lord of Courts. Skip now and you’ll miss out on them for now.' + 'You can come back any time: OPTIONS → Tutorial.' + [▶ PLAY THE TUTORIAL] [Skip anyway]. Rulk: don't name the rewards there. Skip anyway marks it seen and goes to the menu. The in-match Skip confirm uses the same vague wording.",
+      "GOD PATH FIX: Godly Blitz's draw is a Use/Skip prompt now, so the step says 'Godly Blitz offers one more: tap Draw 1. Then claim your Prize', and while any Use/Skip prompt is open the coach pill says 'Answer the prompt first' (it used to say 'Pick a glowing Prize' while the prompt blocked the Prizes).",
+      "COURT TOUR (right after the first completion; replay: OPTIONS → Tutorial → Court Tour): Virora spotlights the menu — a welcome line; with packs waiting, she switches to SHOP and points at Booster Packs ('Tap Booster Packs'), then scrolls to YOUR PACKS ('Open one!'), hides while the pack opens, then 'Every card you pull goes into your collection…'; then LOCKER → My Decks (Starter Decks) → Deck Builder (60 cards including your Herald, the commander every deck needs) → PLAY → Campaign → VS AI ('Finish ✓'). Skip tour any time. The menu tabs are unchanged; the tour only switches tab/focus and spotlights the middle card (cards now carry data-id).",
+      "FIRST-VISIT TIPS: one Virora tip the first time each screen opens (main menu, Deck Builder, My Decks, deck select, Market, Forge, Registry, Battle Pass, Mailbox, Profile, Friends, Trade, Campaign, Trial of Courts, Find Match, Private Room, 2v2, the event, Rulebook) — exact text in SCREEN_TIPS. Only for players under 15 matches. [Got it ✓] / 'Turn off tips'. Settings → Gameplay → new Help section → Menu Tips (toggle with a picture; turning it back on shows the tips again)."],
+    data:["Settings key menuTips (default true). Economy catalog keys 'tut:pack1' and 'tut:pack2' (1 basic base_set pack each) — Rulk re-publishes the catalog.",
+      "GAME_BUILD stays '10.31' (no rules change)."] },
   { build:'10.31', date:'2026-11-18',
     cards:[
       {id:'aang_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/Avatar TLAB/Aang (Promo).png', newAbilities:['Air Scooter','Air Blast','Avatar State'],
@@ -22271,6 +22323,7 @@ let _gameSettings = {
   popChoices: 'side', // build 10.30: pick-one lists, target lists, ability menus — 'side' · 'center'
   popCombat: 'side',  // build 10.30: Burst Window + Power Struggle — 'side' · 'center'
   targetMode: 'board',// build 10.30: equipment / instants / target picks — 'board' (tap the card) · 'list' (pick by name)
+  menuTips: true,     // build 10.32: a tip the first time each screen opens (newer players)
   setTab: 'gameplay', // build 10.30: the Settings tab you looked at last
   invites: 'friends' // Game Invites (build 10.19): who can send you match / party invites — 'friends' · 'anyone' · 'off'
 };
@@ -22412,6 +22465,7 @@ function syncSettingsUI(){
   t('set-reveals', _gameSettings.reveals);
   t('set-banners', _gameSettings.banners);
   t('set-autodraw', _gameSettings.autoDraw!==false);
+  t('set-menutips', _gameSettings.menuTips!==false);
   t('set-useglow', _gameSettings.useGlow!==false);
   t('set-statusfx', _gameSettings.statusFx!==false);
   const vol=document.getElementById('set-sfx-vol');
@@ -22496,6 +22550,9 @@ const STV_PREV=(function(){
     'statusfx':()=>{ let o=bg()+rowO(); OX.forEach(x=>{ o+=card(x,41,12,17,'#26365a'); });
       o+=G('pv-fx',`<rect x="49.6" y="37.6" width="18.8" height="23.8" rx="3.4" fill="none" stroke="#67e8f9" stroke-width="1.6" opacity=".55"/><rect x="51" y="39" width="16" height="21" rx="2.6" fill="#67e8f9" opacity=".18"/><path d="M61 36 L56.5 45 L60 45 L57.5 53 L64 42.5 L60.5 42.5 L63 36 Z" fill="#fde047" stroke="#a16207" stroke-width=".4"/>`+T(42,34,6,'❄','#a5f3fc',700)+T(76,64,5,'✦','#a5f3fc',700));
       o+=`<circle cx="64" cy="56" r="3.4" fill="#0b1626" stroke="#67e8f9" stroke-width=".7"/>`+T(64,57.9,4.6,'❄','#a5f3fc',700); return W(o+hand()); },
+    'menutips':()=>{ let o=R(0,0,120,75,'#0b0a1c'); [[14,22],[44,18],[74,22]].forEach(([x,y],i)=>{ o+=card(x,y,30,40,i===1?'#3a3366':'#26365a',{sw:.8,so:.8}); });
+      o+=R(10,5,100,7,'#18143a','rx="2"')+[0,1,2,3,4].map(i=>R(14+i*19,7.5,14,2,i===1?'#e8c570':'#64748b','rx="1"')).join('');
+      o+=G('pv-fx','<rect x="0" y="0" width="120" height="75" fill="#000" opacity=".35"/><rect x="41.5" y="15.5" width="35" height="45" rx="3" fill="none" stroke="#e8c570" stroke-width="1.2"/>'+panel(64,40,52,30)+'<circle cx="71" cy="47" r="4" fill="#a855f7" stroke="#e8c570" stroke-width=".6"/>'+lines(78,44.5,34,3,3.6)+btn(96,61,16,5.5,'#e8c570','GOT IT')); return W(o); },
     'sp-normal':()=>W(bg()+rowO()+rowP()+dim(.45)+bigCard(47,8,26,36,null,'INSTANT')+bar(1,'1×')),
     'sp-fast':()=>W(bg()+rowO()+rowP()+dim(.3)+bigCard(47,8,26,36,null,'INSTANT')+bar(.5,'2×')+T(83,24,9,'»','#e8c570',900)),
     'sp-instant':()=>W(bg()+rowO()+rowP()+glow(69,41,12,17,'#fde047')+card(69,41,12,17,'#6b4a1d')+bar(.07,'⚡')+T(88,30,8,'⚡','#fde047',900)),
@@ -22552,6 +22609,11 @@ function toggleSetting(key){
       document.getElementById('set-statusfx').classList.toggle('on', _gameSettings.statusFx);
       if(!_gameSettings.statusFx&&typeof stFxReset==='function') stFxReset();
       if(typeof renderAll==='function'&&typeof G!=='undefined'&&G&&G.players) try{ renderAll(); }catch(e){}
+      break;
+    case 'menutips':
+      _gameSettings.menuTips = _gameSettings.menuTips===false;
+      document.getElementById('set-menutips').classList.toggle('on', _gameSettings.menuTips);
+      if(_gameSettings.menuTips){ try{ Object.keys(localStorage).filter(k=>/^loc_tip_/.test(k)).forEach(k=>localStorage.removeItem(k)); }catch(e){} }   // back on = show them again
       break;
     case 'useglow':
       _gameSettings.useGlow = _gameSettings.useGlow===false;
@@ -25373,7 +25435,7 @@ function mmBuildCards(fresh){
   [...car.querySelectorAll('.mm-card')].forEach(c=>c.remove());
   const items=mmTabItems(MENU_TABS[_mm.tab]);
   items.forEach((it,i)=>{
-    const c=document.createElement('div'); c.className='mm-card'; c.dataset.i=i;
+    const c=document.createElement('div'); c.className='mm-card'; c.dataset.i=i; c.dataset.id=it.id;
     let sub=it.s;
     if(it.id==='registry'&&typeof registryEligible==='function'){ const all=Object.keys(DB).filter(registryEligible); const reg=all.filter(cid=>registryState(cid)==='registered').length; sub=reg+' / '+all.length+' REGISTERED'; }
     if(it.id==='friends'&&typeof _friendsList!=='undefined'){ const on=_friendsList.filter(f=>isUserOnline(f.last_active)).length; sub=on+' ONLINE'; }
@@ -26203,6 +26265,7 @@ function _ensureSpotDom(){
   // Enter / Space advance an info step (never while typing in a field or a modal is up)
   document.addEventListener('keydown',(e)=>{
     if(!tutorialStepsActive()||!_tutCurrentCfg||_tutPendingAction||_tutCurrentCfg.choice) return;
+    if(document.querySelector('#tut-codex.on')) return;
     if(e.target&&['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
     if(_tutUIBlocking()) return;
     if(e.key==='Enter'||e.key===' '){ e.preventDefault(); const t=document.getElementById('tut-bubble-text'); if(t&&!t.classList.contains('done')){ t.classList.add('done'); return; } _tutNext(); }
@@ -26231,7 +26294,9 @@ function _tutPositionCurrent(){
   const ring=document.getElementById('tut-ring'), bub=document.getElementById('tut-bubble'), arrow=document.getElementById('tut-arrow');
   const away=_tutUIBlocking();
   spot.classList.toggle('away',away);
-  const hint=(cfg.doHint||'');
+  // build 10.32: a Use / Skip prompt (Godly Blitz's draw, …) comes first, so the pill says so
+  const _ask=!!document.querySelector('#trig-ov.ask.open'); const hint=_ask?'Answer the prompt first':(cfg.doHint||'');
+  { const _d=document.getElementById('tut-bubble-do'); if(_d&&_d.dataset.ask!==String(_ask)){ _d.dataset.ask=String(_ask); if(_ask){ _d.innerHTML='👆 Answer the prompt first'; _d.classList.add('on'); } else { _d.innerHTML=cfg.doHint?('👆 '+cfg.doHint):''; _d.classList.toggle('on',!!cfg.doHint&&!!(cfg.act||cfg.waitFor||cfg.choice)); } } }
   bub.classList.toggle('docked',away);
   bub.classList.toggle('nohint',away&&!hint);
   // emphasise the hand card being discussed
@@ -26336,6 +26401,10 @@ function _tutRenderStep(){
     };
     tick(); return;
   }
+  // build 10.32: a chapter can open with the previous chapter's reward, then it's a save point
+  if(cfg.reward && !cfg._rewarded){ cfg._rewarded=true; _tutSetGates(null); _tutPlayMode='none'; el.classList.add('wait'); _tutHideBubble();
+    _tutChapterReward(cfg.reward, ()=>{ if(run===_tutRunId) _tutRenderStep(); }); return; }
+  if(cfg.chapter && !cfg._chShown && cfg.chapter.n>1) _tutSave();
   if(cfg.chapter && !cfg._chShown){ cfg._chShown=true; _tutSetGates(null); _tutPlayMode='none'; el.classList.add('wait'); _tutHideBubble(); _tutProgress();
     showTutChapter(cfg.chapter, ()=>{ if(run===_tutRunId) _tutRenderStep(); }); return; }
   if(cfg.narration && !cfg._narrShown){ cfg._narrShown=true; _tutSetGates(null); _tutPlayMode='none'; el.classList.add('wait'); _tutHideBubble();
@@ -26354,6 +26423,10 @@ function _tutRenderStep(){
   txt.classList.remove('done');
   const _tx=(typeof cfg.text==='function')?cfg.text():(cfg.text||'');
   txt.innerHTML=_tutWords(_tx)+(cfg.html?'<div class="tb-html">'+cfg.html+'</div>':'');
+  { const old=bub.querySelector('.tb-more'); if(old) old.remove();
+    if(Array.isArray(cfg.more)&&cfg.more.length){ const mr=document.createElement('div'); mr.className='tb-more';
+      cfg.more.forEach(k=>{ const C=TUT_CODEX[k]; if(!C) return; const b=document.createElement('button'); b.type='button'; b.textContent='ⓘ '+C.t; b.onclick=(e)=>{ e.stopPropagation(); _tutCodex(k); }; mr.appendChild(b); });
+      txt.insertAdjacentElement('afterend',mr); } }
   const nextBtn=document.getElementById('tut-bubble-next'), doEl=document.getElementById('tut-bubble-do');
   const gated=!!(cfg.act||cfg.waitFor||cfg.choice);
   nextBtn.style.display=gated?'none':'inline-block';
@@ -26403,8 +26476,9 @@ function _tutFinishRun(){
 function _tutAskSkip(){
   let m=document.getElementById('tut-confirm');
   if(!m){ m=document.createElement('div'); m.id='tut-confirm'; m.className='tut-confirm'; document.body.appendChild(m); }
-  const first=!!(window._tutFirstRun);
-  m.innerHTML='<div class="tcf"><h3>Leave the tutorial?</h3><p>'+(first?'The starter rewards (Booster Packs, Celestium and the First Steps achievement) are only earned by finishing. You can replay it any time from <b>OPTIONS → Tutorial</b>.':'You can replay it any time from <b>OPTIONS → Tutorial</b>.')+'</p><div class="row"><button class="leave" id="tcf-leave">Skip to menu</button><button class="stay" id="tcf-stay">Keep playing</button></div></div>';
+  const first=!window._tutLesson&&_tutFirstTime(); const saved=!window._tutLesson&&!!_tutLoadSave();
+  // build 10.32 (Rulk): mention that finishing pays off, without naming the rewards
+  m.innerHTML='<div class="tcf"><h3>Leave the tutorial?</h3><p>'+(first?'Finishing the tutorial earns you <b>rewards and bonuses</b> for a head start in the world of Lord of Courts. ':'')+(saved?'Your progress is saved: pick up from this chapter any time in <b>OPTIONS → Tutorial</b>.':'You can play it any time from <b>OPTIONS → Tutorial</b>.')+'</p><div class="row"><button class="leave" id="tcf-leave">Skip to menu</button><button class="stay" id="tcf-stay">Keep playing</button></div></div>';
   m.classList.add('on');
   m.querySelector('#tcf-stay').onclick=()=>m.classList.remove('on');
   m.querySelector('#tcf-leave').onclick=()=>{ m.classList.remove('on'); _tutSkipAll(); };
@@ -26418,6 +26492,234 @@ function _tutSkipAll(){
   if(typeof showScreen==='function') showScreen('menu-screen');
   if(typeof _tutFlushAchievements==='function') _tutFlushAchievements();
 }
+// ── build 10.32 · TUTORIAL v3 helpers ──────────────────────────────────────────
+function _tutCodex(k){
+  const C=TUT_CODEX[k]; if(!C) return;
+  let ov=document.getElementById('tut-codex'); if(!ov){ ov=document.createElement('div'); ov.id='tut-codex'; ov.className='tut-codex-ov'; document.body.appendChild(ov); }
+  let html=''; try{ html=C.h(); }catch(e){}
+  ov.innerHTML='<div class="tcx" role="dialog" aria-label="'+C.t+'"><div class="tcx-h">'+C.t+'</div><div class="tcx-t">'+C.d+'</div>'+html+'<div class="tcx-f"><button class="tcx-close" type="button">Back to Virora ▸</button></div></div>';
+  ov.classList.add('on');
+  const close=()=>{ ov.classList.remove('on'); ov.innerHTML=''; };
+  ov.querySelector('.tcx-close').onclick=(e)=>{ e.stopPropagation(); close(); };
+  ov.onclick=(e)=>{ if(e.target===ov) close(); };
+}
+// Rewards are paid as you go (first completion only): chapter III → 1 Booster Pack, chapter V → 1 Booster Pack, the end →
+// First Steps (+200 Celestium) + the Lord Of Courts Blue card back. Same total as before (2 packs, First Steps, card back).
+// Server keys 'tut:pack1' / 'tut:pack2' (one-time per account); a local flag stops a resumed chapter from asking twice.
+function _tutFirstTime(){ return !(typeof _achData!=='undefined'&&_achData&&_achData.ach_tutorial_complete); }
+function _tutRwKey(k){ return 'loc_tut_rw_'+(window._authUid||'guest')+'_'+k; }
+function _tutRwHas(k){ try{ return localStorage.getItem(_tutRwKey(k))==='1'; }catch(e){ return false; } }
+function _tutPackImg(){ return (typeof PACK_ART!=='undefined'&&PACK_ART)?PACK_ART:TUT_RAW+'Sets/BASE%20SET/Copilot_20260621_173509.png'; }
+async function _tutClaimPack(key){
+  if(window._tutLesson||!_tutFirstTime()||_tutRwHas(key)) return false;
+  let r=null; try{ r=await econClaim(key,()=>awardPack('pack','basic','base_set',1,'Base Set Booster')); }catch(e){ r=null; }
+  if(r&&(r.ok||r.error==='already')){ try{ localStorage.setItem(_tutRwKey(key),'1'); }catch(e){} }
+  return !!(r&&r.ok);
+}
+function _tutChapterReward(rw, done){
+  let fired=false; const go=()=>{ if(fired) return; fired=true; done(); };
+  _tutClaimPack(rw.key).then(ok=>{ if(!ok){ go(); return; }
+    showRewardsCelebration([{img:_tutPackImg(), amount:'×1', label:'Base Set Booster Pack'}], go, {title:'CHAPTER '+rw.roman+' COMPLETE', sub:'Reward · waiting in Your Packs'}); }).catch(go);
+  setTimeout(()=>{ if(!document.querySelector('#rc-overlay.on')) go(); }, 9000);   // never hang on a slow server
+}
+// SAVE POINTS: the board is saved at the start of chapters II–VI (Royal Trial only) → "Continue from Chapter …".
+const TUT_SAVE_V=3;
+function _tutSaveKey(){ return 'loc_tut_save_'+(window._authUid||'guest'); }
+function _tutSave(){
+  if(window._tutLesson||!(G&&G.tutorialMode)) return;
+  try{ const g={}; Object.keys(G).forEach(k=>{ if(k!=='log') g[k]=G[k]; });
+    const c=_tutChapterOf(_tutStepIdx);
+    const snap={v:TUT_SAVE_V, at:Date.now(), idx:_tutStepIdx, path:window._tutPath||null, rig:_tutRig, ch:c?{n:c.ch.n,roman:c.ch.roman,title:c.ch.title}:null, G:JSON.parse(JSON.stringify(g))};
+    localStorage.setItem(_tutSaveKey(), JSON.stringify(snap)); }catch(e){ console.warn('[tutorial save]',e); }
+}
+function _tutLoadSave(){
+  try{ const s=JSON.parse(localStorage.getItem(_tutSaveKey())||'null');
+    if(!s||s.v!==TUT_SAVE_V||!s.G||!s.ch||!(s.ch.n>1)||Date.now()-(s.at||0)>14*864e5) return null; return s; }catch(e){ return null; }
+}
+function _tutClearSave(){ try{ localStorage.removeItem(_tutSaveKey()); }catch(e){} }
+function _tutApplySave(R){
+  Object.keys(R.G).forEach(k=>{ G[k]=R.G[k]; });
+  G.tutorialMode=true; G.gameOver=false; _tutRig=R.rig||{coin:[],dice:[]};
+  try{ _pendingPrizePick=null; }catch(e){}
+  log('🎓 Tutorial resumed: Chapter '+(R.ch&&R.ch.roman||'')+'.','info');
+  if(typeof renderAll==='function') renderAll();
+}
+// Royal Trial from the menu: continue a saved chapter, or start over.
+function tutBeginTrial(opts){
+  opts=opts||{}; const s=_tutLoadSave();
+  if(!s){ startTutorial(opts); return; }
+  const body=document.createElement('div'); body.className='adv-hub';
+  body.innerHTML='<button type="button" class="adv-card" id="tb-cont"><div class="ac-ico">▶</div><div><div class="ac-t">Continue</div><div class="ac-s">CHAPTER '+s.ch.roman+' · '+String(s.ch.title||'').toUpperCase()+'</div><div class="ac-d">Pick up where you left off.</div></div></button>'
+    +'<button type="button" class="adv-card" id="tb-over"><div class="ac-ico">↺</div><div><div class="ac-t">Start over</div><div class="ac-s">FROM CHAPTER I</div><div class="ac-d">Play the whole Royal Trial again from the beginning.</div></div></button>';
+  body.querySelector('#tb-cont').onclick=()=>{ closeAllModals(); startTutorial(Object.assign({},opts,{resume:s})); };
+  body.querySelector('#tb-over').onclick=()=>{ closeAllModals(); _tutClearSave(); startTutorial(opts); };
+  showModalEl('🎓 The Royal Trial',body);
+}
+// NEW ACCOUNTS (build 10.32): the tutorial is offered, not forced. Skip warns that finishing pays off (no specifics).
+function tutOffer(opts){
+  opts=opts||{};
+  let el=document.getElementById('tut-offer'); if(!el){ el=document.createElement('div'); el.id='tut-offer'; el.className='tut-offer'; document.body.appendChild(el); }
+  const save=_tutLoadSave(); const face='<div class="tof-face"><img src="'+TUTORIAL_NARRATOR_IMG+'" alt="Virora"></div>';
+  const close=()=>{ el.classList.remove('on'); el.innerHTML=''; };
+  const wire=()=>el.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{ const a=b.dataset.a; try{ if(typeof SFX!=='undefined'&&SFX.click) SFX.click(); }catch(e){}
+    if(a==='skip'){ warn(); return; }
+    if(a==='back'){ main(); return; }
+    if(a==='resume'){ close(); startTutorial({firstRun:!!opts.firstRun, force:true, resume:save}); return; }
+    if(a==='play'){ close(); if(save) _tutClearSave(); startTutorial({firstRun:!!opts.firstRun, force:true}); return; }
+    if(a==='skipok'){ close(); _tutSkipFromOffer(); } });
+  const main=()=>{ el.innerHTML='<div class="tof">'+face+'<div><div class="tof-k">WELCOME, CHALLENGER</div><div class="tof-h">Enter the Courts</div>'
+      +'<p class="tof-p">'+(save?'Welcome back! You stopped the tutorial at <b>Chapter '+save.ch.roman+' · '+save.ch.title+'</b>. Pick up right where you were.'
+        :"I'm <b>Virora</b>. Let me show you how to play: one guided match, about 8 minutes, and by the end you'll be transforming and dueling Heralds.")+'</p>'
+      +'<div class="tof-btns">'+(save?'<button class="tof-go" data-a="resume">▶ CONTINUE · CHAPTER '+save.ch.roman+'</button><button class="tof-alt" data-a="play">Start from the beginning</button>'
+        :'<button class="tof-go" data-a="play">▶ PLAY THE TUTORIAL</button>')+'<button class="tof-skip" data-a="skip">Skip, I know card games</button></div></div></div>'; wire(); };
+  const warn=()=>{ el.innerHTML='<div class="tof">'+face+'<div><div class="tof-k">BEFORE YOU GO</div><div class="tof-h">Skip the tutorial?</div>'
+      +'<p class="tof-p">Challengers who finish the tutorial earn <b>rewards and bonuses</b> that give them a <b>head start</b> in the world of Lord of Courts. Skip now and you’ll miss out on them for now.</p>'
+      +'<p class="tof-meta">You can come back any time: OPTIONS → Tutorial.</p>'
+      +'<div class="tof-btns"><button class="tof-go" data-a="'+(save?'resume':'play')+'">▶ '+(save?'CONTINUE THE TUTORIAL':'PLAY THE TUTORIAL')+'</button><button class="tof-alt" data-a="skipok">Skip anyway</button></div></div></div>'; wire(); };
+  main(); el.classList.add('on');
+}
+function _tutSkipFromOffer(){
+  if(typeof markCutsceneWatched==='function') try{ markCutsceneWatched('welcome_tutorial'); }catch(e){}
+  _tutMarkKnownLocal(); window._tutFirstRun=false;
+  if(typeof hideBootVeil==='function') hideBootVeil();
+  if(typeof showScreen==='function') showScreen('menu-screen');
+  setTimeout(()=>{ try{ tipMaybe('menu-screen'); }catch(e){} }, 900);
+}
+// ═══ MENU SPOTLIGHT (build 10.32) — the Court Tour + a tip the first time each screen opens ═══
+// spotRun(steps,{tag,skipLabel,doneLabel,light,onSkip,onEnd}). A step: {text, target (selector | fn → element/selector),
+// screen (the screen it belongs to; leaving it ends a tip quietly), before(), waitFor() (auto-advance; no Next button),
+// doHint, hideWhile() (e.g. while a pack opens), nextLabel}. Clicks pass through, so the menu stays usable.
+let _spot=null;
+function _spotTry(f){ try{ return !!f(); }catch(e){ return false; } }
+function _spotDom(){
+  let el=document.getElementById('spot-tip'); if(el) return el;
+  el=document.createElement('div'); el.id='spot-tip'; el.className='tut-spot spot-tip';
+  el.innerHTML='<div class="tut-spot-ring free" id="spot-ring"></div><div class="tut-arrow" id="spot-arrow">▼</div>'
+    +'<div class="tut-bubble" id="spot-bubble"><div class="tb-head"><div class="tb-face"><img alt="Virora"/></div><div class="tb-who"><span class="tb-name">VIRORA</span><span class="tb-ch" id="spot-ch"></span></div></div>'
+    +'<div class="tb-text" id="spot-text"></div><div class="tb-ctrl"><button class="tb-skip" id="spot-skip"></button><span class="tb-do" id="spot-do"></span><button class="tb-next" id="spot-next">Next ▸</button></div></div>';
+  document.body.appendChild(el);
+  el.querySelector('#spot-next').onclick=(e)=>{ e.stopPropagation(); spotNext(); };
+  el.querySelector('#spot-skip').onclick=(e)=>{ e.stopPropagation(); const S=_spot; if(S&&typeof S.o.onSkip==='function') try{ S.o.onSkip(); }catch(x){} spotEnd(); };
+  el.querySelector('#spot-text').onclick=(e)=>{ e.stopPropagation(); e.currentTarget.classList.add('done'); };
+  window.addEventListener('resize',()=>{ if(_spot) _spotPlace(); });
+  return el;
+}
+function spotActive(){ return !!_spot; }
+function spotRun(steps,o){ spotEnd(true); _spot={steps:(steps||[]).filter(Boolean), i:0, o:o||{}, t:null, at:0}; _spotShow(); }
+function spotNext(){ const S=_spot; if(!S) return; S.i++; _spotShow(); }
+function spotEnd(silent){
+  const S=_spot; _spot=null; if(S&&S.t) clearInterval(S.t);
+  const el=document.getElementById('spot-tip'); if(el){ el.classList.remove('on','away'); const b=el.querySelector('#spot-bubble'); if(b) b.classList.remove('show'); const a=el.querySelector('#spot-arrow'); if(a) a.classList.remove('on'); }
+  if(S&&!silent&&typeof S.o.onEnd==='function') try{ S.o.onEnd(); }catch(e){}
+}
+function _spotTarget(st){ let t=st&&st.target; if(typeof t==='function'){ try{ t=t(); }catch(e){ t=null; } } if(typeof t==='string'){ try{ t=document.querySelector(t); }catch(e){ t=null; } }
+  if(!t||t.nodeType!==1) return null; const r=t.getBoundingClientRect(); return (r.width>2&&r.height>2&&r.bottom>0&&r.top<innerHeight)?r:null; }
+function _spotShow(){
+  const S=_spot; if(!S) return; const st=S.steps[S.i]; if(!st){ spotEnd(); return; }
+  if(st.when && !_spotTry(st.when)){ S.i++; _spotShow(); return; }
+  const el=_spotDom();
+  if(typeof st.before==='function' && !st._b){ st._b=true; el.classList.add('on','away'); try{ st.before(); }catch(e){ console.warn('[spot before]',e); } setTimeout(()=>{ if(_spot===S) _spotShow(); }, st.delay||420); return; }
+  el.classList.add('on'); el.classList.remove('away'); el.style.setProperty('--spot-dim', S.o.light?'rgba(5,3,16,.38)':'rgba(5,3,16,.58)');
+  const img=el.querySelector('.tb-face img'); if(img&&img.getAttribute('src')!==TUTORIAL_NARRATOR_IMG) img.src=TUTORIAL_NARRATOR_IMG;
+  el.querySelector('#spot-ch').textContent=S.o.tag||'';
+  const txt=el.querySelector('#spot-text'); txt.classList.remove('done'); txt.innerHTML=_tutWords(typeof st.text==='function'?st.text():(st.text||''));
+  const nx=el.querySelector('#spot-next'), dz=el.querySelector('#spot-do'), sk=el.querySelector('#spot-skip');
+  nx.style.display=st.waitFor?'none':''; nx.textContent=st.nextLabel||((S.i>=S.steps.length-1)?(S.o.doneLabel||'Got it ✓'):'Next ▸');
+  dz.classList.toggle('on',!!(st.waitFor&&st.doHint)); dz.innerHTML=st.doHint?('👆 '+st.doHint):'';
+  sk.textContent=S.o.skipLabel||'Skip'; sk.style.display=S.o.noSkip?'none':'';
+  const bub=el.querySelector('#spot-bubble'); bub.classList.remove('show'); void bub.offsetWidth;
+  _spotPlace(); requestAnimationFrame(()=>{ if(_spot!==S) return; _spotPlace(); bub.classList.add('show'); });
+  S.at=Date.now(); if(S.t) clearInterval(S.t);
+  S.t=setInterval(()=>{
+    if(_spot!==S||S.steps[S.i]!==st) return;
+    if(st.waitFor && _spotTry(st.waitFor)){ spotNext(); return; }
+    if(st.screen && !document.querySelector('#'+st.screen+'.active') && Date.now()-S.at>900){ spotEnd(); return; }   // the player went elsewhere
+    if(document.querySelector('#game-screen.active,#game-screen-2v2.active')){ spotEnd(); return; }
+    const hide=!!(st.hideWhile&&_spotTry(st.hideWhile)) || !!document.querySelector('#modal-overlay.open,#game-settings-modal.open,#rc-overlay.on');
+    el.classList.toggle('away',hide); bub.classList.toggle('show',!hide);
+    if(!hide) _spotPlace();
+  },160);
+}
+function _spotPlace(){
+  const S=_spot; if(!S) return; const st=S.steps[S.i]; if(!st) return;
+  const ring=document.getElementById('spot-ring'), bub=document.getElementById('spot-bubble'), arrow=document.getElementById('spot-arrow'); if(!ring||!bub) return;
+  const vw=innerWidth, vh=innerHeight, M=10; const T=_spotTarget(st); let R=null;
+  if(T){ const pad=8; let w=Math.max(44,T.width+pad*2), h=Math.max(44,T.height+pad*2); const cx=T.left+T.width/2, cy=T.top+T.height/2;
+    R={left:Math.max(2,cx-w/2), top:Math.max(2,cy-h/2)}; R.width=Math.min(w,vw-4-R.left); R.height=Math.min(h,vh-4-R.top); R.right=R.left+R.width; R.bottom=R.top+R.height;
+    ring.classList.remove('free'); Object.assign(ring.style,{left:R.left+'px',top:R.top+'px',width:R.width+'px',height:R.height+'px'}); }
+  else { ring.classList.add('free'); Object.assign(ring.style,{left:(vw/2)+'px',top:(vh/2)+'px',width:'0px',height:'0px'}); }
+  ring.classList.toggle('act',!!(R&&st.waitFor));
+  const bw=bub.offsetWidth||360, bh=bub.offsetHeight||160; let bx,by,side=null;
+  if(!R){ bx=(vw-bw)/2; by=Math.max(M,(vh-bh)/2); }
+  else if(vw<=760){ bx=(vw-bw)/2; const up=(R.top+R.height/2)>vh*.5; by=up?Math.max(M,R.top-bh-14):Math.min(vh-bh-M,R.bottom+14); side=up?'above':'below'; }
+  else { const g=16; const c=[{s:'above',x:R.left+R.width/2-bw/2,y:R.top-bh-g,f:R.top-bh-g>=M},{s:'below',x:R.left+R.width/2-bw/2,y:R.bottom+g,f:R.bottom+g+bh<=vh-M},{s:'right',x:R.right+g,y:R.top+R.height/2-bh/2,f:R.right+g+bw<=vw-M},{s:'left',x:R.left-bw-g,y:R.top+R.height/2-bh/2,f:R.left-bw-g>=M}];
+    const p=c.find(x=>x.f)||c[1]; bx=p.x; by=p.y; side=p.s; }
+  bx=Math.min(Math.max(M,bx),vw-bw-M); by=Math.max(M,Math.min(by,vh-bh-M));
+  bub.style.left=Math.round(bx)+'px'; bub.style.top=Math.round(by)+'px';
+  if(R&&st.waitFor){ arrow.classList.add('on'); arrow.classList.toggle('up',side==='above'||R.top<60); arrow.style.left=(R.left+R.width/2)+'px'; arrow.style.top=((side==='above'||R.top<60)?R.bottom+20:R.top-20)+'px'; }
+  else arrow.classList.remove('on');
+}
+// COURT TOUR: right after the tutorial (first time), or OPTIONS → Tutorial → Court Tour. Packs → decks → Story/practice.
+function courtTourStart(){
+  if(document.querySelector('#game-screen.active,#game-screen-2v2.active')) return;
+  if(!document.querySelector('#menu-screen.active') && typeof showScreen==='function') showScreen('menu-screen');
+  const shopOn=(typeof isFeatureEnabled!=='function')||isFeatureEnabled('shop_enabled');
+  const packs=()=>{ try{ return (typeof totalUnopenedPacks==='function')?totalUnopenedPacks():0; }catch(e){ return 0; } };
+  const focus=(tab,item)=>{ if(!document.querySelector('#menu-screen.active')) showScreen('menu-screen'); const ti=MENU_TABS.findIndex(t=>t.id===tab); if(ti<0) return;
+    if(_mm.tab!==ti) mmSetTab(ti); const it=mmTabItems(MENU_TABS[ti]); const k=it.findIndex(x=>x.id===item); if(k>-1&&_mm.focus!==k){ _mm.focus=k; mmLayout(); } };
+  const card=(id)=>()=>document.querySelector('#mm-car .mm-card.on[data-id="'+id+'"]')||document.querySelector('#mm-car .mm-card.on');
+  const withPacks=()=>shopOn&&packs()>0; let opened=false;
+  try{ localStorage.setItem('loc_tip_menu-screen','1'); }catch(e){}
+  spotRun([
+    {screen:'menu-screen', text:"Welcome to the <b>main menu</b>! Tabs across the top, cards in the middle: swipe or use the arrows, then tap the middle card to open it. First, your rewards."},
+    {when:withPacks, screen:'menu-screen', before:()=>focus('shop','packs'), target:card('packs'), waitFor:()=>!!document.querySelector('#market-screen.active'), doHint:'Tap Booster Packs', text:"Your Booster Packs are in the <b>SHOP</b>. Tap <b>Booster Packs</b>."},
+    {when:withPacks, screen:'market-screen', before:()=>{ const g=document.querySelector('#market-screen .mk-grid.inv'); if(g) g.scrollIntoView({block:'center',behavior:'smooth'}); }, delay:700,
+      target:()=>{ const g=document.querySelector('#market-screen .mk-grid.inv'); return (g&&g.getBoundingClientRect().height>4)?g:(g&&g.previousElementSibling)||null; }, waitFor:()=>{ if(document.body.classList.contains('po2-open')){ opened=true; return true; } return false; }, doHint:'Open one of your packs', text:"These are <b>your packs</b>. Open one!"},
+    {when:()=>opened, hideWhile:()=>document.body.classList.contains('po2-open'), text:"Every card you pull goes into your <b>collection</b>. Open the rest whenever you like: they wait under <b>Your Packs</b> in the Shop."},
+    {before:()=>focus('locker','mydecks'), screen:'menu-screen', target:card('mydecks'), text:"Your decks live in the <b>LOCKER</b>. <b>My Decks</b> already holds <b>Starter Decks</b> you can play right now."},
+    {before:()=>focus('locker','builder'), screen:'menu-screen', target:card('builder'), text:"The <b>Deck Builder</b> is where you make your own from your collection: <b>60 cards including your Herald</b>, the commander every deck needs. Open packs, win cards in Story mode and events, and build your dream court."},
+    {before:()=>focus('play','campaign'), screen:'menu-screen', target:card('campaign'), text:"<b>Campaign</b> is Story mode: march through the Courts and earn rewards along the way."},
+    {before:()=>focus('play','ai'), screen:'menu-screen', target:card('ai'), nextLabel:'Finish ✓', text:"And <b>VS AI</b> is practice at your own pace, with a Starter Deck if you like. Good luck, challenger. The Courts are yours!"},
+  ],{tag:'COURT TOUR', skipLabel:'Skip tour', onEnd:()=>{ try{ localStorage.setItem('loc_tour_done_'+(window._authUid||'guest'),'1'); }catch(e){} }});
+}
+// FIRST-VISIT TIPS: one short tip the first time a screen opens, for newer players (under 15 matches) with Menu Tips on.
+const SCREEN_TIPS={
+  'menu-screen':"This is the <b>main menu</b>. Pick a tab at the top, then tap the middle card to open it. New to the game? <b>OPTIONS → Tutorial</b>.",
+  'builder-screen':"The <b>Deck Builder</b>: a deck is <b>60 cards including your Herald</b>. Every deck needs one: the Herald is the <b>commander of your deck</b>. Tap cards from your collection to add them; the counter shows how close you are.",
+  'decks-screen':"<b>My Decks</b>: your deck boxes. The Starter Decks are always here. Double-click a deck to edit it.",
+  'deck-select-screen':"Pick a deck for this match. No deck of your own yet? Choose a <b>Starter Deck</b>.",
+  'market-screen':"The <b>Court Market</b>: booster packs, today's single cards and cosmetics, paid with <b>Celestium</b>. Packs you own wait under <b>Your Packs</b>.",
+  'forge-screen':"The <b>Court Forge</b>: shatter cards you don't need into <b>Court Shards</b>, then forge the exact card you want.",
+  'registry-screen':"The <b>Registry</b>: every card you've seen or own. Tap one to read its record.",
+  'battle-pass-screen':"The <b>Battle Pass</b>: playing earns XP, XP climbs tiers, and tiers unlock rewards.",
+  'mail-screen':"Your <b>Mailbox</b>: messages, gifts and redeem codes.",
+  'profile-screen':"Your <b>Profile</b>: your record, achievements, packs and Celestium log.",
+  'friends-screen':"<b>Friends</b>: add players to invite them to matches, trade with them and watch their games.",
+  'trade-screen':"<b>Trade</b> cards with other players, card for card.",
+  'campaign-worlds-screen':"<b>Campaign</b>: Story mode. Every chapter ends at a Herald, with rewards along the way.",
+  'trial-screen':"<b>Trial of Courts</b>: take one deck up through seven Courts. Win to pick a reward; one loss ends the run.",
+  'matchmaking-screen':"<b>Find Match</b>: ranked 1v1 against real players. Pick your rules and deck, then queue.",
+  'online-lobby-screen':"<b>Private Room</b>: join an open room, or make your own and share the code with a friend.",
+  'setup-2v2-screen':"<b>2v2</b>: two Heralds a side and shared Life. Team up with a friend or the CPU.",
+  'harvest-screen':"A <b>limited-time event</b>: missions, challenges and cards you can only earn while it lasts.",
+  'rulebook-screen':"The full <b>Rulebook</b>, chapter by chapter. The one-screen version is under <b>OPTIONS → Rules</b>.",
+};
+function tipsOn(){
+  if(typeof _gameSettings!=='undefined'&&_gameSettings.menuTips===false) return false;
+  const c=(typeof _celData!=='undefined')?_celData:null; return !c||(c.matches||0)<15;
+}
+function tipMaybe(id){
+  try{
+    if(!SCREEN_TIPS[id]||_spot||!tipsOn()) return;
+    if(typeof tutorialStepsActive==='function'&&tutorialStepsActive()) return;
+    if(!document.querySelector('#'+id+'.active')) return;
+    if(document.querySelector('#game-screen.active,#game-screen-2v2.active,#tut-offer.on,#boot-veil:not(.gone),#tut-narrator.on,#rc-overlay.on')) return;
+    const k='loc_tip_'+id; if(localStorage.getItem(k)==='1') return; localStorage.setItem(k,'1');
+    spotRun([{screen:id, text:SCREEN_TIPS[id]}],{tag:'TIP', light:true, skipLabel:'Turn off tips', doneLabel:'Got it ✓',
+      onSkip:()=>{ _gameSettings.menuTips=false; if(typeof saveGameSettings==='function') saveGameSettings(); if(typeof spToast==='function') spToast('Tips are off. Turn them back on in Settings → Gameplay.',2600); }});
+  }catch(e){}
+}
+function spotScreenChanged(id){ if(_spot) return; setTimeout(()=>tipMaybe(id), 650); }
 // Public: run an ordered list of spotlight steps.
 function runTutorialSteps(steps, startIdx){ _tutFinishRun(); _tutSteps=steps||[]; _tutStepIdx=startIdx||0; _tutRenderStep(); }
 function tutorialStepsActive(){ const el=document.getElementById('tut-spot'); return !!(el&&el.classList.contains('on')); }
@@ -28226,6 +28528,7 @@ function showScreen(id){
   if(id==='builder-screen'){renderBuilderCards();renderBuilderDeck();}
   if(id==='deck-select-screen'){loadDecksFromStorage().then(()=>renderDeckSelectOptions());}
   if(typeof updateMenuMusic==='function')updateMenuMusic(); // play on menus, stop in battle
+  if(typeof spotScreenChanged==='function') try{ spotScreenChanged(id); }catch(e){}
 }
 
 function showRulesScreen(){
@@ -28797,7 +29100,9 @@ function econBuildRewards(){
   const rw={}; const add=(k,p)=>{ const o={}; Object.keys(p).forEach(x=>{ const v=p[x]; if(v==null||v===false) return; if(Array.isArray(v)&&!v.length) return; if(typeof v==='number'&&!v&&x!=='celestium') return; o[x]=v; }); rw[k]=o; };
   try{ Object.entries(ACHIEVEMENTS).forEach(([id,a])=>add('ach:'+id,{celestium:Math.max(0,+a.reward||0)})); }catch(e){}
   try{ const C=(typeof CAMPAIGN_DATA!=='undefined'&&CAMPAIGN_DATA)||CAMPAIGN_DEFAULT; (C.worlds||[]).forEach(w=>(w.chapters||[]).forEach(c=>(c.matches||[]).forEach(m=>{ if(m&&m.id) add('camp:'+m.id,{celestium:Math.max(0,+(m.rewards&&m.rewards.celestium)||0)}); }))); }catch(e){}
-  add('tutorial',{packs:[{kind:'pack',type:'basic',setId:'base_set',qty:2,name:'Base Set Booster'}]});
+  add('tutorial',{packs:[{kind:'pack',type:'basic',setId:'base_set',qty:2,name:'Base Set Booster'}]});   // older clients (PC before 10.32)
+  add('tut:pack1',{packs:[{kind:'pack',type:'basic',setId:'base_set',qty:1,name:'Base Set Booster'}]});   // build 10.32: Royal Trial chapter III
+  add('tut:pack2',{packs:[{kind:'pack',type:'basic',setId:'base_set',qty:1,name:'Base Set Booster'}]});   // build 10.32: Royal Trial chapter V
   try{ const cat=cosCatalog(); add('cos:starter',{cosmetics:cat.filter(it=>it.starter).map(it=>it.id)});
     cat.filter(it=>it.unlock&&['registry_set','achievement','event'].includes(it.unlock.kind)).forEach(it=>add('cos:'+it.id,{cosmetics:[it.id]})); }catch(e){}
   try{ const sid=econBpSid();
@@ -28809,7 +29114,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.31';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.32';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -30959,7 +31264,7 @@ function _tutRetaliationHtml(){
     +step('🛡️','Exceptions','A Herald hits back for <b>half</b> its ATK. Locations never hit back. A <b>Frozen</b> defender can\'t hit back.')
     +'</div>'
     +'<div class="tut-retal-ex"><div class="rx-h">WHAT JUST HAPPENED</div>'
-    +'<div class="rx-row"><span class="rx-card"><img src="'+_tutImg('saiyan_heavy_warrior_bse')+'" alt=""><b>Heavy Warrior</b><i>5 ATK · 3 DEF</i></span><span class="rx-arrow">⚔ 5 ➜</span><span class="rx-card"><img src="'+_tutImg('virora_base_bse')+'" alt=""><b>Virora</b><i>8 left → 3 left</i></span><span class="rx-arrow back">↩ 8</span><span class="rx-res">I <b>survived</b>, so I hit back with my full <b>8 ATK</b> into its <b>3 DEF</b> → <b>destroyed</b>. Their attack cost them their attacker and gave <em>you</em> a Prize.</span></div></div>'
+    +'<div class="rx-row"><span class="rx-card"><img src="'+_tutImg('saiyan_heavy_warrior_bse')+'" alt=""><b>Heavy Warrior</b><i>5 ATK · 3 DEF</i></span><span class="rx-arrow">⚔ 6 ➜</span><span class="rx-card"><img src="'+_tutImg('virora_base_bse')+'" alt=""><b>Virora</b><i>8 left → 2 left</i></span><span class="rx-arrow back">↩ 8</span><span class="rx-res">5 ATK, +1 from Vildrex&#39;s Arch-Nemesis because I&#39;m a Saiyan. I <b>survived</b>, so I hit back with my full <b>8 ATK</b> into its <b>3 DEF</b> → <b>destroyed</b>. Their attack cost them their attacker and gave <em>you</em> a Prize.</span></div></div>'
     +'<div class="tut-retal-why"><div class="rx-h">WHY IT EXISTS</div>'
     +'Without it, you could poke any card for free every turn, and fights would simply go to whoever has more attackers. Retaliation makes <b>every attack a trade</b>: you put your attacker\'s DEF on the line against the defender\'s ATK. It rewards smart attacks and makes strong defenders worth playing.</div>'
     +'<div class="tut-rules" style="grid-template-columns:repeat(3,minmax(0,1fr))"><div><b>✓ Good attack</b>You destroy the defender, so nothing hits back.</div><div><b>✓ Good attack</b>It survives, but its ATK is far below your DEF.</div><div><b>✗ Bad attack</b>It survives AND its ATK is at least your DEF, so you lose your attacker.</div></div>';
@@ -30985,7 +31290,7 @@ function _tutPathsHtml(){
 }
 // ── board ──────────────────────────────────────────────────────────────────────
 function _tutorialPlayerDeck(){ const d=['surfacer_herald']; while(d.length<61) d.push('energy_1_purple'); return d; }
-function _tutorialAiDeck(){ const d=['daredevil_fog_herald']; while(d.length<61) d.push('energy_1_red'); return d; }
+function _tutorialAiDeck(){ const d=['vildrex_herald']; while(d.length<61) d.push('energy_1_red'); return d; }   // build 10.32: Vildrex (Base Set) — no promo cards in the tutorial
 // Deterministic board so the guided steps + scripted AI always line up.
 function _setupTutorialBoard(){
   if(window._tutLesson==='fusion'){ _setupFusionLessonBoard(); return; }
@@ -31055,10 +31360,14 @@ const ADV_LESSONS=[
 function _advDone(id){ try{ return localStorage.getItem('loc_adv_'+id)==='1'; }catch(e){ return false; } }
 function openTutorialHub(){
   const body=document.createElement('div'); body.className='adv-hub';
-  body.innerHTML='<button type="button" class="adv-card" id="hub-trial"><img src="'+_tutImg('virora_base_bse')+'" alt=""><div><div class="ac-t">The Royal Trial</div><div class="ac-s">THE WHOLE GAME · ONE GUIDED MATCH</div><div class="ac-d">Card types, colors, combos, both transformation paths and a Herald duel. Start here.</div></div></button>'
+  body.innerHTML='<button type="button" class="adv-card" id="hub-trial"><img src="'+_tutImg('virora_base_bse')+'" alt=""><div><div class="ac-t">The Royal Trial</div><div class="ac-s">THE WHOLE GAME · ONE GUIDED MATCH</div><div class="ac-d">One guided match, about 8 minutes: combos, transforming and a Herald duel. Start here.'+(_tutLoadSave()?' <b style=\'color:#fde68a\'>Saved: Chapter '+_tutLoadSave().ch.roman+'</b>':'')+'</div></div></button>'
     +'<button type="button" class="adv-card" id="hub-adv"><div class="ac-ico">🎓</div><div><div class="ac-t">Advanced Training</div><div class="ac-s">PICK A TOPIC</div><div class="ac-d">Short lessons on one mechanic at a time. First lesson: Fusion.</div></div></button>';
-  body.querySelector('#hub-trial').onclick=()=>{ closeAllModals(); startTutorial(); };
+  const _tour=document.createElement('button'); _tour.type='button'; _tour.className='adv-card'; _tour.id='hub-tour';
+  _tour.innerHTML='<div class="ac-ico">🧭</div><div><div class="ac-t">Court Tour</div><div class="ac-s">THE MENU · ONE MINUTE</div><div class="ac-d">Where your packs, decks, Story mode and practice matches are.</div></div>';
+  body.appendChild(_tour);
+  body.querySelector('#hub-trial').onclick=()=>{ closeAllModals(); tutBeginTrial(); };
   body.querySelector('#hub-adv').onclick=()=>{ openAdvancedTraining(); };
+  _tour.onclick=()=>{ closeAllModals(); courtTourStart(); };
   showModalEl('🎓 Tutorial',body);
 }
 function openAdvancedTraining(){
@@ -31225,16 +31534,23 @@ function _tutBindingText(){
   return 'They chose to <b>lose 2 Energy</b>.';
 }
 // ── the script ─────────────────────────────────────────────────────────────────
-const TUT_CH={
+const TUT_CH={   // build 10.32: 6 chapters (was 7)
   welcome:{n:0,kicker:'WELCOME, CHALLENGER',title:'Lord of Courts',sub:'A royal trial, guided by Virora.',art:TUT_ART.main,pos:'50% 40%',hold:3200},
-  court:{n:1,roman:'I',title:'The Court',sub:'Know your battlefield before you fight on it.',chips:['PRIZES','YOUR HERALD','YOUR HAND','THE TURN'],art:TUT_ART.main,pos:'50% 45%'},
-  energy:{n:2,roman:'II',title:'Energy & Colors',sub:'Fuel every move and find your style.',chips:['ONE POOL','ENERGY CARDS','7 COLORS','PLAY STYLES'],glyph:'⚡'},
-  champ:{n:3,roman:'III',title:'Your Champion',sub:'Card types, characters, and me.',chips:['CARD TYPES','ATK & DEF','PASSIVES','SUMMONING'],art:TUT_ART.portrait,pos:'50% 18%'},
-  royal:{n:4,roman:'IV',title:'The Royal Court',sub:'Locations, equipment, and your first combo.',chips:['LOCATIONS','COMBOS','EQUIPMENT','ATTACKING'],art:TUT_ART.tower,pos:'50% 40%'},
-  ascend:{n:5,roman:'V',title:'Ascension',sub:'Transformation lines and the path you choose.',chips:['FORM LINES','CALM CLARITY','FULL HEAL','YOUR CHOICE'],art:TUT_ART.ssj,pos:'50% 30%'},
-  ssj:{n:6,roman:'VI',title:'The Warrior Path',sub:'Raw power, a lucky coin, and a partner.',chips:['ABILITIES','HERALD POWER','BURST SPEED','TEAMWORK'],art:TUT_ART.ssj,pos:'60% 25%'},
-  ssg:{n:6,roman:'VI',title:'The God Path',sub:'Strike twice. Draw twice. Untouchable.',chips:['HERALD POWER','GODLY BLITZ','DOUBLE ATTACK','GODLY EVASION'],art:TUT_ART.ssg,pos:'45% 35%'},
-  heralds:{n:7,roman:'VII',title:'Clash of Heralds',sub:'Round 4: the Heralds enter the fight.',chips:['HERALD DUEL','½ RETALIATION','BROKEN','TWO PRIZES'],art:TUT_ART.main,pos:'50% 60%'},
+  court:{n:1,roman:'I',title:'The Court',sub:'Prizes, Heralds and your first turn.',chips:['PRIZES','HERALDS','THE TURN','ENERGY'],art:TUT_ART.main,pos:'50% 45%'},
+  champ:{n:2,roman:'II',title:'Your Champion',sub:'Summon me, then watch your rival move.',chips:['CHARACTERS','ATK & DEF','PASSIVES','POWER UP'],art:TUT_ART.portrait,pos:'50% 18%'},
+  royal:{n:3,roman:'III',title:'The Royal Court',sub:'Locations, equipment and your first combo.',chips:['LOCATIONS','COMBOS','EQUIPMENT','RETALIATION'],art:TUT_ART.tower,pos:'50% 40%'},
+  ascend:{n:4,roman:'IV',title:'Ascension',sub:'Choose the path I climb.',chips:['STATUSES','SURGE','FORM LINES','YOUR PATH'],art:TUT_ART.ssj,pos:'50% 30%'},
+  ssj:{n:5,roman:'V',title:'The Warrior Path',sub:'Raw power, a lucky coin and a partner.',chips:['HERALD POWER','ABILITIES','BURST SPEED','TEAMWORK'],art:TUT_ART.ssj,pos:'60% 25%'},
+  ssg:{n:5,roman:'V',title:'The God Path',sub:'Strike twice. Draw twice. Untouchable.',chips:['HERALD POWER','GODLY BLITZ','DOUBLE ATTACK','GODLY EVASION'],art:TUT_ART.ssg,pos:'45% 35%'},
+  heralds:{n:6,roman:'VI',title:'Clash of Heralds',sub:'Break their Herald and take the crown.',chips:['HERALD DUEL','BROKEN','TWO PRIZES'],art:TUT_ART.main,pos:'50% 60%'},
+};
+// ⓘ more: the long explanations live behind a chip on the step instead of a wall of text (TUT_CODEX[key]).
+const TUT_CODEX={
+  colors:{t:'The 7 colors', d:"Every card has a <b>color</b>, and every color plays differently. Your deck's colors are its personality:", h:()=>_tutColorsHtml()},
+  energy:{t:'Energy cards', d:"Energy cards come in a few styles. You'll use three of them today:", h:()=>_tutEnergyHtml()},
+  types:{t:'Card types', d:"Every kind of card in the game. The type is printed on each card's frame:", h:()=>_tutTypesHtml()},
+  retal:{t:'Retaliation', d:"The most important rule in combat. Here's exactly how it works, and why it exists:", h:()=>_tutRetaliationHtml()},
+  tree:{t:'Transformation lines', d:"A Base Character can evolve into higher forms, and some lines <b>branch</b>:", h:()=>_tutTreeHtml()},
 };
 const _onAiTurn=(n)=>()=>G&&G.activePlayer===2&&G.tut&&G.tut.aiTurn===n;
 const _onMyTurn=()=>G&&G.activePlayer===1;
@@ -31244,112 +31560,89 @@ function buildTutorialSteps(){
   return [
     // ── PROLOGUE ──
     {chapter:TUT_CH.welcome, narration:[
-      "Hi, I'm a Royal Saiyan named Virora! Welcome to the Courts, challenger. I'll be your guide today… and your star card.",
-      "Every match is a duel of two 60-card decks, each led by a Herald. Break your rival's board, claim their Prizes, take the crown.",
-      "I built you a deck around me, called the Royal Court. Follow my lead, and by the end you'll be transforming, combo-ing and dueling Heralds."
+      "Hi, I'm Virora, a Royal Saiyan! I'll be your guide today… and your star card.",
+      "Every match is two decks, each led by a Herald. Destroy your rival's characters, take their Prizes, take the crown. Follow my lead!"
     ]},
     // ── I · THE COURT ──
-    {chapter:TUT_CH.court, target:'#p2-prizes', text:"This is a <b>Prize Battle</b>. Your rival has <b>6 face-down Prize cards</b>. Every enemy character you destroy lets you take one. Take them all and <b>you win</b>."},
-    {target:'#p1-prizes', text:"These are <b>your</b> Prizes. Lose characters and your rival takes these instead. Protect them."},
-    {target:TS.herald(1), text:"Your <b>Herald: The Surfacer</b>. A Herald leads your deck: it starts in play and is never drawn. Its passive shapes the whole match. His taxes your rival <em>every single turn</em>."},
-    {target:TS.herald(2), text:"Their Herald: <b>Daredevil (Fist of God)</b>. Heralds don't fight characters… but remember him. You'll settle things with him personally."},
-    {target:'#hand-dock', text:"Your hand. <b>Right-click</b> any card (or tap it when it isn't your Main phase) to read it in full. The card text is the rules."},
-    {target:'#ph-draw', act:'draw', doHint:'Tap DRAW', text:"Every turn flows <b>Draw → Main → Attack → End</b>. Begin: tap <b>Draw</b> to draw a card and bank <b>+1 Energy</b>."},
-    // ── II · ENERGY & COLORS ──
-    {chapter:TUT_CH.energy, target:TS.energy, text:"This is your <b>Energy</b>, the one resource in the game. It <b>carries over</b> between turns, so nothing is ever wasted. You started with 5 and just banked 1 more."},
-    {target:'#ph-main', act:'main', doHint:'Tap MAIN', text:"Enter your <b>Main phase</b>, where you play cards, transform and use abilities."},
-    {target:()=>TS.hand('energy_2_purple'), act:'play_energy', allow:'energy_2_purple', doHint:'Play 2 Purple Energy', text:"You may play <b>ONE Energy card per turn</b>. Play this <em>2 Purple Energy</em>."},
-    {wide:true, text:"Every card has a <b>color</b>, and every color plays differently. Your deck's colors are its personality:", html:_tutColorsHtml()},
-    {target:TS.energy, text:"Colored Energy is still part of your <b>one pool</b>. It's just <b>spent first on matching cards</b>. A few big abilities demand a specific color. Tap this panel any time to see your bank."},
-    {wide:true, text:"Energy cards come in a few styles. You'll use three of them today:", html:_tutEnergyHtml()},
-    // ── III · YOUR CHAMPION ──
-    {chapter:TUT_CH.champ, wide:true, text:"Every kind of card you'll see today. The type is printed on each card's frame:", html:_tutTypesHtml()},
-    {target:()=>TS.hand(V), act:'play', allow:V, doHint:'Play Virora', text:"Enough talk. Summon your champion! Play <b>me: Virora</b> for 3 Energy."},
-    {target:()=>TS.mine(V), text:"Read a character like this: <b>cost 3</b> · <b>4 ATK</b> (damage I deal) · <b>4 DEF</b> (damage I can take). My subtypes read <em>Royal • Saiyan</em>, and that makes me a <b>Royal Saiyan</b>. Remember it: it's our combo."},
-    {target:()=>TS.mine(V), text:"My passive, <b>Calm Clarity</b>: while I'm on the field, every transformation you make costs just <b>3 Energy</b>. My forms normally cost 6, so this is how we evolve fast."},
-    {target:()=>TS.mine(V), text:"One rule: a character <b>can't attack the turn it's summoned</b>. Keywords like <em>Burst Speed</em> break that rule. You'll meet one later."},
-    {target:'#ph-end', act:'endturn', doHint:'Tap END TURN', text:"Nothing to attack yet, and that's fine. End a turn <b>without attacking or using abilities</b> and you <b>Power Up: +2 Energy</b>. End your turn."},
+    {chapter:TUT_CH.court, target:['#p2-prizes','#p1-prizes'], text:"This is a <b>Prize Battle</b>. Destroy an enemy character and you take one of their <b>6 Prize cards</b>. Take all 6 and <b>you win</b>. Lose characters and they take yours."},
+    {target:()=>[TS.herald(1),TS.herald(2)], text:"Each deck is led by a <b>Herald</b>. It starts in play and is never drawn. Yours, <b>The Surfacer</b>, taxes your rival every turn. Theirs is <b>Vildrex</b>: his side hits <em>Saiyans</em> for +1, and I'm a Saiyan. You'll duel him at the end."},
+    {target:'#ph-draw', act:'draw', doHint:'Tap DRAW', text:"Every turn goes <b>Draw → Main → Attack → End</b>. Tap <b>Draw</b>: one card, and <b>+1 Energy</b>."},
+    {target:'#ph-main', act:'main', doHint:'Tap MAIN', text:"<b>Energy</b> is your one resource, and it <b>carries over</b> between turns. Now your <b>Main phase</b>, where you play cards."},
+    {target:()=>TS.hand('energy_2_purple'), act:'play_energy', allow:'energy_2_purple', doHint:'Play 2 Purple Energy', more:['colors','energy'], text:"You can play <b>one Energy card per turn</b>. Play this <em>2 Purple Energy</em>. (Right-click any card to read it in full.)"},
+    // ── II · YOUR CHAMPION ──
+    {chapter:TUT_CH.champ, target:()=>TS.hand(V), act:'play', allow:V, doHint:'Play Virora', more:['types'], text:"Summon your champion: play <b>me, Virora</b>, for 3 Energy."},
+    {target:()=>TS.mine(V), text:"<b>Cost 3 · 4 ATK</b> (damage I deal) <b>· 4 DEF</b> (damage I can take). I'm a <b>Royal Saiyan</b>, and that matters in a moment. My passive, <b>Calm Clarity</b>, makes every transformation cost just <b>3 Energy</b>."},
+    {target:'#ph-end', act:'endturn', doHint:'Tap END TURN', text:"New characters <b>can't attack the turn they arrive</b>. End a turn <b>without attacking or using abilities</b> and you <b>Power Up: +2 Energy</b>. End your turn."},
     // enemy turn 1
-    {tag:ENEMY, watch:true, waitBefore:_onAiTurn(1), target:()=>_tutBindingTarget(), text:()=>"Their turn, and your Herald strikes first. <b>Surfacer Binding</b>: at the start of each of their turns they must discard a card or lose 2 Energy. "+_tutBindingText()},
-    {tag:ENEMY, watch:true, before:()=>TUTAI.play('saiyan_heavy_warrior_bse'), target:()=>TS.foe('saiyan_heavy_warrior_bse'), text:"They summon a <b>Saiyan Heavy Warrior</b>. Its Battle Hardened gave it <b>+2 ATK</b>: a 5-ATK hitter… with only 3 DEF."},
-    {tag:ENEMY, watch:true, before:()=>TUTAI.play('female_saiyan_citizen_bse'), target:()=>TS.foe('female_saiyan_citizen_bse'), text:"Plus a cheap <b>Saiyan Citizen</b>. Rivals love to flood the board early.", after:()=>TUTAI.endTurn()},
-    // ── IV · THE ROYAL COURT ──
-    {chapter:TUT_CH.royal, waitBefore:_onMyTurn, target:'#ph-draw', act:'draw', doHint:'Tap DRAW', text:"Your turn. <b>Draw</b>, and watch the Energy: +1 for the turn, on top of last turn's +2 Power Up."},
-    {target:'#ph-main', act:'main', doHint:'Tap MAIN', text:"Into the <b>Main phase</b>."},
-    {target:()=>TS.hand('energy_3_purple'), act:'play_energy', allow:'energy_3_purple', doHint:'Play 3 Purple Energy', text:"You drew a <em>3 Purple Energy</em>: big fuel for a big turn. Play it."},
-    {target:()=>TS.hand('virora_team_hq_bse'), act:'play_location', allow:'virora_team_hq_bse', doHint:"Play Virora's Team Headquarters", text:"<b>Locations</b> are permanent: <b>+1 Energy every turn</b>, plus their own effect. Play <b>Virora's Team Headquarters</b>. It's <em>White</em>, so it fits any deck."},
-    {target:()=>[TS.mine('virora_team_hq_bse'),TS.mine(V)], text:"<b>COMBO!</b> Royal Meeting gives a Saiyan <b>+3 DEF</b>, but a <em>Royal</em> Saiyan gets the bigger Royal bonus <b>instead</b>: <b>+4 DEF and +2 ATK</b>. I'm a Royal Saiyan, so <b>4/4 just became 6/8</b>."},
-    {target:()=>TS.mine(V), text:"That's deck-building in one move: pick cards whose <b>subtypes and effects feed each other</b>. And a Royal Saiyan is still a <b>Saiyan</b>, so any card that boosts Saiyans boosts me too. This card just picks one tier or the other."},
-    {target:()=>TS.hand('void_crystal_bse'), act:'equip', allow:'void_crystal_bse', tgt:V, doHint:'Play Void Crystal → equip Virora', text:"<b>Equipment</b> attaches to one of your characters and stays, even through transformations. Play <b>Void Crystal</b> on me: <b>+2/+2</b>."},
-    {target:()=>TS.mine(V), text:"<b>8 ATK / 10 DEF.</b> Void Crystal is <em>Black</em>. Off-color cards work fine, they just draw from your shared pool. (Its Soul Find returns a fallen character from your discard. None yet.)"},
-    {target:()=>TS.mine(V), text:"Tip: <b>click any character</b>, yours or theirs, to inspect it. You'll see its <b>attached cards</b> (tap one to read it) and every <b>active effect</b> on it, with the card causing it. Try me: Royal Meeting and Void Crystal are both at work. A green <b>▲</b> on the board means buffed, a red <b>▼</b> means weakened."},
-    {target:'#ph-attack', act:'attack_phase', doHint:'Tap ATTACK', text:"Time to fight. Enter the <b>Attack phase</b>."},
-    {target:()=>[TS.mine(V),TS.foe('female_saiyan_citizen_bse')], act:'attack', attacker:V, foe:'female_saiyan_citizen_bse', doHint:'Tap Virora → tap their Citizen', text:"Only <b>one character attacks per turn</b>. Tap <b>me</b>, then their <b>Saiyan Citizen</b>. (Leave the Warrior. I want to show you something on their turn.)"},
-    {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=1&&!_tutPicking(), doHint:'Pick a glowing Prize', waitBefore:()=>_tutPicking()||_tutPrizesTaken()>=1, text:"Destroyed! A destroyed defender <b>can't hit back</b>. Claim your reward: pick any glowing <b>Prize</b>. Claiming is mandatory before your turn can end."},
-    {target:'#p2-prizes', text:"One down, five to go. Every kill also pays you <b>+1 Energy</b>, and the Prize card itself joins your hand."},
+    {tag:ENEMY, watch:true, waitBefore:_onAiTurn(1), target:()=>_tutBindingTarget(), text:()=>"Their turn, and your Herald strikes first: <b>Surfacer Binding</b> makes them discard a card or lose 2 Energy every turn. "+_tutBindingText()},
+    {tag:ENEMY, watch:true, before:()=>TUTAI.play('saiyan_heavy_warrior_bse'), target:()=>TS.foe('saiyan_heavy_warrior_bse'), text:"They summon a <b>Saiyan Heavy Warrior</b>: <b>5 ATK</b>, but only <b>3 DEF</b>."},
+    {tag:ENEMY, watch:true, before:()=>TUTAI.play('female_saiyan_citizen_bse'), target:()=>TS.foe('female_saiyan_citizen_bse'), text:"And a cheap <b>Saiyan Citizen</b>. Rivals love to flood the board.", after:()=>TUTAI.endTurn()},
+    // ── III · THE ROYAL COURT ──
+    {chapter:TUT_CH.royal, waitBefore:_onMyTurn, target:'#ph-draw', act:'draw', doHint:'Tap DRAW', text:"Your turn. <b>Draw</b>. You kept last turn's <b>+2 Power Up</b>, too."},
+    {target:'#ph-main', act:'main', doHint:'Tap MAIN', text:"<b>Main phase.</b>"},
+    {target:()=>TS.hand('energy_3_purple'), act:'play_energy', allow:'energy_3_purple', doHint:'Play 3 Purple Energy', text:"A <em>3 Purple Energy</em>: big fuel for a big turn. Play it."},
+    {target:()=>TS.hand('virora_team_hq_bse'), act:'play_location', allow:'virora_team_hq_bse', doHint:"Play Virora's Team Headquarters", text:"<b>Locations</b> stay in play: <b>+1 Energy every turn</b>, plus their own effect. Play <b>Virora's Team Headquarters</b>."},
+    {target:()=>[TS.mine('virora_team_hq_bse'),TS.mine(V)], text:"<b>COMBO!</b> Royal Meeting gives Saiyans <b>+3 DEF</b>, but a <em>Royal</em> Saiyan like me gets <b>+4 DEF and +2 ATK</b> instead: <b>4/4 → 6/8</b>. Great decks are built from combos like this."},
+    {target:()=>TS.hand('void_crystal_bse'), act:'equip', allow:'void_crystal_bse', tgt:V, doHint:'Play Void Crystal → equip Virora', text:"<b>Equipment</b> attaches to a character and stays, even through transformations. Equip <b>Void Crystal</b> on me: <b>+2/+2</b>."},
+    {target:'#ph-attack', act:'attack_phase', doHint:'Tap ATTACK', text:"<b>8 ATK / 10 DEF.</b> Click any character to inspect it: its effects, attachments, and green ▲ buffs / red ▼ debuffs. Now the <b>Attack phase</b>."},
+    {target:()=>[TS.mine(V),TS.foe('female_saiyan_citizen_bse')], act:'attack', attacker:V, foe:'female_saiyan_citizen_bse', doHint:'Tap Virora → tap their Citizen', text:"Only <b>one character attacks per turn</b>. Tap <b>me</b>, then their <b>Saiyan Citizen</b>. (Leave the Warrior for now.)"},
+    {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=1&&!_tutPicking(), doHint:'Pick a glowing Prize', waitBefore:()=>_tutPicking()||_tutPrizesTaken()>=1, text:"Destroyed! A destroyed defender <b>can't hit back</b>. Pick a glowing <b>Prize</b>: it joins your hand, and every kill pays <b>+1 Energy</b>."},
     {target:'#ph-end', act:'endturn', doHint:'Tap END TURN', text:"End your turn, and watch what happens when they attack <b>me</b>."},
     // enemy turn 2
-    {tag:ENEMY, watch:true, waitBefore:_onAiTurn(2), target:()=>_tutBindingTarget(), text:()=>"Surfacer Binding again. "+_tutBindingText()+" Your Herald never stops working."},
-    {tag:ENEMY, watch:true, before:()=>TUTAI.play('blade_of_udun_bse'), target:()=>_tutViroraSel(), text:"<b>Blade of Udun</b> is an <em>Instant</em>: a one-shot effect played from hand. 2 damage <b>and Burn</b>. Burn hurts me at the start of each of my turns until it fades."},
-    {tag:ENEMY, watch:true, before:()=>{ const v=_tutVirora(); if(v) TUTAI.attack('saiyan_heavy_warrior_bse', v.uid); }, waitBefore:()=>!(typeof _presentBusy==='function'&&_presentBusy()), target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=2&&!_tutPicking(), doHint:'Pick a glowing Prize', text:"Their Warrior hit me for 5, but I <b>survived</b>, so I hit back with my full ATK: <b>RETALIATION</b>. It's destroyed, and you claim a Prize, even on their turn!"},
-    {tag:ENEMY, watch:true, wide:true, text:"That hit-back is called <b>RETALIATION</b>, the most important rule in combat. Here's exactly how it works, and why it exists:", html:_tutRetaliationHtml()},
-    {tag:ENEMY, watch:true, before:()=>TUTAI.play('rapture_vortex_bse'), target:()=>TS.foe('rapture_vortex_bse'), text:"Now their big gun: <b>Rapture of the Vortex</b>: 6 ATK / 8 DEF. Too tough to take head-on… for now."},
-    {tag:ENEMY, watch:true, before:()=>{ _tutRig.coin=[false]; TUTAI.play('aoliath_base_bse'); }, waitBefore:()=>!(typeof _presentBusy==='function'&&_presentBusy()), target:()=>TS.foe('aoliath_base_bse'), text:"Plus <b>Aoliath</b>, a cheap <em>Red</em> fighter. That coin was its entry ability, <b>Demolition</b>. It landed <b>tails</b>, so it can now attack <b>Locations</b>, like our Royal Meeting. Two targets. Next turn we answer both. <b>It's time to ascend.</b>", after:()=>TUTAI.endTurn()},
-    // ── V · ASCENSION ──
-    {chapter:TUT_CH.ascend, waitBefore:_onMyTurn, target:()=>_tutViroraSel(), text:"My turn begins and the <b>Burn</b> ticks: −1. Statuses linger until they fade, or until something <b>cleanses</b> them. Watch this."},
-    {target:'#ph-draw', act:'draw', doHint:'Tap DRAW', text:"<b>Draw</b>. Your Headquarters adds +1 Energy now too."},
+    {tag:ENEMY, watch:true, waitBefore:_onAiTurn(2), target:()=>_tutBindingTarget(), text:()=>"Surfacer Binding again. "+_tutBindingText()},
+    {tag:ENEMY, watch:true, before:()=>TUTAI.play('blade_of_udun_bse'), target:()=>_tutViroraSel(), text:"<b>Blade of Udun</b> is an <em>Instant</em>: a one-shot card. 2 damage <b>and Burn</b>, which hurts me at the start of my turns until it fades."},
+    {tag:ENEMY, watch:true, before:()=>{ const v=_tutVirora(); if(v) TUTAI.attack('saiyan_heavy_warrior_bse', v.uid); }, waitBefore:()=>!(typeof _presentBusy==='function'&&_presentBusy()), target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=2&&!_tutPicking(), doHint:'Pick a glowing Prize', more:['retal'], text:"Their Warrior hit me for <b>6</b> (5, +1 from Vildrex). I <b>survived</b>, so I hit back with my full ATK: <b>RETALIATION</b>. It's destroyed, and you take a Prize, even on their turn!"},
+    {tag:ENEMY, watch:true, before:()=>TUTAI.play('rapture_vortex_bse'), target:()=>TS.foe('rapture_vortex_bse'), text:"Their big gun: <b>Rapture of the Vortex</b>, 6 ATK / 8 DEF. Too tough to take head-on… for now."},
+    {tag:ENEMY, watch:true, before:()=>{ _tutRig.coin=[false]; TUTAI.play('aoliath_base_bse'); }, waitBefore:()=>!(typeof _presentBusy==='function'&&_presentBusy()), target:()=>TS.foe('aoliath_base_bse'), text:"And <b>Aoliath</b>. Its entry coin came up <b>tails</b>, so it can attack <b>Locations</b> like our Headquarters. Next turn, we answer both.", after:()=>TUTAI.endTurn()},
+    // ── IV · ASCENSION ── (chapter III's reward first)
+    {chapter:TUT_CH.ascend, reward:{key:'tut:pack1', roman:'III'}, waitBefore:_onMyTurn, target:()=>_tutViroraSel(), text:"The <b>Burn</b> ticked: −1. Statuses last until they fade, or until something <b>cleanses</b> them. Watch this."},
+    {target:'#ph-draw', act:'draw', doHint:'Tap DRAW', text:"<b>Draw.</b> Your Headquarters adds +1 Energy now too."},
     {target:'#ph-main', act:'main', doHint:'Tap MAIN', text:"<b>Main phase.</b>"},
-    {target:()=>TS.hand('surge_energy'), act:'play_energy', allow:'surge_energy', doHint:'Play Surge Energy', text:"<b>Surge Energy</b>: <b>+4 right now</b>, but you <b>skip your next Draw step</b> (no card, no +1 Energy). It's a trade, and today it's worth it. Play it."},
-    {wide:true, text:"The heart of the Courts: <b>transformation lines</b>. A Base Character can evolve into higher forms, and some lines <b>branch</b>.", html:_tutTreeHtml()},
-    {wide:true, choice:true, text:"You're holding <b>both</b> of my forms, but only one can happen, and whichever you pick, I stay on that path. <b>Choose your path:</b>", html:_tutPathsHtml()},
+    {target:()=>TS.hand('surge_energy'), act:'play_energy', allow:'surge_energy', doHint:'Play Surge Energy', text:"<b>Surge Energy</b>: <b>+4 right now</b>, but you <b>skip your next Draw step</b> (no card, no +1 Energy). Today it's worth it. Play it."},
+    {wide:true, choice:true, more:['tree'], text:"Characters evolve along <b>transformation lines</b>. You're holding <b>both</b> of my forms, but only one can happen, and I stay on that path. <b>Choose:</b>", html:_tutPathsHtml()},
     // the chosen path's steps are spliced in right here by _tutChoosePath()
-    // ── VII · CLASH OF HERALDS ──
-    {chapter:TUT_CH.heralds, waitBefore:_onMyTurn, target:'#ph-draw', act:'draw', doHint:'Tap DRAW', text:"<b>Draw</b>... or rather, don't: Surge skips this Draw step. No card, and no +1 Energy this turn. Next turn it's back to normal."},
-    {target:()=>[TS.herald(1),TS.herald(2)], text:"<b>Round 4.</b> Heralds never attack characters, but from now on, once per turn, your Herald may <b>duel</b> theirs. A Herald that survives hits back for <b>half</b> its ATK."},
-    {target:()=>TS.herald(2), text:"A Herald at 0 DEF is <b>BROKEN</b>: every ability gone for good, and its breaker takes <b>TWO Prizes</b>. The Surfacer has <b>13 ATK</b>. Daredevil has <b>10 DEF</b>…"},
-    {target:'#ph-attack', act:'attack_phase', doHint:'Tap ATTACK', text:"No need for the Main phase. Go straight to <b>Attack</b>."},
+    // ── VI · CLASH OF HERALDS ── (chapter V's reward first)
+    {chapter:TUT_CH.heralds, reward:{key:'tut:pack2', roman:'V'}, waitBefore:_onMyTurn, target:'#ph-draw', act:'draw', doHint:'Tap DRAW', text:"Surge skips this <b>Draw</b> step: no card, and no +1 Energy this turn. Tap Draw to move on."},
+    {target:()=>[TS.herald(1),TS.herald(2)], text:"<b>Round 4:</b> from now on, once per turn, your Herald may <b>duel</b> theirs. A Herald at 0 DEF is <b>BROKEN</b>, and whoever breaks it takes <b>TWO Prizes</b>. The Surfacer has <b>13 ATK</b>. Vildrex has <b>12 DEF</b>…"},
+    {target:'#ph-attack', act:'attack_phase', doHint:'Tap ATTACK', text:"Straight to the <b>Attack phase</b>."},
     {target:()=>TS.herald(1), act:'herald_ready', doHint:'Tap ⚔ATK on your Herald', text:"Tap <b>⚔ATK</b> on The Surfacer."},
-    {target:()=>TS.herald(2), act:'herald_duel', doHint:'Tap their Herald', text:"Now tap <b>Daredevil</b>. End this."},
-    {target:TS.prizesClaim, waitFor:()=>G&&G.gameOver, waitBefore:()=>_tutPicking()||(G&&G.gameOver), doHint:'Pick your last two Prizes', text:"<b>DAREDEVIL IS BROKEN!</b> Take your two Prizes and the crown!"},
+    {target:()=>TS.herald(2), act:'herald_duel', doHint:'Tap their Herald', text:"Now tap <b>Vildrex</b>. End this."},
+    {target:TS.prizesClaim, waitFor:()=>G&&G.gameOver, waitBefore:()=>_tutPicking()||(G&&G.gameOver), doHint:'Pick your last two Prizes', text:"<b>VILDREX IS BROKEN!</b> Take your last two Prizes and the crown!"},
   ];
 }
 // The two transformation paths (spliced in after the choice).
 function _tutBuildPath(path){
-  const V='virora_base_bse';
   const ssj=path==='ssj'; const F=ssj?'virora_ssj1_bse':'virora_ssg_bse'; const FN=ssj?'Virora (SSJ)':'Virora (SSG)';
   const R='rapture_vortex_bse', A='aoliath_base_bse';
   const ENEMY='ENEMY TURN · WATCH';
   const steps=[
-    {target:'#action-tf-btn', act:'transform', tf:F, doHint:'Tap ⬆ → choose '+FN, text:"Tap the <b>⬆ Transform</b> button and choose <b>"+FN+"</b>. It normally costs 6 Energy, but with Calm Clarity it's just <b>3</b>."},
-    {target:()=>TS.mine(F), text:(ssj?"<b>ASCENDED.</b> Full health, Burn <b>cleansed</b>, Void Crystal still attached, and my SSJ form is still a <em>Royal Saiyan</em>, so the Court's Royal bonus re-applies: <b>9 ATK / 12 DEF</b>.":"<b>ASCENDED.</b> Full health, Burn <b>cleansed</b>, Void Crystal still attached, and my SSG form is still a <em>Royal Saiyan</em>, so the Court's Royal bonus re-applies: <b>7 ATK / 15 DEF</b>.")+" Bonuses always follow the <b>current form's subtypes</b>."},
-    {chapter:TUT_CH[path], target:'.action-tool-btn.ab', ability:'Surface Depletion', foe:R, waitFor:()=>{ const r=_tutFc(2,R); return !r || (r.surfacerHpDebuff||0)>0; }, doHint:'Tap ✨ → Surface Depletion → Rapture', text:"Heralds have <b>abilities</b> too. Open <b>✨ Abilities</b> and use The Surfacer's <b>Surface Depletion</b> on Rapture: −2 ATK / −2 DEF this turn, and if it dies this turn you <b>draw a card</b>."},
-    {target:()=>TS.foe(R), text:"Rapture drops to <b>4 / 6</b>. Weaken first, strike second: that's a combo too. (A <b>free</b> ability taps whoever uses it, so The Surfacer rests until your next turn.)"},
+    {target:'#action-tf-btn', act:'transform', tf:F, doHint:'Tap ⬆ → choose '+FN, text:"Tap the <b>⬆ Transform</b> button and choose <b>"+FN+"</b>. It normally costs 6 Energy; with Calm Clarity it's just <b>3</b>."},
+    {target:()=>TS.mine(F), text:"<b>ASCENDED.</b> Full health, Burn <b>cleansed</b>, Void Crystal kept, and the Royal bonus follows my new form: "+(ssj?"<b>9 ATK / 12 DEF</b>.":"<b>7 ATK / 15 DEF</b>.")},
+    {chapter:TUT_CH[path], target:'.action-tool-btn.ab', ability:'Surface Depletion', foe:R, waitFor:()=>{ const r=_tutFc(2,R); return !r || (r.surfacerHpDebuff||0)>0; }, doHint:'Tap ✨ → Surface Depletion → Rapture', text:"Heralds have <b>abilities</b> too. Open <b>✨ Abilities</b> and use The Surfacer's <b>Surface Depletion</b> on Rapture: −2 ATK / −2 DEF this turn, and if it dies you <b>draw a card</b>."},
+    {target:()=>TS.foe(R), text:"Rapture drops to <b>4 / 6</b>. Weaken first, then strike. (A <b>free</b> ability taps whoever uses it, so The Surfacer rests until your next turn.)"},
   ];
   if(ssj){
     steps.push(
-      {target:'.action-tool-btn.ab', ability:'Light Sphere', foe:A, onShow:()=>{ _tutRig.coin=[true]; }, waitFor:()=>!_tutFc(2,A), doHint:'Tap ✨ → Light Sphere → Aoliath', text:"Now the Warrior's power: <b>Light Sphere</b>. Open ✨ Abilities and use it: flip a coin, and on heads deal <b>4 damage</b>. Aim at <b>Aoliath</b>."},
-      {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=3&&!_tutPicking(), doHint:'Pick a glowing Prize', text:"<b>HEADS</b>! Aoliath is gone! (I'll admit it: today the coin was on our side. In a real match it's a true 50/50.) Claim your Prize."},
-      {target:()=>TS.mine(F), text:"Notice I'm <b>tapped</b> now: a <b>free</b> ability (0 Energy) taps the card that uses it, so I <b>can't attack</b> this turn. Paid abilities don't, unless the card says so. Good thing I brought backup…"},
-      {target:()=>TS.hand('vuruna_base_bse'), act:'play', allow:'vuruna_base_bse', doHint:'Play Vuruna', text:"Meet <b>Vuruna</b>. <em>Yellow</em> means speed: <b>Burst Speed</b> lets her attack the turn she arrives. She's a Royal Saiyan too, so the Court makes her <b>6 / 8</b>. Play her."},
-      {target:'#ph-attack', act:'attack_phase', doHint:'Tap ATTACK', text:"Enter the <b>Attack phase</b>."},
-      {target:()=>[TS.mine('vuruna_base_bse'),TS.foe(R)], act:'attack', attacker:'vuruna_base_bse', foe:R, doHint:'Tap Vuruna → tap Rapture', text:"Tap <b>Vuruna</b>, then <b>Rapture</b>. 6 damage into 6 DEF."},
-      {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=4&&!_tutPicking(), waitBefore:()=>_tutPicking()||_tutPrizesTaken()>=4, doHint:'Pick a glowing Prize', text:"Burst Speed + Depletion + the Court: their biggest threat, gone the moment she arrived, and Depletion drew you a card. Claim your Prize."},
+      {target:'.action-tool-btn.ab', ability:'Light Sphere', foe:A, onShow:()=>{ _tutRig.coin=[true]; }, waitFor:()=>!_tutFc(2,A), doHint:'Tap ✨ → Light Sphere → Aoliath', text:"The Warrior's power: <b>Light Sphere</b>. Open ✨ Abilities and use it: flip a coin, and on heads deal <b>4 damage</b>. Aim at <b>Aoliath</b>."},
+      {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=3&&!_tutPicking(), doHint:'Pick a glowing Prize', text:"<b>HEADS!</b> Aoliath is gone. (Today the coin was on our side; in a real match it's 50/50.) Claim your Prize."},
+      {target:()=>TS.hand('vuruna_base_bse'), act:'play', allow:'vuruna_base_bse', doHint:'Play Vuruna', text:"I'm <b>tapped</b> now: a free ability taps the user, so I can't attack. Good thing I brought backup: <b>Vuruna</b>. <em>Burst Speed</em> lets her attack the turn she arrives, and the Court makes her <b>6 / 8</b>. Play her."},
+      {target:'#ph-attack', act:'attack_phase', doHint:'Tap ATTACK', text:"<b>Attack phase.</b>"},
+      {target:()=>[TS.mine('vuruna_base_bse'),TS.foe(R)], act:'attack', attacker:'vuruna_base_bse', foe:R, doHint:'Tap Vuruna → tap Rapture', text:"Tap <b>Vuruna</b>, then <b>Rapture</b>: 6 damage into 6 DEF."},
+      {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=4&&!_tutPicking(), waitBefore:()=>_tutPicking()||_tutPrizesTaken()>=4, doHint:'Pick a glowing Prize', text:"Burst Speed + Depletion + the Court: their biggest threat is gone, and Depletion drew you a card. Claim your Prize."},
     );
   } else {
     steps.push(
       {target:()=>TS.mine(F), text:"The God's power: <b>Godly Blitz</b>: I attack <b>twice</b> each turn and draw a card every time I deal combat damage. And <b>Godly Evasion</b>: they must pay 2 Energy just to target me."},
-      {target:'#ph-attack', act:'attack_phase', doHint:'Tap ATTACK', text:"Enter the <b>Attack phase</b>."},
+      {target:'#ph-attack', act:'attack_phase', doHint:'Tap ATTACK', text:"<b>Attack phase.</b>"},
       {target:()=>[TS.mine(F),TS.foe(R)], act:'attack', attacker:F, foe:R, doHint:'Tap Virora → tap Rapture', text:"First strike: tap <b>me</b>, then <b>Rapture</b>. 7 damage into 6 DEF."},
-      {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=3&&!_tutPicking(), waitBefore:()=>_tutPicking()||_tutPrizesTaken()>=3, doHint:'Pick a glowing Prize', text:"Destroyed with no retaliation, plus a <b>Godly Blitz</b> draw and a Surface Depletion draw. Claim your Prize."},
+      {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=3&&!_tutPicking(), waitBefore:()=>_tutPicking()||_tutPrizesTaken()>=3, doHint:'Pick a glowing Prize', text:"Destroyed, with no retaliation. Depletion drew you a card, and <b>Godly Blitz</b> offers one more: tap <b>Draw 1</b>. Then claim your Prize."},
       {target:()=>[TS.mine(F),TS.foe(A)], act:'attack', attacker:F, foe:A, doHint:'Tap Virora → tap Aoliath', text:"I'm not done. <b>Second attack</b>: tap me again, then <b>Aoliath</b>."},
-      {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=4&&!_tutPicking(), waitBefore:()=>_tutPicking()||_tutPrizesTaken()>=4, doHint:'Pick a glowing Prize', text:"Two attacks, two Prizes, two cards. <b>That's</b> the God Path."},
+      {target:TS.prizesClaim, waitFor:()=>_tutPrizesTaken()>=4&&!_tutPicking(), waitBefore:()=>_tutPicking()||_tutPrizesTaken()>=4, doHint:'Pick a glowing Prize', text:"Draw again, then take your Prize. Two attacks, two Prizes, two cards: <b>that's</b> the God Path."},
     );
   }
   steps.push(
-    {target:'#p2-prizes', text:"<b>Four Prizes down</b>, only two left. Their board is empty… but they still have their Herald. And so do you."},
-    {target:'#ph-end', act:'endturn', doHint:'Tap END TURN', text:"End your turn."},
-    {tag:ENEMY, watch:true, waitBefore:_onAiTurn(3), target:()=>_tutBindingTarget(), text:()=>"Binding, one more time. "+_tutBindingText()},
-    {tag:ENEMY, watch:true, before:()=>TUTAI.play('male_saiyan_citizen_bse'), target:()=>TS.foe('male_saiyan_citizen_bse'), text:"All they can muster is a lone <b>Saiyan Citizen</b>. A character can only strike a Herald when the enemy board is <b>empty</b>, so he's their shield now… or so they think.", after:()=>TUTAI.endTurn()},
+    {target:'#ph-end', act:'endturn', doHint:'Tap END TURN', text:"<b>Four Prizes down</b>, two to go. Their board is empty, but they still have their Herald. End your turn."},
+    {tag:ENEMY, watch:true, waitBefore:_onAiTurn(3), before:()=>TUTAI.play('male_saiyan_citizen_bse'), target:()=>TS.foe('male_saiyan_citizen_bse'), text:()=>"Binding again. "+_tutBindingText()+" All they can muster is a lone <b>Saiyan Citizen</b>. Characters can only hit a Herald when the enemy board is <b>empty</b>, so he's their shield… or so they think.", after:()=>TUTAI.endTurn()},
   );
   return steps;
 }
@@ -31361,11 +31654,13 @@ function _tutChoosePath(path){
   _tutAdvance();
 }
 // ── start / finish ─────────────────────────────────────────────────────────────
-function _tutPreload(){ try{ Object.values(TUT_ART).forEach(u=>{ const i=new Image(); i.src=u; }); ['virora_ssj1_bse','virora_ssg_bse','surfacer_herald','daredevil_fog_herald','rapture_vortex_bse'].forEach(c=>{ const u=_tutImg(c); if(u){ const i=new Image(); i.src=u; } }); }catch(e){} }
+function _tutPreload(){ try{ Object.values(TUT_ART).forEach(u=>{ const i=new Image(); i.src=u; }); ['virora_ssj1_bse','virora_ssg_bse','surfacer_herald','vildrex_herald','rapture_vortex_bse'].forEach(c=>{ const u=_tutImg(c); if(u){ const i=new Image(); i.src=u; } }); }catch(e){} }
 function startTutorial(opts){
   opts=opts||{};
   if(G && !G.gameOver && document.querySelector('#game-screen.active') && !opts.force){ if(!confirm('Leave the current match and start the tutorial?')) return; }
-  window._tutFirstRun=!!opts.firstRun; window._tutPath=null; window._tutAchQ=[]; window._tutLesson=null; _tutChapterTotal=7;
+  window._tutFirstRun=!!opts.firstRun; window._tutPath=null; window._tutAchQ=[]; window._tutLesson=null; _tutChapterTotal=6;
+  const _resume=opts.resume||null;
+  if(typeof spotEnd==='function') spotEnd(true);
   _tutPreload();
   if(typeof closeAllModals==='function') closeAllModals();
   try{ pendingGameMode='prize'; pendingPrizeCount=6; }catch(e){}
@@ -31373,7 +31668,12 @@ function startTutorial(opts){
   _pendingTutorial=true;
   startGame('ai', _tutorialPlayerDeck(), _tutorialAiDeck());
   if(typeof hideBootVeil==='function') hideBootVeil();
-  setTimeout(()=>{ if(G && G.tutorialMode) runTutorialSteps(buildTutorialSteps()); }, 450);
+  setTimeout(()=>{ if(!(G && G.tutorialMode)) return;
+    let steps=buildTutorialSteps(), idx=0;
+    if(_resume){ try{ _tutApplySave(_resume);
+        if(_resume.path){ const ci=steps.findIndex(x=>x.choice); if(ci>-1) steps.splice(ci+1,0,..._tutBuildPath(_resume.path)); window._tutPath=_resume.path; }
+        idx=Math.max(0,Math.min(_resume.idx|0, steps.length-1)); }catch(e){ console.warn('[tutorial resume]',e); idx=0; } }
+    runTutorialSteps(steps, idx); }, 450);
 }
 // Queue achievement toasts during the lesson; play them after the rewards screen.
 function _tutFlushAchievements(){
@@ -31389,8 +31689,10 @@ async function onTutorialFinished(p){
   window._tutorialDoneFlag=true;
   if(typeof markCutsceneWatched==='function') try{ markCutsceneWatched('welcome_tutorial'); }catch(e){}
   _tutMarkKnownLocal();
+  _tutClearSave();
   if(firstTime){
-    try{ if(typeof awardPack==='function') await econClaim('tutorial',()=>awardPack('pack','basic','base_set',2,'Base Set Booster')); }catch(e){}
+    // build 10.32: the two packs were paid at chapters III and V; pay any that didn't land (offline, older save…)
+    try{ await _tutClaimPack('tut:pack1'); await _tutClaimPack('tut:pack2'); }catch(e){}
     try{ if(typeof checkAchievements==='function') await checkAchievements(); }catch(e){} // First Steps (+200 Celestium)
     try{ if(typeof cosEnsureStarter==='function') cosEnsureStarter(); }catch(e){}
   }
@@ -31400,15 +31702,14 @@ async function onTutorialFinished(p){
   const pathName=window._tutPath==='ssg'?'God Path':'Warrior Path';
   const items=firstTime?[
     {img:_CEL_IMG, amount:'+200', label:'Celestium'},
-    {img:_PACK_IMG, amount:'×2', label:'Base Set Booster Packs'},
+    {img:_PACK_IMG, amount:'×2', label:'Booster Packs · earned along the way'},
     (_achImg?{img:_achImg, label:'Achievement: First Steps'}:{icon:'🎓', label:'Achievement: First Steps'}),
     {img:TUT_RAW+'Card%20BACKS/Lord%20Of%20States%20Default%20Back%20(BLUE).png', label:'Card Back: Lord Of Courts Blue'}
   ]:[{icon:'👑', label:'Trial complete: '+pathName}];
   showRewardsCelebration(items, ()=>{
     const lines=firstTime?[
-      "You did it! The Royal Trial is yours. Those packs are waiting in your collection.",
-      "From here: open your packs, build a deck in the Deck Builder, and take on the AI, Story mode or real rivals online.",
-      "You can replay this lesson any time from OPTIONS → Tutorial. Now go, the Courts are waiting."
+      "You did it! The Royal Trial is yours, and your packs are waiting.",
+      "Come on, let me show you around the Courts."
     ]:["Still sharp, I see. The Courts are waiting. Go make your name."];
     showNarration(lines, ()=>{
       window._tutFirstRun=false;
@@ -31416,6 +31717,7 @@ async function onTutorialFinished(p){
       if(typeof showScreen==='function') showScreen('menu-screen');
       if(typeof updateCelDisplay==='function') updateCelDisplay();
       _tutFlushAchievements();
+      if(firstTime) setTimeout(()=>{ try{ courtTourStart(); }catch(e){ console.warn('[court tour]',e); } }, 1200);   // build 10.32
     });
   }, firstTime?{title:'TRIAL COMPLETE', sub:'Starter Rewards'}:{title:'TRIAL COMPLETE', sub:'Rewards already claimed'});
 }
@@ -31431,9 +31733,10 @@ function tutorialIsNewPlayer(){
 // Login hand-off: brand-new players go straight into the tutorial (the boot veil keeps
 // the main menu hidden until here); everyone else is revealed the menu.
 function maybeStartTutorialForNewPlayer(){
-  if(tutorialIsNewPlayer() && !(G && !G.gameOver && document.querySelector('#game-screen.active'))){ startTutorial({firstRun:true}); return true; }
+  if(tutorialIsNewPlayer() && !(G && !G.gameOver && document.querySelector('#game-screen.active'))){ tutOffer({firstRun:true}); return true; }   // build 10.32: offered, not forced
   _tutMarkKnownLocal();
   if(typeof hideBootVeil==='function') hideBootVeil();
+  setTimeout(()=>{ try{ tipMaybe('menu-screen'); }catch(e){} }, 1200);
   return false;
 }
 // Admin: reset the tutorial so it can be replayed/tested.
@@ -31445,6 +31748,7 @@ async function adminResetTutorial(){
     if(typeof saveCampaignProgress==='function') await saveCampaignProgress();
   }
   try{ if(window._authUid) localStorage.removeItem('loc_known_'+window._authUid); }catch(e){}
+  _tutClearSave(); try{ Object.keys(localStorage).filter(k=>/^loc_(tip_|tour_done_|tut_rw_)/.test(k)).forEach(k=>localStorage.removeItem(k)); }catch(e){}
   alert('✓ Tutorial reset. Use "Test Tutorial" or re-login as a new account to see it again.');
 }
 
@@ -37354,6 +37658,14 @@ window.addEventListener('load',async()=>{
         </div>
        </div>
        <div class="settings-section">
+        <div class="settings-section-title">Help</div>
+        <div class="settings-row stv-trow">
+          <span class="stv-thumb" data-prev="menutips"></span>
+          <div><div class="settings-label">Menu Tips</div><div class="settings-label-desc">A short tip from Virora the first time you open each screen (for newer players). The Court Tour is under OPTIONS → Tutorial.</div></div>
+          <div class="settings-toggle on" id="set-menutips" onclick="toggleSetting('menutips')"><div class="settings-toggle-knob"></div></div>
+        </div>
+       </div>
+       <div class="settings-section">
         <div class="settings-section-title">Pace</div>
         <div class="stv-vrow">
           <div><div class="settings-label">Game Speed</div><div class="settings-label-desc">How long card plays and ability banners stay up. Click any moment to speed it up.</div></div>
@@ -37888,7 +38200,7 @@ function renderBuilderDeck(){
   const curve=document.getElementById('bld-curve');
   if(curve){ const bins=[0,0,0,0,0,0,0,0]; cards.forEach(cid=>{ const c=DB[cid]; if(!c||c.type==='energy_card'||c.type==='herald') return; bins[Math.min(7,c.cost||0)]++; }); const mx=Math.max(1,...bins); curve.innerHTML=bins.map((n,i)=>`<i data-c="${i===7?'7+':i}" style="height:${Math.max(2,Math.round(n/mx*24))}px" title="${n} card${n===1?'':'s'} at cost ${i}"></i>`).join(''); }
   // stacks
-  if(!builderDeck.length){ list.innerHTML='<div class="dk-empty" style="grid-column:1/-1">Your deck is empty. Click + on a card above to add it.<br><span style="font-size:10px">60 cards · 1 Herald · max 4 copies of a card</span></div>'; return; }
+  if(!builderDeck.length){ list.innerHTML='<div class="dk-empty" style="grid-column:1/-1">Your deck is empty. Click + on a card above to add it.<br><span style="font-size:10px">60 cards including your Herald · max 4 copies of a card</span></div>'; return; }
   let html='';
   DK_TYPE_ORDER.forEach(type=>{
     const entries=builderDeck.filter(e=>DB[e.cid]?.type===type); if(!entries.length) return;
