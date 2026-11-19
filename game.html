@@ -6068,6 +6068,7 @@ textarea{
 #game-screen .rail-tab[aria-selected="true"]{ color:var(--ar-gold2); border-bottom-color:var(--ar-gold); }
 #game-screen .rail-pane{ display:none; flex:1; min-height:0; overflow:auto; padding:12px; }
 #game-screen .rail-pane.on{ display:flex; flex-direction:column; }
+#game-screen .rail-pane{ overflow-x:hidden; } #game-screen #hover-preview-content{ min-width:0; max-width:100%; overflow-wrap:anywhere; }   /* build 10.37: Card Info stays the rail's width whatever the card */
 #game-screen .hover-preview-placeholder{ min-height:0; flex:1; }
 #game-screen .hover-preview-content{ min-height:0; width:100%; }
 #game-screen .hover-preview-img{ border:2px solid var(--ar-gold2); box-shadow:0 0 24px rgba(232,197,112,.3),0 10px 28px rgba(0,0,0,.6); }
@@ -8867,6 +8868,26 @@ body.btg-on #game-screen .card-slot[data-uid]:not(.btg-target),body.btg-on #game
 @keyframes drawDue{0%,100%{box-shadow:0 0 0 2px rgba(251,191,36,.8),0 0 10px rgba(251,191,36,.45)}50%{box-shadow:0 0 0 3px #fbbf24,0 0 22px 6px rgba(251,191,36,.7)}}
 .phase-pill.draw-due{animation:drawDue 1.4s ease-in-out infinite;opacity:1!important;filter:none!important}
 .phase-pill.draw-nudge{animation:chNudge .45s ease,drawDue 1.4s ease-in-out .45s infinite}
+/* build 10.37 · the phase you're on glows: Draw green, Main a soft yellow, Attack red (finished phases stay grey) */
+@keyframes phCurY{0%,100%{box-shadow:0 0 0 1px rgba(250,204,21,.42),0 0 8px rgba(250,204,21,.24)}50%{box-shadow:0 0 0 1px rgba(250,204,21,.58),0 0 13px rgba(250,204,21,.34)}}
+@keyframes phCurR{0%,100%{box-shadow:0 0 0 1px rgba(239,68,68,.48),0 0 8px rgba(239,68,68,.28)}50%{box-shadow:0 0 0 1px rgba(239,68,68,.66),0 0 14px rgba(239,68,68,.4)}}
+.phase-pill.cur-phase,.phase-pill.cur-phase:disabled,.phase-pill.cur-phase:hover{opacity:1;filter:none;cursor:default;transform:none;
+  background:linear-gradient(180deg,rgba(250,204,21,.13),rgba(250,204,21,.04));border-color:rgba(250,204,21,.68);color:#fde68a;animation:phCurY 2.6s ease-in-out infinite}
+.phase-pill.cur-phase .phase-pill-icon{opacity:1}
+.phase-pill.cur-phase.ph-attack,.phase-pill.cur-phase.ph-attack:disabled,.phase-pill.cur-phase.ph-attack:hover{
+  background:linear-gradient(180deg,rgba(239,68,68,.15),rgba(239,68,68,.04));border-color:rgba(239,68,68,.72);color:#fca5a5;animation-name:phCurR}
+@keyframes phCurG{0%,100%{box-shadow:0 0 0 1px rgba(34,197,94,.45),0 0 8px rgba(34,197,94,.26)}50%{box-shadow:0 0 0 1px rgba(34,197,94,.62),0 0 13px rgba(34,197,94,.36)}}
+@keyframes phDrawDueG{0%,100%{box-shadow:0 0 0 2px rgba(34,197,94,.8),0 0 10px rgba(34,197,94,.45)}50%{box-shadow:0 0 0 3px #22c55e,0 0 22px 6px rgba(34,197,94,.7)}}
+.phase-pill.cur-phase.ph-draw,.phase-pill.cur-phase.ph-draw:disabled,.phase-pill.cur-phase.ph-draw:hover{
+  background:linear-gradient(180deg,rgba(34,197,94,.14),rgba(34,197,94,.04));border-color:rgba(34,197,94,.7);color:#bbf7d0;animation-name:phCurG}
+.phase-pill.cur-phase.draw-due{animation:phDrawDueG 1.4s ease-in-out infinite}
+.phase-pill.cur-phase.draw-nudge{animation:chNudge .45s ease,phDrawDueG 1.4s ease-in-out .45s infinite}
+.v2-ph-dot.on.ph-attack{background:#f87171;border-color:#ef4444;box-shadow:0 0 8px rgba(239,68,68,.55)}
+@media (prefers-reduced-motion:reduce){
+  .phase-pill.cur-phase{animation:none;box-shadow:0 0 0 1px rgba(250,204,21,.52),0 0 10px rgba(250,204,21,.3)}
+  .phase-pill.cur-phase.ph-draw{box-shadow:0 0 0 1px rgba(34,197,94,.55),0 0 10px rgba(34,197,94,.32)}
+  .phase-pill.cur-phase.ph-attack{box-shadow:0 0 0 1px rgba(239,68,68,.58),0 0 11px rgba(239,68,68,.34)}
+}
 /* build 10.26 · usable glow */
 @keyframes ablGlow{0%,100%{box-shadow:0 0 0 2px rgba(196,181,253,.9),0 0 10px 2px rgba(167,139,250,.55)}50%{box-shadow:0 0 0 2px rgba(253,224,71,.95),0 0 20px 6px rgba(250,204,21,.55)}}
 @keyframes playGlow{0%,100%{box-shadow:0 0 0 1px rgba(34,197,94,.6),0 0 6px rgba(34,197,94,.35)}50%{box-shadow:0 0 0 2px rgba(74,222,128,.95),0 0 16px 4px rgba(74,222,128,.5)}}
@@ -9637,7 +9658,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.36 · Buy & Open fix</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.37 · Phase glow</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10694,6 +10715,11 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.34'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.37', date:'2026-11-19', cards:[], abilities:[],
+    screens:["PHASE GLOW (Rulk): the phase pill you're ON glows — Draw green (border rgba(34,197,94,.7), text #bbf7d0), Main a soft yellow (border rgba(250,204,21,.68), glow 8–13px at .24–.34 alpha, slow 2.6s breathe, text #fde68a), Attack red (border rgba(239,68,68,.72), same glow in red, text #fca5a5). Finished phases stay grey (done-phase) as before; phases still to come stay plain. The current pill is never dimmed even though it's disabled (you can't re-enter it). At turn start the Draw pill's stronger 'draw first' pulse is now green too (was amber) until you draw, then it settles to the soft green. BUG IT FIXES: the current phase is pushed into phasesDone the moment you enter it, and the renderer checked phasesDone first, so the phase you were on showed grey (in Main, Draw and Main both looked grey). New order: ph===G.phase → current glow; else phasesDone → grey. It follows whoever's turn it is (the opponent's phase glows on their turn). Same on the 2v2 bar; the 2v2 HUD phase dot for Attack turns red. Reduced-motion: static glow.",
+      "CARD INFO RAIL IS A FIXED WIDTH (PC bug report): the web rail is a fixed grid track --rail = clamp(228px, 16vw, 380px) whatever card is hovered; the card image fills it (rail − 26px wide, × ~1.395 tall: 354×494 at 2560 wide, 281×392 at 1920, 202×281 at 1366) and every text line WRAPS inside it (10.37 adds overflow-x:hidden + overflow-wrap:anywhere as a guard). On PC the rail grows to fit its widest unwrapped line — e.g. the tapped note under an ability ('… is tapped — it can't use abilities until your next turn.') — so it widens for some cards (The Surfacer) and shoves the whole board right. PC: fix the rail's width (custom_minimum_size.x = that clamp, no EXPAND/size-to-content), every Label autowrap_mode = AUTOWRAP_WORD_SMART, card TextureRect expand_mode IGNORE_SIZE + keep-aspect, ScrollContainer horizontal scroll off.",
+      "ROLLS WAIT FOR REVEALS: the coin-flip / dice panel now waits while an ability or Instant reveal (#instant-reveal-overlay) or the card-play zoom is on screen (max ~4.8 s). The activator already closed its reveal before the roll; this fixes the online opponent's screen, where the ability_reveal (shown 2 s) and the roll_show (sent 1.5 s later) overlapped."],
+    data:["GAME_BUILD stays '10.34' (display only)."] },
   { build:'10.36', date:'2026-11-18', cards:[], abilities:[],
     screens:["MARKET BUY & OPEN FIX (first pack of a kind): with 0 packs of that kind, BUY & OPEN bought the pack (Your Packs ×1) but the open asked the server first, the server's copy of pack_inventory didn't have it yet, and the game toasted 'No packs of that kind left.' with no opening (a second purchase then worked). Now: (1) a pack bought in the game (econ_buy fell back because the catalog isn't published, lock off) opens in the game straight away — openInventoryPack(key, context, {local:true}) skips econ_open_pack (Market BUY & OPEN, old shop 'OPEN NOW', old Booster Box 'OPEN A PACK NOW'); (2) safety net in econOpen for every open while the lock is OFF: econ_open_pack → error 'none' while the local inventory still holds that key with qty>0 → save pack_inventory again, call econ_open_pack once more, and if it's still 'none' open in the game (return null → local opening). Lock ON keeps the server's answer (toast + econSnap). (3) savePackInventory now checks the update's error and retries once (it ignored failed writes). Check the PC's Buy & Open the same way: open from the copy that made the purchase, and never trust a server 'none' over a pack the client still holds while the lock is off."],
     data:["GAME_BUILD stays '10.34' (no rules change)."] },
@@ -24410,7 +24436,8 @@ function _rollPush(e){
   _rollQ.push(e); _rollSend(e); if(!_rollCur) _rollNext();
 }
 function _rollNext(){
-  if(!_rollCur && _rollQ.length && document.querySelector('#trig-ov.open')){ setTimeout(()=>{ if(!_rollCur) _rollNext(); },120); return; }
+  if(!_rollCur && _rollQ.length && (document.querySelector('#trig-ov.open') || (document.querySelector('#instant-reveal-overlay.open,#card-play-zoom.playing') && (window._rollWaitN=(window._rollWaitN||0)+1)<40))){ setTimeout(()=>{ if(!_rollCur) _rollNext(); },120); return; }
+  window._rollWaitN=0;   // build 10.37: rolls wait for the ability / Instant reveal and the card zoom
   _rollCur=_rollQ.shift()||null; if(!_rollCur){ document.getElementById('roll-ov')?.classList.remove('open'); return; }
   const e=_rollCur, ov=_rollEnsure();
   const $=id=>document.getElementById(id);
@@ -28243,7 +28270,7 @@ function renderV2HUD(p){
   const phaseHtml=V2_PHASES.map(([ph,lbl])=>{
     const on=isActive&&G.phase===ph;
     const done=isActive&&(G.phasesDone||[]).includes(ph);
-    return `<span class="v2-ph-dot${on?' on':''}${done?' done':''}" title="${ph[0].toUpperCase()+ph.slice(1)} phase">${lbl}</span>`;
+    return `<span class="v2-ph-dot ph-${ph}${on?' on':''}${done?' done':''}" title="${ph[0].toUpperCase()+ph.slice(1)} phase">${lbl}</span>`;
   }).join('');
   const rift=(pl.rift||[]).length;
   el.innerHTML=
@@ -28366,9 +28393,9 @@ function renderV2HandFor(hp){
 function renderPhaseBar2v2(){
   ['draw','main','attack'].forEach(ph=>{
     const btn=document.getElementById('v2-ph-'+ph);if(!btn)return;
-    btn.className='phase-pill';
-    if(G.phasesDone.includes(ph))btn.classList.add('done-phase');
-    else if(ph===G.phase)btn.classList.add('active-phase');
+    btn.className='phase-pill ph-'+ph;
+    if(ph===G.phase)btn.classList.add('cur-phase');   // build 10.37
+    else if(G.phasesDone.includes(ph))btn.classList.add('done-phase');
     btn.disabled=!isHumanPlayer(G.activePlayer)||G.phasesDone.includes(ph);
   });
   const end=document.getElementById('v2-end'); if(end)end.disabled=!isHumanPlayer(G.activePlayer);
@@ -28759,9 +28786,9 @@ function renderPhaseBar(){
   // Phase pills (draw/resource/main/attack)
   ['draw','main','attack'].forEach(ph=>{
     const btn=document.getElementById('ph-'+ph);if(!btn)return;
-    btn.className='phase-pill';
-    if(G.phasesDone.includes(ph))btn.classList.add('done-phase');
-    else if(ph===G.phase)btn.classList.add('active-phase');
+    btn.className='phase-pill ph-'+ph;
+    if(ph===G.phase)btn.classList.add('cur-phase');   // build 10.37: the phase you're on glows (it's already in phasesDone)
+    else if(G.phasesDone.includes(ph))btn.classList.add('done-phase');
     btn.disabled=(G.is2v2?!isHumanPlayer(G.activePlayer):G.activePlayer!==1)||G.phasesDone.includes(ph)||!!G.spectating;
   });
   // End turn button (separate styling)
@@ -29587,7 +29614,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.36';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.37';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
