@@ -9661,7 +9661,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.39 · Sound effects</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.40 · Crystal (SSJ2) + Virora's Beer</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10716,8 +10716,18 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.38'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.40'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.40', date:'2026-11-20',
+    cards:[{id:'crystal_ssj2_bse', set:'base_set', number:'126/150', rarity:'rare', scan:'Sets/BASE SET/126-150 (Crystal SSJ2).png', newAbilities:['Storm Aegis','Refraction Surge'],
+      note:"Crystal (SSJ2) · Blue · transformOnly · charLine 'crystal' · formTier 'ssj2' · path 'saiyan' · cost 7 · 6 ATK / 7 HP · subtypes Saiyan · race 'Saiyan' · sym CRYSSJ2. DATA CHANGE: crystal_ssj_bse.nextForms [] → ['ssj2'] (Crystal → SSJ → SSJ2)."},
+      {id:'virora_beer_bse', set:'base_set', number:'086/150', rarity:'common', scan:"Sets/BASE SET/086-150 (Virora's Beer).png", newAbilities:['Liquid Courage'],
+      note:"Virora's Beer · Instant · Consumable · cost 2 · PURPLE (the printed cost circle is pink; the game has no pink, and Confusion is a Purple effect) · subtypes Instant, Consumable · race 'Consumable' · sym 🍺. A targeted instant (HAND_CHOICE_INSTANTS: charged when the target is confirmed)."}],
+    abilities:["STORM AEGIS (Crystal SSJ2, activated): exactly Prism Barrier with 4 instead of 3 — 2 Energy (Blue), once per turn (generic lock), paid → doesn't tap. Choose one of YOUR characters (herself included; closing the chooser refunds). It gets fc._prismShield = 4 (the amount is read from the ability text: /prevent (\\d+)/), fc._prismBy = placer, and NEW fc._prismLbl = 'Storm Aegis' (Prism Barrier now sets 'Prism Barrier'). Same rules as Prism Barrier: the next damage that character would be dealt (after Nullify / Inferno Ward / Diamond Calm / Half-Divine / Titan's Armor / Bracelets) is reduced by up to 4 and the shield is spent even if the hit was smaller; Primal Breaker's pierce ignores it; it ends at the start of the placer's next turn (tickPrismBarrier); a new shield on the same character replaces the old one (no stacking). Logs / effects-panel row / fade text use the label (⛈ Storm Aegis, 💠 Prism Barrier). It's a burst ability too (BURST_ABILITIES). CPU: same scoring as Prism Barrier.",
+      "REFRACTION SURGE (Crystal SSJ2, triggered/passive on the field): in dealDamage, after every reduction step (Nullify, Inferno Ward, Diamond Calm, Half-Divine, Titan's Armor, Bracelets of Submission, Prism Barrier / Storm Aegis, Spider-Sense) — if the target is a CHARACTER and prevented = (damage coming in, incl. Inferno Fist / Arch-Nemesis bonuses) − (damage taken) > 0, snapshot every Refraction Surge character on the TARGET's controller's field. Source = the character that dealt it (_dmgSourceFc: the other combatant in combat, or the ability's source card via the fx context). It counts only if the source is a character controlled by another side (not the same player, not a 2v2 teammate) and isn't the target. Primal Breaker's pierce means nothing was prevented. AFTER the hit lands (and after a KO it may cause), each snapshotted Refraction Surge character deals 2 damage to the source (ability context with that Crystal as the source; stops early if the source is gone). Refraction damage never triggers Refraction (G._refracting guard) — no ping-pong between two Crystals. Two Crystal (SSJ2) on the field = two hits of 2. Heralds, Burn/Poison chip and sourceless effects don't trigger it. CPU attack safety adds 2 per Refraction Surge holder when the target has a shield or reduction (refractRisk)."],
+    screens:["Effects panel: the shield row is titled by its label (⛈ Storm Aegis / 💠 Prism Barrier). New row 🍺 Liquid Courage: '+N Attack until the end of this turn.'",
+      "LIQUID COURAGE (Virora's Beer, instant): choose one of YOUR characters (picker rows show ⚔ now→+2 and '😵 Confused' or 'no Confusion'). It gets +2 Attack until end of turn (fc._beer += 2, currentATK/atkBonus += 2; stacks with a second beer), THEN becomes Confused (applyStatus 'confuse', the normal 3 turns; Vortex Shield blocks it) — unless it's a Virora character (isViroraChar: name or charName contains the word Virora, e.g. Virora forms, Darkspine Virora, Virora & Volaris). Order matters: it's Confused right away, so a non-Virora drinker's attacks this turn already need the Confusion coin flip (tails = it hits itself for 2); in the Burst Window the +2 boosts its hit back. tickBeer runs at the end of EVERY turn and clears _beer on all fields ('until end of turn' = the turn it was drunk in, so a Burst-Window drink ends with the opponent's turn). CPU: plays it only on a ready Virora character that can attack while an enemy is on the field (score 30), and picks that Virora; it doesn't use it in its Burst Window."],
+    data:["GAME_BUILD → '10.40' (new card). WEB_BUILD 10.40."] },
   { build:'10.39', date:'2026-11-20', cards:[], abilities:[],
     screens:["REAL SOUND EFFECTS (Rulk's picks). The web now ships its own sound files, built into game.html (const SFX_BUILTIN: SFX event → data:audio/mpeg;base64 mp3, mono 64 kbps, trimmed, level-matched). Priority per sound: Admin → Sound Effects link (app_settings 'sfx_urls') > built-in file > old synth. The same files are in Rulk's folder D:\\PLAY TCG HERE\\lord-of-courts-vcu\\Assets\\Sounds\\game (one mp3 per moment, named below) for the PC to pack in. Volume = the Settings SFX volume (default 0.6). Event → file: attack=attack.mp3 · damage=damage.mp3 · destroy=destroy.mp3 · death=death.mp3 · heraldSlam=herald-slam.mp3 · heal=heal.mp3 · freeze=freeze.mp3 · burn=burn.mp3 · powerup=powerup.mp3 · transform=transform.mp3 · cardPlay=card-play.mp3 · cardFlip=card-flip.mp3 · draw=draw.mp3 (NEW) · shuffle=shuffle.mp3 (NEW) · instant=instant.mp3 · ability=ability.mp3 · energy=energy.mp3 · packOpen=pack-open.mp3 · prize=prize.mp3 · coin=coin.mp3 · dice=dice.mp3 (NEW, split from coin) · turnStart=turn-start.mp3 · win=win.mp3 · lose=lose.mp3 · click=click.mp3 · error=error.mp3 · emote=emote.mp3 · heraldStorm=thunder.mp3 · rift=rift.mp3 (NEW). Kept as synth: poison, paralyze, confuse, mystical, heraldName, the pack charge/burst/rip, the Harvest secret sounds. transform / powerup / destroy / coin were called but never defined on web (silent) — now defined (synth fallback) so their files play. Pack opening: when pack-open.mp3 exists the synth packTear is skipped.",
       "WHERE THE NEW ONES PLAY: draw → every animated draw from a deck (not during setup). shuffle → whenever a player's deck is shuffled during a match (deck searches, cards shuffled back), at most once per 1.5 s. dice → once when the dice panel starts rolling (replaces the tick clicks when the file exists). coin → the coin panel's flip (was the card-flip sound). rift → the Rift vortex (fxRift). transform → plays 0.83 s after the transformation animation starts, so the burst lands with the flash at ~0.95 s (the card swap).",
@@ -11713,6 +11723,7 @@ const DEFAULTS={
   magnus_ssj_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/023-150%20(Magnus%20SSJ).png',
   royal_matcha_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/078-150%20(Royal%20Matcha).png',
   virora_matcha_bse: "https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/079-150%20(Virora's%20Matcha%20Instant).png",
+  virora_beer_bse: "https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/086-150%20(Virora's%20Beer).png",
   zephyranth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/075-150%20(Zephyranth%20Fruit%20Instant).png',
   blade_of_udun_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/081-150%20(Blade%20Of%20Udun%20Instant).png',
   kevin_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Awakening/Kevin%20(Promo%20Card).png',
@@ -11722,6 +11733,7 @@ const DEFAULTS={
   paradox_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/027-150%20(Paradox).png',
   crystal_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/113-150%20(Crystal%20Base).png',
   crystal_ssj_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/114-150%20(Crystal%20SSJ).png',
+  crystal_ssj2_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/126-150%20(Crystal%20SSJ2).png',
   pharoah_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/112-150%20(Pharoah).png',
   zaria_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/127-150%20(Zaria).png',
   asteria_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/150-150%20(Asteria).png',
@@ -12017,8 +12029,12 @@ const DB={
     abilities:[{label:'Limitless Power',type:'triggered',cost:0,text:'At the start of your turn, this card gets +1/+1 permanently (max +4/+4).'},
       {label:'Unbreakable',type:'passive',cost:0,text:'Resolve. The first time this card would be destroyed by damage, it survives with 1 Health instead (once per game).'}]},
   // ── CRYSTAL (SSJ) (BSE 114/150) — build 10.18. Saiyan-path form of Crystal (113). BLUE (protection / control).
-  crystal_ssj_bse:{id:'crystal_ssj_bse',rarity:'uncommon',name:'Crystal (SSJ)',color:'blue',charName:'Crystal',charLine:'crystal',formTier:'ssj1',path:'saiyan',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:5,atk:4,hp:5,sym:'CRYSSJ',setId:'base_set',cardNumber:'114/150',keywords:[],nextForms:[],
+  crystal_ssj_bse:{id:'crystal_ssj_bse',rarity:'uncommon',name:'Crystal (SSJ)',color:'blue',charName:'Crystal',charLine:'crystal',formTier:'ssj1',path:'saiyan',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:5,atk:4,hp:5,sym:'CRYSSJ',setId:'base_set',cardNumber:'114/150',keywords:[],nextForms:['ssj2'],
     abilities:[{label:'Prism Barrier',type:'activated',cost:2,limit:'once_per_turn',text:'Pay 2 Energy: Choose one of your characters. The next time it would be dealt damage before your next turn, prevent 3 of that damage. (Once per turn)'}]},
+  // ── CRYSTAL (SSJ2) (BSE 126/150) — build 10.40. Crystal's second form (Base → SSJ → SSJ2). BLUE (shields + payback).
+  crystal_ssj2_bse:{id:'crystal_ssj2_bse',rarity:'rare',name:'Crystal (SSJ2)',color:'blue',charName:'Crystal',charLine:'crystal',formTier:'ssj2',path:'saiyan',transformOnly:true,subtypes:['Saiyan'],type:'char',race:'Saiyan',cost:7,atk:6,hp:7,sym:'CRYSSJ2',setId:'base_set',cardNumber:'126/150',keywords:[],nextForms:[],
+    abilities:[{label:'Storm Aegis',type:'activated',cost:2,limit:'once_per_turn',text:'Pay 2 Energy: Choose one of your characters. The next time it would be dealt damage before your next turn, prevent 4 of that damage. (Once per turn)'},
+      {label:'Refraction Surge',type:'triggered',cost:0,text:'Whenever damage to one of your characters is prevented, deal 2 damage to the character that dealt it.'}]},
   // ── SURANA (SSG) (BSE 029/150) — build 10.3. God form of Surana. BLACK (Poison + sacrifice payoff).
   surana_ssg_bse:{id:'surana_ssg_bse',rarity:'uncommon',name:'Surana (SSG)',color:'black',charName:'Surana',charLine:'surana',formTier:'ssg',path:'god',transformOnly:true,subtypes:['Omega','Celestial','Saiyan God'],type:'char',race:'Omega Celestial Saiyan',cost:5,atk:5,hp:5,sym:'SURSSG',setId:'base_set',cardNumber:'029/150',keywords:[],nextForms:['sss'],
     abilities:[{label:'Withering Touch',type:'triggered',cost:0,text:'Whenever this card deals combat damage to a character, that character is Poisoned.'},
@@ -12218,6 +12234,9 @@ const DB={
   // ── VIRORA'S MATCHA — BSE Instant (Consumable). GREEN (healing). 079/150 Rare.
   virora_matcha_bse:{id:'virora_matcha_bse',rarity:'rare',name:"Virora's Matcha",color:'green',charName:"Virora's Matcha",subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:4,atk:0,hp:0,sym:'🧋',setId:'base_set',cardNumber:'079/150',nextForms:[],
     abilities:[{label:"Virora's Matcha",type:'instant',cost:0,text:'Heal a chosen character for +4 HP and cure ALL status effects on it.'}],transforms:[]},
+  // ── VIRORA'S BEER — BSE Instant (Consumable). PURPLE (Confusion; the printed circle is pink, which the game doesn't have). 086/150 Common. build 10.40
+  virora_beer_bse:{id:'virora_beer_bse',rarity:'common',name:"Virora's Beer",color:'purple',charName:"Virora's Beer",subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:2,atk:0,hp:0,sym:'🍺',setId:'base_set',cardNumber:'086/150',nextForms:[],
+    abilities:[{label:'Liquid Courage',type:'instant',cost:0,text:"Choose one of your characters. It gets +2 Attack until end of turn, then becomes Confused. If it's a Virora character, it doesn't become Confused."}],transforms:[]},
   // ── BLADE OF UDUN — BSE instant. RED (direct damage + Burn). 081/150 Uncommon.
   blade_of_udun_bse:{id:'blade_of_udun_bse',rarity:'uncommon',name:'Blade of Udun',color:'red',charName:'Blade of Udun',subtypes:['Instant','Equipment'],type:'instant',race:'Instant',cost:3,atk:0,hp:0,sym:'🗡️',setId:'base_set',cardNumber:'081/150',nextForms:[],
     abilities:[{label:'Blade of Udun',type:'instant',cost:0,text:"Choose a character on your opponent's field. That character takes 2 damage and is now Burned."}],transforms:[]},
@@ -13862,6 +13881,7 @@ function fillAttachedCarry(fc){
 function reapplyCarry(fc,list){ fc.carry=[]; (list||[]).forEach(e=>grantCarry(fc,e.src,e.atk,e.hp)); fillAttachedCarry(fc); }
 function tempStatDelta(f){ let a=0,h=0;
   a+=(f._webSling||0)+(f._riseImp||0); // 🕷 Spider-Man (Imperfects)
+  a+=(f._beer||0); // 🍺 Virora's Beer
   a+=(f._ironFist||0)+(f._avState||0)+(f._bloodRite||0)+(f._rampage||0)+((f._flame&&f._flame.amt)||0)+(f.krhAtk||0)+(f.ssbAtkBuff||0)+(f._aeth||0)+(f._stonePow||0)+(f._dcmd||0);
   h+=(f.krhHp||0)+(f._dcmd||0);
   a-=(f.surfacerAtkDebuff||0); h-=(f.surfacerHpDebuff||0);
@@ -14375,9 +14395,10 @@ function fxEffectsOf(fc){
   if(airBlasted(fc)) cond('💨','Air Blast',"Tapped — it can't attack until its opponent's next turn.",null);
   if(fc._avState>0) cond('🌀','Avatar State','+'+fc._avState+' Attack and Onslaught until the end of this turn.',null);
   if(fc._webSling>0) cond('🕸','Web-Slinger Strike','+'+fc._webSling+' Attack until the end of this turn'+(webSlingOn(fc)?' · its next attack takes no damage back':'')+'.',null);
+  if(fc._beer>0) cond('🍺','Liquid Courage','+'+fc._beer+' Attack until the end of this turn.',null);
   if(fc._riseImp>0) cond('🕷','Rise of the Imperfect','+'+fc._riseImp+' Attack until the end of this turn, and it can attack twice.',null);
   if(hasAbilityLabel(fc,'Spider-Sense')) cond('🕷','Spider-Sense',fc._spiderTurn===_braceTurnKey()?'Used this turn — ready again next turn.':'Ready: the first damage it takes this turn is reduced by 2.',null);
-  if(fc._prismShield>0) cond('💠','Prism Barrier','Prevents '+fc._prismShield+' of the next damage it would be dealt (ends at the start of its owner\'s next turn).',null);
+  if(fc._prismShield>0) cond(fc._prismLbl==='Storm Aegis'?'⛈':'💠',fc._prismLbl||'Prism Barrier','Prevents '+fc._prismShield+' of the next damage it would be dealt (ends at the start of its owner\'s next turn).',null);
   if(Array.isArray(fc.attachments)&&fc.attachments.includes('void_siphon_device_bse')) cond('🌀','Void Siphon Device',((fc._siphonT||0)%2===1)?"Energy Intake is recharging — it drains again at the start of its controller's turn after next.":"Energy Intake: at the start of its controller's next turn, the opponent loses 2 Energy and its controller gains that much.",{cid:'void_siphon_device_bse',uid:null});
   if(Array.isArray(fc.attachments)&&fc.attachments.includes('the_dark_hold_bse')) cond('📕','The Dark Hold','Takes 1 damage at the start of each of your turns'+(fc._sinTurn===(G&&G.turn)?' · Pages of Sin used this turn':'')+'.',null);
   { const l=fc.abilityUsed&&fc.abilityUsed.sandstorm_turn; if(l!=null&&G&&G.turn-l<4&&hasAbilityLabel(fc,'Sandstorm')) cond('🏜','Sandstorm','Recharging: ready again in '+(4-(G.turn-l))+' turn(s).',null); }
@@ -15392,13 +15413,32 @@ function escalationSpec(fc){
 function escalationBank(fc){ const sp=escalationSpec(fc); if(!sp) return; const was=fc._esc||0; fc._esc=Math.min(sp.cap,was+sp.step);
   if(fc._esc>was) log(`💥 Legendary Escalation: ${DB[fc.cid]?.name} survives — its next attack deals +${fc._esc}.`,'gain'); }
 function prismBarrierAbsorb(fc,dmg){
-  const blk=Math.min(fc._prismShield||0,dmg); fc._prismShield=0; fc._prismBy=null;
-  if(blk>0){ log(`💠 Prism Barrier: ${DB[fc.cid]?.name} is shielded — ${blk} damage prevented${dmg-blk>0?` (takes ${dmg-blk})`:''}.`,'gain');
+  const blk=Math.min(fc._prismShield||0,dmg), L=fc._prismLbl||'Prism Barrier'; fc._prismShield=0; fc._prismBy=null; fc._prismLbl=null;
+  if(blk>0){ log(`${L==='Storm Aegis'?'⛈':'💠'} ${L}: ${DB[fc.cid]?.name} is shielded — ${blk} damage prevented${dmg-blk>0?` (takes ${dmg-blk})`:''}.`,'gain');
     if(typeof showStatusFx==='function') try{ showStatusFx(fc.uid,'freeze'); }catch(e){} }
   return dmg-blk;
 }
+// REFRACTION SURGE (Crystal SSJ2, build 10.40): dealDamage notes when damage to a character was PREVENTED (any reduction there:
+// Nullify, Inferno Ward, Diamond Calm, Half-Divine, Titan's Armor, Bracelets, Prism Barrier / Storm Aegis, Spider-Sense). Each
+// Refraction Surge character its controller had on the field at that moment then deals 2 to the character that dealt it (a
+// character of another side; Heralds, Burn/Poison and effects without a source character don't count). It runs after the hit
+// lands; refraction damage never triggers Refraction again.
+function refractionSurge(r){
+  G._refracting=true;
+  try{ for(const h of r.hs){ const S=(G.players[r.so]?.field||[]).find(f=>f.uid===r.src); if(!S||(S.currentHP||0)<=0) break;
+      log(`🔷 Refraction Surge: ${r.prev} damage to ${r.tn} was prevented — ${h.name} hits ${DB[S.cid]?.name} for 2.`,'dmg');
+      if(typeof fxSlash==='function') try{ fxSlash(S.uid,'#7dd3fc'); }catch(e){}
+      const _fx=(typeof fxPush==='function')?fxPush(h.cid,'Refraction Surge',h.uid):null;
+      try{ dealDamage(r.so,S.uid,2); } finally{ if(typeof fxPop==='function') fxPop(_fx); } } }
+  finally{ G._refracting=false; }
+}
+function refractRisk(t){ // CPU: counter damage an attacker should expect from hitting t
+  const q=_fcOwner(t); if(q==null) return 0; const n=(G.players[q].field||[]).filter(f=>isChar(DB[f.cid])&&hasAbilityLabel(f,'Refraction Surge')).length; if(!n) return 0;
+  const red=(t._prismShield>0)||(t.nullify>0)||['Inferno Ward','Diamond Calm',"Titan's Armor"].some(l=>hasAbilityLabel(t,l))||(hasAbilityLabel(t,'Spider-Sense')&&t._spiderTurn!==_braceTurnKey());
+  return red?2*n:0;
+}
 function tickPrismBarrier(p){
-  (G.is2v2&&typeof teamPlayers==='function'?[1,2,3,4]:[1,2]).forEach(q=>(G.players[q]?.field||[]).forEach(f=>{ if(f._prismShield>0&&f._prismBy===p){ f._prismShield=0; f._prismBy=null; log(`💠 ${DB[f.cid]?.name}'s Prism Barrier fades.`,'info'); } }));
+  (G.is2v2&&typeof teamPlayers==='function'?[1,2,3,4]:[1,2]).forEach(q=>(G.players[q]?.field||[]).forEach(f=>{ if(f._prismShield>0&&f._prismBy===p){ const L=f._prismLbl||'Prism Barrier'; f._prismShield=0; f._prismBy=null; f._prismLbl=null; log(`${L==='Storm Aegis'?'⛈':'💠'} ${DB[f.cid]?.name}'s ${L} fades.`,'info'); } }));
 }
 function dealDamage(tp,tuid,amt){
   if(amt<=0)return;
@@ -15440,6 +15480,11 @@ function dealDamage(tp,tuid,amt){
       log(`Rage Eternal: Hulk gains +${dmg} ATK (now ${hfc.currentATK})!`,'gain');
     }
   }
+  let _refr=null; // 🔷 Refraction Surge (Crystal SSJ2): damage to this character was prevented
+  if(isChar(c)&&!G._refracting&&amt-dmg>0){ const _hs=(G.players[tp].field||[]).filter(f=>isChar(DB[f.cid])&&hasAbilityLabel(f,'Refraction Surge'));
+    if(_hs.length){ const _s=_dmgSourceFc(tuid), _so=_s?_fcOwner(_s):null;
+      if(_s&&_so!=null&&_so!==tp&&!(G.is2v2&&typeof teamOf==='function'&&teamOf(_so)===teamOf(tp))&&isChar(DB[_s.cid])&&String(_s.uid)!==String(tuid))
+        _refr={hs:_hs.map(f=>({uid:f.uid,cid:f.cid,name:DB[f.cid]?.name})),src:_s.uid,so:_so,prev:amt-dmg,tn:c.name}; } }
   fc.currentHP-=dmg;
   if(isChar(c)){ fc.damagedThisTurn=true; fc._hurtTurn=G.turn; } // _hurtTurn: Blinding Power (Virora SSJ) looks back to the start of your last turn
   msDamage(tp,fc,dmg,tuid); // end-of-match stats
@@ -15468,6 +15513,7 @@ function dealDamage(tp,tuid,amt){
     } else { killCard(tp,fc); }
   }
   if(isChar(c)&&dmg>0&&fc.currentHP>0&&hasAbilityLabel(fc,'Legendary Escalation')&&(G.players[tp]?.field||[]).some(f=>f.uid===fc.uid)) escalationBank(fc); // 💥 Keon
+  if(_refr) refractionSurge(_refr); // 🔷 Crystal (SSJ2)
 }
 
 // DEVOURING DARK (Praxus, Herald): one of your characters is destroyed or sacrificed → +1 Energy, at most 2 per turn.
@@ -16229,7 +16275,7 @@ function openBurstWindow(ap, auid, dp, duid, phase){
 //    Barrier, Earth Wall, Radiant Blessing), or let it hit. One response per attack; 20 s, then it lets the hit through.
 //    Your response really resolves (it runs through the normal play path with you as the acting player for that moment).
 //    Online matches: not yet (needs both screens in sync) — combat resolves directly there, as before.
-const BURST_ABILITIES=['Grove Bloom','Full Restore','Prism Barrier','Earth Wall','Radiant Blessing'];
+const BURST_ABILITIES=['Grove Bloom','Full Restore','Prism Barrier','Storm Aegis','Earth Wall','Radiant Blessing'];
 const BURST_SKIP_INSTANTS=['art_of_fusion_bse','unison_rite_test'];
 function burstHumanDefender(ap,dp){
   if(!G||G.onlineMode||G.is2v2||G.tutorialMode||G.gameOver||ap===dp||window._noBurst) return false; // _noBurst: test-harness bypass (like _skipCoinToss)
@@ -17999,6 +18045,11 @@ function onHandClick(p,uid,fc){
       pastPerfectResolve(p, c.id, bases, commitPlay);
       return;
     }
+    if(c.id==='virora_beer_bse'){ // 🍺 Liquid Courage (build 10.40)
+      if(!chars.length){log(`No field character to use ${c.name} on!`,'dmg');return;}
+      openBeerPicker(p, fco, chars, commitPlay);
+      return;
+    }
     if(c.id==='royal_matcha_bse' || c.id==='virora_matcha_bse'){
       if(!chars.length){log(`No field character to use ${c.name} on!`,'dmg');return;}
       const healAmt = c.id==='virora_matcha_bse'?4:2;
@@ -18020,7 +18071,7 @@ function onHandClick(p,uid,fc){
 }
 
 // Instants that ask for a target before they resolve (charge on confirm in onHandClick).
-const HAND_CHOICE_INSTANTS=new Set(['winters_approach_hoc','saiyan_blood','zephyranth_fruit_bse','vermynth_fruit_bse','royal_matcha_bse','virora_matcha_bse','blade_of_udun_bse','past_perfect_bse']);
+const HAND_CHOICE_INSTANTS=new Set(['winters_approach_hoc','saiyan_blood','zephyranth_fruit_bse','vermynth_fruit_bse','royal_matcha_bse','virora_matcha_bse','virora_beer_bse','blade_of_udun_bse','past_perfect_bse']);
 // GENERIC ENEMY TARGET PICKER — pick one enemy character, run callback(uid)
 function openEnemyTargetPicker(targets, callback, opts){
   opts = opts || {};
@@ -18111,6 +18162,49 @@ function openFruitHealPicker(p, fco, chars, healAmt, atkAmt, cureMode, commit){
     body.appendChild(btn);
   });
   showModalEl(`Instant: ${c.name}`,body);
+}
+// VIRORA'S BEER — Liquid Courage: +2 Attack until end of turn (fc._beer; tickBeer clears it at the end of every turn), then the
+// character becomes Confused unless it's a Virora character (so its attacks need the Confusion coin flip: tails = it hits itself for 2).
+function beerApply(p, c, target){
+  const pl=G.players[p]; const nm=DB[target.cid]?.name;
+  target._beer=(target._beer||0)+2; target.currentATK=(target.currentATK||0)+2; target.atkBonus=(target.atkBonus||0)+2;
+  if(typeof showStatusFx==='function') try{ showStatusFx(target.uid,'confuse'); }catch(e){}
+  let msg=`🍺 ${c.name}: ${nm} gets +2 Attack until the end of the turn (now ${target.currentATK})`;
+  if(isViroraChar(DB[target.cid])) msg+=` — Virora holds her drink, so no Confusion`;
+  log(msg+'.','gain');
+  if(!isViroraChar(DB[target.cid])){ if(applyStatus(target,'confuse')) log(`😵 ${nm} is Confused.`,'dmg'); }
+  pl.discard.push(c.id);
+  if(typeof recalcPassives==='function')recalcPassives();
+}
+function openBeerPicker(p, fco, chars, commit){
+  const c=DB[fco.cid];
+  const apply=(target)=>{
+    if(commit && !commit()){ closeAllModals(); renderAll(); return; } // pay now that a target is chosen
+    beerApply(p, c, target);
+    closeAllModals(); renderAll();
+    if(G.tutorialMode&&p===1&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('instant');
+  };
+  const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(p) : (p===1);
+  if(!_human||(G&&G._aiAuto)){
+    const vr=chars.filter(f=>isViroraChar(DB[f.cid]));
+    const pool=vr.filter(f=>aiReady(f)); const t=(pool.length?pool:(vr.length?vr:chars)).slice().sort((a,b)=>(b.currentATK||0)-(a.currentATK||0))[0];
+    apply(t); return;
+  }
+  const body=document.createElement('div');
+  body.innerHTML=`<div style="font-weight:700;color:#e879f9;margin-bottom:4px">🍺 ${c.name}</div><div style="font-size:11px;color:#9ca3af;margin-bottom:10px">${c.abilities[0]?.text||''}</div><div style="font-size:11px;color:#c8a0ff;margin-bottom:6px">Choose one of your characters:</div>`;
+  body.dataset.btgHint=`Choose one of your characters for ${c.name}.`; body.dataset.btgSrc=fco.uid;
+  chars.forEach(cf=>{
+    const cc=DB[cf.cid]; const v=isViroraChar(cc);
+    const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:7px 10px;display:flex;justify-content:space-between;align-items:center'; btn.dataset.tuid=cf.uid;
+    btn.innerHTML=`<span>${cc.name}</span><span style="color:${v?'#86efac':'#c084fc'}">⚔${cf.currentATK}→${(cf.currentATK||0)+2}${v?' · no Confusion':' · 😵 Confused'}</span>`;
+    if(G.tutorialMode && _tutTargetCid && cf.cid!==_tutTargetCid){ btn.disabled=true; btn.style.opacity='0.4'; btn.style.cursor='not-allowed'; btn.innerHTML+=' 🔒'; }
+    else { btn.onclick=()=>apply(cf); }
+    body.appendChild(btn);
+  });
+  showModalEl(`Instant: ${c.name}`,body);
+}
+function tickBeer(){ // "until end of turn": clears at the end of whichever turn it was drunk in (a Burst-Window drink too)
+  [1,2,3,4].forEach(q=>(G.players[q]?.field||[]).forEach(f=>{ if(f._beer){ f.currentATK=Math.max(0,(f.currentATK||0)-f._beer); f.atkBonus=(f.atkBonus||0)-f._beer; f._beer=0; log(`🍺 ${DB[f.cid]?.name}'s Liquid Courage wears off.`,'info'); } }));
 }
 function openInstantTargetPicker(ifc,chars,commit){
   const ic=DB[ifc.cid];
@@ -20985,20 +21079,23 @@ function runAbilityEffect(fc, abl, pl){
   // ── CRYSTAL (SSJ) BSE 114/150: Prism Barrier — 2⚡, once per turn, paid → doesn't tap. Choose one of your characters (herself
   //    included): the next time it would be dealt damage before your next turn, prevent 3 of it (fc._prismShield). A new barrier on
   //    the same character replaces the old one (no stacking). Closing the chooser refunds the ability.
-  if(label==='Prism Barrier'){
+  // ── CRYSTAL (SSJ2) BSE 126/150: Storm Aegis — the same shield at 4 (build 10.40). The amount comes from the ability's text.
+  if(label==='Prism Barrier'||label==='Storm Aegis'){
     const ap=G.activePlayer, P=G.players[ap]; const _undo=_abilityUndo;
+    const _ab=[...(DB[fc.cid]?.abilities||[]),...(fc.gainedAbilities||[])].find(a=>a&&a.label===label);
+    const AMT=+((/prevent (\d+)/i.exec(_ab?.text||'')||[])[1]||(label==='Storm Aegis'?4:3)), IC=label==='Storm Aegis'?'⛈':'💠';
     const mine=P.field.filter(f=>isChar(DB[f.cid]));
-    if(!mine.length){ if(_undo) _undo(); log('Prism Barrier: no character to shield — not used.','dmg'); renderAll(); return; }
+    if(!mine.length){ if(_undo) _undo(); log(`${label}: no character to shield — not used.`,'dmg'); renderAll(); return; }
     const go=(uid)=>{ const t=P.field.find(f=>f.uid===uid); if(!t){ if(_undo) _undo(); renderAll(); return; }
-      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Prism Barrier',fc.uid):null;
-      t._prismShield=3; t._prismBy=ap; if(typeof showStatusFx==='function') try{ showStatusFx(t.uid,'freeze'); }catch(e){}
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,label,fc.uid):null;
+      t._prismShield=AMT; t._prismBy=ap; t._prismLbl=label; if(typeof showStatusFx==='function') try{ showStatusFx(t.uid,'freeze'); }catch(e){}
       if(typeof fxPop==='function') fxPop(_fx);
-      log(`💠 Prism Barrier: ${DB[t.cid].name} is shielded — the next damage it would be dealt before your next turn is reduced by 3.`,'gain');
+      log(`${IC} ${label}: ${DB[t.cid].name} is shielded — the next damage it would be dealt before your next turn is reduced by ${AMT}.`,'gain');
       renderAll(); };
     if(seqIsLocalHuman(ap)&&!G._aiAuto){
-      seqChoose('💠 Prism Barrier','Choose one of your characters. The next time it would be dealt damage before your next turn, prevent 3 of that damage.',
+      seqChoose(`${IC} ${label}`,`Choose one of your characters. The next time it would be dealt damage before your next turn, prevent ${AMT} of that damage.`,
         mine.map(f=>({label:DB[f.cid].name+(f.uid===fc.uid?' (this card)':''), sub:'♥'+(f.currentHP||0)+(f._prismShield>0?' · shielded':''), val:f.uid})),
-        go, ()=>{ if(_undo) _undo(); log('Prism Barrier: cancelled — Energy back.','info'); });
+        go, ()=>{ if(_undo) _undo(); log(`${label}: cancelled — Energy back.`,'info'); });
     } else {
       const pool=mine.filter(f=>!(f._prismShield>0)); const t=(pool.length?pool:mine).slice().sort((a,b)=>aiFcValue(b)-aiFcValue(a))[0];
       go(t.uid);
@@ -22786,6 +22883,7 @@ function endTurnFx(p){
   tickIronFist(p); // 👊 Danny Rand: The Iron Fist ends with the turn
   tickAvatarState(p); // 🌀 Aang: Avatar State ends with the turn
   tickSpiderMan(p); // 🕷 Spider-Man (Imperfects): Web-Slinger / Rise +3 Attack end with the turn
+  tickBeer(); // 🍺 Virora's Beer: Liquid Courage's +2 Attack ends with the turn
   tickBloodRite(p); // 🩸 Surana (SSS): Blood Rite's +3 Attack ends with the turn
   tickScorchedEarth(p); // count down any Scorched Earth timers this player set
   tickFusions(p); // 💤 Fatigue, then 💫 Dance timers (split at 0)
@@ -23403,7 +23501,7 @@ function aiScoreAbility(p, fc, abl, src){
   if(abl.label==='Elemental Cataclysm'){ const es=aiEnemyChars(p); if(!es.length) return -1;
     const kills=es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,3-(e.fc.nullify||0))).length;
     return 16+es.length*5+kills*14-(aiReady(fc)?12:0); }
-  if(abl.label==='Prism Barrier'){ const _m=pl.field.filter(f=>isChar(DB[f.cid])&&!(f._prismShield>0)); if(!_m.length||!aiEnemyChars(p).length) return -1;
+  if(abl.label==='Prism Barrier'||abl.label==='Storm Aegis'){ const _m=pl.field.filter(f=>isChar(DB[f.cid])&&!(f._prismShield>0)); if(!_m.length||!aiEnemyChars(p).length) return -1;
     if(pl.energy-cost<1) return -1; return 5+Math.min(7,Math.max(..._m.map(f=>aiFcValue(f)))*.25); } // a shield for its best character before the enemy turn
   if(abl.label==='Blood Rite'){ const _o=pl.field.filter(f=>f.uid!==fc.uid&&isChar(DB[f.cid])&&!DB[f.cid]?.isToken); if(!_o.length) return -1;
     if(Math.min(..._o.map(f=>aiFcValue(f)))>12) return -1; const _hurt=Math.max(0,aiMaxHP(fc)-(fc.currentHP||0));
@@ -23545,6 +23643,7 @@ function aiEnumerateActions(p){
       if(c.id==='zephyranth_fruit_bse'||c.id==='vermynth_fruit_bse'||c.id==='royal_matcha_bse'||c.id==='virora_matcha_bse'){ if(wounded.length) s=42+wounded.length*3; else if(c.id==='virora_matcha_bse'&&chars.some(f=>f.statuses&&Object.keys(f.statuses).length)) s=40; }
       else if(c.id==='past_perfect_bse'){ const bs=(pl.discard||[]).filter(id=>DB[id]?.type==='base_char'); if(bs.length) s=24+Math.min(16,bs.length*3)+(bs.some(id=>_ppFormsOf(p,id).length)?10:0); }
       else if(c.id==='blade_of_udun_bse'){ if(enemies.length){ s=36; if(enemies.some(e=>e.fc.currentHP<=2)) s+=22; } }
+      else if(c.id==='virora_beer_bse'){ const _v=chars.filter(f=>isViroraChar(DB[f.cid])&&aiReady(f)&&canCharacterAttack(p,f)); if(_v.length&&enemies.length) s=30; }   // build 10.40
       else if(c.id==='saiyan_blood'){ if(chars.some(f=>DB[f.cid]?.subtypes?.some(x=>/saiyan/i.test(x)))) s=34; else if(chars.length) s=24; }
       else if(c.id==='courts_favor_hoc'){ if(pl._favorTurn!==G.turn){ const gain=harvestOn(p)?4:3; const next=pl.hand.some(h=>h.uid!==fc.uid&&DB[h.cid]&&DB[h.cid].type!=='energy_card'&&!DB[h.cid].transformOnly&&(DB[h.cid].cost||0)>pl.energy-1&&(DB[h.cid].cost||0)<=pl.energy-1+gain); s=next?48:20; } }
       else if(c.id==='winters_approach_hoc'){ if(enemies.length) s=30+Math.min(2,enemies.length)*4+(harvestOn(p)&&enemies.length>1?6:0); }
@@ -24791,7 +24890,7 @@ function aiChooseStance(p, fc, when){
     const atkIn=offAtk-(stanceLabelActive(t,'Water Stance')?3:0);
     const kills=atkIn>=(t.currentHP||0) && !(hasKW(t,'resolve')&&!t.resolveUsed&&(t.currentHP||0)>0);
     if(!kills) return false;
-    const counters=(hasAbilityLabel(t,'Inferno Reflex')?2:0)+(hasAbilityLabel(t,'Shielded Pressure')?3:0)+(hasAbilityLabel(t,'Receipt')?2:0);
+    const counters=(hasAbilityLabel(t,'Inferno Reflex')?2:0)+(hasAbilityLabel(t,'Shielded Pressure')?3:0)+(hasAbilityLabel(t,'Receipt')?2:0)+refractRisk(t);
     return offHp>counters;
   });
   if(killSafe) return off;
@@ -29732,7 +29831,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.39';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.40';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
