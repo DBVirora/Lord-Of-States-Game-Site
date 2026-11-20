@@ -6753,6 +6753,15 @@ textarea{
 .player-panel-title{ font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--title-c,#e8c570); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-shadow:0 0 8px var(--title-glow,transparent); margin-top:1px; }
 .player-panel-title:empty{ display:none; }
 .player-panel-top.cos-plate{ background:var(--plate-bg); background-size:cover; background-position:center; border-radius:8px; padding:4px 6px; border:1px solid var(--plate-line,rgba(232,197,112,.3)); }
+/* build 10.41 · frames + plates outside the 1v1 battle panel (top bar, main menu, profile, 2v2) */
+.cos-av.cos-framed{ position:relative; overflow:visible!important; border-color:transparent!important; }
+.cos-av.cos-framed::after{ content:''; position:absolute; inset:-18%; background:var(--frame-img) center/contain no-repeat; pointer-events:none; z-index:2; }
+.cos-av.cos-ring{ border:2px solid var(--ring1,#e8c570)!important; box-shadow:0 0 0 2px var(--ring2,rgba(232,197,112,.35)),0 0 12px var(--ring2,rgba(232,197,112,.35))!important; }
+.cos-av.cos-framed img,.cos-av.cos-ring img{ border-radius:50%; }
+.cos-plated{ background:var(--plate-bg)!important; background-size:cover!important; background-position:center!important; border:1px solid var(--plate-line,rgba(232,197,112,.4))!important; text-shadow:0 1px 3px #000,0 0 6px rgba(0,0,0,.8); }
+.cos-plated.cos-plate-img{ background-size:100% 100%!important; }
+.pf-name.cos-plated{ display:inline-block; padding:2px 16px; border-radius:8px; }
+.v2-hud-name.cos-plated{ padding:1px 8px; border-radius:6px; }
 /* shop tab */
 .cos-head{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:12px; }
 .cos-chip{ font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1.5px; color:#cfc6dc; background:rgba(14,10,38,.85); border:1px solid rgba(232,197,112,.3); border-radius:999px; padding:5px 11px; cursor:pointer; transition:all .15s; }
@@ -9661,7 +9670,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.40 · Crystal (SSJ2) + Virora's Beer</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.41 · Frames and plates everywhere</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10718,6 +10727,12 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.40'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.41', date:'2026-11-20', cards:[], abilities:[],
+    screens:["AVATAR FRAMES + NAME PLATES SHOW EVERYWHERE (Rulk: 'they don't appear at all when equipped — they need to appear in battles and on the menus'). PC v1.0.19's Battle.gd applies ONLY the title from the loadout (applyIdentCos title part) — the frame and plate are never drawn, in battles or menus. Web (applyIdentCos + new applyMenuCos) does this — the PC needs the same:",
+      "ITEMS: cosmetics type 'frame' = { ring:[c1,c2] } (draw a 2px ring in c1 + an outer 2px glow ring and a soft glow in c2) or { img } (a PNG ring drawn OVER the avatar, centered, ~136% of the avatar size: CSS inset −16%/−18%, contain). frame_none = nothing. Type 'plate' = { bg: CSS linear-gradient, line } or { img } (a PNG drawn behind the name box, stretched to the box; line = 1px border colour, default rgba(232,197,112,.4)). plate_none = nothing. Ownership rule: an equipped item you don't own falls back to the default.",
+      "WHERE (web): 1) BATTLE 1v1: your avatar (p1) and the opponent's (p2) get their frame; the whole ident box (avatar + name + title, .player-panel-top) gets the plate behind it (radius 8, padding 4×6). The opponent uses its own loadout: online = their cos_hello loadout, CPU = its rolled aiCosLoadout (random from free + starter + what YOU own). 2) BATTLE 2v2: each seat's small identity chip gets that seat's frame and the seat name gets the plate behind it (padding 1×8, radius 6). 3) TOP BAR: your avatar circle gets your frame (shows on every menu). 4) MAIN MENU: the nameplate under the display Herald (name + title + PROFILE ›) gets your plate behind it. 5) PROFILE: the big avatar gets your frame; your name gets the plate behind it (inline, padding 2×16, radius 8). Name text on a plate gets a dark shadow so it stays readable. Image plates stretch to the box (100%×100%); gradient plates cover.",
+      "Refresh them whenever the loadout changes (equip in the Locker / Market / Battle Pass), at login when the profile loads, when the opponent's cos_hello arrives, and when a match starts."],
+    data:["WEB_BUILD 10.41. GAME_BUILD stays '10.40' (cosmetic display only)."] },
   { build:'10.40', date:'2026-11-20',
     cards:[{id:'crystal_ssj2_bse', set:'base_set', number:'126/150', rarity:'rare', scan:'Sets/BASE SET/126-150 (Crystal SSJ2).png', newAbilities:['Storm Aegis','Refraction Surge'],
       note:"Crystal (SSJ2) · Blue · transformOnly · charLine 'crystal' · formTier 'ssj2' · path 'saiyan' · cost 7 · 6 ATK / 7 HP · subtypes Saiyan · race 'Saiyan' · sym CRYSSJ2. DATA CHANGE: crystal_ssj_bse.nextForms [] → ['ssj2'] (Crystal → SSJ → SSJ2)."},
@@ -26228,6 +26243,7 @@ function mmRenderPlinth(){
   const h=mmDisplayHerald(); const el=document.getElementById('mm-herald'); if(el){ const u=h?getImg(h):null; el.innerHTML=u?`<img src="${u}" alt="">`:'<div style="display:grid;place-items:center;height:100%;font-size:40px">👑</div>'; if(u&&typeof applyScanTrim==='function')applyScanTrim(el.querySelector('img')); }
   const sub=document.getElementById('mm-herald-sub'); if(sub) sub.textContent='HERALD · '+(h?DB[h].name.toUpperCase():'—')+' · TAP TO CHANGE';
   const nm=document.getElementById('mm-name'); if(nm) { let n=(window._playerName||document.getElementById('hud-username')?.textContent||'').trim(); if(!n||/loading/i.test(n)) n='PLAYER'; nm.textContent=n.toUpperCase(); }
+  if(typeof applyMenuCos==='function') applyMenuCos(); // build 10.41: your plate behind the nameplate
   const ti=document.getElementById('mm-title'); if(ti){ const t=(typeof cosItem==='function')?cosItem(cosEquipped('title',1)):null; ti.textContent=(t&&t.id!=='title_none')?(t.text||t.name):''; ti.style.color=(t&&t.color)||'#00d4ff'; ti.classList.toggle('ttl-fx-playtest',!!(t&&t.fx==='playtest')); }
   const w=_celData.wins||0, l=_celData.losses||0; const W=document.getElementById('mm-wins'); if(W)W.textContent=w; const L=document.getElementById('mm-losses'); if(L)L.textContent=l; const R=document.getElementById('mm-wr'); if(R)R.textContent=(w+l)?Math.round(w/(w+l)*100)+'%':'—';
   const rg=document.getElementById('mm-reg'); if(rg&&typeof registryEligible==='function'){ const all=Object.keys(DB).filter(registryEligible); const reg=all.filter(cid=>registryState(cid)==='registered').length; rg.textContent=all.length?Math.round(reg/all.length*100)+'%':'0%'; }
@@ -26520,6 +26536,7 @@ function applyCosmetics(){
   [[you,1],[opp,2]].forEach(([el,p])=>{ if(!el)return; const id=cosEquipped('mat',p); const bg=_cosMatBg(id); const it=cosItem(id);
     el.classList.toggle('has-mat',!!bg); if(bg){ el.style.setProperty('--mat-bg',bg); el.style.setProperty('--mat-line',(it&&it.accent)?it.accent+'55':'rgba(255,255,255,.08)'); } else { el.style.removeProperty('--mat-bg'); el.style.removeProperty('--mat-line'); } });
   [1,2].forEach(p=>applyIdentCos(p));
+  applyMenuCos(); // build 10.41: top bar avatar, main menu nameplate, profile
   // 2v2: each seat's board gets that seat's own playmat (you = your loadout, AI seats = their rolled loadout)
   [1,2,3,4].forEach(p=>{ const el=document.getElementById('v2-board-'+p); if(!el)return; const on=!!(typeof G!=='undefined'&&G&&G.is2v2);
     const id=on?cosEquipped('mat',p):null; const bg=id?_cosMatBg(id):null; const it=id?cosItem(id):null;
@@ -26534,6 +26551,18 @@ function applyIdentCos(p){
   if(top){ top.classList.toggle('cos-plate',!!(pl&&pl.id!=='plate_none')); if(pl&&pl.id!=='plate_none'){ top.style.setProperty('--plate-bg',pl.img?`url("${pl.img}")`:pl.bg); top.style.setProperty('--plate-line',pl.line||'rgba(232,197,112,.3)'); } else { top.style.removeProperty('--plate-bg'); } }
   if(ttl){ const txt=(ti&&ti.id!=='title_none')?(ti.text||ti.name):''; ttl.textContent=isAI&&!txt?'':txt; ttl.style.setProperty('--title-c',(ti&&ti.color)||'#e8c570'); ttl.style.setProperty('--title-glow',(ti&&ti.color)?ti.color+'88':'transparent'); ttl.classList.toggle('ttl-fx-playtest',!!(ti&&ti.fx==='playtest'&&txt)); }
 }
+// build 10.41 · one way to put a frame on any avatar and a plate behind any name
+function cosMine(type){ const id=(_cos&&_cos.equipped&&_cos.equipped[type])||COS_DEFAULT_EQUIP[type]; return cosOwned(id)?id:COS_DEFAULT_EQUIP[type]; } // your own loadout (menus)
+function cosFrameEl(el,id){ if(!el) return; el.classList.add('cos-av'); el.classList.remove('cos-framed','cos-ring'); ['--frame-img','--ring1','--ring2'].forEach(v=>el.style.removeProperty(v));
+  const fr=cosItem(id); if(!fr||fr.id==='frame_none') return;
+  if(fr.img){ el.classList.add('cos-framed'); el.style.setProperty('--frame-img',`url("${fr.img}")`); } else if(fr.ring){ el.classList.add('cos-ring'); el.style.setProperty('--ring1',fr.ring[0]); el.style.setProperty('--ring2',fr.ring[1]); } }
+function cosPlateEl(el,id){ if(!el) return; const pl=cosItem(id); const on=!!(pl&&pl.id!=='plate_none'); el.classList.toggle('cos-plated',on); el.classList.toggle('cos-plate-img',!!(on&&pl.img));
+  if(on){ el.style.setProperty('--plate-bg',pl.img?`url("${pl.img}")`:pl.bg); el.style.setProperty('--plate-line',pl.line||'rgba(232,197,112,.4)'); } else { el.style.removeProperty('--plate-bg'); el.style.removeProperty('--plate-line'); } }
+function cosPlateAttr(p){ const pl=cosItem(cosEquipped('plate',p)); if(!pl||pl.id==='plate_none') return {cls:'',style:''}; // for HTML built as strings (2v2 HUD)
+  return {cls:' cos-plated'+(pl.img?' cos-plate-img':''), style:` style="--plate-bg:${String(pl.img?`url('${pl.img}')`:pl.bg).replace(/"/g,'&quot;')};--plate-line:${pl.line||'rgba(232,197,112,.4)'}"`}; }
+function applyMenuCos(){ try{ const f=cosMine('frame'), p=cosMine('plate');
+  cosFrameEl(document.getElementById('hud-avatar'),f); cosFrameEl(document.getElementById('profile-avatar'),f);
+  cosPlateEl(document.querySelector('#menu-screen .mm-nameplate'),p); cosPlateEl(document.getElementById('profile-username'),p); }catch(e){ console.warn('[cos] menu',e); } }
 const AI_COS={ entrance:'ent_abyss' };
 function cosHelloSend(){ if(!G||!G.onlineMode||typeof sendGameAction!=='function') return; const eq={}; Object.keys(COS_TYPES).forEach(t=>eq[t]=cosEquipped(t,1)); let n=0; const iv=setInterval(()=>{ sendGameAction('cos_hello',{cos:eq}); if(++n>=4) clearInterval(iv); },400); }
 function cosHelloRecv(d){ if(!G) return; G.oppCos=(d&&d.cos)||{}; applyCosmetics(); if(!G.players) return; try{ if(typeof renderP2Backs==='function') renderP2Backs(); if(typeof renderDeckPile==='function') renderDeckPile(2); if(typeof renderPrizes==='function') renderPrizes(2); }catch(e){} }
@@ -28474,10 +28503,11 @@ function renderV2HUD(p){
     return `<span class="v2-ph-dot ph-${ph}${on?' on':''}${done?' done':''}" title="${ph[0].toUpperCase()+ph.slice(1)} phase">${lbl}</span>`;
   }).join('');
   const rift=(pl.rift||[]).length;
+  const _v2pl=(typeof cosPlateAttr==='function')?cosPlateAttr(p):{cls:'',style:''}; // build 10.41: the seat's name plate
   el.innerHTML=
     `<div class="v2-hud-id">`
-      +`<div class="v2-id-chip">${human?'👤':'🤖'}</div>`
-      +`<div class="v2-hud-name" title="${name} · ${_V2LBL[p]}">${name}${human?'':' <span class="v2-hud-cpu">CPU</span>'}</div>`
+      +`<div class="v2-id-chip" id="v2-chip-${p}">${human?'👤':'🤖'}</div>`
+      +`<div class="v2-hud-name${_v2pl.cls}"${_v2pl.style} title="${name} · ${_V2LBL[p]}">${name}${human?'':' <span class="v2-hud-cpu">CPU</span>'}</div>`
     +`</div>`
     +`<div class="v2-hud-energy" title="Energy">⚡<b>${pl.energy}</b></div>`
     +`<div class="v2-hud-phase" title="Current phase">${phaseHtml}</div>`
@@ -28487,6 +28517,7 @@ function renderV2HUD(p){
       +`<span title="Discard pile">🗑${(pl.discard||[]).length}</span>`
       +`<span class="z-rift" title="Rift zone (banished)">🌀${rift}</span>`
     +`</div>`;
+  if(typeof cosFrameEl==='function') cosFrameEl(document.getElementById('v2-chip-'+p),cosEquipped('frame',p)); // build 10.41
 }
 function renderAll2v2(){
   if(typeof applyCosmetics==='function'&&G&&G.is2v2&&!G._cosApplied){ G._cosApplied=true; try{ applyCosmetics(); }catch(e){} }
@@ -29831,7 +29862,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.40';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.41';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -30107,6 +30138,7 @@ function refreshProfileScreen(){
   if(profName)profName.textContent=hudName;
   if(profProv)profProv.textContent=hudProv;
   if(profAv&&hudAv){profAv.innerHTML=hudAv.innerHTML;}
+  if(typeof applyMenuCos==='function') applyMenuCos(); // build 10.41: your frame + plate on the profile
   // Stats
   const w=document.getElementById('profile-wins');if(w)w.textContent=_celData.wins;
   const l=document.getElementById('profile-losses');if(l)l.textContent=_celData.losses;
