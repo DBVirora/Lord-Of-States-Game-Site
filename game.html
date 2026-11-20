@@ -6657,6 +6657,9 @@ textarea{
 #menu-screen .mm-card .mm-lbl{ flex:none; margin:calc(var(--mm-cw) * .03) calc(var(--mm-cw) * .035) calc(var(--mm-cw) * .035); border-radius:calc(var(--mm-cw) * .025); background:linear-gradient(180deg,#0f0d1e,#05040c); border:1px solid rgba(232,197,112,.25); padding:calc(var(--mm-cw) * .05) calc(var(--mm-cw) * .05) calc(var(--mm-cw) * .055); font-family:'Cinzel',serif; font-weight:700; letter-spacing:2px; font-size:calc(var(--mm-cw) * .085); text-align:center; color:var(--mm-ink); text-shadow:0 2px 8px #000; text-wrap:balance; }
 #menu-screen .mm-card .mm-lbl::before{ content:''; display:block; height:2px; margin:0 18% 7px; border-radius:2px; background:linear-gradient(90deg,transparent,var(--mm-gold),transparent); }
 #menu-screen .mm-card .mm-lbl small{ display:block; font-family:'Share Tech Mono',monospace; font-size:calc(var(--mm-cw) * .048); letter-spacing:2px; color:var(--mm-gold); margin-top:3px; font-weight:400; }
+#menu-screen .mm-plate small .mm-backlink{ font:inherit; letter-spacing:inherit; color:var(--mm-gold2,#e8c570); background:rgba(10,8,26,.55); border:1px solid var(--mm-gold,#c8a44a); border-radius:999px; padding:3px 12px; margin-top:4px; cursor:pointer; }
+#menu-screen .mm-plate small .mm-backlink:hover{ background:#7c3aed; color:#fff; }
+#menu-screen .mm-card.mm-group .mm-lbl{ font-size:calc(var(--mm-cw) * .095); }
 #menu-screen .mm-card.on{ border-color:#cfd6e6; box-shadow:0 0 0 1px rgba(255,255,255,.25),0 0 40px rgba(232,197,112,.45),0 30px 60px rgba(0,0,0,.8); z-index:10; }
 #menu-screen .mm-car .mm-arrow{ position:absolute; top:50%; transform:translateY(-50%); z-index:20; width:40px; height:56px; display:grid; place-items:center; font-size:26px; color:var(--mm-gold); opacity:.75; border-radius:8px; background:rgba(10,8,26,.5); border:1px solid var(--mm-line); cursor:pointer; }
 #menu-screen .mm-car .mm-arrow:hover{ opacity:1; } #menu-screen .mm-car .mm-arrow.l{ left:6px; } #menu-screen .mm-car .mm-arrow.r{ right:6px; }
@@ -9658,7 +9661,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.37 · Phase glow</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.38 · Spider-Man + Play split</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10713,8 +10716,19 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.34'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.38'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.38', date:'2026-11-20',
+    cards:[ { id:'spiderman_imperfects_promo', name:'Spider-Man (Imperfects)', set:'promo', number:'PROMO', rarity:'legend', color:'yellow', type:'char', cost:7, atk:7, hp:6, subtypes:['Hero','Spider'], race:'Hero Spider', sym:'SPIDY',
+      scan:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Spider-Man%20Imperfects%20(Promo).png',
+      newAbilities:['Spider-Sense (passive): the FIRST time each turn (each player-turn, key turn:activePlayer) it would take damage, reduce that damage by 2 — in dealDamage after Nullify / Inferno Ward / Diamond Calm / Half-Divine / Titan\'s Armor / Bracelets / Prism Barrier; Primal Breaker\'s pierce ignores it like every reduction; only spent on damage > 0 at that point (fc._spiderTurn).',
+        'Web-Slinger Strike (activated, 2⚡, once per turn, generic lock, paid → no tap): +3 Attack until end of turn (fc._webSling) and its NEXT attack this turn takes no damage back (fc._webNoRet = turn key): no retaliation, no Power Struggle (psEligible sees primalMuzzled), and the enemy Herald\'s ½-ATK hit-back is skipped. The shield is used up by that attack whether or not the target dies.',
+        'Rise of the Imperfect (activated, 6⚡, once per game, paid → no tap): +3 Attack until end of turn (fc._riseImp) and it can attack twice this turn (fc.extraAttacks += 1, the same counter as Rewind / Flashpoint Chain, cleared at end of turn). Effects panel names it on the extra-attack row.'],
+      note:'Spider-Man (Imperfects) · PROMO · Yellow Legend (gold cost circle like Aang) · cost 7 · 7 ATK / 6 HP · Hero, Spider · Marvel series. End of his turn: both +3s come off and the shield clears (tickSpiderMan next to tickAvatarState). AI: ai:{when:\'enemy\'} on both activated abilities. Menu art \'Main Menu Images/Spider-Man Imperfects.jpg\' (Rulk sets it in Admin → Menu Art).' } ],
+    abilities:[],
+    screens:["PLAY TAB SPLIT (Rulk): the PLAY tab now opens TWO cards side by side — SINGLE PLAYER (id solo, sub 'STORY · CPU · CO-OP') and MULTIPLAYER (id online, sub 'RANKED · ROOMS · CO-OP'). One tap/click on either opens its modes in the usual carousel. SINGLE PLAYER = Campaign, Trial of Courts, Harvest of Courts (when visible), VS AI (difficulty chips), 2v2 Team (sub now 'CO-OP · VS CPU'), Local PvP. MULTIPLAYER = Find Match, Private Room, and NEW '2v2 Co-op' (id team_online, sub 'ONLINE · WITH A FRIEND': you + a friend vs a CPU team; opens the 2v2 setup with Online / Friend selected). Co-op is in BOTH lists (Rulk): Single Player's '2v2 Team' = co-op with the CPU or a friend on the same device; Multiplayer's '2v2 Co-op' = online. Inside a group the heading shows the group name (SINGLE PLAYER / MULTIPLAYER) with a '◂ BACK TO PLAY' pill under it; Esc or Backspace also goes back; clicking the PLAY tab again always returns to the two cards. The open group is remembered for the session (sessionStorage loc_mm_sub), so after a match you land back in your list. The ribbon under a group card lists its modes as chips that jump straight to that mode. Menu Art (admin) has rows for the two new cards (solo, online) and team_online; fallback art King Theoden / Storm / Magnus (Virora). The main menu TABS are unchanged (still PLAY · SHOP · LOCKER · COURT · OPTIONS). Court Tour steps that point at Campaign / VS AI enter Single Player first.",
+      "PC BUG · MENU CARD NAME PLATE POPS OUT (Rulk's screenshot, PC v1.0.19): on the selected PLAY card 'Trial of Courts', the black name plate (title + subtitle) is wider than the card and sticks out past both side borders. Web spec: the card clips everything inside it (overflow hidden). The plate sits INSIDE the card frame with margins .03cw top / .035cw sides / .035cw bottom (cw = card width, ~297px on desktop), padding .05cw; title Cinzel 700, size .085cw (group cards .095cw), letter-spacing 2px, centered, WRAPS onto two balanced lines when long; subtitle Share Tech Mono .048cw, letter-spacing 2px, also wraps. ALSO: Trial of Courts' card subtitle is now just 'GAUNTLET' (was 'GAUNTLET · ONE LOSS ENDS IT'). PC: give the plate a fixed width = card width − 2×.035cw, autowrap both Labels (AUTOWRAP_WORD_SMART), shrink the font only if it still doesn't fit, and clip_contents on the card."],
+    data:["GAME_BUILD → '10.38' (new card: Spider-Man (Imperfects)). Both players need 10.38 for online play."] },
   { build:'10.37', date:'2026-11-19', cards:[], abilities:[],
     screens:["PHASE GLOW (Rulk): the phase pill you're ON glows — Draw green (border rgba(34,197,94,.7), text #bbf7d0), Main a soft yellow (border rgba(250,204,21,.68), glow 8–13px at .24–.34 alpha, slow 2.6s breathe, text #fde68a), Attack red (border rgba(239,68,68,.72), same glow in red, text #fca5a5). Finished phases stay grey (done-phase) as before; phases still to come stay plain. The current pill is never dimmed even though it's disabled (you can't re-enter it). At turn start the Draw pill's stronger 'draw first' pulse is now green too (was amber) until you draw, then it settles to the soft green. BUG IT FIXES: the current phase is pushed into phasesDone the moment you enter it, and the renderer checked phasesDone first, so the phase you were on showed grey (in Main, Draw and Main both looked grey). New order: ph===G.phase → current glow; else phasesDone → grey. It follows whoever's turn it is (the opponent's phase glows on their turn). Same on the 2v2 bar; the 2v2 HUD phase dot for Attack turns red. Reduced-motion: static glow.",
       "CARD INFO RAIL IS A FIXED WIDTH (PC bug report): the web rail is a fixed grid track --rail = clamp(228px, 16vw, 380px) whatever card is hovered; the card image fills it (rail − 26px wide, × ~1.395 tall: 354×494 at 2560 wide, 281×392 at 1920, 202×281 at 1366) and every text line WRAPS inside it (10.37 adds overflow-x:hidden + overflow-wrap:anywhere as a guard). On PC the rail grows to fit its widest unwrapped line — e.g. the tapped note under an ability ('… is tapped — it can't use abilities until your next turn.') — so it widens for some cards (The Surfacer) and shoves the whole board right. PC: fix the rail's width (custom_minimum_size.x = that clamp, no EXPAND/size-to-content), every Label autowrap_mode = AUTOWRAP_WORD_SMART, card TextureRect expand_mode IGNORE_SIZE + keep-aspect, ScrollContainer horizontal scroll off.",
@@ -11673,6 +11687,7 @@ const DEFAULTS={
   frostbound_observatory_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/069-150%20(Frostbound%20Observatory).png',
   skyrail_velocity_station_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/108-150%20(Skyrail%20Velocity%20Station).png',
   crossroads_market_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/109-150%20(Crossroads%20Market).png',
+  spiderman_imperfects_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Spider-Man%20Imperfects%20(Promo).png',
   red_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Red%20Hulk%20(Promo).png',
   elise_ssbe_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/133-150%20(Elise%20SSBE).png',
   asa_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/063-150%20(Asa).png',
@@ -12141,6 +12156,13 @@ const DB={
   // ── RED HULK (Promo, Marvel) — build 10.34. Red Legend, standalone character (no line). Gamma Monster.
   //    Heat Absorption: can't be Burned; whenever an opposing character is Burned, +1 Attack until end of turn (fc._heatAbs).
   //    Thermal Smash: when it attacks, Burn the defending character (the Fire Stance hook). Meltdown: 5⚡ once per game.
+  // ── SPIDER-MAN (IMPERFECTS) (Promo) — build 10.38. Yellow Legend, 7 cost 7/6, Hero · Spider.
+  //    Spider-Sense: first damage each turn −2 (dealDamage, fc._spiderTurn). Web-Slinger Strike: 2⚡ once/turn, +3 ATK this turn and its next
+  //    attack this turn takes no damage back (fc._webSling, fc._webNoRet). Rise of the Imperfect: 6⚡ once/game, +3 ATK and attacks twice this turn.
+  spiderman_imperfects_promo:{id:'spiderman_imperfects_promo',rarity:'legend',name:'Spider-Man (Imperfects)',color:'yellow',charName:'Spider-Man',subtypes:['Hero','Spider'],type:'char',race:'Hero Spider',cost:7,atk:7,hp:6,sym:'SPIDY',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
+    abilities:[{label:'Spider-Sense',type:'passive',cost:0,text:'The first time each turn this card would take damage, reduce that damage by 2.'},
+      {label:'Web-Slinger Strike',type:'activated',cost:2,limit:'once_per_turn',ai:{when:'enemy'},text:'Pay 2 Energy: This card gets +3 Attack until end of turn and takes no damage back from its next attack this turn. (Once per turn)'},
+      {label:'Rise of the Imperfect',type:'activated',cost:6,limit:'once_per_game',ai:{when:'enemy'},text:'Pay 6 Energy: This card gets +3 Attack until end of turn and can attack twice this turn. (Once per game)'}],transforms:[]},
   red_hulk_promo:{id:'red_hulk_promo',rarity:'legend',name:'Red Hulk',color:'red',charName:'Red Hulk',subtypes:['Gamma','Monster'],type:'char',race:'Gamma Monster',cost:8,atk:9,hp:7,sym:'RHULK',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
     abilities:[{label:'Heat Absorption',type:'passive',cost:0,text:"This card can't be Burned. Whenever an opposing character is Burned, this card gets +1 Attack until end of turn."},
       {label:'Thermal Smash',type:'triggered',cost:0,text:'Whenever this card attacks, Burn the defending character.'},
@@ -13677,6 +13699,11 @@ function triggerCrimsonRampage(afc){
   dealDamage(p, afc.uid, 2);
   if(!G.players[p]?.field.some(f=>f.uid===afc.uid)){ afc._rampKO=true; log(`${DB[afc.cid]?.name} is destroyed by its own Crimson Rampage — the attack never lands.`,'dmg'); }
 }
+function tickSpiderMan(p){
+  (G.players[p]?.field||[]).forEach(f=>{ const a=(f._webSling||0)+(f._riseImp||0);
+    if(a){ f.currentATK=Math.max(0,(f.currentATK||0)-a); f.atkBonus=(f.atkBonus||0)-a; log(`${DB[f.cid]?.name}'s ${f._riseImp?'Rise of the Imperfect':'Web-Slinger Strike'} fades.`,'info'); }
+    f._webSling=0; f._riseImp=0; f._webNoRet=null; });
+}
 function tickAvatarState(p){
   (G.players[p]?.field||[]).forEach(f=>{ if(f._avState){ f.currentATK=Math.max(0,(f.currentATK||0)-f._avState); f.atkBonus=(f.atkBonus||0)-f._avState; f._avState=0; log(`${DB[f.cid]?.name} leaves the Avatar State.`,'info'); } });
 }
@@ -13829,6 +13856,7 @@ function fillAttachedCarry(fc){
 }
 function reapplyCarry(fc,list){ fc.carry=[]; (list||[]).forEach(e=>grantCarry(fc,e.src,e.atk,e.hp)); fillAttachedCarry(fc); }
 function tempStatDelta(f){ let a=0,h=0;
+  a+=(f._webSling||0)+(f._riseImp||0); // 🕷 Spider-Man (Imperfects)
   a+=(f._ironFist||0)+(f._avState||0)+(f._bloodRite||0)+(f._rampage||0)+((f._flame&&f._flame.amt)||0)+(f.krhAtk||0)+(f.ssbAtkBuff||0)+(f._aeth||0)+(f._stonePow||0)+(f._dcmd||0);
   h+=(f.krhHp||0)+(f._dcmd||0);
   a-=(f.surfacerAtkDebuff||0); h-=(f.surfacerHpDebuff||0);
@@ -14321,7 +14349,7 @@ function fxEffectsOf(fc){
   if(fc.nullify>0) cond('🛡','Nullify '+fc.nullify,'Reduces incoming damage by '+fc.nullify+'.',null);
   if(fc.mustAttack) cond('📣','Must attack','It must attack on its next turn if able.',byLabel('Combat Control'));
   if(fc.costMod) cond('💠','Cost '+(fc.costMod>0?'+':'−')+Math.abs(fc.costMod),'Its cost is changed by '+fc.costMod+'.',null);
-  if(fc.extraAttacks>0){ const _ce=fc._execTurn===G.turn&&hasAbilityLabel(fc,'Crimson Execution'); const _fp=!_ce&&fc._flashTurn===G.turn&&hasAbilityLabel(fc,'Flashpoint Chain'); const _pc=!_ce&&!_fp&&fc._primalTurn===G.turn&&hasAbilityLabel(fc,'Primal Chain'); cond(_ce?'🩸':_fp?'⚡':_pc?'🦍':'⏳',_ce?'Crimson Execution':_fp?'Flashpoint Chain':_pc?'Primal Chain':'Rewind','It may attack '+fc.extraAttacks+' more time'+(fc.extraAttacks>1?'s':'')+' this turn.',null); }
+  if(fc.extraAttacks>0){ const _ce=fc._execTurn===G.turn&&hasAbilityLabel(fc,'Crimson Execution'); const _fp=!_ce&&fc._flashTurn===G.turn&&hasAbilityLabel(fc,'Flashpoint Chain'); const _pc=!_ce&&!_fp&&fc._primalTurn===G.turn&&hasAbilityLabel(fc,'Primal Chain'); const _ri=!_ce&&!_fp&&!_pc&&fc._riseImp>0; cond(_ce?'🩸':_fp?'⚡':_pc?'🦍':_ri?'🕷':'⏳',_ce?'Crimson Execution':_fp?'Flashpoint Chain':_pc?'Primal Chain':_ri?'Rise of the Imperfect':'Rewind','It may attack '+fc.extraAttacks+' more time'+(fc.extraAttacks>1?'s':'')+' this turn.',null); }
   if(fc._relayTurn===G.turn&&G.phase==='attack') cond('🌙','Heavenly Relay',"Another of your characters that hasn't attacked may attack this turn.",null);
   else if(hasAbilityLabel(fc,'Heavenly Relay')&&!heavenlyRelayReady(fc)) cond('🌙','Heavenly Relay','Recharging: ready again in '+(2-(G.turn-fc.abilityUsed.relay_turn))+' turn(s).',null);
   if((c.abilities||[]).some(a=>/\bHarvest —/.test(a.text||''))&&typeof harvestOn==='function'){ const _ho=_fcOwner(fc); if(_ho!=null) cond('🍂','Harvest',harvestOn(_ho)?'Active — its controller has a Location that isn\'t frozen.':'Inactive — its controller needs a Location (not frozen).',null); }   // build 10.20
@@ -14341,6 +14369,9 @@ function fxEffectsOf(fc){
   if(isLassoed(fc)) cond('🪢','Lasso of Truth',"Can't attack until the end of its controller's next turn.",null);
   if(airBlasted(fc)) cond('💨','Air Blast',"Tapped — it can't attack until its opponent's next turn.",null);
   if(fc._avState>0) cond('🌀','Avatar State','+'+fc._avState+' Attack and Onslaught until the end of this turn.',null);
+  if(fc._webSling>0) cond('🕸','Web-Slinger Strike','+'+fc._webSling+' Attack until the end of this turn'+(webSlingOn(fc)?' · its next attack takes no damage back':'')+'.',null);
+  if(fc._riseImp>0) cond('🕷','Rise of the Imperfect','+'+fc._riseImp+' Attack until the end of this turn, and it can attack twice.',null);
+  if(hasAbilityLabel(fc,'Spider-Sense')) cond('🕷','Spider-Sense',fc._spiderTurn===_braceTurnKey()?'Used this turn — ready again next turn.':'Ready: the first damage it takes this turn is reduced by 2.',null);
   if(fc._prismShield>0) cond('💠','Prism Barrier','Prevents '+fc._prismShield+' of the next damage it would be dealt (ends at the start of its owner\'s next turn).',null);
   if(Array.isArray(fc.attachments)&&fc.attachments.includes('void_siphon_device_bse')) cond('🌀','Void Siphon Device',((fc._siphonT||0)%2===1)?"Energy Intake is recharging — it drains again at the start of its controller's turn after next.":"Energy Intake: at the start of its controller's next turn, the opponent loses 2 Energy and its controller gains that much.",{cid:'void_siphon_device_bse',uid:null});
   if(Array.isArray(fc.attachments)&&fc.attachments.includes('the_dark_hold_bse')) cond('📕','The Dark Hold','Takes 1 damage at the start of each of your turns'+(fc._sinTurn===(G&&G.turn)?' · Pages of Sin used this turn':'')+'.',null);
@@ -15372,6 +15403,8 @@ function dealDamage(tp,tuid,amt){
     fc._braceTurn=_braceTurnKey(); log(`🛡 Bracelets of Submission: ${DB[fc.cid]?.name} deflects it — all ${dmg} damage prevented.`,'gain');
     if(typeof showStatusFx==='function') try{ showStatusFx(fc.uid,'freeze'); }catch(e){} dmg=0; }
   if(isChar(c)&&fc._prismShield>0&&dmg>0&&!G._pierceHit) dmg=prismBarrierAbsorb(fc,dmg); // 💠 Prism Barrier (Crystal SSJ): prevents up to 3 of the next damage, then it's gone
+  if(isChar(c)&&dmg>0&&!G._pierceHit&&hasAbilityLabel(fc,'Spider-Sense')&&fc._spiderTurn!==_braceTurnKey()){ // 🕷 Spider-Man (Imperfects): first damage each turn −2
+    fc._spiderTurn=_braceTurnKey(); const _r=Math.min(2,dmg); dmg-=_r; log(`🕷 Spider-Sense: ${c.name} reduces the damage by ${_r} (takes ${dmg}).`,'gain'); }
   // Track marked damage silently for future parry/defense mechanics
   if(isChar(c))fc.markedDamage=(fc.markedDamage||0)+dmg;
   // Omega Judgment: attacker loses 3 ATK when hitting Darkseid herald,
@@ -16777,8 +16810,11 @@ function executeCombatDamage(ap,auid,dp,duid){
     dfc.currentHP+=2;
     log(`Immortality: ${dc.name} gains +2 Health (now ${dfc.currentHP}HP).`,'gain');
   }
+  const _web=webSlingOn(afc); if(_web) afc._webNoRet=null;   // 🕸 used up by this attack (kill or not)
   if(tgtAlive&&(G._noRetaliation||(_pso&&_pso.kind==='atk'))){
     log(_pso&&_pso.kind==='atk'?`⚔ Power Struggle: ${dc.name} doesn't hit back.`:`${dc.name} can't block — no retaliation.`,'info');
+  } else if(tgtAlive&&_web){
+    log(`🕸 Web-Slinger Strike: ${ac.name} takes no damage back from ${dc.name}.`,'info');
   } else if(tgtAlive&&isImprisoned(dfc)){
     log(`🔒 Celestial Confinement: ${dc.name} is imprisoned and can't hit back.`,'info');
   } else if(tgtAlive&&primalMuzzled(dfc,afc)){
@@ -16960,11 +16996,13 @@ function resolveCharVsHerald(ap, auid, dp){
   // Herald triggered abilities on being hit (same as the engine's Herald hooks)
   if(h.currentHP>0&&h.cid==='hulk_gs_herald'){ h.atkBonus=(h.atkBonus||0)+dmg; h.currentATK=(h.currentATK||0)+dmg; log(`Rage Eternal: Hulk gains +${dmg} ATK (now ${h.currentATK})!`,'gain'); }
   if(h.currentHP>0&&h.cid==='darkseid_herald'&&!afc.omegaJudged){ afc.omegaJudged=true; afc.omegaPenalty=Math.min(3,afc.currentATK); afc.currentATK=Math.max(0,afc.currentATK-3); afc.atkBonus=(afc.atkBonus||0)-afc.omegaPenalty; log(`Omega Judgment: ${DB[afc.cid]?.name} -3 ATK until its next attack!`,'dmg'); }
-  if(h.currentHP<=0){ breakHerald(dp, ap, DB[afc.cid].name); }
+  if(h.currentHP<=0){ breakHerald(dp, ap, DB[afc.cid].name); if(webSlingOn(afc)) afc._webNoRet=null; }
   else {
     log(`${DB[h.cid].name} Herald: ${h.currentHP} HP — retaliates for ${retaliate} (½ ATK)!`,'dmg');
     claimPrizeOnHeraldHit(ap);
-    if(retaliate>0){ G._curDef=h.uid; dealDamage(ap, afc.uid, retaliate); }
+    if(retaliate>0&&webSlingOn(afc)){ afc._webNoRet=null; log(`🕸 Web-Slinger Strike: ${DB[afc.cid]?.name} takes no damage back from the Herald.`,'info'); }
+    else if(retaliate>0){ G._curDef=h.uid; dealDamage(ap, afc.uid, retaliate); }
+    if(webSlingOn(afc)) afc._webNoRet=null;
   }
   renderAll(); return true;
 }
@@ -18854,7 +18892,8 @@ function greatApeRoar(owner,fc){
   }
 }
 // PRIMAL INSTINCT (Vuruna SSJ4): the chosen foe can't hit back against that card this turn.
-function primalMuzzled(dfc,afc){ if(isImprisoned(dfc)) return true; /* 🔒 imprisoned: never hits back */ return !!(dfc&&afc&&dfc._muzzle&&typeof _braceTurnKey==='function'&&dfc._muzzle.key===_braceTurnKey()&&dfc._muzzle.by===afc.uid); }
+function webSlingOn(afc){ return !!(afc&&afc._webNoRet&&typeof _braceTurnKey==='function'&&afc._webNoRet===_braceTurnKey()); }   // 🕸 Web-Slinger Strike: its next attack this turn takes no damage back
+function primalMuzzled(dfc,afc){ if(isImprisoned(dfc)) return true; /* 🔒 imprisoned: never hits back */ if(webSlingOn(afc)) return true; return !!(dfc&&afc&&dfc._muzzle&&typeof _braceTurnKey==='function'&&dfc._muzzle.key===_braceTurnKey()&&dfc._muzzle.by===afc.uid); }
 // ADMIN: Transform Ladder (skip prices for chain paths) → app_settings 'tf_ladder' for everyone.
 function openTfLadderEditor(){
   if(typeof isAdmin==='function'&&!isAdmin()) return;
@@ -21145,6 +21184,19 @@ function runAbilityEffect(fc, abl, pl){
       wall(((at.length?at:mine).slice().sort((a,b)=>aiFcValue(b)-aiFcValue(a))[0]).uid); }
     return;
   }
+  // ── SPIDER-MAN (IMPERFECTS): Web-Slinger Strike (2⚡ once/turn) · Rise of the Imperfect (6⚡ once/game) — build 10.38
+  if(label==='Web-Slinger Strike'||label==='Rise of the Imperfect'){
+    if(!(G.players[G.activePlayer]?.field||[]).includes(fc)){ renderAll(); return; }
+    const _fx=(typeof fxPush==='function')?fxPush(fc.cid,label,fc.uid):null;
+    try{
+      fc.currentATK=(fc.currentATK||0)+3; fc.atkBonus=(fc.atkBonus||0)+3;
+      if(label==='Web-Slinger Strike'){ fc._webSling=(fc._webSling||0)+3; fc._webNoRet=_braceTurnKey(); }
+      else { fc._riseImp=(fc._riseImp||0)+3; fc.extraAttacks=(fc.extraAttacks||0)+1; }
+    } finally { if(typeof fxPop==='function') fxPop(_fx); }
+    log(label==='Web-Slinger Strike'?`🕸 Web-Slinger Strike: ${DB[fc.cid]?.name} gets +3 Attack (now ${fc.currentATK}) — its next attack this turn takes no damage back.`
+      :`🕷 Rise of the Imperfect: ${DB[fc.cid]?.name} gets +3 Attack (now ${fc.currentATK}) and can attack twice this turn!`,'gain');
+    renderAll(); return;
+  }
   // ── AANG: Avatar State — 6⚡, once per game: +4 Attack and Onslaught until the end of the turn (fc._avState).
   if(label==='Avatar State'){
     if(!(G.players[G.activePlayer]?.field||[]).includes(fc)){ renderAll(); return; }
@@ -22722,6 +22774,7 @@ function endTurnFx(p){
   tickCrimsonRampage(p); // 🔥 Crystora (SSGE): Crimson Rampage ends with the turn
   tickIronFist(p); // 👊 Danny Rand: The Iron Fist ends with the turn
   tickAvatarState(p); // 🌀 Aang: Avatar State ends with the turn
+  tickSpiderMan(p); // 🕷 Spider-Man (Imperfects): Web-Slinger / Rise +3 Attack end with the turn
   tickBloodRite(p); // 🩸 Surana (SSS): Blood Rite's +3 Attack ends with the turn
   tickScorchedEarth(p); // count down any Scorched Earth timers this player set
   tickFusions(p); // 💤 Fatigue, then 💫 Dance timers (split at 0)
@@ -25802,7 +25855,7 @@ function registrySelect(cid,quiet){
 // ═══════════════════════════════════════════════════════════════════════
 // Menu card art: art-only images (Rulk's uploads) go here keyed by entry id. Missing → falls back to a card scan's illustration window.
 const MENU_ART={};
-const MENU_FALLBACK_CARD={ campaign:'darkseid_herald', trial:'gorim_herald', harvest:'booni_hoc', match:'kratos_promo', ai:'deerhaunter_promo', room:'lady_loki_promo', team:'magnus_virora', pvp:'ivan_wca_promo',
+const MENU_FALLBACK_CARD={ solo:'king_theoden_bse', online:'storm_herald', team_online:'magnus_virora', campaign:'darkseid_herald', trial:'gorim_herald', harvest:'booni_hoc', match:'kratos_promo', ai:'deerhaunter_promo', room:'lady_loki_promo', team:'magnus_virora', pvp:'ivan_wca_promo',
   packs:'destroyers_gift', singles:'aquatic_hearth', cosmetics:'back', events:'volaris_prism',
   mydecks:'surfacer_herald', builder:'magnus_base_bse', loadout:'back', herald:'peleus_herald', images:'volaris_prism',
   registry:'virora_base_bse', forge:'virora_surfacer_mui_sr_bse', rulebook:'nature_focus', pass:'virora_ssg', profile:'virora', friends:'najeela_ssg_bse', mailbox:'virora_ssg', trade:'void_crystal_bse',
@@ -25810,13 +25863,19 @@ const MENU_FALLBACK_CARD={ campaign:'darkseid_herald', trial:'gorim_herald', har
 const MENU_TABS=[
  {id:'play',label:'PLAY',icon:'⚔',plate:'PLAY',sub:'CHOOSE YOUR BATTLE',items:[
   {id:'campaign',t:'Campaign',s:'STORY MODE',d:'March through the Courts. Each chapter ends at a Herald.',go:()=>enterCampaign()},
-  {id:'trial',t:'Trial of Courts',s:'GAUNTLET · ONE LOSS ENDS IT',d:'Take one deck up through seven Courts to the High Throne. Win, pick a reward, keep climbing.',when:()=>typeof trOn==='function'&&trOn(),go:()=>openTrial()},
+  {id:'trial',t:'Trial of Courts',s:'GAUNTLET',d:'Take one deck up through seven Courts to the High Throne. Win, pick a reward, keep climbing.',when:()=>typeof trOn==='function'&&trOn(),go:()=>openTrial()},
   {id:'harvest',t:'Harvest of Courts',s:'EVENT · LIMITED TIME',d:'Seven missions, nine challenges and 13 cards you can only earn during the event.',when:()=>typeof evVisible==='function'&&evVisible(),go:()=>openHarvest()},
   {id:'match',t:'Find Match',s:'RANKED · ONLINE',d:'Queue for a ranked 1v1. Prize, Life Force or Combined rules.',go:()=>{showScreen('matchmaking-screen');openMatchmaking();}},
   {id:'ai',t:'VS AI',s:'PRACTICE',d:'Fight the CPU at your own pace. Pick a difficulty below.',chips:[['EASY','easy'],['MEDIUM','medium'],['HARD','hard']],go:()=>goToDeckSelect('medium')},
   {id:'room',t:'Private Room',s:'PUBLIC OR PRIVATE',d:'Join an open room or make your own and share the code.',go:()=>{showScreen('online-lobby-screen');openOnlineLobby();}},
-  {id:'team',t:'2v2 Team',s:'TEAM BATTLE',d:'Two Heralds a side. Shared Life, shared glory.',go:()=>open2v2Setup()},
+  {id:'team',t:'2v2 Team',s:'CO-OP · VS CPU',d:'Two Heralds a side. Shared Life, shared glory. Team up with the CPU or a friend on this device.',go:()=>open2v2Setup()},
   {id:'pvp',t:'Local PvP',s:'SAME SCREEN',d:'Pass the device. Hot-seat duel.',go:()=>goToDeckSelect('pvp')},
+  {id:'team_online',t:'2v2 Co-op',s:'ONLINE · WITH A FRIEND',d:'Co-op online: you and a friend team up, two Heralds a side, against a CPU team.',go:async()=>{ await open2v2Setup(); if(typeof set2v2Mode==='function') set2v2Mode('online'); }},
+ ],
+ // build 10.38: PLAY opens these two cards first; each lists its own modes (ids → items above)
+ groups:[
+  {id:'solo',t:'Single Player',s:'STORY · CPU · CO-OP',d:'Campaign, Trial of Courts, events, practice vs the CPU, 2v2 co-op and same-screen duels.',ids:['campaign','trial','harvest','ai','team','pvp']},
+  {id:'online',t:'Multiplayer',s:'RANKED · ROOMS · CO-OP',d:'Play real people online: ranked Find Match, public or private rooms, and 2v2 co-op with a friend.',ids:['match','room','team_online']},
  ]},
  {id:'shop',label:'SHOP',icon:'🏪',plate:'SHOP',sub:'THE COURT MARKET',items:[
   {id:'packs',t:'Booster Packs',s:'BY SET',d:'Packs and 36-pack boxes by set.',go:()=>openMarket('vault')},
@@ -25850,7 +25909,7 @@ const MENU_TABS=[
  ]},
 ];
 const MENU_TIPS=["A character's Health is how much damage it takes to destroy it.","A Herald can only be struck by characters when the enemy board is empty.","Retaliation uses the defender's Attack from before the hit.","Heralds may duel from round 4. Two Prizes or 15 Life break one.","Free abilities tap the card. Paid abilities don't.","Win the coin toss and you choose who goes first.","Equipment Hex turns off everything an enemy's equipment does.","Ending your turn with an unclaimed Prize is not allowed — claim it first."];
-let _mm={tab:(()=>{ try{ const t=+sessionStorage.getItem('loc_mm_tab'); return (t>=0&&t<5)?t:0; }catch(e){ return 0; } })(),focus:0,tipI:0,tipTimer:null,built:false,dragX:null};
+let _mm={tab:(()=>{ try{ const t=+sessionStorage.getItem('loc_mm_tab'); return (t>=0&&t<5)?t:0; }catch(e){ return 0; } })(),sub:(()=>{ try{ return sessionStorage.getItem('loc_mm_sub')||null; }catch(e){ return null; } })(),focus:0,tipI:0,tipTimer:null,built:false,dragX:null};
 function mmApplyBackdrop(){
   const L=document.getElementById('menu-bg-layer'), im=document.getElementById('menu-bg-image'); if(!L||!im)return;
   const bg=MENU_ART.__bg||null;
@@ -25875,7 +25934,7 @@ async function saveMenuArt(){
 function mmArtManage(){
   if(!isAdmin()) return;
   const body=document.createElement('div');
-  const rows=[]; MENU_TABS.forEach(T=>T.items.forEach(it=>rows.push([T.label,it])));
+  const rows=[]; MENU_TABS.forEach(T=>{ (T.groups||[]).forEach(g=>rows.push([T.label,g])); T.items.forEach(it=>rows.push([T.label,it])); });
   const bg=MENU_ART.__bg||{}; const inp="width:100%;box-sizing:border-box;font-family:'Share Tech Mono',monospace;font-size:11px;color:#ece6d6;background:rgba(0,0,0,.35);border:1px solid rgba(232,197,112,.3);border-radius:6px;padding:5px 8px;margin-top:4px";
   body.innerHTML=`<div style="padding:10px;border-radius:10px;border:1px solid rgba(232,197,112,.35);background:rgba(124,58,237,.12);margin-bottom:14px">
       <div style="font-family:Cinzel,serif;font-size:12px;letter-spacing:3px;color:#e8c570">BACKDROP</div>
@@ -25900,7 +25959,7 @@ function mmArtManage(){
 }
 function mmArtPreview(id,url){ const el=document.getElementById('mma-prev-'+id); if(!el)return; url=url.trim(); el.innerHTML=url?`<img src="${url}" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.parentNode.innerHTML='<div style=\\'display:grid;place-items:center;height:100%;font-size:10px;color:#f87171\\'>no image</div>'">`:''; }
 async function mmArtSave(){
-  const next={}; MENU_TABS.forEach(T=>T.items.forEach(it=>{ const v=(document.getElementById('mma-'+it.id)?.value||'').trim(); if(v) next[it.id]=v; }));
+  const next={}; MENU_TABS.forEach(T=>[...(T.groups||[]),...T.items].forEach(it=>{ const v=(document.getElementById('mma-'+it.id)?.value||'').trim(); if(v) next[it.id]=v; }));
   const bgu=(document.getElementById('mma-bg-url')?.value||'').trim(); if(bgu) next.__bg={url:bgu,urlm:(document.getElementById('mma-bg-urlm')?.value||'').trim()||'',dim:+(document.getElementById('mma-bg-dim')?.value||45),stars:!!document.getElementById('mma-bg-stars')?.checked};
   Object.keys(MENU_ART).forEach(k=>delete MENU_ART[k]); Object.assign(MENU_ART,next); mmApplyBackdrop();
   if(await saveMenuArt()){ closeAllModals(); mmBuildCards(false); if(typeof SFX!=='undefined'&&_gameSettings.sfx)SFX.energy(); }
@@ -25910,7 +25969,28 @@ let _rulebookHtml=null;
 function rulebookHtml(){ if(_rulebookHtml) return _rulebookHtml; const el=document.getElementById('rulebook-src'); if(!el) return ''; try{ const bin=atob(el.textContent.trim()); const bytes=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i); _rulebookHtml=new TextDecoder('utf-8').decode(bytes); }catch(e){ _rulebookHtml=''; } return _rulebookHtml; }
 function openRulebook(){ const fr=document.getElementById('rulebook-frame'); if(!fr) return; showScreen('rulebook-screen'); if(!fr.dataset.loaded){ fr.srcdoc=rulebookHtml(); fr.dataset.loaded='1'; } const m=/Provisional Rulebook v([\d.]+)/.exec(rulebookHtml()); const v=document.getElementById('rb-ver'); if(v&&m) v.textContent='PROVISIONAL v'+m[1]; if(typeof SFX!=='undefined'&&_gameSettings.sfx)SFX.click(); }
 function rulebookOpenTab(){ try{ const b=new Blob([rulebookHtml()],{type:'text/html'}); window.open(URL.createObjectURL(b),'_blank'); }catch(e){} }
-function mmTabItems(T){ return T.items.filter(it=>(!it.admin||(typeof isAdmin==='function'&&isAdmin()))&&(!it.when||it.when())); }
+function mmItemOk(it){ return (!it.admin||(typeof isAdmin==='function'&&isAdmin()))&&(!it.when||it.when()); }
+function mmAllTabItems(T){ return T.items.filter(mmItemOk); }   // every visible entry of a tab, groups ignored
+// build 10.38: a tab with groups (PLAY) shows the group cards first, then the open group's entries
+function mmGroupOf(T){ return (T&&T.groups&&_mm.sub&&MENU_TABS[_mm.tab]===T)?T.groups.find(g=>g.id===_mm.sub)||null:null; }
+function mmTabItems(T){
+  if(T.groups){ const g=mmGroupOf(T);
+    if(!g) return T.groups.map(x=>Object.assign({},x,{isGroup:true,go:()=>mmEnterGroup(x.id)}));
+    return g.ids.map(id=>T.items.find(it=>it.id===id)).filter(it=>it&&mmItemOk(it)); }
+  return T.items.filter(mmItemOk);
+}
+function mmSaveSub(){ try{ if(_mm.sub) sessionStorage.setItem('loc_mm_sub',_mm.sub); else sessionStorage.removeItem('loc_mm_sub'); }catch(e){} }
+function mmPlateRender(){ const pl=document.getElementById('mm-plate'); if(!pl) return; const T=MENU_TABS[_mm.tab]; const g=mmGroupOf(T);
+  pl.innerHTML=g?(g.t.toUpperCase()+'<small><button type="button" class="mm-backlink" onclick="event.stopPropagation();mmGroupBack()" title="Back (Esc)">◂ BACK TO '+T.plate+'</button></small>'):(T.plate+'<small>'+T.sub+'</small>'); }
+function mmEnterGroup(id){ const T=MENU_TABS[_mm.tab]; if(!T||!T.groups||!T.groups.some(g=>g.id===id)) return; _mm.sub=id; _mm.focus=0; mmSaveSub(); mmPlateRender(); mmBuildCards(true); }
+function mmGroupBack(){ const T=MENU_TABS[_mm.tab]; if(!T||!T.groups||!_mm.sub) return false; const k=T.groups.findIndex(g=>g.id===_mm.sub); _mm.sub=null; _mm.focus=Math.max(0,k); mmSaveSub(); mmPlateRender(); mmBuildCards(true); if(typeof SFX!=='undefined'&&_gameSettings.sfx)SFX.click(); return true; }
+// open a tab and focus one entry, entering its group when it has one (Court Tour, chips)
+function mmFocusItem(tabId,itemId){
+  const ti=MENU_TABS.findIndex(t=>t.id===tabId); if(ti<0) return; const T=MENU_TABS[ti];
+  if(_mm.tab!==ti) mmSetTab(ti);
+  if(T.groups){ const g=T.groups.find(x=>x.ids.includes(itemId)); if(g&&_mm.sub!==g.id){ _mm.sub=g.id; _mm.focus=0; mmSaveSub(); mmPlateRender(); mmBuildCards(false); } }
+  const it=mmTabItems(T); const k=it.findIndex(x=>x.id===itemId); if(k>-1&&_mm.focus!==k){ _mm.focus=k; mmLayout(); }
+}
 function mmArtHtml(id){
   const url=MENU_ART[id]||((id==='harvest'||(id==='events'&&typeof evVisible==='function'&&evVisible()))&&typeof EV_ART_HERO!=='undefined'?EV_ART_HERO:null); if(url) return `<img src="${url}" alt="">`;
   const cid=MENU_FALLBACK_CARD[id];
@@ -25926,7 +26006,7 @@ function mmBuildTabs(){
     const m=document.createElement('button'); m.className='mm-tab'+(i===_mm.tab?' on':''); m.innerHTML='<span>'+T.icon+'</span>'+T.label; m.onclick=()=>mmSetTab(i); b.appendChild(m);
   });
 }
-function mmSetTab(i){ _mm.tab=i; _mm.focus=0; try{ sessionStorage.setItem('loc_mm_tab',String(i)); }catch(e){} mmBuildTabs(); const T=MENU_TABS[i]; const pl=document.getElementById('mm-plate'); if(pl)pl.innerHTML=T.plate+'<small>'+T.sub+'</small>'; mmBuildCards(true); if(typeof SFX!=='undefined'&&_gameSettings.sfx)SFX.click(); }
+function mmSetTab(i){ _mm.tab=i; _mm.focus=0; _mm.sub=null; mmSaveSub(); try{ sessionStorage.setItem('loc_mm_tab',String(i)); }catch(e){} mmBuildTabs(); mmPlateRender(); mmBuildCards(true); if(typeof SFX!=='undefined'&&_gameSettings.sfx)SFX.click(); }
 function mmBuildCards(fresh){
   const car=document.getElementById('mm-car'); if(!car)return;
   [...car.querySelectorAll('.mm-card')].forEach(c=>c.remove());
@@ -25937,7 +26017,8 @@ function mmBuildCards(fresh){
     if(it.id==='registry'&&typeof registryEligible==='function'){ const all=Object.keys(DB).filter(registryEligible); const reg=all.filter(cid=>registryState(cid)==='registered').length; sub=reg+' / '+all.length+' REGISTERED'; }
     if(it.id==='friends'&&typeof _friendsList!=='undefined'){ const on=_friendsList.filter(f=>isUserOnline(f.last_active)).length; sub=on+' ONLINE'; }
     c.innerHTML=`<div class="mm-art">${mmArtHtml(it.id)}<div class="mm-veil"></div><div class="mm-shine"></div></div><div class="mm-lbl">${it.t}<small>${sub||'&nbsp;'}</small></div>`;
-    c.onclick=()=>{ if(i===_mm.focus) mmSelect(); else { _mm.focus=i; mmLayout(); } };
+    c.onclick=()=>{ if(i===_mm.focus) mmSelect(); else if(it.isGroup){ _mm.focus=i; mmLayout(); mmSelect(); } else { _mm.focus=i; mmLayout(); } };
+    if(it.isGroup) c.classList.add('mm-group');
     if(fresh){ c.style.transition='none'; c.style.transform=`translate(${(i-_mm.focus)*160}%,0) scale(.5)`; c.style.opacity=0; }
     car.appendChild(c);
   });
@@ -25945,6 +26026,13 @@ function mmBuildCards(fresh){
 }
 function mmLayout(){
   const car=document.getElementById('mm-car'); if(!car)return; const cards=[...car.querySelectorAll('.mm-card')]; const n=cards.length; if(!n)return;
+  const pair=!!(MENU_TABS[_mm.tab].groups&&!_mm.sub);   // build 10.38: SINGLE PLAYER / MULTIPLAYER side by side
+  car.classList.toggle('mm-pair',pair);
+  if(pair){ const cw=cards[0].offsetWidth||1, fit=Math.min(1,(car.clientWidth||cw*3)/(cw*2.4));
+    cards.forEach((c,i)=>{ const on=i===_mm.focus, k=i-(n-1)/2;
+      c.style.transform=`translate(${k*112*fit}%,${on?-4:0}%) scale(${(on?1:.92)*fit}) rotateY(${-k*6}deg)`;
+      c.style.opacity=1; c.style.filter=on?'none':'brightness(.82) saturate(.9)'; c.style.zIndex=on?10:9; c.style.pointerEvents=''; c.classList.toggle('on',on); });
+  } else
   cards.forEach((c,i)=>{
     let d=i-_mm.focus; if(d>n/2)d-=n; if(d<-n/2)d+=n; const ad=Math.abs(d);
     const x=d*0.78*100+Math.sign(d)*(ad>1?(ad-1)*-18:0); const sc=d===0?1:Math.max(.62,.84-(ad-1)*.1); const y=d===0?-4:ad*3;
@@ -25952,7 +26040,8 @@ function mmLayout(){
     c.style.opacity=ad>3?0:1-ad*.18; c.style.filter=d===0?'none':`brightness(${1-ad*.22}) saturate(.8)`; c.style.zIndex=10-ad; c.style.pointerEvents=ad>3?'none':''; c.classList.toggle('on',d===0);
   });
   const it=mmTabItems(MENU_TABS[_mm.tab])[_mm.focus]; const rb=document.getElementById('mm-ribbon'); if(!it||!rb)return;
-  rb.innerHTML=`<b>${it.t.toUpperCase()}</b><p>${it.d}</p>`+(it.chips?`<div class="mm-chips">${it.chips.map(([l,m])=>`<button class="mm-chip" onclick="event.stopPropagation();mmRemember('${m}');goToDeckSelect('${m}')">${l}</button>`).join('')}</div>`:'');
+  const _gi=it.isGroup?(it.ids||[]).map(id=>MENU_TABS[_mm.tab].items.find(x=>x.id===id)).filter(x=>x&&mmItemOk(x)):null;
+  rb.innerHTML=`<b>${it.t.toUpperCase()}</b><p>${it.d}</p>`+(_gi&&_gi.length?`<div class="mm-chips">${_gi.map(x=>`<button class="mm-chip" onclick="event.stopPropagation();mmFocusItem('${MENU_TABS[_mm.tab].id}','${x.id}')">${x.t}</button>`).join('')}</div>`:'')+(it.chips?`<div class="mm-chips">${it.chips.map(([l,m])=>`<button class="mm-chip" onclick="event.stopPropagation();mmRemember('${m}');goToDeckSelect('${m}')">${l}</button>`).join('')}</div>`:'');
 }
 function mmStep(d){ const n=mmTabItems(MENU_TABS[_mm.tab]).length; if(!n)return; _mm.focus=(_mm.focus+d+n)%n; mmLayout(); }
 function mmSelect(){ const it=mmTabItems(MENU_TABS[_mm.tab])[_mm.focus]; if(!it)return; const car=document.getElementById('mm-car'); car.classList.add('selecting'); if(typeof SFX!=='undefined'&&_gameSettings.sfx)SFX.cardPlay(); setTimeout(()=>{ car.classList.remove('selecting'); try{ it.go(); }catch(e){ console.warn('[menu]',e); } },260); }
@@ -26054,7 +26143,9 @@ function mmTogPanel(k,on){ const sc=document.getElementById('menu-screen'); sc.t
 function mmWire(){
   if(_mm.built) return; _mm.built=true;
   const car=document.getElementById('mm-car'); if(!car)return;
-  car.addEventListener('keydown',e=>{ if(e.key==='ArrowLeft')mmStep(-1); else if(e.key==='ArrowRight')mmStep(1); else if(e.key==='Enter'||e.key===' '){ e.preventDefault(); mmSelect(); } });
+  car.addEventListener('keydown',e=>{ if(e.key==='ArrowLeft')mmStep(-1); else if(e.key==='ArrowRight')mmStep(1); else if(e.key==='Enter'||e.key===' '){ e.preventDefault(); mmSelect(); } else if((e.key==='Escape'||e.key==='Backspace')&&_mm.sub&&mmGroupBack()) e.preventDefault(); });
+  document.addEventListener('keydown',e=>{ if(e.key!=='Escape'||!_mm.sub||!document.getElementById('menu-screen')?.classList.contains('active')) return;
+    if((typeof _ms!=='undefined'&&_ms.open)||document.querySelector('.modal-overlay.open,#mm-hpick.open,#spot-tip.on')) return; if(mmGroupBack()) e.preventDefault(); });
   let wl=0; car.addEventListener('wheel',e=>{ const now=Date.now(); if(now-wl<300)return; const v=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY; if(Math.abs(v)<8)return; wl=now; mmStep(v>0?1:-1); },{passive:true});
   car.addEventListener('pointerdown',e=>{ _mm.dragX=e.clientX; }); car.addEventListener('pointerup',e=>{ if(_mm.dragX==null)return; const dx=e.clientX-_mm.dragX; _mm.dragX=null; if(Math.abs(dx)>40){ mmStep(dx<0?1:-1); e.preventDefault(); } });
   car.addEventListener('pointermove',e=>{ const on=car.querySelector('.mm-card.on'); if(!on||_mm.dragX!=null||matchMedia('(hover:none)').matches)return; const r=on.getBoundingClientRect(); const px=(e.clientX-r.left)/r.width-.5, py=(e.clientY-r.top)/r.height-.5; if(Math.abs(px)>.9||Math.abs(py)>.9){ mmLayout(); return; } on.style.transform=`translate(0,-4%) scale(1) rotateY(${px*14}deg) rotateX(${-py*12}deg)`; });
@@ -26081,7 +26172,7 @@ function renderMainMenu(){
   const sc=document.getElementById('menu-screen'); if(!sc||!document.getElementById('mm-car')) return;
   _mmTry('fit',mmFit); _mmTry('wire',mmWire); _mmTry('tabs',mmBuildTabs);
   _mmTry('admin',()=>{ const b=document.getElementById('mm-admin-art'); if(b) b.style.display=(typeof isAdmin==='function'&&isAdmin())?'':'none'; });
-  _mmTry('plate',()=>{ const pl=document.getElementById('mm-plate'); const T=MENU_TABS[_mm.tab]; if(pl)pl.innerHTML=T.plate+'<small>'+T.sub+'</small>'; });
+  _mmTry('plate',mmPlateRender);
   _mmTry('cards',()=>mmBuildCards(false)); _mmTry('hero',mmHeroRender); _mmTry('quick',mmRenderQuick); _mmTry('ledger',mmRenderLedger);
   _mmTry('plinth',mmRenderPlinth); _mmTry('loadout',mmRenderLoadout); _mmTry('friends',mmRenderFriends);
   _mmTry('tip',()=>{ mmTip(); clearInterval(_mm.tipTimer); _mm.tipTimer=setInterval(mmTip,7000); });
@@ -27162,8 +27253,7 @@ function courtTourStart(){
   if(!document.querySelector('#menu-screen.active') && typeof showScreen==='function') showScreen('menu-screen');
   const shopOn=(typeof isFeatureEnabled!=='function')||isFeatureEnabled('shop_enabled');
   const packs=()=>{ try{ return (typeof totalUnopenedPacks==='function')?totalUnopenedPacks():0; }catch(e){ return 0; } };
-  const focus=(tab,item)=>{ if(!document.querySelector('#menu-screen.active')) showScreen('menu-screen'); const ti=MENU_TABS.findIndex(t=>t.id===tab); if(ti<0) return;
-    if(_mm.tab!==ti) mmSetTab(ti); const it=mmTabItems(MENU_TABS[ti]); const k=it.findIndex(x=>x.id===item); if(k>-1&&_mm.focus!==k){ _mm.focus=k; mmLayout(); } };
+  const focus=(tab,item)=>{ if(!document.querySelector('#menu-screen.active')) showScreen('menu-screen'); mmFocusItem(tab,item); };   // build 10.38: enters PLAY's group
   const card=(id)=>()=>document.querySelector('#mm-car .mm-card.on[data-id="'+id+'"]')||document.querySelector('#mm-car .mm-card.on');
   const withPacks=()=>shopOn&&packs()>0; let opened=false;
   try{ localStorage.setItem('loc_tip_menu-screen','1'); }catch(e){}
@@ -29614,7 +29704,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.37';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.38';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
