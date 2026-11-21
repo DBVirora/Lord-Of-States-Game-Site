@@ -9670,7 +9670,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.41 · Frames and plates everywhere</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.42 · Glacynth Fruit + Pink Kamehameha</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10725,8 +10725,17 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.40'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.42'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.42', date:'2026-11-21',
+    cards:[{id:'glacynth_fruit_bse', set:'base_set', number:'077/150', rarity:'common', scan:'Sets/BASE SET/077-150 (Glacynth Fruit).png', newAbilities:['Frostbloom Ward'],
+      note:"Glacynth Fruit · Instant · Consumable · cost 1 · BLUE (blue cost circle) · subtypes Instant, Consumable · race 'Consumable' · sym ❄️. A targeted instant (HAND_CHOICE_INSTANTS: charged when the target is confirmed; closing the picker refunds)."},
+      {id:'pink_kamehameha_bse', set:'base_set', number:'082/150', rarity:'common', scan:'Sets/BASE SET/082-150 (Pink Kamehameha).png', newAbilities:['Ascension Wave'],
+      note:"Pink Kamehameha · Instant · cost 2 · PURPLE (the printed cost circle is pink; the game has no pink — same call as Virora's Beer) · subtypes Instant · race 'Instant' · sym 💗."}],
+    abilities:["FROSTBLOOM WARD (Glacynth Fruit, instant): choose one of YOUR characters (picker rows show '🧊 Frozen' / '😵 Confused' → cured, or 'no status', plus '🛡 ward'). Remove Freeze and Confusion from it (cureStatus 'freeze' and 'confuse'), then it can't be targeted by OPPOSING abilities until your next turn: fc._frostWard = owner. On the web this is folded into hasDrunkenStance(fc) — the one check every enemy target picker (abilities, entry effects, Herald abilities AND instants like Blade of Udun) already uses for Billy's Drunken Stance — so it blocks exactly what Drunken Stance blocks: targeted effects only. Attacks still work, and non-targeted 'each opposing character' effects still hit it. It fades at the START of the owner's next turn (start-of-turn step, right after Prism Barriers fade), so a Burst-Window use during the opponent's turn lasts through that turn. Effects panel row ❄️ Frostbloom Ward. CPU: plays it only when one of its characters is Frozen or Confused (score 28, +8 if an enemy is on the field and that character is untapped) and picks the most valuable such character."],
+    screens:["ASCENSION WAVE (Pink Kamehameha, instant): deal 3 damage to a target opposing character — 4 instead if you control a Virora character (isViroraChar on your field) when it resolves. Targeted: the normal enemy picker (Drunken Stance / Frostbloom Ward and Space can't be picked; the Godly Evasion / Air Scooter 2-Energy toll applies; 2v2: either enemy board). Charged when the target is confirmed (closing the picker = nothing spent). Real ability damage: dealDamage under an fx context with the instant as the source, so shields and reductions apply (Prism Barrier / Storm Aegis, Spider-Sense, Bracelets, Nullify…), a KO goes through the normal kill, and no Refraction Surge (an instant isn't a character). Picker text: 'Choose an enemy character — it takes N damage.' Log: '💗 Pink Kamehameha: X is hit for N (powered up by a Virora character)!'. CPU: score 34 when it has a legal target, +22 if it can KO one (N vs current HP); it targets a KO it can make (most valuable), else the most valuable target, skipping protected ones and toll targets it can't afford.",
+      "Enemy target picker note when a protected character is filtered out: 'A protected character (Drunken Stance or Frostbloom Ward) can't be targeted by your abilities.' (was 'Drunken Stance: Billy …')."],
+    data:["GAME_BUILD → '10.42' (new cards). WEB_BUILD 10.42."] },
   { build:'10.41', date:'2026-11-20', cards:[], abilities:[],
     screens:["AVATAR FRAMES + NAME PLATES SHOW EVERYWHERE (Rulk: 'they don't appear at all when equipped — they need to appear in battles and on the menus'). PC v1.0.19's Battle.gd applies ONLY the title from the loadout (applyIdentCos title part) — the frame and plate are never drawn, in battles or menus. Web (applyIdentCos + new applyMenuCos) does this — the PC needs the same:",
       "ITEMS: cosmetics type 'frame' = { ring:[c1,c2] } (draw a 2px ring in c1 + an outer 2px glow ring and a soft glow in c2) or { img } (a PNG ring drawn OVER the avatar, centered, ~136% of the avatar size: CSS inset −16%/−18%, contain). frame_none = nothing. Type 'plate' = { bg: CSS linear-gradient, line } or { img } (a PNG drawn behind the name box, stretched to the box; line = 1px border colour, default rgba(232,197,112,.4)). plate_none = nothing. Ownership rule: an equipped item you don't own falls back to the default.",
@@ -11741,6 +11750,7 @@ const DEFAULTS={
   virora_beer_bse: "https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/086-150%20(Virora's%20Beer).png",
   zephyranth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/075-150%20(Zephyranth%20Fruit%20Instant).png',
   blade_of_udun_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/081-150%20(Blade%20Of%20Udun%20Instant).png',
+  pink_kamehameha_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/082-150%20(Pink%20Kamehameha).png',
   kevin_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Awakening/Kevin%20(Promo%20Card).png',
   kevin_ssg_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Awakening/Kevin%20SSG%20(Promo%20Card).png',
   lady_loki_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Lady%20Loki%20(Promo).png',
@@ -11826,6 +11836,7 @@ const DEFAULTS={
   raven_vampire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/DC/Raven%20Vampire%20(Promo%20Card).png',
   deerhaunter_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Timesplitters/The%20DeerHaunter%20(PROMO)%20Timesplitters%20Future%20Perfect.png',
   vermynth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/076-150%20(Vermynth%20Fruit%20Instant).png',
+  glacynth_fruit_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/077-150%20(Glacynth%20Fruit).png',
   tyler_ssb_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/020-150%20(Tyler%20SSB).png',
   ghost_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/ghost_hulk_card%20PROMO.png',
   billy_base_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/004-150%20(Billy%20Base).png',
@@ -11988,6 +11999,9 @@ const DB={
   // ── VERMYNTH FRUIT — BSE Instant (Consumable). GREEN (healing). 076/150 Uncommon.
   vermynth_fruit_bse:{id:'vermynth_fruit_bse',rarity:'uncommon',name:'Vermynth Fruit',color:'green',charName:'Vermynth Fruit',subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:4,atk:0,hp:0,sym:'🥝',setId:'base_set',cardNumber:'076/150',nextForms:[],
     abilities:[{label:'Vermynth Fruit',type:'instant',cost:0,text:'Heals one of your characters on the field for 4 HP while also adding 2 ATK Power.'}],transforms:[]},
+  // ── GLACYNTH FRUIT — BSE Instant (Consumable). BLUE (protection + status cleanse). 077/150 Common. build 10.42
+  glacynth_fruit_bse:{id:'glacynth_fruit_bse',rarity:'common',name:'Glacynth Fruit',color:'blue',charName:'Glacynth Fruit',subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:1,atk:0,hp:0,sym:'❄️',setId:'base_set',cardNumber:'077/150',nextForms:[],
+    abilities:[{label:'Frostbloom Ward',type:'instant',cost:0,text:"Choose one of your characters. Remove Freeze and Confusion from it. It can't be targeted by opposing abilities until your next turn."}],transforms:[]},
   // ── MAGNUS (Base) — BSE transform-line starter (Royal • Saiyan). BLUE (control). 022/150 Common.
   magnus_base_bse:{id:'magnus_base_bse',rarity:'common',name:'Magnus',color:'blue',charName:'Magnus',charLine:'magnus',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:3,atk:2,hp:2,sym:'MAG',setId:'base_set',cardNumber:'022/150',canAttackLocations:true,nextForms:['ssj1','ssg'],
     abilities:[{label:'Runes of Veelden',type:'passive',cost:0,text:'This card can attack Locations.'},{label:'Controlled Sorcery',type:'activated',cost:0,text:'Flip a coin. If tails, you may search your deck for a Transformation card and add it to your hand. (Taps)'}],transforms:[]},
@@ -12255,6 +12269,9 @@ const DB={
   // ── BLADE OF UDUN — BSE instant. RED (direct damage + Burn). 081/150 Uncommon.
   blade_of_udun_bse:{id:'blade_of_udun_bse',rarity:'uncommon',name:'Blade of Udun',color:'red',charName:'Blade of Udun',subtypes:['Instant','Equipment'],type:'instant',race:'Instant',cost:3,atk:0,hp:0,sym:'🗡️',setId:'base_set',cardNumber:'081/150',nextForms:[],
     abilities:[{label:'Blade of Udun',type:'instant',cost:0,text:"Choose a character on your opponent's field. That character takes 2 damage and is now Burned."}],transforms:[]},
+  // ── PINK KAMEHAMEHA — BSE Instant. PURPLE (the printed circle is pink; the game has no pink). 082/150 Common. build 10.42
+  pink_kamehameha_bse:{id:'pink_kamehameha_bse',rarity:'common',name:'Pink Kamehameha',color:'purple',charName:'Pink Kamehameha',subtypes:['Instant'],type:'instant',race:'Instant',cost:2,atk:0,hp:0,sym:'💗',setId:'base_set',cardNumber:'082/150',nextForms:[],
+    abilities:[{label:'Ascension Wave',type:'instant',cost:0,text:'Deal 3 damage to target opposing character. If you control a Virora character, deal 4 damage instead.'}],transforms:[]},
   // ── KEVIN (Base) — PROMO Prime Saiyan. RED (raw attack power). Transforms into Kevin (SSG).
   kevin_promo:{id:'kevin_promo',rarity:'common',name:'Kevin',color:'red',charName:'Kevin',charLine:'kevin',formTier:'base',subtypes:['Prime','Saiyan'],type:'base_char',race:'Prime Saiyan',cost:4,atk:2,hp:3,sym:'KEV',setId:'promo',cardNumber:'PROMO',nextForms:['ssg'],
     abilities:[{label:'Primal Strike',type:'triggered',cost:0,text:'Flip a coin. If heads, this attack does +3 damage.'},{label:'Silent Search',type:'activated',cost:0,text:'If this card has equipment attached to it, you may search your deck for a Transformation card and place it in your hand.'}]},
@@ -14410,6 +14427,7 @@ function fxEffectsOf(fc){
   if(airBlasted(fc)) cond('💨','Air Blast',"Tapped — it can't attack until its opponent's next turn.",null);
   if(fc._avState>0) cond('🌀','Avatar State','+'+fc._avState+' Attack and Onslaught until the end of this turn.',null);
   if(fc._webSling>0) cond('🕸','Web-Slinger Strike','+'+fc._webSling+' Attack until the end of this turn'+(webSlingOn(fc)?' · its next attack takes no damage back':'')+'.',null);
+  if(fc._frostWard) cond('❄️','Frostbloom Ward',"Can't be targeted by opposing abilities until its owner's next turn.",null);
   if(fc._beer>0) cond('🍺','Liquid Courage','+'+fc._beer+' Attack until the end of this turn.',null);
   if(fc._riseImp>0) cond('🕷','Rise of the Imperfect','+'+fc._riseImp+' Attack until the end of this turn, and it can attack twice.',null);
   if(hasAbilityLabel(fc,'Spider-Sense')) cond('🕷','Spider-Sense',fc._spiderTurn===_braceTurnKey()?'Used this turn — ready again next turn.':'Ready: the first damage it takes this turn is reduced by 2.',null);
@@ -17269,7 +17287,7 @@ function hasGodlyEvasion(fc){
 // (no toll, absolute). Attacks are NOT restricted by it.
 function hasDrunkenStance(fc){
   const c=DB[fc.cid];
-  return hasAbilityLabel(fc,'Drunken Stance');
+  return hasAbilityLabel(fc,'Drunken Stance') || !!(fc&&fc._frostWard); // ❄ Glacynth Fruit's Frostbloom Ward (build 10.42) works the same way until its owner's next turn
 }
 // Returns true if attackerPlayer may target targetFc, paying the 2⚡ toll if
 // Godly Evasion applies. Charges + logs when paid; returns false if unaffordable.
@@ -18012,6 +18030,30 @@ function onHandClick(p,uid,fc){
       openFruitHealPicker(p, fco, chars, healAmt, atkAmt, undefined, commitPlay);
       return;
     }
+    if(c.id==='pink_kamehameha_bse'){ // 💗 Ascension Wave (build 10.42): 3 damage, 4 with a Virora character
+      const foes=[]; hocEnemies(p).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])&&!DB[f.cid]?.isToken) foes.push({fc:f,p:op}); }));
+      if(!foes.length){ log('No enemy characters to hit with '+c.name+'!','dmg'); return; }
+      const fire=(tuid)=>{
+        const hit=foes.find(x=>x.fc.uid===tuid); if(!hit) return;
+        const tf=(G.players[hit.p].field||[]).find(f=>f.uid===tuid); if(!tf) return;
+        if(!commitPlay()){ renderAll(); return; }
+        pl.discard.push(c.id);
+        const n=pinkKameDamage(p);
+        if(typeof fxSlash==='function') try{ fxSlash(tf.uid,'#f472b6'); }catch(e){}
+        log(`💗 ${c.name}: ${DB[tf.cid]?.name} is hit for ${n}${n===4?' (powered up by a Virora character)':''}!`,'dmg');
+        const _fx=(typeof fxPush==='function')?fxPush(c.id,c.name,fco.uid):null;
+        try{ dealDamage(hit.p,tf.uid,n); } finally{ if(typeof fxPop==='function') fxPop(_fx); }
+        if(typeof recalcPassives==='function')recalcPassives();
+        closeAllModals(); renderAll();
+      };
+      const tgts=foes.map(x=>x.fc);
+      if((typeof seqIsLocalHuman==='function'?seqIsLocalHuman(p):p===1)&&!(G&&G._aiAuto)){ openEnemyTargetPicker(tgts, fire, {title:c.name, desc:`Choose an enemy character — it takes ${pinkKameDamage(p)} damage.`, sourcePlayer:p, sourceUid:fco.uid}); }
+      else { const n=pinkKameDamage(p); const pool=tgts.filter(f=>!hasDrunkenStance(f)&&!spaceShielded(f)&&(!hasAbilityToll(f)||G.players[p].energy>=c.cost+2));
+        if(!pool.length){ log('AI: no valid target for '+c.name+'.','info'); return; }
+        const t=pool.filter(f=>(f.currentHP||0)<=n).sort((a,b)=>aiFcValue(b)-aiFcValue(a))[0]||pool.slice().sort((a,b)=>aiFcValue(b)-aiFcValue(a))[0];
+        if(hasAbilityToll(t)&&!canPayEvasionToll(p,t)) return; fire(t.uid); }
+      return;
+    }
     if(c.id==='blade_of_udun_bse'){
       const o=(p===1)?2:1;
       const enemies=(G.players[o].field||[]).filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
@@ -18060,6 +18102,11 @@ function onHandClick(p,uid,fc){
       pastPerfectResolve(p, c.id, bases, commitPlay);
       return;
     }
+    if(c.id==='glacynth_fruit_bse'){ // ❄ Frostbloom Ward (build 10.42)
+      if(!chars.length){log(`No field character to use ${c.name} on!`,'dmg');return;}
+      openGlacynthPicker(p, fco, chars, commitPlay);
+      return;
+    }
     if(c.id==='virora_beer_bse'){ // 🍺 Liquid Courage (build 10.40)
       if(!chars.length){log(`No field character to use ${c.name} on!`,'dmg');return;}
       openBeerPicker(p, fco, chars, commitPlay);
@@ -18086,7 +18133,7 @@ function onHandClick(p,uid,fc){
 }
 
 // Instants that ask for a target before they resolve (charge on confirm in onHandClick).
-const HAND_CHOICE_INSTANTS=new Set(['winters_approach_hoc','saiyan_blood','zephyranth_fruit_bse','vermynth_fruit_bse','royal_matcha_bse','virora_matcha_bse','virora_beer_bse','blade_of_udun_bse','past_perfect_bse']);
+const HAND_CHOICE_INSTANTS=new Set(['winters_approach_hoc','saiyan_blood','zephyranth_fruit_bse','vermynth_fruit_bse','royal_matcha_bse','virora_matcha_bse','virora_beer_bse','glacynth_fruit_bse','pink_kamehameha_bse','blade_of_udun_bse','past_perfect_bse']);
 // GENERIC ENEMY TARGET PICKER — pick one enemy character, run callback(uid)
 function openEnemyTargetPicker(targets, callback, opts){
   opts = opts || {};
@@ -18103,7 +18150,7 @@ function openEnemyTargetPicker(targets, callback, opts){
   // DRUNKEN STANCE: absolutely untargetable by opponent abilities — remove from list.
   const _before = targets.length;
   targets = (targets||[]).filter(cf=>!hasDrunkenStance(cf));
-  if(targets.length<_before){ log("Drunken Stance: Billy can't be targeted by your abilities.",'info'); }
+  if(targets.length<_before){ log("A protected character (Drunken Stance or Frostbloom Ward) can't be targeted by your abilities.",'info'); }
   if(!targets.length){ if(_undo) _undo(); showModal('No Target','No valid targets — protected characters cannot be targeted.'); renderAll(); return; }
   // Which player is doing the targeting (whose energy pays the evasion toll).
   // Defaults to the active player.
@@ -18218,6 +18265,45 @@ function openBeerPicker(p, fco, chars, commit){
   });
   showModalEl(`Instant: ${c.name}`,body);
 }
+// GLACYNTH FRUIT — Frostbloom Ward: cure Freeze + Confusion, then the character can't be targeted by opposing abilities
+// (fc._frostWard = owner → hasDrunkenStance) until the start of its owner's next turn.
+function glacynthApply(p, c, target){
+  const pl=G.players[p]; const nm=DB[target.cid]?.name;
+  const fz=cureStatus(target,'freeze'), cf=cureStatus(target,'confuse');
+  target._frostWard=p;
+  if(typeof showStatusFx==='function') try{ showStatusFx(target.uid,'freeze'); }catch(e){}
+  log(`❄ ${c.name}: ${nm}${fz||cf?` is clear-headed again${fz&&cf?' (Freeze and Confusion removed)':fz?' (Freeze removed)':' (Confusion removed)'} and`:''} can't be targeted by opposing abilities until your next turn.`,'gain');
+  pl.discard.push(c.id);
+  if(typeof recalcPassives==='function')recalcPassives();
+}
+function glacynthNeeds(f){ return statusActive(f,'freeze')||statusActive(f,'confuse'); }
+function openGlacynthPicker(p, fco, chars, commit){
+  const c=DB[fco.cid];
+  const apply=(target)=>{
+    if(commit && !commit()){ closeAllModals(); renderAll(); return; }
+    glacynthApply(p, c, target);
+    closeAllModals(); renderAll();
+    if(G.tutorialMode&&p===1&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('instant');
+  };
+  const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(p) : (p===1);
+  if(!_human||(G&&G._aiAuto)){
+    const need=chars.filter(glacynthNeeds); const t=(need.length?need:chars).slice().sort((a,b)=>aiFcValue(b)-aiFcValue(a))[0];
+    apply(t); return;
+  }
+  const body=document.createElement('div');
+  body.innerHTML=`<div style="font-weight:700;color:#7dd3fc;margin-bottom:4px">❄️ ${c.name}</div><div style="font-size:11px;color:#9ca3af;margin-bottom:10px">${c.abilities[0]?.text||''}</div><div style="font-size:11px;color:#c8a0ff;margin-bottom:6px">Choose one of your characters:</div>`;
+  body.dataset.btgHint=`Choose one of your characters for ${c.name}.`; body.dataset.btgSrc=fco.uid;
+  chars.forEach(cf=>{
+    const cc=DB[cf.cid]; const st=[statusActive(cf,'freeze')?'🧊 Frozen':'', statusActive(cf,'confuse')?'😵 Confused':''].filter(Boolean).join(' · ');
+    const btn=document.createElement('button');btn.className='btn-gray btn-sm';btn.style.cssText='width:100%;margin-bottom:5px;text-align:left;padding:7px 10px;display:flex;justify-content:space-between;align-items:center'; btn.dataset.tuid=cf.uid;
+    btn.innerHTML=`<span>${cc.name}</span><span style="color:${st?'#7dd3fc':'#9ca3af'}">${st?st+' → cured':'no status'} · 🛡 ward</span>`;
+    if(G.tutorialMode && _tutTargetCid && cf.cid!==_tutTargetCid){ btn.disabled=true; btn.style.opacity='0.4'; btn.style.cursor='not-allowed'; btn.innerHTML+=' 🔒'; }
+    else { btn.onclick=()=>apply(cf); }
+    body.appendChild(btn);
+  });
+  showModalEl(`Instant: ${c.name}`,body);
+}
+function pinkKameDamage(p){ return (G.players[p]?.field||[]).some(f=>isViroraChar(DB[f.cid]))?4:3; } // 💗 Pink Kamehameha: 4 while you control a Virora character
 function tickBeer(){ // "until end of turn": clears at the end of whichever turn it was drunk in (a Burst-Window drink too)
   [1,2,3,4].forEach(q=>(G.players[q]?.field||[]).forEach(f=>{ if(f._beer){ f.currentATK=Math.max(0,(f.currentATK||0)-f._beer); f.atkBonus=(f.atkBonus||0)-f._beer; f._beer=0; log(`🍺 ${DB[f.cid]?.name}'s Liquid Courage wears off.`,'info'); } }));
 }
@@ -22673,6 +22759,7 @@ function startTurnFx(player){
   if(typeof fxCtx==='function') fxCtx(null,'Turn',null,{turn:true});
   if(G&&G.trial&&typeof trTurnStart==='function') trTurnStart(player);   // build 10.18: Energy Font
   tickPrismBarrier(player); // 💠 Crystal (SSJ): Prism Barriers this player placed last ran "before your next turn"
+  [1,2,3,4].forEach(q=>(G.players[q]?.field||[]).forEach(f=>{ if(f._frostWard===player){ f._frostWard=0; log(`❄ ${DB[f.cid]?.name}'s Frostbloom Ward fades.`,'info'); } })); // ❄ Glacynth Fruit
   if(typeof applyStatusDoT==='function') applyStatusDoT(player); // Burn/Poison chip at turn start
   const pl=G.players[player]; if(!pl) return;
   pl.field.forEach(f=>{ if(f._crash) f._crash.seen=true; }); // Crash the Feast: the frozen Location's owner's turn has begun — it thaws when this turn ends
@@ -23658,6 +23745,8 @@ function aiEnumerateActions(p){
       if(c.id==='zephyranth_fruit_bse'||c.id==='vermynth_fruit_bse'||c.id==='royal_matcha_bse'||c.id==='virora_matcha_bse'){ if(wounded.length) s=42+wounded.length*3; else if(c.id==='virora_matcha_bse'&&chars.some(f=>f.statuses&&Object.keys(f.statuses).length)) s=40; }
       else if(c.id==='past_perfect_bse'){ const bs=(pl.discard||[]).filter(id=>DB[id]?.type==='base_char'); if(bs.length) s=24+Math.min(16,bs.length*3)+(bs.some(id=>_ppFormsOf(p,id).length)?10:0); }
       else if(c.id==='blade_of_udun_bse'){ if(enemies.length){ s=36; if(enemies.some(e=>e.fc.currentHP<=2)) s+=22; } }
+      else if(c.id==='pink_kamehameha_bse'){ const _n=pinkKameDamage(p); const _t=enemies.filter(e=>!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)); if(_t.length){ s=34; if(_t.some(e=>(e.fc.currentHP||0)<=_n)) s+=22; } }   // build 10.42
+      else if(c.id==='glacynth_fruit_bse'){ const _g=chars.filter(glacynthNeeds); if(_g.length) s=28+(enemies.length&&_g.some(f=>!f.tapped)?8:0); }   // build 10.42: free a Frozen / Confused character
       else if(c.id==='virora_beer_bse'){ const _v=chars.filter(f=>isViroraChar(DB[f.cid])&&aiReady(f)&&canCharacterAttack(p,f)); if(_v.length&&enemies.length) s=30; }   // build 10.40
       else if(c.id==='saiyan_blood'){ if(chars.some(f=>DB[f.cid]?.subtypes?.some(x=>/saiyan/i.test(x)))) s=34; else if(chars.length) s=24; }
       else if(c.id==='courts_favor_hoc'){ if(pl._favorTurn!==G.turn){ const gain=harvestOn(p)?4:3; const next=pl.hand.some(h=>h.uid!==fc.uid&&DB[h.cid]&&DB[h.cid].type!=='energy_card'&&!DB[h.cid].transformOnly&&(DB[h.cid].cost||0)>pl.energy-1&&(DB[h.cid].cost||0)<=pl.energy-1+gain); s=next?48:20; } }
@@ -29862,7 +29951,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.41';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.42';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
