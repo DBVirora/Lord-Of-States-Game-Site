@@ -9670,7 +9670,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.43 · Pink Kamehameha is Red</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.44 · Tutorial offer for new players</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10727,6 +10727,12 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.43'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.44', date:'2026-11-21', cards:[], abilities:[],
+    screens:["TUTORIAL OFFER FOR NEW PLAYERS (Rulk: 'ensure the tutorial pops up for new players ANY time a new player first hits the main screen'). The welcome offer (Virora: 'Enter the Courts' — PLAY THE TUTORIAL / Skip, I know card games → 'Skip the tutorial?' warning; CONTINUE · CHAPTER N when a tutorial save exists) must appear whenever the MAIN MENU is showing for a new player, not only once at the end of login.",
+      "NEW PLAYER = never finished the tutorial (achievement tutorial_complete) AND never skipped / left it (campaign watched_cutscenes 'welcome_tutorial') AND at most 2 matches played (wins + losses ≤ 2). (Was: exactly 0 matches — a first match through an invite, before ever seeing the menu, hid it for good.) If the account's stats couldn't be read (profiles query error), don't guess: no offer.",
+      "WHEN: 1) at the login hand-off, once all login data has loaded (as before); 2) every time the main menu screen opens (web: showScreen('menu-screen') → tutEnsureOffer() 350 ms later), as long as the login data has loaded, the player is new, the offer isn't already open, and no match / tutorial is running; 3) if a login step fails, the error path still offers it (when the stats loaded) instead of only revealing the menu.",
+      "The offer stays above every other menu popup (daily login, mail, news). Choosing Skip (and confirming) or leaving the tutorial marks welcome_tutorial watched, so it never comes back; closing the game without choosing = offered again next time."],
+    data:["WEB_BUILD 10.44. GAME_BUILD stays '10.43'."] },
   { build:'10.43', date:'2026-11-21', cards:[], abilities:[], screens:[],
     data:["CARD DATA: pink_kamehameha_bse.color 'purple' → 'red' (Rulk: it's Red). Nothing else about the card changes.",
       "GAME_BUILD → '10.43' (card data changed). WEB_BUILD 10.43."] },
@@ -29362,6 +29368,7 @@ function showScreen(id){
   else el.classList.add('active');
   if(id==='upload-screen')buildUploadScreen();
   if(id==='menu-screen'&&typeof renderMainMenu==='function'){ try{ renderMainMenu(); }catch(e){ console.warn('[menu]',e); } }
+  if(id==='menu-screen'&&typeof tutEnsureOffer==='function') setTimeout(()=>{ try{ tutEnsureOffer(); }catch(e){} }, 350); // build 10.44: new players get the tutorial offer on the main menu
   if(id==='builder-screen'){renderBuilderCards();renderBuilderDeck();}
   if(id==='deck-select-screen'){loadDecksFromStorage().then(()=>renderDeckSelectOptions());}
   if(typeof updateMenuMusic==='function')updateMenuMusic(); // play on menus, stop in battle
@@ -29718,6 +29725,7 @@ async function loadCelestium(){
     const {data,error}=await _celSB.from('profiles')
       .select('celestium,wins,losses,matches,last_login,first_win_date,cel_log')
       .eq('id',_celUserId).maybeSingle();
+    window._celStatsOK=!error; // build 10.44: the tutorial offer only trusts stats it could actually read
     if(!error&&data){
       _celData.celestium=data.celestium||0;
       _celData.wins=data.wins||0;
@@ -29954,7 +29962,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.43';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.44';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -32570,15 +32578,29 @@ async function onTutorialFinished(p){
 // Is this a brand-new account? (never finished/skipped the tutorial, never played a match)
 function tutorialIsNewPlayer(){
   try{
-    if(typeof hasCutsceneBeenWatched==='function' && hasCutsceneBeenWatched('welcome_tutorial')) return false;
-    if(typeof _achData!=='undefined' && _achData && _achData.ach_tutorial_complete) return false;
+    if(typeof hasCutsceneBeenWatched==='function' && hasCutsceneBeenWatched('welcome_tutorial')) return false; // skipped or left it
+    if(typeof _achData!=='undefined' && _achData && _achData.ach_tutorial_complete) return false;             // finished it
+    if(window._celStatsOK===false) return false;   // build 10.44: couldn't read the account's stats → don't guess
     const c=(typeof _celData!=='undefined')?_celData:null; if(!c) return false;
-    return (c.matches||0)===0 && (c.wins||0)===0 && (c.losses||0)===0;
+    return (c.matches||0)<=2 && ((c.wins||0)+(c.losses||0))<=2;   // build 10.44: was exactly 0 (an invite match before ever seeing the menu hid it)
   }catch(e){ return false; }
+}
+// build 10.44 · the offer shows ANY time a new player is on the main menu: not just once at the end of login.
+function tutEnsureOffer(){
+  try{
+    if(!window._authUid || !window._tutDataReady) return false;               // the account's data has to be loaded first
+    if(!tutorialIsNewPlayer()) return false;
+    if(document.querySelector('#tut-offer.on')) return true;                  // already up
+    if(G && G.tutorialMode) return false;                                     // in the tutorial
+    if(document.querySelector('#game-screen.active,#game-screen-2v2.active')) return false;
+    if(!document.getElementById('menu-screen')?.classList.contains('active')) return false;
+    tutOffer({firstRun:true}); return true;
+  }catch(e){ console.warn('[tutorial offer]',e); return false; }
 }
 // Login hand-off: brand-new players go straight into the tutorial (the boot veil keeps
 // the main menu hidden until here); everyone else is revealed the menu.
 function maybeStartTutorialForNewPlayer(){
+  window._tutDataReady=true; // build 10.44: from here on, reaching the main menu checks for the offer too (tutEnsureOffer)
   if(tutorialIsNewPlayer() && !(G && !G.gameOver && document.querySelector('#game-screen.active'))){ tutOffer({firstRun:true}); return true; }   // build 10.32: offered, not forced
   _tutMarkKnownLocal();
   if(typeof hideBootVeil==='function') hideBootVeil();
@@ -37276,7 +37298,10 @@ window.addEventListener('load',async()=>{
       // Brand-new players go straight into the tutorial (the boot veil kept the menu hidden); everyone else gets the menu.
       if(typeof maybeStartTutorialForNewPlayer==='function') maybeStartTutorialForNewPlayer(); else if(typeof hideBootVeil==='function') hideBootVeil();
       window.signOutUser=async function(){await sb.auth.signOut();window.location.replace(LOGIN);};
-    }catch(e){console.error('[AUTH] error:',e);window.signOutUser=function(){window.location.replace(LOGIN);};if(typeof hideBootVeil==='function')hideBootVeil();}
+    }catch(e){console.error('[AUTH] error:',e);window.signOutUser=function(){window.location.replace(LOGIN);};
+      // build 10.44: a failed login step used to skip the tutorial offer entirely; offer it anyway if the account's stats loaded
+      let _offered=false; try{ if(window._celStatsOK===true && typeof maybeStartTutorialForNewPlayer==='function') _offered=maybeStartTutorialForNewPlayer(); }catch(e2){}
+      if(!_offered&&typeof hideBootVeil==='function')hideBootVeil();}
   }
 
   async function init(){
