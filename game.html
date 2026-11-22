@@ -991,6 +991,7 @@ body:has(#fullcard-modal.open) #tut-bubble.docked{opacity:0!important;pointer-ev
 .fc-green  {border-color:var(--col-green)!important; box-shadow:0 0 8px var(--col-green)44!important;}
 .fc-white  {border-color:var(--col-white)!important; box-shadow:0 0 8px var(--col-white)44!important;}
 .fc-unstable{border-style:dashed!important;opacity:.85;}
+.card-slot.unstable-slot{outline:2px dashed rgba(248,113,113,.8);outline-offset:-3px;}
 .unstable-badge{background:#7f1d1d;color:#fca5a5;border:1px solid #ef4444;font-size:7px;font-weight:700;padding:1px 4px;border-radius:3px;letter-spacing:.3px;}
 /* Energy card type */
 .energy-card-slot{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #fbbf24;}
@@ -9670,7 +9671,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.45 · Viewtiful Joe + Korra forms</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.46 · Color Rules</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -9934,6 +9935,14 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
             <button class="ds-opt-btn selected" onclick="selectPrizeCount(6)" data-pc="6">6</button><button class="ds-opt-btn" onclick="selectPrizeCount(7)" data-pc="7">7</button><button class="ds-opt-btn" onclick="selectPrizeCount(8)" data-pc="8">8</button><button class="ds-opt-btn" onclick="selectPrizeCount(9)" data-pc="9">9</button><button class="ds-opt-btn" onclick="selectPrizeCount(10)" data-pc="10">10</button></div></div>
           <div id="lf-hp-wrap"><div class="ds2-lbl">LIFE FORCE HP</div><div style="display:flex;gap:6px">
             <button class="ds-opt-btn selected" onclick="selectLFHP(100)" data-hp="100">100</button><button class="ds-opt-btn" onclick="selectLFHP(125)" data-hp="125">125</button><button class="ds-opt-btn" onclick="selectLFHP(150)" data-hp="150">150</button><button class="ds-opt-btn" onclick="selectLFHP(175)" data-hp="175">175</button><button class="ds-opt-btn" onclick="selectLFHP(200)" data-hp="200">200</button></div></div>
+        </div>
+        <div class="ds2-opts" id="color-rules-wrap">
+          <div><div class="ds2-lbl">🎨 COLOR RULES</div><div style="display:flex;gap:6px">
+            <button class="ds-opt-btn selected" data-cr="classic" onclick="selectColorRules('classic')">Classic</button><button class="ds-opt-btn" data-cr="herald" onclick="selectColorRules('herald')">Herald</button><button class="ds-opt-btn" data-cr="strict" onclick="selectColorRules('strict')">Strict</button></div>
+            <div id="color-rules-desc" style="font-size:10px;color:#9ca3af;margin-top:4px;max-width:360px;line-height:1.35"></div></div>
+          <div><div class="ds2-lbl">🎲 RANDOM DECKS</div><div style="display:flex;gap:6px">
+            <button class="ds-opt-btn selected" data-rs="auto" onclick="selectRandomStyle('auto')">Auto</button><button class="ds-opt-btn" data-rs="herald" onclick="selectRandomStyle('herald')">Herald-built</button><button class="ds-opt-btn" data-rs="chaos" onclick="selectRandomStyle('chaos')">Fully random</button></div>
+            <div id="random-style-desc" style="font-size:10px;color:#9ca3af;margin-top:4px;max-width:360px;line-height:1.35"></div></div>
         </div>
         <div class="ds2-opp">
           <div class="av" id="ds2-opp-av">🤖</div>
@@ -10725,8 +10734,23 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.45'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.46'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.46', date:'2026-11-22',
+    rules:["COLOR RULES — a per-match setting: G.colorRules = 'classic' | 'herald' | 'strict'. DEFAULT 'classic' (= exactly how it played before). Set from the deck-select screen (Play vs CPU / local 1v1) or the online room (host's lobby select 'lobby-color-rules', sent as room.color_rules in the match_started payload; the guest takes it from the room, and G.colorRules rides in the state sync). Tutorial, story/event/scripted battles, Quick Match and 2v2 stay 'classic'. Match start log: '🎨 Color Rules: Herald — …'.",
+      "HERALD COLORS = cardColors(herald) without white (colors[] if set, else color). A Broken Herald keeps its colors (use origCid). White or no Herald = no colors.",
+      "DRAW STEP (turnDraw): still +1 Energy total. In 'herald'/'strict' with Herald colors, that +1 is ALSO added to colorEnergy[color], where color = heraldColors[_hcIdx % n]; then _hcIdx++ (per player, starts 0, synced online in the player state). One-color Herald: always its color. Two-color (Surfacer blue/purple): blue, purple, blue… White Herald: plain Energy. A skipped draw (Surge) gives nothing and doesn't advance _hcIdx. Log '🔵 X's Herald gives 1 Blue Energy.'",
+      "UNSTABLE (off-color) in 'herald'/'strict': a card is off-color when it has at least one non-white color and NONE of its colors is a Herald color (a dual card is fine if EITHER color matches). Never off-color: white cards, Energy cards, Heralds, tokens; nothing is off-color with a White/no Herald. Effect: +2 Energy cost — added in handCostMod(p,fc), the single hand-cost modifier every check uses (play, CPU, Burst Window, hand display; the hand shows the taxed cost with a red ⚠). A CHARACTER played from hand also enters with −1 Attack / −1 Health (atkBonus/currentATK −1, hpBonus/currentHP −1; Attack never below 0, Health never below 1), fc.unstable=true → dashed red outline on the board + effects row '⚠️ Unstable'. It stays for as long as that card is on the field (also through transformations). Locations/Equipment/Instants: only the +2. TRANSFORMING into an off-color form costs +2 (transformCostFor adds it; returns unstable:true); no −1/−1 for transforming.",
+      "STRICT only: a colored card needs at least 1 banked Energy of ONE of its colors (colorEnergy[c] ≥ 1) to be played from hand or transformed into; white cards never need it. Checked: hand play ('🎨 Strict colors: X needs at least 1 Red Energy.'), hand 'playable' glow (+ 'NEEDS RED ·' tag), CPU hand + transform choices, Burst Window, transform menu ('Needs 1 Red Energy'), doTransform. Fusion cards are not affected.",
+      "SPENDING ORDER in 'herald'/'strict' (spendEnergy): the card's own color first, then PLAIN Energy (energy − sum(colorEnergy)), then other colors (smallest first). Classic keeps the old order (own color, other colors, plain).",
+      "CPU in 'strict': aiPickEnergyCard plays the Energy card whose color unlocks its most valuable stuck card (Choice/Rainbow next), else the first one; Choice/Rainbow color = the color a stuck card needs. Classic/Herald: unchanged (first Energy card)."],
+    screens:["DECK-SELECT SCREEN: new row under Prize count / Life HP: '🎨 COLOR RULES' [Classic][Herald][Strict] with a one-line description under it, and '🎲 RANDOM DECKS' [Auto][Herald-built][Fully random] with a description. Both remembered on the device (localStorage vcu_color_rules / vcu_random_style).",
+      "Descriptions — Classic: \"How it's always played: any Energy pays for any card.\" · Herald: \"Your Draw step Energy comes in your Herald's color (two-color Heralds alternate). Cards outside your Herald's colors are Unstable: +2 cost, and characters enter with −1/−1. A White Herald gives plain Energy and nothing is off-color.\" · Strict: \"Herald rules, plus every colored card needs at least 1 Energy of its color to be played.\"",
+      "ONLINE ROOM: a third select next to game mode: 🎨 Classic colors / Herald colors / Strict colors (host only). Rematch keeps it.",
+      "ENERGY HUD: in Herald/Strict, a '➜ ●' pip in the next Draw step's Herald color after the color pips (tooltip 'Next Draw step: 1 Blue Energy from your Herald').",
+      "RULES SCREEN: the Off-Color line now reads 'Color Rules (pick before a match): …' + 'Off-Color (Unstable) — Herald & Strict: a card with none of your Herald's colors costs +2 Energy · a character enters with -1 ATK / -1 HP. White cards are never off-color; with a White Herald nothing is.'"],
+    data:["RANDOM DECKS: style Auto (default) = fully random in Classic, Herald-built in Herald/Strict; or forced Herald-built / Fully random. HERALD-BUILT (generateHeraldDeck): same pools and ownership rules as the fully random deck; random Herald; colors = its colors (White Herald: 1 random color, 40% a 2nd); 34 characters (28 tries from cards with a Herald color, then those + white ones; any character if the pool is tiny); then their transform forms (addTransformFormsToDeck), trimming duplicate non-form cards back to 48; up to 10 on-color Locations/Equipment/Instants (deck ≤ 48); 2 Choice/Rainbow; basic Energy (1/2/3) of its colors to 60 — so 12+ Energy cards. The online '🎲 Random Deck' (fair deck) stays fully random.",
+      "GAME_BUILD → '10.46' (rules change). WEB_BUILD 10.46."] },
   { build:'10.45', date:'2026-11-22',
     cards:[{id:'viewtiful_joe_herald', set:'promo', number:'PROMO', rarity:'mythic', scan:'Characters/Series/Viewtiful Joe/Viewtiful Joe (Herald) PROMO.png', newAbilities:['VFX Slow','Mach Speed','Henshin-a-go-go, Baby!'],
       note:"Viewtiful Joe · HERALD · Mythic · 13 ATK / 11 HP · subtypes Hero, VFX · race 'Hero' · color 'yellow' · sym 🎬 · setId promo · cardNumber PROMO. Menu art: Main Menu Images/Viewtiful Joe.jpg (Admin → Menu Art)."},
@@ -13101,6 +13125,7 @@ async function loadDecksFromStorage(){
 }
 
 function generateRandomDeck(opts){
+  if(_rdStyle(opts)==='herald'){ try{ const hd=generateHeraldDeck(opts); if(hd&&hd.length>=60) return hd; }catch(e){ console.warn('[DECK] Herald-built deck failed — fully random instead',e); } }
   // opts.fair (online): deal from the public pool — no disabled or exclusive cards, even for admins.
   const _rdOk=(opts&&opts.fair)?(id=>!DB[id].exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id])):isCardPlayable;
   // Separate card pools
@@ -13169,6 +13194,38 @@ function generateRandomDeck(opts){
   // excluded, but they need to be in the deck to be drawn + used as transform fuel).
   addTransformFormsToDeck(deck);
   console.log('[DECK] after adding transform forms:',deck.length);
+  return shuffle([...deck]);
+}
+
+// 🎨 HERALD-BUILT RANDOM DECK (build 10.46): a random Herald, 34 characters mostly in its colors (white fill) + their transform
+// forms (kept to 48 cards), up to 10 on-color Locations / Equipment / Instants, 2 Choice/Rainbow and basic Energy of its colors
+// to 60 (12+ Energy). A White Herald picks 1–2 colors.
+// Same card pools and ownership rules as the fully random deck.
+function generateHeraldDeck(opts){
+  const _rdOk=(opts&&opts.fair)?(id=>!DB[id].exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id])):isCardPlayable;
+  const _own=id=>((typeof _collection!=='undefined'&&_collection[id])||0)>0;
+  const _exOk=id=>!DB[id].noRandom&&(!DB[id].exclusive||(!(opts&&opts.fair)&&_own(id)));
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+  const heraldIds=Object.keys(DB).filter(id=>DB[id].type==='herald'&&!DB[id].isToken&&_exOk(id)&&_rdOk(id));
+  const charIds=Object.keys(DB).filter(id=>['base_char','char','team'].includes(DB[id].type)&&!DB[id].transformOnly&&!DB[id].isToken&&_exOk(id)&&!DB[id].fusion&&_rdOk(id));
+  const supIds=Object.keys(DB).filter(id=>!['base_char','char','team','herald','token','energy_card'].includes(DB[id].type)&&!DB[id].isToken&&!DB[id].fusionMethodCard&&_exOk(id)&&_rdOk(id));
+  const energyIds=Object.keys(DB).filter(id=>DB[id].type==='energy_card'&&!DB[id].isToken&&_exOk(id)&&_rdOk(id));
+  if(!heraldIds.length||charIds.length<10) return null;
+  const herald=pick(heraldIds); let cols=cardColors(herald).filter(c=>c&&c!=='white');
+  if(!cols.length){ const all=['red','blue','purple','black','yellow','green']; const a=pick(all); cols=[a]; if(Math.random()<.4) cols.push(pick(all.filter(x=>x!==a))); }
+  const colored=id=>cardColors(id).some(c=>cols.includes(c));
+  const onColor=id=>{ const cc=cardColors(id).filter(c=>c&&c!=='white'); return !cc.length||cc.some(c=>cols.includes(c)); };
+  const deck=[herald];
+  const addFrom=(pool,n)=>{ if(!pool.length||n<=0) return; const goal=deck.length+n; let att=0; while(deck.length<goal&&att<4000){ att++; const id=pick(pool); if(deck.filter(x=>x===id).length<4) deck.push(id); } };
+  const cPool=charIds.filter(colored), wPool=charIds.filter(id=>onColor(id)&&!colored(id));
+  addFrom(cPool,28); addFrom(cPool.concat(wPool),35-deck.length); if(deck.length<35) addFrom(charIds,35-deck.length);
+  addTransformFormsToDeck(deck); // forms for its base characters first, so they never push Energy out
+  while(deck.length>48){ const i=deck.findIndex((id,k)=>k>0&&!DB[id].transformOnly&&deck.filter(x=>x===id).length>=2); if(i<0) break; deck.splice(i,1); }
+  const sPool=supIds.filter(onColor); addFrom(sPool.length?sPool:supIds,Math.min(10,48-deck.length));
+  const basics=energyIds.filter(id=>!DB[id].specialEnergy&&cols.includes(DB[id].color)), flex=energyIds.filter(id=>/choice|rainbow/i.test(id));
+  addFrom(flex,2); addFrom(basics.length?basics:energyIds,60-deck.length);
+  if(deck.length<60) addFrom(charIds.filter(onColor),60-deck.length); if(deck.length<60) addFrom(charIds,60-deck.length);
+  console.log('[DECK] Herald-built random deck: '+DB[herald].name+' · '+cols.join('/')+' · '+deck.length+' cards');
   return shuffle([...deck]);
 }
 
@@ -13407,6 +13464,7 @@ function launchGame(){
   if(!pendingP1Deck||!pendingP2Deck)return;
   if(!validateDeckForPlay(pendingP1Deck)||!validateDeckForPlay(pendingP2Deck))return;
   if(typeof mmRemember==='function') mmRemember(pendingMode,pendingP1Deck);
+  _matchColorRules=pendingColorRules; // 🎨 build 10.46: this match's Color Rules (random decks below follow them too)
   startGame(pendingMode,getDeckList(pendingP1Deck),getDeckList(pendingP2Deck),getDeckFoils(pendingP1Deck),getDeckFoils(pendingP2Deck));
 }
 
@@ -14481,6 +14539,7 @@ function fxEffectsOf(fc){
   if(airBlasted(fc)) cond('💨','Air Blast',"Tapped — it can't attack until its opponent's next turn.",null);
   if(fc._avState>0) cond('🌀','Avatar State','+'+fc._avState+' Attack and Onslaught until the end of this turn.',null);
   if(fc._webSling>0) cond('🕸','Web-Slinger Strike','+'+fc._webSling+' Attack until the end of this turn'+(webSlingOn(fc)?' · its next attack takes no damage back':'')+'.',null);
+  if(fc.unstable) cond('⚠️','Unstable',"Off-color for its Herald: it entered with −1 Attack / −1 Health.",null);
   if(fc._henshin>0) cond('🎬','Henshin-a-go-go, Baby!','+'+fc._henshin+" Attack, and opposing characters can't deal damage to it this turn.",null);
   if(fc._frostWard) cond('❄️','Frostbloom Ward',"Can't be targeted by opposing abilities until its owner's next turn.",null);
   if(fc._beer>0) cond('🍺','Liquid Courage','+'+fc._beer+' Attack until the end of this turn.',null);
@@ -14713,6 +14772,9 @@ function startGame(mode,deck1,deck2,foils1,foils2){
     },log:[]};
   if(_pendingAdminTest){ G.adminTestMode=true; _pendingAdminTest=false; log('🧪 AI Admin Testing Mode — status tester enabled.','info'); }
   if(_pendingTutorial){ G.tutorialMode=true; _pendingTutorial=false; G.tut={shown:{}}; log('🎓 Tutorial match started.','info'); }
+  // 🎨 COLOR RULES (build 10.46): only matches started from the deck-select screen or an online room set them; everything else is Classic.
+  G.colorRules=(!G.tutorialMode&&(_matchColorRules==='herald'||_matchColorRules==='strict'))?_matchColorRules:'classic'; _matchColorRules=null;
+  if(G.colorRules!=='classic') log(`🎨 Color Rules: ${COLOR_RULES_META[G.colorRules].label} — ${COLOR_RULES_META[G.colorRules].desc}`,'info');
   for(let i=0;i<7;i++){drawCard(1,true);drawCard(2,true);}
   if(h1)log(`${pname(1)} Herald: ${DB[h1.cid].name} enters play!`,'gain');
   if(h2)log(`${pname(2)} Herald: ${DB[h2.cid].name} enters play!`,'gain');
@@ -18030,6 +18092,7 @@ function onHandClick(p,uid,fc){
   if(c.transformOnly){log(`${c.name} — Transform Only (not playable from hand).`,'dmg');return;}
   const effectiveCost=Math.max(0,c.cost+(fco.costMod||0)+handCostMod(p,fco));
   if(pl.energy<effectiveCost){log(`Need ${effectiveCost}⚡.`,'dmg');return;}
+  { const _cm=colorReqMissing(p,fco); if(_cm){ log(`🎨 Strict colors: ${c.name} needs at least 1 ${colorWord(_cm)} Energy.`,'dmg'); return; } }
   if(c.id==='courts_favor_hoc'){ if(pl._favorTurn===G.turn){ log("Court's Favor: you can play only 1 Court's Favor per turn.",'dmg'); return; } pl._favorTurn=G.turn; } // build 10.20
   // CHARGE ON CONFIRM (build 10.4): Equipment and targeted Instants stay in your hand and cost nothing until you
   // pick the target. Closing the picker leaves the card in hand with your Energy untouched. commitPlay() pays then.
@@ -18053,6 +18116,7 @@ function onHandClick(p,uid,fc){
     if(isChar(DB[fco.cid])&&!DB[fco.cid]?.isToken&&namedFighters>=MAX_FIELD){log('Fighter zone full! (max 8 named fighters).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     if(!isChar(DB[fco.cid])&&otherCards>=MAX_OTHER){log('Field full! (max 5 other cards on field).','dmg');pl.hand.push(fco);pl.energy+=effectiveCost;return;}
     if(fco&&fco._kept) applyKeptStats(fco); // 🚄 Express Return
+    if(isOffColor(p,fco.cid)) markUnstable(p,fco); // 🎨 Unstable: −1 Attack / −1 Health
     pl.field.push(fco);log(`${pname(p)} plays ${c.name}.`,'info');playCardZoom(fco.cid,fco.variant);if(typeof fxMarkLand==='function')fxMarkLand(fco.uid,'char');if(typeof SFX!=='undefined')SFX.cardPlay();if(p===1)sendGameAction('card_play',{cardId:fco.cid,variant:fco.variant});seqEntry(p,fco);
     if(G.tutorialMode&&p===1&&isChar(c)&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('play');
     if(typeof trackCardPlayed==='function')trackCardPlayed(p,c);
@@ -19121,7 +19185,8 @@ function transformCostFor(p,fc,tid){
   cost=royalClarityCost(p,fc,tc,cost);
   if(hasAbilityLabel(fc,'Feral Awakening')&&tc.charLine&&tc.charLine===DB[fc.cid]?.charLine&&String(tc.formTier||'').toLowerCase()==='ssbe') cost=Math.max(0,cost-2); // 🐾 Elise (SSG): her SSBE costs 2 less
   const steps=tfSkipSteps(fc.cid,tid), toll=steps.reduce((a,x)=>a+x.price,0);
-  return {cost:cost+toll, base:cost, toll, steps, shift:tfIsOpenShift(fc.cid,tid)};
+  const _uns=(typeof isOffColor==='function'&&isOffColor(p,tid))?2:0; cost+=_uns; // 🎨 Unstable: an off-color form costs +2
+  return {cost:cost+toll, base:cost, toll, steps, shift:tfIsOpenShift(fc.cid,tid), unstable:_uns>0};
 }
 // Prism Shift's "next form": legacy transforms[0], else the lowest-rank chain target (cheapest on a tie).
 function tfNextFormOf(cid){
@@ -19283,7 +19348,8 @@ function openTransformModal(){
       const inHand=pl.hand.find(f=>f.cid===tid);
       if(G.tutorialMode && !inHand) return; // tutorial: only the forms you're holding
       const _used=tfUsedThisTurn(fc);
-      const can=!!inHand&&pl.energy>=cost&&!_used;
+      const _needC=colorReqMissingCid(actingPlayer(),tid);
+      const can=!!inHand&&pl.energy>=cost&&!_used&&!_needC;
       found=true;
       const pathLabel = getPathLabel(tc.path);
       const row=document.createElement('div');row.style.cssText='border:1px solid #3a3a5c;border-radius:8px;padding:9px;margin-bottom:7px;display:flex;align-items:center;gap:9px';
@@ -19294,7 +19360,7 @@ function openTransformModal(){
         <div style="color:#9ca3af;font-size:11px">${_tcf.toll?`${_tcf.base}⚡ + skip ${_tcf.steps.map(x=>x.tier+' '+x.price).join(' + ')} = <b style="color:#e8c570">${cost}⚡</b>`:cost+'⚡'} · ${tc.atk}ATK/${tc.hp}HP${_tcf.shift?' · <span style="color:#c8a0ff">shift: damage &amp; statuses stay</span>':''}</div>
         <div style="font-size:10px;color:${inHand?'#22c55e':'#ef4444'};margin-top:2px">${inHand?'✓ In hand':'✗ Need in hand'}</div>`;
       const btn=document.createElement('button');btn.className='btn-primary btn-sm';btn.style.marginTop='5px';
-      btn.textContent=can?(_tcf.shift?'Shift ⬆':'Transform ⬆'):_used?'Already transformed this turn':inHand?`Need ${cost}⚡`:'Need in hand';btn.disabled=!can;
+      btn.textContent=can?(_tcf.shift?'Shift ⬆':'Transform ⬆'):_used?'Already transformed this turn':(inHand&&_needC&&pl.energy>=cost)?`Needs 1 ${colorWord(_needC)} Energy`:inHand?`Need ${cost}⚡`:'Need in hand';btn.disabled=!can;
       btn.onclick=()=>doTransform(fc.uid,tid,inHand?.uid,cost);
       if(G.tutorialMode && _tutPlayMode!=='free' && tid!==_tutTfCid){ btn.disabled=true; btn.style.opacity='.45'; btn.textContent='🔒 '+(_tutTfCid?'Not this path':'Not yet'); }
       info.appendChild(btn);row.appendChild(prev);row.appendChild(info);body.appendChild(row);
@@ -19518,6 +19584,7 @@ function doTransform(fieldUid,newCid,handUid,cost,ownerOverride){
   if(tfUsedThisTurn(fc)){ log(`${DB[fc.cid]?.name} has already transformed this turn.`,'dmg'); return; } // one per character per turn
   const actualCost=cost!==undefined?cost:nc.cost;
   if(pl.energy<actualCost){log('Not enough energy!','dmg');return;}
+  { const _cm=colorReqMissingCid(owner,newCid); if(_cm){ log(`🎨 Strict colors: ${nc.name} needs at least 1 ${colorWord(_cm)} Energy.`,'dmg'); return; } }
   // The transformed character takes the FINISH of the form card played from hand
   // (e.g. a Ruby SSJ2 in hand → Ruby SSJ2 on the field), not the old form's finish.
   const _handFc=pl.hand.find(f=>f.uid===handUid);
@@ -22414,7 +22481,7 @@ function endTurnNow(){
 // back to normal. Location Energy and the untap still happen.
 function turnDraw(p){ const pl=G.players[p]; if(!pl) return false;
   if(pl.skipNextDraw){ pl.skipNextDraw=false; log(`⚡ Surge Energy: ${pname(p)} skips this Draw step — no card and no +1 Energy this turn.`,'info'); return false; }
-  pl.energy+=1; drawCard(p); return true; }
+  heraldDrawEnergy(p); drawCard(p); return true; } // 🎨 build 10.46: Herald / Strict → the +1 comes in the Herald's color
 function doPhase(ph){
   if(!iControlActive())return;
   // TUTORIAL PHASE-LOCK: during a guided step, only the phase Virora is asking for works.
@@ -23900,7 +23967,7 @@ function aiEnumerateActions(p){
   const handCids=new Set(pl.hand.map(f=>f.cid));
   // 1) Energy card — free value, always first
   if(!pl.energyCardPlayedThisTurn){
-    const ec=pl.hand.find(f=>DB[f.cid]?.type==='energy_card');
+    const ec=aiPickEnergyCard(p); // 🎨 Strict: the color it needs (otherwise the first Energy card, as before)
     if(ec){ acts.push({score:95,label:'energy '+DB[ec.cid].name,run:()=>playEnergyCard(p,ec.cid)}); }
   }
   // 2) Transformations (new charLine/nextForms system + legacy arrays via getTransformTargets)
@@ -23910,7 +23977,7 @@ function aiEnumerateActions(p){
       const inHand=pl.hand.find(f=>f.cid===tid); if(!inHand) return;
       if(tfUsedThisTurn(fc)) return;
       const cost=transformCostFor(p,fc,tid).cost;
-      if(pl.energy<cost) return;
+      if(pl.energy<cost||colorReqMissingCid(p,tid)) return;
       if(aiTried('tf:'+fc.uid+':'+tid)) return;
       const gain=((tc.atk||0)+(tc.hp||0))-((fc.currentATK||0)+(fc.currentHP||0));
       const abilGain=((tc.abilities||[]).length)-((DB[fc.cid]?.abilities||[]).length);
@@ -23933,7 +24000,7 @@ function aiEnumerateActions(p){
   // 3-6) Cards from hand
   pl.hand.forEach(fc=>{
     const c=DB[fc.cid]; if(!c||c.type==='energy_card'||c.transformOnly||c.isToken||c.fusion||c.fusionMethodCard==='dance') return;
-    const cost=Math.max(0,(c.cost||0)+(fc.costMod||0)+handCostMod(p,fc)); if(pl.energy<cost) return;
+    const cost=Math.max(0,(c.cost||0)+(fc.costMod||0)+handCostMod(p,fc)); if(pl.energy<cost||colorReqMissing(p,fc)) return;
     if(aiTried('hand:'+fc.uid)) return;
     const base=()=>({run:()=>{ aiMark('hand:'+fc.uid); onHandClick(p,fc.uid,fc); }});
     if(isChar(c)){
@@ -24081,7 +24148,7 @@ function aiBurstResponse(ap, afc, dp, dfc){
   const pl=G.players[dp]; if(!pl||G.activePlayer===dp) return;
   const dmg=effPower(afc); if(dmg<(dfc.currentHP||0)) return; // survives anyway
   const hand=pl.hand.slice();
-  const tryPlay=(fc)=>{ const c=DB[fc.cid]; if(!c||pl.energy<Math.max(0,(c.cost||0)+(fc.costMod||0)+handCostMod(dp,fc))) return false;
+  const tryPlay=(fc)=>{ const c=DB[fc.cid]; if(!c||pl.energy<Math.max(0,(c.cost||0)+(fc.costMod||0)+handCostMod(dp,fc))||colorReqMissing(dp,fc)) return false;
     const was=G._aiAuto; G._aiAuto=true; const ph=G.phase, apl=G.activePlayer; G.phase='main'; G.activePlayer=dp;
     try{ onHandClick(dp,fc.uid,fc); } finally { G.phase=ph; G.activePlayer=apl; G._aiAuto=was; }
     log(`AI responds with ${c.name}!`,'info'); return true; };
@@ -24260,6 +24327,63 @@ function isUnstable(cid, deckColors){
 
 function getColorClass(color){ return color?'fc-'+color:''; }
 
+// ═══ 🎨 COLOR RULES (build 10.46) ═══ 'classic' (how it always played) · 'herald' · 'strict' — chosen per match on the deck-select
+// screen / in the online room. G.colorRules holds the match's rule; anything that isn't 'herald'/'strict' plays Classic.
+let pendingColorRules='classic', pendingRandomStyle='auto', _matchColorRules=null;
+try{ const _cr=localStorage.getItem('vcu_color_rules'); if(['classic','herald','strict'].includes(_cr)) pendingColorRules=_cr;
+     const _rs=localStorage.getItem('vcu_random_style'); if(['auto','herald','chaos'].includes(_rs)) pendingRandomStyle=_rs; }catch(e){}
+const COLOR_RULES_META={
+  classic:{label:'Classic', desc:"How it's always played: any Energy pays for any card."},
+  herald:{label:'Herald', desc:"Your Draw step Energy comes in your Herald's color (two-color Heralds alternate). Cards outside your Herald's colors are Unstable: +2 cost, and characters enter with −1/−1. A White Herald gives plain Energy and nothing is off-color."},
+  strict:{label:'Strict', desc:'Herald rules, plus every colored card needs at least 1 Energy of its color to be played.'}};
+const RANDOM_STYLE_META={
+  auto:{label:'Auto', desc:'Classic → fully random. Herald / Strict → built around their Herald.'},
+  herald:{label:'Herald-built', desc:"Random decks are built around their Herald's colors, with matching Energy."},
+  chaos:{label:'Fully random', desc:'Every random deck is a full mix of colors (the classic chaos).'}};
+function colorRulesOn(){ return !!(typeof G!=='undefined'&&G&&(G.colorRules==='herald'||G.colorRules==='strict')); }
+function colorWord(col){ return (COLOR_DEFS[col]&&COLOR_DEFS[col].label)||col; }
+// The Herald's colors (white left out). A Broken Herald keeps its colors (its origCid).
+function heraldColorsOf(p){ const h=G&&G.players&&G.players[p]&&G.players[p].herald; if(!h) return [];
+  const cid=(h.cid==='herald_broken'||h.broken)?(h.origCid||h.cid):h.cid; return cardColors(cid).filter(c=>c&&c!=='white'); }
+// The color of this player's NEXT Draw-step Energy (null = plain Energy).
+function nextHeraldColor(p){ if(!colorRulesOn()) return null; const cols=heraldColorsOf(p); if(!cols.length) return null;
+  return cols[((G.players[p]._hcIdx||0)%cols.length+cols.length)%cols.length]; }
+function heraldDrawEnergy(p){ const pl=G.players[p]; const col=nextHeraldColor(p); pl.energy+=1;
+  if(col){ if(!pl.colorEnergy) pl.colorEnergy={}; pl.colorEnergy[col]=(pl.colorEnergy[col]||0)+1; pl._hcIdx=(pl._hcIdx||0)+1;
+    log(`${COLOR_DEFS[col]?.pip||'⚡'} ${pname(p)}'s Herald gives 1 ${colorWord(col)} Energy.`,'gain'); } }
+// Off-color (Unstable): none of the card's colors is one of the Herald's. White cards, Energy cards, Heralds and tokens never are;
+// with a White (or no) Herald nothing is.
+function isOffColor(p,cid){ if(!colorRulesOn()) return false; const c=DB[cid]; if(!c||c.type==='energy_card'||c.type==='herald'||c.isToken) return false;
+  const hc=heraldColorsOf(p); if(!hc.length) return false; const cols=cardColors(cid).filter(x=>x&&x!=='white'); if(!cols.length) return false;
+  return !cols.some(x=>hc.includes(x)); }
+// STRICT: a colored card needs at least 1 banked Energy of one of its colors. Returns the missing color, or null.
+function colorReqMissingCid(p,cid){ if(!G||G.colorRules!=='strict') return null; const c=DB[cid]; if(!c||c.type==='energy_card'||c.type==='herald'||c.isToken) return null;
+  const cols=cardColors(cid).filter(x=>x&&x!=='white'); if(!cols.length) return null; const ce=(G.players[p]&&G.players[p].colorEnergy)||{};
+  return cols.some(x=>(ce[x]||0)>=1)?null:cols[0]; }
+function colorReqMissing(p,fc){ return fc?colorReqMissingCid(p,fc.cid):null; }
+// An off-color character enters with −1 Attack / −1 Health (Attack never below 0, Health never below 1).
+function markUnstable(p,fc){ const c=DB[fc.cid]; if(!c||fc.unstable) return; fc.unstable=true;
+  const da=Math.min(1,Math.max(0,fc.currentATK||0)), dh=Math.min(1,Math.max(0,(fc.currentHP||0)-1));
+  fc.atkBonus=(fc.atkBonus||0)-da; fc.currentATK=(fc.currentATK||0)-da; fc.hpBonus=(fc.hpBonus||0)-dh; fc.currentHP=(fc.currentHP||0)-dh;
+  log(`⚠️ Unstable: ${c.name} is off-color for ${pname(p)}'s Herald — it enters with −1 Attack / −1 Health.`,'dmg'); }
+function applyColorRulesUI(){
+  document.querySelectorAll('[data-cr]').forEach(b=>{ b.className='ds-opt-btn'+(b.dataset.cr===pendingColorRules?' selected':''); });
+  document.querySelectorAll('[data-rs]').forEach(b=>{ b.className='ds-opt-btn'+(b.dataset.rs===pendingRandomStyle?' selected':''); });
+  const d=document.getElementById('color-rules-desc'); if(d) d.textContent=(COLOR_RULES_META[pendingColorRules]||{}).desc||'';
+  const r=document.getElementById('random-style-desc'); if(r) r.textContent=(RANDOM_STYLE_META[pendingRandomStyle]||{}).desc||''; }
+function selectColorRules(v){ if(!COLOR_RULES_META[v]) return; pendingColorRules=v; try{ localStorage.setItem('vcu_color_rules',v); }catch(e){} applyColorRulesUI(); }
+function selectRandomStyle(v){ if(!RANDOM_STYLE_META[v]) return; pendingRandomStyle=v; try{ localStorage.setItem('vcu_random_style',v); }catch(e){} applyColorRulesUI(); }
+try{ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>{ try{ applyColorRulesUI(); }catch(e){} }); else applyColorRulesUI(); }catch(e){}
+// Random-deck style for a deck generated right now.
+function _rdStyle(opts){ if(opts&&opts.style) return opts.style; if(opts&&opts.fair) return 'chaos';
+  const st=pendingRandomStyle||'auto'; if(st==='auto') return (pendingColorRules==='herald'||pendingColorRules==='strict')?'herald':'chaos'; return st; }
+// CPU (Strict): play the Energy card whose color unlocks the most valuable stuck card; otherwise the first one (Classic/Herald: unchanged).
+function aiPickEnergyCard(p){ const pl=G.players[p]; const ecs=pl.hand.filter(f=>DB[f.cid]?.type==='energy_card'); if(!ecs.length) return null;
+  if(!G||G.colorRules!=='strict') return ecs[0];
+  const need={}; pl.hand.forEach(f=>{ if(colorReqMissing(p,f)){ const v=(typeof aiCardValue==='function')?(aiCardValue(DB[f.cid])||1):1; cardColors(f.cid).filter(c=>c&&c!=='white').forEach(c=>need[c]=(need[c]||0)+v); } });
+  const sc=f=>{ const d=DB[f.cid]; const flex=/choice|rainbow/i.test(f.cid); let v=(d.energyGain||1); if(d.color&&need[d.color]) v+=100+need[d.color]; else if(flex&&Object.keys(need).length) v+=90; return v; };
+  return ecs.slice().sort((a,b)=>sc(b)-sc(a))[0]; }
+
 function renderColorDot(color, size=8){
   if(!color) return '';
   const def=COLOR_DEFS[color];
@@ -24319,6 +24443,9 @@ function spendEnergy(p, amount, cardColor){
     remaining-=fromColor;
     if(pl.colorEnergy[cardColor]<=0) delete pl.colorEnergy[cardColor];
   }
+  // 🎨 Herald / Strict: plain Energy goes before other colors, so colored Energy is kept for colored cards (build 10.46)
+  if(remaining>0&&pl.colorEnergy&&typeof colorRulesOn==='function'&&colorRulesOn()){
+    const _colored=Object.values(pl.colorEnergy).reduce((a,b)=>a+(b||0),0); remaining-=Math.min(remaining,Math.max(0,pl.energy-_colored)); }
   // Spend remaining from other color energy (smallest pools first)
   if(remaining>0&&pl.colorEnergy){
     const otherColors=Object.entries(pl.colorEnergy).sort((a,b)=>a[1]-b[1]);
@@ -24382,7 +24509,9 @@ function renderColorEnergyBreakdown(p){
   const pl=G.players[p];
   const ce=pl.colorEnergy||{};
   const entries=Object.entries(ce).filter(([c,v])=>v>0).sort((a,b)=>b[1]-a[1]);
-  if(!entries.length){pipsEl.innerHTML='';return;}
+  const _nx=(typeof nextHeraldColor==='function')?nextHeraldColor(p):null; // 🎨 the next Draw step's Herald Energy
+  const _nxHtml=(_nx&&COLOR_DEFS[_nx])?'<span class="energy-hud-pip" title="Next Draw step: 1 '+COLOR_DEFS[_nx].label+' Energy from your Herald" style="opacity:.9">➜<span class="energy-hud-pip-dot" style="border-color:'+COLOR_DEFS[_nx].hex+';background:'+COLOR_DEFS[_nx].hex+'55;"></span></span>':'';
+  if(!entries.length){pipsEl.innerHTML=_nxHtml;return;}
   const maxShow=4;
   const shown=entries.slice(0,maxShow);
   const hidden=entries.length-maxShow;
@@ -24391,7 +24520,7 @@ function renderColorEnergyBreakdown(p){
     return '<span class="energy-hud-pip"><span class="energy-hud-pip-dot" style="border-color:'+def.hex+';background:'+def.hex+'33;"></span>'+amt+'</span>';
   }).join('');
   if(hidden>0)html+='<span class="energy-hud-pip" style="color:#6b7280">+'+hidden+'</span>';
-  pipsEl.innerHTML=html;
+  pipsEl.innerHTML=html+_nxHtml;
   // Legacy element if it exists - clear it
   const old=document.getElementById('p'+p+'-color-energy');
   if(old)old.innerHTML='';
@@ -24631,6 +24760,8 @@ function openEnergyColorPicker(p, c, gained, onPick){
 // (so the energy is likely to be on-color for what they want to play), else white.
 function _autoPickEnergyColor(p){
   const pl=G.players[p]; if(!pl) return 'white';
+  if(G&&G.colorRules==='strict'){ const need={}; (pl.hand||[]).forEach(fc=>{ const m=colorReqMissing(p,fc); if(m) need[m]=(need[m]||0)+1; });
+    const nb=Object.entries(need).sort((a,b)=>b[1]-a[1])[0]; if(nb) return nb[0]; } // 🎨 Strict: the color a stuck card needs
   const counts={};
   (pl.hand||[]).forEach(fc=>{ const d=DB[fc.cid]; if(d&&d.color&&d.color!=='white'&&d.type!=='energy_card'){ counts[d.color]=(counts[d.color]||0)+1; } });
   let best=null,bestN=0;
@@ -25151,9 +25282,10 @@ function seqEntry(p, fc){
 function hasEquipmentAttached(fc){ return !!fc && Array.isArray(fc.attachments) && fc.attachments.some(a=>isEquip(DB[a])); }
 // LATVERIAN ARMORY (Doctor Doom Herald): Equipment you play costs 1 less. Used by every hand-cost check.
 function handCostMod(p, fc){
-  const c=DB[fc&&fc.cid]; const h=G&&G.players&&G.players[p]&&G.players[p].herald;
-  if(c && c.type==='equipment' && h && hasAbilityLabel(h,'Latverian Armory')) return -1;
-  return 0;
+  const c=DB[fc&&fc.cid]; const h=G&&G.players&&G.players[p]&&G.players[p].herald; let m=0;
+  if(c && c.type==='equipment' && h && hasAbilityLabel(h,'Latverian Armory')) m-=1;
+  if(c && typeof isOffColor==='function' && isOffColor(p,fc.cid)) m+=2; // 🎨 Unstable (Herald / Strict Color Rules)
+  return m;
 }
 // DOOM'S DESIGN cooldown — same timed-limit convention as Water Whip / Sensory Play (G.turn difference ≥ 2).
 function doomsDesignReady(fc){ const last=fc&&fc.abilityUsed&&fc.abilityUsed.dooms_design_turn; return last==null || (G.turn-last)>=2; }
@@ -28403,7 +28535,7 @@ let pendingLFHP=100;
 let pendingPrizeCount=6;
 
 function selectGameMode(mode){
-  pendingGameMode=mode;
+  pendingGameMode=mode; try{ applyColorRulesUI(); }catch(e){}
   ['prize','lifeforce','combined'].forEach(m=>{
     const btn=document.getElementById('mode-'+m);
     if(btn){btn.className='ds-mode-btn'+(mode===m?' selected':'');}
@@ -28906,7 +29038,7 @@ function renderV2HandFor(hp){
     const c=DB[fc.cid];if(!c)return;
     const div=document.createElement('div');
     const effectiveCost=Math.max(0,c.cost+(fc.costMod||0)+handCostMod(hp,fc));
-    const playable=(c.fusion||c.fusionMethodCard==='dance')?(isActive&&G.phase==='main'&&fusionHandPlayable(hp,fc)):(isActive&&!c.transformOnly&&G.phase==='main'&&pl.energy>=effectiveCost);
+    const playable=(c.fusion||c.fusionMethodCard==='dance')?(isActive&&G.phase==='main'&&fusionHandPlayable(hp,fc)):(isActive&&!c.transformOnly&&G.phase==='main'&&pl.energy>=effectiveCost&&!colorReqMissing(hp,fc));
     div.className='hand-card '+(isInst(c)?'instant-card '+(playable?'playable':'not-playable'):playable?'playable':'not-playable'); div.dataset.huid=fc.uid;
     if(!isActive)div.style.opacity='0.5';
     const artWrap=document.createElement('div');artWrap.className='hand-art-area';
@@ -29003,6 +29135,7 @@ function renderField(p, targetId){
     div.setAttribute('data-uid',fc.uid);div.setAttribute('data-player',p);div.setAttribute('data-cid',fc.cid);
     if(typeof fxApplyLand==='function') fxApplyLand(div,fc.uid);
     if(c.isToken)div.classList.add('token-card');
+    if(fc.unstable)div.classList.add('unstable-slot'); // 🎨 off-color for its Herald
     if(fc.tapped)div.classList.add('tapped');
     if(statusActive(fc,'freeze'))div.classList.add('frozen');else if(statusActive(fc,'paralyze'))div.classList.add('paralyzed');
     if(fc.uid===G.selectedAttacker)div.classList.add('attacker-sel');
@@ -29116,7 +29249,7 @@ function renderHand(){
     const c=DB[fc.cid];if(!c)return;
     const div=document.createElement('div');
     const effectiveCost=Math.max(0,c.cost+(fc.costMod||0)+handCostMod(handP,fc));
-    const playable=(c.fusion||c.fusionMethodCard==='dance')?(G.activePlayer===handP&&G.phase==='main'&&fusionHandPlayable(handP,fc)):(!c.transformOnly&&G.activePlayer===handP&&G.phase==='main'&&pl.energy>=effectiveCost);
+    const playable=(c.fusion||c.fusionMethodCard==='dance')?(G.activePlayer===handP&&G.phase==='main'&&fusionHandPlayable(handP,fc)):(!c.transformOnly&&G.activePlayer===handP&&G.phase==='main'&&pl.energy>=effectiveCost&&!colorReqMissing(handP,fc));
     div.className='hand-card '+(isInst(c)?'instant-card '+(playable?'playable':'not-playable'):playable?'playable':'not-playable'); div.dataset.huid=fc.uid;
     const artWrap=document.createElement('div');artWrap.className='hand-art-area';
     const url=getImg(fc.cid);if(url){const img=document.createElement('img');img.src=url;artWrap.appendChild(img);}else artWrap.textContent=c.sym||'?';
@@ -29126,10 +29259,10 @@ function renderHand(){
     const tc={base_char:'#c4b5fd',char:'#a5b4fc',team:'#7dd3fc',location:'#86efac',equipment:'#fcd34d',instant:'#fca5a5',token:'#a78bfa'};
     info.innerHTML=`<div class="hand-name">${c.name}</div>
       <div style="display:flex;justify-content:space-between">
-        ${c.transformOnly?`<span style="font-size:8px;color:#f59e0b;font-weight:700">🔒TF</span>`:`<span style="font-size:9px;color:#fbbf24;font-weight:700">⚡${effectiveCost}</span>`}
+        ${c.transformOnly?`<span style="font-size:8px;color:#f59e0b;font-weight:700">🔒TF</span>`:`<span style="font-size:9px;color:#fbbf24;font-weight:700">⚡${effectiveCost}${isOffColor(handP,fc.cid)?'<span title="Off-color for your Herald: +2 cost, enters with −1/−1" style="color:#f87171"> ⚠</span>':''}</span>`}
         ${c.atk>0?`<span style="font-size:8px;color:#94a3b8">${c.atk}/${c.hp}</span>`:''}
       </div>
-      <div style="font-size:7px;color:${tc[c.type]||'#9ca3af'}">${(c.fusion&&!c.transformOnly)?'FUSION':c.transformOnly?'TF ONLY':c.type==='instant'?'INSTANT':c.type.replace('_',' ').toUpperCase().slice(0,6)}</div>`;
+      <div style="font-size:7px;color:${tc[c.type]||'#9ca3af'}">${(()=>{ const _n=colorReqMissing(handP,fc); return _n?`<span style="color:#f87171">NEEDS ${colorWord(_n).toUpperCase()} · </span>`:''; })()}${(c.fusion&&!c.transformOnly)?'FUSION':c.transformOnly?'TF ONLY':c.type==='instant'?'INSTANT':c.type.replace('_',' ').toUpperCase().slice(0,6)}</div>`;
     div.appendChild(info);
     div.dataset.cid=fc.cid; div.dataset.uid=fc.uid;
     div.onclick=()=>onHandClick(handP,fc.uid,fc);
@@ -29610,7 +29743,8 @@ function showRulesScreen(){
     <span style="color:#f59e0b">■ Yellow</span> ·
     <span style="color:#22c55e">■ Green</span> ·
     <span style="color:#e2e8f0">■ White</span> (always on-color)<br>
-    <b style="color:#c8a0ff">Off-Color (Unstable):</b> +2 Energy cost · Enters with -1 ATK / -1 HP.<br>
+    <b style="color:#c8a0ff">Color Rules (pick before a match):</b> Classic — any Energy pays for any card · Herald — your Draw step Energy comes in your Herald's color (two-color Heralds alternate; White = plain Energy) · Strict — Herald, plus each colored card needs at least 1 Energy of its color.<br>
+    <b style="color:#c8a0ff">Off-Color (Unstable) — Herald &amp; Strict:</b> a card with none of your Herald's colors costs +2 Energy · a character enters with -1 ATK / -1 HP. White cards are never off-color; with a White Herald nothing is.<br>
     <b style="color:#c8a0ff">Energy Cards:</b> Play from hand during Main Phase. Discard after use. Limit 1 per turn.<br>
     <b style="color:#a855f7">Discard pile (🗑):</b> Cards here may be brought back by specific abilities.<br>
     <b style="color:#a855f7">Rift Zone (🌀):</b> Permanent removal. Cards here cannot be retrieved by any effect. Only specific abilities that say "Rift Zone" send cards here.
@@ -30170,7 +30304,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.45';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.46';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -34002,7 +34136,7 @@ async function startOnlineMatch(opt){
   const gameMode=document.getElementById('lobby-game-mode')?.value||'prize';
   const prizeCount=parseInt(document.getElementById('lobby-prize-count')?.value||'6');
   const lfHp=parseInt(document.getElementById('lobby-lf-hp')?.value||'100');
-  const roomData={..._onlineRoom,status:'playing',game_mode:gameMode,prize_count:prizeCount,lf_hp:lfHp,host_avatar:(window._playerAvatarUrl||null),rules_version:GAME_BUILD,...(typeof wgRoomPayload==='function'?wgRoomPayload():{}),...(typeof spRoomPayload==='function'?spRoomPayload():{})};
+  const roomData={..._onlineRoom,status:'playing',game_mode:gameMode,prize_count:prizeCount,lf_hp:lfHp,color_rules:(document.getElementById('lobby-color-rules')?.value||'classic'),host_avatar:(window._playerAvatarUrl||null),rules_version:GAME_BUILD,...(typeof wgRoomPayload==='function'?wgRoomPayload():{}),...(typeof spRoomPayload==='function'?spRoomPayload():{})};
   // Update DB
   await sb.from('online_rooms').update({status:'playing',game_mode:gameMode,prize_count:prizeCount,lf_hp:lfHp}).eq('code',_onlineRoom.code);
   // Broadcast to guest via channel
@@ -34037,6 +34171,7 @@ function enterOnlineGame(room){
   pendingGameMode=room.game_mode||'prize';
   pendingPrizeCount=parseInt(room.prize_count)||6;
   pendingLFHP=parseInt(room.lf_hp)||100;
+  _matchColorRules=(room.color_rules==='herald'||room.color_rules==='strict')?room.color_rules:'classic'; // 🎨 the host's Color Rules
 
   if(isHost){
     // HOST builds the authoritative game state
@@ -34180,6 +34315,7 @@ function broadcastGameState(){
     gameOver:G.gameOver,
     prizeCount:G.prizeCount,
     gameMode:G.gameMode,
+    colorRules:G.colorRules||'classic',
     startingLF:G.startingLF,
     selectedAttacker:G.selectedAttacker,
     heraldAttacking:G.heraldAttacking,
@@ -34221,6 +34357,7 @@ function sanitizePlayer(pl){
     prizesTaken:pl.prizesTaken||[],
     prizesFoil:pl.prizesFoil||[],
     lifeForce:pl.lifeForce||0,
+    _hcIdx:pl._hcIdx||0,
     herald:pl.herald||null
   },(k,v)=>typeof v==='function'?undefined:v));
 }
@@ -34253,6 +34390,7 @@ function onReceiveGameState(payload){
   G.gameOver=incoming.gameOver||false;
   G.prizeCount=incoming.prizeCount||6;
   G.gameMode=incoming.gameMode||'prize';
+  if(incoming.colorRules) G.colorRules=incoming.colorRules;
   G.startingLF=incoming.startingLF||100;
   G.selectedAttacker=incoming.selectedAttacker||null;
   G.heraldAttacking=incoming.heraldAttacking||false;
@@ -34318,6 +34456,7 @@ function applyPlayer(dst,src){
   dst.prizesTaken=Array.isArray(src.prizesTaken)?src.prizesTaken:[];
   dst.prizesFoil=Array.isArray(src.prizesFoil)?src.prizesFoil:[];
   dst.lifeForce=src.lifeForce||0;
+  dst._hcIdx=src._hcIdx||0;
   dst.herald=src.herald||null;
 }
 
@@ -38274,6 +38413,12 @@ window.addEventListener('load',async()=>{
             <option value="lifeforce">❤️ Life Force Mode</option>
             <option value="combined">⚔️ Combined Mode</option>
           </select>
+          <!-- 🎨 Color Rules (build 10.46) -->
+          <select id="lobby-color-rules" class="admin-input" style="width:150px" title="Color Rules" onchange="if(typeof prTrack==='function')prTrack()">
+            <option value="classic">🎨 Classic colors</option>
+            <option value="herald">🎨 Herald colors</option>
+            <option value="strict">🎨 Strict colors</option>
+          </select>
           <!-- Prize count: Prize + Combined only -->
           <select id="lobby-prize-count" class="admin-input" style="width:90px" onchange="if(typeof prTrack==='function')prTrack()">
             <option value="6">6 Prizes</option>
@@ -41222,6 +41367,7 @@ function rmCheck(){
     const gm=document.getElementById('lobby-game-mode'); if(gm) gm.value=r.game_mode||'prize';
     const pc=document.getElementById('lobby-prize-count'); if(pc) pc.value=String(r.prize_count||6);
     const lf=document.getElementById('lobby-lf-hp'); if(lf) lf.value=String(r.lf_hp||100);
+    const cr=document.getElementById('lobby-color-rules'); if(cr&&r.color_rules) cr.value=r.color_rules;
     setTimeout(()=>startOnlineMatch(),250);
   }
   rmRender();
