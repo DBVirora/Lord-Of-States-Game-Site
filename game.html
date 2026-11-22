@@ -9670,7 +9670,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.44 · Tutorial offer for new players</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.45 · Viewtiful Joe + Korra forms</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10725,8 +10725,29 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.43'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.45'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.45', date:'2026-11-22',
+    cards:[{id:'viewtiful_joe_herald', set:'promo', number:'PROMO', rarity:'mythic', scan:'Characters/Series/Viewtiful Joe/Viewtiful Joe (Herald) PROMO.png', newAbilities:['VFX Slow','Mach Speed','Henshin-a-go-go, Baby!'],
+      note:"Viewtiful Joe · HERALD · Mythic · 13 ATK / 11 HP · subtypes Hero, VFX · race 'Hero' · color 'yellow' · sym 🎬 · setId promo · cardNumber PROMO. Menu art: Main Menu Images/Viewtiful Joe.jpg (Admin → Menu Art)."},
+      {id:'korra_raava_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/Avatar TLAB/Korra Spirit of Raava (Promo).png', newAbilities:['Spirit Ward','Elemental Cycle','Harmonic Convergence'],
+       note:"Korra (Spirit of Raava) · transformOnly · charLine 'korra' · formTier 'spirit_of_raava' (no path) · nextForms [] · color 'red', colors ['red','green'] · Legend · cost 9 · 8 ATK / 10 HP · subtypes Avatar, Bender · race 'Avatar Bender' · sym KORRAR. Menu art: Main Menu Images/Korra Spirit of Raava.jpg."},
+      {id:'korra_nightmare_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/Avatar TLAB/Nightmare Korra (Promo).png', newAbilities:['Haunted Avatar','Chainbreaker','Dark Avatar State'],
+       note:"Nightmare Korra · transformOnly · charLine 'korra' · formTier 'nightmare' (no path) · nextForms [] · color 'black' · Legend · cost 9 · 9 ATK / 9 HP · subtypes Avatar, Bender · race 'Avatar Bender' · sym KORRAN. Menu art: Main Menu Images/Nightmare Korra.jpg."},
+      {id:'korra_promo', set:'promo', number:'PROMO', rarity:'legend', newAbilities:[], note:"CHANGED: Korra is now a BASE CHARACTER — type 'base_char', charLine 'korra', formTier 'base', nextForms ['spirit_of_raava','nightmare']. Card text unchanged."},
+      {id:'korra_halloween_promo', set:'promo', number:'PROMO', rarity:'secret', newAbilities:[], note:"CHANGED: Korra (Halloween) is now a BASE CHARACTER — same charLine 'korra', formTier 'base', nextForms ['spirit_of_raava','nightmare']. Card text unchanged."}],
+    abilities:["KORRA FORMS: both promo Korras → either form. A Korra that took one form can't go on to the other (the forms have no path and nextForms []), but another base Korra can take either. Transform cost/rules are the normal ones.",
+      "SPIRIT WARD (passive): applyStatus refuses freeze / confuse / burn / paralyze on it (log '☀️ Spirit Ward: X can't be Frozen.'). Poison still works.",
+      "ELEMENTAL CYCLE (2⚡, once per turn): choose one (only modes with a legal target are offered): DEAL 3 (enemy picker, dealDamage with Korra as the fx source) · FREEZE target opposing character until the end of YOUR next turn (the Glacial Lens mechanism: applyStatus freeze 2 + t._lensThaw {by, ends:2, lbl:'Elemental Cycle', ico:'🌀'}; targets exclude Frozen / Spirit Ward / Vortex Shield) · UNTAP one of your tapped characters (fc.tapped=false; it doesn't give another attack). Skip / closing any step refunds. CPU: a KO with 3 → damage; else Freeze its biggest untapped 4+ Attack enemy; else 3 damage to the most valuable target (untap only with no enemy). Score 12 + 16 per KO-able target + 2 per target (max 6).",
+      "HARMONIC CONVERGENCE (6⚡, once per game): 3 damage to each opposing character (seqAreaHits, Korra as source, like Cosmic Radiance), then each of YOUR characters heals 3 (healFc). Usable with no enemies if something is wounded; refunds if neither. CPU: needs 2+ enemies, a KO or 6+ Health to heal; score 10 + 4/enemy + 12/KO + Health healed.",
+      "HAUNTED AVATAR (triggered): startTurnFx of its owner, after Earth Wall ends: −1 current Health (NOT damage — nothing prevents it; it can destroy her; she can heal it back) and +2 Attack until end of turn (fc._haunt, currentATK/atkBonus += 2, temp-stat delta; tickHaunt at the end of every turn). Effects panel row 🌑.",
+      "CHAINBREAKER (2⚡, once per turn): 3 damage to target opposing character (dealDamage, Korra as source, so shields/reductions apply); she heals for the damage dealt = target Health before − after (0 if fully prevented; overkill counts). CPU: 12 + 16 per KO-able + 2 per missing Health (max 3) + 2 per target (max 6).",
+      "DARK AVATAR STATE (6⚡, once per game): destroy target opposing character (killCard, like Reap), then each of YOUR OTHER characters loses 2 current Health (not damage; can destroy them). CPU: only if the best target's value ≥ 18 (aiFcValue: Kratos 25, Magnus SSG 22, a 3-cost body ~9-12) and beats the value of its own characters that would die (+4).",
+      "VFX SLOW (Herald passive): in combat damage, after Trial by Combat — an attacking CHARACTER deals 1 less for each OPPOSING Viewtiful Joe Herald that isn't Broken (min 0). Log '⌛ VFX Slow: X attacks with −1.' Damage only (like Trial by Combat it doesn't change the Power Struggle tie check).",
+      "MACH SPEED (Herald, activated, 2⚡, once per turn): choose one of YOUR characters → fc.extraAttacks += 1 (the same counter as Rise of the Imperfect / Rewind / Flashpoint Chain, cleared at end of turn): it can attack one additional time this turn. Closing the chooser refunds. CPU: score 26 when it has a ready character and there's something to attack (an enemy character or an unbroken enemy Herald); picks its highest-Attack ready character.",
+      "HENSHIN-A-GO-GO, BABY! (Herald, activated, 6⚡, once per game): choose one of YOUR characters → +4 Attack until end of turn (fc._henshin, currentATK/atkBonus += 4) and the protection flag fc._henshinTurn (set until tickHenshin clears it — not a turn-key compare, so it also holds during the Burst Window, where activePlayer is the defender). In dealDamage, right after Primal Breaker's pierce and before every reduction: if the target has _henshinTurn and the damage source is a character of another side (not a 2v2 teammate) → damage 0 ('🎬 Henshin: X can't damage Y this turn.'). So no hit-back, no Power Struggle loss, no damage from opposing character abilities; Burn/Poison, Heralds and sourceless effects still hurt it. Counts as prevented damage (Refraction Surge). tickHenshin at the end of every turn removes the +4 and the protection. Effects panel row 🎬. CPU: score 44 only when a ready character could KO an enemy with the +4 that it can't KO without it; picks that character."],
+    screens:["SURFACER BINDING (web fix, matches the PC 1.0.23 fix): the human's Binding choice now waits in the action queue (seqPush) like the stance / weather choices, so it never opens on top of another choice. (Its buttons call closeAllModals, which used to close — and auto-skip — whatever other choice was open.) Closing it without choosing re-opens it: the choice is mandatory. AI resolution unchanged."],
+    data:["GAME_BUILD → '10.45' (new card). WEB_BUILD 10.45."] },
   { build:'10.44', date:'2026-11-21', cards:[], abilities:[],
     screens:["TUTORIAL OFFER FOR NEW PLAYERS (Rulk: 'ensure the tutorial pops up for new players ANY time a new player first hits the main screen'). The welcome offer (Virora: 'Enter the Courts' — PLAY THE TUTORIAL / Skip, I know card games → 'Skip the tutorial?' warning; CONTINUE · CHAPTER N when a tutorial save exists) must appear whenever the MAIN MENU is showing for a new player, not only once at the end of login.",
       "NEW PLAYER = never finished the tutorial (achievement tutorial_complete) AND never skipped / left it (campaign watched_cutscenes 'welcome_tutorial') AND at most 2 matches played (wins + losses ≤ 2). (Was: exactly 0 matches — a first match through an invite, before ever seeing the menu, hid it for good.) If the account's stats couldn't be read (profiles query error), don't guess: no offer.",
@@ -11785,6 +11806,7 @@ const DEFAULTS={
   infinity_gauntlet_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/The%20Infinity%20Gauntlet%20(Promo).png',
   infinity_stones_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/The%20Infinity%20Stones%20(Promo).png',
   storm_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Storm%20Weather%20Goddess%20(Herald)%20PROMO.png',
+  viewtiful_joe_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Viewtiful%20Joe/Viewtiful%20Joe%20(Herald)%20PROMO.png',
   sauron_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Lord%20Of%20The%20Rings/Sauron%20(Herald)%20PROMO.png',
   toph_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Toph%20(Promo).png',
   aang_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Aang%20(Promo).png',
@@ -11826,6 +11848,8 @@ const DEFAULTS={
   wca_overdrive_belt_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Wrestling/WCA%20OVERDRIVE%20CHAMPION%20BELT%20(PROMO%20EQUIPTMENT).png',
   korra_halloween_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Korra%20Halloween%20(Promo)%20(Secret%20Rare).png',
   korra_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Korra%20(Promo).png',
+  korra_raava_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Korra%20Spirit%20of%20Raava%20(Promo).png',
+  korra_nightmare_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Nightmare%20Korra%20(Promo).png',
   kratos_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/God%20Of%20War/Kratos%20(Promo).png',
   anya_corazon_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Anya%20Corazon%20(Promo).png',
   scorpion_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Mortal%20Kombat/Scorpion%20(Promo).png',
@@ -12314,17 +12338,27 @@ const DB={
   wca_overdrive_belt_promo:{id:'wca_overdrive_belt_promo',rarity:'legend',color:'green',name:'WCA Overdrive Champion Belt',charName:'WCA Overdrive Champion Belt',subtypes:['Championship','Equipment'],type:'equipment',persistent:true,race:'Championship',cost:5,atk:0,hp:0,sym:'🏆',setId:'promo',cardNumber:'PROMO',
     abilities:[{label:'Main Event Glow',type:'passive',cost:0,text:'Equipped character gets +2/+3.'},{label:'Title Defense',type:'triggered',cost:0,text:'When equipped character is attacked, the attacker gets -2 Attack until end of their next turn.'},{label:'Showdown Hype',type:'triggered',cost:0,text:'When equipped character destroys a character, its controller banks 3 Energy.'}],transforms:[]},
   // ── KORRA — Avatar TLAB-series promo. BLUE/RED dual (water + fire). Legend, cost 7, 9/7.
-  korra_promo:{id:'korra_promo',rarity:'legend',name:'Korra',color:'blue',colors:['blue','red'],charName:'Korra',subtypes:['Avatar','Bender'],type:'char',race:'Avatar Bender',cost:7,atk:9,hp:7,sym:'KORRA',setId:'promo',cardNumber:'PROMO',nextForms:[],
+  korra_promo:{id:'korra_promo',rarity:'legend',name:'Korra',color:'blue',colors:['blue','red'],charName:'Korra',charLine:'korra',formTier:'base',subtypes:['Avatar','Bender'],type:'base_char',race:'Avatar Bender',cost:7,atk:9,hp:7,sym:'KORRA',setId:'promo',cardNumber:'PROMO',nextForms:['spirit_of_raava','nightmare'],
     quote:"Being the Avatar isn't about being the strongest. It's about serving all people.",
     abilities:[{label:'Tidebreak',type:'triggered',cost:0,text:'When this card enters your field, Freeze a target opposing character.'},
       {label:'Water Whip',type:'activated',cost:2,limit:'every_other_turn',text:"Tap target opposing character. It can't attack this turn. [Once every 2 turns] Cost 2 Energy"},
       {label:'Flame Spiral',type:'triggered',cost:0,text:'When this card attacks, it gets +2 Attack until end of next turn.'}]},
   // ── KORRA (HALLOWEEN) — Secret Rare Promo variant of Korra: same abilities, fire-first, cost 8, 10/8.
-  korra_halloween_promo:{id:'korra_halloween_promo',rarity:'secret',secretRare:true,name:'Korra (Halloween)',color:'red',colors:['red','blue'],charName:'Korra',subtypes:['Avatar','Bender'],type:'char',race:'Avatar Bender',cost:8,atk:10,hp:8,sym:'KORRA',setId:'promo',cardNumber:'PROMO',nextForms:[],
+  korra_halloween_promo:{id:'korra_halloween_promo',rarity:'secret',secretRare:true,name:'Korra (Halloween)',color:'red',colors:['red','blue'],charName:'Korra',charLine:'korra',formTier:'base',subtypes:['Avatar','Bender'],type:'base_char',race:'Avatar Bender',cost:8,atk:10,hp:8,sym:'KORRA',setId:'promo',cardNumber:'PROMO',nextForms:['spirit_of_raava','nightmare'],
     quote:"Trick or treat? Nah. Just treat… or I bend the porch lights.",
     abilities:[{label:'Tidebreak',type:'triggered',cost:0,text:'When this card enters your field, Freeze a target opposing character.'},
       {label:'Water Whip',type:'activated',cost:2,limit:'every_other_turn',text:"Tap target opposing character. It can't attack this turn. [Once every 2 turns] Cost 2 Energy"},
       {label:'Flame Spiral',type:'triggered',cost:0,text:'When this card attacks, it gets +2 Attack until end of next turn.'}]},
+  // ── KORRA (SPIRIT OF RAAVA) / NIGHTMARE KORRA — build 10.45. Optional forms of Korra (either printing). No path, no nextForms:
+  //    a Korra that takes one form can't go on to the other.
+  korra_raava_promo:{id:'korra_raava_promo',rarity:'legend',name:'Korra (Spirit of Raava)',color:'red',colors:['red','green'],charName:'Korra',charLine:'korra',formTier:'spirit_of_raava',subtypes:['Avatar','Bender'],type:'char',transformOnly:true,race:'Avatar Bender',cost:9,atk:8,hp:10,sym:'KORRAR',setId:'promo',cardNumber:'PROMO',nextForms:[],
+    abilities:[{label:'Spirit Ward',type:'passive',cost:0,text:"This card can't be Frozen, Confused, Burned or Paralyzed."},
+      {label:'Elemental Cycle',type:'activated',cost:2,limit:'once_per_turn',text:'Pay 2 Energy, choose one: deal 3 damage to target opposing character; or Freeze target opposing character until the end of your next turn; or untap one of your characters. (Once per turn)'},
+      {label:'Harmonic Convergence',type:'activated',cost:6,limit:'once_per_game',text:'Pay 6 Energy: Deal 3 damage to each opposing character and heal 3 Health on each of your characters. (Once per game)'}]},
+  korra_nightmare_promo:{id:'korra_nightmare_promo',rarity:'legend',name:'Nightmare Korra',color:'black',charName:'Korra',charLine:'korra',formTier:'nightmare',subtypes:['Avatar','Bender'],type:'char',transformOnly:true,race:'Avatar Bender',cost:9,atk:9,hp:9,sym:'KORRAN',setId:'promo',cardNumber:'PROMO',nextForms:[],
+    abilities:[{label:'Haunted Avatar',type:'triggered',cost:0,text:'At the start of your turn, this card loses 1 Health and gets +2 Attack until end of turn.'},
+      {label:'Chainbreaker',type:'activated',cost:2,limit:'once_per_turn',text:'Pay 2 Energy: Deal 3 damage to target opposing character. Heal this card for the damage dealt. (Once per turn)'},
+      {label:'Dark Avatar State',type:'activated',cost:6,limit:'once_per_game',text:'Pay 6 Energy: Destroy target opposing character. Each of your other characters loses 2 Health. (Once per game)'}]},
   // ── PAVI (PROMO) — build 9.6, card designer. Stance card: Avatar's Balance picks Air or Earth on entry and at
   //    the start of each of your turns. Keywords stay EMPTY in data: Onslaught / Guardian come from the stance (hasKW).
   pavi_promo:{id:'pavi_promo',rarity:'legend',name:'Pavi',color:'green',colors:['green','yellow'],charName:'Pavi',charLine:'pavi',formTier:'base',subtypes:['Avatar','Bender'],type:'base_char',race:'Avatar Bender',cost:6,atk:4,hp:7,sym:'PAVI',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:['root_chakra'],
@@ -12827,6 +12861,14 @@ const DB={
     ],transforms:[]},
   // ── DAREDEVIL (FIST OF GOD) — PROMO Mythic Herald (Hero). WHITE (matches any).
   // ── DOCTOR DOOM (PROMO HERALD) — build 9.9. Equipment Herald.
+  // ── VIEWTIFUL JOE (Herald, Promo, Mythic) — build 10.45. Speed hero: slows attackers, extra attacks, a +4 untouchable finisher.
+  viewtiful_joe_herald:{id:'viewtiful_joe_herald',rarity:'mythic',name:'Viewtiful Joe',type:'herald',race:'Hero',cost:0,atk:13,hp:11,sym:'🎬',subtypes:['Hero','VFX'],color:'yellow',keywords:[],
+    heraldFlip:null,autoFlip:false,setId:'promo',cardNumber:'PROMO',
+    abilities:[
+      {type:'passive',label:'VFX Slow',cost:0,text:'Opposing characters get −1 Attack while attacking.'},
+      {type:'activated',label:'Mach Speed',cost:2,limit:'once_per_turn',text:'Pay 2 Energy: Choose one of your characters. It can attack one additional time this turn. (Once per turn)'},
+      {type:'activated',label:'Henshin-a-go-go, Baby!',cost:6,limit:'once_per_game',text:"Pay 6 Energy: Choose one of your characters. Until end of turn, it gets +4 Attack and opposing characters can't deal damage to it. (Once per game)"}
+    ]},
   doctor_doom_herald:{id:'doctor_doom_herald',rarity:'mythic',name:'Doctor Doom',type:'herald',race:'Sorcerer Monarch',cost:0,atk:11,hp:14,sym:'👑',subtypes:['Sorcerer','Monarch'],color:'green',keywords:[],
     heraldFlip:null,autoFlip:false,setId:'promo',cardNumber:'PROMO',
     abilities:[
@@ -13923,6 +13965,8 @@ function reapplyCarry(fc,list){ fc.carry=[]; (list||[]).forEach(e=>grantCarry(fc
 function tempStatDelta(f){ let a=0,h=0;
   a+=(f._webSling||0)+(f._riseImp||0); // 🕷 Spider-Man (Imperfects)
   a+=(f._beer||0); // 🍺 Virora's Beer
+  a+=(f._henshin||0); // 🎬 Viewtiful Joe
+  a+=(f._haunt||0); // 🌑 Nightmare Korra
   a+=(f._ironFist||0)+(f._avState||0)+(f._bloodRite||0)+(f._rampage||0)+((f._flame&&f._flame.amt)||0)+(f.krhAtk||0)+(f.ssbAtkBuff||0)+(f._aeth||0)+(f._stonePow||0)+(f._dcmd||0);
   h+=(f.krhHp||0)+(f._dcmd||0);
   a-=(f.surfacerAtkDebuff||0); h-=(f.surfacerHpDebuff||0);
@@ -14403,7 +14447,8 @@ function fxEffectsOf(fc){
   if(fc._soulCage&&typeof isAbilitySealed==='function'&&isAbilitySealed(fc)) cond('🔒','Soul Cage',"It can't use activated abilities while its jailer stays on the field.",byUid(fc._soulCage.sourceUid));
   if(isImprisoned(fc)) cond('🔒','Imprisoned',"Aetherak Prison holds it: it can't attack, retaliate or use abilities while the Prison stays. Its owner may pay 4 Energy on their turn to free it (Breakout).",{cid:'aetherak_prison_bse',uid:fc._prison.src});
   if(fc._decree) cond('👑','Evolved Decree','+'+fc._decree.amt+'/+'+fc._decree.amt+(fc._decree.kw?' and Resolve':'')+' until the end of '+pname(fc._decree.by)+"'s next turn.",byLabel('Evolved Decree'));
-  if(fc._lensThaw&&statusActive(fc,'freeze')) cond('🔭','Glacial Lens','Frozen until the end of '+pname(fc._lensThaw.by)+"'s next turn.",null);
+  if(fc._lensThaw&&statusActive(fc,'freeze')) cond(fc._lensThaw.ico||'🔭',fc._lensThaw.lbl||'Glacial Lens','Frozen until the end of '+pname(fc._lensThaw.by)+"'s next turn.",null);
+  if(fc._haunt>0) cond('🌑','Haunted Avatar','+'+fc._haunt+' Attack until the end of this turn.',null);
   if(fc._heatAbs>0) cond('🔥','Heat Absorption','+'+fc._heatAbs+' Attack until the end of this turn.',null);
   if(fc._fury>0) cond('🐾',fc._furyL||'Fury','−'+fc._fury+' Attack until the end of this turn.',null);
   if(fc._theftDn>0) cond('🐾','Primal Theft','Its Attack was stolen: −'+fc._theftDn+' until the end of this turn.',byLabel('Primal Theft'));
@@ -14436,6 +14481,7 @@ function fxEffectsOf(fc){
   if(airBlasted(fc)) cond('💨','Air Blast',"Tapped — it can't attack until its opponent's next turn.",null);
   if(fc._avState>0) cond('🌀','Avatar State','+'+fc._avState+' Attack and Onslaught until the end of this turn.',null);
   if(fc._webSling>0) cond('🕸','Web-Slinger Strike','+'+fc._webSling+' Attack until the end of this turn'+(webSlingOn(fc)?' · its next attack takes no damage back':'')+'.',null);
+  if(fc._henshin>0) cond('🎬','Henshin-a-go-go, Baby!','+'+fc._henshin+" Attack, and opposing characters can't deal damage to it this turn.",null);
   if(fc._frostWard) cond('❄️','Frostbloom Ward',"Can't be targeted by opposing abilities until its owner's next turn.",null);
   if(fc._beer>0) cond('🍺','Liquid Courage','+'+fc._beer+' Attack until the end of this turn.',null);
   if(fc._riseImp>0) cond('🕷','Rise of the Imperfect','+'+fc._riseImp+' Attack until the end of this turn, and it can attack twice.',null);
@@ -15490,6 +15536,8 @@ function dealDamage(tp,tuid,amt){
   if(isSaiyanChar(c)){ const _an=archNemesisBonus(tp,tuid); if(_an>0){ amt+=_an; log(`🌀 Arch-Nemesis: +${_an} damage to ${c.name} (Saiyan).`,'dmg'); } } // Vildrex
   let dmg=isChar(c)?Math.max(0,amt-(fc.nullify||0)-(hasAbilityLabel(fc,'Inferno Ward')?1:0)-(hasAbilityLabel(fc,'Diamond Calm')?2:0)-((hasAbilityLabel(fc,'Half-Divine')&&_dmgSrcIsGod(tuid))?2:0)-((hasAbilityLabel(fc,"Titan's Armor")&&typeof _fxCtx!=='undefined'&&_fxCtx&&_fxCtx.combat)?1:0)):amt; // Inferno Ward (Crystora) −1 · Diamond Calm (Crystora SSBM) −2 · Half-Divine (Asa) −2 vs Gods
   if(G._pierceHit&&isChar(c)&&dmg<amt){ log(`💥 Primal Breaker ignores ${c.name}'s damage reduction (${amt}).`,'dmg'); dmg=amt; } // Tynie (Primal Destroyer)
+  if(isChar(c)&&dmg>0&&fc._henshinTurn){ const _hs=_dmgSourceFc(tuid), _ho=_hs?_fcOwner(_hs):null; // 🎬 Henshin-a-go-go, Baby!
+    if(_hs&&_ho!=null&&_ho!==tp&&isChar(DB[_hs.cid])&&!(G.is2v2&&typeof teamOf==='function'&&teamOf(_ho)===teamOf(tp))){ log(`🎬 Henshin: ${DB[_hs.cid]?.name} can't damage ${c.name} this turn.`,'gain'); dmg=0; } }
   if(isChar(c)&&dmg>0&&!G._pierceHit&&hasAbilityLabel(fc,'Bracelets of Submission')&&!(typeof _fxCtx!=='undefined'&&_fxCtx&&_fxCtx.combat)&&fc._braceTurn!==_braceTurnKey()){ // 🛡 Wonder Woman
     fc._braceTurn=_braceTurnKey(); log(`🛡 Bracelets of Submission: ${DB[fc.cid]?.name} deflects it — all ${dmg} damage prevented.`,'gain');
     if(typeof showStatusFx==='function') try{ showStatusFx(fc.uid,'freeze'); }catch(e){} dmg=0; }
@@ -16797,6 +16845,7 @@ function executeCombatDamage(ap,auid,dp,duid){
   // ⚔ COMBAT MASTERY (Zaria): her attack on a character with a higher printed cost deals +2.
   if(hasAbilityLabel(afc,'Combat Mastery')&&isChar(dc)&&(dc.cost||0)>(ac.cost||0)){ atkDmg+=2; log(`⚔ Combat Mastery: ${ac.name} strikes the costlier ${dc.name} (${dc.cost||0} > ${ac.cost||0}) for +2!`,'dmg'); }
   { const _tb=trialByCombatBonus(ap,afc); if(_tb){ atkDmg+=_tb; log(`🏟️ Trial by Combat: ${ac.name} (Prime) attacks with +${_tb}.`,'dmg'); } }
+  { const _vs=vfxSlowPenalty(ap,afc); if(_vs&&atkDmg>0){ const _r=Math.min(_vs,atkDmg); atkDmg-=_r; log(`⌛ VFX Slow: ${ac.name} attacks with −${_r}.`,'dmg'); } } // 🎬 Viewtiful Joe
   { const _ki=killingIntent(afc,dfc); if(_ki){ atkDmg+=_ki; log(`🩸 Killing Intent: ${DB[dfc.cid]?.name} is already wounded — +2!`,'dmg'); } }
 
   // Power Struggle result override
@@ -18313,6 +18362,38 @@ function openGlacynthPicker(p, fco, chars, commit){
   showModalEl(`Instant: ${c.name}`,body);
 }
 function pinkKameDamage(p){ return (G.players[p]?.field||[]).some(f=>isViroraChar(DB[f.cid]))?4:3; } // 💗 Pink Kamehameha: 4 while you control a Virora character
+// 🌀 Korra (Spirit of Raava) — CPU mode for Elemental Cycle: a KO with 3 → damage; else Freeze its biggest untapped attacker (4+ Attack);
+// else untap its best tapped character that has an activated ability ready; else 3 damage to the most valuable target.
+function aiElementalMode(p,enemies,frz,tapped){
+  const ok=(f)=>!hasDrunkenStance(f)&&!spaceShielded(f)&&(!hasAbilityToll(f)||G.players[p].energy>=2);
+  const es=enemies.filter(ok), fs=frz.filter(ok);
+  const k=es.filter(f=>(f.currentHP||0)<=Math.max(0,3-(f.nullify||0))).sort((a,b)=>aiFcValue(b)-aiFcValue(a))[0]; if(k) return {mode:'dmg',t:k};
+  const fz=fs.filter(f=>!f.tapped&&(f.currentATK||0)>=4).sort((a,b)=>(b.currentATK||0)-(a.currentATK||0))[0]; if(fz) return {mode:'frz',t:fz};
+  const ut=tapped.filter(f=>(DB[f.cid]?.abilities||[]).some(a=>a.type==='activated')).sort((a,b)=>aiFcValue(b)-aiFcValue(a))[0]; if(ut&&!es.length) return {mode:'untap',t:ut};
+  if(es.length) return {mode:'dmg',t:es.slice().sort((a,b)=>aiFcValue(b)-aiFcValue(a))[0]};
+  if(fs.length) return {mode:'frz',t:fs[0]};
+  return tapped.length?{mode:'untap',t:tapped[0]}:{mode:'dmg',t:enemies[0]};
+}
+// 🎬 Viewtiful Joe helpers
+function joeFoes(p){ const opp=(typeof _fusionOpps==='function')?_fusionOpps(p):[p===1?2:1]; const out=[]; opp.forEach(q=>(G.players[q]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) out.push(f); })); return out; }
+function aiJoeTarget(p,mine,hen){
+  const ready=mine.filter(f=>aiReady(f)), foes=joeFoes(p);
+  if(hen){ const kill=ready.filter(f=>foes.some(e=>(e.currentHP||0)<=(f.currentATK||0)+4)).sort((a,b)=>aiFcValue(b)-aiFcValue(a))[0]; if(kill) return kill; }
+  const pool=ready.length?ready:mine; return pool.slice().sort((a,b)=>(b.currentATK||0)-(a.currentATK||0))[0];
+}
+// 🌑 NIGHTMARE KORRA — Haunted Avatar: loses 1 Health (not damage: nothing prevents it; it can destroy her; it heals back) and gets
+// +2 Attack until end of turn (fc._haunt; tickHaunt at the end of every turn).
+function hauntedAvatar(p,f){ const _fx=(typeof fxPush==='function')?fxPush(f.cid,'Haunted Avatar',f.uid):null;
+  try{ f.currentHP=(f.currentHP||0)-1; f._haunt=(f._haunt||0)+2; f.currentATK=(f.currentATK||0)+2; f.atkBonus=(f.atkBonus||0)+2;
+    log(`🌑 Haunted Avatar: ${DB[f.cid]?.name} loses 1 Health (${Math.max(0,f.currentHP)} left) and gets +2 Attack until end of turn (now ${f.currentATK}).`,'dmg');
+    if(typeof showDmgPopup==='function') showDmgPopup(p,'-1',f.uid);
+  } finally { if(typeof fxPop==='function') fxPop(_fx); }
+  if((f.currentHP||0)<=0&&(G.players[p]?.field||[]).includes(f)) killCard(p,f); }
+function tickHaunt(){ [1,2,3,4].forEach(q=>(G.players[q]?.field||[]).forEach(f=>{ if(f._haunt){ f.currentATK=Math.max(0,(f.currentATK||0)-f._haunt); f.atkBonus=(f.atkBonus||0)-f._haunt; f._haunt=0; } })); }
+// Korra forms: "loses N Health" (Dark Avatar State) — not damage, can destroy.
+function korraLoseHealth(p,f,n,lbl){ f.currentHP=(f.currentHP||0)-n; log(`🌑 ${lbl}: ${DB[f.cid]?.name} loses ${n} Health (${Math.max(0,f.currentHP)} left).`,'dmg');
+  if(typeof showDmgPopup==='function') showDmgPopup(p,'-'+n,f.uid); if((f.currentHP||0)<=0&&(G.players[p]?.field||[]).includes(f)) killCard(p,f); }
+function tickHenshin(){ [1,2,3,4].forEach(q=>(G.players[q]?.field||[]).forEach(f=>{ if(f._henshin){ f.currentATK=Math.max(0,(f.currentATK||0)-f._henshin); f.atkBonus=(f.atkBonus||0)-f._henshin; f._henshin=0; f._henshinTurn=null; log(`🎬 ${DB[f.cid]?.name}'s Henshin wears off.`,'info'); } })); }
 function tickBeer(){ // "until end of turn": clears at the end of whichever turn it was drunk in (a Burst-Window drink too)
   [1,2,3,4].forEach(q=>(G.players[q]?.field||[]).forEach(f=>{ if(f._beer){ f.currentATK=Math.max(0,(f.currentATK||0)-f._beer); f.atkBonus=(f.atkBonus||0)-f._beer; f._beer=0; log(`🍺 ${DB[f.cid]?.name}'s Liquid Courage wears off.`,'info'); } }));
 }
@@ -21403,6 +21484,97 @@ function runAbilityEffect(fc, abl, pl){
     return;
   }
   // ── SPIDER-MAN (IMPERFECTS): Web-Slinger Strike (2⚡ once/turn) · Rise of the Imperfect (6⚡ once/game) — build 10.38
+  // ── KORRA (SPIRIT OF RAAVA): Elemental Cycle (2⚡ once per turn, choose one) · Harmonic Convergence (6⚡ once per game) — build 10.45
+  if(label==='Elemental Cycle'){
+    const ap=G.activePlayer, P=G.players[ap]; const _undo=_abilityUndo; const opps=_fusionOpps(ap);
+    const ownerOf=(uid)=>opps.find(o=>(G.players[o]?.field||[]).some(f=>f.uid===uid));
+    const enemies=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) enemies.push(f); }));
+    const frz=enemies.filter(f=>!statusActive(f,'freeze')&&!hasAbilityLabel(f,'Spirit Ward')&&!hasAbilityLabel(f,'Vortex Shield'));
+    const tapped=P.field.filter(f=>isChar(DB[f.cid])&&f.tapped);
+    const fin=()=>{ if(typeof recalcPassives==='function') recalcPassives(); renderAll(); if(typeof checkWin==='function') checkWin(); };
+    const blast=(uid)=>{ const op=ownerOf(uid); const t=op&&G.players[op].field.find(f=>f.uid===uid); if(!t){ renderAll(); return; }
+      log(`🌀 Elemental Cycle: ${DB[t.cid].name} takes 3 damage!`,'dmg');
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Elemental Cycle',fc.uid):null; try{ dealDamage(op,uid,3); } finally { if(typeof fxPop==='function') fxPop(_fx); } fin(); };
+    const chill=(uid)=>{ const op=ownerOf(uid); const t=op&&G.players[op].field.find(f=>f.uid===uid); if(!t){ renderAll(); return; }
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Elemental Cycle',fc.uid):null;
+      try{ if(applyStatus(t,'freeze',2)){ t._lensThaw={by:ap,ends:2,lbl:'Elemental Cycle',ico:'🌀'}; log(`🌀 Elemental Cycle: ${DB[t.cid].name} is Frozen until the end of ${pname(ap)}'s next turn.`,'gain'); } } finally { if(typeof fxPop==='function') fxPop(_fx); } fin(); };
+    const untap=(uid)=>{ const t=P.field.find(f=>f.uid===uid); if(!t){ if(_undo) _undo(); renderAll(); return; } t.tapped=false; log(`🌀 Elemental Cycle: ${DB[t.cid].name} is untapped.`,'gain'); fin(); };
+    const cancel=()=>{ if(_undo) _undo(); log('Elemental Cycle: cancelled — Energy back.','info'); renderAll(); };
+    const opts=[]; if(enemies.length) opts.push({label:'💥 Deal 3 damage',sub:'to target opposing character',val:'dmg'});
+    if(frz.length) opts.push({label:'❄️ Freeze',sub:'target opposing character until the end of your next turn',val:'frz'});
+    if(tapped.length) opts.push({label:'🔄 Untap',sub:'one of your characters',val:'untap'});
+    if(!opts.length){ if(_undo) _undo(); log('Elemental Cycle: nothing to do — not used.','dmg'); renderAll(); return; }
+    if(seqIsLocalHuman(ap)&&!G._aiAuto){
+      seqChoose('🌀 Elemental Cycle','Choose one:',opts,(m)=>{
+        if(m==='dmg'){ _abilityUndo=_undo; openEnemyTargetPicker(enemies,blast,{sourcePlayer:ap,title:'🌀 Elemental Cycle',desc:'Deal 3 damage to an opposing character.'}); }
+        else if(m==='frz'){ _abilityUndo=_undo; openEnemyTargetPicker(frz,chill,{sourcePlayer:ap,title:'🌀 Elemental Cycle',desc:'Freeze an opposing character until the end of your next turn.'}); }
+        else seqChoose('🌀 Elemental Cycle','Untap one of your characters.',tapped.map(f=>({label:DB[f.cid].name, sub:'⚔'+(f.currentATK||0)+' ♥'+(f.currentHP||0), val:f.uid})),untap,cancel);
+      },cancel);
+    } else {
+      const m=aiElementalMode(ap,enemies,frz,tapped);
+      if(m.mode==='untap') untap(m.t.uid); else openEnemyTargetPicker([m.t],m.mode==='frz'?chill:blast,{sourcePlayer:ap,title:'Elemental Cycle'});
+    }
+    return;
+  }
+  if(label==='Harmonic Convergence'){
+    const ap=G.activePlayer, P=G.players[ap]; const foes=[];
+    _fusionOpps(ap).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) foes.push({p:op,uid:f.uid}); }));
+    const healAll=()=>{ const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Harmonic Convergence',fc.uid):null;
+      try{ P.field.filter(f=>isChar(DB[f.cid])).forEach(f=>{ const h=healFc(f,3); if(h>0){ log(`🌀 Harmonic Convergence: ${DB[f.cid].name} heals ${h}.`,'gain'); if(typeof showHealPopup==='function') showHealPopup(ap,'+'+h,f.uid); } }); }
+      finally { if(typeof fxPop==='function') fxPop(_fx); }
+      if(typeof recalcPassives==='function') recalcPassives(); renderAll(); if(typeof checkWin==='function') checkWin(); };
+    if(!foes.length&&!P.field.some(f=>isChar(DB[f.cid])&&(f.currentHP||0)<aiMaxHP(f))){ if(_abilityUndo) _abilityUndo(); log('Harmonic Convergence: no opposing characters and nothing to heal — not used.','dmg'); renderAll(); return; }
+    log(`🌀 Harmonic Convergence: 3 damage to every opposing character, 3 Health to each of ${pname(ap)}'s characters!`,'dmg');
+    if(foes.length) seqAreaHits(foes,3,{cid:fc.cid,label:'Harmonic Convergence',uid:fc.uid},{after:healAll}); else healAll();
+    renderAll();
+    return;
+  }
+  // ── NIGHTMARE KORRA: Chainbreaker (2⚡ once per turn) · Dark Avatar State (6⚡ once per game) — build 10.45
+  if(label==='Chainbreaker'||label==='Dark Avatar State'){
+    const ap=G.activePlayer, P=G.players[ap]; const opps=_fusionOpps(ap); const das=label==='Dark Avatar State';
+    const ownerOf=(uid)=>opps.find(o=>(G.players[o]?.field||[]).some(f=>f.uid===uid));
+    const enemies=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) enemies.push(f); }));
+    if(!enemies.length){ if(_abilityUndo) _abilityUndo(); log(`${label}: no opposing characters — not used.`,'dmg'); renderAll(); return; }
+    const go=(uid)=>{ const op=ownerOf(uid); const t=op&&G.players[op].field.find(f=>f.uid===uid); if(!t){ renderAll(); return; }
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,label,fc.uid):null;
+      try{
+        if(!das){ const hp0=t.currentHP||0; log(`⛓ Chainbreaker: ${DB[t.cid].name} takes 3 damage!`,'dmg'); dealDamage(op,uid,3);
+          const dealt=Math.max(0,hp0-(t.currentHP||0));
+          if(dealt>0&&P.field.includes(fc)){ const h=healFc(fc,dealt); log(`⛓ Chainbreaker: ${DB[fc.cid].name} heals ${h} (${dealt} damage dealt).`,'gain'); if(h>0&&typeof showHealPopup==='function') showHealPopup(ap,'+'+h,fc.uid); } }
+        else { log(`🌑 Dark Avatar State: ${DB[t.cid].name} is destroyed!`,'dmg'); killCard(op,t);
+          P.field.filter(f=>isChar(DB[f.cid])&&f!==fc).slice().forEach(f=>korraLoseHealth(ap,f,2,'Dark Avatar State')); }
+      } finally { if(typeof fxPop==='function') fxPop(_fx); }
+      if(typeof recalcPassives==='function') recalcPassives(); renderAll(); if(typeof checkWin==='function') checkWin(); };
+    if(seqIsLocalHuman(ap)&&!G._aiAuto){
+      openEnemyTargetPicker(enemies,go,{sourcePlayer:ap,title:das?'🌑 Dark Avatar State':'⛓ Chainbreaker',desc:das?'Destroy an opposing character. Each of your other characters loses 2 Health.':'Deal 3 damage to an opposing character. Nightmare Korra heals for the damage dealt.'});
+    } else {
+      const pool=enemies.filter(f=>!hasDrunkenStance(f)&&!spaceShielded(f)&&(!hasAbilityToll(f)||G.players[ap].energy>=2)); const P2=pool.length?pool:enemies;
+      const kill=(f)=>(f.currentHP||0)<=Math.max(0,3-(f.nullify||0))?1:0;
+      const best=das?P2.slice().sort((a,b)=>aiFcValue(b)-aiFcValue(a))[0]:P2.slice().sort((a,b)=>(kill(b)-kill(a))||(aiFcValue(b)-aiFcValue(a)))[0];
+      openEnemyTargetPicker([best],go,{sourcePlayer:ap,title:label});
+    }
+    return;
+  }
+  // ── VIEWTIFUL JOE (Herald): Mach Speed (2⚡ once per turn) / Henshin-a-go-go, Baby! (6⚡ once per game) — pick one of your characters.
+  if(label==='Mach Speed'||label==='Henshin-a-go-go, Baby!'){
+    const ap=G.activePlayer, P=G.players[ap]; const _undo=_abilityUndo; const hen=label!=='Mach Speed';
+    const mine=P.field.filter(f=>isChar(DB[f.cid]));
+    if(!mine.length){ if(_undo) _undo(); log(`${label}: no character to choose — not used.`,'dmg'); renderAll(); return; }
+    const apply=(t)=>{ const _fx=(typeof fxPush==='function')?fxPush(fc.cid,label,fc.uid):null;
+      try{
+        if(!hen){ t.extraAttacks=(t.extraAttacks||0)+1; log(`⚡ Mach Speed: ${DB[t.cid]?.name} can attack one more time this turn!`,'gain'); }
+        else { t._henshin=(t._henshin||0)+4; t._henshinTurn=G.turn||1; t.currentATK=(t.currentATK||0)+4; t.atkBonus=(t.atkBonus||0)+4;
+          log(`🎬 Henshin-a-go-go, Baby! ${DB[t.cid]?.name} gets +4 Attack (now ${t.currentATK}) — opposing characters can't deal damage to it this turn!`,'gain'); }
+      } finally { if(typeof fxPop==='function') fxPop(_fx); }
+      if(typeof recalcPassives==='function') recalcPassives(); renderAll(); };
+    if(seqIsLocalHuman(ap)&&!G._aiAuto){
+      seqChoose(hen?'🎬 Henshin-a-go-go, Baby!':'⚡ Mach Speed', hen?"Choose one of your characters: +4 Attack until end of turn, and opposing characters can't deal damage to it.":'Choose one of your characters: it can attack one additional time this turn.',
+        mine.map(f=>({label:DB[f.cid].name, sub:'⚔'+(f.currentATK||0)+' ♥'+(f.currentHP||0)+(f.attackedThisTurn?' · attacked':'')+(f.extraAttacks>0?' · +'+f.extraAttacks+' attack':''), val:f.uid})),
+        (uid)=>{ const t=P.field.find(f=>f.uid===uid); if(!t){ if(_undo) _undo(); renderAll(); return; } apply(t); },
+        ()=>{ if(_undo) _undo(); log(`${label}: cancelled — Energy back.`,'info'); });
+    } else { apply(aiJoeTarget(ap,mine,hen)); }
+    return;
+  }
   if(label==='Web-Slinger Strike'||label==='Rise of the Imperfect'){
     if(!(G.players[G.activePlayer]?.field||[]).includes(fc)){ renderAll(); return; }
     const _fx=(typeof fxPush==='function')?fxPush(fc.cid,label,fc.uid):null;
@@ -22511,6 +22683,9 @@ function energyIntake(p, copies){
 // ═══ build 10.34 helpers: King Theoden, the Base Set Locations, Red Hulk ═══
 function isPrimeChar(c){ return !!c&&isChar(c)&&(((c.subtypes||[]).some(s=>/^prime$/i.test(String(s).trim())))||/\bprime\b/i.test(c.race||'')); }
 // TRIAL BY COMBAT (Prime Proving Ground): +1 damage on a Prime's attack per Proving Ground you control that isn't frozen.
+// 🎬 VIEWTIFUL JOE (Herald) — VFX Slow: an attacking character deals 1 less for each opposing Joe Herald that isn't Broken.
+function vfxSlowPenalty(ap,afc){ if(!afc||!isChar(DB[afc.cid])) return 0; const opp=(typeof _fusionOpps==='function')?_fusionOpps(ap):[ap===1?2:1];
+  return opp.filter(q=>{ const h=G.players[q]?.herald; return h&&!isHeraldBroken(h)&&hasAbilityLabel(h,'VFX Slow'); }).length; }
 function trialByCombatBonus(ap,afc){ if(!afc||!isPrimeChar(DB[afc.cid])) return 0; return (G.players[ap]?.field||[]).filter(l=>isLoc(DB[l.cid])&&hasAbilityLabel(l,'Trial by Combat')&&!isLocationFrozen(l)).length; }
 // ROYAL SUMMONS (King Theoden): search your deck for a Royal Saiyan character, reveal it, put it into your hand, shuffle.
 function royalSummonsSearch(p,fc){
@@ -22607,24 +22782,38 @@ function applySurfacerBinding(player){
     else { const _ev=(f)=>{ const d=DB[f.cid]; return (d&&d.type==='energy_card')?-100+(d.energyGain||1):aiCardValue(d); }; const pick=pl.hand.slice().sort((a,b)=>_ev(a)-_ev(b))[0]; G._lastBinding={player,choice:'discard',cid:pick.cid}; discardOne(pick.uid); } // AI gives up its least valuable card
     return;
   }
-  // Human: present the choice.
+  // Human: present the choice — through the action queue (build 10.45), so it waits for any other open choice (a
+  // start-of-turn stance, the weather, a queued prompt) instead of opening on top of it and closing it with its own click.
+  if(typeof seqPush==='function'){ seqPush(done=>{
+      if(!G||G.gameOver||!G.players[player]){ done(); return; }
+      window._bindingDone=()=>{ const f=done; window._bindingDone=null; f(); };
+      applySurfacerBindingNow(player, loseEnergy, discardOne); }); return; }
+  applySurfacerBindingNow(player, loseEnergy, discardOne);
+}
+function applySurfacerBindingNow(player, loseEnergy, discardOne){
+  const pl=G.players[player]; if(!pl) return;
+  const end=()=>{ if(typeof window._bindingDone==='function') window._bindingDone(); };
+  const reopen=()=>{ setTimeout(()=>{ // the choice is mandatory: closing it brings it back (unless the match is over)
+      if(!G||G.gameOver||!G.players[player]||(typeof _inMatch==='function'&&!_inMatch())){ end(); return; }
+      applySurfacerBindingNow(player, loseEnergy, discardOne); }, 0); };
   const body=document.createElement('div');
   body.innerHTML=`<div style="font-size:12px;color:#d8b4fe;margin-bottom:12px;line-height:1.5">🔮 <b>Surfacer Binding</b> — the enemy Herald binds you. Choose one:</div>`;
   const eBtn=document.createElement('button'); eBtn.className='btn-gray'; eBtn.style.cssText='width:100%;padding:10px;margin-bottom:8px';
   eBtn.textContent=`⚡ Lose 2 Energy (you have ${pl.energy||0})`;
-  eBtn.onclick=()=>{ closeAllModals(); loseEnergy(); };
+  eBtn.onclick=()=>{ takeModalCancel(); closeAllModals(); loseEnergy(); end(); };
   const dBtn=document.createElement('button'); dBtn.className='btn-gray'; dBtn.style.cssText='width:100%;padding:10px';
   dBtn.textContent=`🗑 Discard 1 card (${pl.hand.length} in hand)`;
   dBtn.disabled=!pl.hand.length;
   dBtn.onclick=()=>{
-    if(!pl.hand.length){ closeAllModals(); return; }
+    if(!pl.hand.length){ takeModalCancel(); closeAllModals(); end(); return; }
+    takeModalCancel();
     const dl=document.createElement('div'); dl.innerHTML='<div style="font-size:11px;color:#d8b4fe;margin-bottom:8px">Choose a card to discard:</div>';
     const list=document.createElement('div'); list.style.cssText='display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto';
-    pl.hand.forEach(h=>{ const c2=DB[h.cid]; const row=document.createElement('button'); row.className='btn-gray btn-sm'; row.style.cssText='padding:8px 10px;text-align:left;width:100%;font-weight:700;color:#e2e8f0'; row.textContent=c2?.name||h.cid; row.onclick=()=>{ closeAllModals(); discardOne(h.uid); }; list.appendChild(row); });
-    dl.appendChild(list); showModalEl('🗑 Surfacer Binding — Discard', dl);
+    pl.hand.forEach(h=>{ const c2=DB[h.cid]; const row=document.createElement('button'); row.className='btn-gray btn-sm'; row.style.cssText='padding:8px 10px;text-align:left;width:100%;font-weight:700;color:#e2e8f0'; row.textContent=c2?.name||h.cid; row.onclick=()=>{ takeModalCancel(); closeAllModals(); discardOne(h.uid); end(); }; list.appendChild(row); });
+    dl.appendChild(list); showModalEl('🗑 Surfacer Binding — Discard', dl, {forceHuman:true}); armModalCancel(reopen);
   };
   body.appendChild(eBtn); body.appendChild(dBtn);
-  showModalEl('🔮 Surfacer Binding', body);
+  showModalEl('🔮 Surfacer Binding', body, {forceHuman:true}); armModalCancel(reopen);
 }
 // ═════════════════════════════════════════
 // STATUS EFFECT ENGINE (Burn / Poison / Freeze / Paralyze / Confusion)
@@ -22641,11 +22830,13 @@ const STATUS_META = {
   paralyze:{icon:'⚡', label:'Paralyze',  color:'#facc15', dur:2},
   confuse: {icon:'😵', label:'Confusion', color:'#c084fc', dur:3},
 };
+const SPIRIT_WARD_WORD={freeze:'Frozen',confuse:'Confused',burn:'Burned',paralyze:'Paralyzed'};
 function statusActive(fc,type){ return !!(fc&&fc.statuses&&fc.statuses[type]>0); }
 function applyStatus(fc,type,turns){
   if(!fc||!STATUS_META[type])return false;
   // VORTEX SHIELD (Rapture of the Vortex): total status immunity.
   if(hasAbilityLabel(fc,'Vortex Shield')){ log(`🛡️ Vortex Shield: ${DB[fc.cid]?.name} is immune to status effects!`,'info'); return false; }
+  if(SPIRIT_WARD_WORD[type]&&hasAbilityLabel(fc,'Spirit Ward')){ log(`☀️ Spirit Ward: ${DB[fc.cid]?.name} can't be ${SPIRIT_WARD_WORD[type]}.`,'info'); return false; } // Korra (Spirit of Raava)
   if(type==='burn'&&hasAbilityLabel(fc,'Heat Absorption')){ log(`🔥 Heat Absorption: ${DB[fc.cid]?.name} can't be Burned.`,'info'); return false; }
   if(!fc.statuses)fc.statuses={};
   if(fc.statuses[type]>0){ log(`${DB[fc.cid]?.name} is already ${STATUS_META[type].label}ed — it doesn't stack.`,'info'); return false; }
@@ -22782,6 +22973,7 @@ function startTurnFx(player){
   })();
   pl.field.slice().forEach(f=>{ if(Array.isArray(f._ewall)&&f._ewall.some(w=>w.by===player)){ const h=f._ewall.filter(w=>w.by===player).reduce((s,w)=>s+w.hp,0); f._ewall=f._ewall.filter(w=>w.by!==player);
     f.hpBonus=(f.hpBonus||0)-h; f.currentHP=(f.currentHP||0)-h; log(`🪨 Earth Wall around ${DB[f.cid]?.name} crumbles (−${h} Health).`,'info'); if(f.currentHP<=0) killCard(player,f); } }); // Toph's Earth Wall ends
+  pl.field.slice().forEach(f=>{ if(isChar(DB[f.cid])&&hasAbilityLabel(f,'Haunted Avatar')&&pl.field.includes(f)) hauntedAvatar(player,f); }); // 🌑 Nightmare Korra
   pl.field.forEach(f=>{ if(f._spaceBy===player){ delete f._spaceBy; log(`💎 Space: ${DB[f.cid]?.name} can be targeted again.`,'info'); } }); // Stone Power (Space) ends
   // 🪓 SAURON — Armies of Mordor: 3 or fewer characters → a 1/1 Orc Token.
   if(pl.herald&&!isHeraldBroken(pl.herald)&&hasAbilityLabel(pl.herald,'Armies of Mordor')&&pl.field.filter(f=>isChar(DB[f.cid])).length<=3){
@@ -22959,7 +23151,7 @@ function endTurnFx(p){
     if(f._theftUp){ f.currentATK=Math.max(0,(f.currentATK||0)-f._theftUp); f.atkBonus=(f.atkBonus||0)-f._theftUp; f._theftUp=0; }
     if(f._heatAbs){ f.currentATK=Math.max(0,(f.currentATK||0)-f._heatAbs); f.atkBonus=(f.atkBonus||0)-f._heatAbs; f._heatAbs=0; } // 🔥 Red Hulk: Heat Absorption ends with the turn
     if(f._decree&&f._decree.by===p&&--f._decree.ends<=0) endEvolvedDecree(f); // 👑 Theoden (SSBE): until the end of your next turn
-    if(f._lensThaw&&f._lensThaw.by===p&&--f._lensThaw.ends<=0){ delete f._lensThaw; if(statusActive(f,'freeze')){ delete f.statuses.freeze; if(f.statusSrc) delete f.statusSrc.freeze; log(`❄️ Glacial Lens: ${DB[f.cid]?.name} thaws.`,'info'); } }
+    if(f._lensThaw&&f._lensThaw.by===p&&--f._lensThaw.ends<=0){ f._lensLbl=f._lensThaw.lbl; delete f._lensThaw; if(statusActive(f,'freeze')){ delete f.statuses.freeze; if(f.statusSrc) delete f.statusSrc.freeze; log(`❄️ ${f._lensLbl||'Glacial Lens'}: ${DB[f.cid]?.name} thaws.`,'info'); } }
     if(f.ssbAtkBuff){ f.currentATK=(f.currentATK||0)-f.ssbAtkBuff; f.atkBonus=(f.atkBonus||0)-f.ssbAtkBuff; f.ssbAtkBuff=0; }
     if(f._aeth&&f._aethBy===p){ const d=f._aeth; f.currentATK=Math.max(0,(f.currentATK||0)-d); f.atkBonus=(f.atkBonus||0)-d; f._aeth=0; f._aethBy=null; log(`✨ Aetherion Light on ${DB[f.cid]?.name} fades.`,'info'); } // ✨ Asteria
     if(f._stonePow&&f._stonePowBy===p){ const d=f._stonePow; f.currentATK=Math.max(0,(f.currentATK||0)-d); f.atkBonus=(f.atkBonus||0)-d; f._stonePow=0; f._stonePowBy=null; log(`💎 Stone Power (Power) on ${DB[f.cid]?.name} fades.`,'info'); }
@@ -22995,6 +23187,8 @@ function endTurnFx(p){
   tickAvatarState(p); // 🌀 Aang: Avatar State ends with the turn
   tickSpiderMan(p); // 🕷 Spider-Man (Imperfects): Web-Slinger / Rise +3 Attack end with the turn
   tickBeer(); // 🍺 Virora's Beer: Liquid Courage's +2 Attack ends with the turn
+  tickHenshin(); // 🎬 Viewtiful Joe: Henshin's +4 Attack and protection end with the turn
+  tickHaunt(); // 🌑 Nightmare Korra: Haunted Avatar's +2 Attack ends with the turn
   tickBloodRite(p); // 🩸 Surana (SSS): Blood Rite's +3 Attack ends with the turn
   tickScorchedEarth(p); // count down any Scorched Earth timers this player set
   tickFusions(p); // 💤 Fatigue, then 💫 Dance timers (split at 0)
@@ -23624,6 +23818,20 @@ function aiScoreAbility(p, fc, abl, src){
   if(abl.label==='Primal Instinct'){ if(!(aiReady(fc)&&canCharacterAttack(p,fc))) return -1; const my=effPower(fc);
     const es=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&!statusActive(e.fc,'freeze')&&effPower(e.fc)>0&&(e.fc.currentHP||0)>my); if(!es.length) return -1;
     const worst=Math.max(...es.map(e=>effPower(e.fc))); return 4+Math.min(10,worst)*.6+(worst>=(fc.currentHP||0)?6:0); } // only matters for a foe that survives her hit
+  if(abl.label==='Elemental Cycle'){ const _es=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)&&(!hasAbilityToll(e.fc)||pl.energy>=cost+2)); if(!_es.length) return -1;   // build 10.45 · Korra (Spirit of Raava)
+    const _k=_es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,3-(e.fc.nullify||0))).length; return 12+_k*16+Math.min(6,_es.length*2); }
+  if(abl.label==='Harmonic Convergence'){ const es=aiEnemyChars(p); const heal=pl.field.filter(f=>isChar(DB[f.cid])).reduce((s,f)=>s+Math.min(3,aiMaxHP(f)-(f.currentHP||0)),0);
+    const kills=es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,3-(e.fc.nullify||0))).length; if(es.length<2&&!kills&&heal<6) return -1;
+    return 10+es.length*4+kills*12+heal; }
+  if(abl.label==='Chainbreaker'){ const _es=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)&&(!hasAbilityToll(e.fc)||pl.energy>=cost+2)); if(!_es.length) return -1;   // build 10.45 · Nightmare Korra
+    const _k=_es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,3-(e.fc.nullify||0))).length; const _w=Math.min(3,aiMaxHP(fc)-(fc.currentHP||0)); return 12+_k*16+_w*2+Math.min(6,_es.length*2); }
+  if(abl.label==='Dark Avatar State'){ const _es=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)&&(!hasAbilityToll(e.fc)||pl.energy>=cost+2)); if(!_es.length) return -1;
+    const _v=Math.max(..._es.map(e=>aiFcValue(e.fc))); const _mine=pl.field.filter(f=>isChar(DB[f.cid])&&f!==fc); const _dead=_mine.filter(f=>(f.currentHP||0)<=2).reduce((s,f)=>s+aiFcValue(f),0);
+    return (_v>=18&&_v>_dead+4)?Math.round(20+_v-_dead-_mine.length):-1; }
+  if(abl.label==='Mach Speed'||abl.label==='Henshin-a-go-go, Baby!'){ const _r=pl.field.filter(f=>isChar(DB[f.cid])&&aiReady(f)), _e=joeFoes(p); if(!_r.length) return -1;   // build 10.45 · Viewtiful Joe
+    if(abl.label==='Mach Speed') return (_e.length||((typeof _fusionOpps==='function')?_fusionOpps(p):[p===1?2:1]).some(q=>{ const h=G.players[q]?.herald; return h&&!isHeraldBroken(h); }))?26:-1;
+    if(!_e.length) return -1;
+    return _r.some(f=>_e.some(e=>(e.currentHP||0)<=(f.currentATK||0)+4&&(e.currentHP||0)>(f.currentATK||0)))?44:-1; }
   if(abl.label==='Radiant Blessing'){ const _m=pl.field.filter(f=>isChar(DB[f.cid])); if(!_m.length) return -1;
     const sc=_m.map(f=>Math.min(3,aiMaxHP(f)-(f.currentHP||0))*2+(Object.keys(f.statuses||{}).some(k=>f.statuses[k]>0)?6:0)); const best=Math.max(...sc);
     return best>=4?3+best:-1; } // at least 2 missing Health or a status to clear
@@ -29962,7 +30170,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.44';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.45';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
