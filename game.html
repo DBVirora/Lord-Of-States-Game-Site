@@ -9697,7 +9697,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.47 · Color Rules everywhere</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.48 · Energy spending fix</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10773,6 +10773,11 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.47'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.48', date:'2026-11-22',
+    rules:["No rules change: GAME_BUILD stays '10.47' (each client works out its own turns, so 10.47 and 10.48 still play each other). Two Energy bookkeeping fixes; port both."],
+    energy:["FIX spendEnergy, Herald/Strict (the bug the PC reported): after taking the card's own color, White = (energy − amount already taken) − Σ colorEnergy, not energy − Σ colorEnergy. Example: 3 Energy = Red 1 + Blue 2, pay 2 for a Red card → Red 1 paid, White 0, Blue 1 paid → Energy 1 = Blue 1. (Before: Energy 1 with Blue still 2.) Classic was never affected.",
+      "FIX colorEnergy could add up to more than energy: spendEnergy now ends with _trimColorEnergy(pl), and so does every effect that lowers Energy directly: Power Struggle bids, Evasion tolls (canPayEvasionToll), Velocity Blitz's 2⚡, the old Equip modal, The Gift of the God's drain, Surfacer Binding, Hidden Power's drain, the Lean Court rule. _trimColorEnergy takes the excess (Σ colorEnergy − energy) off the largest color pool, 1 at a time (ties: first key), so White is lost first and colors only when it runs out."],
+    data:["WEB_BUILD 10.48. GAME_BUILD stays 10.47."] },
   { build:'10.47', date:'2026-11-22',
     rules:["No new rules, but GAME_BUILD → '10.47' for the online protocol below (Quick Match color key, 2v2 color_rules + synced colorRules/_hcIdx, 'room_settings', group-room set.cr): a 10.46 client in a Herald/Strict 2v2 or group room would play its own turns by Classic rules. Color Rules now reach every place a match is set up, plus helpers and a lesson."],
     screens:["DECK BUILDER: the deck bar's Herald line shows the Herald's colors as dots ('⚪ any color' for a White Herald) and either '⚠ N off-color' (red, tooltip: 'Cards with none of your Herald's colors are Unstable under Herald / Strict Color Rules: +2 cost, characters enter −1/−1. Classic ignores it.') or '✓ on-color'. Deck list strips of off-color cards get a red ⚠ after the name; pool tiles get a red '⚠ OFF-COLOR' badge (left, under OWN). Off-color = offColorForHerald(heraldCid, cid): the card has a non-white color and none of the Herald's colors (Energy cards, Heralds, tokens, White cards never; nothing with a White Herald).",
@@ -16599,7 +16604,7 @@ function psBid(b){ if(!_ps||!_ps.cur) return; if(b>(G.players[_ps.cur.p].energy|
 function psLock(){ if(!_ps||!_ps.cur||!_ps.cur.pick) return; clearTimeout(psAsk._t); const c=_ps.cur; _ps.picks[c.p]=c.pick; _ps.bids[c.p]=c.bid||0; _ps.cur=null; psAsk(); }
 function psReveal(){
   const b=_ps, afc=G.players[b.ap].field.find(f=>f.uid===b.auid), dfc=G.players[b.dp].field.find(f=>f.uid===b.duid);
-  [b.ap,b.dp].forEach(p=>{ let k=b.bids[p]||0; k=Math.min(k,G.players[p].energy||0); b.bids[p]=k; if(k>0){ G.players[p].energy-=k; log(`Power Struggle: ${pname(p)} bids ${k} Energy.`,'info'); } });
+  [b.ap,b.dp].forEach(p=>{ let k=b.bids[p]||0; k=Math.min(k,G.players[p].energy||0); b.bids[p]=k; if(k>0){ G.players[p].energy-=k; _trimColorEnergy(G.players[p]); log(`Power Struggle: ${pname(p)} bids ${k} Energy.`,'info'); } });
   const out=psResolve(b.picks[b.ap],b.picks[b.dp],afc,dfc,b.bids[b.ap]||0,b.bids[b.dp]||0);
   G._psOutcome=out; log(`⚔ Power Struggle: ${out.why}.`,'gain');
   const ov=psEl(); const tile=(p,role)=>{ const k=b.picks[p]; return `<div class="ps3-r"><i>${role} · ${escapeHtml(pname(p))}</i><span>${PS_PICKS[k].i}</span><b>${PS_PICKS[k].n}</b>${b.bids[p]?`<em>+${b.bids[p]}⚡ bid</em>`:''}</div>`; };
@@ -17474,7 +17479,7 @@ function hasDrunkenStance(fc){
 function canPayEvasionToll(attackerPlayer, targetFc){
   if(!hasAbilityToll(targetFc)) return true;
   const pl=G.players[attackerPlayer];
-  if(pl.energy>=2){ pl.energy-=2; log(`Paid 2⚡ to get past ${tollLabel(targetFc)} on ${DB[targetFc.cid].name}.`,'info'); return true; }
+  if(pl.energy>=2){ pl.energy-=2; _trimColorEnergy(pl); log(`Paid 2⚡ to get past ${tollLabel(targetFc)} on ${DB[targetFc.cid].name}.`,'info'); return true; }
   return false;
 }
 // AIR SCOOTER (Aang): opponents pay 2⚡ to target him with an ABILITY (attacks are free). The Godly Evasion family charges both.
@@ -17933,7 +17938,7 @@ function resolveAttack(ap,auid,dp,duid){
   else if(hasAbilityLabel(dfc,'Velocity Blitz')){
     const _vp=G.players[ap];
     if((_vp.energy||0)<2){ log(`${DB[dfc.cid].name} has Velocity Blitz — need 2⚡ to attack it.`,'dmg'); return; }
-    _vp.energy-=2; log(`⚡ Paid 2⚡ to attack ${DB[dfc.cid].name} (Velocity Blitz).`,'info');
+    _vp.energy-=2; _trimColorEnergy(_vp); log(`⚡ Paid 2⚡ to attack ${DB[dfc.cid].name} (Velocity Blitz).`,'info');
   }
   const ac=DB[afc.cid],dc=DB[dfc.cid];
   afc.attacksThisTurn=(afc.attacksThisTurn||0)+1; triggerFlameSpiral(afc); if(afc._rampKO){ renderAll(); return; }
@@ -19721,7 +19726,7 @@ function openEquipModal(){
       btn.textContent=DB[cf.cid].name;
       btn.onclick=()=>{
         if(pl.energy<ec.cost){log('Not enough energy!','dmg');return;}
-        pl.energy-=ec.cost;pl.hand=pl.hand.filter(f=>f.uid!==ef.uid);
+        pl.energy-=ec.cost;_trimColorEnergy(pl);pl.hand=pl.hand.filter(f=>f.uid!==ef.uid);
         closeAllModals();applyEquipToTarget(ef,cf);
       };
       row.appendChild(btn);
@@ -20492,7 +20497,7 @@ function _activateAbilityCore(fc,abl){
     };
     const doDrain=()=>{
       const opps = (G.is2v2 ? teamPlayers(enemyTeamOf(ap)) : [ap===1?2:1]).filter(n=>G.players[n]);
-      const drain=(n)=>{ const before=G.players[n].energy||0; G.players[n].energy=Math.max(0,before-1); log(`The Gift of the God's: ${pname?pname(n):'P'+n} loses 1 Energy (${before} → ${G.players[n].energy}).`,'dmg'); commit(); renderAll(); };
+      const drain=(n)=>{ const before=G.players[n].energy||0; G.players[n].energy=Math.max(0,before-1); _trimColorEnergy(G.players[n]); log(`The Gift of the God's: ${pname?pname(n):'P'+n} loses 1 Energy (${before} → ${G.players[n].energy}).`,'dmg'); commit(); renderAll(); };
       if(opps.length===1){ drain(opps[0]); return; }
       const body=document.createElement('div');
       body.innerHTML='<div style="font-size:11px;color:#fca5a5;margin-bottom:8px">Choose an opponent to drain 1 Energy.</div>';
@@ -22901,7 +22906,7 @@ function heatAbsorptionTrigger(burned){
 }
 function applySurfacerBinding(player){
   const pl=G.players[player]; if(!pl) return;
-  const loseEnergy=()=>{ const lost=Math.min(2, pl.energy||0); pl.energy=Math.max(0,(pl.energy||0)-2); log(`🔮 Surfacer Binding: ${pname(player)} loses ${lost} Energy.`,'dmg'); renderAll(); };
+  const loseEnergy=()=>{ const lost=Math.min(2, pl.energy||0); pl.energy=Math.max(0,(pl.energy||0)-2); _trimColorEnergy(pl); log(`🔮 Surfacer Binding: ${pname(player)} loses ${lost} Energy.`,'dmg'); renderAll(); };
   const discardOne=(cid)=>{ const idx=pl.hand.findIndex(h=>h.uid===cid); if(idx>=0){ const d=pl.hand.splice(idx,1)[0]; pl.discard.push(d.cid); log(`🔮 Surfacer Binding: ${pname(player)} discards ${DB[d.cid]?.name||d.cid}.`,'dmg'); } renderAll(); };
   // AI (or empty-handed) auto-resolves: lose energy if it can, else discard.
   if(!isHumanPlayer(player)){
@@ -24512,7 +24517,8 @@ function spendEnergy(p, amount, cardColor){
   }
   // 🎨 Herald / Strict: White (uncolored) Energy goes before other colors, so colored Energy is kept for colored cards (build 10.46)
   if(remaining>0&&pl.colorEnergy&&typeof colorRulesOn==='function'&&colorRulesOn()){
-    const _colored=Object.values(pl.colorEnergy).reduce((a,b)=>a+(b||0),0); remaining-=Math.min(remaining,Math.max(0,pl.energy-_colored)); }
+    const _colored=Object.values(pl.colorEnergy).reduce((a,b)=>a+(b||0),0), _white=Math.max(0,(pl.energy-(amount-remaining))-_colored); // White = what's left once the own color already taken is out (build 10.48 fix)
+    remaining-=Math.min(remaining,_white); }
   // Spend remaining from other color energy (smallest pools first)
   if(remaining>0&&pl.colorEnergy){
     const otherColors=Object.entries(pl.colorEnergy).sort((a,b)=>a[1]-b[1]);
@@ -24525,7 +24531,7 @@ function spendEnergy(p, amount, cardColor){
     }
   }
   // Rest comes from universal pool
-  pl.energy-=amount;
+  pl.energy-=amount; _trimColorEnergy(pl); // colors never add up to more than the Energy left (build 10.48)
   if(amount>0) pl.spentEnergyThisTurn=true; // Raven Vampire's Hollow Vein tracker
   return true;
 }
@@ -24779,7 +24785,7 @@ function playSpecialEnergy(p,cid){
     const opps=(typeof aiEnemyPlayersOf==='function')?aiEnemyPlayersOf(p):[p===1?2:1];
     const opp=opps.slice().sort((a,b)=>(G.players[b]?.energy||0)-(G.players[a]?.energy||0))[0];
     const hidden=()=>seqAbility(p,cid,'Hidden Power',null,{kind:'ON PLAY'},()=>{
-      const drain=()=>{ const o=G.players[opp]; if(!o) return; const b=o.energy||0; o.energy=Math.max(0,b-1); log(`💎 Hidden Power: ${pname(opp)} loses ${b>0?1:0} Energy.`,'gain'); renderAll(); };
+      const drain=()=>{ const o=G.players[opp]; if(!o) return; const b=o.energy||0; o.energy=Math.max(0,b-1); _trimColorEnergy(o); log(`💎 Hidden Power: ${pname(opp)} loses ${b>0?1:0} Energy.`,'gain'); renderAll(); };
       const more=(col)=>{ _seAddColor(p,1,col); log(`💎 Hidden Power: +1${col&&COLOR_DEFS[col]?' '+COLOR_DEFS[col].label:''} Energy to your bank.`,'gain'); renderAll(); };
       if(human){
         seqChoose('💎 Hidden Power','A Celestial is on your field — choose one.',[
@@ -30394,7 +30400,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.47';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.48';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -42887,7 +42893,7 @@ function trApplyStart(){
   const T=G&&G.trial; if(!T) return; const P1=G.players[1], P2=G.players[2]; const R=k=>T.rules.includes(k), B=k=>T.boons.includes(k);
   const notes=[];
   if(R('surge')){ P1.energy+=3; P2.energy+=3; notes.push('Surging Court: both sides +3 Energy'); }
-  if(R('lean')){ P1.energy=Math.max(0,P1.energy-2); notes.push('Lean Court: you start with 2 less Energy'); }
+  if(R('lean')){ P1.energy=Math.max(0,P1.energy-2); _trimColorEnergy(P1); notes.push('Lean Court: you start with 2 less Energy'); }
   if(B('warchest')){ P1.energy+=2; notes.push('War Chest: +2 Energy'); }
   if(R('iron')&&P2.herald){ P2.herald.hpBonus=(P2.herald.hpBonus||0)+8; P2.herald.currentHP+=8; notes.push('Iron Herald: their Herald +8 Health'); }
   if(B('aegis')&&P1.herald){ P1.herald.hpBonus=(P1.herald.hpBonus||0)+6; P1.herald.currentHP+=6; notes.push("Herald's Aegis: your Herald +6 Health"); }
