@@ -6164,6 +6164,12 @@ textarea{
 .ebx-next{ display:flex; align-items:center; gap:5px; padding-top:5px; border-top:1px solid rgba(255,255,255,.07); font:600 calc(var(--fs,12px) * .72) 'Share Tech Mono',monospace; letter-spacing:.8px; color:#8d91ab; }
 .ebx-next b{ font-family:'Orbitron',sans-serif; font-weight:700; letter-spacing:.5px; font-size:1.05em; }
 .ebx-next:first-child{ border-top:none; padding-top:0; }
+/* 📖 Keyword Tips (build 10.49) */
+.kwt{ color:#fcd34d; font-weight:700; border-bottom:1px dotted rgba(252,211,77,.85); cursor:help; }
+.kw-badge[data-kw]{ cursor:help; }
+#kw-tip{ position:fixed; z-index:100000; display:none; max-width:260px; padding:8px 11px 9px; pointer-events:none; background:rgba(10,10,30,.97); border:1px solid rgba(200,164,74,.6); border-radius:9px; box-shadow:0 8px 26px rgba(0,0,0,.65); color:#e5e7eb; font:500 calc(12px * var(--ui-scale,1))/1.45 'Rajdhani','Segoe UI',sans-serif; }
+#kw-tip.on{ display:block; }
+#kw-tip b{ display:block; margin-bottom:3px; font:700 calc(10.5px * var(--ui-scale,1)) 'Orbitron',sans-serif; letter-spacing:1.5px; color:#fcd34d; }
 #game-screen .ident .player-panel-life{ margin:0; padding:4px 8px; }
 #game-screen .ident .lf-val{ font-size:calc(var(--fs) * 1.1); }
 #game-screen .ident-meta{ font-family:'Share Tech Mono',monospace; font-size:calc(var(--fs) * .82); color:#8d91ab; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -9697,7 +9703,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.48 · Energy spending fix</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.49 · Keyword Tips</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10773,6 +10779,13 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.47'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.49', date:'2026-11-23',
+    rules:["No rules change: GAME_BUILD stays '10.47'."],
+    screens:["KEYWORD TIPS (Rulk). Words already in ability text get a gold dotted underline (color #fcd34d, bold) in: Card Info (the rail's hover preview — ability TEXT and the effects rows, never the card name or ability names), the phone card sheet, the Battle Log and the 2v2 mini log. Hover (tap on phones; tap again or elsewhere hides) shows a tooltip box: bold Orbitron title in gold (icon + LABEL) and a one-line rule; it flips above the word near the bottom edge and stays inside the screen. Keyword badges (kw-badge) show the same tip instead of their old title tooltip.",
+      "WORDS (Rulk's list): the 10 keywords — Burst Speed, Guardian(s), Breakthrough, Pursuit, Onslaught, Phase (NOT when it follows Draw/Main/Attack/End/Power/Resource/Combat/Burst), Regeneration, Resolve, Drain, Warp — matched capitalized only; and, any case: Burn/Burns/Burned, Freeze/Freezes/Frozen, Paralyze/-zes/-zed/Paralysis, Poison/-s/-ed, Confusion/Confused/Confuses, Tap/Taps/Tapped, Rift/Rifted (capitalized), Transform/-s/-ed/-ing/Transformation(s), Fusion(s)/Fuse/Fuses/Fused, Unstable. Whole words only ('Burning', 'untap' don't match).",
+      "TEXTS: keywords use KEYWORDS.desc, now the Rulebook glossary wording — burst_speed 'May attack the turn it enters the field.' · guardian \"Enemy attacks must target a Guardian before other characters, and Life can't be attacked directly while one is on the field. Abilities can still target anything.\" · breakthrough 'Excess damage from destroying a blocker or target hits the enemy Herald (never below 1 Health).' · pursuit 'If it destroys its target, it takes no retaliation and no counter damage from it.' · onslaught 'May attack twice per turn (same character); each attack is a full combat.' · phase 'Can only be blocked by Phase characters.' · regeneration 'At the start of your turn it heals 3 of its marked damage.' · resolve 'The first time it would be destroyed by damage, it survives at 1 Health instead (once per game).' · drain 'Gain Energy equal to the combat damage it deals.' · warp 'Has an enter-the-field effect.' Other terms: see KW_TERMS in game.html (Burn, Freeze, Paralyze, Poison, Confusion, Tap, Rift, Transform, Fusion, Unstable) — copy them word for word.",
+      "SETTINGS → Gameplay → Help: a new 'Keyword Tips' toggle under Menu Tips (default ON, _gameSettings.kwTips). Off = no underlines, no tips, keyword badges get their old title tooltip back."],
+    data:["WEB_BUILD 10.49. GAME_BUILD stays 10.47.", "FIX the 2v2 mini log (renderV2Log) showed blank lines: it read l.text, log entries are {m,t}."] },
   { build:'10.48', date:'2026-11-22',
     rules:["No rules change: GAME_BUILD stays '10.47' (each client works out its own turns, so 10.47 and 10.48 still play each other). Two Energy bookkeeping fixes; port both."],
     energy:["FIX spendEnergy, Herald/Strict (the bug the PC reported): after taking the card's own color, White = (energy − amount already taken) − Σ colorEnergy, not energy − Σ colorEnergy. Example: 3 Energy = Red 1 + Blue 2, pay 2 for a Red card → Red 1 paid, White 0, Blue 1 paid → Energy 1 = Blue 1. (Before: Energy 1 with Blue still 2.) Classic was never affected.",
@@ -23377,6 +23390,7 @@ let _gameSettings = {
   autoDraw: true,    // build 10.26: draw automatically at the start of your turn (unless a card effect holds it)
   useGlow: true,     // build 10.26: pulse cards you can still play / use this turn
   statusFx: true,    // build 10.27: status auras animate + an effect over afflicted cards each turn
+  kwTips: true,      // build 10.49: Keyword Tips — dotted underline + hover/tap rule on keywords in Card Info and the Battle Log
   popPrompts: 'side', // build 10.30: Use / Skip and start-of-turn ability prompts — 'side' (docked) · 'center' (classic)
   popChoices: 'side', // build 10.30: pick-one lists, target lists, ability menus — 'side' · 'center'
   popCombat: 'side',  // build 10.30: Burst Window + Power Struggle — 'side' · 'center'
@@ -23524,6 +23538,7 @@ function syncSettingsUI(){
   t('set-banners', _gameSettings.banners);
   t('set-autodraw', _gameSettings.autoDraw!==false);
   t('set-menutips', _gameSettings.menuTips!==false);
+  t('set-kwtips', _gameSettings.kwTips!==false);
   t('set-useglow', _gameSettings.useGlow!==false);
   t('set-statusfx', _gameSettings.statusFx!==false);
   const vol=document.getElementById('set-sfx-vol');
@@ -23608,6 +23623,8 @@ const STV_PREV=(function(){
     'statusfx':()=>{ let o=bg()+rowO(); OX.forEach(x=>{ o+=card(x,41,12,17,'#26365a'); });
       o+=G('pv-fx',`<rect x="49.6" y="37.6" width="18.8" height="23.8" rx="3.4" fill="none" stroke="#67e8f9" stroke-width="1.6" opacity=".55"/><rect x="51" y="39" width="16" height="21" rx="2.6" fill="#67e8f9" opacity=".18"/><path d="M61 36 L56.5 45 L60 45 L57.5 53 L64 42.5 L60.5 42.5 L63 36 Z" fill="#fde047" stroke="#a16207" stroke-width=".4"/>`+T(42,34,6,'❄','#a5f3fc',700)+T(76,64,5,'✦','#a5f3fc',700));
       o+=`<circle cx="64" cy="56" r="3.4" fill="#0b1626" stroke="#67e8f9" stroke-width=".7"/>`+T(64,57.9,4.6,'❄','#a5f3fc',700); return W(o+hand()); },
+    'kwtips':()=>{ let o=R(0,0,120,75,'#0b0a1c')+panel(6,8,64,58)+lines(11,15,54,3,5.5)+R(11,36,17,1.5,'#94a3b8','rx=".75" opacity=".6"')+T(30,38.4,5.2,'Freeze','#fcd34d',800,'start')+'<path d="M30 40 H48" stroke="#fcd34d" stroke-width=".7" stroke-dasharray="1 1"/>'+lines(11,45,54,2,5.5);
+      o+=G('pv-fx',panel(46,24,68,26)+T(50,31.5,4.6,'❄ FREEZE','#fcd34d',800,'start')+lines(50,36,60,2,4.6)); return W(o); },
     'menutips':()=>{ let o=R(0,0,120,75,'#0b0a1c'); [[14,22],[44,18],[74,22]].forEach(([x,y],i)=>{ o+=card(x,y,30,40,i===1?'#3a3366':'#26365a',{sw:.8,so:.8}); });
       o+=R(10,5,100,7,'#18143a','rx="2"')+[0,1,2,3,4].map(i=>R(14+i*19,7.5,14,2,i===1?'#e8c570':'#64748b','rx="1"')).join('');
       o+=G('pv-fx','<rect x="0" y="0" width="120" height="75" fill="#000" opacity=".35"/><rect x="41.5" y="15.5" width="35" height="45" rx="3" fill="none" stroke="#e8c570" stroke-width="1.2"/>'+panel(64,40,52,30)+'<circle cx="71" cy="47" r="4" fill="#a855f7" stroke="#e8c570" stroke-width=".6"/>'+lines(78,44.5,34,3,3.6)+btn(96,61,16,5.5,'#e8c570','GOT IT')); return W(o); },
@@ -23672,6 +23689,14 @@ function toggleSetting(key){
       _gameSettings.menuTips = _gameSettings.menuTips===false;
       document.getElementById('set-menutips').classList.toggle('on', _gameSettings.menuTips);
       if(_gameSettings.menuTips){ try{ Object.keys(localStorage).filter(k=>/^loc_tip_/.test(k)).forEach(k=>localStorage.removeItem(k)); }catch(e){} }   // back on = show them again
+      break;
+    case 'kwtips':
+      _gameSettings.kwTips = _gameSettings.kwTips===false;
+      document.getElementById('set-kwtips').classList.toggle('on', _gameSettings.kwTips);
+      kwTipHide(); _kwCache.clear();
+      if(!_gameSettings.kwTips) document.querySelectorAll('.kwt').forEach(sp=>sp.replaceWith(document.createTextNode(sp.textContent)));
+      else document.querySelectorAll('#hover-preview-content,#mobile-card-sheet').forEach(el=>kwMarkEl(el));
+      if(typeof G!=='undefined'&&G&&G.log) try{ renderLog(); if(typeof renderV2Log==='function') renderV2Log(); if(typeof renderAll==='function'&&G.players) renderAll(); }catch(e){}
       break;
     case 'useglow':
       _gameSettings.useGlow = _gameSettings.useGlow===false;
@@ -24475,16 +24500,16 @@ function renderColorPips(colors){
 // KEYWORD SYSTEM
 // ═══════════════════════════════════════════════════
 const KEYWORDS = {
-  burst_speed:  {label:'Burst Speed',  cls:'kw-burst',        desc:'Can attack the turn it enters the field.'},
-  guardian:     {label:'Guardian',     cls:'kw-guardian',     desc:'Opponent must attack this character before others.'},
-  breakthrough: {label:'Breakthrough', cls:'kw-breakthrough', desc:'Excess damage carries over to the Herald after destroying a blocker.'},
-  pursuit:      {label:'Pursuit',      cls:'kw-pursuit',      desc:'Deals damage first. If blocker is destroyed, takes no retaliation.'},
-  onslaught:    {label:'Onslaught',    cls:'kw-onslaught',    desc:'Can attack twice per turn.'},
-  phase:        {label:'Phase',        cls:'kw-phase',        desc:'Can only be blocked by other Phase characters.'},
-  regeneration: {label:'Regeneration', cls:'kw-regen',        desc:'Removes Marked Damage at the start of your turn.'},
-  resolve:      {label:'Resolve',      cls:'kw-resolve',      desc:'Survives lethal damage once, stays at 1 HP instead of dying.'},
-  drain:        {label:'Drain',        cls:'kw-drain',        desc:'Gain Energy equal to damage dealt.'},
-  warp:         {label:'Warp',         cls:'kw-warp',         desc:'Has an Enter-the-Field effect when played.'},
+  burst_speed:  {label:'Burst Speed',  cls:'kw-burst',        desc:'May attack the turn it enters the field.'},
+  guardian:     {label:'Guardian',     cls:'kw-guardian',     desc:"Enemy attacks must target a Guardian before other characters, and Life can't be attacked directly while one is on the field. Abilities can still target anything."},
+  breakthrough: {label:'Breakthrough', cls:'kw-breakthrough', desc:'Excess damage from destroying a blocker or target hits the enemy Herald (never below 1 Health).'},
+  pursuit:      {label:'Pursuit',      cls:'kw-pursuit',      desc:'If it destroys its target, it takes no retaliation and no counter damage from it.'},
+  onslaught:    {label:'Onslaught',    cls:'kw-onslaught',    desc:'May attack twice per turn (same character); each attack is a full combat.'},
+  phase:        {label:'Phase',        cls:'kw-phase',        desc:'Can only be blocked by Phase characters.'},
+  regeneration: {label:'Regeneration', cls:'kw-regen',        desc:'At the start of your turn it heals 3 of its marked damage.'},
+  resolve:      {label:'Resolve',      cls:'kw-resolve',      desc:'The first time it would be destroyed by damage, it survives at 1 Health instead (once per game).'},
+  drain:        {label:'Drain',        cls:'kw-drain',        desc:'Gain Energy equal to the combat damage it deals.'},
+  warp:         {label:'Warp',         cls:'kw-warp',         desc:'Has an enter-the-field effect.'},
 };
 function hasKW(fc, kw){ if(DB[fc.cid]?.keywords?.includes(kw))return true; if(Array.isArray(fc&&fc.gainedKeywords)&&fc.gainedKeywords.includes(kw)) return true;
   if(kw==='onslaught'&&fc&&fc._avState>0) return true; // 🌀 Aang: Avatar State
@@ -24495,7 +24520,7 @@ function hasKW(fc, kw){ if(DB[fc.cid]?.keywords?.includes(kw))return true; if(Ar
 const KEYWORD_PASSIVES={'Blue Tempest':'onslaught','Rage of Sparta':'burst_speed','Flash Step':'burst_speed','Spider Agility':'burst_speed','Hulk Smash':'breakthrough','Four as One':'onslaught','Four Elements Unbound':'onslaught','Muladhara':'resolve','Unbreakable':'resolve','Legendary Wall':'guardian','Worldbreaker':'breakthrough'};
 function renderKeywordBadges(fc){
   const kws=DB[fc.cid]?.keywords; if(!kws||!kws.length) return '';
-  return kws.map(kw=>{ const k=KEYWORDS[kw]; if(!k) return ''; return '<span class="kw-badge '+k.cls+'" title="'+k.desc+'">'+k.label+'</span>'; }).join('');
+  return kws.map(kw=>{ const k=KEYWORDS[kw]; if(!k) return ''; return '<span class="kw-badge '+k.cls+'"'+(kwTipsOn()?' data-kw="'+kw+'"':' title="'+k.desc+'"')+'>'+k.label+'</span>'; }).join('');
 }
 
 
@@ -28154,13 +28179,13 @@ function showMobileCardSheet(cardId){
     html+='<div style="margin-top:12px">';
     c.abilities.forEach(ab=>{
       html+='<div style="background:rgba(20,15,40,.7);border:1px solid rgba(200,164,74,.2);border-radius:8px;padding:8px 10px;margin-bottom:6px">';
-      html+='<div style="font-family:\'Cinzel\',serif;font-size:12px;color:#c8a44a;margin-bottom:3px">'+(ab.label||'Ability')+(ab.cost?' ('+ab.cost+'⚡)':'')+'</div>';
+      html+='<div data-nokw style="font-family:\'Cinzel\',serif;font-size:12px;color:#c8a44a;margin-bottom:3px">'+(ab.label||'Ability')+(ab.cost?' ('+ab.cost+'⚡)':'')+'</div>';
       html+='<div style="font-size:11px;color:#cbd5e1;line-height:1.4">'+(ab.text||'')+'</div>';
       html+='</div>';
     });
     html+='</div>';
   }
-  contentEl.innerHTML=html;
+  contentEl.innerHTML=html; kwMarkEl(contentEl);
   if(typeof mobileSheetTab==='function') mobileSheetTab('card');
   sheet.classList.add('open');
 }
@@ -28226,11 +28251,11 @@ function showHoverPreview(cardId){
   }
   if(c.keywords&&c.keywords.length&&typeof KEYWORDS!=='undefined'){
     html+='<div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:6px">';
-    c.keywords.forEach(kw=>{ if(KEYWORDS[kw])html+='<span class="kw-badge '+KEYWORDS[kw].cls+'">'+KEYWORDS[kw].label+'</span>'; });
+    c.keywords.forEach(kw=>{ if(KEYWORDS[kw])html+='<span class="kw-badge '+KEYWORDS[kw].cls+'"'+(kwTipsOn()?' data-kw="'+kw+'"':'')+'>'+KEYWORDS[kw].label+'</span>'; });
     html+='</div>';
   }
   if(_hfc&&typeof fcHoverEffectsHtml==='function') try{ html+=fcHoverEffectsHtml(_hfc); }catch(e){}
-  contentEl.innerHTML=html;
+  contentEl.innerHTML=html; kwMarkEl(contentEl); if(_kwTipAnchor&&!_kwTipAnchor.isConnected) kwTipHide();
 }
 
 // STICKY PREVIEW: moving the mouse off a card no longer wipes the Card Info panel — the last
@@ -29168,7 +29193,7 @@ function renderPhaseBar2v2(){
 function renderV2Log(){
   const el=document.getElementById('v2-log'); if(!el)return;
   const lines=(G.log||[]).slice(-6);
-  el.innerHTML=lines.map(l=>`<div>${typeof l==='string'?l:(l.text||'')}</div>`).join('');
+  el.innerHTML=lines.map(l=>`<div>${kwMarkHtml(typeof l==='string'?l:(l.m||l.text||''))}</div>`).join('');
   el.scrollTop=el.scrollHeight;
 }
 
@@ -29637,9 +29662,72 @@ function renderBanner(){
     }
   }
 }
+// 📖 KEYWORD TIPS (build 10.49, Rulk): words already printed in ability text get a dotted underline in Card Info, the
+// phone card sheet and the Battle Log; hover (tap on phones) shows the rule. Settings → Keyword Tips (default ON).
+// Keyword rules come from KEYWORDS.desc (= the Rulebook glossary); the other terms live here. Card text never changes.
+const KW_TERMS={
+  burn:     {label:'Burn',      icon:'🔥', text:"For 3 turns: 1 damage at the start of its controller's turn, 2 on the last turn."},
+  freeze:   {label:'Freeze',    icon:'❄️', text:"For 1 turn: can't attack, can't use abilities and doesn't retaliate when attacked."},
+  paralyze: {label:'Paralyze',  icon:'⚡', text:'For 2 turns: when it attacks, flip a coin. Tails, the attack fizzles.'},
+  poison:   {label:'Poison',    icon:'☠️', text:"For 3 turns: 1, then 2, then 3 damage at the start of its controller's turn."},
+  confuse:  {label:'Confusion', icon:'😵', text:'For 3 turns: when it attacks, flip a coin. Tails, it deals 2 damage to itself instead.'},
+  tap:      {label:'Tap',       icon:'',   text:"A tapped card can't attack or use activated abilities until its controller's next turn, when everything untaps. Passives, retaliation and blocking still work."},
+  rift:     {label:'Rift',      icon:'',   text:'Cards sent to the Rift are gone for good. Nothing comes back from the Rift.'},
+  transform:{label:'Transform', icon:'',   text:"Play the character's next form from your hand and pay its cost. It keeps its place and Equipment, goes to full Health and its statuses are cleansed."},
+  fusion:   {label:'Fusion',    icon:'',   text:'Two of your characters on the field combine into a Fusion card from your hand (Bond, Dance or Relic).'},
+  unstable: {label:'Unstable',  icon:'⚠️', text:"Herald and Strict Color Rules: a card with none of your Herald's colors costs +2, and a character enters with −1 Attack / −1 Health."}
+};
+// [pattern, key, flags] — keywords match capitalized only (so 'effects resolve' / 'Main Phase' stay plain); the rest any case.
+const KW_WORDS=[["Burst Speed",'burst_speed',''],["Guardians?",'guardian',''],["Breakthrough",'breakthrough',''],["Pursuit",'pursuit',''],["Onslaught",'onslaught',''],
+  ["Phase",'phase',''],["Regeneration",'regeneration',''],["Resolve",'resolve',''],["Drain",'drain',''],["Warp",'warp',''],
+  ["burn(?:s|ed)?",'burn','i'],["freez(?:e|es)|frozen",'freeze','i'],["paraly(?:ze|zes|zed|sis)",'paralyze','i'],["poison(?:s|ed)?",'poison','i'],["confus(?:ion|ed|es)",'confuse','i'],
+  ["tap(?:s|ped)?",'tap','i'],["Rift(?:ed)?",'rift',''],["transform(?:s|ed|ing|ations?)?",'transform','i'],["fusions?|fus(?:e|es|ed)",'fusion','i'],["unstable",'unstable','i']];
+let _kwRe=null; const _kwCache=new Map();
+function kwTipsOn(){ return !(typeof _gameSettings!=='undefined'&&_gameSettings&&_gameSettings.kwTips===false); }
+function kwTip(key){ const k=KEYWORDS[key]; if(k) return {label:k.label, icon:'', text:k.desc}; return KW_TERMS[key]||null; }
+function _kwRegex(){ if(_kwRe) return _kwRe;
+  _kwRe=KW_WORDS.map(([p,k,f])=>({k, re:new RegExp('(^|[^A-Za-z\\-])('+p+')(?![A-Za-z])', 'g'+f)})); return _kwRe; }
+const KW_SKIP='.kwt,.hover-preview-ability-name,.hover-preview-name,.kw-badge,[data-nokw],script,style,button,input,textarea';
+function kwMarkEl(root){
+  if(!root||!kwTipsOn()) return root;
+  const tw=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>{ const p=n.parentElement; if(p&&p.closest(KW_SKIP)) return NodeFilter.FILTER_REJECT; return /[A-Za-z]{3}/.test(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT; }});
+  const nodes=[]; while(tw.nextNode()) nodes.push(tw.currentNode);
+  nodes.forEach(n=>{ const s=n.nodeValue; const hits=[];
+    _kwRegex().forEach(({k,re})=>{ re.lastIndex=0; let m; while((m=re.exec(s))){ const st=m.index+m[1].length, en=st+m[2].length;
+      if(k==='phase'&&/(Draw|Main|Attack|End|Power|Resource|Combat|Burst)\s+$/i.test(s.slice(Math.max(0,st-12),st))) continue; // a turn phase, not the keyword
+      if(!hits.some(h=>st<h.en&&en>h.st)) hits.push({st,en,k}); } });
+    if(!hits.length) return; hits.sort((a,b)=>a.st-b.st);
+    const f=document.createDocumentFragment(); let last=0;
+    hits.forEach(h=>{ f.appendChild(document.createTextNode(s.slice(last,h.st))); const sp=document.createElement('span'); sp.className='kwt'; sp.dataset.kw=h.k; sp.textContent=s.slice(h.st,h.en); f.appendChild(sp); last=h.en; });
+    f.appendChild(document.createTextNode(s.slice(last))); n.parentNode.replaceChild(f,n); });
+  return root;
+}
+function kwMarkHtml(html){
+  if(!kwTipsOn()||!html) return html;
+  let out=_kwCache.get(html); if(out!==undefined) return out;
+  const t=document.createElement('template'); t.innerHTML=html; kwMarkEl(t.content);
+  const d=document.createElement('div'); d.appendChild(t.content); out=d.innerHTML;
+  if(_kwCache.size>600) _kwCache.clear(); _kwCache.set(html,out); return out;
+}
+let _kwTipAnchor=null, _kwPtr='mouse';
+function kwTipHide(){ const t=document.getElementById('kw-tip'); if(t) t.classList.remove('on'); _kwTipAnchor=null; }
+function kwTipShow(el){
+  if(!kwTipsOn()) return; const tip=kwTip(el.dataset.kw); if(!tip) return;
+  let t=document.getElementById('kw-tip'); if(!t){ t=document.createElement('div'); t.id='kw-tip'; t.setAttribute('role','tooltip'); document.body.appendChild(t); }
+  t.innerHTML='<b>'+(tip.icon?tip.icon+' ':'')+tip.label.toUpperCase()+'</b>'+tip.text; t.classList.add('on'); _kwTipAnchor=el;
+  const r=el.getBoundingClientRect(), tw=t.offsetWidth, th=t.offsetHeight;
+  let x=Math.min(Math.max(8,r.left), innerWidth-8-tw), y=r.bottom+6; if(y+th>innerHeight-8) y=Math.max(8,r.top-th-6);
+  t.style.left=x+'px'; t.style.top=y+'px';
+}
+document.addEventListener('pointerdown',e=>{ _kwPtr=e.pointerType||'mouse'; if(_kwTipAnchor&&!(e.target.closest&&e.target.closest('.kwt,[data-kw]'))) kwTipHide(); },true);
+document.addEventListener('mouseover',e=>{ if(_kwPtr==='touch') return; const a=e.target.closest&&e.target.closest('.kwt,[data-kw]'); if(a){ if(a!==_kwTipAnchor) kwTipShow(a); } else if(_kwTipAnchor) kwTipHide(); });
+document.addEventListener('click',e=>{ if(_kwPtr!=='touch') return; const a=e.target.closest&&e.target.closest('.kwt,[data-kw]'); if(!a) return; if(a===_kwTipAnchor) kwTipHide(); else kwTipShow(a); });
+document.addEventListener('scroll',()=>{ if(_kwTipAnchor) kwTipHide(); },true);
+
 function renderLog(){
-  const html=G.log.slice(-30).map(e=>`<div class="log-entry log-${e.t}">${e.m}</div>`).join('');
+  const html=G.log.slice(-30).map(e=>`<div class="log-entry log-${e.t}">${kwMarkHtml(e.m)}</div>`).join('');
   document.querySelectorAll('.log-box').forEach(el=>{ el.innerHTML=html; el.scrollTop=el.scrollHeight; });
+  if(_kwTipAnchor&&!_kwTipAnchor.isConnected) kwTipHide();
 }
 
 // Get a player's display name for logs/UI (real name for humans, 'AI' for AI)
@@ -30400,7 +30488,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.48';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.49';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -39121,6 +39209,11 @@ window.addEventListener('load',async()=>{
           <span class="stv-thumb" data-prev="menutips"></span>
           <div><div class="settings-label">Menu Tips</div><div class="settings-label-desc">A short tip from Virora the first time you open each screen (for newer players). The Court Tour is under OPTIONS → Tutorial.</div></div>
           <div class="settings-toggle on" id="set-menutips" onclick="toggleSetting('menutips')"><div class="settings-toggle-knob"></div></div>
+        </div>
+        <div class="settings-row stv-trow">
+          <span class="stv-thumb" data-prev="kwtips"></span>
+          <div><div class="settings-label">Keyword Tips</div><div class="settings-label-desc">Keywords like Freeze or Guardian are underlined in Card Info and the Battle Log. Hover one (tap on a phone) to see what it does.</div></div>
+          <div class="settings-toggle on" id="set-kwtips" onclick="toggleSetting('kwtips')"><div class="settings-toggle-knob"></div></div>
         </div>
        </div>
        <div class="settings-section">
