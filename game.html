@@ -7461,6 +7461,12 @@ body.he-shake{ animation:he-shake .45s linear 1; }
 .mke-today{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px;margin-top:8px}
 .mke-today div{background:rgba(255,255,255,.05);border-radius:6px;padding:5px 8px;font-size:12px}
 .mke-today div small{color:#ffe31a;font-weight:700;margin-left:4px}
+.mke-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;margin-bottom:8px}
+.mke-card{display:flex;align-items:center;gap:9px;padding:6px 8px 6px 6px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);min-width:0}
+.mke-card img{width:40px;height:56px;object-fit:cover;border-radius:4px;flex:none;background:#140f2a}
+.mke-card .t{display:flex;flex-direction:column;min-width:0;flex:1}
+.mke-card .t b{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mke-card .t small{font-size:10px;color:#a9a1cf}
+.mke-cacts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
 /* ── narrow / short landscape: keep the showcase readable ── */
 @media (max-height:560px) and (min-aspect-ratio:4/5){.mk{--top:max(44px,calc(var(--u)*4.4))}}
 /* ── phones in portrait: chips across the top, two-column tiles, the showcase becomes a bottom sheet ── */
@@ -7963,6 +7969,12 @@ body.po2-open #fullcard-modal{z-index:400}
 .b3e-f input,.b3e-f select{background:#0d1330;border:1px solid rgba(255,255,255,.16);color:#fff;border-radius:5px;padding:6px 8px;font-size:12px;min-width:0;width:100%}
 .b3e-f input[type=color]{padding:2px;height:30px}
 .b3e-ck{display:flex;align-items:center;gap:6px;font-size:12px;margin:4px 0 8px}
+.b3e-pick{display:flex;align-items:center;gap:8px;width:100%;min-width:0;text-align:left;background:#0d1330;border:1px solid rgba(232,197,112,.45);color:#fff;border-radius:6px;padding:4px 8px 4px 4px;cursor:pointer}
+.b3e-pick:hover{border-color:#e8c570;box-shadow:0 0 10px rgba(232,197,112,.25)}
+.b3e-pick img{width:30px;height:42px;object-fit:cover;border-radius:3px;flex:none;background:#140f2a}
+.b3e-pick .t{display:flex;flex-direction:column;min-width:0;flex:1}.b3e-pick .t b,.b3e-pick .t small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.b3e-pick .t b{font-size:12px}.b3e-pick .t small{font-size:10px;color:#9ca3af}
+.b3e-pick i{font-style:normal;font-size:10px;font-weight:800;letter-spacing:.08em;color:#e8c570;flex:none}
 .b3e-cols{display:grid;grid-template-columns:1fr 1fr;gap:0 8px}
 .b3e-pages{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
 .b3e-pt{flex:none;width:96px;height:118px;position:relative;border:none;border-radius:8px;overflow:hidden;cursor:pointer;background:linear-gradient(180deg,var(--c2,#334),var(--c1,#112));color:#fff;padding:0}
@@ -9216,6 +9228,11 @@ body.use-glow #game-screen .hand-card.playable,body.use-glow #game-screen-2v2 .h
 .gcp-qty b{font-family:'Orbitron',sans-serif;color:#f0d58a;min-width:30px;text-align:center}
 .gcp-added{display:flex;flex-direction:column;gap:4px}
 .gc-item img.th{width:24px;height:33px;object-fit:cover;border-radius:3px;flex:none}
+/* admin card picker (build 10.51) — reuses the gift picker's look */
+.acp .acp-sets .dk-pill b{font-family:'Share Tech Mono',monospace;font-size:9px;opacity:.7;margin-left:3px}
+.acp .acp-hint{margin-top:-4px}
+.acp .gcp-card.acp-in{opacity:.55}
+.acp .gcp-side .dk-btn[disabled]{opacity:.5;cursor:default}
 @media (max-width:820px){ .gcp{padding:12px} .gcp-body{grid-template-columns:1fr;grid-template-rows:1fr auto} .gcp-side{max-height:50vh} .gcp-side img.big{max-width:150px;align-self:center} .gcp-grid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))} }
 </style>
 <style id="ps3-css">
@@ -9807,7 +9824,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.50 · Draft & Sealed</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.51 · New cards + card picker</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10895,8 +10912,36 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.47'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.51'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.51', date:'2026-11-23',
+    rules:["GAME_BUILD '10.51' (new cards = new rules; online needs both sides on 10.51)."],
+    cards:[{id:'elagost_bse', set:'base_set', number:'043/150', rarity:'rare', scan:'Sets/BASE SET/043-150 (Elagost).png', newAbilities:["Prince's Pride","Heir's Flare"],
+        note:"Elagost · Character (type 'char', no charLine) · color 'red' · Rare · cost 5 · 6 ATK / 5 HP · subtypes Royal, Saiyan · race 'Royal Saiyan' · sym ELA."},
+      {id:'saiyan_mage_bse', set:'base_set', number:'048/150', rarity:'uncommon', scan:'Sets/BASE SET/048-150 (Saiyan Mage).png', newAbilities:['Nebula Snare','Arcane Ascension'],
+        note:"Saiyan Mage · Character · color 'purple' · Uncommon · cost 4 · 3 ATK / 4 HP · subtypes Saiyan, Mage · race 'Saiyan' · sym MAGE · flavor quote."},
+      {id:'saiyan_pup_bse', set:'base_set', number:'053/150', rarity:'common', scan:'Sets/BASE SET/053-150 (Saiyan Pup).png', newAbilities:['Zoomies','Fetch'],
+        note:"Saiyan Pup · Character · color 'yellow' · Common · cost 2 · 2 ATK / 1 HP · subtypes Beast, Saiyan · race 'Beast Saiyan' · keywords ['burst_speed'] · sym PUP · flavor."},
+      {id:'twin_tornadoes_bse', set:'base_set', number:'088/150', rarity:'common', scan:'Sets/BASE SET/088-150 (Twin Tornadoes).png', newAbilities:['Rending Gale'],
+        note:"Twin Tornadoes · Instant · color 'red' · Common · cost 3 · sym 🌪️ · a targeted instant (HAND_CHOICE_INSTANTS: paid when the first target is picked)."},
+      {id:'sage_mode_virora_shop', set:'shop', number:'SHOP', rarity:'legend', scan:'Sets/SHOP CARDS/SHOP NOVEMBER 2026/SHOP (Sage Mode Virora Surface Technique).png', newAbilities:['Sage Stillness','Surface Palm','Mirror of Nature'],
+        note:"Sage Mode Virora (Surface Technique) · standalone Character (type 'char', charLine 'sage_mode_virora_shop', charName 'Virora', nextForms []) · color 'purple' · Legend · cost 7 · 7 ATK / 6 HP · subtypes Royal, Saiyan, Celestial Sage · race 'Royal Saiyan' · sym SMV · printed set code SHP, number SHOP · flavor quote."}],
+    abilities:["PRINCE'S PRIDE (Elagost, passive recalc): +1 Attack for each OTHER Royal Saiyan its controller has on the field (isRoyalSaiyan: Saiyan + subtype 'Royal' or race containing Royal), max +3. Heralds don't count.",
+      "HEIR'S FLARE (Elagost, activated): 3 Energy (Red), every other turn — abilityUsed.heirs_flare_turn, the Glacial Lens / Air Blast cooldown (G.turn − last < 2 = wait). Needs at least one opposing character. Pick a target (openEnemyTargetPicker: shields/tolls apply) → dealDamage 2, then 1 damage to EACH OTHER opposing character (seqAreaHits; not targeted, so Drunken Stance / Frostbloom Ward don't stop the 1; 2v2: both enemy fields). Paid → doesn't tap. CPU: target = a 2-damage kill (best value) else the strongest attacker; score 12 + 4 per enemy + 14 if it kills the target + 10 per 1-damage kill.",
+      "NEBULA SNARE (Saiyan Mage, onEntry): flipCoinFor (full roll panel). Tails = nothing. Heads = Confuse a target opposing character (applyStatus 'confuse', the normal 3 turns; Vortex Shield / Spirit Ward still block it). A person picks (openEnemyTargetPicker); the CPU picks the strongest attacker that isn't Confused, protected or Vortex Shielded. No opposing characters = no flip.",
+      "ARCANE ASCENSION (Saiyan Mage, passive): the FIRST transformation a player PLAYS from hand each turn costs 1 less for EACH Arcane Ascension on their field (two Mages = 2 less), min 0, not fusions. In transformCostFor right after Royal Clarity (so it shows in the transform menu and the CPU sees it). doTransform sets pl._tfPlayTurn = G.turn for every transformation played from hand (handUid), Mage or not — a second transformation that turn pays full price, and so does one played after the Mage arrives if one was already played. Free transformations not from hand (Prism Shift etc.) don't use it up.",
+      "ZOOMIES (Saiyan Pup) = Burst Speed (keyword burst_speed). FETCH (triggered): triggerFetch(afc) in the shared on-attack hook triggerFlameSpiral — when it attacks, if its controller has ANOTHER Saiyan character on the field (isSaiyanChar), draw 1.",
+      "RENDING GALE (Twin Tornadoes, instant): pick the first opposing character (that's when it's paid: commitPlay), then a SECOND one or Skip (seqChoose; closing = Skip; protected characters aren't offered; a toll target asks for its 2⚡ like a picker). Both take 2 together (seqAreaHits, the card as the fx source). CPU: targets 2-damage kills first, then the most valuable; score 30 + 5 per target (max 2) + 16 per kill (max 2).",
+      "SAGE STILLNESS (Sage Mode Virora): in the owner's start-of-turn effects — if fc.attackedLastTurn is false (set at the end of each of the owner's turns), +1 Energy (White: energy += 1, colorEnergy unchanged). A card that just arrived counts as not having attacked.",
+      "SURFACE PALM (Sage Mode Virora, activated): 3 Energy, once per turn (generic gate). 3 damage to a target opposing character (dealDamage), then if it survived, −2 Attack until the end of YOUR next turn (applyTimedCut, label 'Surface Palm' — the Sapphire Nova mechanism; no draw).",
+      "MIRROR OF NATURE (Sage Mode Virora, activated): 5 Energy (Purple), once per game. Options = every activated ability of ANOTHER character on any field (yours, opponents', 2v2 allies) whose limit isn't once_per_game (and whose text doesn't say Once per game); Locations and Heralds aren't characters; one row per card+ability. A person picks from a list (seqChoose; Skip = nothing spent). The 5 is paid on the pick and Mirror is marked used; then the copied ability runs through the normal ability code (_activateAbilityCore) with SAGE MODE VIRORA as its source ('this card' = her, targets are hers; its once-per-turn / cooldown marks go on her). Its Energy cost is skipped: G._freeAbility makes spendEnergyAbility a no-op, and a temporary cushion (+800 Energy, +99 of each color) gets it past 'not enough Energy' checks and is removed right after. If the copied ability can't be used right now (cooldown, no target), or its target picker is closed, Mirror is refunded (5 back, not used). CPU: scores each option with aiScoreAbility at cost 0 and copies the best if it scores 22+ (Mirror's score = that − 6)."],
+    screens:["ADMIN CARD PICKER (Rulk: no more typing card ids). acpOpen(opts) — a full-screen picker in the Gift Center picker's look: SET chips with counts (All sets / every set / No set), type pills, rarity and color dropdowns, search; card images; click = preview on the right, CHOOSE (or double-click). opts.stay keeps it open to add several (✓ marks cards already in the list).",
+      "BATTLE PASS EDITOR: a Card reward shows the chosen card (thumbnail, name, number · set) as a button → the picker (opens on that card's set). The typed 'Card id' box and its datalist are gone; the Finish dropdown stays.",
+      "MARKET: new section SHOP CARDS (id 'shopcards', after Daily Singles; a saved section order gets it right after Daily Singles via mkFillOrder). Always there (no rotation). Cards = shop_config.shopCards if set, else every card in the Shop set. Priced like Daily Singles (singlesPrice by rarity — the server prices singles the same way, kind 'card'); tiles say 'SHOP CARD' and carry a SHOP tag for Shop-set cards.",
+      "MARKET EDITOR → new CARDS tab: Shop Cards (list with thumbnails + prices, + ADD CARD → picker, ✕ removes; 'Automatic' until you change it, USE AUTOMATIC goes back), Daily Singles — always in (shop_config.singlesPinned: shown every day, the rest of the slots rotate), Daily Singles — never in (shop_config.singlesHidden). The picker only shows cards the server can sell as singles (mkShopOk = econSinglesPool's rule)."],
+    data:["NEW SET {id:'shop', name:'Shop'} in DEFAULT_CARD_SETS and added to a saved card_sets list that lacks it (like 'hoc'). Shop cards are NOT in packs (_packPool / _heraldPool / econPackPool / econHeraldPool / econBuildPacks skip 'shop', so no Shop packs), not craftable (craftCheck: 'Shop cards are sold in the Market.'; Forge hides the set), not in Draft & Sealed (ltSets skips it), not in Daily Singles (mkSinglesPool skips it). They are NOT exclusive: they show in the collection and can turn up in random CPU decks like promos.",
+      "Scans in the Scans repo: Sets/BASE SET/043-150 (Elagost).png, 048-150 (Saiyan Mage).png, 053-150 (Saiyan Pup).png, 088-150 (Twin Tornadoes).png; Sets/SHOP CARDS/SHOP NOVEMBER 2026/SHOP (Sage Mode Virora Surface Technique).png.",
+      "shop_config gains shopCards (array or unset), singlesPinned [], singlesHidden []. Admin: republish the economy catalog so the server knows the new cards (Sage Mode Virora gets the 'sold as a single' flag)."] },
   { build:'10.50', date:'2026-11-23',
     rules:["No rules change: GAME_BUILD stays '10.47'. A new SOLO mode, nothing online."],
     screens:["DRAFT & SEALED (Rulk) — limited play vs the CPU. PLAY → Single Player → 'Draft & Sealed' (sub 'BUILD FROM PACKS'), right after Trial of Courts. SWITCH feature_flags.limited (GLOBAL, default OFF, admins always have it; Admin → Game switches → 🃏 Draft & Sealed). It reuses the Trial of Courts look (tr-panel / tr-opt / tr-go).",
@@ -11988,6 +12033,11 @@ const DEFAULTS={
   remmel_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/137-150%20(Remmel).png?v=2',
   vuruna_ssb_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/034-150%20(Vuruna%20SSB).png',
   theia_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/057-150%20(Theia).png',
+  elagost_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/043-150%20(Elagost).png',
+  saiyan_mage_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/048-150%20(Saiyan%20Mage).png',
+  saiyan_pup_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/053-150%20(Saiyan%20Pup).png',
+  twin_tornadoes_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/088-150%20(Twin%20Tornadoes).png',
+  sage_mode_virora_shop: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/SHOP%20CARDS/SHOP%20NOVEMBER%202026/SHOP%20(Sage%20Mode%20Virora%20Surface%20Technique).png',
   crimson_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/143-150%20(Crimson).png',
   praxus_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/148-150%20(Praxus).png',
   tyler_ssbe_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/021-150%20(Tyler%20SSBE).png',
@@ -12503,6 +12553,34 @@ const DB={
   // ── THEIA (BSE 057/150) — build 10.13. Prime, Red. The Power of Primes: +2 Attack while you control another Prime.
   theia_bse:{id:'theia_bse',rarity:'common',name:'Theia',color:'red',charName:'Theia',subtypes:['Prime'],type:'char',race:'Prime',cost:3,atk:3,hp:4,sym:'THEIA',setId:'base_set',cardNumber:'057/150',keywords:[],nextForms:[],
     abilities:[{label:'The Power of Primes',type:'passive',cost:0,text:'While you control another Prime character, this card gets +2 Attack.'}],transforms:[]},
+  // ── ELAGOST (BSE 043/150) — build 10.51. Royal Saiyan, Red Rare. Prince's Pride: +1 Attack per other Royal Saiyan you control
+  //    (max +3, passive recalc). Heir's Flare: 3⚡ every other turn (abilityUsed.heirs_flare_turn) — 2 to a target, 1 to each other foe.
+  elagost_bse:{id:'elagost_bse',rarity:'rare',name:'Elagost',color:'red',charName:'Elagost',subtypes:['Royal','Saiyan'],type:'char',race:'Royal Saiyan',cost:5,atk:6,hp:5,sym:'ELA',setId:'base_set',cardNumber:'043/150',keywords:[],nextForms:[],
+    abilities:[{label:"Prince's Pride",type:'passive',cost:0,text:'This card gets +1 Attack for each other Royal Saiyan you control (up to +3).'},
+      {label:"Heir's Flare",type:'activated',cost:3,limit:'every_other_turn',text:'Pay 3 Energy: Deal 2 damage to target opposing character and 1 damage to each other opposing character. (Every other turn)'}],transforms:[]},
+  // ── SAIYAN MAGE (BSE 048/150) — build 10.51. Purple Uncommon. Nebula Snare: on entry, coin flip → heads: Confuse a target foe.
+  //    Arcane Ascension: the first transformation its controller plays each turn costs 1 less (transformCostFor; pl._tfPlayTurn).
+  saiyan_mage_bse:{id:'saiyan_mage_bse',rarity:'uncommon',name:'Saiyan Mage',color:'purple',charName:'Saiyan Mage',subtypes:['Saiyan','Mage'],type:'char',race:'Saiyan',cost:4,atk:3,hp:4,sym:'MAGE',setId:'base_set',cardNumber:'048/150',keywords:[],nextForms:[],
+    flavor:'Every Saiyan fights with their fists. I fight with the stars.',
+    abilities:[{label:'Nebula Snare',type:'triggered',cost:0,text:'When this card enters your field, flip a coin. If heads, target opposing character becomes Confused.'},
+      {label:'Arcane Ascension',type:'passive',cost:0,text:'The first transformation you play each turn costs 1 less Energy.'}],transforms:[]},
+  // ── SAIYAN PUP (BSE 053/150) — build 10.51. Yellow Common. Zoomies = Burst Speed. Fetch: when it attacks, if you control another
+  //    Saiyan character, draw 1 (triggerFetch from the shared on-attack hook triggerFlameSpiral).
+  saiyan_pup_bse:{id:'saiyan_pup_bse',rarity:'common',name:'Saiyan Pup',color:'yellow',charName:'Saiyan Pup',subtypes:['Beast','Saiyan'],type:'char',race:'Beast Saiyan',cost:2,atk:2,hp:1,sym:'PUP',setId:'base_set',cardNumber:'053/150',keywords:['burst_speed'],nextForms:[],
+    flavor:"Planet Sadala's friendliest K9. First to every fight, last to stop wagging.",
+    abilities:[{label:'Zoomies',type:'passive',cost:0,text:'Burst Speed (this card can attack the turn it enters your field).'},
+      {label:'Fetch',type:'triggered',cost:0,text:'When this card attacks, if you control another Saiyan character, draw 1 card.'}],transforms:[]},
+  // ── TWIN TORNADOES (BSE 088/150) — build 10.51. Instant, Red Common. Rending Gale: 2 damage to each of up to two target foes.
+  twin_tornadoes_bse:{id:'twin_tornadoes_bse',rarity:'common',name:'Twin Tornadoes',color:'red',charName:'Twin Tornadoes',subtypes:['Instant'],type:'instant',race:'Instant',cost:3,atk:0,hp:0,sym:'🌪️',setId:'base_set',cardNumber:'088/150',nextForms:[],
+    abilities:[{label:'Rending Gale',type:'instant',cost:0,text:'Deal 2 damage to each of up to two target opposing characters.'}],transforms:[]},
+  // ── SAGE MODE VIRORA (SURFACE TECHNIQUE) — SHOP set (printed SHOP · SHP), build 10.51. Purple Legend, standalone character.
+  //    Sage Stillness (start of turn: didn't attack last turn → +1 Energy) · Surface Palm (3⚡ once per turn: 3 damage, −2 Attack
+  //    until the end of your next turn) · Mirror of Nature (5⚡ once per game: use another character's activated ability for free).
+  sage_mode_virora_shop:{id:'sage_mode_virora_shop',rarity:'legend',name:'Sage Mode Virora (Surface Technique)',color:'purple',charName:'Virora',charLine:'sage_mode_virora_shop',subtypes:['Royal','Saiyan','Celestial Sage'],type:'char',race:'Royal Saiyan',cost:7,atk:7,hp:6,sym:'SMV',setId:'shop',cardNumber:'SHOP',keywords:[],nextForms:[],
+    flavor:"So this is what it feels like... nature's Ki and the Surfacer's power, flowing through me as one.",
+    abilities:[{label:'Sage Stillness',type:'passive',cost:0,text:"At the start of your turn, if this card didn't attack during your last turn, gain 1 Energy."},
+      {label:'Surface Palm',type:'activated',cost:3,limit:'once_per_turn',text:'Pay 3 Energy: Deal 3 damage to target opposing character. It gets −2 Attack until the end of your next turn. (Once per turn)'},
+      {label:'Mirror of Nature',type:'activated',cost:5,limit:'once_per_game',text:"Pay 5 Energy: Choose another character's activated ability that isn't Once per game. Use it now without paying its Energy cost. (Once per game)"}],transforms:[]},
   // ── CRIMSON (BSE 143/150) — build 10.13. Mortal Warrior, Red (the set plan said Yellow; the cost circle is red).
   //    Killing Intent: +2 to any damage it deals to a character that already has damage on it.
   //    Crimson Execution: once every 2 turns, when its attack destroys a character, it may attack again this turn.
@@ -14108,6 +14186,13 @@ function triggerGodfireSpillover(killerFc, killerP, victimP, victimUid){
 // of your characters that hasn't attacked this turn may attack (G.bonusAttackers +1 — reset every turn). Not spent when
 // no other character of yours could attack.
 function heavenlyRelayReady(fc){ const l=fc&&fc.abilityUsed&&fc.abilityUsed.relay_turn; return l==null||(G.turn-l)>=2; }
+// SAIYAN PUP — Fetch (build 10.51): when it attacks, if its controller has another Saiyan character on the field, draw 1.
+function triggerFetch(afc){
+  if(!afc||!G||!hasAbilityLabel(afc,'Fetch')) return;
+  const p=[1,2,3,4].find(x=>G.players[x]&&G.players[x].field.some(f=>f.uid===afc.uid)); if(!p) return;
+  if(!G.players[p].field.some(f=>f.uid!==afc.uid&&isSaiyanChar(DB[f.cid]))) return;
+  drawCard(p); log(`🐾 Fetch: ${DB[afc.cid]?.name} brings one back — ${pname(p)} draws 1.`,'gain');
+}
 function triggerHeavenlyRelay(afc){
   if(!afc||!hasAbilityLabel(afc,'Heavenly Relay')||!heavenlyRelayReady(afc)) return;
   const p=[1,2,3,4].find(x=>G.players[x]&&G.players[x].field.some(f=>f.uid===afc.uid)); if(!p||p!==G.activePlayer) return;
@@ -14337,6 +14422,7 @@ function triggerFlameSpiral(afc){
   triggerCrimsonRampage(afc);
   triggerHeavenlyRelay(afc);
   triggerVoidGate(afc);
+  triggerFetch(afc);
   if(!afc||!hasAbilityLabel(afc,'Flame Spiral')) return;
   if(afc._flame){ afc._flame.ends=2; return; }
   afc._flame={amt:2,ends:2}; afc.currentATK=(afc.currentATK||0)+2; afc.atkBonus=(afc.atkBonus||0)+2;
@@ -14863,6 +14949,10 @@ function recalcPassives(){
       }
       // IVAN (WCA) — Locker Room Law: Ivan himself gets +1 ATK for each OTHER
       // character on his controller's field. Scales up/down automatically.
+      // ELAGOST — Prince's Pride: +1 Attack for each OTHER Royal Saiyan its controller has on the field, up to +3.
+      if(abils.some(a=>a.label==="Prince's Pride")){
+        const _rs=Math.min(3,pl.field.filter(f=>f.uid!==fc.uid&&isRoyalSaiyan(DB[f.cid])).length); if(_rs) add(_rs,0,fc.cid,"Prince's Pride",fc.uid);
+      }
       if(abils.some(a=>a.label==='Locker Room Law')){
         add(pl.field.filter(f=>isChar(DB[f.cid])&&f.uid!==fc.uid).length,0,fc.cid,'Locker Room Law',fc.uid);
       }
@@ -18413,6 +18503,25 @@ function onHandClick(p,uid,fc){
       else { const t=(typeof aiPickEnemyTarget==='function')?aiPickEnemyTarget(enemies,{desc:'2 damage'}):null; strike((t||enemies[Math.floor(Math.random()*enemies.length)]).uid); }
       return;
     }
+    // TWIN TORNADOES (build 10.51): Rending Gale — 2 damage to each of up to two target opposing characters. Pick one (that's when
+    // it's paid), then a second one or Skip; both are hit together.
+    if(c.id==='twin_tornadoes_bse'){
+      const foes=()=>{ const o=[]; hocEnemies(p).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])&&!DB[f.cid]?.isToken) o.push({fc:f,p:op}); })); return o; };
+      if(!foes().length){ log('Twin Tornadoes: no opposing characters to hit.','dmg'); return; }
+      const src={cid:c.id,label:'Rending Gale',uid:fco.uid}, ok2=f=>!hasDrunkenStance(f)&&!spaceShielded(f);
+      const blow=(list)=>{ log(`🌪️ ${c.name}: Rending Gale hits ${list.map(x=>DB[x.fc.cid]?.name).join(' and ')} for 2!`,'dmg');
+        seqAreaHits(list.map(x=>({p:x.p,uid:x.fc.uid})),2,src,{after:()=>{ if(typeof recalcPassives==='function') recalcPassives(); }}); renderAll(); };
+      const first=(uid)=>{ const a=foes().find(x=>x.fc.uid===uid); if(!a) return; if(!commitPlay()){ renderAll(); return; } pl.discard.push(c.id); closeAllModals();
+        const rest=foes().filter(x=>x.fc.uid!==uid&&ok2(x.fc));
+        const second=(u2)=>{ const b=rest.find(x=>x.fc.uid===u2); if(b&&hasAbilityToll(b.fc)&&!canPayEvasionToll(p,b.fc)){ blow([a]); return; } blow(b?[a,b]:[a]); };
+        if(!rest.length){ blow([a]); return; }
+        if(seqIsLocalHuman(p)&&!G._aiAuto) seqChoose('🌪️ Twin Tornadoes','Choose a second opposing character to take 2 damage (or Skip).',rest.map(x=>({label:DB[x.fc.cid].name,sub:'❤️'+(x.fc.currentHP||0)+' · ⚔'+(x.fc.currentATK||0),val:x.fc.uid})),(u)=>second(u),()=>blow([a]));
+        else { const t=aiTornadoPick(rest.map(x=>x.fc)); second(t&&t.uid); } };
+      if(seqIsLocalHuman(p)&&!G._aiAuto) openEnemyTargetPicker(foes().map(x=>x.fc), first, {sourcePlayer:p, sourceUid:fco.uid, title:'🌪️ Twin Tornadoes', desc:'Deal 2 damage to an opposing character — then you can pick a second one.'});
+      else { const pool=foes().map(x=>x.fc).filter(f=>ok2(f)&&(!hasAbilityToll(f)||G.players[p].energy>=c.cost+2)); const t=aiTornadoPick(pool);
+        if(!t){ log('AI: no valid target for '+c.name+'.','info'); return; } if(hasAbilityToll(t)&&!canPayEvasionToll(p,t)) return; first(t.uid); }
+      return;
+    }
     // WINTER'S APPROACH (build 10.20): Freeze a target opposing character (until the end of their next turn); Harvest: up to two.
     if(c.id==='winters_approach_hoc'){
       const foes=()=>{ const o=[]; hocEnemies(p).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])&&!statusActive(f,'freeze')&&!hasDrunkenStance(f)) o.push({fc:f,p:op}); })); return o; };
@@ -18470,7 +18579,8 @@ function onHandClick(p,uid,fc){
 }
 
 // Instants that ask for a target before they resolve (charge on confirm in onHandClick).
-const HAND_CHOICE_INSTANTS=new Set(['winters_approach_hoc','saiyan_blood','zephyranth_fruit_bse','vermynth_fruit_bse','royal_matcha_bse','virora_matcha_bse','virora_beer_bse','glacynth_fruit_bse','pink_kamehameha_bse','blade_of_udun_bse','past_perfect_bse']);
+function aiTornadoPick(list){ const k=(list||[]).filter(f=>(f.currentHP||0)<=Math.max(0,2-(f.nullify||0))).sort((a,b)=>aiFcValue(b)-aiFcValue(a)); return k[0]||(list||[]).slice().sort((a,b)=>aiFcValue(b)-aiFcValue(a))[0]||null; }
+const HAND_CHOICE_INSTANTS=new Set(['twin_tornadoes_bse','winters_approach_hoc','saiyan_blood','zephyranth_fruit_bse','vermynth_fruit_bse','royal_matcha_bse','virora_matcha_bse','virora_beer_bse','glacynth_fruit_bse','pink_kamehameha_bse','blade_of_udun_bse','past_perfect_bse']);
 // GENERIC ENEMY TARGET PICKER — pick one enemy character, run callback(uid)
 function openEnemyTargetPicker(targets, callback, opts){
   opts = opts || {};
@@ -19041,6 +19151,26 @@ function onEntry(p,fc){
       else { freeze(enemies[Math.floor(Math.random()*enemies.length)].uid); }
     } else { log(_lbl+': no enemy characters to target.','info'); }
   }
+  // ── SAIYAN MAGE: Nebula Snare (build 10.51) — on entry, flip a coin; heads: target opposing character becomes Confused.
+  if(hasAbilityLabel(fc,'Nebula Snare')){
+    const _p=p, _src=fc;
+    const foes=()=>{ const o=[]; hocEnemies(_p).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])&&!DB[f.cid]?.isToken) o.push({fc:f,p:op}); })); return o; };
+    if(!foes().length) log('🌌 Nebula Snare: no opposing characters.','info');
+    else flipCoinFor({title:'Nebula Snare — '+(c.name||'Saiyan Mage'), desc:'Heads: target opposing character becomes Confused.'},(heads)=>{
+      if(!G||G.gameOver) return;
+      if(!heads){ log('🌌 Nebula Snare: TAILS — nothing happens.','info'); renderAll(); return; }
+      const list=foes(); if(!list.length){ log('🌌 Nebula Snare: no opposing characters left.','info'); renderAll(); return; }
+      const conf=(uid)=>{ const t=foes().find(x=>x.fc.uid===uid); if(!t) return;
+        const _fx=(typeof fxPush==='function')?fxPush(_src.cid,'Nebula Snare',_src.uid):null;
+        try{ if(applyStatus(t.fc,'confuse',(STATUS_META.confuse&&STATUS_META.confuse.dur)||3)){ if(typeof showStatusFx==='function') try{ showStatusFx(uid,'confuse'); }catch(e){} log(`🌌 Nebula Snare: ${DB[t.fc.cid].name} is Confused!`,'dmg'); } }
+        finally{ if(typeof fxPop==='function') fxPop(_fx); }
+        renderAll(); };
+      if(seqIsLocalHuman(_p)&&!G._aiAuto) openEnemyTargetPicker(list.map(x=>x.fc),conf,{sourcePlayer:_p,title:'🌌 Nebula Snare',desc:'Choose an opposing character to Confuse.'});
+      else { const pool=list.map(x=>x.fc).filter(f=>!hasDrunkenStance(f)&&!spaceShielded(f)&&!statusActive(f,'confuse')&&!hasAbilityLabel(f,'Vortex Shield')&&(!hasAbilityToll(f)||G.players[_p].energy>=2));
+        const t=pool.slice().sort((a,b)=>effPower(b)-effPower(a))[0]; if(!t){ log('🌌 Nebula Snare: no opposing character worth Confusing.','info'); renderAll(); return; }
+        if(hasAbilityToll(t)&&!canPayEvasionToll(_p,t)) return; conf(t.uid); }
+    });
+  }
   // (Card-played / favorites tracking lives in trackCardPlayed, called at each
   // play site, since locations/equipment/instants never reach onEntry.)
   if(c.id==='archon'){drawCard(p);drawCard(p);log('Archon: draw 2!','gain');
@@ -19398,6 +19528,7 @@ function transformCostFor(p,fc,tid){
   if(fc.cid==='lazarus'&&fc.attachments?.includes('saiyan_blood')) cost=0;
   else if(!(tc.fusion||fc.fusion)) cost=effectiveTransformCost(p,cost); // fusion forms pay their printed cost
   cost=royalClarityCost(p,fc,tc,cost);
+  { const _aa=arcaneAscensionN(p,fc,tc); if(_aa) cost=Math.max(0,cost-_aa); } // 🔮 Saiyan Mage: the first transformation played this turn
   if(hasAbilityLabel(fc,'Feral Awakening')&&tc.charLine&&tc.charLine===DB[fc.cid]?.charLine&&String(tc.formTier||'').toLowerCase()==='ssbe') cost=Math.max(0,cost-2); // 🐾 Elise (SSG): her SSBE costs 2 less
   const steps=tfSkipSteps(fc.cid,tid), toll=steps.reduce((a,x)=>a+x.price,0);
   const _uns=(typeof isOffColor==='function'&&isOffColor(p,tid))?2:0; cost+=_uns; // 🎨 Unstable: an off-color form costs +2
@@ -19520,6 +19651,9 @@ function royalClarityApplies(p, fc, tc){
   if(!isRoyalSaiyanCard(DB[fc.cid])) return false;
   return pl.field.some(f=>hasAbilityLabel(f,'Royal Clarity'));
 }
+// ARCANE ASCENSION (Saiyan Mage, build 10.51): the first transformation a player PLAYS (a form card from hand) each turn costs 1 less
+// for each Arcane Ascension on their field (min 0; not fusions). doTransform records pl._tfPlayTurn = G.turn for every one played.
+function arcaneAscensionN(p, fc, tc){ const pl=G.players[p]; if(!pl||!tc||!fc||tc.fusion||fc.fusion||pl._tfPlayTurn===G.turn) return 0; return pl.field.filter(f=>hasAbilityLabel(f,'Arcane Ascension')).length; }
 function royalClarityCost(p, fc, tc, cost){ return (cost>1 && royalClarityApplies(p,fc,tc)) ? Math.max(1,cost-2) : cost; }
 // Calm Clarity & similar: returns the effective transform cost for a player's
 // transformation, applying any field effects that override it.
@@ -19806,6 +19940,7 @@ function doTransform(fieldUid,newCid,handUid,cost,ownerOverride){
   const newVariant=_handFc?(_handFc.variant||'none'):(fc.variant||'none');
   // Remove from hand — FIX: no duplicates
   pl.hand=pl.hand.filter(f=>f.uid!==handUid);
+  if(_handFc){ const _aa=arcaneAscensionN(owner,fc,nc); if(_aa) log(`🔮 Arcane Ascension: the first transformation this turn costs ${_aa} less.`,'gain'); pl._tfPlayTurn=G.turn; }
   if(royalClarityApplies(owner, fc, nc)){ pl.royalClarityTurn=G.turn; if(actualCost<nc.cost) log('👑 Royal Clarity: this transformation costs 2 less.','gain'); }
   spendEnergy(owner, actualCost, DB[newCid]?.color||null);
   log(`${DB[fc.cid].name} → ${nc.name}!`,'gain');
@@ -19995,6 +20130,50 @@ function activateAbility(fc,abl){
       else if(!want && fc.tapped){ fc.tapped=false; if(typeof renderAll==='function') renderAll(); }
     }
   }
+}
+// MIRROR OF NATURE (build 10.51) helpers. Options = activated abilities of OTHER characters on any field that aren't Once per game.
+function mirrorOptions(fc, ap){
+  const out=[], seen=new Set(), opps=_fusionOpps(ap);
+  [1,2,3,4].forEach(pp=>{ const P=G.players[pp]; if(!P||!P.field) return;
+    P.field.forEach(f=>{ if(f.uid===fc.uid) return; const d=DB[f.cid]; if(!d||!isChar(d)) return;
+      (d.abilities||[]).forEach(a=>{ if(!a||a.type!=='activated'||a.limit==='once_per_game'||a.limit==='once'||/once per game/i.test(a.text||'')||a.label==='Mirror of Nature') return;
+        const k=f.cid+'|'+a.label; if(seen.has(k)) return; seen.add(k);
+        out.push({fc:f,p:pp,abl:a,side:pp===ap?'Yours':(opps.includes(pp)?'Opponent':'Ally')}); }); }); });
+  return out;
+}
+function aiMirrorPick(p, fc, opts){
+  let best=null, bs=-1;
+  (opts||[]).forEach(o=>{ let sc=-1; try{ sc=aiScoreAbility(p,fc,Object.assign({},o.abl,{cost:0}),'mirror'); }catch(e){ sc=-1; } if(sc>bs){ bs=sc; best=o; } });
+  if(!best||bs<22) return null; best._s=bs; return best;
+}
+// Pays Mirror's 5, then runs the copied ability through the normal ability code with Sage Mode Virora as its source. Its Energy cost
+// is skipped (G._freeAbility makes spendEnergyAbility a no-op, a cushion gets it past "not enough Energy" checks and is taken back).
+// If the copy can't be used right now, or its target picker is closed, Mirror is refunded (not used, 5 back).
+function mirrorUse(fc, ap, o){
+  const pl=G.players[ap]; if(!o||!pl||!pl.field.some(f=>f.uid===fc.uid)) return;
+  if(fc.abilityUsed&&fc.abilityUsed['Mirror of Nature']) return;
+  if(pl.energy<5){ log('Not enough energy (need 5⚡).','dmg'); return; }
+  const snap={e:pl.energy, ce:JSON.parse(JSON.stringify(pl.colorEnergy||{})), used:JSON.parse(JSON.stringify(fc.abilityUsed||{})), tap:!!fc.tapped, uat:!!pl.usedAbilityThisTurn};
+  const CUSH=800, CC=['red','blue','purple','black','yellow','green']; let refunded=false, cushioned=false;
+  const uncushion=()=>{ if(!cushioned) return; cushioned=false; pl.energy=Math.max(0,pl.energy-CUSH); pl.colorEnergy=pl.colorEnergy||{};
+    CC.forEach(k=>{ const v=(pl.colorEnergy[k]||0)-99; if(v>0) pl.colorEnergy[k]=v; else delete pl.colorEnergy[k]; }); _trimColorEnergy(pl); };
+  const refund=(why)=>{ if(refunded) return; refunded=true; cushioned=false; pl.energy=snap.e; pl.colorEnergy=JSON.parse(JSON.stringify(snap.ce)); fc.abilityUsed=snap.used; fc.tapped=snap.tap; pl.usedAbilityThisTurn=snap.uat;
+    log(`Mirror of Nature: ${why} — nothing was spent.`,'info'); renderAll(); };
+  if(!spendEnergyAbility(ap,5,'purple')) return;
+  fc.abilityUsed=fc.abilityUsed||{}; fc.abilityUsed['Mirror of Nature']=true;
+  if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
+  log(`🍃 Mirror of Nature: ${DB[fc.cid].name} copies ${o.abl.label} from ${DB[o.fc.cid]?.name||'a character'}!`,'gain');
+  const copy=Object.assign({},o.abl,{_mirror:true,_mirrorCid:o.fc.cid}); // _mirrorCid: card-specific handlers in runAbilityEffect still match
+  const prevUndo=_abilityUndo; _abilityUndo=()=>refund('cancelled');
+  pl.energy+=CUSH; pl.colorEnergy=pl.colorEnergy||{}; CC.forEach(k=>{ pl.colorEnergy[k]=(pl.colorEnergy[k]||0)+99; }); cushioned=true;
+  pl.usedAbilityThisTurn=false; G._freeAbility=true;
+  try{ _activateAbilityCore(fc,copy); } catch(e){ console.error('[Mirror of Nature]',e); }
+  G._freeAbility=false; const fired=!!pl.usedAbilityThisTurn; uncushion(); _abilityUndo=prevUndo;
+  if(refunded) return;
+  // Not used and not waiting on a choice (some abilities only count as used once you answer) = it couldn't be used: refund.
+  const waiting=!!(_aiChoiceWait>0||document.querySelector('#modal-overlay.open,#deck-search-modal.open,#roll-ov.open')||(typeof deckSearchActive!=='undefined'&&deckSearchActive)||(typeof _rollQ!=='undefined'&&_rollQ.length)||(typeof _rollCur!=='undefined'&&_rollCur));
+  if(!fired&&!waiting){ refund(`${o.abl.label} can't be used right now`); return; }
+  pl.usedAbilityThisTurn=true; renderAll();
 }
 function _activateAbilityCore(fc,abl){
   // FROZEN DOMAIN: a frozen Location cannot use its abilities.
@@ -20437,6 +20616,51 @@ function _activateAbilityCore(fc,abl){
     if(seqIsLocalHuman(ap)&&!G._aiAuto){ openEnemyTargetPicker(foes,freeze,{sourcePlayer:ap,title:'🔭 Glacial Lens',desc:'Freeze an opposing character with cost 3 or less until the end of your next turn.'}); }
     else { const pool=foes.filter(f=>!hasDrunkenStance(f)&&!spaceShielded(f)&&(!hasAbilityToll(f)||pl.energy>=2)); const best=(pool.length?pool:foes).slice().sort((a,b)=>effPower(b)-effPower(a))[0];
       openEnemyTargetPicker([best],freeze,{sourcePlayer:ap,title:'Glacial Lens'}); }
+    return;
+  }
+  // ── ELAGOST: Heir's Flare (build 10.51) — 3⚡ every other turn (abilityUsed.heirs_flare_turn, like Glacial Lens): 2 damage to a
+  //    target opposing character, then 1 damage to EACH OTHER opposing character (not targeted, so Drunken Stance doesn't stop the 1).
+  if(abl.label==="Heir's Flare"){
+    const last=fc.abilityUsed&&fc.abilityUsed.heirs_flare_turn;
+    if(last!=null&&(G.turn-last)<2){ log(`Heir's Flare: wait ${2-(G.turn-last)} more turn(s).`,'dmg'); return; }
+    const ap=G.activePlayer, pl=G.players[ap]; const opps=_fusionOpps(ap);
+    const foes=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) foes.push({fc:f,p:op}); }));
+    if(!foes.length){ log("Heir's Flare: no opposing characters.",'dmg'); return; }
+    if(pl.energy<3){ log('Not enough energy (need 3⚡).','dmg'); return; }
+    if(!spendEnergyAbility(ap,3,'red')) return;
+    if(!fc.abilityUsed) fc.abilityUsed={}; fc.abilityUsed.heirs_flare_turn=G.turn; pl.usedAbilityThisTurn=true;
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    const src={cid:fc.cid,label:"Heir's Flare",uid:fc.uid};
+    const hit=(uid)=>{ const t=foes.find(x=>x.fc.uid===uid); if(!t||!(G.players[t.p].field||[]).some(f=>f.uid===uid)){ renderAll(); return; }
+      log(`🔥 Heir's Flare: ${DB[t.fc.cid].name} takes 2 — every other opposing character takes 1.`,'dmg');
+      const _fx=(typeof fxPush==='function')?fxPush(src.cid,src.label,src.uid):null;
+      try{ dealDamage(t.p,uid,2); } finally{ if(typeof fxPop==='function') fxPop(_fx); }
+      const rest=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(f.uid!==uid&&isChar(DB[f.cid])) rest.push({p:op,uid:f.uid}); }));
+      seqAreaHits(rest,1,src,{after:()=>{ if(typeof recalcPassives==='function') recalcPassives(); }});
+      renderAll(); };
+    if(seqIsLocalHuman(ap)&&!G._aiAuto){ openEnemyTargetPicker(foes.map(x=>x.fc),hit,{sourcePlayer:ap,title:"🔥 Heir's Flare",desc:'Deal 2 damage to an opposing character and 1 damage to each other opposing character.'}); }
+    else { const all=foes.map(x=>x.fc), pool=all.filter(f=>!hasDrunkenStance(f)&&!spaceShielded(f)&&(!hasAbilityToll(f)||pl.energy>=2));
+      const kill=pool.filter(f=>(f.currentHP||0)<=Math.max(0,2-(f.nullify||0))).sort((a,b)=>aiFcValue(b)-aiFcValue(a))[0];
+      const best=kill||(pool.length?pool:all).slice().sort((a,b)=>effPower(b)-effPower(a))[0];
+      openEnemyTargetPicker([best],hit,{sourcePlayer:ap,title:"Heir's Flare"}); }
+    return;
+  }
+  // ── SAGE MODE VIRORA: Mirror of Nature (build 10.51) — 5⚡, once per game. Pick another character's activated ability (any field,
+  //    either side) that isn't Once per game; she uses it now without paying its Energy cost ("this card" = her; targets are hers).
+  //    The 5 is paid when you pick; Skip = nothing spent. See mirrorUse.
+  if(abl.label==='Mirror of Nature'){
+    if(fc.abilityUsed&&fc.abilityUsed['Mirror of Nature']){ log('Mirror of Nature has already been used this game.','dmg'); return; }
+    const ap=G.activePlayer, pl=G.players[ap];
+    if(pl.energy<5){ log('Not enough energy (need 5⚡).','dmg'); return; }
+    const opts=mirrorOptions(fc, ap);
+    if(!opts.length){ log('Mirror of Nature: no other character has an activated ability to copy.','dmg'); return; }
+    closeAllModals();
+    if(seqIsLocalHuman(ap)&&!G._aiAuto){
+      seqChoose('🍃 Mirror of Nature','Choose another character\'s activated ability. You use it now without paying its Energy cost (Mirror of Nature costs 5⚡ — paid when you pick).',
+        opts.map((o,i)=>({label:o.abl.label+' — '+(DB[o.fc.cid]?.name||''), sub:o.side+' · normally '+(o.abl.cost||0)+'⚡ · '+(o.abl.text||''), val:{uid:o.fc.uid,i}})),
+        (v)=>mirrorUse(fc,ap,opts[v.i]), ()=>log('Mirror of Nature: skipped — nothing was spent.','info'));
+    } else { const best=aiMirrorPick(ap,fc,opts); if(best) mirrorUse(fc,ap,best); }
     return;
   }
   // ── SKYRAIL VELOCITY STATION: Express Return — 3⚡ every other turn (abilityUsed.express_return_turn): one of your characters goes
@@ -22191,6 +22415,20 @@ function runAbilityEffect(fc, abl, pl){
     openEnemyTargetPicker(enemies, hit, {sourcePlayer:ap, title:'Sapphire Nova', desc:'Deal 3 damage to an opposing character. It gets −2 Attack until the end of your next turn; if it is destroyed, draw 1.'});
     return;
   }
+  // ── SAGE MODE VIRORA: Surface Palm (build 10.51) — 3 damage to target opposing character, then −2 Attack until the end of your
+  //    next turn (applyTimedCut, the Sapphire Nova mechanism). 3⚡, once per turn (generic gate).
+  if(label==='Surface Palm'){
+    const ap=G.activePlayer; const opps=_fusionOpps(ap);
+    const enemies=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) enemies.push(f); }));
+    if(!enemies.length){ log('Surface Palm: no opposing characters.','dmg'); renderAll(); return; }
+    const hit=(uid)=>{ const op=opps.find(o=>(G.players[o]?.field||[]).some(f=>f.uid===uid)); const t=op&&G.players[op].field.find(f=>f.uid===uid); if(!t) return;
+      log(`🖐️ Surface Palm: ${DB[t.cid].name} takes 3.`,'dmg'); dealDamage(op,uid,3);
+      const t2=G.players[op].field.find(f=>f.uid===uid);
+      if(t2&&t2.currentHP>0) applyTimedCut(ap,t2,'Surface Palm',2,'🖐️ ');
+      renderAll(); };
+    openEnemyTargetPicker(enemies, hit, {sourcePlayer:ap, title:'Surface Palm', desc:'Deal 3 damage to an opposing character. It gets −2 Attack until the end of your next turn.'});
+    return;
+  }
   // ── JALINA: Heir's Shockwave — 2 damage to target opposing character. 2⚡, once per turn; its text taps it.
   if(label==="Heir's Shockwave"||label==='Starbolt'){
     const ap=G.activePlayer; const opps=_fusionOpps(ap); const _sb=label==='Starbolt';
@@ -22254,7 +22492,7 @@ function runAbilityEffect(fc, abl, pl){
   }
   // A stolen ability (Exsanguinate) dispatches as if used by its original card.
   const _g=Array.isArray(fc.gainedAbilities)?fc.gainedAbilities.find(a=>a.label===label&&a.sourceCid):null;
-  const cid = _g ? _g.sourceCid : fc.cid;
+  const cid = (abl&&abl._mirrorCid) || (_g ? _g.sourceCid : fc.cid); // build 10.51: a Mirror of Nature copy too
 
   // ── VIRORA: Freeze Over — opponent flips coin; heads = they skip their turn ──
   if(label==='Freeze Over'){
@@ -23294,6 +23532,8 @@ function startTurnFx(player){
       if(fc._ramp%2===0){ fc.atkBonus=(fc.atkBonus||0)+2; fc.currentATK=(fc.currentATK||0)+2; fc.hpBonus=(fc.hpBonus||0)+4; fc.currentHP=(fc.currentHP||0)+4;
         log(`🌀 Mastery Ramp: ${c.name} grows +2/+4 (now ${fc.currentATK}/${fc.currentHP}).`,'gain'); } }
     // ── HARVEST OF COURTS (build 10.20) ──
+    // SAGE MODE VIRORA — Sage Stillness (build 10.51): it didn't attack during its controller's last turn → +1 Energy (White).
+    if(isChar(c)&&hasAbilityLabel(fc,'Sage Stillness')&&!fc.attackedLastTurn){ pl.energy+=1; log(`🍃 Sage Stillness: ${c.name} stayed still — ${pname(player)} gains 1 Energy.`,'gain'); }
     if(isChar(c)&&hasAbilityLabel(fc,'Bountiful Yield')&&harvestOn(player)){ pl.energy+=1; log(`🌾 Bountiful Yield: ${c.name} reaps 1 Energy for ${pname(player)}.`,'gain'); }
     if(isLoc(c)&&hasAbilityLabel(fc,'Feast of the Court')&&!isLocationFrozen(fc)){
       const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Feast of the Court',fc.uid):null; let _n=0;
@@ -23985,11 +24225,12 @@ function aiPickDeckCard(pl, filterFn){
   if(!cands.length) return null;
   return cands.reduce((a,b)=>(aiCardValue(DB[b])+(DB[b].cost||0)*.5)>(aiCardValue(DB[a])+(DB[a].cost||0)*.5)?b:a);
 }
+let _aiChoiceWait=0; // build 10.51: CPU choice clicks still to come (setTimeout 0)
 function aiAutoModalChoice(bodyEl){
   const btns=[...bodyEl.querySelectorAll('button')].filter(b=>!b.disabled&&!/cancel|close|skip|back|👁|view|never ?mind|no thanks|dismiss/i.test(b.textContent||''));
   if(!btns.length) return false;
   const pick=btns[Math.floor(Math.random()*btns.length)];
-  setTimeout(()=>{ try{ pick.click(); }catch(e){ console.warn('[AI] modal choice failed',e); } },0);
+  _aiChoiceWait++; setTimeout(()=>{ _aiChoiceWait=Math.max(0,_aiChoiceWait-1); try{ pick.click(); }catch(e){ console.warn('[AI] modal choice failed',e); } },0);
   return true;
 }
 // If an ability left a "click your deck" search pending, the AI resolves it now.
@@ -24012,6 +24253,9 @@ function aiScoreAbility(p, fc, abl, src){
   if(abl.label==="Doom's Design" && (!doomsDesignReady(fc) || !(pl.deck||[]).some(cid=>isEquip(DB[cid])))) return -1;
   if(abl.label==='The Iron Fist'){ const _l=fc.abilityUsed&&fc.abilityUsed.iron_fist_turn; if(_l!=null&&G.turn-_l<2) return -1;
     if(fc.tapped||!aiReady(fc)||!canCharacterAttack(p,fc)||!aiAttackOptionsFor(p,fc).length) return -1; return 24; }
+  if(abl.label==="Heir's Flare"){ if(ablCooldownLeft(fc,abl)>0) return -1; const es=aiEnemyChars(p); const _t=es.filter(e=>!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)); if(!_t.length) return -1;   // build 10.51 · Elagost
+    const k2=_t.some(e=>(e.fc.currentHP||0)<=Math.max(0,2-(e.fc.nullify||0)))?1:0, k1=es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,1-(e.fc.nullify||0))).length; return 12+es.length*4+k2*14+k1*10; }
+  if(abl.label==='Mirror of Nature'){ const _o=aiMirrorPick(p,fc,mirrorOptions(fc,p)); return _o?Math.round(_o._s-6):-1; }   // build 10.51 · Sage Mode Virora
   if(abl.label==='Air Blast'){ if(ablCooldownLeft(fc,abl)>0) return -1;   // build 10.31: lock down their best attacker
     const _pool=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)&&!airBlasted(e.fc)&&(!hasAbilityToll(e.fc)||pl.energy>=cost+2));
     if(!_pool.length) return -1; const _b=Math.max(..._pool.map(e=>effPower(e.fc))); return _b>=3?10+Math.min(18,_b*2):-1; }
@@ -24261,6 +24505,7 @@ function aiEnumerateActions(p){
       else if(c.id==='virora_beer_bse'){ const _v=chars.filter(f=>isViroraChar(DB[f.cid])&&aiReady(f)&&canCharacterAttack(p,f)); if(_v.length&&enemies.length) s=30; }   // build 10.40
       else if(c.id==='saiyan_blood'){ if(chars.some(f=>DB[f.cid]?.subtypes?.some(x=>/saiyan/i.test(x)))) s=34; else if(chars.length) s=24; }
       else if(c.id==='courts_favor_hoc'){ if(pl._favorTurn!==G.turn){ const gain=harvestOn(p)?4:3; const next=pl.hand.some(h=>h.uid!==fc.uid&&DB[h.cid]&&DB[h.cid].type!=='energy_card'&&!DB[h.cid].transformOnly&&(DB[h.cid].cost||0)>pl.energy-1&&(DB[h.cid].cost||0)<=pl.energy-1+gain); s=next?48:20; } }
+      else if(c.id==='twin_tornadoes_bse'){ const _t=enemies.filter(e=>!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)); if(_t.length){ const _k=_t.filter(e=>(e.fc.currentHP||0)<=Math.max(0,2-(e.fc.nullify||0))).length; s=30+Math.min(2,_t.length)*5+Math.min(2,_k)*16; } }   // build 10.51
       else if(c.id==='winters_approach_hoc'){ if(enemies.length) s=30+Math.min(2,enemies.length)*4+(harvestOn(p)&&enemies.length>1?6:0); }
       else if(c.id==='harvest_pie_hoc'){ if(wounded.length) s=34+wounded.length*4+(harvestOn(p)?3:0); }
       else if(c.id==='harvest_curse_hoc'){ const _r=enemies.filter(e=>(e.fc.currentHP||0)<=4&&!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)); const _rv=_r.length?Math.max(..._r.map(e=>aiFcValue(e.fc))):0;
@@ -24715,6 +24960,7 @@ function crowsResidueTax(p){
 }
 
 function spendEnergyAbility(p, amount, cardColor){
+  if(G&&G._freeAbility) return true; // Mirror of Nature: the copied ability's Energy cost isn't paid
   const opp=p===1?2:1; const oppl=G.players[opp];
   let taxed=amount;
   if(amount>0 && crowsResidueTax(p)>0){
@@ -30627,13 +30873,13 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.50';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.51';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
 function econPackPool(setId){ return Object.keys(DB).filter(id=>{ const c=DB[id]; if(!c||c.isToken||c.type==='token'||c.type==='system') return false;
-  if((c.type==='energy_card'&&!c.specialEnergy)||c.type==='herald') return false; if(!econPlayable(id)) return false; const cs=econSetOf(id); if(cs==='promo') return false; return !setId||cs===setId; }); }
-function econHeraldPool(setId){ return Object.keys(DB).filter(id=>{ const c=DB[id]; if(!c||c.type!=='herald'||!econPlayable(id)) return false; const cs=econSetOf(id); if(cs==='promo') return false; return !setId||cs===setId; }); }
+  if((c.type==='energy_card'&&!c.specialEnergy)||c.type==='herald') return false; if(!econPlayable(id)) return false; const cs=econSetOf(id); if(cs==='promo'||cs==='shop') return false; return !setId||cs===setId; }); }
+function econHeraldPool(setId){ return Object.keys(DB).filter(id=>{ const c=DB[id]; if(!c||c.type!=='herald'||!econPlayable(id)) return false; const cs=econSetOf(id); if(cs==='promo'||cs==='shop') return false; return !setId||cs===setId; }); }
 function econEnergyPool(){ return Object.keys(DB).filter(id=>{ const c=DB[id]; if(!c||c.isToken||c.transformOnly||c.type==='token'||c.type==='system'||!econPlayable(id)) return false;
   return c.type==='energy_card'&&!c.specialEnergy&&!/choice|rainbow|wild|prism/i.test(id)&&!/choice|rainbow|wild|prism/i.test(c.name||''); }); }
 function econSinglesPool(){ return Object.keys(DB).filter(id=>{ const c=DB[id]; if(!c||c.exclusive||c.isToken||c.transformOnly||c.type==='token'||c.type==='system'||c.type==='herald') return false;
@@ -30656,7 +30902,7 @@ function econBuildCards(){
 }
 function econBuildPacks(){
   const pools={}, sets=new Set(((typeof _cardSets!=='undefined'&&_cardSets)||[]).map(x=>x.id).concat(Object.keys(DB).map(econSetOf)));
-  sets.forEach(set=>{ if(!set||set==='promo') return; const pp=econPackPool(set); if(!pp.length) return; const g={};
+  sets.forEach(set=>{ if(!set||set==='promo'||set==='shop') return; const pp=econPackPool(set); if(!pp.length) return; const g={};
     pp.forEach(id=>{ const r=DB[id].rarity||'common'; (g[r]=g[r]||[]).push(id); }); const hp=econHeraldPool(set); if(hp.length) g.herald=hp; pools[set]=g; });
   return {pools,energy:econEnergyPool(),odds:ECON_PACK_ODDS};
 }
@@ -31550,7 +31796,7 @@ async function saveDisabledCards(){
 // Both persisted in Supabase app_settings ('card_sets' / 'card_set_overrides').
 // getCardSet(cid) is the single source of truth (override first, else DB setId).
 // ═══════════════════════════════════════════════════════
-const DEFAULT_CARD_SETS=[{id:'base_set',name:'Base Set'},{id:'promo',name:'Promo'},{id:'hoc',name:'Harvest of Courts'}];
+const DEFAULT_CARD_SETS=[{id:'base_set',name:'Base Set'},{id:'promo',name:'Promo'},{id:'hoc',name:'Harvest of Courts'},{id:'shop',name:'Shop'}];
 let _cardSets = DEFAULT_CARD_SETS.map(s=>({...s}));
 let _cardSetOverrides = {};
 
@@ -31566,6 +31812,7 @@ async function loadCardSets(){
     const {data}=await _celSB.from('app_settings').select('value').eq('key','card_sets').maybeSingle();
     if(data&&data.value){ const arr=JSON.parse(data.value); if(Array.isArray(arr)&&arr.length) _cardSets=arr; }
     if(!_cardSets.some(x=>x.id==='hoc')) _cardSets.push({id:'hoc',name:'Harvest of Courts'}); // build 10.20: the event set
+    if(!_cardSets.some(x=>x.id==='shop')) _cardSets.push({id:'shop',name:'Shop'}); // build 10.51: Market-only cards
   }catch(e){ console.warn('[CardSets] load error:',e); }
   try{
     const {data}=await _celSB.from('app_settings').select('value').eq('key','card_set_overrides').maybeSingle();
@@ -32093,7 +32340,7 @@ function _packPool(setId){
     if(!isCardPlayable(id)) return false; // disabled gate (admin sees all)
     if(c.exclusive) return false; // gift-only
     const cset = (typeof getCardSet==='function') ? getCardSet(id) : (c.setId||'');
-    if(cset==='promo') return false;
+    if(cset==='promo'||cset==='shop') return false; // shop cards are sold in the Market only (build 10.51)
     if(setId && cset!==setId) return false;  // scope to this pack's set
     return true;
   });
@@ -32103,7 +32350,7 @@ function _heraldPool(setId){
     const c=DB[id]; if(!c||c.type!=='herald') return false;
     if(!isCardPlayable(id)) return false;
     const cset=(typeof getCardSet==='function')?getCardSet(id):(c.setId||'');
-    if(cset==='promo') return false;
+    if(cset==='promo'||cset==='shop') return false; // shop cards are sold in the Market only (build 10.51)
     if(setId && cset!==setId) return false;
     return true;
   });
@@ -40486,6 +40733,77 @@ function gcpAdd(){
   if(ex) ex.qty+=_gcp.qty; else R.cards.push({cid,foil:_gcp.foil,qty:_gcp.qty});
   gcpRender(); gcpSide();
 }
+// ── ADMIN CARD PICKER (build 10.51) — click a card instead of typing its id. acpOpen({title, sub, hint, filter(cid)→bool,
+//    onPick(cid), current, set, stay, has(cid)→bool, onClose}). stay:true keeps it open to add several (Market lists).
+let _acp={q:'',set:'all',type:'all',rar:'all',col:'all',sel:null,o:null};
+function acpSetList(){ return (typeof _cardSets!=='undefined'&&_cardSets.length)?_cardSets:DEFAULT_CARD_SETS; }
+function acpBase(c){ const o=_acp.o||{}; return !!(c&&!c.isToken&&c.type!=='token'&&c.type!=='system'&&(!o.filter||o.filter(c.id))); }
+function acpColors(c){ return Array.isArray(c.colors)&&c.colors.length?c.colors:(c.color?[c.color]:[]); }
+function acpList(){
+  const q=_acp.q.trim().toLowerCase();
+  return Object.values(DB).filter(c=>{
+    if(!acpBase(c)) return false;
+    if(_acp.type!=='all'&&gcpType(c)!==_acp.type) return false;
+    const st=getCardSet(c.id);
+    if(_acp.set==='__none__'){ if(st) return false; } else if(_acp.set!=='all'&&st!==_acp.set) return false;
+    if(_acp.rar!=='all'&&getRarity(c.id)!==_acp.rar) return false;
+    if(_acp.col!=='all'&&!acpColors(c).includes(_acp.col)) return false;
+    if(q&&!(c.name.toLowerCase().includes(q)||c.id.includes(q)||String(c.cardNumber||'').toLowerCase().includes(q)||String(c.charName||'').toLowerCase().includes(q))) return false;
+    return true;
+  }).sort((a,b)=>(getCardSet(a.id)||'~').localeCompare(getCardSet(b.id)||'~')||String(a.cardNumber||'999').localeCompare(String(b.cardNumber||'999'))||a.name.localeCompare(b.name));
+}
+function acpOpen(o){
+  o=o||{}; _acp.o=o; _acp.q=''; _acp.type='all'; _acp.rar='all'; _acp.col='all'; _acp.sel=(o.current&&DB[o.current])?o.current:null;
+  _acp.set=_acp.sel?(getCardSet(_acp.sel)||'__none__'):(o.set||'all'); // opens on the current card's set, else opts.set, else All
+  document.getElementById('acp')?.remove();
+  const ov=document.createElement('div'); ov.className='gcp acp'; ov.id='acp'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-label',o.title||'Pick a card');
+  ov.innerHTML=`<div class="gcp-head"><h3>${mlEsc(o.title||'PICK A CARD')}</h3>${o.sub?`<span class="ml-note">${mlEsc(o.sub)}</span>`:''}
+      <input class="ml-in" id="acp-q" placeholder="Search name, number…" oninput="_acp.q=this.value;acpRender()">
+      <select class="ml-sel" id="acp-rar" onchange="_acp.rar=this.value;acpRender()"><option value="all">All rarities</option>${RARITY_ORDER.map(r=>`<option value="${r}">${mlEsc((RARITY_DEFS[r]||{}).label||r)}</option>`).join('')}</select>
+      <select class="ml-sel" id="acp-col" onchange="_acp.col=this.value;acpRender()"><option value="all">All colors</option>${Object.keys(COLOR_DEFS).map(k=>`<option value="${k}">${mlEsc(colorWord(k))}</option>`).join('')}</select>
+      <span class="ml-note" id="acp-count"></span><span style="flex:1"></span>
+      <button class="dk-btn${o.stay?' gold':''}" data-acp-close="1" onclick="acpClose()">${o.stay?'DONE':'CANCEL'}</button></div>
+    <div class="gcp-types acp-sets" id="acp-sets"></div>
+    <div class="gcp-types">${GCP_TYPES.map(([k,l])=>`<span class="dk-pill${_acp.type===k?' on':''}" data-k="${k}" onclick="_acp.type='${k}';document.querySelectorAll('#acp .gcp-types:not(.acp-sets) .dk-pill').forEach(p=>p.classList.toggle('on',p.dataset.k==='${k}'));acpRender()">${l}</span>`).join('')}</div>
+    ${o.hint?`<div class="ml-note acp-hint">${mlEsc(o.hint)}</div>`:''}
+    <div class="gcp-body"><div class="gcp-grid" id="acp-grid"></div><div class="gcp-side" id="acp-side"></div></div>`;
+  ov.addEventListener('keydown',e=>{ if(e.key==='Escape'){ e.stopPropagation(); acpClose(); } });
+  document.body.appendChild(ov); acpRender(); acpSide();
+  if(_acp.sel) setTimeout(()=>{ const el=document.querySelector(`#acp-grid .gcp-card[data-cid="${_acp.sel}"]`); if(el) try{ el.scrollIntoView({block:'center'}); }catch(e){} },60);
+  setTimeout(()=>document.getElementById('acp-q')?.focus(),50);
+}
+function acpClose(){ const o=_acp.o||{}; document.getElementById('acp')?.remove(); _acp.o=null; if(o.onClose) try{ o.onClose(); }catch(e){ console.error('[acp]',e); } }
+function acpSetChips(){
+  const box=document.getElementById('acp-sets'); if(!box) return;
+  const base=Object.values(DB).filter(acpBase); const n={all:base.length,__none__:0}; base.forEach(c=>{ const st=getCardSet(c.id); if(!st) n.__none__++; else n[st]=(n[st]||0)+1; });
+  const chips=[['all','ALL SETS']].concat(acpSetList().map(x=>[x.id,x.name])).concat(n.__none__?[['__none__','NO SET']]:[]);
+  box.innerHTML=chips.filter(([k])=>k==='all'||n[k]).map(([k,l])=>`<span class="dk-pill acp-set${_acp.set===k?' on':''}" data-set="${mlEsc(k)}" onclick="_acp.set=this.dataset.set;acpRender()">${mlEsc(String(l).toUpperCase())} <b>${n[k]||0}</b></span>`).join('');
+}
+function acpRender(){
+  const grid=document.getElementById('acp-grid'); if(!grid) return; const o=_acp.o||{};
+  acpSetChips();
+  const list=acpList(); document.getElementById('acp-count').textContent=list.length+' CARD'+(list.length===1?'':'S');
+  grid.innerHTML=list.map(c=>{ const has=o.has&&o.has(c.id), cur=o.current===c.id, dis=typeof _disabledCards!=='undefined'&&_disabledCards[c.id];
+    return `<div class="gcp-card${_acp.sel===c.id?' sel':''}${has?' acp-in':''}" data-cid="${c.id}" tabindex="0" onclick="acpSelect('${c.id}')" ondblclick="acpSelect('${c.id}');acpChoose()" onkeydown="if(event.key==='Enter')acpSelect('${c.id}')">
+      <img loading="lazy" src="${getImg(c.id)}" alt="${mlEsc(c.name)}">
+      ${dis?'<span class="tag" style="border-color:#f87171;color:#fca5a5">OFF</span>':(c.formTier&&c.formTier!=='base'?`<span class="tag">${mlEsc(c.formTier.toUpperCase())}</span>`:'')}
+      ${has?'<span class="cnt">✓</span>':cur?'<span class="cnt">NOW</span>':''}
+      <div class="n">${mlEsc(c.name)}</div><div class="m">${mlEsc(gcpMeta(c.id)||c.id)}</div></div>`; }).join('')||'<div class="ml-empty">No cards match.</div>';
+}
+function acpSelect(cid){ _acp.sel=cid; document.querySelectorAll('#acp-grid .gcp-card').forEach(el=>el.classList.toggle('sel',el.dataset.cid===cid)); acpSide(); }
+function acpSide(){
+  const side=document.getElementById('acp-side'); if(!side) return; const o=_acp.o||{}; const c=DB[_acp.sel];
+  if(!c){ side.innerHTML=`<div class="ml-empty" style="padding:24px 8px">Click a card to see it.<br><br>Double-click ${o.stay?'adds':'chooses'} it.</div>`; return; }
+  const r=getRarity(c.id), has=o.has&&o.has(c.id);
+  side.innerHTML=`<img class="big" src="${getImg(c.id)}" alt="${mlEsc(c.name)}" onclick="showFullCard('${c.id}')">
+    <h4>${mlEsc(c.name)}</h4><div class="ml-note" style="margin-top:-6px">${mlEsc(gcpMeta(c.id))} · <b style="color:${(RARITY_DEFS[r]||{}).hex||'#fff'}">${mlEsc((RARITY_DEFS[r]||{}).label||r)}</b> · ${mlEsc(c.id)}</div>
+    <button class="dk-btn gold" id="acp-go" onclick="acpChoose()" ${has?'disabled':''}>${has?'✓ ALREADY IN THE LIST':o.stay?'+ ADD THIS CARD':'✓ CHOOSE THIS CARD'}</button>`;
+}
+function acpChoose(){
+  const cid=_acp.sel, o=_acp.o||{}; if(!DB[cid]||(o.has&&o.has(cid))) return;
+  try{ if(o.onPick) o.onPick(cid); }catch(e){ console.error('[acp]',e); }
+  if(o.stay){ acpRender(); acpSide(); } else { document.getElementById('acp')?.remove(); _acp.o=null; }
+}
 function gcCardSuggest(ctx){
   const q=document.getElementById('gc-'+ctx+'-card').value.trim().toLowerCase(), box=document.getElementById('gc-'+ctx+'-card-sug');
   if(q.length<2){ box.style.display='none'; return; }
@@ -41970,6 +42288,7 @@ function craftCheck(cid){
   if(c.exclusive) return {ok:false,cost,why:'Exclusive cards are gifts only.'};
   if(c.type==='energy_card'&&!c.specialEnergy) return {ok:false,cost,why:'Basic Energy comes in every pack.'};
   if(set==='promo') return {ok:false,cost,why:"Promo cards can't be crafted."};
+  if(set==='shop') return {ok:false,cost,why:'Shop cards are sold in the Market.'};
   if(!set) return {ok:false,cost,why:"This card isn't in a set yet."};
   if(typeof _disabledCards!=='undefined'&&_disabledCards[cid]) return {ok:false,cost,why:'This card is switched off right now.'};
   if(c.type==='herald'){ if(!cfg.heralds) return {ok:false,cost,why:'Heralds come from packs only.'};
@@ -42194,7 +42513,7 @@ function openForge(){
 }
 function fgSets(){
   const all=(typeof _cardSets!=='undefined'?_cardSets:[]);
-  return _fg.mode==='forge'?all.filter(s=>s.id!=='promo'):all;
+  return _fg.mode==='forge'?all.filter(s=>s.id!=='promo'&&s.id!=='shop'):all;
 }
 function fgMode(m){ if(_fg.mode===m) return; _fg.mode=m; _fg.sel=null; _fg.only=false; fgCloseSheet(); fgSfx('click'); fgRender(); }
 function fgSet(k,v){ _fg[k]=v; if(k!=='q') fgSfx('click'); fgRenderGrid(); }
@@ -43366,7 +43685,7 @@ function ltPool(setId){ return Object.keys(DB).filter(id=>ltCardOk(id)&&getCardS
 function ltHeralds(sets){ return Object.keys(DB).filter(id=>{ const c=DB[id]; return c&&c.type==='herald'&&!c.isToken&&sets.includes(getCardSet(id))&&(typeof isCardPlayable!=='function'||isCardPlayable(id)); }); }
 function ltSets(){
   const list=(typeof _cardSets!=='undefined'&&_cardSets.length)?_cardSets:[{id:'base_set',name:'Base Set'}];
-  return list.map(s=>({id:s.id,name:s.name,cards:ltPool(s.id).length,heralds:ltHeralds([s.id]).length})).filter(s=>s.cards>0);
+  return list.filter(s=>s.id!=='shop').map(s=>({id:s.id,name:s.name,cards:ltPool(s.id).length,heralds:ltHeralds([s.id]).length})).filter(s=>s.cards>0);
 }
 function ltMix(sets,n){ const out=[]; for(let i=0;i<n;i++) out.push(sets[i%sets.length]); return out; }
 function ltMixText(mix){ const c={}; mix.forEach(s=>{ c[s]=(c[s]||0)+1; }); return Object.entries(c).map(([s,n])=>n+' '+setLabel(s)).join(' · '); }
@@ -44178,7 +44497,7 @@ function bp3EditRender(){
         <div class="b3e-pacts"><button type="button" onclick="bp3EdMovePage(-1)">◀ MOVE</button><button type="button" onclick="bp3EdMovePage(1)">MOVE ▶</button><button type="button" class="del" onclick="bp3EdDelPage()">DELETE PAGE</button></div>
         <h5>REWARDS <small>— ${pg.rewards.length} (${Math.ceil(pg.rewards.length/5)} row${Math.ceil(pg.rewards.length/5)===1?'':'s'} of 5); the first one is the big headline tile</small></h5><div class="b3e-rws">${rw}</div><button type="button" class="b3e-add" onclick="bp3EdAddReward()">＋ ADD REWARD</button></div>`:'<p>No pages.</p>'}
     </section></div>
-    <datalist id="b3e-cids">${Object.keys(DB).filter(id=>DB[id]&&!DB[id].isToken&&DB[id].type!=='system').map(id=>`<option value="${id}">${bp3Esc(DB[id].name)}</option>`).join('')}</datalist></div>`;
+    </div>`;
   e.classList.add('open');
 }
 function bp3EdXpOut(){ const x=_b3e.xp||{}, n=(v,d)=>(v!==''&&v!=null&&isFinite(+v)&&+v>=0)?Math.round(+v):d, D=BP_XP_DEFAULT;
@@ -44190,7 +44509,7 @@ function bp3EdXpLine(){ const o=bp3EdXpOut(), b=o.bands; let t=0; const at={}; c
   return `LVL 10 = ${(at[10]||0).toLocaleString()} XP · every set (LVL ${mains}) = ${(at.m||0).toLocaleString()} · everything (LVL ${tot}) = ${(at.t||0).toLocaleString()} · a regular player (5 games a day + quests) ≈ ${Math.round(day).toLocaleString()} XP a day → every set in ~${Math.ceil((at.m||0)/day)} days, everything in ~${Math.ceil((at.t||0)/day)}`; }
 function bp3EdReward(pg,r,i){
   const b='pages.'+_b3e._open+'.rewards.'+i+'.'; let f='';
-  if(r.type==='card') f=bp3EdIn(b+'cid','Card id','text',' list="b3e-cids" data-re="1"')+bp3EdSel(b+'finish','Finish',VARIANT_ORDER.map(v=>[v,(VARIANT_META[v]||{}).label||v]));
+  if(r.type==='card') f=bp3EdCardField(r,i)+bp3EdSel(b+'finish','Finish',VARIANT_ORDER.map(v=>[v,(VARIANT_META[v]||{}).label||v]));
   else if(r.type==='cosmetic'){ const c=r.cos||(r.cos={id:'bp_'+_b3e.seasonId+'_'+r.id,type:'title'}); const cb=b+'cos.';
     f=bp3EdSel(cb+'type','Cosmetic',Object.keys(BP3_COSK).map(k=>[k,BP3_COSK[k]]),true)+bp3EdIn(cb+'name','Name');
     if(c.type==='back'||c.type==='mat') f+=bp3EdIn(cb+'img','Image link','url');
@@ -44205,6 +44524,10 @@ function bp3EdReward(pg,r,i){
     ${pg.kind==='main'?bp3EdIn(b+'free','FREE (no pass needed)','checkbox'):''}${r.type==='cosmetic'?'':bp3EdIn(b+'name','Name (blank = automatic)')}${bp3EdIn(b+'desc','Text (blank = automatic)')}</div>
     <div class="b3e-ra"><button type="button" onclick="bp3EdMoveRw(${i},-1)" aria-label="Up">▲</button><button type="button" onclick="bp3EdMoveRw(${i},1)" aria-label="Down">▼</button><button type="button" class="del" onclick="bp3EdDelRw(${i})" aria-label="Delete">✕</button></div></div>`;
 }
+function bp3EdCardField(r,i){ const c=DB[r.cid];
+  return `<div class="b3e-f b3e-cardf"><span>Card</span><button type="button" class="b3e-pick" onclick="bp3EdPickCard(${i})">${c?`<img src="${getImg(r.cid)}" alt=""><span class="t"><b>${bp3Esc(c.name)}</b><small>${bp3Esc(gcpMeta(r.cid)||r.cid)}</small></span>`:'<span class="t"><b>Choose a card…</b><small>No card yet</small></span>'}<i>${c?'CHANGE':'PICK'}</i></button></div>`; }
+function bp3EdPickCard(i){ const pg=_b3e.pages[_b3e._open], r=pg&&pg.rewards[i]; if(!r) return;
+  acpOpen({title:'BATTLE PASS CARD', sub:(pg.name||pg.id)+' · reward '+(i+1), current:r.cid, onPick:(cid)=>{ r.cid=cid; bp3EditRender(); }}); }
 function bp3EdAddReward(){ const pg=_b3e.pages[_b3e._open]; const id=pg.id+'_'+Date.now().toString(36); pg.rewards.push({id,type:'celestium',amount:100}); bp3EditRender(); }
 function bp3EdDelRw(i){ const pg=_b3e.pages[_b3e._open]; if(!confirm('Delete this reward? Players who claimed it keep what they got.')) return; pg.rewards.splice(i,1); bp3EditRender(); }
 function bp3EdMoveRw(i,d){ const R=_b3e.pages[_b3e._open].rewards; const j=i+d; if(j<0||j>=R.length) return; [R[i],R[j]]=[R[j],R[i]]; bp3EditRender(); }
@@ -44250,17 +44573,17 @@ const MK_PACKART={ base_set:mkRaw('Market/Thumbs/pack_base_set.webp') };
 const MK_BACKDROPS=['featured','vault','singles','backs','mats','frames','titles','entrances','events','set_gamma_breaker','set_king_courts_halloween','set_virora','set_time_splitting_chimp','set_bender_havens'];
 const MK_THEMES={
   featured:{c1:'#d9467a',c2:'#1a0b2e'}, vault:{c1:'#7c4dff',c2:'#100826'}, pass:{c1:'#2f8bff',c2:'#0a1f5c'}, singles:{c1:'#8b5cf6',c2:'#100828'},
-  backs:{c1:'#e0449b',c2:'#22071c'}, mats:{c1:'#4f86d6',c2:'#0b1530'}, frames:{c1:'#1fa874',c2:'#05201a'}, titles:{c1:'#d99a2b',c2:'#1d0d28'},
+  shopcards:{c1:'#c026d3',c2:'#1c0626'}, backs:{c1:'#e0449b',c2:'#22071c'}, mats:{c1:'#4f86d6',c2:'#0b1530'}, frames:{c1:'#1fa874',c2:'#05201a'}, titles:{c1:'#d99a2b',c2:'#1d0d28'},
   entrances:{c1:'#e23b3b',c2:'#1f0508'}, events:{c1:'#5cc443',c2:'#0b1a08'},
   set_gamma_breaker:{c1:'#6fbf1f',c2:'#0b1606'}, set_king_courts_halloween:{c1:'#f97316',c2:'#170a26'}, set_virora:{c1:'#e83fae',c2:'#24071f'},
   set_time_splitting_chimp:{c1:'#2f7df6',c2:'#06102a'}, set_bender_havens:{c1:'#e8961a',c2:'#140c2a'}
 };
-const MK_SECTION_IDS=['featured','vault','pass','singles','collections','backs','mats','frames','titles','entrances','events'];
-const MK_SECTION_NAMES={featured:'Featured',vault:'Booster Packs',pass:'Battle Pass',singles:'Daily Singles',collections:'Collections',backs:'Card Backs',mats:'Playmats',frames:'Frames & Plates',titles:'Titles',entrances:'Herald Entrances',events:'Events'};
+const MK_SECTION_IDS=['featured','vault','pass','singles','shopcards','collections','backs','mats','frames','titles','entrances','events'];
+const MK_SECTION_NAMES={featured:'Featured',vault:'Booster Packs',pass:'Battle Pass',singles:'Daily Singles',shopcards:'Shop Cards',collections:'Collections',backs:'Card Backs',mats:'Playmats',frames:'Frames & Plates',titles:'Titles',entrances:'Herald Entrances',events:'Events'};
 const MK_TYPE_ONE={back:'CARD BACK',mat:'PLAYMAT',frame:'AVATAR FRAME',plate:'NAME PLATE',title:'TITLE',entrance:'HERALD ENTRANCE'};
 const MK_DEFAULTS={dailySlots:10,featuredCount:2,featuredStay:3,singlesCount:8,dailyFeatured:true,
   singlesPrice:{common:200,uncommon:400,rare:900,legend:1800,mythic:3500,secret:6000},
-  packQty:[1,5,10],pinned:[],hidden:[],sales:{},sections:{},order:[],showOdds:false,setArt:{}};
+  packQty:[1,5,10],pinned:[],hidden:[],sales:{},sections:{},order:[],showOdds:false,setArt:{},singlesPinned:[],singlesHidden:[]};   // shopCards: unset = every Shop-set card (build 10.51)
 let _mkRemote=null, _mkPreview=null;
 let _mk={focus:null,sec:null,D:null,dayOff:0,secs:[],timer:null,keys:false,cfgLoaded:false,bpLoaded:false,rot:{},cfgSrc:undefined,cfgC:null,bgI:0,bgUrl:null,set:null,qty:{},busy:false,spin:{a:0,v:0,raf:0,drag:null,idleT:0}};
 
@@ -44274,7 +44597,8 @@ function mkCfg(){
   o.dailyFeatured=o.dailyFeatured!==false; o.showOdds=o.showOdds===true;
   o.singlesPrice=Object.assign({},MK_DEFAULTS.singlesPrice,(s.singlesPrice&&typeof s.singlesPrice==='object')?s.singlesPrice:{});
   Object.keys(o.singlesPrice).forEach(k=>{ o.singlesPrice[k]=num(o.singlesPrice[k],MK_DEFAULTS.singlesPrice[k]||0,0,1e7); });
-  ['pinned','hidden','packQty','order'].forEach(k=>{ if(!Array.isArray(o[k])) o[k]=MK_DEFAULTS[k].slice(); });
+  ['pinned','hidden','packQty','order','singlesPinned','singlesHidden'].forEach(k=>{ if(!Array.isArray(o[k])) o[k]=MK_DEFAULTS[k].slice(); });
+  if(o.shopCards!=null&&!Array.isArray(o.shopCards)) delete o.shopCards;
   ['sales','sections','setArt'].forEach(k=>{ if(!o[k]||typeof o[k]!=='object'||Array.isArray(o[k])) o[k]={}; });
   o.packQty=o.packQty.map(n=>Math.max(1,Math.min(99,Math.round(+n)||0))).filter((n,i,a)=>n&&a.indexOf(n)===i).slice(0,4); if(!o.packQty.length) o.packQty=[1];
   _mk.cfgSrc=src; _mk.cfgC=o; _mk.rot={}; return o;
@@ -44317,8 +44641,16 @@ function mkInMarket(id,R){ return R.inCol.includes(id)||R.pinned.includes(id)||R
 function mkLastSeen(id){ const D=mkDay(); for(let d=D-1;d>=D-120;d--){ if(mkInMarket(id,mkRotation(d))) return D-d; } return null; }
 function mkSinglesPool(){ return Object.keys(DB).filter(id=>{ const c=DB[id]; if(!c||c.exclusive||c.isToken||c.transformOnly||c.type==='token'||c.type==='system'||c.type==='herald') return false;
   if(c.type==='energy_card'&&!c.specialEnergy) return false; if((typeof cardHiddenFor==='function'&&cardHiddenFor(id))||(typeof _disabledCards!=='undefined'&&_disabledCards[id])) return false;
-  const set=(typeof getCardSet==='function')?getCardSet(id):(c.setId||''); if(!set||set==='promo') return false; return getRarity(id)!=='secret'; }); }
-function mkSingles(D){ const C=mkCfg(); return mkShuffle(mkSinglesPool(),'mk-singles-'+D).slice(0,C.singlesCount); }
+  const set=(typeof getCardSet==='function')?getCardSet(id):(c.setId||''); if(!set||set==='promo'||set==='shop') return false; if((mkCfg().singlesHidden||[]).includes(id)) return false; return getRarity(id)!=='secret'; }); }
+// Cards the server can sell as singles (econSinglesPool's rule: no exclusives, promos, Secret Rares, Heralds, forms or basic Energy).
+function mkShopOk(id){ const c=DB[id]; if(!c||c.exclusive||c.isToken||c.transformOnly||c.type==='token'||c.type==='system'||c.type==='herald') return false;
+  if(c.type==='energy_card'&&!c.specialEnergy) return false; if(typeof _disabledCards!=='undefined'&&_disabledCards[id]) return false;
+  const set=(typeof getCardSet==='function')?getCardSet(id):(c.setId||''); if(!set||set==='promo') return false; return getRarity(id)!=='secret'; }
+function mkSingles(D){ const C=mkCfg(); const pin=(C.singlesPinned||[]).filter((id,i,a)=>a.indexOf(id)===i&&mkShopOk(id)&&getCardSet(id)!=='shop');
+  return pin.concat(mkShuffle(mkSinglesPool().filter(id=>!pin.includes(id)),'mk-singles-'+D).slice(0,Math.max(0,C.singlesCount-pin.length))); }
+// SHOP CARDS (build 10.51): always in the Market. Unset list = every card in the Shop set; Market Editor → Cards sets your own.
+function mkShopAuto(){ return Object.keys(DB).filter(id=>getCardSet(id)==='shop'&&mkShopOk(id)).sort((a,b)=>(DB[a].name||'').localeCompare(DB[b].name||'')); }
+function mkShopCards(){ const C=mkCfg(); return (Array.isArray(C.shopCards)?C.shopCards:mkShopAuto()).filter((id,i,a)=>a.indexOf(id)===i&&mkShopOk(id)); }
 
 // ── prices ──
 function mkSale(id){ const s=mkCfg().sales[id]; if(!s) return 0; const pct=Math.max(0,Math.min(90,Math.round(+s.pct||0))); if(!pct) return 0;
@@ -44403,7 +44735,7 @@ function mkStrip(o){
   if(o.kind==='pack') return `10 CARDS · RARE+`;
   if(o.kind==='box') return `${BOX_PACKS} PACKS · 10% OFF`;
   if(o.kind==='inv') return `${((typeof setLabel==='function'&&setLabel(o.setId))||'').toUpperCase()} · OPEN`;
-  if(o.kind==='card') return `${o.tierLabel} · SINGLE CARD`;
+  if(o.kind==='card') return getCardSet(o.cid)==='shop'?`${o.tierLabel} · SHOP CARD`:`${o.tierLabel} · SINGLE CARD`;
   if(o.kind==='bp') return o.type;
   return '';
 }
@@ -44436,6 +44768,8 @@ function mkHeroHtml(o,pill,pillCls,secId){
     <div class="mk-hbuy"><button type="button" class="mk-btn" data-act="buy" data-k="${mkEsc(o.key)}">${o.owned?'OWNED · EQUIP':(o.kind==='set'?'VIEW SET':'VIEW ITEM')}</button>${o.owned?'':`<span class="mk-pr">${mkCoin()}${mkN(o.price)}${o.was?` <s>${mkN(o.was)}</s>`:''}</span>`}</div>
     <i class="mk-down" data-act="down" data-sec="${secId}" title="More"></i></div>`;
 }
+// A saved section order that's missing a newer section gets it right after the section it follows in MK_SECTION_IDS.
+function mkFillOrder(order){ MK_SECTION_IDS.forEach((x,i)=>{ if(order.includes(x)) return; const prev=MK_SECTION_IDS.slice(0,i).reverse().find(y=>order.includes(y)); order.splice(prev?order.indexOf(prev)+1:0,0,x); }); return order; }
 function mkLeftText(R,sid){ const n=R.left[sid]; if(!n) return 'ALWAYS IN THE MARKET'; return n===1?'LAST DAY':'IN THE MARKET · '+n+' MORE DAYS'; }
 function mkBuildSections(){
   const C=mkCfg(), D=mkDay(), R=mkRotation(D); _mk.D=D; const S={};
@@ -44456,6 +44790,8 @@ function mkBuildSections(){
     S.pass={id:'pass',name:mkSecName('pass'),sub:bp3Cfg().label,html:`<header class="mk-sh"><h2 class="mk-f mk-i">${mkEsc(mkSecName('pass'))}</h2><span class="mk-sub">${mkEsc(bp3Cfg().label)}${bp3Cfg().title?' · '+mkEsc(bp3Cfg().title):''}</span></header><div class="mk-grid">${t}</div>`}; }
   // daily singles
   { const cs=mkSingles(D); if(cs.length) S.singles={id:'singles',name:mkSecName('singles'),sub:'New cards every day',html:`<header class="mk-sh"><h2 class="mk-f mk-i">${mkEsc(mkSecName('singles'))}</h2><span class="mk-sub">NEW CARDS EVERY DAY · <b class="mk-tmx">${mkFmtLeft()}</b></span></header><div class="mk-grid">${cs.map(cid=>mkTile('card:'+cid)).join('')}</div>`}; }
+  // shop cards (build 10.51)
+  { const sc=mkShopCards(); if(sc.length) S.shopcards={id:'shopcards',name:mkSecName('shopcards'),sub:'Only in the Market',html:`<header class="mk-sh"><h2 class="mk-f mk-i">${mkEsc(mkSecName('shopcards'))}</h2><span class="mk-sub">ONLY IN THE MARKET · <b>${sc.length}</b> CARD${sc.length===1?'':'S'}</span></header><div class="mk-grid">${sc.map(cid=>mkTile('card:'+cid,{tags:getCardSet(cid)==='shop'?[['SHOP','p']]:[]})).join('')}</div>`}; }
   // collections (each one repaints the screen with its playmat)
   const cols=[]; const colIds=featSet?[featSet].concat(R.col.filter(x=>x!==featSet)):R.col.slice();
   colIds.forEach(sid=>{ const o=mkOffer('set:'+sid); if(!o) return; const isF=sid===featSet;
@@ -44472,7 +44808,7 @@ function mkBuildSections(){
       ?`<button type="button" class="mk-ev-tile" onclick="openHarvest()" style="display:grid;grid-template-columns:1fr 38%;width:100%;min-height:calc(var(--u)*16);border:1px solid rgba(240,197,106,.45);border-radius:calc(var(--u)*1.2);overflow:hidden;cursor:pointer;text-align:left;padding:0;color:#f7ead5;background:linear-gradient(90deg,#1d0a06,rgba(29,10,6,.6)),url('${EV_MAT_IMG}') center/cover"><span style="padding:calc(var(--u)*2)"><small style="font-family:'Share Tech Mono',monospace;letter-spacing:.3em;color:#e8913a;font-size:calc(var(--u)*1)">LIMITED-TIME EVENT · ${evLeftText()}</small><b style="display:block;font-family:Cinzel,serif;font-weight:900;font-size:calc(var(--u)*3);letter-spacing:.1em;color:#ffe3a3;margin:calc(var(--u)*.6) 0">HARVEST OF COURTS</b><span style="font-size:calc(var(--u)*1.3)">7 missions · 9 challenges · 13 event-only cards · earned, never sold. Open the event →</span></span><span style="background:url('${EV_ART_HERO}') center 20%/cover"></span></button>`
       :`<div class="mk-empty">No events are running right now. Seasonal packs and exclusive rewards will show up here during limited-time events.</div>`)}; }
   // order
-  let order=(C.order&&C.order.length?C.order.filter(x=>MK_SECTION_IDS.includes(x)):[]); MK_SECTION_IDS.forEach(x=>{ if(!order.includes(x)) order.push(x); });
+  let order=(C.order&&C.order.length?C.order.filter(x=>MK_SECTION_IDS.includes(x)):[]); mkFillOrder(order);
   if(featSet){ order=order.filter(x=>x!=='featured'); const ci=order.indexOf('collections'); order.splice(ci,1); order.unshift('collections'); }
   const out=[]; order.forEach(x=>{ if(x==='collections') cols.forEach(c=>out.push(c)); else if(S[x]) out.push(S[x]); });
   return out;
@@ -44812,7 +45148,7 @@ function mkEdTargets(){
 function mkEdWithCfg(fn){ const saved=_mkPreview; _mkPreview=_mke.w; _mk.cfgSrc=undefined; try{ return fn(); } finally { _mkPreview=saved; _mk.cfgSrc=undefined; } }
 function mkEditRender(){
   const ed=document.getElementById('mk-edit'); if(!ed) return; const W=_mke.w;
-  const tabs=[['rot','Rotation'],['sales','Sales'],['items','Items'],['sec','Sections'],['packs','Packs']];
+  const tabs=[['rot','Rotation'],['cards','Cards'],['sales','Sales'],['items','Items'],['sec','Sections'],['packs','Packs']];
   const num=(p,l,v,min,max)=>`<label>${l}<input type="number" data-p="${p}" data-t="num" value="${mkEdEsc(v)}" min="${min}" max="${max}"></label>`;
   const sw=(k,l,d)=>`<div class="mke-sw${W[k]?' on':''}" data-tog="${k}"><b>${l}<br><small style="font-weight:500;color:#a9a1cf">${d}</small></b><i></i></div>`;
   let body='';
@@ -44833,6 +45169,18 @@ function mkEditRender(){
         ${R.daily.map(id=>`<div>${mkEdEsc(nm(id))}<small>today</small></div>`).join('')}
         <div>Singles: ${sing.map(c=>mkEdEsc((DB[c]||{}).name||c)).join(', ')||'—'}</div></div>`;
   }
+  if(_mke.tab==='cards'){
+    const auto=!Array.isArray(W.shopCards); const shop=mkEdWithCfg(()=>mkShopCards());
+    const price=cid=>mkN((W.singlesPrice||{})[getRarity(cid)]!=null?W.singlesPrice[getRarity(cid)]:(MK_DEFAULTS.singlesPrice[getRarity(cid)]||0));
+    const chip=(cid,list)=>{ const c=DB[cid]; const rd=RARITY_DEFS[getRarity(cid)]||{}; return `<div class="mke-card"><img src="${mkEdEsc(getImg(cid)||'')}" alt="" loading="lazy"><span class="t"><b>${mkEdEsc(c?c.name:cid)}</b><small style="color:${rd.hex||'#aaa'}">${mkEdEsc(rd.label||'')}</small><small>${mkEdEsc((typeof setLabel==='function'&&setLabel(getCardSet(cid)))||'')}${list==='shop'?' · '+price(cid)+' Celestium':''}</small></span><button class="mke-b s r" data-cdel="${list}" data-cid="${mkEdEsc(cid)}" aria-label="Remove">✕</button></div>`; };
+    body=`<h5>Shop Cards</h5><p class="n">Cards the Market's <b>SHOP CARDS</b> section sells every day. They cost the Daily Singles price for their rarity (Rotation tab). ${auto?'<b>Automatic</b> right now: every card in the Shop set. Adding or removing a card switches to your own list.':'This is <b>your list</b>.'}</p>
+      <div class="mke-cards">${shop.map(cid=>chip(cid,'shop')).join('')||'<p class="n">No cards.</p>'}</div>
+      <div class="mke-cacts"><button class="mke-b s y" data-cadd="shop">+ ADD CARD</button>${auto?'':'<button class="mke-b s" data-cauto="1">USE AUTOMATIC (EVERY SHOP SET CARD)</button>'}</div>
+      <h5>Daily Singles — always in</h5><p class="n">In Daily Singles every day. The rest of the ${mkEdEsc(W.singlesCount)} slots keep rotating.</p>
+      <div class="mke-cards">${(W.singlesPinned||[]).map(cid=>chip(cid,'pin')).join('')||'<p class="n">None.</p>'}</div><div class="mke-cacts"><button class="mke-b s y" data-cadd="pin">+ ADD CARD</button></div>
+      <h5>Daily Singles — never in</h5><p class="n">Kept out of Daily Singles. Players who own them keep them.</p>
+      <div class="mke-cards">${(W.singlesHidden||[]).map(cid=>chip(cid,'hide')).join('')||'<p class="n">None.</p>'}</div><div class="mke-cacts"><button class="mke-b s y" data-cadd="hide">+ ADD CARD</button></div>`;
+  }
   if(_mke.tab==='sales'){
     const T=mkEdTargets(); const ids=Object.keys(W.sales||{});
     body=`<h5>Sales</h5><p class="n">Puts an item on sale for everyone: the price drops, the full price is crossed out, and a red seal shows the % off. Leave the end date empty for no end. Sales on packs apply to every pack of that kind (Buy Another too).</p>
@@ -44849,7 +45197,7 @@ function mkEditRender(){
       ${rows.map(([id,n,t])=>`<div class="mke-row"><span class="nm">${mkEdEsc(n)}<small>${mkEdEsc(t)}</small></span><select data-item="${mkEdEsc(id)}"><option value="rot"${mode(id)==='rot'?' selected':''}>Rotates</option><option value="pin"${mode(id)==='pin'?' selected':''}>Always in the Market</option><option value="hide"${mode(id)==='hide'?' selected':''}>Never in the Market</option></select></div>`).join('')}`;
   }
   if(_mke.tab==='sec'){
-    let order=(W.order&&W.order.length?W.order.filter(x=>MK_SECTION_IDS.includes(x)):[]); MK_SECTION_IDS.forEach(x=>{ if(!order.includes(x)) order.push(x); });
+    let order=(W.order&&W.order.length?W.order.filter(x=>MK_SECTION_IDS.includes(x)):[]); mkFillOrder(order);
     const ids=MK_SECTION_IDS.filter(x=>x!=='collections').concat(cosSetList().map(s=>s.id));
     body=`<h5>Order</h5><p class="n">"Collections" is where every collection in the Market goes. A featured collection always goes first.</p>
       ${order.map((id,i)=>`<div class="mke-row"><span class="nm">${i+1}. ${mkEdEsc(MK_SECTION_NAMES[id]||id)}</span><button class="mke-b s" data-ord="${id}" data-d="-1" ${i?'':'disabled'}>▲</button><button class="mke-b s" data-ord="${id}" data-d="1" ${i<order.length-1?'':'disabled'}>▼</button></div>`).join('')}
@@ -44876,9 +45224,12 @@ function mkEdWire(ed){
     if(d.tab){ _mke.tab=d.tab; mkEditRender(); return; }
     if(d.tog){ W[d.tog]=!W[d.tog]; mkEditRender(); return; }
     if(d.day!=null){ _mk.dayOff=d.day==='0'?0:(_mk.dayOff||0)+(+d.day); _mk.rot={}; mkRefresh(); document.getElementById('mk-edit').classList.add('open'); mkEditRender(); return; }
+    if(d.cadd){ mkEdPickCards(d.cadd); return; }
+    if(d.cdel){ mkEdListDel(d.cdel,d.cid); mkEditRender(); return; }
+    if(d.cauto){ delete W.shopCards; mkEditRender(); return; }
     if(d.saleadd){ const T=mkEdTargets().find(t=>!(W.sales||{})[t[0]]); if(T){ W.sales=W.sales||{}; W.sales[T[0]]={pct:20,until:''}; } mkEditRender(); return; }
     if(d.saledel){ delete W.sales[d.saledel]; mkEditRender(); return; }
-    if(d.ord){ let order=(W.order&&W.order.length?W.order.filter(x=>MK_SECTION_IDS.includes(x)):[]); MK_SECTION_IDS.forEach(x=>{ if(!order.includes(x)) order.push(x); });
+    if(d.ord){ let order=(W.order&&W.order.length?W.order.filter(x=>MK_SECTION_IDS.includes(x)):[]); mkFillOrder(order);
       const i=order.indexOf(d.ord), j=i+(+d.d); if(j>=0&&j<order.length){ const t=order[i]; order[i]=order[j]; order[j]=t; } W.order=order; mkEditRender(); return; }
     if(d.secclr){ if(W.sections) delete W.sections[d.secclr]; mkEditRender(); return; }
     if(d.reset){ _mke.w=JSON.parse(JSON.stringify(MK_DEFAULTS)); _mke.msg='Defaults loaded in this window — PREVIEW or SAVE to use them.'; _mke.err=false; mkEditRender(); return; }
@@ -44894,6 +45245,18 @@ function mkEdWire(ed){
       if(f==='pct') s.pct=Math.max(1,Math.min(90,Math.round(+el.value)||1)); if(f==='until') s.until=el.value?new Date(el.value).toISOString():''; W.sales[id]=s; return; }
     if(el.dataset.item){ const id=el.dataset.item, m=el.value; W.pinned=(W.pinned||[]).filter(x=>x!==id); W.hidden=(W.hidden||[]).filter(x=>x!==id); if(m==='pin') W.pinned.push(id); if(m==='hide') W.hidden.push(id); return; }
   };
+}
+// Market Editor → Cards (build 10.51): lists are edited with the admin card picker.
+function mkEdList(k){ const W=_mke.w; if(k==='shop'){ if(!Array.isArray(W.shopCards)) W.shopCards=mkEdWithCfg(()=>mkShopCards()).slice(); return W.shopCards; }
+  const key=k==='pin'?'singlesPinned':'singlesHidden'; if(!Array.isArray(W[key])) W[key]=[]; return W[key]; }
+function mkEdListDel(k,cid){ const L=mkEdList(k); const i=L.indexOf(cid); if(i>=0) L.splice(i,1); }
+function mkEdPickCards(k){
+  const W=_mke.w, cur=()=>k==='shop'?mkEdWithCfg(()=>mkShopCards()):(k==='pin'?(W.singlesPinned||[]):(W.singlesHidden||[]));
+  const T={shop:['ADD SHOP CARDS','Sold every day in SHOP CARDS'],pin:['ALWAYS IN DAILY SINGLES','In Daily Singles every day'],hide:['NEVER IN DAILY SINGLES','Kept out of Daily Singles']}[k];
+  acpOpen({title:T[0], sub:T[1], stay:true, set:k==='shop'?'shop':'all', hint:'Only cards the Market can sell are shown (no Promo, exclusive or Secret Rare cards, Heralds, transformations or basic Energy).',
+    filter:id=>mkShopOk(id)&&(k==='shop'||getCardSet(id)!=='shop'), has:id=>cur().includes(id),
+    onPick:cid=>{ const L=mkEdList(k); if(!L.includes(cid)) L.push(cid); if(k==='pin') mkEdListDel('hide',cid); if(k==='hide') mkEdListDel('pin',cid); mkEditRender(); },
+    onClose:()=>mkEditRender()});
 }
 async function mkEdSave(){
   if(typeof isAdmin!=='function'||!isAdmin()) return; const v=JSON.parse(JSON.stringify(_mke.w));
