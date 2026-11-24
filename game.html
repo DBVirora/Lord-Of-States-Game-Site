@@ -9824,7 +9824,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.51 · New cards + card picker</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.52 · Christmas promos</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10912,8 +10912,21 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.51'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.52'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.52', date:'2026-11-24',
+    rules:["GAME_BUILD '10.52' (a new card = new rules; online needs both sides on 10.52)."],
+    cards:[{id:'booni_christmas_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/Virora/Booni Stole Christmas (Promo).png', newAbilities:['Sack Snatch','Runaway Reindeer','Naughty List'],
+        note:"Booni (Stole Christmas) · Character (type 'char', no line; charName 'Booni' like Booni (Uninvited Guest)) · color 'purple' · Legend · cost 7 · 6 ATK / 7 HP · subtypes Freeloader, Human · race 'Freeloader Human' · sym 🎅 · printed PROMO / PRM. Not exclusive (a normal promo: codes, gifts, mail)."},
+      {id:'virora_santa_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/Virora/Virora Santa (Promo).png', newAbilities:['Secret Santa','Snow Globe Keepsake','Holiday Spirit'],
+        note:"Virora (Santa) · standalone Character (type 'char', charLine 'virora_santa_promo' so it has no Virora forms; charName 'Virora', so it counts as a Virora character) · color 'purple' · Legend · cost 6 · 5 ATK / 6 HP · subtypes Royal, Saiyan · race 'Royal Saiyan' · sym 🎁 · printed PROMO / PRM. Not exclusive."}],
+    abilities:["SACK SNATCH (onEntry): take up to 2 Energy from the opponent (2v2: the opponent with the most Energy) — they lose it (energy −= n, _trimColorEnergy), you gain it as White (energy += n). The Energy Intake pattern.",
+      "RUNAWAY REINDEER (activated): 1 Energy (Purple), once per turn (generic gate; paid → doesn't tap). flipCoinFor. TAILS: dealDamage 2 to Booni himself (can destroy him). HEADS: pick an opposing character (openEnemyTargetPicker: shields / tolls apply) → tapped = true (a normal tap: it untaps at its controller's next turn) and applyStatus 'confuse' with the normal duration (STATUS_META.confuse.dur). No opposing characters on heads = nothing. CPU: never at 2 Health or less; target = the strongest attacker that isn't Confused / protected / Vortex Shielded; score 10 + min(12, its Attack).",
+      "NAUGHTY LIST (passive, recalcPassives): every Confused character (not Heralds) gets −1 Attack for each Naughty List on an opposing field, never pushing its Attack below 0 (so it comes back exactly). naughtyListRefresh() re-runs recalcPassives when a Confusion starts (applyStatus), is cured (cureStatus / cureAllStatuses) or wears off (decrementStatuses), only while some field has a Naughty List.",
+      "SECRET SANTA (Virora (Santa), onEntry): choose one of your OTHER characters (seqChoose; not optional — Skip / closing picks one: a character with statuses first, then the most valuable; the CPU does the same). cureAllStatuses, then +2/+2 until the end of YOUR next turn: f._santa = {amt, by, ends:2} (currentATK/atkBonus/hpBonus/currentHP +2), ticked at the end of each turn of `by` like Evolved Decree (endSecretSanta: −2/−2, Health stays at least 1), counted in tempStatDelta so a transformation keeps it; Card Info shows '🎁 Secret Santa'. No other character = nothing.",
+      "SNOW GLOBE KEEPSAKE (Virora (Santa), activated): 2 Energy (Purple), every other turn (abilityUsed.snow_globe_keepsake_turn, the Heir's Flare / Glacial Lens cooldown), paid → no tap. Pick an opposing character (openEnemyTargetPicker; paid when the ability starts, like Heir's Flare) → Confused (normal duration); then a second one or Skip (seqChoose; protected characters aren't offered; a toll target asks its 2⚡). CPU: the two strongest attackers that can still be Confused; score 8 + their Attack.",
+      "HOLIDAY SPIRIT (Virora (Santa), passive recalc): your other Royal Saiyans (isRoyalSaiyan) get +1 Attack, one per Holiday Spirit (the King of Sadala pattern)."],
+    screens:["Card Info condition row '🎁 Secret Santa +2/+2 until the end of <player>'s next turn'."], data:["Scans: Scans repo Characters/Series/Virora/Booni Stole Christmas (Promo).png and Virora Santa (Promo).png."] },
   { build:'10.51', date:'2026-11-23',
     rules:["GAME_BUILD '10.51' (new cards = new rules; online needs both sides on 10.51)."],
     cards:[{id:'elagost_bse', set:'base_set', number:'043/150', rarity:'rare', scan:'Sets/BASE SET/043-150 (Elagost).png', newAbilities:["Prince's Pride","Heir's Flare"],
@@ -12027,6 +12040,8 @@ const DEFAULTS={
   crossroads_market_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/109-150%20(Crossroads%20Market).png',
   spiderman_imperfects_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Spider-Man%20Imperfects%20(Promo).png',
   red_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Red%20Hulk%20(Promo).png',
+  booni_christmas_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Virora/Booni%20Stole%20Christmas%20(Promo).png',
+  virora_santa_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Virora/Virora%20Santa%20(Promo).png',
   elise_ssbe_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/133-150%20(Elise%20SSBE).png',
   asa_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/063-150%20(Asa).png',
   falcore_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/136-150%20(Falcore).png',
@@ -12553,6 +12568,20 @@ const DB={
   // ── THEIA (BSE 057/150) — build 10.13. Prime, Red. The Power of Primes: +2 Attack while you control another Prime.
   theia_bse:{id:'theia_bse',rarity:'common',name:'Theia',color:'red',charName:'Theia',subtypes:['Prime'],type:'char',race:'Prime',cost:3,atk:3,hp:4,sym:'THEIA',setId:'base_set',cardNumber:'057/150',keywords:[],nextForms:[],
     abilities:[{label:'The Power of Primes',type:'passive',cost:0,text:'While you control another Prime character, this card gets +2 Attack.'}],transforms:[]},
+  // ── VIRORA (SANTA) — PROMO (PRM), build 10.52. Purple Legend, standalone (its own charLine, so no Virora forms from it).
+  //    Secret Santa (onEntry: an ally loses all statuses, +2/+2 until the end of your next turn — f._santa) · Snow Globe Keepsake
+  //    (2⚡ every other turn, abilityUsed.snow_globe_keepsake_turn: Confuse up to two foes) · Holiday Spirit (other Royal Saiyans +1 ATK).
+  virora_santa_promo:{id:'virora_santa_promo',rarity:'legend',name:'Virora (Santa)',color:'purple',charName:'Virora',charLine:'virora_santa_promo',subtypes:['Royal','Saiyan'],type:'char',race:'Royal Saiyan',cost:6,atk:5,hp:6,sym:'🎁',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
+    abilities:[{label:'Secret Santa',type:'triggered',cost:0,text:'When this card enters your field, choose one of your other characters. Remove all statuses from it, and it gets +2/+2 until the end of your next turn.'},
+      {label:'Snow Globe Keepsake',type:'activated',cost:2,limit:'every_other_turn',text:'Pay 2 Energy: Up to two target opposing characters become Confused. (Every other turn)'},
+      {label:'Holiday Spirit',type:'passive',cost:0,text:'Your other Royal Saiyans get +1 Attack.'}],transforms:[]},
+  // ── BOONI (STOLE CHRISTMAS) — PROMO (PRM), build 10.52. Purple Legend. Sack Snatch (onEntry: take 2 Energy from your opponent) ·
+  //    Runaway Reindeer (1⚡ once per turn: coin — heads tap + Confuse a target, tails 2 damage to Booni) · Naughty List (recalcPassives:
+  //    Confused opposing characters −1 Attack; naughtyListRefresh re-runs it when a Confusion starts or ends).
+  booni_christmas_promo:{id:'booni_christmas_promo',rarity:'legend',name:'Booni (Stole Christmas)',color:'purple',charName:'Booni',subtypes:['Freeloader','Human'],type:'char',race:'Freeloader Human',cost:7,atk:6,hp:7,sym:'🎅',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
+    abilities:[{label:'Sack Snatch',type:'triggered',cost:0,text:'When this card enters your field, take 2 Energy from your opponent.'},
+      {label:'Runaway Reindeer',type:'activated',cost:1,limit:'once_per_turn',text:'Pay 1 Energy: Flip a coin. Heads: tap target opposing character and it becomes Confused. Tails: Booni crash-lands and this card takes 2 damage. (Once per turn)'},
+      {label:'Naughty List',type:'passive',cost:0,text:'Confused opposing characters get −1 Attack.'}],transforms:[]},
   // ── ELAGOST (BSE 043/150) — build 10.51. Royal Saiyan, Red Rare. Prince's Pride: +1 Attack per other Royal Saiyan you control
   //    (max +3, passive recalc). Heir's Flare: 3⚡ every other turn (abilityUsed.heirs_flare_turn) — 2 to a target, 1 to each other foe.
   elagost_bse:{id:'elagost_bse',rarity:'rare',name:'Elagost',color:'red',charName:'Elagost',subtypes:['Royal','Saiyan'],type:'char',race:'Royal Saiyan',cost:5,atk:6,hp:5,sym:'ELA',setId:'base_set',cardNumber:'043/150',keywords:[],nextForms:[],
@@ -14317,7 +14346,7 @@ function tempStatDelta(f){ let a=0,h=0;
   a-=(f.surfacerAtkDebuff||0); h-=(f.surfacerHpDebuff||0);
   if(f._ph) a-=(f._ph.atk||0); if(f._kb) a-=(f._kb.atk||0);
   a-=(f._fury||0)+(f._theftDn||0); a+=(f._theftUp||0); // 🐾 Elise (build 10.33)
-  a+=(f._heatAbs||0); if(f._decree){ a+=f._decree.amt||0; h+=f._decree.amt||0; } // 🔥 Red Hulk · 👑 Evolved Decree (build 10.34)
+  a+=(f._heatAbs||0); if(f._decree){ a+=f._decree.amt||0; h+=f._decree.amt||0; } if(f._santa){ a+=f._santa.amt||0; h+=f._santa.amt||0; } // 🔥 Red Hulk · 👑 Evolved Decree (build 10.34)
   if(Array.isArray(f._wotr)) f._wotr.forEach(w=>{ a-=(w.atk||0); h-=(w.hp||0); });
   if(Array.isArray(f._ewall)) f._ewall.forEach(w=>{ h+=(w.hp||0); });
   return {a,h}; }
@@ -14792,6 +14821,7 @@ function fxEffectsOf(fc){
   if(typeof hasTerrainScan==='function'&&hasTerrainScan(fc)) cond('📡','Terrain Scan','It may attack Location cards.',{cid:'geo_radar_bse',uid:null});
   if(fc._soulCage&&typeof isAbilitySealed==='function'&&isAbilitySealed(fc)) cond('🔒','Soul Cage',"It can't use activated abilities while its jailer stays on the field.",byUid(fc._soulCage.sourceUid));
   if(isImprisoned(fc)) cond('🔒','Imprisoned',"Aetherak Prison holds it: it can't attack, retaliate or use abilities while the Prison stays. Its owner may pay 4 Energy on their turn to free it (Breakout).",{cid:'aetherak_prison_bse',uid:fc._prison.src});
+  if(fc._santa) cond('🎁','Secret Santa','+'+fc._santa.amt+'/+'+fc._santa.amt+' until the end of '+pname(fc._santa.by)+"'s next turn.",byLabel('Secret Santa'));
   if(fc._decree) cond('👑','Evolved Decree','+'+fc._decree.amt+'/+'+fc._decree.amt+(fc._decree.kw?' and Resolve':'')+' until the end of '+pname(fc._decree.by)+"'s next turn.",byLabel('Evolved Decree'));
   if(fc._lensThaw&&statusActive(fc,'freeze')) cond(fc._lensThaw.ico||'🔭',fc._lensThaw.lbl||'Glacial Lens','Frozen until the end of '+pname(fc._lensThaw.by)+"'s next turn.",null);
   if(fc._haunt>0) cond('🌑','Haunted Avatar','+'+fc._haunt+' Attack until the end of this turn.',null);
@@ -14966,6 +14996,8 @@ function recalcPassives(){
       if((c.subtypes||[]).some(t=>/^hero$/i.test(String(t).trim()))) pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,"Amazon's Valor")).forEach(f=>add(1,0,f.cid,"Amazon's Valor",f.uid));
       // VEYNARIA — Royal Matriarch: your OTHER Royal Saiyans get the source form's +Attack / +Health (one bonus per source).
       // KING THEODEN — King of Sadala (+1/+1) / Sovereign of Sadala (+2/+2): your OTHER Royal Saiyans (one bonus per source).
+      // VIRORA (SANTA) — Holiday Spirit (build 10.52): your other Royal Saiyans get +1 Attack (each Holiday Spirit).
+      if(isRoyalSaiyan(c)) pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'Holiday Spirit')).forEach(f=>add(1,0,f.cid,'Holiday Spirit',f.uid));
       if(isRoyalSaiyan(c)){ pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'King of Sadala')).forEach(f=>add(1,1,f.cid,'King of Sadala',f.uid));
         pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'Sovereign of Sadala')).forEach(f=>add(2,2,f.cid,'Sovereign of Sadala',f.uid)); }
       // SKYRAIL VELOCITY STATION — Fast Lane: your Yellow characters get +1 Attack (each Station that isn't frozen).
@@ -14987,6 +15019,10 @@ function recalcPassives(){
       if(pl.herald && hasAbilityLabel(pl.herald,'Latverian Armory') && hasEquipmentAttached(fc)) add(1,1,pl.herald.cid,'Latverian Armory',pl.herald.uid);
       // STORM — Tailwind: your characters get +1 Attack (until your next turn).
       if(isChar(c) && weatherOf(p)==='tailwind') add(1,0,pl.herald.cid,'Tailwind',pl.herald.uid);
+      // BOONI (STOLE CHRISTMAS) — Naughty List (build 10.52): a Confused character gets −1 Attack for each Naughty List on an opposing
+      // field (never below 0 Attack, so the number comes back exactly when the Confusion ends).
+      if(fc!==pl.herald&&statusActive(fc,'confuse')) hocEnemies(p).forEach(op=>(G.players[op]?.field||[]).filter(f=>hasAbilityLabel(f,'Naughty List')).forEach(f=>{
+        const _room=Math.max(0,(fc.currentATK||0)-prevA+addA); if(_room>0) add(-1,0,f.cid,'Naughty List',f.uid); }));
       // Apply delta to current stats
       const deltaA=addA-prevA, deltaH=addH-prevH;
       fc.passiveAtk=addA; fc.passiveHp=addH; fc.passiveSrc=src;
@@ -19151,6 +19187,34 @@ function onEntry(p,fc){
       else { freeze(enemies[Math.floor(Math.random()*enemies.length)].uid); }
     } else { log(_lbl+': no enemy characters to target.','info'); }
   }
+  // ── VIRORA (SANTA): Secret Santa (build 10.52) — on entry, choose one of your OTHER characters: remove all its statuses, and it
+  //    gets +2/+2 until the end of your next turn. It's not optional: Skip / closing picks the best one for you.
+  if(hasAbilityLabel(fc,'Secret Santa')){
+    const _p=p, _src=fc;
+    const mine=()=>(G.players[_p]?.field||[]).filter(f=>f.uid!==_src.uid&&isChar(DB[f.cid]));
+    const gift=(uid)=>{ const t=mine().find(f=>f.uid===uid); if(!t){ renderAll(); return; }
+      const _fx=(typeof fxPush==='function')?fxPush(_src.cid,'Secret Santa',_src.uid):null;
+      try{ cureAllStatuses(t); applySecretSanta(t,_p); } finally{ if(typeof fxPop==='function') fxPop(_fx); }
+      log(`🎁 Secret Santa: ${DB[t.cid].name} is cleansed and gets +2/+2 until the end of ${pname(_p)}'s next turn!`,'gain');
+      if(typeof recalcPassives==='function') recalcPassives(); renderAll(); };
+    const best=()=>{ const m=mine(); return m.slice().sort((a,b)=>((b.statuses&&Object.keys(b.statuses).length)?1:0)-((a.statuses&&Object.keys(a.statuses).length)?1:0)||aiFcValue(b)-aiFcValue(a))[0]; };
+    const m0=mine();
+    if(!m0.length) log('🎁 Secret Santa: no other character to give a gift to.','info');
+    else if(seqIsLocalHuman(_p)&&!G._aiAuto) seqChoose('🎁 Secret Santa','Choose one of your other characters: remove all its statuses, and it gets +2/+2 until the end of your next turn. (Skip picks one for you.)',
+      m0.map(f=>{ const st=f.statuses?Object.keys(f.statuses).filter(k=>f.statuses[k]>0):[]; return {label:DB[f.cid].name, sub:'⚔'+(f.currentATK||0)+' · ❤️'+(f.currentHP||0)+(st.length?' · '+st.map(k=>(STATUS_META[k]||{}).label||k).join(', '):''), val:f.uid}; }),
+      (u)=>gift(u), ()=>{ const b=best(); if(b) gift(b.uid); });
+    else { const b=best(); if(b) gift(b.uid); }
+  }
+  // ── BOONI (STOLE CHRISTMAS): Sack Snatch (build 10.52) — on entry, take up to 2 Energy from the opponent (2v2: the one with the
+  //    most Energy). It arrives as White Energy, like Energy Intake.
+  if(hasAbilityLabel(fc,'Sack Snatch')){
+    const _opps=hocEnemies(p).filter(o=>G.players[o]); const _opp=_opps.slice().sort((a,b)=>(G.players[b].energy||0)-(G.players[a].energy||0))[0];
+    if(_opp!=null){ const _o=G.players[_opp], _got=Math.min(2,Math.max(0,_o.energy||0));
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Sack Snatch',fc.uid):null;
+      try{ if(_got>0){ _o.energy=(_o.energy||0)-_got; _trimColorEnergy(_o); G.players[p].energy=(G.players[p].energy||0)+_got; log(`🎅 Sack Snatch: ${c.name} takes ${_got} Energy from ${pname(_opp)}!`,'gain'); }
+        else log(`🎅 Sack Snatch: ${pname(_opp)} has no Energy to take.`,'info'); }
+      finally{ if(typeof fxPop==='function') fxPop(_fx); } }
+  }
   // ── SAIYAN MAGE: Nebula Snare (build 10.51) — on entry, flip a coin; heads: target opposing character becomes Confused.
   if(hasAbilityLabel(fc,'Nebula Snare')){
     const _p=p, _src=fc;
@@ -20132,6 +20196,8 @@ function activateAbility(fc,abl){
   }
 }
 // MIRROR OF NATURE (build 10.51) helpers. Options = activated abilities of OTHER characters on any field that aren't Once per game.
+// SNOW GLOBE KEEPSAKE (CPU): the strongest attacker that can still be Confused.
+function aiSnowGlobePick(list){ const ok=(list||[]).filter(f=>!statusActive(f,'confuse')&&!hasAbilityLabel(f,'Vortex Shield')&&!hasAbilityLabel(f,'Spirit Ward')); return (ok.length?ok:(list||[])).slice().sort((a,b)=>effPower(b)-effPower(a))[0]||null; }
 function mirrorOptions(fc, ap){
   const out=[], seen=new Set(), opps=_fusionOpps(ap);
   [1,2,3,4].forEach(pp=>{ const P=G.players[pp]; if(!P||!P.field) return;
@@ -20620,6 +20686,32 @@ function _activateAbilityCore(fc,abl){
   }
   // ── ELAGOST: Heir's Flare (build 10.51) — 3⚡ every other turn (abilityUsed.heirs_flare_turn, like Glacial Lens): 2 damage to a
   //    target opposing character, then 1 damage to EACH OTHER opposing character (not targeted, so Drunken Stance doesn't stop the 1).
+  // ── VIRORA (SANTA): Snow Globe Keepsake (build 10.52) — 2⚡ every other turn (abilityUsed.snow_globe_keepsake_turn): up to two
+  //    target opposing characters become Confused. Pick the first (that's when it's paid), then a second or Skip.
+  if(abl.label==='Snow Globe Keepsake'){
+    const last=fc.abilityUsed&&fc.abilityUsed.snow_globe_keepsake_turn;
+    if(last!=null&&(G.turn-last)<2){ log(`Snow Globe Keepsake: wait ${2-(G.turn-last)} more turn(s).`,'dmg'); return; }
+    const ap=G.activePlayer, pl=G.players[ap], opps=_fusionOpps(ap);
+    const foes=()=>{ const o=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) o.push(f); })); return o; };
+    if(!foes().length){ log('Snow Globe Keepsake: no opposing characters.','dmg'); return; }
+    if(pl.energy<2){ log('Not enough energy (need 2⚡).','dmg'); return; }
+    if(!spendEnergyAbility(ap,2,'purple')) return;
+    if(!fc.abilityUsed) fc.abilityUsed={}; fc.abilityUsed.snow_globe_keepsake_turn=G.turn; pl.usedAbilityThisTurn=true;
+    if(isMe(ap) && typeof bumpStat==='function') bumpStat('abilities_used',1);
+    closeAllModals();
+    const conf=(t)=>{ if(!t||!foes().some(f=>f.uid===t.uid)) return; const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Snow Globe Keepsake',fc.uid):null;
+      try{ if(applyStatus(t,'confuse',(STATUS_META.confuse&&STATUS_META.confuse.dur)||3)) log(`🔮 Snow Globe Keepsake: ${DB[t.cid].name} is Confused!`,'gain'); } finally{ if(typeof fxPop==='function') fxPop(_fx); } };
+    const ok2=f=>!hasDrunkenStance(f)&&!spaceShielded(f);
+    const first=(uid)=>{ const a=foes().find(f=>f.uid===uid); if(!a){ renderAll(); return; } conf(a);
+      const rest=foes().filter(f=>f.uid!==uid&&ok2(f));
+      const second=(u2)=>{ const b=rest.find(f=>f.uid===u2); if(b&&(!hasAbilityToll(b)||canPayEvasionToll(ap,b))) conf(b); renderAll(); };
+      if(!rest.length){ renderAll(); return; }
+      if(seqIsLocalHuman(ap)&&!G._aiAuto) seqChoose('🔮 Snow Globe Keepsake','Choose a second opposing character to Confuse (or Skip).',rest.map(f=>({label:DB[f.cid].name,sub:'⚔'+(f.currentATK||0)+(statusActive(f,'confuse')?' · already Confused':''),val:f.uid})),(u)=>second(u),()=>renderAll());
+      else { const t=aiSnowGlobePick(rest); second(t&&t.uid); } };
+    if(seqIsLocalHuman(ap)&&!G._aiAuto) openEnemyTargetPicker(foes(),first,{sourcePlayer:ap,title:'🔮 Snow Globe Keepsake',desc:'Choose an opposing character to Confuse — then you can pick a second one.'});
+    else { const pool=foes().filter(f=>ok2(f)&&(!hasAbilityToll(f)||pl.energy>=2)); const t=aiSnowGlobePick(pool); openEnemyTargetPicker([t||foes()[0]],first,{sourcePlayer:ap,title:'Snow Globe Keepsake'}); }
+    return;
+  }
   if(abl.label==="Heir's Flare"){
     const last=fc.abilityUsed&&fc.abilityUsed.heirs_flare_turn;
     if(last!=null&&(G.turn-last)<2){ log(`Heir's Flare: wait ${2-(G.turn-last)} more turn(s).`,'dmg'); return; }
@@ -22415,6 +22507,30 @@ function runAbilityEffect(fc, abl, pl){
     openEnemyTargetPicker(enemies, hit, {sourcePlayer:ap, title:'Sapphire Nova', desc:'Deal 3 damage to an opposing character. It gets −2 Attack until the end of your next turn; if it is destroyed, draw 1.'});
     return;
   }
+  // ── BOONI (STOLE CHRISTMAS): Runaway Reindeer (build 10.52) — 1⚡, once per turn (generic gate). Flip a coin. Heads: tap a target
+  //    opposing character and Confuse it. Tails: Booni crash-lands and takes 2 damage.
+  if(label==='Runaway Reindeer'){
+    const ap=G.activePlayer, opps=_fusionOpps(ap);
+    flipCoinFor({title:'Runaway Reindeer — '+(DB[fc.cid]?.name||'Booni'),desc:'Heads: tap an opposing character and Confuse it · Tails: Booni crash-lands (2 damage)'},(heads)=>{
+      if(!G||G.gameOver) return;
+      if(!G.players[ap].field.some(f=>f.uid===fc.uid)){ renderAll(); return; }
+      if(!heads){ log(`🦌 Runaway Reindeer: tails — ${DB[fc.cid]?.name} crash-lands and takes 2 damage!`,'dmg');
+        const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Runaway Reindeer',fc.uid):null; try{ dealDamage(ap,fc.uid,2); } finally{ if(typeof fxPop==='function') fxPop(_fx); }
+        renderAll(); return; }
+      const foes=()=>{ const o=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) o.push(f); })); return o; };
+      const f0=foes(); if(!f0.length){ log('🦌 Runaway Reindeer: heads — but there are no opposing characters.','info'); renderAll(); return; }
+      const hit=(uid)=>{ const op=opps.find(o=>(G.players[o]?.field||[]).some(f=>f.uid===uid)); const t=op&&G.players[op].field.find(f=>f.uid===uid); if(!t){ renderAll(); return; }
+        const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Runaway Reindeer',fc.uid):null;
+        try{ t.tapped=true; applyStatus(t,'confuse',(STATUS_META.confuse&&STATUS_META.confuse.dur)||3); } finally{ if(typeof fxPop==='function') fxPop(_fx); }
+        log(`🦌 Runaway Reindeer: heads — ${DB[t.cid].name} is tapped and Confused!`,'gain'); renderAll(); };
+      if(seqIsLocalHuman(ap)&&!G._aiAuto) openEnemyTargetPicker(f0,hit,{sourcePlayer:ap,title:'🦌 Runaway Reindeer',desc:'Heads! Choose an opposing character: it is tapped and becomes Confused.'});
+      else { const pool=f0.filter(f=>!hasDrunkenStance(f)&&!spaceShielded(f)&&!hasAbilityLabel(f,'Vortex Shield')&&(!hasAbilityToll(f)||G.players[ap].energy>=2));
+        const fresh=pool.filter(f=>!statusActive(f,'confuse')); const t=(fresh.length?fresh:pool).slice().sort((a,b)=>effPower(b)-effPower(a))[0];
+        if(!t){ log('🦌 Runaway Reindeer: no opposing character to snare.','info'); renderAll(); return; }
+        if(hasAbilityToll(t)&&!canPayEvasionToll(ap,t)){ renderAll(); return; } hit(t.uid); }
+    });
+    return;
+  }
   // ── SAGE MODE VIRORA: Surface Palm (build 10.51) — 3 damage to target opposing character, then −2 Attack until the end of your
   //    next turn (applyTimedCut, the Sapphire Nova mechanism). 3⚡, once per turn (generic gate).
   if(label==='Surface Palm'){
@@ -23223,6 +23339,18 @@ function applyEvolvedDecree(f,by){
   f.currentATK=(f.currentATK||0)+3; f.atkBonus=(f.atkBonus||0)+3; f.hpBonus=(f.hpBonus||0)+3; f.currentHP=(f.currentHP||0)+3;
   if(!hasKW(f,'resolve')){ f.gainedKeywords=(Array.isArray(f.gainedKeywords)?f.gainedKeywords:[]).concat('resolve'); f._decree.kw=true; }
 }
+// SECRET SANTA (Virora (Santa), build 10.52): f._santa = {amt, by, ends:2}; +amt/+amt until the end of `by`'s next turn
+// (ticked with Evolved Decree at the end of each turn; counted in tempStatDelta so a transformation keeps it).
+function applySecretSanta(f,by){
+  if(!f._santa) f._santa={amt:0,by,ends:2};
+  f._santa.amt+=2; f._santa.ends=2; f._santa.by=by;
+  f.currentATK=(f.currentATK||0)+2; f.atkBonus=(f.atkBonus||0)+2; f.hpBonus=(f.hpBonus||0)+2; f.currentHP=(f.currentHP||0)+2;
+}
+function endSecretSanta(f){
+  const d=f._santa; if(!d) return; delete f._santa;
+  f.currentATK=Math.max(0,(f.currentATK||0)-d.amt); f.atkBonus=(f.atkBonus||0)-d.amt; f.hpBonus=(f.hpBonus||0)-d.amt; f.currentHP=Math.max(1,(f.currentHP||0)-d.amt);
+  log(`🎁 Secret Santa's +${d.amt}/+${d.amt} on ${DB[f.cid]?.name} ends.`,'info');
+}
 function endEvolvedDecree(f){
   const d=f._decree; if(!d) return; delete f._decree;
   f.currentATK=Math.max(0,(f.currentATK||0)-d.amt); f.atkBonus=(f.atkBonus||0)-d.amt; f.hpBonus=(f.hpBonus||0)-d.amt; f.currentHP=Math.max(1,(f.currentHP||0)-d.amt);
@@ -23367,18 +23495,27 @@ function applyStatus(fc,type,turns){
   log(`${m.icon} ${DB[fc.cid]?.name} is afflicted with ${m.label} (${fc.statuses[type]} turn${fc.statuses[type]>1?'s':''})!`,'dmg');
   if(type==='burn') try{ heatAbsorptionTrigger(fc); }catch(e){ console.warn('[Heat Absorption]',e); }
   if((type==='freeze'||type==='paralyze')&&fc._esc>0){ const _sp=escalationSpec(fc); if(_sp&&_sp.lockClears){ fc._esc=0; log(`💥 Legendary Escalation: ${DB[fc.cid]?.name} loses its banked damage (${m.label}).`,'dmg'); } }
+  if(type==='confuse') naughtyListRefresh();
   return true;
+}
+// NAUGHTY LIST (build 10.52): re-run the passive recalc when a Confusion starts or ends while a Naughty List is on a field.
+function naughtyListRefresh(){
+  if(!G||!G.players||G._nlBusy||typeof recalcPassives!=='function') return;
+  if(![1,2,3,4].some(p=>(G.players[p]?.field||[]).some(f=>hasAbilityLabel(f,'Naughty List')))) return;
+  G._nlBusy=true; try{ recalcPassives(); } finally{ G._nlBusy=false; }
 }
 function cureStatus(fc,type){
   if(!fc||!fc.statuses||!fc.statuses[type])return false;
   delete fc.statuses[type]; if(fc.statusSrc) delete fc.statusSrc[type];
   log(`${STATUS_META[type]?.icon||''} ${DB[fc.cid]?.name}'s ${STATUS_META[type]?.label||type} was cured.`,'gain');
+  if(type==='confuse') naughtyListRefresh();
   return true;
 }
 function cureAllStatuses(fc){
   if(!fc||!fc.statuses||!Object.keys(fc.statuses).length)return false;
   fc.statuses={}; fc.statusSrc={};
   log(`${DB[fc.cid]?.name} was cleansed of all status effects.`,'gain');
+  naughtyListRefresh();
   return true;
 }
 // DoT (Burn back-loaded 1/1/2, Poison ramping 1/2/3) at the afflicted player's turn start.
@@ -23453,6 +23590,7 @@ function decrementStatuses(p){
       if(fc.statuses[type]<=0){ delete fc.statuses[type]; log(`${STATUS_META[type]?.icon||''} ${DB[fc.cid]?.name}'s ${STATUS_META[type]?.label||type} wore off.`,'info'); }
     });
   });
+  naughtyListRefresh();
 }
 // Paralyze/Confusion roll when a character attempts to attack. Returns true if the
 // attack may proceed; false if it was consumed (fizzle or self-hit) — caller aborts.
@@ -23672,6 +23810,7 @@ function endTurnFx(p){
     if(f._theftDn){ f.currentATK=(f.currentATK||0)+f._theftDn; f.atkBonus=(f.atkBonus||0)+f._theftDn; f._theftDn=0; log(`🐾 ${DB[f.cid]?.name} gets its Attack back (Primal Theft ends).`,'info'); }
     if(f._theftUp){ f.currentATK=Math.max(0,(f.currentATK||0)-f._theftUp); f.atkBonus=(f.atkBonus||0)-f._theftUp; f._theftUp=0; }
     if(f._heatAbs){ f.currentATK=Math.max(0,(f.currentATK||0)-f._heatAbs); f.atkBonus=(f.atkBonus||0)-f._heatAbs; f._heatAbs=0; } // 🔥 Red Hulk: Heat Absorption ends with the turn
+    if(f._santa&&f._santa.by===p&&--f._santa.ends<=0) endSecretSanta(f); // 🎁 Virora (Santa): until the end of your next turn
     if(f._decree&&f._decree.by===p&&--f._decree.ends<=0) endEvolvedDecree(f); // 👑 Theoden (SSBE): until the end of your next turn
     if(f._lensThaw&&f._lensThaw.by===p&&--f._lensThaw.ends<=0){ f._lensLbl=f._lensThaw.lbl; delete f._lensThaw; if(statusActive(f,'freeze')){ delete f.statuses.freeze; if(f.statusSrc) delete f.statusSrc.freeze; log(`❄️ ${f._lensLbl||'Glacial Lens'}: ${DB[f.cid]?.name} thaws.`,'info'); } }
     if(f.ssbAtkBuff){ f.currentATK=(f.currentATK||0)-f.ssbAtkBuff; f.atkBonus=(f.atkBonus||0)-f.ssbAtkBuff; f.ssbAtkBuff=0; }
@@ -24253,6 +24392,12 @@ function aiScoreAbility(p, fc, abl, src){
   if(abl.label==="Doom's Design" && (!doomsDesignReady(fc) || !(pl.deck||[]).some(cid=>isEquip(DB[cid])))) return -1;
   if(abl.label==='The Iron Fist'){ const _l=fc.abilityUsed&&fc.abilityUsed.iron_fist_turn; if(_l!=null&&G.turn-_l<2) return -1;
     if(fc.tapped||!aiReady(fc)||!canCharacterAttack(p,fc)||!aiAttackOptionsFor(p,fc).length) return -1; return 24; }
+  if(abl.label==='Snow Globe Keepsake'){ if(ablCooldownLeft(fc,abl)>0) return -1;   // build 10.52 · Virora (Santa)
+    const es=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)&&!statusActive(e.fc,'confuse')&&!hasAbilityLabel(e.fc,'Vortex Shield')&&!hasAbilityLabel(e.fc,'Spirit Ward')); if(!es.length) return -1;
+    return 8+es.map(e=>effPower(e.fc)).sort((a,b)=>b-a).slice(0,2).reduce((x,y)=>x+y,0); }
+  if(abl.label==='Runaway Reindeer'){ if((fc.currentHP||0)<=2) return -1;   // build 10.52 · Booni (Stole Christmas): tails would destroy him
+    const es=aiEnemyChars(p).filter(e=>!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)&&!statusActive(e.fc,'confuse')&&!hasAbilityLabel(e.fc,'Vortex Shield')); if(!es.length) return -1;
+    return 10+Math.min(12,Math.max(...es.map(e=>effPower(e.fc)))); }
   if(abl.label==="Heir's Flare"){ if(ablCooldownLeft(fc,abl)>0) return -1; const es=aiEnemyChars(p); const _t=es.filter(e=>!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)); if(!_t.length) return -1;   // build 10.51 · Elagost
     const k2=_t.some(e=>(e.fc.currentHP||0)<=Math.max(0,2-(e.fc.nullify||0)))?1:0, k1=es.filter(e=>(e.fc.currentHP||0)<=Math.max(0,1-(e.fc.nullify||0))).length; return 12+es.length*4+k2*14+k1*10; }
   if(abl.label==='Mirror of Nature'){ const _o=aiMirrorPick(p,fc,mirrorOptions(fc,p)); return _o?Math.round(_o._s-6):-1; }   // build 10.51 · Sage Mode Virora
@@ -30873,7 +31018,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.51';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.52';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
