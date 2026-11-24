@@ -9824,7 +9824,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.53 · Fewer pack repeats</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.54 · Catalog publishes itself</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10914,6 +10914,11 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.52'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.54', date:'2026-11-24',
+    rules:["No match rules change: GAME_BUILD stays '10.52'. Web admin only."],
+    screens:["Admin → Economy (web): a 'Publish automatically' checkbox (on by default) on the catalog card, and a new 'Server functions' card (UP TO DATE / UPDATE NEEDED). Nothing for the PC to copy."],
+    data:["THE ECONOMY CATALOG PUBLISHES ITSELF (web admin). It is still one row, app_settings 'econ_catalog', that the web and the PC both read. Only the web writes it. The PC must NOT add a publisher: two different builders would overwrite each other's catalog. The web now publishes on admin sign-in when its catalog hash differs from the published one (after an update), unless the published build is newer than the page, and about 1.5 s after an admin save that can change it.",
+      "SQL: VCU_Economy_Setup.sql adds public.econ_sql_version() → text ('10.54'). The web admin compares it with ECON_SQL_NEED and shows UPDATE NEEDED. The PC can ignore it."] },
   { build:'10.53', date:'2026-11-24',
     rules:["No match rules change: GAME_BUILD stays '10.52'. Booster pack contents only."],
     screens:[],
@@ -31024,7 +31029,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.53';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.54';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -31069,14 +31074,66 @@ function econCatalogBody(){
   return {rewards:econBuildRewards(),cards:econBuildCards(),packs:econBuildPacks(),shop:econBuildShop(),bp};
 }
 function econBuildCatalog(){ const body=econCatalogBody(); return Object.assign({v:2,build:WEB_BUILD,at:new Date().toISOString(),hash:econHash(JSON.stringify(body))},body); }
+async function econWriteCatalog(cat){
+  const {error}=await _celSB.from('app_settings').upsert({key:'econ_catalog',value:JSON.stringify(cat),updated_at:new Date().toISOString()},{onConflict:'key'});
+  if(error) throw error;
+  ECON.pub={at:cat.at,build:cat.build,hash:cat.hash};
+  if(ECON.st){ ECON.st.catalogAt=cat.at; ECON.st.catalogBuild=cat.build; ECON.st.catalogHash=cat.hash; }
+}
 async function econPublish(btn){
   if(!isAdmin()) return;
   const cat=econBuildCatalog(); if(btn){ btn.disabled=true; btn.textContent='PUBLISHING…'; }
-  try{ const {error}=await _celSB.from('app_settings').upsert({key:'econ_catalog',value:JSON.stringify(cat),updated_at:new Date().toISOString()},{onConflict:'key'});
-    if(error) throw error; if(ECON.st){ ECON.st.catalogAt=cat.at; ECON.st.catalogBuild=cat.build; ECON.st.catalogHash=cat.hash; }
-    econToast(`Economy catalog published · <b>${Object.keys(cat.rewards).length}</b> rewards.`); }
+  try{ await econWriteCatalog(cat); econToast(`Economy catalog published · <b>${Object.keys(cat.rewards).length}</b> rewards.`); }
   catch(e){ alert('Publish failed: '+(e.message||e)); }
   econManage();
+}
+// ── build 10.54: the catalog publishes itself ──
+// One server row that the web and the PC both read; only the web admin writes it. Published on admin sign-in when the
+// game's catalog differs (after an update), and ~1.5 s after an admin save that can change it. An older cached page never
+// overwrites a newer build's catalog. Only this page's own changes trigger the save path (ECON.pub = the hash it last saw).
+const ECON_SQL_NEED='10.54';   // the econ_sql_version() this build expects (VCU_Economy_Setup.sql)
+function econBuildCmp(a,b){ const x=String(a||'').split('.').map(v=>parseInt(v,10)||0), y=String(b||'').split('.').map(v=>parseInt(v,10)||0);
+  for(let i=0;i<Math.max(x.length,y.length);i++){ const d=(x[i]||0)-(y[i]||0); if(d) return d<0?-1:1; } return 0; }
+function econAutoOn(){ try{ return localStorage.getItem('vcu_econ_auto')!=='0'; }catch(e){ return true; } }
+function econSetAuto(on){ try{ localStorage.setItem('vcu_econ_auto',on?'1':'0'); }catch(e){} if(on) econAutoSync('toggle'); }
+async function econAutoSync(why){
+  if(!isAdmin()||!econReady()||!econAutoOn()||!ECON.pub||ECON._autoBusy) return false;
+  const cat=econBuildCatalog();
+  if(cat.hash===ECON.pub.hash) return false;
+  if(ECON.pub.build&&econBuildCmp(ECON.pub.build,WEB_BUILD)>0){
+    if(!ECON._oldWarn){ ECON._oldWarn=true; econToast(`Catalog not updated: this page is build <b>${WEB_BUILD}</b>, older than the published catalog (<b>${String(ECON.pub.build).replace(/[<>&]/g,'')}</b>). Refresh the page.`); }
+    return false; }
+  ECON._autoBusy=true;
+  try{ await econWriteCatalog(cat); ECON._autoAt=Date.now(); econToast(`💠 Economy catalog updated automatically · build <b>${WEB_BUILD}</b>.`); return true; }
+  catch(e){ console.warn('[ECON] auto publish',e); return false; }
+  finally{ ECON._autoBusy=false; }
+}
+let _econAutoT=null;
+function econAutoSoon(){ if(!isAdmin()) return; clearTimeout(_econAutoT); _econAutoT=setTimeout(()=>{ econAutoSync('save'); },1500); }
+// Admin saves that can change the catalog: re-check right after each one (wrapped once, at admin sign-in).
+const ECON_AUTO_SAVERS=['saveDisabledCards','saveCardSets','saveCardSetOverrides','saveCosCatalog','saveCardMeta','saveCampaignFromEditor','saveBPFromEditor','startBPSeasonNow','endBPSeasonNow','bp3EdSave','craftAdminSave'];
+function econWrapSavers(){
+  if(ECON._wrapped) return; ECON._wrapped=true;
+  ECON_AUTO_SAVERS.forEach(n=>{ const f=window[n]; if(typeof f!=='function'||f._econWrap) return;
+    const w=async function(...a){ const r=await f.apply(this,a); try{ econAutoSoon(); }catch(e){} return r; }; w._econWrap=true; window[n]=w; });
+}
+// '' = installed functions predate the version check; null = couldn't tell (offline) → no warning.
+async function econSqlVersion(){
+  try{ const {data,error}=await _celSB.rpc('econ_sql_version');
+    if(error) return /could not find|does not exist|PGRST202|404/i.test(String(error.message||error.code||''))?'':null;
+    return typeof data==='string'?data:((data&&data.v)||''); }catch(e){ return null; }
+}
+function econSqlBehind(){ return ECON.sql!=null&&econBuildCmp(ECON.sql||'0',ECON_SQL_NEED)<0; }
+async function econAutoBoot(){
+  if(!isAdmin()) return;
+  econWrapSavers();
+  if(!ECON.tried) await econInit();
+  if(!econReady()) return;
+  const [ad,sv]=await Promise.all([econRpc('econ_admin_status',{p_limit:1}),econSqlVersion()]);
+  ECON.sql=sv;
+  if(ad&&ad.ok) ECON.pub={at:ad.catalogAt||null,build:ad.catalogBuild||'',hash:ad.catalogHash||''};
+  const pub=await econAutoSync('boot');
+  if(econSqlBehind()) setTimeout(()=>econToast(`🛠️ Server update needed: run <b>VCU_Economy_Setup.sql</b> in Supabase → SQL Editor. (Admin → Economy has details.)`),pub?5600:0);
 }
 
 // ── Admin → Economy ──
@@ -31086,8 +31143,10 @@ async function econManage(){
   showModalEl('💠 Economy',body,{forceHuman:true});
   if(!ECON.tried||!ECON.on) await econInit();
   if(!ECON.on){ body.innerHTML=`<div class="ec-card"><h4>Server functions not installed</h4><p>Run <b>VCU_Economy_Setup.sql</b> in the Supabase SQL Editor (after the Mailbox SQL), then reopen this panel. Until then the game pays rewards itself, as before.</p></div>`; return; }
-  const [st,ad]=await Promise.all([econRpc('econ_status'),econRpc('econ_admin_status',{p_limit:50})]);
+  const [st,ad,sv]=await Promise.all([econRpc('econ_status'),econRpc('econ_admin_status',{p_limit:50}),econSqlVersion()]);
   if(st){ ECON.st=st; ECON.lock=!!st.lock; }
+  ECON.sql=sv; if(ad&&ad.ok) ECON.pub={at:ad.catalogAt||null,build:ad.catalogBuild||'',hash:ad.catalogHash||''};
+  const sqlOld=econSqlBehind();
   const c=(ad&&ad.cfg)||{}, curBody=econCatalogBody(), cur=curBody.rewards, curHash=econHash(JSON.stringify(curBody));
   const pubAt=ad&&ad.catalogAt, fresh=!!pubAt&&ad.catalogHash===curHash;
   const me=(c.lockUsers||[]).includes(_celUserId);
@@ -31096,8 +31155,11 @@ async function econManage(){
   const m=(st&&st.match)||{};
   body.innerHTML=`
     <div class="ec-card"><h4>Reward catalog <span class="ec-pill ${fresh?'ok':'warn'}">${pubAt?(fresh?'UP TO DATE':'OUT OF DATE'):'NOT PUBLISHED'}</span></h4>
-      <p>The server uses this list for one-time rewards (achievements, campaign, tutorial, Battle Pass, Harvest of Courts, unlock cosmetics), Market prices, cosmetic sets, the cards in each set’s packs and what can be crafted. ${pubAt?`Published ${esc(fmt(pubAt))} · build ${esc(ad.catalogBuild||'?')} · ${ad.rewardKeys||0} rewards.`:'Not published yet: until you publish, the game handles these itself.'} Publish again after adding cards or cosmetics, changing prices, achievements, the campaign, the Battle Pass or an event. (Sales, single-card prices, Battle Pass prices and crafting rates are read live.)</p>
+      <p>The server uses this list for one-time rewards (achievements, campaign, tutorial, Battle Pass, Harvest of Courts, unlock cosmetics), Market prices, cosmetic sets, the cards in each set’s packs and what can be crafted. ${pubAt?`Published ${esc(fmt(pubAt))} · build ${esc(ad.catalogBuild||'?')} · ${ad.rewardKeys||0} rewards.`:'Not published yet: until you publish, the game handles these itself.'} It publishes itself: when you sign in on the web after an update, and right after you save an admin change that affects it (cards on or off, sets, cosmetics, the campaign, the Battle Pass, crafting). The PC reads this same catalog, so there’s nothing to publish there. (Sales, single-card prices, Battle Pass prices and crafting rates are read live.)</p>
+      <label class="ec-chk"><input type="checkbox" id="ec-auto" ${econAutoOn()?'checked':''} onchange="econSetAuto(this.checked)"> Publish automatically</label>
       <button type="button" class="btn-primary" onclick="econPublish(this)">PUBLISH ECONOMY CATALOG · ${Object.keys(cur).length}</button></div>
+    <div class="ec-card"><h4>Server functions <span class="ec-pill ${sqlOld?'warn':(ECON.sql?'ok':'off')}">${sqlOld?'UPDATE NEEDED':(ECON.sql?'UP TO DATE':'UNKNOWN')}</span></h4>
+      <p>${sqlOld?`This game needs a newer version of the server functions (installed: <b>${esc(ECON.sql||'before 10.54')}</b> · needed: <b>${ECON_SQL_NEED}</b>). Paste <b>VCU_Economy_Setup.sql</b> into Supabase → SQL Editor and press Run. Nothing breaks in the meantime; the newest server changes just wait.`:(ECON.sql?`Installed: <b>${esc(ECON.sql)}</b>. When a build changes the server, this shows UPDATE NEEDED.`:'Couldn’t check the server version right now.')} It’s always the same file, <b>VCU_Economy_Setup.sql</b>: the newest full version, safe to run again.</p></div>
     <div class="ec-card"><h4>Match rewards</h4>
       <div class="ec-grid">
         <label>Rewarded matches a day<input type="number" min="1" max="500" id="ec-mpd" value="${+c.matchesPerDay||40}"></label>
@@ -38497,6 +38559,7 @@ window.addEventListener('load',async()=>{
       if(typeof mlInit==='function') mlInit().catch(e=>console.warn('[MAIL] init',e));
       await loadCampaign();
       await loadBattlePass();
+      if(typeof econAutoBoot==='function') econAutoBoot().catch(e=>console.warn('[ECON] auto',e));   // build 10.54
       if(typeof updateXpHud==='function')updateXpHud();
       if(typeof cosEnsureStarter==='function') cosEnsureStarter();
       if(typeof renderMainMenu==='function'&&document.getElementById('menu-screen')?.classList.contains('active')) renderMainMenu();
