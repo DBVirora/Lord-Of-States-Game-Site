@@ -9824,7 +9824,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.52 · Christmas promos</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.53 · Fewer pack repeats</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10914,6 +10914,12 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.52'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.53', date:'2026-11-24',
+    rules:["No match rules change: GAME_BUILD stays '10.52'. Booster pack contents only."],
+    screens:[],
+    data:["PACK REPEATS (Rulk picked 'rare repeats'): generatePack's 4 common + 3 uncommon slots go through _pullFresh(rarity, setId, have). The card is picked as before (_pullOfRarity); if it's already in this pack's common/uncommon slots, it's REDRAWN from that rarity's pool (same fallback down the rarity chain) minus the cards already in the pack — unless Math.random() < PACK_DUP_KEEP (0.10) keeps it. If no other card is left (a tiny set), the repeat stays. Result with the Base Set (22 commons, 27 uncommons): a repeat in those 7 slots dropped from about 1 pack in 3 to about 1 in 30. The Energy, reverse holo and Rare+ slots are unchanged and may still match a card (the reverse holo matches a normal slot in ~1 pack in 9 — Rulk is fine with that).",
+      "Catalog: ECON_PACK_ODDS.basic / .premium get dupKeep: 0.10 (published with the economy catalog).",
+      "Server: SQL file VCU_Pack_Repeats_10.53.sql adds public.econ_pull_fresh(pools, set, rarity, have jsonb, keep numeric) and replaces public.econ_gen_pack to use it for the 7 slots, keep = catalog odds.dupKeep (default 0.10). The PC should use the same rule wherever it builds packs locally."] },
   { build:'10.52', date:'2026-11-24',
     rules:["GAME_BUILD '10.52' (a new card = new rules; online needs both sides on 10.52)."],
     cards:[{id:'booni_christmas_promo', set:'promo', number:'PROMO', rarity:'legend', scan:'Characters/Series/Virora/Booni Stole Christmas (Promo).png', newAbilities:['Sack Snatch','Runaway Reindeer','Naughty List'],
@@ -31018,7 +31024,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.52';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.53';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -31031,8 +31037,8 @@ function econSinglesPool(){ return Object.keys(DB).filter(id=>{ const c=DB[id]; 
   if(c.type==='energy_card'&&!c.specialEnergy) return false; if(typeof _disabledCards!=='undefined'&&_disabledCards[id]) return false; const set=econSetOf(id); if(!set||set==='promo') return false; return getRarity(id)!=='secret'; }); }
 // The pack odds below mirror generatePack / rollHoloType — change both together.
 const ECON_PACK_ODDS={
-  basic:{rev:{common:45,uncommon:35,rare:17,legend:3},top:{rare:71,legend:20,mythic:5,herald:3,secret:1},holo:0.30,finish:{classic:60,cosmic:25,gold:11,ruby:4},harder:{classic:50,cosmic:27,gold:16,ruby:7}},
-  premium:{rev:{common:38,uncommon:35,rare:22,legend:5},top:{rare:53,legend:30,mythic:10,herald:5,secret:2},holo:0.45,finish:{classic:50,cosmic:28,gold:15,ruby:7},harder:{classic:42,cosmic:28,gold:20,ruby:10}}};
+  basic:{rev:{common:45,uncommon:35,rare:17,legend:3},top:{rare:71,legend:20,mythic:5,herald:3,secret:1},holo:0.30,dupKeep:0.10,finish:{classic:60,cosmic:25,gold:11,ruby:4},harder:{classic:50,cosmic:27,gold:16,ruby:7}},
+  premium:{rev:{common:38,uncommon:35,rare:22,legend:5},top:{rare:53,legend:30,mythic:10,herald:5,secret:2},holo:0.45,dupKeep:0.10,finish:{classic:50,cosmic:28,gold:15,ruby:7},harder:{classic:42,cosmic:28,gold:20,ruby:10}}};
 function econBuildCards(){
   const ri=r=>Math.max(0,RARITY_ORDER.indexOf(r||'common')), singles=new Set(econSinglesPool()), packs={}, heralds={}, out={};
   const inPacks=(id,set)=>{ if(!(set in packs)){ packs[set]=new Set(econPackPool(set)); heralds[set]=new Set(econHeraldPool(set)); } return DB[id].type==='herald'?heralds[set].has(id):packs[set].has(id); };
@@ -32522,6 +32528,18 @@ function _pullOfRarity(rarity,setId){
   if(pool.length===0) pool=_packPool();   // ultimate safety net
   return _pickRandom(pool);
 }
+// PACK REPEATS (build 10.53, Rulk: "rare repeats"): a card already in this pack's common/uncommon slots is redrawn from the
+// cards not in the pack yet, unless a PACK_DUP_KEEP roll keeps it (≈1 pack in 30 still repeats there). Sets too small to
+// avoid a repeat just repeat. The reverse holo and Rare+ slots aren't limited. Server twin: econ_pull_fresh (odds.dupKeep).
+const PACK_DUP_KEEP=0.10;
+function _pullFresh(rarity,setId,have){
+  const cid=_pullOfRarity(rarity,setId);
+  if(!have||!have.includes(cid)||Math.random()<PACK_DUP_KEEP) return cid;
+  const order=RARITY_ORDER; let idx=order.indexOf(rarity); if(idx<0) idx=0;
+  let pool=_cardsByRarity(rarity,setId); while(pool.length===0&&idx>0){ idx--; pool=_cardsByRarity(order[idx],setId); }
+  const rest=pool.filter(id=>!have.includes(id));
+  return rest.length?_pickRandom(rest):cid;
+}
 // Regular-holo foil style varies by rarity — used only as a legacy fallback now.
 function holoStyleForRarity(rarity){
   if(rarity==='secret') return 'ruby';
@@ -32540,8 +32558,9 @@ function rollHoloType(tier, harder){
 function generatePack(type, setId){
   setId = setId || PACK_SETS[type] || 'base_set';
   const pulls=[];
-  for(let i=0;i<4;i++){ const cid=_pullOfRarity('common',setId);   pulls.push({cid,foil:'none',rarity:getRarity(cid)}); }
-  for(let i=0;i<3;i++){ const cid=_pullOfRarity('uncommon',setId); pulls.push({cid,foil:'none',rarity:getRarity(cid)}); }
+  const _have=[];   // build 10.53: the common/uncommon slots rarely repeat a card (_pullFresh)
+  for(let i=0;i<4;i++){ const cid=_pullFresh('common',setId,_have);   _have.push(cid); pulls.push({cid,foil:'none',rarity:getRarity(cid)}); }
+  for(let i=0;i<3;i++){ const cid=_pullFresh('uncommon',setId,_have); _have.push(cid); pulls.push({cid,foil:'none',rarity:getRarity(cid)}); }
   // Slot 8 — always a regular Energy (universal, not set-scoped)
   { const ep=_regularEnergyPool(); const cid=_pickRandom(ep)||_pullOfRarity('common',setId); pulls.push({cid,foil:'none',rarity:getRarity(cid)}); }
   // Slot 9 — Reverse Holo. Any card EXCEPT mythics or heralds (heralds aren't in this pool).
