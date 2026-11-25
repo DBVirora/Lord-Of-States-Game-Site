@@ -9180,6 +9180,8 @@ body.use-glow #game-screen .hand-card.playable,body.use-glow #game-screen-2v2 .h
 .stance-chip.earth{background:rgba(101,163,13,.94);color:#0f1a05;border:1px solid #bef264}
 .stance-chip.fire{background:rgba(249,115,22,.94);color:#2a0d00;border:1px solid #fdba74}
 .stance-chip.water{background:rgba(56,189,248,.94);color:#04202e;border:1px solid #bae6fd}
+.stance-chip.pavi{background:rgba(132,204,22,.94);color:#0f1a05;border:1px solid #d9f99d}
+.stance-chip.nisha{background:rgba(239,68,68,.94);color:#2a0505;border:1px solid #fca5a5}
 .fusion-chip{position:absolute;top:3px;right:3px;z-index:4;padding:1px 6px;border-radius:9px;font:700 9px/1.5 'Share Tech Mono',monospace;letter-spacing:1px;pointer-events:none;box-shadow:0 2px 6px rgba(0,0,0,.6);background:linear-gradient(90deg,rgba(56,189,248,.95),rgba(167,139,250,.95));color:#0b1020;border:1px solid #e0e7ff}
 .fusion-chip.dance{background:linear-gradient(90deg,rgba(250,204,21,.95),rgba(244,114,182,.95))}
 .fusion-chip.relic{background:linear-gradient(90deg,rgba(167,139,250,.95),rgba(232,121,249,.95))}
@@ -9917,7 +9919,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.55 · Sideways play</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.56 · Pavi & Nisha</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -11005,8 +11007,16 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.52'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.56'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.56', date:'2026-11-25',
+    cards:[{id:'pavi_nisha_team_promo', set:'promo', number:'PROMO', rarity:'mythic', scan:'Characters/Series/Avatar TLAB/Pavi & Nisha (Promo) (Team Card).png', newAbilities:['Twin Avatars','Elemental Lead','Twin Bond'],
+      note:"Pavi & Nisha · TEAM card (type 'team', like Virora & Volaris) · Mythic · cost 10 · 9 ATK / 9 HP · color 'green', colors ['green','red'] · subtypes Avatar, Bender, Team · race 'Avatar Bender' · charName 'Pavi & Nisha' (doesn't count as Pavi or as Nisha) · sym 'P&N' · setId promo · cardNumber PROMO · flavor 'The Avatars Of A New Era!'. Menu art: Main Menu Images/Pavi and nisha team card.jpg (Rulk sets it in Admin → Menu Art)."}],
+    rules:["GAME_BUILD '10.56' (new card).",
+      "TWIN AVATARS (triggered): a stance chooser like Avatar's Balance / Harmony — STANCE_CHOOSERS['Twin Avatars']=['nisha','pavi'] (first = the attack choice / gold button / AI attack pick). Asked on entry and at the start of each of your turns; lasts until your next turn. STANCE_META pavi ⛰ \"Pavi's Lead\" / nisha 🔥 \"Nisha's Lead\" (lead:true → the chooser says CHOOSE WHO LEADS, the log says '<Name> takes the lead for Pavi & Nisha'; chip 'PAVI' green / 'NISHA' red).",
+      "ELEMENTAL LEAD (passive, one ability for both stances): STANCE_ABILITIES keys may now be 'Label@stance' (stanceBaseLabel(k) strips it; every helper matches the base label). 'Elemental Lead@pavi' {guardian, +3 HP} · 'Elemental Lead@nisha' {+2 ATK, burn:true}. Nisha's Lead Burns the defender at the declaration, through the Fire Stance hook (_attackBurnLabel → triggerFireStance; in Life modes the blocker is Burned). Pavi's Lead CAN still attack (unlike Earth Stance). Switching from Pavi's Lead removes its +3 Health (the usual lethal-switch warning).",
+      "TWIN BOND (triggered): when it's destroyed (killCard, next to The Horde Rises) → twinBondSearch(owner) in the action sequencer: search the deck for a 'Pavi' and a 'Nisha' (charName, characters only, not tokens), one of each, into hand, then shuffle. Several versions of one → a local human picks from a list (Skip = the first); AI / remote → the first playable one (non-transform first, cheapest first). Nothing found → a log line."],
+    data:["Scan: Characters/Series/Avatar TLAB/Pavi & Nisha (Promo) (Team Card).png. Main menu art: Main Menu Images/Pavi and nisha team card.jpg."] },
   { build:'10.55', date:'2026-11-25',
     rules:["No match rules change: GAME_BUILD stays '10.52'. Web phones only; nothing for the PC to port."],
     screens:["PHONE SIDEWAYS (web). A phone turned sideways (CSS: orientation landscape + max-height 520px + hover none; JS isLandscapePhone()) no longer gets the tall phone board. The 1v1 match uses the PC board fitted to the height: HUD bar hidden during the match, Card / Log / Chat / ⚙ / 🏠 as a slim column on the left, no info rail, card height = (screen − 66 px) / 2.9, the opponent's hand shown as a ✋ count, labels off, locations in one column, a compact seam, the hand showing most of each card, no hover lifts, the Card / Log / Chat panel sliding in from the right, the prize claim floating in the middle. isMobileView() is true there (taps, the card panel); fitFields uses the one-row PC fitting. Upright phones, tablets and PCs are unchanged. 2v2 and the menus keep their current layouts sideways.",
@@ -12253,6 +12263,7 @@ const DEFAULTS={
   scorpion_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Mortal%20Kombat/Scorpion%20(Promo).png',
   incredible_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/The%20Incredible%20Hulk%20(Promo).png',
   nisha_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Nisha%20(Promo).png',
+  pavi_nisha_team_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Pavi%20%26%20Nisha%20(Promo)%20(Team%20Card).png',
   nishvi_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Nishvi%20(Promo).png',
   nishvi_avatar_state_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Nishvi%20Avatar%20State%20(Promo).png',
   pavi_vampire_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Avatar%20TLAB/Pavi%20Vampire%20(Promo).png',
@@ -12822,6 +12833,14 @@ const DB={
     abilities:[{label:"Avatar's Harmony",type:'triggered',cost:0,text:'When this card enters your field, and at the start of each of your turns, choose Fire or Water. This card stays in that stance until your next turn.'},
       {label:'Fire Stance',type:'passive',cost:0,text:'This card gets +2 Attack. When it attacks, the defender is Burned.'},
       {label:'Water Stance',type:'passive',cost:0,text:"This card can't attack. Characters that attack it get −3 Attack before the hit."}]},
+  // ── PAVI & NISHA (PROMO TEAM CARD) — build 10.56. Twin Avatars picks who leads (stance chooser ['nisha','pavi']);
+  //    Elemental Lead: Pavi's Lead = Guardian, +3 Health · Nisha's Lead = +2 Attack, Burns the defender
+  //    (STANCE_ABILITIES 'Elemental Lead@pavi' / '@nisha'). Twin Bond (killCard → twinBondSearch): Pavi + Nisha from the deck.
+  pavi_nisha_team_promo:{id:'pavi_nisha_team_promo',rarity:'mythic',name:'Pavi & Nisha',color:'green',colors:['green','red'],charName:'Pavi & Nisha',subtypes:['Avatar','Bender','Team'],type:'team',race:'Avatar Bender',cost:10,atk:9,hp:9,sym:'P&N',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
+    flavor:'The Avatars Of A New Era!',
+    abilities:[{label:'Twin Avatars',type:'triggered',cost:0,text:'When this card enters your field, and at the start of each of your turns, choose who leads: Pavi or Nisha. The leader stays until your next turn.'},
+      {label:'Elemental Lead',type:'passive',cost:0,text:'Pavi leads (Air & Earth): Guardian and +3 Defense. Nisha leads (Fire & Water): +2 Attack, and when this card attacks, the defender is Burned.'},
+      {label:'Twin Bond',type:'triggered',cost:0,text:'When this card is destroyed, search your deck for Pavi and Nisha and put them into your hand.'}]},
   // ── NISHVI (PROMO FUSION) — build 10.1. Pavi + Nisha. Bond / Dance / Relic. Never played on its own:
   //    clicking it in hand opens the fusion chooser (fusionHandClick). See the FUSION block (performFusion).
   nishvi_promo:{id:'nishvi_promo',rarity:'mythic',name:'Nishvi',color:'red',colors:['red','green'],charName:'Nishvi',charLine:'nishvi',formTier:'base',path:'avatar',subtypes:['Avatar','Bender'],type:'char',fusion:true,race:'Avatar Bender',cost:13,atk:11,hp:12,sym:'NSHV',setId:'promo',cardNumber:'PROMO',
@@ -15123,7 +15142,7 @@ function recalcPassives(){
           if(isViroraChar(c)) pl.field.filter(f=>f.uid!==fc.uid && hasAbilityLabel(f,'Beast Bond')).forEach(f=>add(2,2,f.cid,'Beast Bond',f.uid));
         } }
       // STANCES (Pavi): Air Stance +1 ATK · Earth Stance +4 HP (Defense), while that stance is active.
-      if(fc.stance) stanceAbilitiesOf(fc,fc.stance).forEach(l=>{ const d=STANCE_ABILITIES[l]; if(d.atk||d.hp) add(d.atk||0,d.hp||0,fc.cid,l,fc.uid); });
+      if(fc.stance) stanceAbilitiesOf(fc,fc.stance).forEach(l=>{ const d=STANCE_ABILITIES[l]; if(d.atk||d.hp) add(d.atk||0,d.hp||0,fc.cid,stanceBaseLabel(l),fc.uid); });
       // LATVERIAN ARMORY (Doctor Doom Herald): each of your characters with Equipment attached gets +1/+1.
       if(pl.herald && hasAbilityLabel(pl.herald,'Latverian Armory') && hasEquipmentAttached(fc)) add(1,1,pl.herald.cid,'Latverian Armory',pl.herald.uid);
       // STORM — Tailwind: your characters get +1 Attack (until your next turn).
@@ -16152,6 +16171,7 @@ function killCard(p,fc){
   msKill(p,fc); // end-of-match stats
   devouringDark(p, fc);
   if(hasAbilityLabel(fc,'The Horde Rises')) createZombieTokens(p,2,'The Horde Rises');
+  if(hasAbilityLabel(fc,'Twin Bond')) twinBondSearch(p); // Pavi & Nisha
   if(typeof SFX!=='undefined')SFX.death();
   // Death animation on the card element before removing
   const cardEl=document.querySelector(`[data-uid="${fc.uid}"]`);
@@ -23441,6 +23461,31 @@ function royalSummonsSearch(p,fc){
   if(seqIsLocalHuman(p)&&!(G&&G._aiAuto)&&G.activePlayer===p){ openDeckSearch('👑 Royal Summons','Search your deck for a Royal Saiyan character and put it into your hand.',filt,got); return; }
   const pick=aiPickDeckCard(P,filt); if(pick){ P.deck.splice(P.deck.indexOf(pick),1); got(pick); }
 }
+// TWIN BOND (Pavi & Nisha, build 10.56): when it's destroyed, its owner searches the deck for Pavi and for Nisha (one of each,
+//   by character name), puts them into hand and shuffles. Several versions of one → a local human picks (Skip = the first);
+//   otherwise the first playable one, cheapest first. Runs in the action sequencer (it can happen on the opponent's turn).
+function _twinBondFind(P,name){ const seen={}; (P.deck||[]).forEach(cid=>{ const c=DB[cid]; if(c&&isChar(c)&&c.type!=='token'&&!c.isToken&&String(c.charName||c.name)===name) seen[cid]=1; });
+  return Object.keys(seen).sort((a,b)=>((DB[a].transformOnly?1:0)-(DB[b].transformOnly?1:0))||((DB[a].cost||0)-(DB[b].cost||0))); }
+function twinBondSearch(p){
+  const P=G&&G.players&&G.players[p]; if(!P) return;
+  seqPush(done=>{
+    const got=[];
+    const take=cid=>{ const i=P.deck.indexOf(cid); if(i<0) return; P.deck.splice(i,1); const f=newFC(cid); if(f){ P.hand.push(f); got.push(DB[cid].name); } };
+    const step=names=>{
+      if(!G||G.gameOver){ done(); return; }
+      if(!names.length){ shuffle(P.deck); log(got.length?`💞 Twin Bond: ${pname(p)} puts ${got.join(' and ')} into hand. Deck shuffled.`:'💞 Twin Bond: no Pavi or Nisha left in the deck.',got.length?'gain':'info'); if(typeof renderAll==='function') renderAll(); done(); return; }
+      const nm=names[0], opts=_twinBondFind(P,nm);
+      if(!opts.length){ step(names.slice(1)); return; }
+      if(opts.length>1&&seqIsLocalHuman(p)&&!(G&&G._aiAuto)){
+        seqChoose('💞 Twin Bond: choose a '+nm,'Search your deck for '+nm+' and put it into your hand.',opts.map(cid=>({label:DB[cid].name, sub:'⚡'+(DB[cid].cost||0)+(DB[cid].transformOnly?' · transformation':''), val:cid})),
+          cid=>{ take(cid); step(names.slice(1)); }, ()=>{ take(opts[0]); step(names.slice(1)); });
+        return;
+      }
+      take(opts[0]); step(names.slice(1));
+    };
+    step(['Pavi','Nisha']);
+  });
+}
 // EVOLVED DECREE (King Theoden SSBE): f._decree = {amt, by, ends:2, kw}; +amt/+amt and Resolve; ends at the end of `by`'s next turn.
 function applyEvolvedDecree(f,by){
   if(!f._decree) f._decree={amt:0,by,ends:2,kw:false};
@@ -26065,10 +26110,13 @@ function doomsDesignReady(fc){ const last=fc&&fc.abilityUsed&&fc.abilityUsed.doo
 function isViroraChar(c){ return !!c && isChar(c) && (/\bvirora\b/i.test(c.name||'') || /\bvirora\b/i.test(c.charName||'')); }
 var STANCE_META={
   air:{icon:'🌪',name:'Air',label:'Air Stance'},     earth:{icon:'⛰',name:'Earth',label:'Earth Stance'},
-  fire:{icon:'🔥',name:'Fire',label:'Fire Stance'},  water:{icon:'🌊',name:'Water',label:'Water Stance'}};
+  fire:{icon:'🔥',name:'Fire',label:'Fire Stance'},  water:{icon:'🌊',name:'Water',label:'Water Stance'},
+  pavi:{icon:'⛰',name:'Pavi',label:"Pavi's Lead",lead:true}, nisha:{icon:'🔥',name:'Nisha',label:"Nisha's Lead",lead:true}};
 // Stance CHOOSER abilities (triggered: on entry + at the start of each of your turns) → [attack stance, defence stance].
 // The first entry is the gold button / the AI's "go on the attack" choice.
-var STANCE_CHOOSERS={"Avatar's Balance":['air','earth'], "Avatar's Harmony":['fire','water']};
+var STANCE_CHOOSERS={"Avatar's Balance":['air','earth'], "Avatar's Harmony":['fire','water'], "Twin Avatars":['nisha','pavi']};
+// The chooser's first line (default: "Choose a stance…").
+var STANCE_CHOOSER_INTRO={"Twin Avatars":'Choose who leads. The leader stays until your next turn.'};
 // Abilities that only work while their stance is active (keyed on LABEL so stolen copies work).
 //   kw = keyword granted · atk/hp = stat bonus (a passive in recalcPassives) · noAttack = "can't attack".
 //   Triggers live in code: Crimson Gale (triggerCrimsonGale), Bloodstone Skin (triggerBloodstoneSkin),
@@ -26079,13 +26127,17 @@ var STANCE_ABILITIES={
   'Earth Stance':    {stance:'earth', kw:'guardian',  atk:0, hp:4, noAttack:true},
   'Bloodstone Skin': {stance:'earth', kw:'guardian',  atk:0, hp:0, noAttack:true},
   'Fire Stance':     {stance:'fire',                  atk:2, hp:0},
-  'Water Stance':    {stance:'water',                 atk:0, hp:0, noAttack:true}
+  'Water Stance':    {stance:'water',                 atk:0, hp:0, noAttack:true},
+  // One ability that does something in more than one stance: key 'Label@stance' (txt = what that stance gives, for the chooser).
+  'Elemental Lead@pavi':  {stance:'pavi',  kw:'guardian', atk:0, hp:3, txt:'Guardian and +3 Defense.'},
+  'Elemental Lead@nisha': {stance:'nisha',                atk:2, hp:0, burn:true, txt:'+2 Attack, and when this card attacks, the defender is Burned.'}
 };
+function stanceBaseLabel(k){ return String(k||'').split('@')[0]; }
 function stanceChooserOf(fc){ if(!fc) return null; for(const l in STANCE_CHOOSERS){ if(hasAbilityLabel(fc,l)) return {label:l, pair:STANCE_CHOOSERS[l]}; } return null; }
 function isStanceChooserLabel(l){ return !!STANCE_CHOOSERS[l]; }
-function stanceAbilitiesOf(fc,s){ return fc ? Object.keys(STANCE_ABILITIES).filter(l=>STANCE_ABILITIES[l].stance===s && hasAbilityLabel(fc,l)) : []; }
+function stanceAbilitiesOf(fc,s){ return fc ? Object.keys(STANCE_ABILITIES).filter(l=>STANCE_ABILITIES[l].stance===s && hasAbilityLabel(fc,stanceBaseLabel(l))) : []; }
 function stanceActive(fc,s){ return !!fc && fc.stance===s && !!STANCE_META[s] && stanceAbilitiesOf(fc,s).length>0; }
-function stanceLabelActive(fc,label){ const d=STANCE_ABILITIES[label]; return !!d && !!fc && fc.stance===d.stance && hasAbilityLabel(fc,label); }
+function stanceLabelActive(fc,label){ const d=STANCE_ABILITIES[label]; return !!d && !!fc && fc.stance===d.stance && hasAbilityLabel(fc,stanceBaseLabel(label)); }
 function stanceStat(fc,s,key){ return stanceAbilitiesOf(fc,s).reduce((t,l)=>t+(STANCE_ABILITIES[l][key]||0),0); }
 function stanceNoAttack(fc){ return !!fc && !!fc.stance && stanceAbilitiesOf(fc,fc.stance).some(l=>STANCE_ABILITIES[l].noAttack); }
 function stanceGrantsKW(fc,kw){ return !!fc && !!fc.stance && stanceAbilitiesOf(fc,fc.stance).some(l=>STANCE_ABILITIES[l].kw===kw); }
@@ -26129,13 +26181,14 @@ function stanceSet(p, fc, s){
   if(!STANCE_META[s]) return;
   const prev=fc.stance||null;
   fc.stance=s; fc._stanceAsk=false;
-  log(`${STANCE_META[s].icon} ${DB[fc.cid]?.name} takes ${STANCE_META[s].label}${prev&&prev!==s?` (was ${STANCE_META[prev].name})`:prev===s?' again':''}.`,'gain');
+  if(STANCE_META[s].lead) log(`${STANCE_META[s].icon} ${STANCE_META[s].name} takes the lead for ${DB[fc.cid]?.name}${prev&&prev!==s?` (was ${STANCE_META[prev].name})`:prev===s?' again':''}.`,'gain');
+  else log(`${STANCE_META[s].icon} ${DB[fc.cid]?.name} takes ${STANCE_META[s].label}${prev&&prev!==s?` (was ${STANCE_META[prev].name})`:prev===s?' again':''}.`,'gain');
   { const _gain=stanceStat(fc,s,'hp'); if(_gain>0 && prev!==s && typeof fxHeal==='function') try{ fxHeal(fc.uid,_gain); }catch(e){} }
   if(typeof recalcPassives==='function') recalcPassives(); // applies the stance's stats; losing +HP can destroy her (19.23)
 }
 function _stanceText(fc, ch, lethalS){
-  const desc=(s)=>stanceAbilitiesOf(fc,s).map(l=>{ const a=(DB[fc.cid]?.abilities||[]).concat(fc.gainedAbilities||[]).find(x=>x&&x.label===l); return (l===STANCE_META[s].label?'':l+': ')+String(a&&a.text||'').replace(/^(Air|Earth|Fire|Water) Stance:\s*/i,''); }).join(' ');
-  let t='Choose a stance. It lasts until your next turn.';
+  const desc=(s)=>stanceAbilitiesOf(fc,s).map(l=>{ const d=STANCE_ABILITIES[l]; if(d&&d.txt) return d.txt; const a=(DB[fc.cid]?.abilities||[]).concat(fc.gainedAbilities||[]).find(x=>x&&x.label===l); return (l===STANCE_META[s].label?'':l+': ')+String(a&&a.text||'').replace(/^(Air|Earth|Fire|Water) Stance:\s*/i,''); }).join(' ');
+  let t=STANCE_CHOOSER_INTRO[ch.label]||'Choose a stance. It lasts until your next turn.';
   ch.pair.forEach(s=>{ t+='\n'+STANCE_META[s].icon+' '+STANCE_META[s].name.toUpperCase()+': '+desc(s); });
   if(fc.stance) t+='\nNow: '+STANCE_META[fc.stance].label+'.';
   if(lethalS) t+='\n⚠ Switching to '+STANCE_META[lethalS].name+' removes '+STANCE_META[fc.stance].name+'\'s +'+stanceStat(fc,fc.stance,'hp')+' Defense. With '+(fc.currentHP||0)+' Health left, '+(DB[fc.cid]?.name||'she')+' would be destroyed.';
@@ -26145,7 +26198,7 @@ function stanceOpenChooser(p, fc, when, finish){
   const ch=stanceChooserOf(fc); if(!ch){ finish(null); return; }
   const a=ch.pair[0], b=ch.pair[1];
   const la=stanceHpIf(fc,a)<=0, lb=stanceHpIf(fc,b)<=0;
-  const kind=(when==='entry'?'ENTRY ABILITY':'START OF TURN')+' · CHOOSE A STANCE';
+  const kind=(when==='entry'?'ENTRY ABILITY':'START OF TURN')+(STANCE_META[a]&&STANCE_META[a].lead?' · CHOOSE WHO LEADS':' · CHOOSE A STANCE');
   const theme=a==='fire'?'fire-water':'';
   trigShow({cid:fc.cid, p, label:ch.label, text:_stanceText(fc,ch,la?a:(lb?b:null)), kind, ask:true, dual:true, theme,
     useLabel:STANCE_META[a].icon+' '+STANCE_META[a].label+(la?' ⚠':''), skipLabel:STANCE_META[b].icon+' '+STANCE_META[b].label+(lb?' ⚠':''),
@@ -26191,6 +26244,7 @@ function stanceCheckPending(){
 // FOUR ELEMENTS UNBOUND (Nishvi Avatar State). At the declaration, before damage; in Life modes the blocker is Burned.
 function _attackBurnLabel(afc){
   if(stanceLabelActive(afc,'Fire Stance')) return ['Fire Stance','🔥'];
+  { const _sb=afc&&afc.stance?stanceAbilitiesOf(afc,afc.stance).find(l=>STANCE_ABILITIES[l].burn):null; if(_sb) return [stanceBaseLabel(_sb),'🔥']; } // Elemental Lead (Nisha's Lead)
   if(hasAbilityLabel(afc,'Thermal Smash')) return ['Thermal Smash','🔥'];
   if(hasAbilityLabel(afc,'Four Elements Unbound')) return ['Four Elements Unbound','🌀'];
   if(hasAbilityLabel(afc,'Four as One')) return ['Four as One','🌀'];
@@ -29927,7 +29981,7 @@ function renderField(p, targetId){
     const maxHP=fc.baseHP+fc.hpBonus+(fc.passiveHp||0);const pct=Math.max(0,Math.min(100,fc.currentHP/maxHP*100));const hpCol=pct>60?'#22c55e':pct>30?'#f59e0b':'#ef4444';
     const _net=(typeof fxNet==='function')?fxNet(fc):{a:0,h:0};
     div.appendChild(makeArtEl(fc.cid,108,fc));
-    if(fc.stance && STANCE_META[fc.stance] && stanceChooserOf(fc)){ const _sc=document.createElement('div'); _sc.className='stance-chip '+fc.stance; _sc.title=STANCE_META[fc.stance].label+' · '+stanceAbilitiesOf(fc,fc.stance).join(', '); _sc.textContent=STANCE_META[fc.stance].icon+' '+STANCE_META[fc.stance].name.toUpperCase(); div.appendChild(_sc); }
+    if(fc.stance && STANCE_META[fc.stance] && stanceChooserOf(fc)){ const _sc=document.createElement('div'); _sc.className='stance-chip '+fc.stance; _sc.title=STANCE_META[fc.stance].label+' · '+[...new Set(stanceAbilitiesOf(fc,fc.stance).map(stanceBaseLabel))].join(', '); _sc.textContent=STANCE_META[fc.stance].icon+' '+STANCE_META[fc.stance].name.toUpperCase(); div.appendChild(_sc); }
     if(fc.fusion){ const _fu=fc.fusion, _fm=FUSION_METHODS[_fu.method]||FUSION_METHODS.bond; const _fz=document.createElement('div'); _fz.className='fusion-chip '+_fu.method;
       _fz.textContent=_fu.method==='dance'?('💫 '+(_fu.turnsLeft||0)):(_fm.icon+' FUSION'); _fz.title='Fusion ('+_fm.name+') of '+(_fu.mats||[]).map(m=>DB[m.cid]?.name||'?').join(' + ')+(_fu.method==='dance'?' — splits in '+_fu.turnsLeft+' turn(s)':''); div.appendChild(_fz); }
     else if((fc.fatigue||0)>0){ const _fz=document.createElement('div'); _fz.className='fusion-chip fatigue'; _fz.textContent='💤 '+fc.fatigue; _fz.title='Fatigued — can\'t attack or use abilities for '+fc.fatigue+' more of its turns'; div.appendChild(_fz); }
@@ -31146,7 +31200,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.55';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.56';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
