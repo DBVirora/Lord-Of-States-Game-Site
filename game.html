@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>/* build 10.55 · Sideways Play: on a phone with it switched on, open the game turned sideways (sideways.html) */
+(function(){ try{ var m=localStorage.getItem('vcu_sideways'); if(m&&m!=='0'&&window.top===window&&!/[?&]sideways=1/.test(location.search)&&window.matchMedia&&matchMedia('(hover:none)').matches){ window.__vcuLeaving=true; location.replace('sideways.html'+location.search+location.hash); } }catch(e){} })();</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -6291,7 +6293,8 @@ textarea{
 #game-screen .sheet-tabs{ display:none; }
 
 /* ════════ PHONE / NARROW (≤900px, matches isMobileView): stacked layout ════════ */
-@media (max-width:900px){
+/* (build 10.55: not for a phone turned sideways — that one gets the fitted PC board below) */
+@media (max-width:900px) and (orientation:portrait), (max-width:900px) and (min-height:521px), (max-width:900px) and (hover:hover){
   #game-screen{ --rail:0px; --seam:48px; --idw:auto; --cw:clamp(50px, calc((100vw - 28px) / 5.6 * var(--size-mult)), 86px); --pw:calc(var(--cw) * .56); padding:4px !important; }
   #game-screen .battle-layout{ grid-template-columns:minmax(0,1fr); display:grid !important; }
   #game-screen .info-rail{ display:none !important; }
@@ -6348,10 +6351,100 @@ textarea{
   /* compact top HUD on phones */
   .hud-identity{ display:none; }
 }
-@media (max-width:900px) and (max-height:700px){
+@media (max-width:900px) and (max-height:700px) and (orientation:portrait), (max-width:900px) and (max-height:700px) and (min-height:521px), (max-width:900px) and (max-height:700px) and (hover:hover){
   #game-screen{ --cw:clamp(46px, calc((100vw - 28px) / 6.2 * var(--size-mult)), 72px); }
 }
 @media (prefers-reduced-motion:reduce){ #game-screen .card-slot,#game-screen .hand-card{ animation:none !important; } }
+/* Settings → Visuals → Sideways Play (build 10.55): phones and tablets only */
+@media (hover:hover){ .stv-sideways{ display:none !important; } }
+.stv-side-ic{ display:block; font-size:22px; line-height:1; margin:2px 0 4px; color:#e8c570; }
+
+/* ════════ PHONE TURNED SIDEWAYS (build 10.55) — short, wide touch screens: the PC board fitted to the height ════════
+   rows: opponent (1 card) · seam · you (1 card) · hand (most of a card) → card height = (screen − 66 px) / 2.9 */
+@media (orientation:landscape) and (max-height:520px) and (hover:none){
+  body:has(#game-screen.active){ padding-top:0 !important; }
+  body:has(#game-screen.active) #auth-bar{ display:none !important; }
+  #game-screen{
+    --hud:0px; --rail:0px; --gap:4px; --seam:34px; --navw:44px;
+    --cw:clamp(40px, min(calc((100dvh - 66px) / 2.9 * .7), calc((100vw - var(--navw) - 150px) / 7)), 120px);
+    --ch:calc(var(--cw) / .7); --pw:calc(var(--cw) * .52); --lw:calc(var(--cw) * .5);
+    --idw:clamp(104px, calc(var(--cw) * 1.5), 160px); --fs:clamp(8px, calc(var(--cw) * .11), 12px); --tilt:0deg;
+    height:100dvh !important;
+    padding:3px calc(3px + env(safe-area-inset-right)) 0 calc(var(--navw) + 3px + env(safe-area-inset-left)) !important;
+  }
+  #game-screen .battle-layout{ grid-template-columns:minmax(0,1fr); }
+  #game-screen .info-rail{ display:none !important; }
+  #game-screen .arena{ border-radius:12px; }
+  /* opponent's hand: just the ✋ count, centred on the top edge */
+  #game-screen .side.opp{ grid-template-rows:minmax(0,1fr); grid-template-areas:'ident locs field herald piles'; }
+  #game-screen .side .opp-hand{ grid-area:auto; position:absolute; top:1px; left:calc(var(--idw) + 10px); transform:none; height:auto; z-index:4; perspective:none; }
+  #game-screen .side .opp-hand .back-card{ display:none; }
+  #game-screen .side .opp-hand[data-n]::after{ margin:0; font-size:9px; padding:1px 7px; }
+  #game-screen .char-field{ min-height:calc(var(--ch) + 8px); max-height:calc(var(--ch) + 8px); padding:3px 4px; }
+  #game-screen .char-field:empty::before{ font-size:9px; }
+  /* labels off; locations one column; small piles */
+  #game-screen .herald-zone-label,#game-screen .location-zone-label,#game-screen .pile-label,#game-screen .deck-pile-wrap::before{ display:none; }
+  #game-screen .location-zone{ grid-template-columns:var(--lw); min-height:0; }
+  #game-screen .location-zone.many{ --lw:calc(var(--cw) * .4); grid-template-columns:var(--lw) var(--lw); }
+  #game-screen .side.crowded .location-zone{ --lw:calc(var(--cw) * .4); grid-template-columns:var(--lw); }
+  #game-screen .side.crowded .location-zone.many{ --lw:calc(var(--cw) * .32); grid-template-columns:var(--lw) var(--lw); }
+  #game-screen .piles{ gap:3px; }
+  #game-screen .chip{ height:calc(var(--ch) * .2); min-height:18px; }
+  #game-screen .chip .panel-zone-label{ display:none; }
+  #game-screen .chip{ flex-direction:row; flex-wrap:nowrap; white-space:nowrap; gap:2px; padding:0 2px; }
+  #game-screen .chip.rift-zone-wrap::before{ font-size:10px; }
+  #game-screen .side.crowded{ --idw:104px; }
+  #game-screen .side.opp.crowded{ grid-template-columns:104px auto minmax(0,1fr) auto auto; }
+  #game-screen .side.you.crowded{ grid-template-columns:auto auto minmax(0,1fr) auto 104px; }
+  /* identity: avatar + name, Energy, the colour breakdown */
+  #game-screen .ident.player-panel{ padding:4px 5px; gap:3px; border-radius:10px; }
+  #game-screen .ident .player-panel-avatar{ width:26px; height:26px; min-width:26px; min-height:26px; font-size:15px; border-radius:7px; }
+  #game-screen .ident .player-panel-energy{ padding:2px 7px; }
+  #game-screen .ident .energy-word,#game-screen .ident-meta{ display:none; }
+  #game-screen .ident .energy-breakdown.ebx:not(:empty){ gap:3px; padding:4px 7px 5px; }
+  /* seam */
+  #game-screen .center-strip.seam{ gap:6px; padding:0 4px; }
+  #game-screen .turn-chip{ padding:4px 9px; font-size:9px; letter-spacing:1px; }
+  #game-screen .turn-chip small{ display:none; }
+  #game-screen .phase-bar-center,#game-screen .center-tools{ padding:2px; gap:3px; }
+  #game-screen .phase-pill{ flex-direction:row; gap:4px; padding:3px 9px; font-size:10px; min-height:0; height:26px; }
+  #game-screen .phase-pill-icon{ font-size:13px; }
+  #game-screen .center-tools .action-tool-btn{ width:26px; height:26px; font-size:12px; }
+  #game-screen .center-strip .end-turn-btn{ padding:5px 12px; font-size:10px; letter-spacing:1.5px; }
+  /* hand: nearly the whole card shows; tap a card to see it big */
+  #game-screen .hand-dock{ height:calc(var(--ch) * .9); min-height:0; margin:0 var(--gap); }
+  #game-screen .hand-fan .hand-card{ top:2px; }
+  #game-screen .hand-dock-label{ top:-14px; font-size:8px; }
+  #game-screen .hand-hint{ display:none; }
+  /* touch: no hover lifts, flat cards */
+  #game-screen .card-slot:hover,#game-screen .hand-fan .hand-card:hover{ transform:none; animation:none; }
+  #game-screen[data-look="3d"] .side .card-slot:hover{ transform:none; }
+  #game-screen[data-look="3d"] .char-field,#game-screen[data-look="3d"] .herald-zone,#game-screen[data-look="3d"] .location-zone,#game-screen[data-look="3d"] .hand-fan{ perspective:none; transform-style:flat; }
+  #game-screen[data-look="3d"] .deck-pile,#game-screen[data-look="3d"] .prize-stack > .prize-card,#game-screen[data-look="3d"] .side .herald-slot{ transform:none; }
+  #game-screen[data-look="3d"] .hand-fan .hand-card{ --hx:0deg; }
+  /* Card / Log / Chat / ⚙ / 🏠: a slim column on the left edge */
+  #game-screen .mobile-nav{ display:flex; flex-direction:column; justify-content:center; gap:6px; position:fixed; left:calc(env(safe-area-inset-left) + 3px); top:0; bottom:0; width:calc(var(--navw) - 4px); z-index:100001; }
+  #game-screen .mobile-nav button{ background:rgba(10,10,24,.9); border:1px solid var(--ar-line2); border-radius:8px; padding:5px 1px; font:10px/1.15 'Share Tech Mono',monospace; color:#ece6d6; cursor:pointer; white-space:normal; text-align:center; }
+  #game-screen #game-menu-cluster{ display:none; }
+  /* the card / log / chat panel slides in from the right */
+  .mobile-card-sheet{ display:block !important; left:auto; top:0; right:0; bottom:0; width:min(400px,58vw); max-height:none; height:100dvh; border-top:0; border-left:2px solid rgba(200,164,74,.4); border-radius:16px 0 0 16px; transform:translateX(105%); padding:10px calc(14px + env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) 14px; }
+  .mobile-card-sheet.open{ transform:none; }
+  .mobile-card-sheet-handle{ display:none; }
+  #game-screen .sheet-tabs{ display:flex; margin:0 30px 8px 0; }
+  /* prize claim: float in the middle */
+  #game-screen .side .prize-claim-pop{ position:fixed; left:50%; right:auto; top:50%; bottom:auto; transform:translate(-50%,-50%); }
+  #game-screen > .prize-claim-pop.pc-float{ position:fixed; left:50%; right:auto; top:50%; bottom:auto; transform:translate(-50%,-50%); z-index:99; max-width:calc(100vw - 20px); max-height:calc(100dvh - 20px); overflow:auto; box-shadow:0 0 0 100vmax rgba(0,0,0,.55),0 0 32px rgba(251,191,36,.3); }
+  .ai-thinking{ top:6px; }
+  body:has(#game-screen.active) #build-tag{ display:none; }
+}
+/* narrow sideways screens (a frame turned inside Safari): a tighter seam */
+@media (orientation:landscape) and (max-height:520px) and (hover:none) and (max-width:700px){
+  #game-screen .center-strip.seam{ gap:4px; padding:0 2px; }
+  #game-screen .turn-chip{ padding:4px 7px; letter-spacing:.5px; }
+  #game-screen .phase-pill{ padding:3px 6px; gap:3px; }
+  #game-screen .center-tools .action-tool-btn{ width:24px; height:24px; font-size:11px; }
+  #game-screen .center-strip .end-turn-btn{ padding:5px 9px; letter-spacing:1px; }
+}
 
 
 /* ════════════════════════════════════════════════════════════════════════
@@ -9824,7 +9917,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.54 · Catalog publishes itself</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.55 · Sideways play</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10914,6 +11007,10 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.52'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.55', date:'2026-11-25',
+    rules:["No match rules change: GAME_BUILD stays '10.52'. Web phones only; nothing for the PC to port."],
+    screens:["PHONE SIDEWAYS (web). A phone turned sideways (CSS: orientation landscape + max-height 520px + hover none; JS isLandscapePhone()) no longer gets the tall phone board. The 1v1 match uses the PC board fitted to the height: HUD bar hidden during the match, Card / Log / Chat / ⚙ / 🏠 as a slim column on the left, no info rail, card height = (screen − 66 px) / 2.9, the opponent's hand shown as a ✋ count, labels off, locations in one column, a compact seam, the hand showing most of each card, no hover lifts, the Card / Log / Chat panel sliding in from the right, the prize claim floating in the middle. isMobileView() is true there (taps, the card panel); fitFields uses the one-row PC fitting. Upright phones, tablets and PCs are unchanged. 2v2 and the menus keep their current layouts sideways.",
+      "SIDEWAYS PLAY switch: Settings → Visuals → 'Sideways Play' (touch screens only): Off / Top to the Left / Top to the Right (localStorage vcu_sideways '0'/'1'/'2'). On → game.html (first script in <head>) opens sideways.html, which holds game.html?sideways=1 in an iframe turned 90° (clockwise for '1', counter-clockwise for '2') inside the safe area. If the phone turns the page itself, the frame fills the screen unturned. The game inside sees a real landscape viewport, so the sideways layout applies and taps land where you touch. Switching on or off reloads the page (refused during a match); flipping sides inside the frame is instant (parent.vcuSidewaysPlace). If the game navigates to another page (sign in, setup), that page opens full screen."] },
   { build:'10.54', date:'2026-11-24',
     rules:["No match rules change: GAME_BUILD stays '10.52'. Web admin only."],
     screens:["Admin → Economy (web): a 'Publish automatically' checkbox (on by default) on the catalog card, and a new 'Server functions' card (UP TO DATE / UPDATE NEEDED). Nothing for the PC to copy."],
@@ -24057,8 +24154,24 @@ function closeGameSettings(){
   document.getElementById('game-settings-modal').classList.remove('open');
 }
 
+// ── build 10.55: Sideways Play ('0' off · '1' top of the phone to the left · '2' to the right) ──
+function sidewaysPref(){ try{ return localStorage.getItem('vcu_sideways')||'0'; }catch(e){ return '0'; } }
+function inSidewaysFrame(){ try{ return window.top!==window&&/[?&]sideways=1/.test(location.search); }catch(e){ return false; } }
+function syncSidewaysUI(){ const v=sidewaysPref(); document.querySelectorAll('.settings-side-btn').forEach(b=>b.classList.toggle('active',b.dataset.side===v)); }
+function _swInMatch(){ return ['game-screen','game-screen-2v2'].some(id=>{ const e=document.getElementById(id); return !!(e&&e.classList.contains('active')); }); }
+function setSideways(v){
+  v=String(v); const was=sidewaysPref(); if(v===was){ syncSidewaysUI(); return; }
+  const inFrame=inSidewaysFrame(), reload=(v==='0')||(!inFrame);   // on ↔ off reloads; left ↔ right inside the frame doesn't
+  if(reload&&_swInMatch()){ if(typeof spToast==='function') spToast('Finish or leave this match first: turning the game sideways reloads the page.',4200); syncSidewaysUI(); return; }
+  try{ localStorage.setItem('vcu_sideways',v); }catch(e){}
+  syncSidewaysUI();
+  if(v==='0'){ if(inFrame){ try{ window.top.location.replace('game.html'); }catch(e){} } return; }
+  if(inFrame){ try{ if(window.parent&&window.parent.vcuSidewaysPlace) window.parent.vcuSidewaysPlace(); }catch(e){} return; }
+  location.replace('sideways.html'+location.search+location.hash);
+}
 function syncSettingsUI(){
   const t = (id,on)=>{ const el=document.getElementById(id); if(el)el.classList.toggle('on',on); };
+  if(typeof syncSidewaysUI==='function') syncSidewaysUI();
   t('set-sfx', _gameSettings.sfx);
   t('set-music', _gameSettings.music);
   t('set-anim', _gameSettings.animations);
@@ -28673,8 +28786,11 @@ function showHealPopup(player,text,targetUid){
 // ═══════════════════════════════════════════════════
 // MOBILE: drawer toggles + card preview bottom sheet
 // ═══════════════════════════════════════════════════
+// build 10.55: a phone turned sideways (short, wide, touch) — keep in step with the CSS block "PHONE TURNED SIDEWAYS"
+const LS_PHONE_Q='(orientation:landscape) and (max-height:520px) and (hover:none)';
+function isLandscapePhone(){ try{ return window.matchMedia(LS_PHONE_Q).matches; }catch(e){ return false; } }
 function isMobileView(){
-  return window.matchMedia('(max-width:900px)').matches;
+  return window.matchMedia('(max-width:900px)').matches || isLandscapePhone();
 }
 function toggleMobileDrawer(which){
   const gs=document.getElementById('game-screen');
@@ -29748,7 +29864,7 @@ function updateHandLimitDisplay(p){
 
 // PHONES (≤ 900px wide): the claim popover is moved to the top of #game-screen (class pc-float) so no scrolling board / strip
 // can clip it (iOS Safari clipped the fixed popover inside the board's scroll area). One floated popover per pile (data-p).
-function _prizePopFloats(){ try{ return !!(window.matchMedia&&window.matchMedia('(max-width:900px)').matches); }catch(e){ return false; } }
+function _prizePopFloats(){ try{ return !!(window.matchMedia&&window.matchMedia('(max-width:900px)').matches) || (typeof isLandscapePhone==='function'&&isLandscapePhone()); }catch(e){ return false; } }
 function renderPrizes(p){
   document.querySelectorAll('.prize-claim-pop.pc-float[data-p="'+p+'"]').forEach(x=>x.remove());
   const el=document.getElementById(`p${p}-prizes`),pl=G.players[p];
@@ -29952,7 +30068,7 @@ function layoutHandFan(){
 // identity slims) → two rows. Never overflows the board.
 function fitFields(){
   const gs=document.getElementById('game-screen'); if(!gs||!G||!G.players)return;
-  const phone=window.matchMedia('(max-width:900px)').matches;
+  const phone=window.matchMedia('(max-width:900px)').matches && !(typeof isLandscapePhone==='function'&&isLandscapePhone());
   [1,2].forEach(p=>{
     const f=document.getElementById('p'+p+'-field'); const sec=document.getElementById('side-p'+p); if(!f||!sec)return;
     const n=f.querySelectorAll('.card-slot').length;
@@ -31030,7 +31146,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.54';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.55';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -39849,6 +39965,13 @@ window.addEventListener('load',async()=>{
        </div>
       </div>
       <div class="stv-page" data-page="visuals">
+       <div class="settings-section stv-sideways">
+        <div class="settings-section-title">Sideways Play<span class="stv-sec-note">Play with your phone turned sideways</span></div>
+        <div class="stv-vrow">
+          <div><div class="settings-label">Turn the Game</div><div class="settings-label-desc">If your phone won’t turn the game when you turn it, pick the side you hold it on. Turning it on or off reloads the page.</div></div>
+          <div class="stv-tiles three"><button class="settings-size-btn stv-tile settings-side-btn" data-side="0" onclick="setSideways('0')"><span class="stv-side-ic">▯</span><b>Off</b><small>Upright, or the phone turns it.</small></button><button class="settings-size-btn stv-tile settings-side-btn" data-side="1" onclick="setSideways('1')"><span class="stv-side-ic">⟲</span><b>Top to the Left</b><small>Phone turned left.</small></button><button class="settings-size-btn stv-tile settings-side-btn" data-side="2" onclick="setSideways('2')"><span class="stv-side-ic">⟳</span><b>Top to the Right</b><small>Phone turned right.</small></button></div>
+        </div>
+       </div>
        <div class="settings-section">
         <div class="settings-section-title">Board</div>
         <div class="stv-vrow">

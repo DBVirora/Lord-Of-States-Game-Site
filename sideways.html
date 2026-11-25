@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#05050f"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Lord of Courts"/>
+<link rel="apple-touch-icon" href="./icons/icon-192.png"/>
+<title>Lord of Courts VCU</title>
+<!-- Build 10.55 · SIDEWAYS PLAY. When "Sideways Play" is on (Settings → Visuals), game.html opens here on a phone.
+     This page holds the game in a frame turned 90°, so it plays sideways even when the phone won't turn the page
+     (rotation lock, or the browser not turning). The game inside sees a real wide screen, and taps land where you touch.
+     If the phone does turn the page itself, the frame simply fills the screen unturned. -->
+<style>
+  html,body{ margin:0; height:100%; background:#05050f; overflow:hidden; overscroll-behavior:none; }
+  body{ touch-action:none; }
+  #sw-area{ position:fixed; top:env(safe-area-inset-top,0px); right:env(safe-area-inset-right,0px); bottom:env(safe-area-inset-bottom,0px); left:env(safe-area-inset-left,0px); pointer-events:none; visibility:hidden; }
+  #sw-game{ position:fixed; left:0; top:0; border:0; display:block; background:#05050f; transform-origin:0 0; }
+</style>
+</head>
+<body>
+<div id="sw-area"></div>
+<iframe id="sw-game" title="Lord of Courts" allow="autoplay; fullscreen; clipboard-read; clipboard-write"></iframe>
+<script>
+(function(){
+  var f=document.getElementById('sw-game'), area=document.getElementById('sw-area');
+  function pref(){ try{ return localStorage.getItem('vcu_sideways')||'0'; }catch(e){ return '0'; } }
+  function backToGame(){ location.replace('game.html'+location.search+location.hash); }
+  // Off, or not a touch screen → the normal game page
+  if(pref()==='0'||!(window.matchMedia&&matchMedia('(hover:none)').matches)){ backToGame(); return; }
+  var q=location.search?(location.search+'&sideways=1'):'?sideways=1';
+  f.src='game.html'+q+location.hash;
+  // '1' = the top of the phone to the LEFT (turn the game clockwise) · '2' = the top of the phone to the RIGHT
+  function place(){
+    var m=pref(); if(m==='0'){ backToGame(); return; }
+    var r=area.getBoundingClientRect(), W=Math.round(r.width), H=Math.round(r.height), L=Math.round(r.left), T=Math.round(r.top);
+    if(W<=0||H<=0) return;
+    var s=f.style;
+    if(W>=H){ s.transform='none'; s.left=L+'px'; s.top=T+'px'; s.width=W+'px'; s.height=H+'px'; return; }   // the phone turned the page itself
+    s.width=H+'px'; s.height=W+'px';
+    if(m==='2'){ s.left=L+'px'; s.top=(T+H)+'px'; s.transform='rotate(-90deg)'; }
+    else{ s.left=(L+W)+'px'; s.top=T+'px'; s.transform='rotate(90deg)'; }
+  }
+  window.vcuSidewaysPlace=place;
+  place();
+  addEventListener('resize',place); addEventListener('orientationchange',function(){ setTimeout(place,60); setTimeout(place,400); });
+  if(window.visualViewport) visualViewport.addEventListener('resize',place);
+  addEventListener('storage',function(e){ if(e.key==='vcu_sideways') place(); });
+  // The game going to another page (sign in, setup) leaves the frame: that page opens full screen
+  f.addEventListener('load',function(){
+    try{ var w=f.contentWindow, p=w.location.pathname||'';
+      if(!/game\.html$/i.test(p)) location.replace(w.location.href);
+      else document.title=w.document.title||document.title; }catch(e){}
+  });
+})();
+</script>
+</body>
+</html>
