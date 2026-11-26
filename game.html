@@ -8254,6 +8254,152 @@ body.po2-open #fullcard-modal{z-index:400}
 @media (max-width:820px){ .tr-setup,.tr-run{grid-template-columns:1fr} .tr-sum{position:static} .tr-marks{margin-left:0} .tr-door{width:min(44vw,230px)} .tr-dtxt b{font-size:14px} }
 @media (prefers-reduced-motion:reduce){ .tr-step.cur .k{animation:none} .tr-rw,.tr-recruits .tr-pc{animation:none} }
 /* ═══ DRAFT & SEALED (build 10.50) — the Trial look, a cooler table ═══ */
+/* ═══ 🕹 ARCADE (build 10.59): sealed challenge towers — screen, floor panel, roleplay scene, intro, in-match lines, reveal ═══ */
+#arcade-screen{--ar-ink:#eef2ff;--ar-mute:#a5b4fc;--ar-dim:#6b7299;--ar-cy:#22d3ee;--ar-mg:#f472b6;--ar-line:rgba(34,211,238,.25);--ar-panel:rgba(8,6,24,.86);
+  padding:58px 16px 26px;color:var(--ar-ink);min-height:100vh;box-sizing:border-box}
+#arcade-screen .ar-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;
+  background:radial-gradient(70% 55% at 50% -8%,rgba(244,114,182,.22),transparent 62%),radial-gradient(60% 50% at 0% 110%,rgba(34,211,238,.18),transparent 60%),radial-gradient(60% 50% at 100% 110%,rgba(168,85,247,.2),transparent 60%),linear-gradient(180deg,#0b0820,#04030c 72%)}
+#arcade-screen .ar-bg::before{content:'';position:absolute;left:-50%;right:-50%;bottom:-10%;height:55%;transform:perspective(420px) rotateX(62deg);transform-origin:50% 100%;
+  background:repeating-linear-gradient(90deg,rgba(34,211,238,.22) 0 1px,transparent 1px 64px),repeating-linear-gradient(0deg,rgba(244,114,182,.18) 0 1px,transparent 1px 64px);
+  -webkit-mask-image:linear-gradient(0deg,#000 10%,transparent 90%);mask-image:linear-gradient(0deg,#000 10%,transparent 90%);animation:arGrid 6s linear infinite}
+@keyframes arGrid{to{background-position:0 64px,0 64px}}
+@media (prefers-reduced-motion:reduce){#arcade-screen .ar-bg::before{animation:none}}
+.ar-wrap{max-width:1200px;margin:0 auto}
+.ar-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.ar-back{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--ar-cy);background:rgba(34,211,238,.07);border:1px solid var(--ar-line);padding:8px 14px;cursor:pointer;border-radius:3px}
+.ar-back:hover{background:rgba(34,211,238,.16)}
+.ar-title h2{margin:0;font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(22px,3vw,36px);letter-spacing:.32em;color:#fff;text-shadow:0 0 14px rgba(244,114,182,.75),0 0 32px rgba(34,211,238,.45)}
+.ar-title small{display:block;margin-top:4px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.26em;color:var(--ar-mute)}
+.ar-pills{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.ar-pill{display:flex;align-items:center;gap:8px;padding:6px 14px;border:1px solid var(--ar-line);background:var(--ar-panel);border-radius:999px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--ar-mute);letter-spacing:.1em}
+.ar-pill b{font-family:'Orbitron',sans-serif;font-size:15px;color:#fff}
+.ar-code{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:14px 16px;border:1px solid rgba(244,114,182,.35);background:linear-gradient(90deg,rgba(244,114,182,.10),rgba(34,211,238,.06));border-radius:10px;margin-bottom:18px}
+.ar-code label{font-family:'Orbitron',sans-serif;font-weight:700;font-size:12px;letter-spacing:.2em;color:#fbcfe8}
+.ar-code input{flex:1;min-width:150px;background:#07051a;border:1px solid rgba(34,211,238,.4);color:#fff;border-radius:6px;padding:10px 12px;font-family:'Share Tech Mono',monospace;font-size:15px;letter-spacing:.24em;text-transform:uppercase;outline:none}
+.ar-code input:focus{border-color:var(--ar-cy);box-shadow:0 0 0 2px rgba(34,211,238,.25)}
+.ar-code button{font-family:'Orbitron',sans-serif;font-weight:800;font-size:12px;letter-spacing:.2em;padding:11px 18px;border:none;border-radius:6px;cursor:pointer;color:#14051a;background:linear-gradient(180deg,#f9a8d4,#ec4899)}
+.ar-code .msg{flex-basis:100%;font-size:12px;color:var(--ar-mute);min-height:16px}
+.ar-code .msg.ok{color:#86efac}.ar-code .msg.bad{color:#fca5a5}
+.ar-h{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.28em;color:var(--ar-mute);margin:6px 0 10px}
+.ar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.ar-tw{position:relative;border-radius:12px;overflow:hidden;cursor:pointer;border:1px solid var(--ar-line);background:#07051a;min-height:300px;display:flex;flex-direction:column;justify-content:flex-end;text-align:left;color:inherit;padding:0;font:inherit;transition:transform .15s,box-shadow .15s}
+.ar-tw:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(244,114,182,.25),0 0 0 1px rgba(244,114,182,.5)}
+.ar-tw .art{position:absolute;inset:0;background-size:cover;background-position:50% 20%}
+.ar-tw::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(4,3,12,.92) 78%)}
+.ar-tw .tx{position:relative;z-index:1;padding:14px 16px}
+.ar-tw small{display:block;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.24em;color:#f9a8d4}
+.ar-tw b{display:block;font-family:'Orbitron',sans-serif;font-size:19px;letter-spacing:.08em;margin:4px 0}
+.ar-tw p{margin:0;font-size:12px;color:#c7d2fe;line-height:1.45}
+.ar-tw .fl{display:flex;gap:6px;margin-top:9px}
+.ar-tw .fl i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.14)}
+.ar-tw .fl i.on{background:linear-gradient(90deg,var(--ar-cy),var(--ar-mg));box-shadow:0 0 8px rgba(34,211,238,.6)}
+.ar-tw.sealed{cursor:default}
+.ar-tw.sealed .art{filter:blur(9px) grayscale(.6) brightness(.45);transform:scale(1.1)}
+.ar-tw.sealed .seal{position:absolute;inset:0;z-index:1;display:grid;place-items:center}
+.ar-tw.sealed .seal span{font-family:'Orbitron',sans-serif;font-weight:900;font-size:13px;letter-spacing:.32em;color:#fbcfe8;border:2px solid rgba(244,114,182,.7);padding:9px 16px;border-radius:6px;background:rgba(10,4,20,.6);transform:rotate(-6deg);box-shadow:0 0 18px rgba(244,114,182,.4)}
+.ar-tw.sealed:hover{transform:none;box-shadow:none}
+.ar-tw .done{position:absolute;top:10px;right:10px;z-index:1;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.2em;padding:4px 9px;border-radius:999px;background:rgba(34,197,94,.18);border:1px solid rgba(134,239,172,.6);color:#bbf7d0}
+.ar-tw.flash{animation:arUnseal 1.1s ease}
+@keyframes arUnseal{0%{box-shadow:0 0 0 0 rgba(244,114,182,.9)}60%{box-shadow:0 0 0 18px rgba(244,114,182,0)}100%{box-shadow:none}}
+.ar-admin{margin-top:18px;text-align:right}.ar-admin button{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.16em;background:none;border:1px solid rgba(248,113,113,.4);color:#fca5a5;padding:6px 10px;border-radius:4px;cursor:pointer}
+.ar-tower{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:20px;align-items:start}
+.ar-thead{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--ar-line);min-height:380px;background:#07051a;display:flex;flex-direction:column;justify-content:flex-end}
+.ar-thead .art{position:absolute;inset:0;background-size:cover;background-position:50% 18%}
+.ar-thead::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(4,3,12,.94) 80%)}
+.ar-thead .tx{position:relative;z-index:1;padding:16px}
+.ar-thead small{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.24em;color:#f9a8d4}
+.ar-thead h3{margin:4px 0 6px;font-family:'Orbitron',sans-serif;font-size:22px;letter-spacing:.08em}
+.ar-thead p{margin:0;font-size:12px;color:#c7d2fe;line-height:1.5}
+.ar-floors{display:flex;flex-direction:column;gap:12px}
+.ar-fl{position:relative;display:flex;gap:14px;align-items:center;text-align:left;width:100%;padding:16px 14px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:var(--ar-panel);color:inherit;font:inherit;cursor:pointer;transition:border-color .15s,transform .15s}
+.ar-fl:hover:not(:disabled){border-color:rgba(34,211,238,.6);transform:translateX(3px)}
+.ar-fl.boss{border-color:rgba(251,191,36,.45);background:linear-gradient(90deg,rgba(251,191,36,.10),var(--ar-panel) 60%)}
+.ar-fl:disabled{cursor:default;opacity:.55}
+.ar-fl .pt{width:64px;height:86px;flex:none;border-radius:6px;background:#000 center 18%/cover;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.ar-fl .no{position:absolute;left:-1px;top:-1px;font-family:'Orbitron',sans-serif;font-weight:900;font-size:9px;letter-spacing:.14em;padding:3px 8px;border-radius:10px 0 8px 0;background:linear-gradient(90deg,var(--ar-cy),var(--ar-mg));color:#0b0820}
+.ar-fl .bd{flex:1;min-width:0}
+.ar-fl .bd b{display:block;font-family:'Orbitron',sans-serif;font-size:15px;letter-spacing:.06em}
+.ar-fl .bd em{display:block;font-style:normal;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--ar-mute);margin-top:3px}
+.ar-fl .rw{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;align-items:center}
+.ar-fl .rw img{width:30px;height:42px;object-fit:cover;border-radius:3px;background:#000}
+.ar-fl .rw span{font-size:10px;color:#fde68a;font-family:'Share Tech Mono',monospace;letter-spacing:.1em}
+.ar-fl .st{flex:none;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.16em;padding:5px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.18);color:var(--ar-mute)}
+.ar-fl .st.ok{border-color:rgba(134,239,172,.6);color:#bbf7d0;background:rgba(34,197,94,.12)}
+.ar-fl .st.go{border-color:rgba(34,211,238,.6);color:#a5f3fc;background:rgba(34,211,238,.10)}
+@media (max-width:760px){ .ar-tower{grid-template-columns:1fr} .ar-thead{min-height:220px} .ar-fl .pt{width:48px;height:66px} .ar-fl{gap:10px} }
+.ar-ov{position:fixed;inset:0;z-index:9000;display:none;align-items:center;justify-content:center;background:rgba(2,1,8,.72);padding:56px 16px 16px;box-sizing:border-box}
+.ar-ov.on{display:flex}
+.ar-pan{position:relative;width:min(560px,100%);max-height:calc(100dvh - 72px);overflow:auto;border-radius:12px;border:1px solid rgba(244,114,182,.4);background:linear-gradient(180deg,#120a2a,#07051a);box-shadow:0 20px 60px rgba(0,0,0,.6);color:#eef2ff}
+.ar-pan .hd{position:relative;height:150px;background:#000 center 22%/cover}
+.ar-pan .hd::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(7,5,26,1))}
+.ar-pan .hd small{position:absolute;left:16px;bottom:10px;z-index:1;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.24em;color:#f9a8d4}
+.ar-pan .x{position:absolute;top:8px;right:8px;z-index:2;width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.5);color:#fff;cursor:pointer;font-size:14px}
+.ar-pan .bd{padding:4px 16px 16px}
+.ar-pan h4{margin:2px 0 4px;font-family:'Orbitron',sans-serif;font-size:20px;letter-spacing:.06em}
+.ar-pan .foe{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.16em;color:#a5b4fc}
+.ar-pan p{font-size:12px;line-height:1.55;color:#c7d2fe}
+.ar-rules{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.ar-rule{font-size:11px;color:#e0e7ff;padding:7px 10px;border-radius:6px;background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.18);line-height:1.4}
+.ar-lbl{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.24em;color:#a5b4fc;margin:12px 0 7px}
+.ar-prw{display:flex;gap:10px;flex-wrap:wrap}
+.ar-prw>div{width:86px;text-align:center;font-size:10px;color:#e0e7ff;line-height:1.3}
+.ar-prw .im{width:86px;height:120px;border-radius:6px;overflow:hidden;background:#000;position:relative;margin-bottom:4px}
+.ar-prw .im img{width:100%;height:100%;object-fit:cover}
+.ar-prw em{display:block;font-style:normal;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.08em}
+.ar-prw .big{height:120px;border-radius:6px;display:grid;place-items:center;font-family:'Orbitron',sans-serif;font-weight:900;font-size:20px;margin-bottom:4px}
+.ar-big-cel{background:radial-gradient(circle,rgba(251,191,36,.25),rgba(0,0,0,.4));color:#fde68a;border:1px solid rgba(251,191,36,.4)}
+.ar-big-lv{background:radial-gradient(circle,rgba(34,211,238,.22),rgba(0,0,0,.4));color:#a5f3fc;border:1px solid rgba(34,211,238,.4)}
+.ar-decks{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;max-height:220px;overflow:auto;padding:2px}
+.ar-deck{display:flex;gap:9px;align-items:center;text-align:left;padding:7px;cursor:pointer;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);color:#e0e7ff;border-radius:6px;font:inherit}
+.ar-deck.on{border-color:#22d3ee;box-shadow:0 0 0 1px #22d3ee}
+.ar-deck img,.ar-deck span{width:34px;height:48px;object-fit:cover;border-radius:3px;background:#000;flex:none;display:grid;place-items:center}
+.ar-deck b{display:block;font-size:11px;line-height:1.25}.ar-deck small{display:block;font-size:9px;color:#6b7299;font-family:'Share Tech Mono',monospace}
+.ar-go{width:100%;margin-top:14px;padding:14px 10px;border:none;border-radius:8px;cursor:pointer;font-family:'Orbitron',sans-serif;font-weight:900;font-size:14px;letter-spacing:.26em;color:#0b0820;background:linear-gradient(90deg,#67e8f9,#f472b6)}
+.ar-go:disabled{opacity:.45;cursor:default}
+.ar-none{font-size:12px;color:#fca5a5;padding:8px 0}
+#ar-scene{position:fixed;inset:0;z-index:9400;display:none;background:#04030c;overflow:hidden;cursor:pointer;user-select:none;-webkit-user-select:none}
+#ar-scene.on{display:block}
+#ar-scene .bg{position:absolute;inset:-20px;background:#000 center/cover;filter:blur(14px) brightness(.4);transform:scale(1.05)}
+#ar-scene .who{position:absolute;bottom:150px;width:min(300px,42vw);aspect-ratio:63/88;border-radius:12px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.7),0 0 0 2px rgba(255,255,255,.12);transition:transform .35s ease,opacity .35s ease,filter .35s;opacity:0;transform:translateY(24px)}
+#ar-scene .who img{width:100%;height:100%;object-fit:cover}
+#ar-scene .who.L{left:6vw}#ar-scene .who.R{right:6vw}#ar-scene .who.C{left:50%;margin-left:calc(min(300px,42vw) / -2)}
+#ar-scene .who.on{opacity:1;transform:none}
+#ar-scene .who.dim{opacity:.5;filter:grayscale(.5) brightness(.6);transform:scale(.94)}
+#ar-scene .box{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);width:min(860px,calc(100% - 32px));box-sizing:border-box;padding:16px 20px 22px;border-radius:12px;background:rgba(8,6,24,.92);border:1px solid rgba(244,114,182,.45);box-shadow:0 0 30px rgba(244,114,182,.2)}
+#ar-scene .box b{display:block;font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:.14em;margin-bottom:6px;min-height:14px}
+#ar-scene .box p{margin:0;font-size:15px;line-height:1.55;color:#eef2ff;min-height:46px}
+#ar-scene .box p.narr{font-style:italic;color:#c7d2fe}
+#ar-scene .box i{position:absolute;right:16px;bottom:8px;font-style:normal;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.2em;color:#a5b4fc;animation:arBlink 1.2s steps(2) infinite}
+@keyframes arBlink{50%{opacity:.25}}
+#ar-scene .skip{position:absolute;top:14px;right:14px;z-index:2;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.2em;padding:8px 14px;border-radius:4px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.5);color:#fff;cursor:pointer}
+#ar-scene .ttl{position:absolute;top:18px;left:16px;right:110px;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.24em;color:#f9a8d4}
+@media (max-width:640px){ #ar-scene .who{bottom:190px;width:44vw} #ar-scene .who.C{margin-left:-22vw} #ar-scene .box p{font-size:14px} }
+#ar-intro{position:fixed;inset:0;z-index:9450;display:none;align-items:center;justify-content:center;background:rgba(3,2,10,.84);cursor:pointer}
+#ar-intro.on{display:flex}
+#ar-intro .in{text-align:center;padding:24px;animation:arIn .5s ease both}
+@keyframes arIn{from{opacity:0;transform:scale(1.08)}to{opacity:1;transform:none}}
+#ar-intro small{display:block;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.3em;color:#f9a8d4}
+#ar-intro b{display:block;font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(26px,5vw,52px);letter-spacing:.14em;color:#fff;text-shadow:0 0 18px rgba(244,114,182,.8),0 0 40px rgba(34,211,238,.5);margin:8px 0}
+#ar-intro span{display:block;font-family:'Orbitron',sans-serif;font-size:14px;letter-spacing:.3em;color:#a5f3fc}
+#ar-intro em{display:block;font-style:normal;margin-top:10px;font-size:12px;color:#c7d2fe}
+#arc-say{position:fixed;left:50%;top:62px;transform:translate(-50%,-12px);z-index:150;display:flex;gap:10px;align-items:center;max-width:min(560px,calc(100vw - 24px));box-sizing:border-box;padding:8px 14px 8px 8px;border-radius:12px;background:rgba(8,6,24,.94);border:1px solid rgba(244,114,182,.5);box-shadow:0 8px 30px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;cursor:pointer}
+#arc-say.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#arc-say .pt{width:44px;height:44px;border-radius:50%;flex:none;background:#000 center 18%/cover;box-shadow:0 0 0 2px var(--c,#f472b6)}
+#arc-say b{display:block;font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:.12em;color:var(--c,#f472b6)}
+#arc-say span{display:block;font-size:13px;color:#eef2ff;line-height:1.35}
+#ar-reveal{position:fixed;inset:0;z-index:9500;display:none;align-items:center;justify-content:center;background:rgba(2,1,8,.88);padding:16px;box-sizing:border-box}
+#ar-reveal.on{display:flex}
+#ar-reveal .rv{text-align:center;width:min(760px,100%);max-height:calc(100dvh - 32px);overflow:auto;color:#eef2ff}
+#ar-reveal small{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.26em;color:#f9a8d4}
+#ar-reveal h3{margin:6px 0 14px;font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(20px,3.4vw,32px);letter-spacing:.16em;color:#fff;text-shadow:0 0 16px rgba(34,211,238,.6)}
+#ar-reveal .g{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+#ar-reveal .c{width:130px;animation:arIn .45s ease both;animation-delay:calc(var(--k) * .12s)}
+#ar-reveal .c .im{width:130px;height:182px;border-radius:8px;overflow:hidden;background:#000;position:relative;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 0 22px var(--acc,transparent)}
+#ar-reveal .c .im img{width:100%;height:100%;object-fit:cover}
+#ar-reveal .c b{display:block;font-size:12px;margin-top:6px;color:#eef2ff}
+#ar-reveal .c em{display:block;font-style:normal;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--acc,#a5b4fc)}
+#ar-reveal .c .big{width:130px;height:182px;border-radius:8px;display:grid;place-items:center;font-family:'Orbitron',sans-serif;font-weight:900;font-size:26px}
+#ar-reveal .note{font-size:12px;color:#c7d2fe;margin-top:12px}
 #limited-screen{--tr-ink:#efe8d8;--tr-mute:#9aa3c0;--tr-dim:#5f6888;--tr-gold:#e8c570;--tr-gold2:#f7e3a6;--tr-blood:#b91c3c;--tr-line:rgba(232,197,112,.22);--tr-panel:rgba(8,12,28,.84);
   padding:58px 16px 22px;color:var(--tr-ink);min-height:100vh;box-sizing:border-box}
 #limited-screen .tr-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;
@@ -9919,7 +10065,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.58 · Necrid</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.59 · Arcade</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -10803,6 +10949,19 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
   </div>
   <div class="lt-ov" id="lt-ov" role="dialog" aria-modal="true" aria-label="Draft &amp; Sealed" onclick="if(event.target===this)ltEditClose()"></div>
 </div>
+<!-- ARCADE (build 10.59): sealed challenge towers — PLAY → Single Player → Arcade -->
+<div id="arcade-screen" class="screen">
+  <div class="ar-bg" aria-hidden="true"></div>
+  <div class="ar-wrap">
+    <header class="ar-top">
+      <button class="ar-back" type="button" id="ar-backbtn" onclick="arcBack()">← BACK</button>
+      <div class="ar-title"><h2>ARCADE</h2><small id="ar-sub">CHALLENGE TOWERS · UNLOCK WITH A CODE</small></div>
+      <div class="ar-pills" id="ar-pills"></div>
+    </header>
+    <div id="ar-body"></div>
+  </div>
+  <div class="ar-ov" id="ar-ov" role="dialog" aria-modal="true" aria-label="Arcade floor" onclick="if(event.target===this)arcClosePanel()"></div>
+</div>
 <!-- THE COURT FORGE (build 10.18): crafting's own screen — COURT → Court Forge, or the Court Shards pill on the Profile -->
 <div id="forge-screen" class="screen" data-mode="forge">
   <div class="fg-bg" aria-hidden="true"><canvas id="fg-embers"></canvas></div>
@@ -10980,6 +11139,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
       <button class="btn-primary" id="win-trial-btn" style="width:100%;padding:11px;font-size:13px;display:none" onclick="trFromWin()">🏛 Back to the Trial</button>
       <button class="btn-primary" id="win-limited-btn" style="width:100%;padding:11px;font-size:13px;display:none" onclick="ltFromWin()">🃏 Back to Draft &amp; Sealed</button>
       <button class="btn-primary" id="win-event-btn" style="width:100%;padding:11px;font-size:13px;display:none;background:linear-gradient(180deg,#f7c75f,#c8761f);color:#2a1004;border-color:#ffe3a3" onclick="evFromWin()">🍂 Back to the Harvest Road</button>
+      <button class="btn-primary" id="win-arcade-btn" style="width:100%;padding:11px;font-size:13px;display:none;background:linear-gradient(90deg,#67e8f9,#f472b6);color:#0b0820;border-color:#a5f3fc" onclick="arcFromWin()">🕹 Back to the Arcade</button>
       <button class="btn-primary" id="win-menu-btn" style="width:100%;padding:11px;font-size:13px" onclick="returnToMenuFromWin()">🏠 Return to Main Menu</button>
     </div>
   </div>
@@ -11009,6 +11169,22 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.58'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.59', date:'2026-11-26',
+    cards:[{id:'pavi_nisha_team_promo', set:'promo', number:'PROMO', rarity:'mythic', scan:'Characters/Series/Avatar TLAB/Pavi & Nisha (Promo) (Team Card).png', newAbilities:[],
+      note:"CHANGED: exclusive:'arcade' — earned only by clearing the Arcade tower 'The Avatar Twins'. Like other exclusives: hidden from players who don't own it (cardHiddenFor), never in packs, Market, Court Forge, grant-all, Limited pools or random CPU decks; the admin card picker tags it ★ ARCADE."}],
+    rules:["WEB_BUILD '10.59'. GAME_BUILD stays '10.58' — no rules change, online play is unaffected.",
+      "ARCADE (new PLAY mode, Single Player list, after Draft & Sealed; MM_MODES.arcade for Quick Play). Switch feature_flags.arcade, GLOBAL, default ON (saved as arcade:_adminToggles.arcade!==false; Admin → Game switches → 🕹 Arcade).",
+      "SEALED TOWERS: each tower has a code; the game stores only econHash('arc:'+CODE) (FNV-1a, the same econHash as the catalog). CODE = input upper-cased with everything but A–Z/0–9 removed. The Avatar Twins: hash '51b8776d' (the code itself is in the handoff, never in the game files). Unlocks are per player.",
+      "TOWER 'twins' (The Avatar Twins), 3 floors in order: I Pavi — Air & Earth (CPU medium, 5 Prizes, Herald Asteria) · II Nisha — Fire & Water (CPU hard, 5 Prizes, Herald Peleus) · III Pavi & Nisha — The Avatar Twins, BOSS (CPU hard, 6 Prizes, Herald Storm). Prize Mode, Classic colors, you pick any finished 60-card deck. Exact 60-card CPU lists: ARC_TOWERS[0].floors[n].deck (copy them as-is).",
+      "SCENES: a roleplay scene before each floor (F.pre) and after it (F.win / F.lose): card art as standees (Pavi left, Nisha right, others center), name + line, tap / Enter = next, SKIP / Esc = end. Then a short intro banner, then the match. Text lives in ARC_TOWERS (copy it word for word).",
+      "BEATS (arcBeat, run at the start of the CPU's Main Phase, before its normal actions): the CPU's own turn count A.cpuTurn. A beat fires when cpuTurn ≥ at, its 'after' beat is done (+gap turns), when() is true AND its action can happen right now (arcCanAct: room on the field for whatever it plays incl. missing fusion materials, the card still exists somewhere — reserve/hand/deck/discard, no other fusion out, the form's base on the field); otherwise it waits for a later CPU turn (its lines only play when it fires). Each fires once; if the action still fails, no follow-up lines and it tries again next turn. Lines show in a speech strip at the top of the board and go to the game log as 💬 Name: “line”. Actions: play (card into hand, then the normal play path), fuse (missing materials are played first, then Bond fusion), transform (doTransform). F.reserve = signature cards kept OUT of the CPU deck until their beat (arcTake: reserve → hand → deck → discard). AVATAR SPIRIT: if the CPU is short on Energy for a beat action it gains exactly the difference (logged).",
+      "Floor I beats: T1 line · T2 Pavi enters · T4 Pavi → Pavi (Root Chakra) (only if a plain Pavi is on the field; otherwise just a line) · last-Prize line. Floor II: T1 line · T2 Nisha enters · T4 line · last-Prize line. Floor III: T1 lines · T3 the team card Pavi & Nisha · FUSION from CPU turn 5 once the team card has left the field (its Twin Bond hands them Pavi + Nisha) — or turn 8 at the latest, or as soon as Pavi and Nisha are both on the field: Pavi + Nisha (played if missing) → Nishvi (Bond) · the CPU turn after the fusion: Nishvi → Nishvi (Avatar State) if Nishvi is still there · last-Prize lines.",
+      "LINES on kills (once per card id): the CPU's signature cards (F.kill) when destroyed; one taunt (F.taunt) the first time the CPU destroys one of yours on its turn.",
+      "REWARDS (first clear of each floor only; replays are practice; leaving costs nothing): server-paid one-time catalog keys arc:twins:1 = Pavi ×1 + Pavi (Root Chakra) ×1 Classic Holo · arc:twins:2 = Nisha ×1 + Nisha ×1 Reverse Holo · arc:twins:3 = 750 Celestium + Pavi & Nisha ×1 + Nishvi ×1 Gold Holo + Nishvi (Avatar State) ×1 Gold Holo (econClaim; the old in-game grant when the server functions aren't installed). Floor III also gives +2 Battle Pass levels: XP to reach your level + 2 with your progress into the level kept (client-side awardBPXp, like all BP XP) — only when the claim went through (not on 'already').",
+      "WIN SCREEN: '🕹 CLAIM YOUR REWARDS' / '🕹 BACK TO THE TOWER' (#win-arcade-btn) → Arcade screen, tower view, the after-scene, then the reward reveal (holo finishes shown)."],
+    screens:["ARCADE screen (#arcade-screen): header ← BACK / ARCADE / pills UNLOCKED n/N · CLEARED n. Home: 🔑 ENTER CODE box (UNLOCK; messages: unlocked / already unlocked / 'That code doesn't open anything.') and the SEALED CHALLENGES grid — a sealed tile shows blurred art + '🔒 SEALED' + '? ? ?'; an unlocked tile shows art (Main Menu Images/Pavi and nisha team card.jpg), name, blurb, one bar per floor (lit when cleared) and CLEARED ✓. Admins get '↺ RESET MY ARCADE PROGRESS'.",
+      "TOWER view: tower art + blurb on the left, floors stacked top (boss) to bottom; each row: FLOOR n tag, portrait, name — title, 'VS FOE · CPU · PRIZES', reward thumbnails, status FIGHT / CLEARED ✓ / 🔒. Floor panel: art header, rules, FIRST-CLEAR REWARDS (finish labels, EXCLUSIVE tag), YOUR DECK list, FIGHT / ⚔ FACE THE TWINS / REPLAY."],
+    data:["SAVE: profiles.campaign_progress.arc = {v:1, open:{twins:ts}, cleared:{'twins:0':ts,'twins:1':ts,'twins:2':ts}} (guests: localStorage loc_arcade_<uid>). No SQL. The catalog gains arc:twins:1..3 and republishes automatically on the next admin sign-in (10.54 auto-publish)."] },
   { build:'10.58', date:'2026-11-26',
     cards:[{id:'necrid_promo', set:'promo', number:'PROMO', rarity:'rare', scan:'Characters/Series/RealmSplitters/Necrid (Promo).png', newAbilities:['Ethereal Edge','Corrupted Shard'],
       note:"Necrid · Character · Rare · cost 5 · 5 ATK / 5 HP · color 'red', colors ['red','green'] · subtypes Corrupted, Warrior · race 'Corrupted Warrior' · charName 'Necrid' · sym 'NECRID' · setId promo · PROMO. Menu art: Main Menu Images/Necrid.jpg (Rulk sets it in Admin → Menu Art)."}],
@@ -12863,7 +13039,7 @@ const DB={
   // ── PAVI & NISHA (PROMO TEAM CARD) — build 10.56. Twin Avatars picks who leads (stance chooser ['nisha','pavi']);
   //    Elemental Lead: Pavi's Lead = Guardian, +3 Health · Nisha's Lead = +2 Attack, Burns the defender
   //    (STANCE_ABILITIES 'Elemental Lead@pavi' / '@nisha'). Twin Bond (killCard → twinBondSearch): Pavi + Nisha from the deck.
-  pavi_nisha_team_promo:{id:'pavi_nisha_team_promo',rarity:'mythic',name:'Pavi & Nisha',color:'green',colors:['green','red'],charName:'Pavi & Nisha',subtypes:['Avatar','Bender','Team'],type:'team',race:'Avatar Bender',cost:10,atk:9,hp:9,sym:'P&N',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
+  pavi_nisha_team_promo:{id:'pavi_nisha_team_promo',rarity:'mythic',name:'Pavi & Nisha',color:'green',colors:['green','red'],charName:'Pavi & Nisha',subtypes:['Avatar','Bender','Team'],type:'team',race:'Avatar Bender',cost:10,atk:9,hp:9,sym:'P&N',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],exclusive:'arcade',
     flavor:'The Avatars Of A New Era!',
     abilities:[{label:'Twin Avatars',type:'triggered',cost:0,text:'When this card enters your field, and at the start of each of your turns, choose who leads: Pavi or Nisha. The leader stays until your next turn.'},
       {label:'Elemental Lead',type:'passive',cost:0,text:'Pavi leads (Air & Earth): Guardian and +3 Defense. Nisha leads (Fire & Water): +2 Attack, and when this card attacks, the defender is Burned.'},
@@ -16175,6 +16351,7 @@ function killCard(p,fc){
   const c=DB[fc.cid];if(!c)return;
   if(!G.players[p]||!G.players[p].field.some(f=>f.uid===fc.uid)) return; // already gone (no double Prize / Energy)
   if(typeof emCpuOnKill==='function') try{ emCpuOnKill(p,c); }catch(e){}
+  if(G.arcade&&typeof arcOnKill==='function') try{ arcOnKill(p,c); }catch(e){}   // build 10.59: Arcade lines
   // FINAL VERDICT (The Last Magistrate, build 10.20): a character it destroys in battle goes to the Rift instead of the discard pile.
   const _fv=(()=>{ try{ if(!isChar(c)||c.isToken) return false; const cx=(typeof _fxCtx!=='undefined')?_fxCtx:null; if(!cx||!cx.combat) return false; const s=_dmgSourceFc(fc.uid);
     return !!(s&&String(s.uid)!==String(fc.uid)&&hasAbilityLabel(s,'Final Verdict')&&!(typeof isRiftImmune==='function'&&isRiftImmune(fc))); }catch(e){ return false; } })();
@@ -16497,6 +16674,7 @@ function showWinScreen(p,r,forfeited){
   const _wtb=document.getElementById('win-trial-btn'); if(_wtb) _wtb.style.display='none';
   const _wlb=document.getElementById('win-limited-btn'); if(_wlb) _wlb.style.display='none';
   const _wev=document.getElementById('win-event-btn'); if(_wev) _wev.style.display='none';
+  const _wab=document.getElementById('win-arcade-btn'); if(_wab) _wab.style.display='none';
   const _wrn=document.getElementById('win-rematch-note'); if(_wrn) _wrn.textContent='';
   document.getElementById('win-modal').classList.add('open');
   // build 10.17: group room → Back to the room / Rematch (same two, nobody in line) / Leave room; other 1v1 → rematch handshake
@@ -16507,6 +16685,7 @@ function showWinScreen(p,r,forfeited){
   if(G&&G.trial&&typeof trOnMatchEnd==='function') try{ trOnMatchEnd(iWon); }catch(e){ console.warn('[trial]',e); }   // build 10.18: Trial of Courts
   if(G&&G.limited&&typeof ltOnMatchEnd==='function') try{ ltOnMatchEnd(iWon); }catch(e){ console.warn('[limited]',e); }   // build 10.50: Draft & Sealed
   if(typeof evOnMatchEnd==='function') try{ evOnMatchEnd(iWon); }catch(e){ console.warn('[event]',e); }   // build 10.20: Harvest of Courts
+  if(G&&G.arcade&&typeof arcOnMatchEnd==='function') try{ arcOnMatchEnd(iWon); }catch(e){ console.warn('[arcade]',e); }   // build 10.59: Arcade
 }
 function returnToMenuFromWin(){
   document.getElementById('win-modal').classList.remove('open');
@@ -24948,6 +25127,7 @@ function aiEnumerateActions(p){
 
 // ── main phase driver: pick best, execute, pace, repeat ──
 function aiMainPhase(p, onDone){
+  if(typeof G!=='undefined'&&G&&G.arcade&&typeof arcBeat==='function'&&arcBeat(p,()=>aiMainPhase(p,onDone))) return;   // build 10.59: Arcade scripted beats
   if(aiTurnKey(p)!==AIB.turnKey){ AIB.turnKey=aiTurnKey(p); AIB.tried.clear(); }
   G._aiTurn=true; aiSetAuto(true); // stays on through the attack phase (async ability flows, Exsanguinate picks…)
   let steps=0;
@@ -27341,7 +27521,7 @@ function registrySelect(cid,quiet){
 // ═══════════════════════════════════════════════════════════════════════
 // Menu card art: art-only images (Rulk's uploads) go here keyed by entry id. Missing → falls back to a card scan's illustration window.
 const MENU_ART={};
-const MENU_FALLBACK_CARD={ solo:'king_theoden_bse', online:'storm_herald', team_online:'magnus_virora', campaign:'darkseid_herald', trial:'gorim_herald', limited:'destroyers_gift', harvest:'booni_hoc', match:'kratos_promo', ai:'deerhaunter_promo', room:'lady_loki_promo', team:'magnus_virora', pvp:'ivan_wca_promo',
+const MENU_FALLBACK_CARD={ solo:'king_theoden_bse', online:'storm_herald', team_online:'magnus_virora', campaign:'darkseid_herald', trial:'gorim_herald', limited:'destroyers_gift', arcade:'nishvi_promo', harvest:'booni_hoc', match:'kratos_promo', ai:'deerhaunter_promo', room:'lady_loki_promo', team:'magnus_virora', pvp:'ivan_wca_promo',
   packs:'destroyers_gift', singles:'aquatic_hearth', cosmetics:'back', events:'volaris_prism',
   mydecks:'surfacer_herald', builder:'magnus_base_bse', loadout:'back', herald:'peleus_herald', images:'volaris_prism',
   registry:'virora_base_bse', forge:'virora_surfacer_mui_sr_bse', rulebook:'nature_focus', pass:'virora_ssg', profile:'virora', friends:'najeela_ssg_bse', mailbox:'virora_ssg', trade:'void_crystal_bse',
@@ -27351,6 +27531,7 @@ const MENU_TABS=[
   {id:'campaign',t:'Campaign',s:'STORY MODE',d:'March through the Courts. Each chapter ends at a Herald.',go:()=>enterCampaign()},
   {id:'trial',t:'Trial of Courts',s:'GAUNTLET',d:'Take one deck up through seven Courts to the High Throne. Win, pick a reward, keep climbing.',when:()=>typeof trOn==='function'&&trOn(),go:()=>openTrial()},
   {id:'limited',t:'Draft & Sealed',s:'BUILD FROM PACKS',d:'Open packs or draft against 7 CPU drafters, build a 40-card deck and play until 3 wins or 2 losses. The cards are borrowed for the run.',when:()=>typeof ltOn==='function'&&ltOn(),go:()=>openLimited()},
+  {id:'arcade',t:'Arcade',s:'CHALLENGE TOWERS',d:'Sealed challenge towers vs the CPU. Unlock one with a code, then climb it floor by floor for rewards you can only earn there.',when:()=>typeof arcOn==='function'&&arcOn(),go:()=>openArcade()},
   {id:'harvest',t:'Harvest of Courts',s:'EVENT · LIMITED TIME',d:'Seven missions, nine challenges and 13 cards you can only earn during the event.',when:()=>typeof evVisible==='function'&&evVisible(),go:()=>openHarvest()},
   {id:'match',t:'Find Match',s:'RANKED · ONLINE',d:'Queue for a ranked 1v1. Prize, Life Force or Combined rules.',go:()=>{showScreen('matchmaking-screen');openMatchmaking();}},
   {id:'ai',t:'VS AI',s:'PRACTICE',d:'Fight the CPU at your own pace. Pick a difficulty below.',chips:[['EASY','easy'],['MEDIUM','medium'],['HARD','hard']],go:()=>goToDeckSelect('medium')},
@@ -27361,7 +27542,7 @@ const MENU_TABS=[
  ],
  // build 10.38: PLAY opens these two cards first; each lists its own modes (ids → items above)
  groups:[
-  {id:'solo',t:'Single Player',s:'STORY · CPU · CO-OP',d:'Campaign, Trial of Courts, Draft & Sealed, events, practice vs the CPU, 2v2 co-op and same-screen duels.',ids:['campaign','trial','limited','harvest','ai','team','pvp']},
+  {id:'solo',t:'Single Player',s:'STORY · CPU · CO-OP',d:'Campaign, Trial of Courts, Draft & Sealed, Arcade, events, practice vs the CPU, 2v2 co-op and same-screen duels.',ids:['campaign','trial','limited','arcade','harvest','ai','team','pvp']},
   {id:'online',t:'Multiplayer',s:'RANKED · ROOMS · CO-OP',d:'Play real people online: ranked Find Match, public or private rooms, and 2v2 co-op with a friend.',ids:['match','room','team_online']},
  ]},
  {id:'shop',label:'SHOP',icon:'🏪',plate:'SHOP',sub:'THE COURT MARKET',items:[
@@ -31293,9 +31474,11 @@ function econBuildRewards(){
     add('ev:hoc:road',{cosmetics:['back_harvest_of_courts']});
     EV_CHALLENGES.forEach(c=>add('ev:hoc:c:'+c.id,{cards:[].concat(...(c.cards||[]).map(cid=>[{cid,qty:1},{cid,qty:1,foil:'roll'}])),cosmetics:c.cos||[],roll:(c.cards||[]).length?EV_HOLO:null}));
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
+  try{ if(typeof ARC_TOWERS!=='undefined') ARC_TOWERS.forEach(T=>T.floors.forEach((F,i)=>{ const R=F.reward||{};   // build 10.59: Arcade first clears
+    add(arcKey(T,i),{celestium:+R.cel||0,cards:(R.cards||[]).map(x=>(x.foil&&x.foil!=='none')?{cid:x.cid,qty:x.qty||1,foil:x.foil}:{cid:x.cid,qty:x.qty||1})}); })); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.58';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.59';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -33389,6 +33572,7 @@ let _adminToggles={
   crafting:false, // GLOBAL (build 10.17): Court Shards — players can break and craft cards (admins always can)
   trial:false, // GLOBAL (build 10.18): Trial of Courts — the gauntlet on PLAY (admins always have it)
   limited:false, // GLOBAL (build 10.50): Draft & Sealed — limited play vs the CPU on PLAY (admins always have it)
+  arcade:true, // GLOBAL (build 10.59): Arcade — sealed challenge towers on PLAY, unlocked by code (default ON)
   harvest_event:false, // GLOBAL (build 10.20): the Harvest of Courts event (admins always see it)
   harvest_end:'', // GLOBAL (build 10.20): event end (ISO); '' = EV_HOC_END
   admin_unlimited_cards:true // this one is admin-only, stored locally
@@ -33437,6 +33621,7 @@ async function saveAdminToggles(){
       crafting:_adminToggles.crafting===true,
       trial:_adminToggles.trial===true,
       limited:_adminToggles.limited===true,
+      arcade:_adminToggles.arcade!==false,
       harvest_event:_adminToggles.harvest_event===true,
       harvest_end:_adminToggles.harvest_end||''
     };
@@ -39212,6 +39397,10 @@ window.addEventListener('load',async()=>{
           <span class="adm-ico">🃏</span><div class="adm-swt"><b>Draft &amp; Sealed <i class="adm-tag g">GLOBAL</i></b><span>Limited play on PLAY → Single Player: open packs or draft vs 7 CPU drafters, build 40 cards, 3 wins or 2 losses. Cards are borrowed. Payout: ✎ REWARDS on its screen.</span></div>
           <div class="admin-toggle-switch" id="admin-tg-limited"><div class="admin-toggle-knob"></div></div>
         </div>
+        <div class="adm-sw" onclick="adminToggle('arcade')" role="switch" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
+          <span class="adm-ico">🕹</span><div class="adm-swt"><b>Arcade <i class="adm-tag g">GLOBAL</i></b><span>Sealed challenge towers on PLAY → Single Player, each unlocked by its code (The Avatar Twins). On by default.</span></div>
+          <div class="admin-toggle-switch" id="admin-tg-arcade"><div class="admin-toggle-knob"></div></div>
+        </div>
         <div class="adm-sw" onclick="adminToggle('harvest_event')" role="switch" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click();}">
           <span class="adm-ico">🍂</span><div class="adm-swt"><b>Harvest of Courts (event) <i class="adm-tag g">GLOBAL</i></b><span>The first limited-time event: 7 missions, 9 challenges, 13 event-only cards. Players see it on PLAY and SHOP → Events.</span></div>
           <div class="admin-toggle-switch" id="admin-tg-harvest_event"><div class="admin-toggle-knob"></div></div>
@@ -41208,7 +41397,7 @@ function gcpRender(){
   grid.innerHTML=list.map(c=>{ const n=gcpInGift(c.id), dis=typeof _disabledCards!=='undefined'&&_disabledCards[c.id];
     return `<div class="gcp-card${_gcp.sel===c.id?' sel':''}" data-cid="${c.id}" tabindex="0" onclick="gcpSelect('${c.id}')" ondblclick="gcpSelect('${c.id}');gcpAdd()" onkeydown="if(event.key==='Enter')gcpSelect('${c.id}')">
       <img loading="lazy" src="${getImg(c.id)}" alt="${mlEsc(c.name)}">
-      ${dis?'<span class="tag" style="border-color:#f87171;color:#fca5a5">DISABLED</span>':c.exclusive?'<span class="tag" style="border-color:#ff3fb4;color:#ff8fd0;background:#050208">★ PLAYTEST</span>':(c.formTier&&c.formTier!=='base'?`<span class="tag">${mlEsc(c.formTier.toUpperCase())}</span>`:'')}
+      ${dis?'<span class="tag" style="border-color:#f87171;color:#fca5a5">DISABLED</span>':c.exclusive?`<span class="tag" style="border-color:#ff3fb4;color:#ff8fd0;background:#050208">★ ${c.exclusive==='arcade'?'ARCADE':c.exclusive==='event'?'EVENT':'PLAYTEST'}</span>`:(c.formTier&&c.formTier!=='base'?`<span class="tag">${mlEsc(c.formTier.toUpperCase())}</span>`:'')}
       ${n?`<span class="cnt">×${n}</span>`:''}
       <div class="n">${mlEsc(c.name)}</div><div class="m">${mlEsc(gcpMeta(c.id)||c.id)}</div></div>`; }).join('')||'<div class="ml-empty">No cards match.</div>';
 }
@@ -44532,6 +44721,449 @@ async function ltEditSave(){
   ltEditClose(); ltRender();
 }
 if(typeof MM_MODES!=='undefined') MM_MODES.limited={ico:'🃏',t:'Draft & Sealed',s:'BUILD FROM PACKS',go:()=>openLimited()};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// 🕹 ARCADE (build 10.59, Rulk) — challenge towers vs the CPU. PLAY → Single Player → Arcade.
+//   SWITCH feature_flags.arcade (GLOBAL, default ON; admins always have it).
+//   SEALED  every tower starts sealed. 🔑 ENTER CODE breaks the seal: the code is stored hashed only — econHash('arc:'+CODE),
+//           CODE = upper-case letters and digits (spaces / dashes ignored). Unlocks are per player.
+//   TOWER   floors in order (floor N needs floor N-1 cleared). Each floor = one Prize-mode match vs a fixed CPU deck
+//           (F.deck, 60 cards incl. the Herald), Classic colors, with a roleplay scene before it (F.pre) and after it
+//           (F.win / F.lose) — card art + text, tap to go on, SKIP. No cinematics.
+//   BEATS   scripted CPU moves at set CPU turns (F.beats, run at the start of the CPU's Main Phase — arcBeat, hooked in
+//           aiMainPhase): lines (in-match speech strip + the game log) and an action: play / fuse / transform.
+//           F.reserve = signature cards held out of the CPU deck until their beat (so the CPU can't play them early).
+//           AVATAR SPIRIT: a beat that needs more Energy than the CPU has tops it up to exactly the cost (logged).
+//           F.kill = a line the first time that card of theirs is destroyed · F.taunt = once, when the CPU destroys yours.
+//   REWARDS first clear of each floor, paid once by econ catalog key arc:<tower>:<floor> (econClaim → local grant when the
+//           server functions aren't installed) + R.levels Battle Pass levels (client XP, like every other BP XP).
+//           Replays are practice. Leaving a fight costs nothing.
+//   SAVE    profiles.campaign_progress.arc = {v:1, open:{tower:ts}, cleared:{'tower:floorIndex':ts}}
+//           (guests: localStorage loc_arcade_<uid>). No SQL.
+// ═══════════════════════════════════════════════════════════════════════════
+const ARC_SPK={ pavi:{n:'Pavi',cid:'pavi_promo',hex:'#4ade80'}, nisha:{n:'Nisha',cid:'nisha_promo',hex:'#f87171'}, twins:{n:'Pavi & Nisha',cid:'pavi_nisha_team_promo',hex:'#fbbf24'},
+  nishvi:{n:'Nishvi',cid:'nishvi_promo',hex:'#fb923c'}, avatar:{n:'Nishvi (Avatar State)',cid:'nishvi_avatar_state_promo',hex:'#fde047'}, narr:{n:'',cid:null,hex:'#94a3b8'} };
+const ARC_AI={easy:'EASY',medium:'MEDIUM',hard:'HARD'};
+const ARC_ROMAN=['I','II','III','IV','V','VI','VII','VIII'];
+const ARC_SPIRIT={i:'🌀',n:'Avatar Spirit',t:'When the Twins make a signature move, they get the Energy it needs.'};
+function arcEnergy(cols){ const o={}; cols.forEach(c=>{ o['energy_1_'+c]=5; o['energy_2_'+c]=2; o['energy_3_'+c]=1; }); return o; }
+function arcOnField(p,name){ return ((G.players[p]||{}).field||[]).some(f=>{ const d=DB[f.cid]; return d&&isChar(d)&&(d.charName||d.name)===name; }); }
+function arcFieldHas(p,cid){ return ((G.players[p]||{}).field||[]).some(f=>f.cid===cid); }
+function arcPrizesLeft(){ return Math.max(0,(G.prizeCount||6)-((G.players[1]||{}).prizesClaimed||0)); }
+const ARC_TOWERS=[
+ { id:'twins', n:'The Avatar Twins', s:'SEALED CHALLENGE', code:'51b8776d', cover:'pavi_nisha_team_promo',
+   art:'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Main%20Menu%20Images/Pavi%20and%20nisha%20team%20card.jpg',
+   blurb:'Pavi and Nisha guard a tower of their own. Beat each twin alone, then face them together at the top.',
+   floors:[
+    { id:'pavi', n:'Pavi', title:'Air & Earth', foe:'Pavi', pt:'pavi_promo', ai:'medium', prizes:5,
+      line:'Pavi holds the first floor. Air to strike twice, Earth to stand firm.',
+      rules:[ARC_SPIRIT,{i:'⛰',n:'Rooted',t:'Pavi joins the fight early and reaches Root Chakra later on.'}],
+      deck:Object.assign({asteria_herald:1, pavi_promo:3, pavi_root_chakra_promo:2, toph_promo:3, aang_promo:3, najeela_base_bse:3, lazarus:2, keon_bse:2,
+        saiyan_heavy_warrior_bse:2, mort_promo:1, billy_base_bse:2, alita_base_bse:2, alita_ssj_bse:1, vuruna_base_bse:2, saiyan_pup_bse:2, danny_rand_promo:1,
+        senzu_bean:1, nature_focus:2, zephyranth_fruit_bse:3, royal_matcha_bse:1, vermynth_fruit_bse:1, virora_matcha_bse:1, move_out:1, veelden_kingdom_bse:1, skyrail_velocity_station_bse:1},
+        arcEnergy(['green','yellow'])),
+      reserve:['pavi_promo','pavi_root_chakra_promo'],
+      reward:{cards:[{cid:'pavi_promo',qty:1},{cid:'pavi_root_chakra_promo',qty:1,foil:'classic'}]},
+      pre:[['narr','The first floor of the tower: a quiet stone courtyard. Wind curls between the pillars and the ground hums underfoot.'],
+        ['pavi','So you found the code. Not many people do.'],
+        ['pavi','Nisha wanted the first fight, but I won the coin toss. Air and Earth go first.'],
+        ['pavi','Keep your footing and you can climb. Lose it, and the tower sends you back down.']],
+      win:[['pavi','...Alright. You kept your footing.'],['pavi','Take these. You earned them.'],
+        ['pavi',"Nisha's on the next floor. Fire and Water. Don't let the Water fool you into relaxing."]],
+      lose:[['pavi','You lost your balance. Breathe, and climb again.']],
+      beats:[
+        {id:'hello',at:1,say:[['pavi',"Read the wind before you move. That's lesson one."]]},
+        {id:'enter',at:2,act:'play',cid:'pavi_promo',say:[['pavi',"My turn to step in. Air or Earth — try to guess which one you'll get."]],
+          skip:(A,p)=>arcOnField(p,'Pavi'),alt:[['pavi',"Already here. Let's see how you deal with me."]]},
+        {id:'root',at:4,after:'enter',act:'transform',from:'pavi_promo',cid:'pavi_root_chakra_promo',when:(A,p)=>arcOnField(p,'Pavi'),
+          say:[['pavi','Muladhara. Root down.']],then:[['pavi',"Now you'll have to move a mountain."]],
+          skip:(A,p)=>!arcFieldHas(p,'pavi_promo'),alt:[['pavi','Rooted and ready. Your move.']]},
+        {id:'edge',when:()=>arcPrizesLeft()===1,say:[['pavi',"One more and you've got me... I'm not making it easy."]]}],
+      kill:{pavi_promo:[['pavi','Okay, that one stung.']], pavi_root_chakra_promo:[['pavi','You moved the mountain. Huh.']]},
+      taunt:[['pavi','Balance beats force. Every time.']] },
+    { id:'nisha', n:'Nisha', title:'Fire & Water', foe:'Nisha', pt:'nisha_promo', ai:'hard', prizes:5,
+      line:'Nisha holds the second floor. Fire hits hard; Water makes you pay for hitting back.',
+      rules:[ARC_SPIRIT,{i:'🔥',n:'Hot Start',t:'Nisha jumps in early and keeps the pressure on.'}],
+      deck:Object.assign({peleus_herald:1, nisha_promo:3, korra_promo:2, aoliath_base_bse:3, theia_bse:3, scorched_titan_bse:2, jalina_bse:2, elagost_bse:1,
+        red_she_hulk_promo:1, starfire_promo:1, crystal_bse:3, crystal_ssj_bse:1, volaris:2, volaris_ssj:1, magnus_base_bse:2, magnus_ssj_bse:1, eklif_frost_bse:2, paradox_bse:1,
+        pink_kamehameha_bse:2, twin_tornadoes_bse:2, blade_of_udun_bse:1, glacynth_fruit_bse:2, saiyan_blood:2, prime_proving_ground_bse:1, frostbound_observatory_bse:1, aquatic_hearth:1},
+        arcEnergy(['red','blue'])),
+      reserve:['nisha_promo'],
+      reward:{cards:[{cid:'nisha_promo',qty:1},{cid:'nisha_promo',qty:1,foil:'reverse'}]},
+      pre:[['narr','The second floor is half steam, half flame. Water runs down the walls and boils where it meets the floor.'],
+        ['nisha',"Pavi let you through? Pavi's going soft."],
+        ['nisha','Fire hits hard. Water makes you pay for hitting back. Pick your problem.'],
+        ['nisha',"Come on. Let's turn up the heat!"]],
+      win:[['nisha',"Okay, okay... you're actually good."],['nisha','Pavi! They beat both of us!'],
+        ['pavi',"Then there's only one floor left."],['nisha',"The top. Together this time. Don't keep us waiting."]],
+      lose:[['nisha','Too hot? Cool off and come back.']],
+      beats:[
+        {id:'hello',at:1,say:[['nisha',"Don't blink. I'm faster than Pavi."]]},
+        {id:'enter',at:2,act:'play',cid:'nisha_promo',say:[['nisha','Here I come — try to keep up!']],
+          skip:(A,p)=>arcOnField(p,'Nisha'),alt:[['nisha','Already in the fight. Keep up!']]},
+        {id:'heat',at:4,say:[['nisha','Hot enough for you yet?']]},
+        {id:'edge',when:()=>arcPrizesLeft()===1,say:[['nisha','No way. No way am I losing this close to the end!']]}],
+      kill:{nisha_promo:[['nisha','Hey! I was just warming up!']]},
+      taunt:[['nisha','Ha! Too hot to handle?']] },
+    { id:'twins', n:'Pavi & Nisha', title:'The Avatar Twins', foe:'Pavi & Nisha', pt:'pavi_nisha_team_promo', ai:'hard', prizes:6, boss:true,
+      line:'The top of the tower. The Twins fight side by side — and they have more than one way to become one.',
+      rules:[ARC_SPIRIT,{i:'👑',n:'Boss Floor',t:'Expect their team card, the fusion Nishvi and the Avatar State.'},
+        {i:'⚖',n:"Avatar's Peril",t:'Destroy Nishvi (Avatar State) and you claim an extra Prize.'}],
+      deck:Object.assign({storm_herald:1, pavi_nisha_team_promo:1, nishvi_promo:1, nishvi_avatar_state_promo:1, pavi_promo:3, nisha_promo:3, pavi_root_chakra_promo:1,
+        toph_promo:2, korra_promo:2, keon_bse:2, lazarus:2, najeela_base_bse:2, saiyan_heavy_warrior_bse:2, mort_promo:1, theia_bse:2, jalina_bse:2, aoliath_base_bse:2,
+        scorched_titan_bse:2, elagost_bse:1, zephyranth_fruit_bse:2, pink_kamehameha_bse:2, nature_focus:2, senzu_bean:1, twin_tornadoes_bse:1, veelden_kingdom_bse:1,
+        prime_proving_ground_bse:1, blade_of_udun_bse:1},
+        arcEnergy(['green','red'])),
+      reserve:['pavi_nisha_team_promo','nishvi_promo','nishvi_avatar_state_promo'],
+      reward:{cel:750, levels:2, cards:[{cid:'pavi_nisha_team_promo',qty:1},{cid:'nishvi_promo',qty:1,foil:'gold'},{cid:'nishvi_avatar_state_promo',qty:1,foil:'gold'}]},
+      pre:[['narr','The top of the tower. Air, Earth, Fire and Water circle a single platform under an open sky.'],
+        ['pavi','You beat us one at a time.'],['nisha','Nobody beats us together.'],
+        ['twins','We are the Avatars of a new era!'],
+        ['pavi','No holding back this time, Nisha.'],['nisha',"Wasn't planning to."]],
+      win:[['pavi','...We lost. Together.'],['nisha',"I'm not even mad. That was incredible."],
+        ['pavi','Our team card is yours. There is only one way to earn it, and you just did.'],
+        ['nisha','Take Nishvi too — both forms, in gold. A champion should shine.'],
+        ['twins','Welcome to the new era, challenger.']],
+      lose:[['nisha','Told you. Nobody beats us together.'],['pavi','The tower will be here. Come back stronger.']],
+      beats:[
+        {id:'hello',at:1,say:[['nisha','Ready, Pavi?'],['pavi','Always.']]},
+        {id:'team',at:3,act:'play',cid:'pavi_nisha_team_promo',say:[['twins','Twin Avatars — side by side!']],then:[['pavi',"You lead, I'll keep us standing."],['nisha','Deal.']],
+          skip:(A,p)=>arcFieldHas(p,'pavi_nisha_team_promo'),alt:[['twins','Side by side, like always.']]},
+        {id:'fuse',at:5,after:'team',act:'fuse',cid:'nishvi_promo',mats:['pavi_promo','nisha_promo'],
+          when:(A,p)=>!arcFieldHas(p,'pavi_nisha_team_promo')||A.cpuTurn>=8||(arcOnField(p,'Pavi')&&arcOnField(p,'Nisha')),
+          say:[['pavi',"Nisha... it's time."],['nisha','Four elements...'],['twins','...as ONE!']],
+          then:[['nishvi','I am Nishvi. Air, Earth, Fire and Water — all at once.']]},
+        {id:'avatar',after:'fuse',gap:1,act:'transform',from:'nishvi_promo',cid:'nishvi_avatar_state_promo',when:(A,p)=>arcFieldHas(p,'nishvi_promo'),
+          say:[['nishvi','You want to see what the Avatar can really do?'],['nishvi','THE AVATAR STATE!']],
+          then:[['avatar','Every Avatar before us fights with me now.']]},
+        {id:'edge',when:()=>arcPrizesLeft()===1,say:[['nisha',"Pavi, they're one hit from beating us!"],['pavi','Then we hold the line!']]}],
+      kill:{pavi_nisha_team_promo:[['nisha','They broke our formation!'],['pavi',"Twin Bond. We're not done yet."]],
+        nishvi_promo:[['nishvi','...How? Four elements, and you still...']],
+        nishvi_avatar_state_promo:[['avatar','Even the Avatar State... fell?']],
+        pavi_promo:[['nisha','Pavi!']], nisha_promo:[['pavi','Nisha!']]},
+      taunt:[['nisha',"Told you. Together, we're unstoppable."]] }
+   ]}
+];
+let _arc={view:'home',t:null,sel:null,deck:null,local:null,localKey:null,after:null,msg:'',msgCls:'',cpUid:null,flash:null};
+function arcOn(){ return typeof isFeatureEnabled==='function'&&isFeatureEnabled('arcade'); }
+function arcTower(id){ return ARC_TOWERS.find(T=>T.id===id)||null; }
+function arcKey(T,i){ return 'arc:'+T.id+':'+(i+1); }
+function arcDeckList(F){ const out=[]; Object.entries(F.deck).forEach(([cid,n])=>{ for(let k=0;k<n;k++) out.push(cid); }); return out; }
+function arcLocalKey(){ return 'loc_arcade_'+((typeof _celUserId!=='undefined'&&_celUserId)||'guest'); }
+function arcData(){
+  let D;
+  if(evOnline()){ if(typeof _campaignProgress!=='object'||!_campaignProgress) _campaignProgress={}; D=_campaignProgress.arc; if(!D||typeof D!=='object') D=_campaignProgress.arc={}; }
+  else { const k=arcLocalKey(); if(!_arc.local||_arc.localKey!==k){ _arc.localKey=k; _arc.local=null; try{ _arc.local=JSON.parse(localStorage.getItem(k)||'null'); }catch(e){} if(!_arc.local||typeof _arc.local!=='object') _arc.local={}; } D=_arc.local; }
+  D.v=1; D.open=D.open||{}; D.cleared=D.cleared||{}; return D;
+}
+function arcSave(){
+  if(evOnline()){ if(typeof saveCampaignProgress==='function') saveCampaignProgress(); }
+  else { try{ localStorage.setItem(arcLocalKey(),JSON.stringify(_arc.local||{})); }catch(e){} }
+}
+function arcFloorOpen(T,i,D){ D=D||arcData(); return !!D.open[T.id]&&(i===0||!!D.cleared[T.id+':'+(i-1)]); }
+function arcTowerDone(T,D){ D=D||arcData(); return T.floors.every((F,i)=>D.cleared[T.id+':'+i]); }
+function arcNorm(code){ return String(code||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
+
+// ── screen ──
+function openArcade(){
+  if(!arcOn()){ showModal('🕹 Arcade','The Arcade is closed right now.'); return; }
+  if(typeof mmRemember==='function') mmRemember('arcade');
+  showScreen('arcade-screen'); _arc.view='home'; _arc.msg=''; _arc.msgCls=''; arcRender();
+  const uid=(typeof _celUserId!=='undefined'&&_celUserId)||'guest';
+  if(evOnline()&&_arc.cpUid!==uid&&typeof loadCampaignProgress==='function'){ _arc.cpUid=uid; loadCampaignProgress().then(()=>{ if(document.getElementById('arcade-screen')?.classList.contains('active')) arcRender(); }).catch(()=>{}); }
+}
+function arcBack(){ if(_arc.view==='tower'){ _arc.view='home'; arcRender(); return; } showScreen('menu-screen'); }
+function arcRender(){
+  const body=document.getElementById('ar-body'); if(!body) return; const D=arcData();
+  const T=_arc.view==='tower'?arcTower(_arc.t):null; if(!T||!D.open[T.id]) _arc.view='home';
+  const back=document.getElementById('ar-backbtn'); if(back) back.textContent=_arc.view==='tower'?'← ARCADE':'← BACK';
+  const pills=document.getElementById('ar-pills'); const open=ARC_TOWERS.filter(x=>D.open[x.id]).length, done=ARC_TOWERS.filter(x=>arcTowerDone(x,D)).length;
+  if(pills) pills.innerHTML=`<div class="ar-pill">UNLOCKED <b>${open}/${ARC_TOWERS.length}</b></div><div class="ar-pill">CLEARED <b>${done}</b></div>`;
+  const sub=document.getElementById('ar-sub');
+  if(_arc.view==='tower'){ if(sub) sub.textContent=T.n.toUpperCase()+' · '+T.floors.length+' FLOORS'; body.innerHTML=arcTowerHtml(T,D); return; }
+  if(sub) sub.textContent='CHALLENGE TOWERS · UNLOCK WITH A CODE';
+  body.innerHTML=`<form class="ar-code" onsubmit="event.preventDefault();arcRedeem()" autocomplete="off"><label for="ar-code-in">🔑 ENTER CODE</label>
+      <input id="ar-code-in" type="text" maxlength="32" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="CODE" aria-label="Challenge code"><button type="submit">UNLOCK</button>
+      <div class="msg ${_arc.msgCls||''}" id="ar-code-msg" role="status">${evEsc(_arc.msg||'Sealed challenges open with a code.')}</div></form>
+    <div class="ar-h">SEALED CHALLENGES</div><div class="ar-grid">${ARC_TOWERS.map(x=>arcTileHtml(x,D)).join('')}</div>
+    ${(typeof isAdmin==='function'&&isAdmin())?`<div class="ar-admin"><button type="button" onclick="arcAdminReset()">↺ RESET MY ARCADE PROGRESS (ADMIN)</button></div>`:''}`;
+}
+function arcTileHtml(T,D){
+  if(!D.open[T.id]) return `<div class="ar-tw sealed" aria-label="Sealed challenge"><div class="art" style="background-image:url('${T.art}')"></div><div class="seal"><span>🔒 SEALED</span></div>
+    <div class="tx"><small>SEALED CHALLENGE</small><b>? ? ?</b><p>Enter its code to break the seal.</p></div></div>`;
+  const done=arcTowerDone(T,D);
+  return `<button type="button" class="ar-tw${_arc.flash===T.id?' flash':''}" data-tw="${T.id}" onclick="arcOpenTower('${T.id}')"><div class="art" style="background-image:url('${T.art}')"></div>${done?'<span class="done">CLEARED ✓</span>':''}
+    <div class="tx"><small>${evEsc(T.s)} · ${T.floors.length} FLOORS</small><b>${evEsc(T.n)}</b><p>${evEsc(T.blurb)}</p><div class="fl">${T.floors.map((F,i)=>`<i class="${D.cleared[T.id+':'+i]?'on':''}"></i>`).join('')}</div></div></button>`;
+}
+function arcOpenTower(id){ const T=arcTower(id); if(!T||!arcData().open[id]) return; _arc.view='tower'; _arc.t=id; _arc.flash=null; arcRender(); try{ window.scrollTo(0,0); }catch(e){} }
+function arcRewardItems(F){ const R=F.reward||{}, out=[];
+  (R.cards||[]).forEach(x=>out.push({cid:x.cid,finish:x.foil||'none',n:x.qty||1,ex:!!(DB[x.cid]&&DB[x.cid].exclusive)}));
+  if(R.cel) out.push({cel:R.cel}); if(R.levels) out.push({lv:R.levels}); return out; }
+function arcTowerHtml(T,D){
+  const rows=T.floors.map((F,i)=>{
+    const open=arcFloorOpen(T,i,D), done=!!D.cleared[T.id+':'+i], boss=!!F.boss;
+    const rw=arcRewardItems(F).map(x=>x.cid?`<img src="${getImg(x.cid)||''}" alt="" loading="lazy" data-zc="${x.cid}" data-zf="${x.finish}" title="${evEsc((DB[x.cid]?.name||x.cid)+' · '+(VARIANT_META[x.finish]||VARIANT_META.none).label)}">`:x.cel?`<span>+${x.cel} CEL</span>`:`<span>+${x.lv} LEVELS</span>`).join('');
+    return `<button type="button" class="ar-fl${boss?' boss':''}" data-fl="${i}" ${open?`onclick="arcOpenFloor('${T.id}',${i})"`:'disabled'}><span class="no">FLOOR ${ARC_ROMAN[i]}${boss?' · BOSS':''}</span>
+      <div class="pt" style="background-image:url('${getImg(F.pt)||''}')"></div>
+      <div class="bd"><b>${evEsc(F.n)} — ${evEsc(F.title)}</b><em>VS ${evEsc(F.foe.toUpperCase())} · ${ARC_AI[F.ai]} CPU · ${F.prizes} PRIZES</em><div class="rw">${rw}</div></div>
+      <span class="st ${done?'ok':open?'go':''}">${done?'CLEARED ✓':open?'FIGHT':'🔒'}</span></button>`; }).reverse().join('');
+  return `<div class="ar-tower"><div class="ar-thead"><div class="art" style="background-image:url('${T.art}')"></div><div class="tx"><small>${evEsc(T.s)}</small><h3>${evEsc(T.n)}</h3><p>${evEsc(T.blurb)}</p></div></div>
+    <div class="ar-floors">${rows}</div></div>`;
+}
+function arcRedeem(){
+  const inp=document.getElementById('ar-code-in'); const code=arcNorm(inp&&inp.value);
+  if(!code){ _arc.msg='Type a code first.'; _arc.msgCls='bad'; arcRender(); return; }
+  const h=econHash('arc:'+code); const T=ARC_TOWERS.find(x=>x.code===h); const D=arcData();
+  if(!T){ _arc.msg='That code doesn’t open anything.'; _arc.msgCls='bad'; arcRender(); trSfx('denied'); return; }
+  if(D.open[T.id]){ _arc.msg=`${T.n} is already unlocked.`; _arc.msgCls='ok'; arcRender(); return; }
+  D.open[T.id]=Date.now(); arcSave(); _arc.msg=`🔓 ${T.n} unlocked!`; _arc.msgCls='ok'; _arc.flash=T.id;
+  trSfx('powerup'); arcRender();
+}
+function arcAdminReset(){ if(!(typeof isAdmin==='function'&&isAdmin())) return; if(!confirm('Reset your Arcade progress (unlocks and cleared floors)? Server rewards already claimed stay claimed.')) return;
+  const D=arcData(); D.open={}; D.cleared={}; arcSave(); _arc.view='home'; _arc.msg='Arcade progress reset.'; _arc.msgCls='ok'; arcRender(); }
+
+// ── floor panel ──
+function arcOpenFloor(tid,i){
+  const T=arcTower(tid), F=T&&T.floors[i]; if(!F) return; const D=arcData(); if(!arcFloorOpen(T,i,D)) return;
+  const decks=evDecks(); if(!_arc.deck||!decks.some(d=>d.id===_arc.deck)){ try{ _arc.deck=localStorage.getItem('loc_arc_deck'); }catch(e){} if(!decks.some(d=>d.id===_arc.deck)) _arc.deck=decks[0]?decks[0].id:null; }
+  _arc.sel={t:tid,f:i}; const ov=document.getElementById('ar-ov'); if(!ov) return; const done=!!D.cleared[T.id+':'+i];
+  const rules=(F.rules||[]).map(r=>`<div class="ar-rule">${r.i} <b>${evEsc(r.n)}</b> — ${evEsc(r.t)}</div>`).join('');
+  const prw=arcRewardItems(F).map(x=>{ if(x.cid){ const vm=VARIANT_META[x.finish]||VARIANT_META.none;
+      return `<div><div class="im" data-zc="${x.cid}" data-zf="${x.finish}" role="button" tabindex="0" title="Tap to view"><img src="${getImg(x.cid)||''}" alt="" loading="lazy"></div>${evEsc(DB[x.cid]?.name||x.cid)}<em style="color:${vm.accent}">${vm.label.toUpperCase()}${x.ex?' · EXCLUSIVE':''}</em></div>`; }
+    if(x.cel) return `<div><div class="big ar-big-cel">+${x.cel}</div>Celestium</div>`;
+    return `<div><div class="big ar-big-lv">+${x.lv}</div>Levels</div>`; }).join('');
+  const deckHtml=decks.length?decks.map(d=>{ const h=d.cards.find(id=>DB[id]&&DB[id].type==='herald'); const img=h&&getImg(h);
+      return `<button type="button" class="ar-deck${_arc.deck===d.id?' on':''}" onclick="arcPickDeck('${d.id}')">${img?`<img src="${img}" alt="" loading="lazy">`:'<span>🂠</span>'}<div><b>${evEsc(d.name)}</b><small>${d.preset?'STARTER':'60 CARDS'}</small></div></button>`; }).join('')
+    :'<div class="ar-none">You need a finished 60-card deck. Build one in LOCKER → Deck Builder.</div>';
+  ov.innerHTML=`<div class="ar-pan" role="document"><div class="hd" style="background-image:url('${getImg(F.pt)||T.art}')"><small>${evEsc(T.n.toUpperCase())} · FLOOR ${ARC_ROMAN[i]}${F.boss?' · BOSS':''}</small></div>
+    <button type="button" class="x" onclick="arcClosePanel()" aria-label="Close">✕</button>
+    <div class="bd"><h4>${evEsc(F.n)} — ${evEsc(F.title)}</h4><div class="foe">VS ${evEsc(F.foe.toUpperCase())} · ${F.prizes} PRIZES · ${ARC_AI[F.ai]} CPU</div>
+      <p>${evEsc(F.line)}</p><div class="ar-rules">${rules}</div>
+      <div class="ar-lbl">${done?'CLEARED ✓ — REPLAY FOR PRACTICE':'FIRST-CLEAR REWARDS'}</div><div class="ar-prw">${prw}</div>
+      <div class="ar-lbl">YOUR DECK</div><div class="ar-decks">${deckHtml}</div>
+      <button type="button" class="ar-go" id="ar-go" ${decks.length?'':'disabled'} onclick="arcFight('${T.id}',${i})">${done?'REPLAY':(F.boss?'⚔ FACE THE TWINS':'⚔ FIGHT')}</button></div></div>`;
+  ov.classList.add('on');
+}
+function arcPickDeck(id){ _arc.deck=id; try{ localStorage.setItem('loc_arc_deck',id); }catch(e){} if(_arc.sel) arcOpenFloor(_arc.sel.t,_arc.sel.f); }
+function arcClosePanel(){ const ov=document.getElementById('ar-ov'); if(ov){ ov.classList.remove('on'); ov.innerHTML=''; } _arc.sel=null; }
+
+// ── roleplay scene (before / after a floor) ──
+function arcScene(lines,opts,cb){
+  lines=(lines||[]).filter(l=>l&&l[1]); opts=opts||{}; if(!lines.length){ if(cb) cb(); return; }
+  let L=document.getElementById('ar-scene'); if(!L){ L=document.createElement('div'); L.id='ar-scene'; L.setAttribute('role','dialog'); L.setAttribute('aria-modal','true'); L.setAttribute('aria-label','Scene'); document.body.appendChild(L); }
+  L.innerHTML=`<div class="bg" style="background-image:url('${opts.art||''}')"></div><div class="ttl">${evEsc(opts.title||'')}</div><button type="button" class="skip">SKIP ›</button>
+    <div class="who L"><img alt=""></div><div class="who C"><img alt=""></div><div class="who R"><img alt=""></div>
+    <div class="box" aria-live="polite"><b></b><p></p><i>TAP ▸</i></div>`;
+  let k=-1, fin=false;
+  const side=sp=>sp==='pavi'?'L':sp==='nisha'?'R':'C';
+  const show=()=>{ k++; if(k>=lines.length){ end(); return; }
+    const sp=lines[k][0], S=ARC_SPK[sp]||ARC_SPK.narr, sd=side(sp);
+    L.querySelectorAll('.who').forEach(w=>{ const im=w.querySelector('img');
+      if(S.cid&&w.classList.contains(sd)){ if(im.dataset.cid!==S.cid){ im.src=getImg(S.cid)||''; im.dataset.cid=S.cid; } w.classList.add('on'); w.classList.remove('dim'); }
+      else if(w.classList.contains('C')&&sd!=='C'){ w.classList.remove('on','dim'); }
+      else if(w.classList.contains('on')) w.classList.add('dim'); });
+    const b=L.querySelector('.box b'), p=L.querySelector('.box p'); b.textContent=S.n; b.style.color=S.hex; p.textContent=lines[k][1]; p.className=sp==='narr'?'narr':''; };
+  const key=e=>{ if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); end(); } else if(e.key==='Enter'||e.key===' '){ e.preventDefault(); e.stopPropagation(); show(); } };
+  const end=()=>{ if(fin) return; fin=true; document.removeEventListener('keydown',key,true); L.classList.remove('on'); L.innerHTML=''; if(cb) cb(); };
+  L.onclick=e=>{ if(e.target.closest('.skip')){ end(); return; } show(); };
+  document.addEventListener('keydown',key,true);
+  L.classList.add('on'); show();
+}
+function arcIntro(T,F,i,cb){
+  if(typeof trMotion==='function'&&!trMotion()){ cb(); return; }
+  let L=document.getElementById('ar-intro'); if(!L){ L=document.createElement('div'); L.id='ar-intro'; document.body.appendChild(L); }
+  L.innerHTML=`<div class="in"><small>ARCADE · ${evEsc(T.n.toUpperCase())} · FLOOR ${ARC_ROMAN[i]}${F.boss?' · BOSS':''}</small><b>${evEsc(F.title.toUpperCase())}</b><span>VS ${evEsc(F.foe.toUpperCase())}</span>
+    <em>${(F.rules||[]).map(r=>r.i+' '+evEsc(r.n)).join(' · ')}</em></div>`;
+  L.classList.add('on'); trSfx('heraldSlam');
+  let done=false; const fin=()=>{ if(done) return; done=true; L.classList.remove('on'); L.innerHTML=''; cb(); };
+  L.onclick=fin; setTimeout(fin,2300);
+}
+
+// ── fight ──
+function arcFight(tid,i){
+  const T=arcTower(tid), F=T&&T.floors[i]; if(!F||!arcOn()||!arcFloorOpen(T,i)) return;
+  const d=evDecks().find(x=>x.id===_arc.deck); if(!d) return;
+  if(!d.preset&&typeof validateDeckForPlay==='function'&&!validateDeckForPlay(d.id)) return;
+  const foils=(!d.preset&&typeof getDeckFoils==='function'&&getDeckFoils(d.id))||null;
+  arcClosePanel();
+  arcScene(F.pre,{art:getImg(F.pt)||T.art,title:T.n.toUpperCase()+' · FLOOR '+ARC_ROMAN[i]},()=>arcIntro(T,F,i,()=>arcStart(T,F,i,d.cards.slice(),(foils&&foils.length===60)?foils.slice():null)));
+}
+function arcStart(T,F,i,cards,foils){
+  const full=arcDeckList(F), reserve=(F.reserve||[]).slice(), play=full.slice();
+  reserve.forEach(cid=>{ const k=play.indexOf(cid); if(k>-1) play.splice(k,1); });
+  arcSayReset();
+  const sv=[pendingGameMode,pendingPrizeCount,pendingLFHP];
+  pendingGameMode='prize'; pendingPrizeCount=F.prizes;
+  try{ startGame(F.ai,cards,play,foils,null); } finally{ pendingGameMode=sv[0]; pendingPrizeCount=sv[1]; pendingLFHP=sv[2]; }
+  G.arcade={t:T.id,f:i,reserve,done:{},said:{},cpuTurn:0,key:null};
+  G.players[2].name=F.foe;
+  log(`🕹 Arcade — ${T.n}: Floor ${ARC_ROMAN[i]} · ${F.n} (${F.title}).`,'info'); (F.rules||[]).forEach(r=>log(`🕹 ${r.n}: ${r.t}`,'info'));
+  if(typeof renderAll==='function') renderAll();
+}
+function arcFloorOf(A){ const T=A&&arcTower(A.t); return T?T.floors[A.f]:null; }
+
+// ── in-match lines: a speech strip at the top + the game log ──
+const _arcSay={q:[],busy:false,t:null};
+function arcSay(lines,cb){
+  lines=(lines||[]).filter(l=>l&&l[1]);
+  lines.forEach(([sp,t])=>{ const S=ARC_SPK[sp]||ARC_SPK.narr; try{ log(`💬 ${S.n||'…'}: “${t}”`,'info'); }catch(e){} });
+  if(!lines.length||(typeof gameSpeed==='function'&&gameSpeed()==='instant')){ if(cb) setTimeout(cb,0); return; }
+  lines.forEach(l=>_arcSay.q.push({l})); if(cb) _arcSay.q.push({cb});
+  arcSayPump();
+}
+function arcSayPump(){
+  if(_arcSay.busy) return; const it=_arcSay.q.shift(); if(!it){ arcSayHide(); return; }
+  if(it.cb){ try{ it.cb(); }catch(e){ console.warn('[arcade] say cb',e); } arcSayPump(); return; }
+  _arcSay.busy=true; const [sp,t]=it.l; const S=ARC_SPK[sp]||ARC_SPK.narr;
+  let el=document.getElementById('arc-say'); if(!el){ el=document.createElement('div'); el.id='arc-say'; el.setAttribute('role','status'); el.onclick=()=>arcSayNext(); document.body.appendChild(el); }
+  el.style.setProperty('--c',S.hex); el.innerHTML=`<div class="pt" style="background-image:url('${(S.cid&&getImg(S.cid))||''}')"></div><div><b>${evEsc(S.n||'')}</b><span>${evEsc(t)}</span></div>`; el.classList.add('on');
+  const ms=Math.min(4200,1100+t.length*40)*((typeof gameSpeed==='function'&&gameSpeed()==='fast')?.65:1);
+  clearTimeout(_arcSay.t); _arcSay.t=setTimeout(arcSayNext,ms);
+}
+function arcSayNext(){ clearTimeout(_arcSay.t); _arcSay.busy=false; arcSayPump(); }
+function arcSayHide(){ const el=document.getElementById('arc-say'); if(el) el.classList.remove('on'); }
+function arcSayReset(){ clearTimeout(_arcSay.t); _arcSay.q=[]; _arcSay.busy=false; arcSayHide(); }
+
+// ── beats (start of the CPU's Main Phase) ──
+function arcSpirit(p,cost){ const pl=G.players[p]; if(!pl||!(cost>0)) return; const need=cost-(pl.energy||0); if(need>0){ pl.energy+=need; log(`🌀 Avatar Spirit: +${need} Energy for ${pname(p)}.`,'gain'); } }
+function arcTake(p,cid){   // a signature card into the CPU's hand: reserve first, then hand, deck, discard pile
+  const A=G.arcade, pl=G.players[p]; if(!A||!pl||!DB[cid]) return null;
+  const ri=A.reserve.indexOf(cid); if(ri>-1){ A.reserve.splice(ri,1); const fc=newFC(cid); fc.variant='none'; pl.hand.push(fc); return fc; }
+  const h=pl.hand.find(f=>f.cid===cid); if(h) return h;
+  let k=pl.deck.indexOf(cid); if(k>-1){ pl.deck.splice(k,1); } else { k=pl.discard.indexOf(cid); if(k>-1) pl.discard.splice(k,1); else return null; }
+  const fc=newFC(cid); fc.variant='none'; pl.hand.push(fc); return fc;
+}
+function arcBeatDue(A,b,p){
+  if(A.cpuTurn<(b.at||1)) return false;
+  if(b.after&&!A.done[b.after]) return false;
+  if(b.after&&b.gap&&A.cpuTurn<A.done[b.after]+b.gap) return false;
+  if(b.when&&!b.when(A,p)) return false;
+  return arcCanAct(A,b,p);
+}
+// Can the beat's action happen right now? (room on the field, the card still exists, no other fusion out…) — if not, it waits.
+function arcRoom(p){ const pl=G.players[p]; return MAX_FIELD-pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken).length; }
+function arcHas(p,cid){ const A=G.arcade, pl=G.players[p]; return A.reserve.includes(cid)||pl.hand.some(f=>f.cid===cid)||pl.deck.includes(cid)||pl.discard.includes(cid); }
+function arcCanAct(A,b,p){
+  const pl=G.players[p]; if(!b.act) return true; if(b.skip&&b.skip(A,p)) return true;
+  const c=DB[b.cid]; if(!c||!arcHas(p,b.cid)) return false;
+  if(b.act==='play') return !isChar(c)||arcRoom(p)>=1;
+  if(b.act==='fuse'){ if(pl.field.some(f=>f.fusion)) return false;
+    const miss=(c.fusionMaterials||[]).map((sp,k)=>pl.field.some(f=>fusionMatches(sp,f))?null:b.mats[k]).filter(Boolean);
+    return arcRoom(p)>=miss.length&&miss.every(cid=>arcHas(p,cid)); }
+  if(b.act==='transform') return pl.field.some(f=>f.cid===b.from&&!tfUsedThisTurn(f));
+  return true;
+}
+function arcBeat(p,cont){
+  const A=G&&G.arcade; if(!A||p!==2||G.gameOver||G.onlineMode||G.is2v2) return false;
+  const key=G.turn+':'+p; if(A.key===key) return false; A.key=key; A.cpuTurn=(A.cpuTurn||0)+1;
+  const F=arcFloorOf(A); if(!F) return false;
+  let due=[]; try{ due=(F.beats||[]).filter(b=>!A.done[b.id]&&arcBeatDue(A,b,p)); }catch(e){ console.warn('[arcade] beat',e); }
+  if(!due.length) return false;
+  G._aiTurn=true; aiSetAuto(true);
+  let i=0; const next=()=>{ if(G.gameOver||G.arcade!==A) return; if(i>=due.length){ try{ renderAll(); }catch(e){} aiLater(cont,(typeof aiPace==='function')?aiPace(600):600); return; }
+    const b=due[i++]; A.done[b.id]=A.cpuTurn; arcRunBeat(p,b,next); };
+  next(); return true;
+}
+function arcRunBeat(p,b,done){
+  const A=G.arcade; let skip=false; try{ skip=!!(b.act&&b.skip&&b.skip(A,p)); }catch(e){}
+  if(!b.act||skip){ arcSay(skip?(b.alt||b.say):b.say,done); return; }
+  arcSay(b.say,()=>{ if(G.gameOver) return;
+    const fin=ok=>{ if(G.gameOver) return; if(!ok){ A.done[b.id]=0; done(); return; } arcSay(b.then,done); };   // it didn't happen → no follow-up lines; it tries again next turn
+    try{ if(b.act==='play') arcActPlay(p,b.cid,fin); else if(b.act==='fuse') arcActFuse(p,b,fin); else if(b.act==='transform') arcActTransform(p,b,fin); else fin(true); }
+    catch(e){ console.warn('[arcade] beat action',b.id,e); fin(false); } });
+}
+function arcWait(cb,ms){ aiLater(cb,(typeof gameSpeed==='function'&&gameSpeed()==='instant')?60:ms); }
+function arcActPlay(p,cid,cb){
+  const pl=G.players[p], c=DB[cid]; if(!pl||!c){ cb(false); return; }
+  if(isChar(c)&&arcRoom(p)<1){ cb(false); return; }
+  const fc=arcTake(p,cid); if(!fc){ cb(false); return; }
+  arcSpirit(p,Math.max(0,(c.cost||0)+(fc.costMod||0)+handCostMod(p,fc)));
+  aiSetAuto(true); onHandClick(p,fc.uid,fc);
+  try{ if(typeof recalcPassives==='function') recalcPassives(); renderAll(); }catch(e){}
+  const ok=pl.field.some(f=>f.uid===fc.uid);
+  arcWait(()=>cb(ok),ok?1600:60);
+}
+function arcActFuse(p,b,cb){
+  const pl=G.players[p], c=DB[b.cid]; if(!pl||!c){ cb(false); return; }
+  const specs=c.fusionMaterials||[]; const need=[]; specs.forEach((sp,k)=>{ if(!pl.field.some(f=>fusionMatches(sp,f))) need.push(b.mats[k]); });
+  const step=()=>{ if(G.gameOver) return;
+    const cid=need.shift(); if(cid){ arcActPlay(p,cid,ok=>{ if(ok) step(); else cb(false); }); return; }
+    const hf=arcTake(p,b.cid); if(!hf){ cb(false); return; }
+    let opts=fusionOptions(p,hf).filter(o=>o.method==='bond');
+    if(opts.length) arcSpirit(p,opts[0].cost);
+    opts=fusionOptions(p,hf).filter(o=>o.method==='bond'&&o.can);
+    if(!opts.length){ pl.hand=pl.hand.filter(f=>f.uid!==hf.uid); G.arcade.reserve.push(b.cid); cb(false); return; }   // not possible (field / another fusion): back to the reserve, again next turn
+    const o=opts[0]; aiSetAuto(true); const ok=performFusion(p,hf.uid,o.a.uid,o.b.uid,'bond')!==false; G.arcade.fusedTurn=G.arcade.cpuTurn;
+    arcWait(()=>cb(ok),3400); };
+  step();
+}
+function arcActTransform(p,b,cb){
+  const pl=G.players[p]; if(!pl){ cb(false); return; }
+  const fc=pl.field.find(f=>f.cid===b.from&&!tfUsedThisTurn(f)); if(!fc){ cb(false); return; }
+  const hf=arcTake(p,b.cid); if(!hf){ cb(false); return; }
+  const cost=transformCostFor(p,fc,b.cid).cost; arcSpirit(p,cost);
+  aiSetAuto(true); doTransform(fc.uid,b.cid,hf.uid,cost,p);
+  arcWait(()=>cb(fc.cid===b.cid||pl.field.some(f=>f.cid===b.cid)),2900);
+}
+function arcOnKill(p,c){
+  const A=G&&G.arcade; if(!A||G.gameOver||!c) return; const F=arcFloorOf(A); if(!F) return;
+  if(p===2){ const k=F.kill&&F.kill[c.id]; if(k&&!A.said['k:'+c.id]){ A.said['k:'+c.id]=1; arcSay(k); } }
+  else if(p===1&&G.activePlayer===2&&F.taunt&&!A.said.taunt&&isChar(c)){ A.said.taunt=1; arcSay(F.taunt); }
+}
+
+// ── the end of the match: first clear pays; the Arcade button shows the scene + rewards ──
+function arcOnMatchEnd(iWon){
+  if(!G||!G.arcade||G._arcDone) return; G._arcDone=true; arcSayReset();
+  const A=G.arcade, T=arcTower(A.t), F=T&&T.floors[A.f]; if(!F) return;
+  const D=arcData(), ck=T.id+':'+A.f; let items=null, line;
+  if(iWon&&!D.cleared[ck]){
+    D.cleared[ck]=Date.now(); arcSave(); items=arcRewardItems(F);
+    const after=_arc.after={t:T.id,f:A.f,won:true,items,last:A.f===T.floors.length-1};
+    arcPay(T,F,A.f).then(r=>{ if(r&&r.error==='already'){ after.items=null; after.note='These rewards were already claimed on another device.'; } }).catch(e=>console.warn('[arcade] reward',e));
+    line='🕹 Floor cleared — '+items.map(x=>x.cid?(x.n>1?x.n+'× ':'')+(DB[x.cid]?.name||x.cid)+(x.finish!=='none'?' ('+(VARIANT_META[x.finish]||{}).label+')':''):x.cel?'+'+x.cel+' Celestium':'+'+x.lv+' Levels').join(', ');
+  } else {
+    _arc.after={t:T.id,f:A.f,won:!!iWon,items:null};
+    line=iWon?'🕹 Already cleared — practice win.':'🕹 The tower stands. Try again any time.';
+  }
+  const btn=document.getElementById('win-arcade-btn'); if(btn){ btn.style.display='block'; btn.textContent=items?'🕹 CLAIM YOUR REWARDS':'🕹 BACK TO THE TOWER'; }
+  const cel=document.getElementById('win-celestium'); if(cel) cel.textContent=cel.textContent?cel.textContent+' · '+line:line;
+}
+async function arcPay(T,F,fi){
+  const R=F.reward||{}, label='Arcade · '+T.n;
+  const res=await econClaim(arcKey(T,fi),async()=>{
+    (R.cards||[]).forEach(x=>{ addVariantToCollection(x.cid,x.foil||'none',x.qty||1); if(typeof markRegistered==='function') try{ markRegistered(x.cid); }catch(e){} });
+    evSaveCollection(); if(R.cel) try{ await awardCelestium(R.cel,label); }catch(e){} },label);
+  if(res&&res.ok&&R.levels) await arcLevelUps(R.levels,label);
+  return res;
+}
+async function arcLevelUps(n,label){   // n Battle Pass levels from where you are (progress into the level is kept)
+  try{ if(typeof awardBPXp!=='function'||typeof bpCurrentTierFromXP!=='function') return;
+    const X=(typeof _bpPlayerData!=='undefined'&&_bpPlayerData&&_bpPlayerData.xp)||0, t=bpCurrentTierFromXP(X), into=Math.max(0,X-bpTotalXpForTier(t)), t2=t+n;
+    const amt=Math.max(1,bpTotalXpForTier(t2)+Math.min(into,bpXpRequiredForTier(t2)-1)-X);
+    await awardBPXp(amt,label+' · +'+n+' Levels'); }catch(e){ console.warn('[arcade] levels',e); }
+}
+function arcFromWin(){
+  const m=document.getElementById('win-modal'); if(m) m.classList.remove('open');
+  const a=_arc.after; _arc.after=null;
+  showScreen('arcade-screen'); if(a&&arcData().open[a.t]){ _arc.view='tower'; _arc.t=a.t; } arcRender(); if(!a) return;
+  const T=arcTower(a.t), F=T&&T.floors[a.f]; if(!F) return;
+  arcScene(a.won?F.win:F.lose,{art:getImg(F.pt)||T.art,title:T.n.toUpperCase()+' · FLOOR '+ARC_ROMAN[a.f]},()=>{
+    if(a.won&&a.items) arcShowReveal(a.last?'TOWER CLEARED':'FLOOR CLEARED',T.n+' · Floor '+ARC_ROMAN[a.f]+' · '+F.n,a.items);
+    else if(a.won&&a.note) arcShowReveal('FLOOR CLEARED',T.n+' · Floor '+ARC_ROMAN[a.f],[],a.note); });
+}
+function arcShowReveal(title,sub,items,note){
+  let ov=document.getElementById('ar-reveal'); if(!ov){ ov=document.createElement('div'); ov.id='ar-reveal'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true'); document.body.appendChild(ov); }
+  const tiles=(items||[]).map((x,k)=>{
+    if(x.cid){ const vm=VARIANT_META[x.finish]||VARIANT_META.none;
+      return `<div class="c" style="--k:${k};--acc:${vm.accent}"><div class="im" data-holo="${x.finish}" data-zc="${x.cid}" data-zf="${x.finish}" role="button" tabindex="0" title="Tap to view"><img src="${getImg(x.cid)||''}" alt=""></div><b>${evEsc(DB[x.cid]?.name||x.cid)}${x.n>1?' ×'+x.n:''}</b><em>${vm.label.toUpperCase()}${x.ex?' · EXCLUSIVE':''}</em></div>`; }
+    if(x.cel) return `<div class="c" style="--k:${k};--acc:#fbbf24"><div class="big ar-big-cel">+${x.cel}</div><b>Celestium</b><em>REWARD</em></div>`;
+    return `<div class="c" style="--k:${k};--acc:#22d3ee"><div class="big ar-big-lv">+${x.lv}</div><b>Levels</b><em>LEVEL UP</em></div>`; }).join('');
+  ov.innerHTML=`<div class="rv"><small>${evEsc(sub||'')}</small><h3>${evEsc(title)}</h3><div class="g">${tiles}</div>${note?`<div class="note">${evEsc(note)}</div>`:''}<button type="button" class="ar-go" style="max-width:320px" onclick="arcCloseReveal()">COLLECT</button></div>`;
+  ov.querySelectorAll('.im[data-holo]').forEach(w=>{ const f=w.dataset.holo; if(f&&f!=='none'&&typeof _applyHoloStyleToWrap==='function') try{ _applyHoloStyleToWrap(w,f); }catch(e){} });
+  ov.classList.add('on'); trSfx('powerup');
+}
+function arcCloseReveal(){ const ov=document.getElementById('ar-reveal'); if(ov){ ov.classList.remove('on'); ov.innerHTML=''; } arcRender(); }
+if(typeof MM_MODES!=='undefined') MM_MODES.arcade={ico:'🕹',t:'Arcade',s:'CHALLENGE TOWERS',go:()=>openArcade()};
 </script>
 <script>
 // ═══════════════════════════════════════════════════════════════════════════
