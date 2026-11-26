@@ -9919,7 +9919,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.57 · Zalem (The Cursed)</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.58 · Necrid</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -11007,8 +11007,15 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.57'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.58'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.58', date:'2026-11-26',
+    cards:[{id:'necrid_promo', set:'promo', number:'PROMO', rarity:'rare', scan:'Characters/Series/RealmSplitters/Necrid (Promo).png', newAbilities:['Ethereal Edge','Corrupted Shard'],
+      note:"Necrid · Character · Rare · cost 5 · 5 ATK / 5 HP · color 'red', colors ['red','green'] · subtypes Corrupted, Warrior · race 'Corrupted Warrior' · charName 'Necrid' · sym 'NECRID' · setId promo · PROMO. Menu art: Main Menu Images/Necrid.jpg (Rulk sets it in Admin → Menu Art)."}],
+    rules:["GAME_BUILD '10.58' (new card).",
+      "ETHEREAL EDGE (activated, 1⚡, once per turn, generic gate): choose Breakthrough, Pursuit or Onslaught (a list with each keyword's tip; Skip = cancel via _abilityUndo, Energy back). It lasts until end of turn: fc._edgeKW={kw, turn:G.turn, ap:G.activePlayer}, and hasKW(fc,kw) is true only while turn AND active player still match (self-expiring, 2v2-safe). Card Info shows it. CPU uses it only when Necrid can still attack this turn and hasn't yet, and then takes Onslaught (two full attacks); aiEdgePick after an attack: Breakthrough if it can kill with damage to spare, else Pursuit. Note: a destroyed defender never retaliates in a normal attack, so Pursuit only matters for counter damage (Life-mode blocks, Power Struggles).",
+      "CORRUPTED SHARD (triggered): when Necrid destroys an opposing character in combat — its attack, its retaliation or a block, i.e. every triggerShowdownHype site — it gets +1/+1 for good (atkBonus/hpBonus and current stats), at most +2/+2 in all (fc._shard). Not if Necrid died in the same exchange. Card Info shows the total."],
+    data:["Scans: Characters/Series/RealmSplitters/Necrid (Promo).png. Zalem (The Cursed)'s scan MOVED to Characters/Series/RealmSplitters/Zalem The Cursed (Promo).png (she's a RealmSplitters character). Main menu art: Main Menu Images/Necrid.jpg."] },
   { build:'10.57', date:'2026-11-26',
     cards:[{id:'zalem_cursed_promo', set:'promo', number:'PROMO', rarity:'rare', scan:'Characters/Series/Virora/Zalem The Cursed (Promo).png', newAbilities:['Crown of Thorns'],
       note:"Zalem (The Cursed) · Character · Rare · cost 6 · 4 ATK / 5 HP · color 'black' · subtypes Cursed, Wraith · race 'Cursed Wraith' · charName 'Zalem' · sym 'ZALEM' · keywords ['drain'] · setId promo · PROMO. Menu art: Main Menu Images/Zalem the cursed.jpg (Rulk sets it in Admin → Menu Art)."}],
@@ -12167,7 +12174,8 @@ const DEFAULTS={
   crossroads_market_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/109-150%20(Crossroads%20Market).png',
   spiderman_imperfects_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Spider-Man%20Imperfects%20(Promo).png',
   red_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Red%20Hulk%20(Promo).png',
-  zalem_cursed_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Virora/Zalem%20The%20Cursed%20(Promo).png',
+  zalem_cursed_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/RealmSplitters/Zalem%20The%20Cursed%20(Promo).png',
+  necrid_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/RealmSplitters/Necrid%20(Promo).png',
   booni_christmas_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Virora/Booni%20Stole%20Christmas%20(Promo).png',
   virora_santa_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Virora/Virora%20Santa%20(Promo).png',
   elise_ssbe_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/133-150%20(Elise%20SSBE).png',
@@ -12664,6 +12672,11 @@ const DB={
     abilities:[{label:'Spider-Sense',type:'passive',cost:0,text:'The first time each turn this card would take damage, reduce that damage by 2.'},
       {label:'Web-Slinger Strike',type:'activated',cost:2,limit:'once_per_turn',ai:{when:'enemy'},text:'Pay 2 Energy: This card gets +3 Attack until end of turn and takes no damage back from its next attack this turn. (Once per turn)'},
       {label:'Rise of the Imperfect',type:'activated',cost:6,limit:'once_per_game',ai:{when:'enemy'},text:'Pay 6 Energy: This card gets +3 Attack until end of turn and can attack twice this turn. (Once per game)'}],transforms:[]},
+  // ── NECRID (PROMO) — build 10.58. Ethereal Edge: 1⚡ once per turn → Breakthrough / Pursuit / Onslaught until end of turn
+  //    (fc._edgeKW). Corrupted Shard: +1/+1 per opposing character it destroys in combat, up to +2 (fc._shard).
+  necrid_promo:{id:'necrid_promo',rarity:'rare',name:'Necrid',color:'red',colors:['red','green'],charName:'Necrid',subtypes:['Corrupted','Warrior'],type:'char',race:'Corrupted Warrior',cost:5,atk:5,hp:5,sym:'NECRID',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
+    abilities:[{label:'Ethereal Edge',type:'activated',cost:1,limit:'once_per_turn',text:'Pay 1 Energy: This card gains Breakthrough, Pursuit or Onslaught (your choice) until end of turn. (Once per turn)'},
+      {label:'Corrupted Shard',type:'triggered',cost:0,text:'When this card destroys an opposing character, it gets +1/+1 (up to +2).'}]},
   // ── ZALEM (THE CURSED) (PROMO) — build 10.57. Blood Thorns = Drain (keyword). Crown of Thorns (onEntry): a target foe loses 2 Health
   //    (not damage) and is Paralyzed.
   zalem_cursed_promo:{id:'zalem_cursed_promo',rarity:'rare',name:'Zalem (The Cursed)',color:'black',charName:'Zalem',subtypes:['Cursed','Wraith'],type:'char',race:'Cursed Wraith',cost:6,atk:4,hp:5,sym:'ZALEM',setId:'promo',cardNumber:'PROMO',keywords:['drain'],nextForms:[],
@@ -14281,6 +14294,7 @@ function triggerShowdownHype(killerFc, killerP, victimP, victimUid){
   if(typeof triggerCrimsonGale==='function') triggerCrimsonGale(killerFc, killerP, victimP, victimUid);
   if(typeof triggerGodfireSpillover==='function') triggerGodfireSpillover(killerFc, killerP, victimP, victimUid);
   if(typeof triggerReap==='function') triggerReap(killerFc, killerP, victimP, victimUid);   // build 10.20: Reaper's Scythe
+  if(typeof triggerCorruptedShard==='function') triggerCorruptedShard(killerFc, killerP, victimP, victimUid);   // build 10.58: Necrid
   if(!hasBelt(killerFc)) return;
   if(G.players[victimP]?.field.some(f=>f.uid===victimUid)) return; // victim survived
   G.players[killerP].energy+=3; log(`🏆 Showdown Hype: ${pname(killerP)} banks 3 Energy!`,'gain');
@@ -14998,6 +15012,8 @@ function fxEffectsOf(fc){
   if(isLassoed(fc)) cond('🪢','Lasso of Truth',"Can't attack until the end of its controller's next turn.",null);
   if(airBlasted(fc)) cond('💨','Air Blast',"Tapped — it can't attack until its opponent's next turn.",null);
   if(fc._avState>0) cond('🌀','Avatar State','+'+fc._avState+' Attack and Onslaught until the end of this turn.',null);
+  if(fc._edgeKW&&fc._edgeKW.turn===G.turn&&fc._edgeKW.ap===G.activePlayer) cond('⚔','Ethereal Edge',((KEYWORDS[fc._edgeKW.kw]||{}).label||fc._edgeKW.kw)+' until end of turn.',null);
+  if(fc._shard>0) cond('💠','Corrupted Shard','+'+fc._shard+'/+'+fc._shard+' from destroying opposing characters (up to +2).',null);
   if(fc._webSling>0) cond('🕸','Web-Slinger Strike','+'+fc._webSling+' Attack until the end of this turn'+(webSlingOn(fc)?' · its next attack takes no damage back':'')+'.',null);
   if(fc.unstable) cond('⚠️','Unstable',"Off-color for its Herald: it entered with −1 Attack / −1 Health.",null);
   if(fc._henshin>0) cond('🎬','Henshin-a-go-go, Baby!','+'+fc._henshin+" Attack, and opposing characters can't deal damage to it this turn.",null);
@@ -22700,6 +22716,23 @@ function runAbilityEffect(fc, abl, pl){
   }
   // ── SAGE MODE VIRORA: Surface Palm (build 10.51) — 3 damage to target opposing character, then −2 Attack until the end of your
   //    next turn (applyTimedCut, the Sapphire Nova mechanism). 3⚡, once per turn (generic gate).
+  // ── NECRID: Ethereal Edge (build 10.58) — choose Breakthrough, Pursuit or Onslaught until end of turn. Skip = cancel, Energy back.
+  if(label==='Ethereal Edge'){
+    const ap=G.activePlayer; const _undo=_abilityUndo;
+    const give=(kw)=>{ if(!kw||!KEYWORDS[kw]) return; fc._edgeKW={kw,turn:G.turn,ap};
+      const _fx=(typeof fxPush==='function')?fxPush(fc.cid,'Ethereal Edge',fc.uid):null;
+      try{ log(`⚔ Ethereal Edge: ${DB[fc.cid]?.name} gains ${KEYWORDS[kw].label} until end of turn.`,'gain'); } finally{ if(typeof fxPop==='function') fxPop(_fx); }
+      renderAll(); };
+    if(seqIsLocalHuman(ap)&&!G._aiAuto){
+      seqChoose('⚔ Ethereal Edge','Choose a keyword. It lasts until end of turn.',[
+        {label:'💥 Breakthrough',sub:KEYWORDS.breakthrough.desc,val:'breakthrough'},
+        {label:'🎯 Pursuit',sub:KEYWORDS.pursuit.desc,val:'pursuit'},
+        {label:'⚡ Onslaught',sub:KEYWORDS.onslaught.desc,val:'onslaught'}],
+        (kw)=>give(kw), ()=>{ if(_undo) _undo(); log('Ethereal Edge: cancelled — Energy back.','info'); renderAll(); });
+      return;
+    }
+    give(aiEdgePick(ap,fc)); return;
+  }
   if(label==='Surface Palm'){
     const ap=G.activePlayer; const opps=_fusionOpps(ap);
     const enemies=[]; opps.forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) enemies.push(f); }));
@@ -23498,6 +23531,27 @@ function royalSummonsSearch(p,fc){
   if(!(P.deck||[]).some(cid=>filt(DB[cid]))){ shuffle(P.deck); log('👑 Royal Summons: no Royal Saiyan character in the deck.','info'); return; }
   if(seqIsLocalHuman(p)&&!(G&&G._aiAuto)&&G.activePlayer===p){ openDeckSearch('👑 Royal Summons','Search your deck for a Royal Saiyan character and put it into your hand.',filt,got); return; }
   const pick=aiPickDeckCard(P,filt); if(pick){ P.deck.splice(P.deck.indexOf(pick),1); got(pick); }
+}
+// ETHEREAL EDGE (Necrid) — the CPU's pick: Onslaught (two full attacks) while it hasn't attacked yet; after an attack,
+//   Breakthrough if it can still kill something with damage to spare, else Pursuit. (A destroyed defender never hits back
+//   in a normal attack, so Pursuit only matters for counter damage in Life-mode blocks and Power Struggles.)
+function aiEdgePick(p,fc){
+  const foes=[]; aiEnemyPlayersOf(p).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])) foes.push(f); }));
+  const atk=effPower(fc);
+  if(!(fc.attacksThisTurn>0)) return 'onslaught';
+  if(foes.some(f=>(f.currentHP||0)<atk)) return 'breakthrough';
+  return 'pursuit';
+}
+// CORRUPTED SHARD (Necrid, build 10.58): when it destroys an opposing character in combat (its attack, its retaliation or a
+//   block — every triggerShowdownHype site), it gets +1/+1 for good, at most +2/+2 in all (fc._shard). Not if it fell too.
+function triggerCorruptedShard(k, kp, vp, vuid){
+  if(!k||!hasAbilityLabel(k,'Corrupted Shard')||kp===vp) return;
+  if(G.players[vp]?.field.some(f=>f.uid===vuid)) return; // the victim survived
+  if(!(G.players[kp]?.field||[]).includes(k)||(k.currentHP||0)<=0) return; // Necrid fell in the same exchange
+  const n=k._shard||0; if(n>=2) return;
+  k._shard=n+1; k.atkBonus=(k.atkBonus||0)+1; k.hpBonus=(k.hpBonus||0)+1; k.currentATK=(k.currentATK||0)+1; k.currentHP=(k.currentHP||0)+1;
+  log(`💠 Corrupted Shard: ${DB[k.cid]?.name} gets +1/+1 (now +${k._shard}/+${k._shard}${k._shard>=2?', the most it can get':''}).`,'gain');
+  if(typeof recalcPassives==='function') recalcPassives();
 }
 // TWIN BOND (Pavi & Nisha, build 10.56): when it's destroyed, its owner searches the deck for Pavi and for Nisha (one of each,
 //   by character name), puts them into hand and shuffles. Several versions of one → a local human picks (Skip = the first);
@@ -24594,6 +24648,8 @@ function aiScoreAbility(p, fc, abl, src){
   if(fc.abilityUsed&&fc.abilityUsed[abl.label]) return -1;
   if(aiTried('abl:'+fc.uid+':'+abl.label)) return -1;
   if(abl.ai&&abl.ai.when==='never') return -1;
+  if(abl.label==='Ethereal Edge'){ if(!canCharacterAttack(p,fc)||!(fc.turnPlayed<G.turn||hasKW(fc,'burst_speed'))||(fc.attacksThisTurn>0)||(fc._edgeKW&&fc._edgeKW.turn===G.turn)) return -1;
+    const _n=aiEnemyPlayersOf(p).reduce((n,op)=>n+(G.players[op]?.field||[]).filter(f=>isChar(DB[f.cid])).length,0); return _n>=2?16:(_n?10:12); }   // build 10.58: Necrid
   if(abl.label==='Grove Bloom'){ const _mx=aiMaxHP(fc), _miss=_mx-(fc.currentHP||0), _st=fc.statuses&&Object.keys(fc.statuses).length&&harvestOn(p); return (_miss>=3||(_miss>=1&&(fc.currentHP||0)<=2)||_st)?36+_miss*2:-1; }   // build 10.20
   if(abl.label==='Alley Troll Dance'){ const _f=aiEnemyPlayersOf(p).reduce((n,op)=>n+(G.players[op]?.field||[]).filter(f=>isChar(DB[f.cid])&&!statusActive(f,'confuse')).length,0); if(!_f) return -1;
     const _ready=!fc.tapped&&!(fc.attacksThisTurn>0)&&(fc.turnPlayed<G.turn||hasKW(fc,'burst_speed')); return 12+Math.min(2,_f)*6-(_ready?12:0); }   // build 10.20
@@ -25248,6 +25304,7 @@ const KEYWORDS = {
 };
 function hasKW(fc, kw){ if(DB[fc.cid]?.keywords?.includes(kw))return true; if(Array.isArray(fc&&fc.gainedKeywords)&&fc.gainedKeywords.includes(kw)) return true;
   if(kw==='onslaught'&&fc&&fc._avState>0) return true; // 🌀 Aang: Avatar State
+  if(fc&&fc._edgeKW&&fc._edgeKW.kw===kw&&typeof G!=='undefined'&&G&&fc._edgeKW.turn===G.turn&&fc._edgeKW.ap===G.activePlayer) return true; // ⚔ Necrid: Ethereal Edge (until end of turn)
   // STANCES (Pavi): Air Stance grants Onslaught, Earth Stance grants Guardian — only while that stance is active.
   if(fc&&fc.stance&&(kw==='onslaught'||kw==='guardian')&&stanceGrantsKW(fc,kw)) return true;
   return false; }
@@ -31238,7 +31295,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.57';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.58';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
