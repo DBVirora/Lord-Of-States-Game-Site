@@ -10065,7 +10065,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.59 · Arcade</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.60 · Latte, Rebuild Sadala & Void Toll</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -11167,8 +11167,21 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.58'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.60'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.60', date:'2026-11-26',
+    cards:[{id:'vuruna_latte_bse', set:'base_set', number:'080/150', rarity:'uncommon', scan:"Sets/BASE SET/080-150 (Vuruna's Cookies and Cream Blueberry Latte).png", newAbilities:['Midnight Comfort'],
+        note:"Vuruna's Cookies and Cream Blueberry Latte · Instant · Uncommon · cost 2 · color 'purple' · subtypes ['Instant','Consumable'] · race 'Consumable' · sym '☕'. Menu art: Main Menu Images/Vurunas Cookies and Cream Blueberry Latte.jpg."},
+      {id:'rebuild_sadala_bse', set:'base_set', number:'083/150', rarity:'common', scan:'Sets/BASE SET/083-150 (Rebuild Sadala).png', newAbilities:['Raise the Banners'],
+        note:"Rebuild Sadala · Instant · Common · cost 2 · color 'green' · subtypes ['Instant'] · sym '🏗️'. Menu art: Main Menu Images/Rebuild Sadala.jpg."},
+      {id:'void_toll_bse', set:'base_set', number:'084/150', rarity:'common', scan:'Sets/BASE SET/084-150 (Void Toll).png', newAbilities:['Pay the Toll'],
+        note:"Void Toll · Instant · Common · cost 1 · color 'black' · subtypes ['Instant'] · sym '🌀'. Menu art: Main Menu Images/Void Toll.jpg."}],
+    rules:["GAME_BUILD '10.60' (new cards). WEB_BUILD '10.60'.",
+      "MIDNIGHT COMFORT (Vuruna's Latte, charge on confirm — in HAND_CHOICE_INSTANTS): the Matcha picker (openFruitHealPicker, now with opts {after, aiPick}): choose one of your characters → heal 2 (capped, noteHeal) and cure Confusion; then fc._latte={turn:G.turn, ap:p}. transformCostFor: −1 (min 0) while _latte.turn===G.turn && _latte.ap===p (after Arcane Ascension, before Unstable/skip tolls); doTransform clears _latte once it's paid. Card Info: '☕ Midnight Comfort: If it transforms this turn, that transformation costs 1 less.' CPU (aiLatteScore): a character with its next form in hand it can transform this turn after the latte → score 44 if only the 1 off makes it affordable, else 34, and that character is the target; otherwise like Royal Matcha (wounded 38 + 3 each, or 36 to cure Confusion).",
+      "RAISE THE BANNERS (Rebuild Sadala, not targeted — executeInstantEffect after the reveal): every character on your field heals 1; a Saiyan (isSaiyanChar: subtype Saiyan or race containing 'Saiyan', so Royal Saiyans count) heals 2 instead. healFc (capped at max Health, fires noteHeal → Asteria's Aetherion Light etc.). Log: '🏗️ Raise the Banners: N of <player>'s characters heal (T in all).' CPU: plays it when the total it would heal is ≥ 2 (score 24 + 3 per point, max +18).",
+      "PAY THE TOLL (Void Toll, charge on confirm — in HAND_CHOICE_INSTANTS): choose one of your characters (no tokens); THEN it's paid and the card goes to the discard pile. The character is SACRIFICED via doSacrifice(uid, ceil(printed cost / 2), p) — so Fuel the Chaos / Chaos Tithe / Death's Offering / Devouring Dark fire as for any sacrifice, a fusion's stack leaves as usual, and NO Prize is taken. Energy = half the card's printed cost, rounded UP (the Sacrifice action rounds down). No character → can't be played (stays in hand). Cancel the list → nothing happens, no Energy spent.",
+      "CPU (aiVoidToll): only with 2+ characters out; (a) to afford a character in hand it can't pay for now (cost ≤ Energy − toll + gain) while giving up one worth < 60% of it (aiFcValue vs aiCardValue) → score 30 + value gained (max +20); or (b) to cash in one at 1 Health that is Burned or Poisoned (gain ≥ 2) → 26 + gain. It sacrifices the character that move picked."],
+    data:["Scans: Sets/BASE SET/080-150 (Vuruna's Cookies and Cream Blueberry Latte).png, Sets/BASE SET/083-150 (Rebuild Sadala).png, Sets/BASE SET/084-150 (Void Toll).png. Main menu art: Main Menu Images/Vurunas Cookies and Cream Blueberry Latte.jpg, Rebuild Sadala.jpg, Void Toll.jpg (Admin → Menu Art)."] },
   { build:'10.59', date:'2026-11-26',
     cards:[{id:'pavi_nisha_team_promo', set:'promo', number:'PROMO', rarity:'mythic', scan:'Characters/Series/Avatar TLAB/Pavi & Nisha (Promo) (Team Card).png', newAbilities:[],
       note:"CHANGED: exclusive:'arcade' — earned only by clearing the Arcade tower 'The Avatar Twins'. Like other exclusives: hidden from players who don't own it (cardHiddenFor), never in packs, Market, Court Forge, grant-all, Limited pools or random CPU decks; the admin card picker tags it ★ ARCADE."}],
@@ -12364,6 +12377,9 @@ const DEFAULTS={
   saiyan_mage_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/048-150%20(Saiyan%20Mage).png',
   saiyan_pup_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/053-150%20(Saiyan%20Pup).png',
   twin_tornadoes_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/088-150%20(Twin%20Tornadoes).png',
+  rebuild_sadala_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/083-150%20(Rebuild%20Sadala).png',
+  void_toll_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/084-150%20(Void%20Toll).png',
+  vuruna_latte_bse: "https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/080-150%20(Vuruna's%20Cookies%20and%20Cream%20Blueberry%20Latte).png",
   sage_mode_virora_shop: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/SHOP%20CARDS/SHOP%20NOVEMBER%202026/SHOP%20(Sage%20Mode%20Virora%20Surface%20Technique).png',
   crimson_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/143-150%20(Crimson).png',
   praxus_herald: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/148-150%20(Praxus).png',
@@ -12925,6 +12941,18 @@ const DB={
   // ── TWIN TORNADOES (BSE 088/150) — build 10.51. Instant, Red Common. Rending Gale: 2 damage to each of up to two target foes.
   twin_tornadoes_bse:{id:'twin_tornadoes_bse',rarity:'common',name:'Twin Tornadoes',color:'red',charName:'Twin Tornadoes',subtypes:['Instant'],type:'instant',race:'Instant',cost:3,atk:0,hp:0,sym:'🌪️',setId:'base_set',cardNumber:'088/150',nextForms:[],
     abilities:[{label:'Rending Gale',type:'instant',cost:0,text:'Deal 2 damage to each of up to two target opposing characters.'}],transforms:[]},
+  // ── REBUILD SADALA (083/150) — build 10.60. Raise the Banners: heal 1 on each of your characters; your Saiyans heal 2
+  //    (isSaiyanChar — Royal Saiyans count). Not targeted (executeInstantEffect).
+  rebuild_sadala_bse:{id:'rebuild_sadala_bse',rarity:'common',name:'Rebuild Sadala',color:'green',charName:'Rebuild Sadala',subtypes:['Instant'],type:'instant',race:'Instant',cost:2,atk:0,hp:0,sym:'🏗️',setId:'base_set',cardNumber:'083/150',nextForms:[],
+    abilities:[{label:'Raise the Banners',type:'instant',cost:0,text:'Heal 1 on each of your characters. Your Saiyans heal 2 instead.'}],transforms:[]},
+  // ── VOID TOLL (084/150) — build 10.60. Pay the Toll: destroy one of your characters (a sacrifice — doSacrifice, so sacrifice
+  //    payoffs fire and nobody takes a Prize) and gain Energy equal to half its printed cost, rounded up. Charge on confirm.
+  void_toll_bse:{id:'void_toll_bse',rarity:'common',name:'Void Toll',color:'black',charName:'Void Toll',subtypes:['Instant'],type:'instant',race:'Instant',cost:1,atk:0,hp:0,sym:'🌀',setId:'base_set',cardNumber:'084/150',nextForms:[],
+    abilities:[{label:'Pay the Toll',type:'instant',cost:0,text:'Destroy one of your characters. Gain Energy equal to half its cost, rounded up.'}],transforms:[]},
+  // ── VURUNA'S COOKIES AND CREAM BLUEBERRY LATTE (080/150) — build 10.60. Midnight Comfort: one of your characters heals 2 and
+  //    loses Confusion (openFruitHealPicker); if it transforms this turn, that transformation costs 1 less (fc._latte → transformCostFor).
+  vuruna_latte_bse:{id:'vuruna_latte_bse',rarity:'uncommon',name:"Vuruna's Cookies and Cream Blueberry Latte",color:'purple',charName:"Vuruna's Cookies and Cream Blueberry Latte",subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:2,atk:0,hp:0,sym:'☕',setId:'base_set',cardNumber:'080/150',nextForms:[],
+    abilities:[{label:'Midnight Comfort',type:'instant',cost:0,text:'Choose one of your characters. Heal 2 on it and remove Confusion. If you transform it this turn, that transformation costs 1 less.'}],transforms:[]},
   // ── SAGE MODE VIRORA (SURFACE TECHNIQUE) — SHOP set (printed SHOP · SHP), build 10.51. Purple Legend, standalone character.
   //    Sage Stillness (start of turn: didn't attack last turn → +1 Energy) · Surface Palm (3⚡ once per turn: 3 damage, −2 Attack
   //    until the end of your next turn) · Mirror of Nature (5⚡ once per game: use another character's activated ability for free).
@@ -15187,6 +15215,7 @@ function fxEffectsOf(fc){
   if(fc._limitless>0) cond('💚','Limitless Power','+'+fc._limitless+'/+'+fc._limitless+' so far (max +4/+4).',null);
   if(isLassoed(fc)) cond('🪢','Lasso of Truth',"Can't attack until the end of its controller's next turn.",null);
   if(airBlasted(fc)) cond('💨','Air Blast',"Tapped — it can't attack until its opponent's next turn.",null);
+  if(fc._latte&&fc._latte.turn===G.turn&&fc._latte.ap===G.activePlayer) cond('☕','Midnight Comfort','If it transforms this turn, that transformation costs 1 less.',null);
   if(fc._avState>0) cond('🌀','Avatar State','+'+fc._avState+' Attack and Onslaught until the end of this turn.',null);
   if(fc._edgeKW&&fc._edgeKW.turn===G.turn&&fc._edgeKW.ap===G.activePlayer) cond('⚔','Ethereal Edge',((KEYWORDS[fc._edgeKW.kw]||{}).label||fc._edgeKW.kw)+' until end of turn.',null);
   if(fc._shard>0) cond('💠','Corrupted Shard','+'+fc._shard+'/+'+fc._shard+' from destroying opposing characters (up to +2).',null);
@@ -18699,6 +18728,12 @@ function executeInstantEffect(p, cardId){
       log(`🥧 Shared Slices: ${k?k+' of '+pname(p)+"'s characters heal up to "+n:'nobody needed healing'}${n===3?' (Harvest)':''}.`,'gain');
       break;
     }
+    case 'rebuild_sadala_bse': {   // build 10.60: Raise the Banners
+      let k=0, t=0;
+      pl.field.filter(f=>isChar(DB[f.cid])).forEach(f=>{ const h=healFc(f,isSaiyanChar(DB[f.cid])?2:1); if(h>0){ k++; t+=h; } });
+      log(`🏗️ Raise the Banners: ${k?k+' of '+pname(p)+"'s characters heal ("+t+' in all)':'nobody needed healing'}.`,'gain');
+      break;
+    }
     case 'gather_the_court_hoc': {
       const ok=cc=>!!cc&&isChar(cc)&&cc.type!=='herald'&&!cc.isToken&&!cc.transformOnly&&!cc.fusion&&(cc.cost||0)<=4;
       const harvest=harvestOn(p);
@@ -18915,6 +18950,19 @@ function onHandClick(p,uid,fc){
       else { const t=foes().slice().sort((a,b)=>effPower(b.fc)-effPower(a.fc))[0]; if(t) first(t.fc.uid); }
       return;
     }
+    // VOID TOLL (build 10.60): Pay the Toll — destroy one of your characters (a sacrifice), gain half its cost in Energy, rounded up.
+    if(c.id==='void_toll_bse'){
+      const mine=()=>pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken);
+      if(!mine().length){ log('Void Toll: you have no character to destroy.','dmg'); return; }
+      const gainOf=f=>Math.ceil((DB[f.cid]?.cost||0)/2);
+      const pay=(uid)=>{ const f=mine().find(x=>x.uid===uid); if(!f) return; if(!commitPlay()){ renderAll(); return; } pl.discard.push(c.id);
+        const g=gainOf(f); log(`🌀 Void Toll: Pay the Toll — ${pname(p)} destroys ${DB[f.cid]?.name} for +${g}⚡.`,'gain');
+        doSacrifice(uid,g,p); if(typeof recalcPassives==='function') recalcPassives(); renderAll(); };
+      if(seqIsLocalHuman(p)&&!G._aiAuto) seqChoose('🌀 Void Toll','Destroy one of your characters. You gain Energy equal to half its cost, rounded up.',
+        mine().map(f=>({label:DB[f.cid].name, sub:`+${gainOf(f)}⚡ · ❤️${f.currentHP||0} · ⚔${f.currentATK||0}`, val:f.uid})), (uid)=>pay(uid), ()=>{});
+      else { const v=aiVoidToll(p); const t=v?v.uid:mine().slice().sort((a,b)=>aiFcValue(a)-aiFcValue(b))[0].uid; pay(t); }
+      return;
+    }
     // PAST PERFECT: return a Base Character from your discard pile to hand, and you may also return one
     // Transformation card of that same character (same charLine, or same charName).
     if(c.id==='past_perfect_bse'){
@@ -18931,6 +18979,12 @@ function onHandClick(p,uid,fc){
     if(c.id==='virora_beer_bse'){ // 🍺 Liquid Courage (build 10.40)
       if(!chars.length){log(`No field character to use ${c.name} on!`,'dmg');return;}
       openBeerPicker(p, fco, chars, commitPlay);
+      return;
+    }
+    if(c.id==='vuruna_latte_bse'){ // ☕ Midnight Comfort (build 10.60): heal 2 + cure Confusion, then its transformation this turn costs 1 less
+      if(!chars.length){log(`No field character to use ${c.name} on!`,'dmg');return;}
+      openFruitHealPicker(p, fco, chars, 2, 0, 'confuse', commitPlay, {after:(t)=>{ t._latte={turn:G.turn,ap:p}; log(`☕ Midnight Comfort: if ${DB[t.cid]?.name} transforms this turn, it costs 1 less.`,'gain'); },
+        aiPick:(list)=>{ const b=aiLatteScore(p); return b&&list.includes(b.fc)?b.fc:null; }});
       return;
     }
     if(c.id==='royal_matcha_bse' || c.id==='virora_matcha_bse'){
@@ -18955,7 +19009,7 @@ function onHandClick(p,uid,fc){
 
 // Instants that ask for a target before they resolve (charge on confirm in onHandClick).
 function aiTornadoPick(list){ const k=(list||[]).filter(f=>(f.currentHP||0)<=Math.max(0,2-(f.nullify||0))).sort((a,b)=>aiFcValue(b)-aiFcValue(a)); return k[0]||(list||[]).slice().sort((a,b)=>aiFcValue(b)-aiFcValue(a))[0]||null; }
-const HAND_CHOICE_INSTANTS=new Set(['twin_tornadoes_bse','winters_approach_hoc','saiyan_blood','zephyranth_fruit_bse','vermynth_fruit_bse','royal_matcha_bse','virora_matcha_bse','virora_beer_bse','glacynth_fruit_bse','pink_kamehameha_bse','blade_of_udun_bse','past_perfect_bse']);
+const HAND_CHOICE_INSTANTS=new Set(['void_toll_bse','vuruna_latte_bse','twin_tornadoes_bse','winters_approach_hoc','saiyan_blood','zephyranth_fruit_bse','vermynth_fruit_bse','royal_matcha_bse','virora_matcha_bse','virora_beer_bse','glacynth_fruit_bse','pink_kamehameha_bse','blade_of_udun_bse','past_perfect_bse']);
 // GENERIC ENEMY TARGET PICKER — pick one enemy character, run callback(uid)
 function openEnemyTargetPicker(targets, callback, opts){
   opts = opts || {};
@@ -19008,7 +19062,7 @@ function openEnemyTargetPicker(targets, callback, opts){
 
 // ZEPHYRANTH / VERMYNTH FRUIT — heal (and optionally +ATK) one of YOUR field
 // characters, then discard (consumable). AI auto-targets the most-wounded ally.
-function openFruitHealPicker(p, fco, chars, healAmt, atkAmt, cureMode, commit){
+function openFruitHealPicker(p, fco, chars, healAmt, atkAmt, cureMode, commit, opts){   // opts (build 10.60): {after(target), aiPick(chars)}
   const c=DB[fco.cid]; const pl=G.players[p];
   const apply=(target)=>{
     if(commit && !commit()){ closeAllModals(); renderAll(); return; } // pay now that a target is chosen
@@ -19021,13 +19075,14 @@ function openFruitHealPicker(p, fco, chars, healAmt, atkAmt, cureMode, commit){
     else if(cureMode==='confuse'){ if(statusActive(target,'confuse')){ cureStatus(target,'confuse'); msg+=' and its Confusion is cured'; } }
     log(msg+'.','gain');
     pl.discard.push(c.id);
+    if(opts&&typeof opts.after==='function') try{ opts.after(target); }catch(e){ console.warn('[instant] after',e); }
     if(typeof recalcPassives==='function')recalcPassives();
     closeAllModals(); renderAll();
     if(G.tutorialMode&&p===1&&typeof tutorialNotifyAction==='function')tutorialNotifyAction('instant');
   };
   const _human = G.is2v2 ? (G.humanPlayers||[1]).includes(p) : (p===1);
   if(!_human){
-    const target=chars.reduce((a,b)=>{
+    const target=(opts&&typeof opts.aiPick==='function'&&opts.aiPick(chars))||chars.reduce((a,b)=>{
       const am=((a.baseHP||0)+(a.hpBonus||0))-(a.currentHP||0);
       const bm=((b.baseHP||0)+(b.hpBonus||0))-(b.currentHP||0);
       return bm>am?b:a;
@@ -19955,6 +20010,7 @@ function transformCostFor(p,fc,tid){
   else if(!(tc.fusion||fc.fusion)) cost=effectiveTransformCost(p,cost); // fusion forms pay their printed cost
   cost=royalClarityCost(p,fc,tc,cost);
   { const _aa=arcaneAscensionN(p,fc,tc); if(_aa) cost=Math.max(0,cost-_aa); } // 🔮 Saiyan Mage: the first transformation played this turn
+  if(fc._latte&&typeof G!=='undefined'&&G&&fc._latte.turn===G.turn&&fc._latte.ap===p) cost=Math.max(0,cost-1); // ☕ Vuruna's Latte: Midnight Comfort (build 10.60)
   if(hasAbilityLabel(fc,'Feral Awakening')&&tc.charLine&&tc.charLine===DB[fc.cid]?.charLine&&String(tc.formTier||'').toLowerCase()==='ssbe') cost=Math.max(0,cost-2); // 🐾 Elise (SSG): her SSBE costs 2 less
   const steps=tfSkipSteps(fc.cid,tid), toll=steps.reduce((a,x)=>a+x.price,0);
   const _uns=(typeof isOffColor==='function'&&isOffColor(p,tid))?2:0; cost+=_uns; // 🎨 Unstable: an off-color form costs +2
@@ -20369,6 +20425,7 @@ function doTransform(fieldUid,newCid,handUid,cost,ownerOverride){
   if(_handFc){ const _aa=arcaneAscensionN(owner,fc,nc); if(_aa) log(`🔮 Arcane Ascension: the first transformation this turn costs ${_aa} less.`,'gain'); pl._tfPlayTurn=G.turn; }
   if(royalClarityApplies(owner, fc, nc)){ pl.royalClarityTurn=G.turn; if(actualCost<nc.cost) log('👑 Royal Clarity: this transformation costs 2 less.','gain'); }
   spendEnergy(owner, actualCost, DB[newCid]?.color||null);
+  fc._latte=null; // ☕ Midnight Comfort is used up by this transformation
   log(`${DB[fc.cid].name} → ${nc.name}!`,'gain');
   if(G.tutorialMode&&owner===1&&typeof tutorialNotifyAction==='function')setTimeout(()=>tutorialNotifyAction('transform'),300);
   const oldCid=fc.cid;
@@ -24772,6 +24829,31 @@ function abandonMatch(){
 function aiEnemyPlayersOf(p){ return G.is2v2 ? (teamOf(p)==='A'?[2,4]:[1,3]) : [p===1?2:1]; }
 function aiEnemyChars(p){ const out=[]; aiEnemyPlayersOf(p).forEach(e=>{ const pl=G.players[e]; if(pl) pl.field.forEach(f=>{ if(isChar(DB[f.cid])) out.push({fc:f,p:e}); }); }); return out; }
 function aiMaxHP(f){ return (f.baseHP||0)+(f.hpBonus||0)+(f.passiveHp||0); }
+// VURUNA'S LATTE (build 10.60) — the CPU's best Midnight Comfort target: a character with its next form in hand that it can
+// transform this turn after the latte (44 if only the 1 off makes it affordable, 34 otherwise). → {fc, s} | null
+function aiLatteScore(p){
+  const pl=G.players[p]; if(!pl) return null;
+  const card=pl.hand.find(f=>f.cid==='vuruna_latte_bse'); const left=(pl.energy||0)-(card?Math.max(0,(DB.vuruna_latte_bse.cost||0)+(card.costMod||0)+handCostMod(p,card)):2); let best=null;
+  pl.field.filter(f=>isChar(DB[f.cid])&&hasTransformTargets(f.cid)&&!tfUsedThisTurn(f)).forEach(f=>getTransformTargets(f.cid).forEach(tid=>{
+    if(!pl.hand.some(h=>h.cid===tid)) return; const c0=transformCostFor(p,f,tid).cost; if(c0-1>left) return;
+    const sc=c0>left?44:34; if(!best||sc>best.s) best={fc:f,s:sc}; }));
+  return best;
+}
+// VOID TOLL (build 10.60) — the CPU pays the toll only with 2+ characters out, and only (a) to afford a better character in hand
+// that it can't pay for now, giving up one worth well under it, or (b) to cash in a character about to die anyway
+// (1 Health with Burn or Poison on it). → {uid, score} | null
+function aiVoidToll(p){
+  const pl=G.players[p]; if(!pl) return null;
+  const card=pl.hand.find(f=>f.cid==='void_toll_bse'); const toll=card?Math.max(0,(DB.void_toll_bse.cost||0)+(card.costMod||0)+handCostMod(p,card)):1;
+  const mine=pl.field.filter(f=>isChar(DB[f.cid])&&!DB[f.cid]?.isToken); if(mine.length<2) return null;
+  const left=(pl.energy||0)-toll; let best=null;
+  const want=pl.hand.filter(h=>{ const d=DB[h.cid]; return d&&h!==card&&isChar(d)&&!d.transformOnly&&!d.fusion&&!d.isToken; })
+    .map(h=>({d:DB[h.cid], cost:Math.max(0,(DB[h.cid].cost||0)+(h.costMod||0)+handCostMod(p,h))})).filter(x=>x.cost>(pl.energy||0));
+  mine.forEach(f=>{ const g=Math.ceil((DB[f.cid]?.cost||0)/2), v=aiFcValue(f);
+    want.filter(x=>x.cost<=left+g).forEach(x=>{ const gainV=aiCardValue(x.d)-v; if(v<aiCardValue(x.d)*0.6){ const sc=30+Math.min(20,gainV); if(!best||sc>best.score) best={uid:f.uid,score:sc}; } });
+    if((f.currentHP||0)<=1&&(statusActive(f,'burn')||statusActive(f,'poison'))&&g>=2){ const sc=26+g; if(!best||sc>best.score) best={uid:f.uid,score:sc}; } });
+  return best;
+}
 function aiCardValue(c){ if(!c)return 0; return (c.atk||0)*1.2+(c.hp||0)+((c.keywords||[]).length)*1.5+((c.abilities||[]).length)*1.2; }
 function aiFcValue(fc){ const c=DB[fc.cid]||{}; return (effPower(fc))*1.2+(fc.currentHP||0)+((c.keywords||[]).length)*1.5+((c.abilities||[]).length)+((DB[fc.cid]||{}).cost||0)*.4; }
 function aiReady(fc){ if(hasAbilityLabel(fc,'Crimson Rampage')&&(fc.currentHP||0)<=2) return false; return !fc.tapped&&!((fc.fatigue||0)>0)&&(fc.turnPlayed<G.turn||hasKW(fc,'burst_speed'))&&!statusActive(fc,'freeze')&&!statusActive(fc,'paralyze')&&!statusActive(fc,'confuse'); }
@@ -25086,6 +25168,7 @@ function aiEnumerateActions(p){
       const t=((c.abilities||[]).map(a=>a.text||'').join(' ')).toLowerCase();
       let s=-1;
       if(c.id==='zephyranth_fruit_bse'||c.id==='vermynth_fruit_bse'||c.id==='royal_matcha_bse'||c.id==='virora_matcha_bse'){ if(wounded.length) s=42+wounded.length*3; else if(c.id==='virora_matcha_bse'&&chars.some(f=>f.statuses&&Object.keys(f.statuses).length)) s=40; }
+      else if(c.id==='vuruna_latte_bse'){ const _b=aiLatteScore(p); s=_b?_b.s:(wounded.length?38+wounded.length*3:(chars.some(f=>statusActive(f,'confuse'))?36:-1)); }   // build 10.60
       else if(c.id==='past_perfect_bse'){ const bs=(pl.discard||[]).filter(id=>DB[id]?.type==='base_char'); if(bs.length) s=24+Math.min(16,bs.length*3)+(bs.some(id=>_ppFormsOf(p,id).length)?10:0); }
       else if(c.id==='blade_of_udun_bse'){ if(enemies.length){ s=36; if(enemies.some(e=>e.fc.currentHP<=2)) s+=22; } }
       else if(c.id==='pink_kamehameha_bse'){ const _n=pinkKameDamage(p); const _t=enemies.filter(e=>!hasDrunkenStance(e.fc)&&!spaceShielded(e.fc)); if(_t.length){ s=34; if(_t.some(e=>(e.fc.currentHP||0)<=_n)) s+=22; } }   // build 10.42
@@ -25100,6 +25183,8 @@ function aiEnumerateActions(p){
         const _up=(pl.discard||[]).some(id=>DB[id]&&isChar(DB[id])&&DB[id].type!=='herald'&&!DB[id].isToken&&(DB[id].cost||0)>=4);
         if(harvestOn(p)) s=(_r.length||_up)?30+(_r.length?Math.min(24,_rv):0)+(_up?8:0):-1; else s=_r.length&&_rv>=6?32+Math.min(20,_rv):(_up?26:-1); }   // build 10.29
       else if(c.id==='gather_the_court_hoc'){ if((pl.deck||[]).some(id=>DB[id]&&isChar(DB[id])&&DB[id].type!=='herald'&&!DB[id].transformOnly&&(DB[id].cost||0)<=4)) s=28+(chars.length<2?8:0); }
+      else if(c.id==='rebuild_sadala_bse'){ const _h=chars.reduce((n,f)=>n+Math.max(0,Math.min(isSaiyanChar(DB[f.cid])?2:1,aiMaxHP(f)-(f.currentHP||0))),0); if(_h>=2) s=24+Math.min(18,_h*3); }   // build 10.60
+      else if(c.id==='void_toll_bse'){ const _v=aiVoidToll(p); if(_v) s=_v.score; }   // build 10.60
       else if(c.id==='nature_focus'){ s=60; }
       else { s=(/damage|destroy|freeze|burn/.test(t)?(enemies.length?34:-1):(/heal/.test(t)?(wounded.length?34:-1):26)); }
       if(s>0) acts.push(Object.assign({score:s,label:'instant '+c.name},base()));
@@ -31478,7 +31563,7 @@ function econBuildRewards(){
     add(arcKey(T,i),{celestium:+R.cel||0,cards:(R.cards||[]).map(x=>(x.foil&&x.foil!=='none')?{cid:x.cid,qty:x.qty||1,foil:x.foil}:{cid:x.cid,qty:x.qty||1})}); })); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.59';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.60';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
