@@ -9919,7 +9919,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.56 · Pavi & Nisha</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.57 · Zalem (The Cursed)</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -11007,8 +11007,16 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 //   build, date, cards: [{id, set, number, rarity, scan, newAbilities:[labels]}],
 //   abilities: [labels whose rules changed], screens: [what UI changed], data: [other].
 // ═══════════════════════════════════════════════════════════════════════
-const GAME_BUILD='10.56'; // rules version — must match the opponent's client (web or PC) for online play
+const GAME_BUILD='10.57'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.57', date:'2026-11-26',
+    cards:[{id:'zalem_cursed_promo', set:'promo', number:'PROMO', rarity:'rare', scan:'Characters/Series/Virora/Zalem The Cursed (Promo).png', newAbilities:['Crown of Thorns'],
+      note:"Zalem (The Cursed) · Character · Rare · cost 6 · 4 ATK / 5 HP · color 'black' · subtypes Cursed, Wraith · race 'Cursed Wraith' · charName 'Zalem' · sym 'ZALEM' · keywords ['drain'] · setId promo · PROMO. Menu art: Main Menu Images/Zalem the cursed.jpg (Rulk sets it in Admin → Menu Art)."}],
+    rules:["GAME_BUILD '10.57' (new card).",
+      "BLOOD THORNS (passive) = the existing Drain keyword (keywords:['drain']; dealDamage pays the attacker's controller the damage dealt while it's the selected attacker — the same as Dynadrax / Hulk (Green Scar)).",
+      "DRAIN FIX (all Drain cards: Dynadrax, Hulk (Green Scar), Zalem): it used to also pay out for the retaliation the Drain card TOOK (any damage while it was the selected attacker). Now only damage dealt to an opposing card counts: tp!==G.activePlayer && tuid!==attacker uid. Drain still doesn't pay when the Drain card retaliates while defending (unchanged).",
+      "CROWN OF THORNS (triggered, onEntry): target opposing character (openEnemyTargetPicker; the usual targeting rules) loses 2 Health — Health loss, NOT damage: prevention doesn't stop it, no retaliation, it can destroy (killCard) — then, if it survives, applyStatus 'paralyze' (normal duration; Spirit Ward etc. block the Paralysis, not the Health loss). CPU: a kill (HP ≤ 2) if it can, else the strongest foe that isn't already Paralyzed. No foes → a log line."],
+    data:["Scan: Characters/Series/Virora/Zalem The Cursed (Promo).png. Main menu art: Main Menu Images/Zalem the cursed.jpg."] },
   { build:'10.56', date:'2026-11-25',
     cards:[{id:'pavi_nisha_team_promo', set:'promo', number:'PROMO', rarity:'mythic', scan:'Characters/Series/Avatar TLAB/Pavi & Nisha (Promo) (Team Card).png', newAbilities:['Twin Avatars','Elemental Lead','Twin Bond'],
       note:"Pavi & Nisha · TEAM card (type 'team', like Virora & Volaris) · Mythic · cost 10 · 9 ATK / 9 HP · color 'green', colors ['green','red'] · subtypes Avatar, Bender, Team · race 'Avatar Bender' · charName 'Pavi & Nisha' (doesn't count as Pavi or as Nisha) · sym 'P&N' · setId promo · cardNumber PROMO · flavor 'The Avatars Of A New Era!'. Menu art: Main Menu Images/Pavi and nisha team card.jpg (Rulk sets it in Admin → Menu Art)."}],
@@ -12159,6 +12167,7 @@ const DEFAULTS={
   crossroads_market_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/109-150%20(Crossroads%20Market).png',
   spiderman_imperfects_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Spider-Man%20Imperfects%20(Promo).png',
   red_hulk_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Marvel/Red%20Hulk%20(Promo).png',
+  zalem_cursed_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Virora/Zalem%20The%20Cursed%20(Promo).png',
   booni_christmas_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Virora/Booni%20Stole%20Christmas%20(Promo).png',
   virora_santa_promo: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Characters/Series/Virora/Virora%20Santa%20(Promo).png',
   elise_ssbe_bse: 'https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/Sets/BASE%20SET/133-150%20(Elise%20SSBE).png',
@@ -12655,6 +12664,11 @@ const DB={
     abilities:[{label:'Spider-Sense',type:'passive',cost:0,text:'The first time each turn this card would take damage, reduce that damage by 2.'},
       {label:'Web-Slinger Strike',type:'activated',cost:2,limit:'once_per_turn',ai:{when:'enemy'},text:'Pay 2 Energy: This card gets +3 Attack until end of turn and takes no damage back from its next attack this turn. (Once per turn)'},
       {label:'Rise of the Imperfect',type:'activated',cost:6,limit:'once_per_game',ai:{when:'enemy'},text:'Pay 6 Energy: This card gets +3 Attack until end of turn and can attack twice this turn. (Once per game)'}],transforms:[]},
+  // ── ZALEM (THE CURSED) (PROMO) — build 10.57. Blood Thorns = Drain (keyword). Crown of Thorns (onEntry): a target foe loses 2 Health
+  //    (not damage) and is Paralyzed.
+  zalem_cursed_promo:{id:'zalem_cursed_promo',rarity:'rare',name:'Zalem (The Cursed)',color:'black',charName:'Zalem',subtypes:['Cursed','Wraith'],type:'char',race:'Cursed Wraith',cost:6,atk:4,hp:5,sym:'ZALEM',setId:'promo',cardNumber:'PROMO',keywords:['drain'],nextForms:[],
+    abilities:[{label:'Blood Thorns',type:'passive',cost:0,text:'Drain (when this card deals combat damage, you gain that much Energy).'},
+      {label:'Crown of Thorns',type:'triggered',cost:0,text:'When this card enters your field, target opposing character loses 2 Health and becomes Paralyzed.'}]},
   red_hulk_promo:{id:'red_hulk_promo',rarity:'legend',name:'Red Hulk',color:'red',charName:'Red Hulk',subtypes:['Gamma','Monster'],type:'char',race:'Gamma Monster',cost:8,atk:9,hp:7,sym:'RHULK',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],
     abilities:[{label:'Heat Absorption',type:'passive',cost:0,text:"This card can't be Burned. Whenever an opposing character is Burned, this card gets +1 Attack until end of turn."},
       {label:'Thermal Smash',type:'triggered',cost:0,text:'Whenever this card attacks, Burn the defending character.'},
@@ -16118,7 +16132,8 @@ function dealDamage(tp,tuid,amt){
   }
   log(`${c.name} -${dmg}HP → ${fc.currentHP}/${fc.baseHP+fc.hpBonus+(fc.passiveHp||0)}HP`,'dmg');
   const drainAtk=G.selectedAttacker?G.players[G.activePlayer]?.field.find(f=>f.uid===G.selectedAttacker):null;
-  if(drainAtk&&hasKW(drainAtk,'drain')&&dmg>0){G.players[G.activePlayer].energy+=dmg;log('Drain: +'+dmg+'⚡!','gain');}
+  // Drain (build 10.57 fix): only damage the attacker deals to an opposing card — never the retaliation it takes.
+  if(drainAtk&&hasKW(drainAtk,'drain')&&dmg>0&&tp!==G.activePlayer&&tuid!==drainAtk.uid){G.players[G.activePlayer].energy+=dmg;log('Drain: +'+dmg+'⚡!','gain');}
   showDmgPopup(tp,`-${dmg}`,tuid);
   if(typeof SFX!=='undefined')SFX.damage();
   if(fc.currentHP<=0){
@@ -19363,6 +19378,29 @@ function onEntry(p,fc){
         const t=pool.slice().sort((a,b)=>effPower(b)-effPower(a))[0]; if(!t){ log('🌌 Nebula Snare: no opposing character worth Confusing.','info'); renderAll(); return; }
         if(hasAbilityToll(t)&&!canPayEvasionToll(_p,t)) return; conf(t.uid); }
     });
+  }
+  // ── ZALEM (THE CURSED): Crown of Thorns (build 10.57) — on entry, target opposing character loses 2 Health and becomes Paralyzed.
+  if(hasAbilityLabel(fc,'Crown of Thorns')){
+    const _p=p, _src=fc;
+    const foes=()=>{ const o=[]; hocEnemies(_p).forEach(op=>(G.players[op]?.field||[]).forEach(f=>{ if(isChar(DB[f.cid])&&!DB[f.cid]?.isToken) o.push({fc:f,p:op}); })); return o; };
+    const hit=(uid)=>{ const t=foes().find(x=>x.fc.uid===uid); if(!t||!G||G.gameOver) return;
+      const _fx=(typeof fxPush==='function')?fxPush(_src.cid,'Crown of Thorns',_src.uid):null;
+      try{ t.fc.currentHP=(t.fc.currentHP||0)-2;
+        log(`🩸 Crown of Thorns: ${DB[t.fc.cid].name} loses 2 Health (${Math.max(0,t.fc.currentHP)} left).`,'dmg');
+        if(typeof showDmgPopup==='function') showDmgPopup(t.p,'-2',uid);
+        if((t.fc.currentHP||0)<=0){ if((G.players[t.p]?.field||[]).includes(t.fc)) killCard(t.p,t.fc); }
+        else if(applyStatus(t.fc,'paralyze',(STATUS_META.paralyze&&STATUS_META.paralyze.dur)||2)){ if(typeof showStatusFx==='function') try{ showStatusFx(uid,'paralyze'); }catch(e){} log(`🩸 Crown of Thorns: ${DB[t.fc.cid].name} is Paralyzed!`,'dmg'); }
+      } finally{ if(typeof fxPop==='function') fxPop(_fx); }
+      renderAll(); };
+    const list=foes();
+    if(!list.length) log('🩸 Crown of Thorns: no opposing characters.','info');
+    else if(seqIsLocalHuman(_p)&&!G._aiAuto) openEnemyTargetPicker(list.map(x=>x.fc),hit,{sourcePlayer:_p,title:'🩸 Crown of Thorns',desc:'Choose an opposing character: it loses 2 Health and becomes Paralyzed.'});
+    else { // CPU: a kill if it can get one (biggest first), else the strongest character not already Paralyzed
+      const pool=list.map(x=>x.fc).filter(f=>!hasDrunkenStance(f)&&!spaceShielded(f)&&(!hasAbilityToll(f)||G.players[_p].energy>=2));
+      const kill=pool.filter(f=>(f.currentHP||0)<=2).sort((a,b)=>effPower(b)-effPower(a))[0];
+      const t=kill||pool.slice().sort((a,b)=>((statusActive(a,'paralyze')?1:0)-(statusActive(b,'paralyze')?1:0))||(effPower(b)-effPower(a)))[0];
+      if(!t){ log('🩸 Crown of Thorns: no opposing character it can target.','info'); renderAll(); }
+      else { if(hasAbilityToll(t)&&!canPayEvasionToll(_p,t)) return; hit(t.uid); } }
   }
   // (Card-played / favorites tracking lives in trackCardPlayed, called at each
   // play site, since locations/equipment/instants never reach onEntry.)
@@ -31200,7 +31238,7 @@ function econBuildRewards(){
     add('ev:hoc:allch',{cosmetics:['mat_harvest_of_courts']}); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.56';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.57';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
