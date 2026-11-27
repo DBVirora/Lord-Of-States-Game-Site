@@ -9559,6 +9559,22 @@ body.use-glow #game-screen .hand-card.playable,body.use-glow #game-screen-2v2 .h
 .dl-t.done{opacity:.55}
 .dl-d{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.2em;color:#a99fd0}
 .dl-i{font-size:28px;line-height:1}
+/* build 10.63: reward art */
+.rw-ico{display:inline-block;height:1.25em;width:auto;max-width:2.6em;object-fit:contain;vertical-align:-.28em;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))}
+.rw-ico.rw-pk{height:1.65em;vertical-align:-.45em;border-radius:2px}
+.rw-ico.rw-cd{height:1.7em;max-width:none;aspect-ratio:63/88;object-fit:cover;border-radius:2px;vertical-align:-.5em}
+.rw-ico.rw-md{height:30px;max-width:none;vertical-align:middle}
+.rw-ico.rw-pk.rw-md{height:42px}
+.rw-ico.rw-big{height:64px;max-width:none}
+.dl-i{display:flex;align-items:center;justify-content:center;gap:4px;min-height:48px}
+.dl-i .rw-ico{height:38px;max-width:none}
+.dl-i .rw-ico.rw-pk{height:50px}
+.tr-pay .rw-ico{display:block;height:30px;max-width:none;margin:0 auto 6px}
+.tr-pay .rw-ico.rw-pk{height:42px}
+.hv-rv-cel{flex-direction:column;gap:6px}
+.ar-prw .big .rw-ico{height:44px;max-width:none}
+.adm2 .adm-ico .rw-ico{height:24px;max-width:none}
+#win-celestium:not(:empty)::before{content:'';display:inline-block;width:15px;height:15px;margin-right:5px;vertical-align:-3px;background:url('https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png') center/contain no-repeat}
 .dl-r{font-size:11px;line-height:1.35;color:#e9e2ff}
 .dl-r b{color:#f6dc9a}
 .dl-ok{position:absolute;top:6px;right:8px;color:#86efac;font-weight:900}
@@ -10065,7 +10081,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.62 · Registry Ownership Fix</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.63 · Reward Art</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -11169,6 +11185,10 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.60'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.63', date:'2026-11-27',
+    rules:["WEB_BUILD '10.63'. GAME_BUILD stays '10.60' (no rules change).",
+      "REWARD ART — every reward shows the real art, never an emoji: CELESTIUM = currency/Celstium.png (scans repo); COURT SHARDS = the game's Court Shard icon (CS_ICON); PACKS / BOXES = the set's booster pack art: the admin Market set art if set, else Market/Thumbs/pack_<setId>.webp (Base Set: Market/Thumbs/pack_base_set.webp, the trimmed pack), else PACK_ART. Helpers: rwArt(kind,setId) → URL, rwIco(kind,setId,cls) → small inline <img class='rw-ico'> for text, rwPackArt(setId).",
+      "WHERE: Daily Rewards (tile icons: Day 7 shows the pack + the Celestium crystal; the claim celebration) · the rewards celebration (any older item passing only ✦ 💠 🔷 💎 🎴 📦 🎁 🪙 now picks the art from its label: Celestium / Court Shards / Pack·Booster·Box) · tutorial rewards (trimmed pack) · achievements (popup + list: coin before '+N Celestium') · mail (claim celebration + every reward list, cards as thumbnails) · Gift Center + admin '+Celestium' tiles · wagers and watcher bets (coin instead of 💠; plain-text places such as the match log say 'Celestium') · Harvest of Courts (mission reveal, Harvest King panel, mission preview) · Arcade (floor rewards, floor detail, reward reveal) · Trial of Courts and Draft & Sealed (results: icon above each amount; payout lines) · Story campaign match rewards · Battle Pass pack rewards (trimmed pack) · the win screen's Celestium line (coin before it)."] },
   { build:'10.62', date:'2026-11-27',
     rules:["WEB_BUILD '10.62'. GAME_BUILD stays '10.60' (no rules change).",
       "REGISTRY OWNERSHIP — copies you own = MAX(collection[cid], sum of collection_foil[cid][every finish]). The Registry used only collection[cid], while the Collection and deck builder read collection_foil, so a card recorded only per finish (e.g. a holo) showed UNREGISTERED (no quote, cardback). registryState(cid) now uses that count, and so does cardHiddenFor (exclusive cards).",
@@ -28884,7 +28904,7 @@ function _tutCodex(k){
 function _tutFirstTime(){ return !(typeof _achData!=='undefined'&&_achData&&_achData.ach_tutorial_complete); }
 function _tutRwKey(k){ return 'loc_tut_rw_'+(window._authUid||'guest')+'_'+k; }
 function _tutRwHas(k){ try{ return localStorage.getItem(_tutRwKey(k))==='1'; }catch(e){ return false; } }
-function _tutPackImg(){ return (typeof PACK_ART!=='undefined'&&PACK_ART)?PACK_ART:TUT_RAW+'Sets/BASE%20SET/Copilot_20260621_173509.png'; }
+function _tutPackImg(){ if(typeof rwPackArt==='function'){ const u=rwPackArt('base_set'); if(u) return u; } return (typeof PACK_ART!=='undefined'&&PACK_ART)?PACK_ART:TUT_RAW+'Sets/BASE%20SET/Copilot_20260621_173509.png'; }
 async function _tutClaimPack(key){
   if(window._tutLesson||!_tutFirstTime()||_tutRwHas(key)) return false;
   let r=null; try{ r=await econClaim(key,()=>awardPack('pack','basic','base_set',1,'Base Set Booster')); }catch(e){ r=null; }
@@ -31134,6 +31154,22 @@ function renderRulesCardGrid(cards){
 // CELESTIUM CURRENCY SYSTEM
 // ═══════════════════════════════════════════════════
 const CEL_IMG='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png';
+// ═══ REWARD ART (build 10.63) ═══ the real art for every reward — the Celestium crystal, the Court Shard and each set's
+// booster pack — so reward screens never fall back to emoji. rwArt(kind,setId) = image URL · rwIco(kind,setId,cls) = a
+// small inline icon for text · rwPackArt(setId) = the trimmed pack art (Market thumb / admin set art, else PACK_ART).
+function rwPackArt(setId){ try{ if(typeof mkPackArt==='function'){ const u=mkPackArt(setId||'base_set'); if(u) return u; } }catch(e){} return (typeof PACK_ART!=='undefined'&&PACK_ART)||''; }
+function rwArt(kind,setId){ const k=String(kind||'').toLowerCase();
+  if(k==='celestium'||k==='cel') return CEL_IMG;
+  if(k==='shards'||k==='sh'||k==='court_shards') return (typeof CS_ICON!=='undefined'&&CS_ICON)||'';
+  if(k==='pack'||k==='box'||k==='packs') return rwPackArt(setId);
+  return ''; }
+function rwIco(kind,setId,cls){ const u=rwArt(kind,setId); if(!u) return ''; const k=String(kind||'').toLowerCase(), pk=(k==='pack'||k==='box'||k==='packs');
+  return `<img class="rw-ico${pk?' rw-pk':''}${cls?' '+cls:''}" src="${u}" alt="" aria-hidden="true">`; }
+// An older reward that only passes an emoji: pick the real art from what the reward is.
+function rwGuess(it){ if(!it||it.img) return ''; const ic=String(it.icon||''), lb=String(it.label||'');
+  if(!/^(✦|💠|🔷|💎|🎴|📦|🎁|🪙)?$/.test(ic)) return '';
+  if(/celestium/i.test(lb)) return rwArt('celestium'); if(/court shard/i.test(lb)) return rwArt('shards'); if(/\b(pack|packs|booster|box)\b/i.test(lb)) return rwArt('pack',it.setId);
+  return ''; }
 let _celSB=null;
 let _celUserId=null;
 let _celData={celestium:0,wins:0,losses:0,matches:0,last_login:null,first_win_date:null,stats:_defaultStats()};
@@ -31583,7 +31619,7 @@ function econBuildRewards(){
     add(arcKey(T,i),{celestium:+R.cel||0,cards:(R.cards||[]).map(x=>(x.foil&&x.foil!=='none')?{cid:x.cid,qty:x.qty||1,foil:x.foil}:{cid:x.cid,qty:x.qty||1})}); })); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.62';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.63';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -31789,7 +31825,7 @@ function dailyState(){
 }
 function dailyReward(i){ const r=DAILY_DEF[(i||1)-1]||DAILY_DEF[0]; if(r.shards&&!(typeof craftOn==='function'&&craftOn())) return r.alt||{cel:150}; return r; }
 function dailyRewardText(r){ const p=[]; if(r.cel) p.push(`<b>${r.cel}</b> Celestium`); if(r.shards) p.push(`<b>${r.shards}</b> Court Shards`); if(r.pack) p.push(`<b>${r.pack}</b> Basic Pack`); return p.join(' + '); }
-function dailyIcon(r){ return r.pack?'🎴':r.shards?'🔷':'✦'; }
+function dailyIcon(r){ return (r.pack?rwIco('pack','base_set'):'')+(r.shards?rwIco('shards'):'')+(r.cel?rwIco('celestium'):''); }   // build 10.63: the real art
 async function checkDailyLogin(){
   if(typeof loadCampaignProgress==='function') try{ await loadCampaignProgress(); }catch(e){}
   const st=dailyState();
@@ -31833,7 +31869,7 @@ async function dailyClaim(btn){
       if(typeof bpOnDailyLogin==='function') try{ await bpOnDailyLogin(); }catch(e){}
       dailyOpen();
       try{ if(typeof mmRenderLedger==='function') mmRenderLedger(); if(typeof refreshProfileScreen==='function'&&document.getElementById('profile-screen')?.classList.contains('active')) refreshProfileScreen(); }catch(e){}
-      if(typeof showRewardsCelebration==='function'){ const items=[]; if(g.celestium) items.push({icon:'✦',amount:'+'+g.celestium,label:'Celestium'}); if(g.shards) items.push({icon:'🔷',amount:'+'+g.shards,label:'Court Shards'}); (g.packs||[]).forEach(p=>items.push({icon:'🎴',amount:'+'+(p.qty||1),label:'Basic Pack'}));
+      if(typeof showRewardsCelebration==='function'){ const items=[]; if(g.celestium) items.push({img:rwArt('celestium'),amount:'+'+g.celestium,label:'Celestium'}); if(g.shards) items.push({img:rwArt('shards'),amount:'+'+g.shards,label:'Court Shards'}); (g.packs||[]).forEach(p=>items.push({img:rwArt('pack',p.setId||'base_set'),amount:'+'+(p.qty||1),label:'Basic Pack'}));
         try{ showRewardsCelebration(items,null,{title:'DAY '+day+' REWARD'}); }catch(e){} }
       return;
     }
@@ -31849,7 +31885,7 @@ async function dailyClaim(btn){
   if(typeof bpOnDailyLogin==='function') try{ await bpOnDailyLogin(); }catch(e){}
   dailyOpen();
   try{ if(typeof mmRenderLedger==='function') mmRenderLedger(); if(typeof refreshProfileScreen==='function'&&document.getElementById('profile-screen')?.classList.contains('active')) refreshProfileScreen(); }catch(e){}
-  if(typeof showRewardsCelebration==='function'){ const items=[]; if(r.cel) items.push({icon:'✦',amount:'+'+r.cel,label:'Celestium'}); if(r.shards) items.push({icon:'🔷',amount:'+'+r.shards,label:'Court Shards'}); if(r.pack) items.push({icon:'🎴',amount:'+'+r.pack,label:'Basic Pack'});
+  if(typeof showRewardsCelebration==='function'){ const items=[]; if(r.cel) items.push({img:rwArt('celestium'),amount:'+'+r.cel,label:'Celestium'}); if(r.shards) items.push({img:rwArt('shards'),amount:'+'+r.shards,label:'Court Shards'}); if(r.pack) items.push({img:rwArt('pack','base_set'),amount:'+'+r.pack,label:'Basic Pack'});
     try{ showRewardsCelebration(items,null,{title:'DAY '+st.day+' REWARD'}); }catch(e){} }
 }
 
@@ -32154,7 +32190,7 @@ function showAchievementPopup(ach){
     +'<div class="ach-label">🏅 Achievement Unlocked!</div>'
     +'<div class="ach-title">'+ach.title+'</div>'
     +'<div class="ach-desc">'+ach.desc+'</div>'
-    +'<div class="ach-reward">+'+ach.reward+' Celestium'+(ach.xpReward?' · +'+ach.xpReward+' XP':'')+'</div>'
+    +'<div class="ach-reward">'+rwIco('celestium')+' +'+ach.reward+' Celestium'+(ach.xpReward?' · +'+ach.xpReward+' XP':'')+'</div>'
     +'</div>';
   document.body.appendChild(popup);
   setTimeout(()=>{if(popup.parentNode)popup.remove();},5200);
@@ -32249,7 +32285,7 @@ function renderAchievementsSection(){
       const cur=Math.min(_achData.chars_destroyed||0,20);
       progressHtml='<div style="font-size:9px;color:#9ca3af;margin-top:2px">Progress: '+cur+' / 20</div>';
     }
-    const rewardHtml='+'+ach.reward+' Celestium'+(ach.xpReward?' · +'+ach.xpReward+' XP':'');
+    const rewardHtml=rwIco('celestium')+' +'+ach.reward+' Celestium'+(ach.xpReward?' · +'+ach.xpReward+' XP':'');
     card.innerHTML=
       achIconHtml
       +'<div class="ach-card-info">'
@@ -34348,7 +34384,7 @@ async function onTutorialFinished(p){
   }
   const _achImg=(typeof ACHIEVEMENTS!=='undefined'&&ACHIEVEMENTS.tutorial_complete&&ACHIEVEMENTS.tutorial_complete.img)?ACHIEVEMENTS.tutorial_complete.img:'';
   const _CEL_IMG=TUT_RAW+'currency/Celstium.png';
-  const _PACK_IMG=(typeof PACK_ART!=='undefined'&&PACK_ART)?PACK_ART:TUT_RAW+'Sets/BASE%20SET/Copilot_20260621_173509.png';
+  const _PACK_IMG=_tutPackImg();
   const pathName=window._tutPath==='ssg'?'God Path':'Warrior Path';
   const items=firstTime?[
     {img:_CEL_IMG, amount:'+200', label:'Celestium'},
@@ -34423,7 +34459,8 @@ function showRewardsCelebration(items, onDone, opts){
   let el=document.getElementById('rc-overlay');
   if(!el){ el=document.createElement('div'); el.id='rc-overlay'; el.className='rc-overlay'; document.body.appendChild(el); }
   const itemHtml=(items||[]).map(it=>{
-    const vis = it.img ? ('<div class="rc-icon"><img src="'+it.img+'" alt=""/></div>') : ('<div class="rc-icon">'+(it.icon||'🎁')+'</div>');
+    const im = it.img || (typeof rwGuess==='function'?rwGuess(it):'');   // build 10.63
+    const vis = im ? ('<div class="rc-icon"><img src="'+im+'" alt=""/></div>') : ('<div class="rc-icon">'+(it.icon||'🎁')+'</div>');
     return '<div class="rc-item">'+vis+(it.amount?('<div class="rc-amt">'+it.amount+'</div>'):'')+'<div class="rc-label">'+(it.label||'')+'</div></div>';
   }).join('');
   el.innerHTML='<div class="rc-rays"></div>'
@@ -37764,9 +37801,9 @@ function showMatchDetail(match){
   if(descEl)descEl.textContent=match.description||'No details yet.';
   if(rewardsEl){
     const parts=[];
-    if(match.rewards?.celestium)parts.push('+'+match.rewards.celestium+' Celestium');
+    if(match.rewards?.celestium)parts.push(rwIco('celestium')+' +'+match.rewards.celestium+' Celestium');
     if(match.rewards?.cards)parts.push('Card unlocks: '+match.rewards.cards.join(', '));
-    if(match.rewards?.packs)parts.push(match.rewards.packs+' Booster pack(s)');
+    if(match.rewards?.packs)parts.push(rwIco('pack')+' '+match.rewards.packs+' Booster pack(s)');
     if(match.rewards?.note)parts.push(match.rewards.note);
     rewardsEl.innerHTML=parts.length?parts.join('<br>'):'<span style="color:#6b7280">No special rewards yet</span>';
   }
@@ -39573,8 +39610,8 @@ window.addEventListener('load',async()=>{
       <section class="adm-card">
         <h3 class="adm-h">Your test account</h3>
         <div class="adm-tiles">
-          <button type="button" class="adm-tile gold" onclick="adminGrantCelestium()"><span class="adm-ico">💎</span><b>+1,000 Celestium</b><span>Added to your balance</span></button>
-          <button type="button" class="adm-tile gold" onclick="adminGrantCelestium50k()"><span class="adm-ico">💎</span><b>+50,000 Celestium</b><span>Added to your balance</span></button>
+          <button type="button" class="adm-tile gold" onclick="adminGrantCelestium()"><span class="adm-ico"><img class="rw-ico" src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" alt=""></span><b>+1,000 Celestium</b><span>Added to your balance</span></button>
+          <button type="button" class="adm-tile gold" onclick="adminGrantCelestium50k()"><span class="adm-ico"><img class="rw-ico" src="https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/refs/heads/main/currency/Celstium.png" alt=""></span><b>+50,000 Celestium</b><span>Added to your balance</span></button>
           <button type="button" class="adm-tile" onclick="adminUnlockAllAchievements()"><span class="adm-ico">🏅</span><b>Unlock All Achievements</b><span>Marks every achievement earned</span></button>
           <button type="button" class="adm-tile" onclick="adminGrantAllCards()"><span class="adm-ico">🃏</span><b>Grant All Cards</b><span>4 copies of every card, event and secret ones too</span></button>
           <button type="button" class="adm-tile gold" onclick="craftAdminGrant(5000)"><span class="adm-ico">🔨</span><b>+5,000 Court Shards</b><span>For testing crafting</span></button>
@@ -41084,14 +41121,24 @@ function mlRewardLines(att){
   (att.cosmetics||[]).forEach(id=>{ const it=(typeof cosItem==='function')?cosItem(id):null; out.push(((COS_TYPES[it?.type]||{}).icon||'✨')+' '+(it?it.name:id)+(it?' ('+((COS_TYPES[it.type]||{}).label||it.type).replace(/S$/,'').toLowerCase()+')':'')); });
   return out;
 }
+// build 10.63: the same list as mlRewardLines, as HTML with the real art (Celestium, packs, card thumbnails)
+function mlRewardHtml(att,sep){
+  if(!att) return ''; const out=[], S=h=>`<span>${h}</span>`;
+  if(att.celestium) out.push(S(rwIco('celestium')+' '+Number(att.celestium).toLocaleString()+' Celestium'));
+  if(att.xp) out.push(S('⭐ '+Number(att.xp).toLocaleString()+' XP'));
+  (att.packs||[]).forEach(p=>out.push(S(rwIco(p.kind==='box'?'box':'pack',p.setId||'base_set')+' '+(p.qty||1)+'× '+mlEsc(typeof packDisplayName==='function'?packDisplayName(p.kind||'pack',p.type||'basic',p.setId||'base_set'):(p.type+' pack')))));
+  (att.cards||[]).forEach(c=>{ const v=(c.foil&&c.foil!=='none')?((VARIANT_META[c.foil]||{}).label||c.foil)+' ':''; const u=typeof getImg==='function'?getImg(c.cid):''; out.push(S((u?`<img class="rw-ico rw-cd" src="${u}" alt="" aria-hidden="true">`:'🃏')+' '+(c.qty||1)+'× '+mlEsc(v+(DB[c.cid]?.name||c.cid)))); });
+  (att.cosmetics||[]).forEach(id=>{ const it=(typeof cosItem==='function')?cosItem(id):null; out.push(S(mlEsc(((COS_TYPES[it?.type]||{}).icon||'✨')+' '+(it?it.name:id)+(it?' ('+((COS_TYPES[it.type]||{}).label||it.type).replace(/S$/,'').toLowerCase()+')':'')))); });
+  return out.join(sep||'');
+}
 function mlHasRewards(att){ return !!(att&&(att.celestium||att.xp||(att.packs||[]).length||(att.cards||[]).length||(att.cosmetics||[]).length)); }
 // srv = the econ_mail_claim result: the server already added everything; only show it (+ XP, which stays in the game)
 async function mlApplyRewards(att,source,srv){
   if(srv) return mlShowServerRewards(att,source||'Gift',srv);
   const items=[]; source=source||'Gift';
-  if(att.celestium){ const n=Math.floor(Number(att.celestium)||0); if(n){ _celData.celestium=(_celData.celestium||0)+n; try{ _celLog.unshift({amount:n,reason:source,ts:new Date().toISOString()}); }catch(e){} if(n>0&&!att.wager&&typeof bumpStat==='function') bumpStat('celestium_earned',n); if(typeof updateCelDisplay==='function') updateCelDisplay(); await saveCelestium(); items.push({icon:'💠',amount:'+'+n.toLocaleString(),label:'Celestium'}); } }
+  if(att.celestium){ const n=Math.floor(Number(att.celestium)||0); if(n){ _celData.celestium=(_celData.celestium||0)+n; try{ _celLog.unshift({amount:n,reason:source,ts:new Date().toISOString()}); }catch(e){} if(n>0&&!att.wager&&typeof bumpStat==='function') bumpStat('celestium_earned',n); if(typeof updateCelDisplay==='function') updateCelDisplay(); await saveCelestium(); items.push({img:rwArt('celestium'),amount:'+'+n.toLocaleString(),label:'Celestium'}); } }
   if(att.xp&&typeof awardBPXp==='function'){ const n=Math.floor(Number(att.xp)||0); if(n){ await awardBPXp(n,source); items.push({icon:'⭐',amount:'+'+n.toLocaleString(),label:'XP'}); } }
-  if((att.packs||[]).length){ att.packs.forEach(p=>{ grantPack(p.kind||'pack',p.type||'basic',p.setId||'base_set',Math.max(1,Number(p.qty)||1)); items.push({icon:p.kind==='box'?'📦':'🎴',amount:'×'+(p.qty||1),label:packDisplayName(p.kind||'pack',p.type||'basic',p.setId||'base_set')}); }); await savePackInventory(); if(typeof renderPackInventory==='function') try{renderPackInventory();}catch(e){} if(typeof updatePackBadge==='function') try{updatePackBadge();}catch(e){} }
+  if((att.packs||[]).length){ att.packs.forEach(p=>{ grantPack(p.kind||'pack',p.type||'basic',p.setId||'base_set',Math.max(1,Number(p.qty)||1)); items.push({img:rwArt(p.kind==='box'?'box':'pack',p.setId||'base_set'),amount:'×'+(p.qty||1),label:packDisplayName(p.kind||'pack',p.type||'basic',p.setId||'base_set')}); }); await savePackInventory(); if(typeof renderPackInventory==='function') try{renderPackInventory();}catch(e){} if(typeof updatePackBadge==='function') try{updatePackBadge();}catch(e){} }
   if((att.cards||[]).length){ att.cards.forEach(c=>{ if(!DB[c.cid]) return; const q=Math.max(1,Number(c.qty)||1); for(let i=0;i<q;i++) addCardToCollection(c.cid,c.foil||'none'); const v=(c.foil&&c.foil!=='none')?((VARIANT_META[c.foil]||{}).label||c.foil):''; items.push({img:getImg(c.cid),amount:'×'+q,label:DB[c.cid].name+(v?' · '+v:'')}); }); try{ await saveCollection(); saveHoloOwned(); saveCollectionFoil(); }catch(e){ console.warn('[MAIL] card save',e); } }
   (att.cosmetics||[]).forEach(id=>{ const it=cosItem(id); if(!it) return; grantCosmetic(id,source,false); items.push({icon:(COS_TYPES[it.type]||{}).icon||'✨',label:it.name}); });
   if(typeof applyCosmetics==='function') try{ applyCosmetics(); }catch(e){}
@@ -41101,9 +41148,9 @@ async function mlApplyRewards(att,source,srv){
 async function mlShowServerRewards(att,source,srv){
   const items=[], g=srv.given||{};
   await econLand(srv,g,null,{log:source,noStat:!!att.wager});
-  const n=Math.floor(Number(g.celestium)||0); if(n) items.push({icon:'💠',amount:'+'+n.toLocaleString(),label:'Celestium'});
+  const n=Math.floor(Number(g.celestium)||0); if(n) items.push({img:rwArt('celestium'),amount:'+'+n.toLocaleString(),label:'Celestium'});
   if(att.xp&&typeof awardBPXp==='function'){ const x=Math.floor(Number(att.xp)||0); if(x){ await awardBPXp(x,source); items.push({icon:'⭐',amount:'+'+x.toLocaleString(),label:'XP'}); } }
-  (g.packs||[]).forEach(p=>items.push({icon:p.kind==='box'?'📦':'🎴',amount:'×'+(p.qty||1),label:packDisplayName(p.kind||'pack',p.type||'basic',p.setId||'base_set')}));
+  (g.packs||[]).forEach(p=>items.push({img:rwArt(p.kind==='box'?'box':'pack',p.setId||'base_set'),amount:'×'+(p.qty||1),label:packDisplayName(p.kind||'pack',p.type||'basic',p.setId||'base_set')}));
   (g.cards||[]).forEach(c=>{ if(!DB[c.cid]) return; const v=(c.foil&&c.foil!=='none')?((VARIANT_META[c.foil]||{}).label||c.foil):''; items.push({img:getImg(c.cid),amount:'×'+(c.qty||1),label:DB[c.cid].name+(v?' · '+v:'')}); });
   (g.cosmetics||[]).forEach(id=>{ const it=cosItem(id); if(!it) return; items.push({icon:(COS_TYPES[it.type]||{}).icon||'✨',label:it.name}); });
   if(typeof applyCosmetics==='function') try{ applyCosmetics(); }catch(e){}
@@ -41179,7 +41226,7 @@ function mlNextPopup(){
     <h2>${mlEsc(m.subject||'A message for you')}</h2>
     <div class="from">FROM ${mlEsc((m.sender_name||'VIRORA').toUpperCase())}</div>
     <div class="body">${mlEsc(m.body||'')}</div>
-    ${mlHasRewards(m.attachments)?`<div class="ml-rewards"><div class="t">${m.claimed_at?'REWARDS CLAIMED':'YOUR REWARDS'}</div><div class="ml-rw">${mlRewardLines(m.attachments).map(l=>`<span>${mlEsc(l)}</span>`).join('')}</div></div>`:''}
+    ${mlHasRewards(m.attachments)?`<div class="ml-rewards"><div class="t">${m.claimed_at?'REWARDS CLAIMED':'YOUR REWARDS'}</div><div class="ml-rw">${mlRewardHtml(m.attachments)}</div></div>`:''}
     <div class="ml-actions" style="justify-content:center">${has?'<button class="dk-btn gold" id="ml-pop-claim">🎁 CLAIM REWARDS</button>':'<button class="dk-btn gold" id="ml-pop-close">CLOSE</button>'}</div>
   </div>`;
   document.body.appendChild(ov);
@@ -41247,7 +41294,7 @@ function mlRenderRead(){
     <h3>${mlEsc(m.subject||'(no subject)')}</h3>
     <div class="meta">${sent?'TO '+mlEsc((_mail.names[m.recipient_id]||'PLAYER').toUpperCase()):'FROM '+mlEsc((m.sender_name||'PLAYER').toUpperCase())} · ${new Date(m.created_at).toLocaleString()}${sent?(m.read_at?' · READ':' · NOT READ YET'):''}</div>
     <div class="body">${mlEsc(m.body||'')}</div>
-    ${gift?`<div class="ml-rewards"><div class="t">${m.claimed_at?'REWARDS CLAIMED':'ATTACHED REWARDS'}</div><div class="ml-rw">${mlRewardLines(m.attachments).map(l=>`<span>${mlEsc(l)}</span>`).join('')}</div></div>`:''}
+    ${gift?`<div class="ml-rewards"><div class="t">${m.claimed_at?'REWARDS CLAIMED':'ATTACHED REWARDS'}</div><div class="ml-rw">${mlRewardHtml(m.attachments)}</div></div>`:''}
     <div class="ml-actions">
       ${!sent&&gift&&!m.claimed_at?`<button class="dk-btn gold" onclick="this.disabled=true;mlClaim('${m.id}')">🎁 CLAIM REWARDS</button>`:''}
       ${!sent&&m.sender_id&&m.sender_id!==_celUserId&&m.kind==='message'?`<button class="dk-btn" onclick="mlReply('${m.id}')">↩ REPLY</button><button class="dk-btn" onclick="mlBlock('${m.sender_id}','${mlEsc(m.sender_name||'')}')">⛔ BLOCK</button>`:''}
@@ -41322,7 +41369,7 @@ function mlRenderFeatured(){
     ${c.event_name?`<div class="ev">${mlEsc(c.event_name)}</div>`:''}
     <div class="top"><b>${mlEsc(c.code)}</b>${c.expires_at?`<span class="left">⏳ ${gcLeft(c.expires_at)} left</span>`:''}</div>
     <div class="sub">${mlEsc(c.subject||'')}</div>
-    <div class="ml-rw">${mlRewardLines(c.rewards).map(l=>`<span>${mlEsc(l)}</span>`).join('')}</div>
+    <div class="ml-rw">${mlRewardHtml(c.rewards)}</div>
     ${c.audience&&c.audience!=='all'?`<div class="ml-note">👥 ${mlEsc(gcAudienceText(c.audience,c.audience_days))}</div>`:''}
     <div style="margin-top:8px">${c.claimed?'<span class="ml-ok">✓ CLAIMED</span>':c.eligible?`<button class="dk-btn gold" onclick="this.disabled=true;mlRedeem('${mlEsc(c.code)}')">🎁 CLAIM</button>`:'<span class="ml-note">Not available for your account</span>'}</div></div>`).join('');
 }
@@ -41417,9 +41464,9 @@ function gcRenderCompose(ctx){
   const S=gcState(ctx), R=S.rewards, P=ctx;
   const host=document.getElementById(ctx==='code'?'gc-code-compose':'gc-compose'); if(!host) return;
   const items=[];
-  if(R.celestium) items.push(`<div class="gc-item">💠 <b>${Number(R.celestium).toLocaleString()}</b> Celestium<button onclick="gcState('${P}').rewards.celestium=0;gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`);
+  if(R.celestium) items.push(`<div class="gc-item">${rwIco('celestium')} <b>${Number(R.celestium).toLocaleString()}</b> Celestium<button onclick="gcState('${P}').rewards.celestium=0;gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`);
   if(R.xp) items.push(`<div class="gc-item">⭐ <b>${Number(R.xp).toLocaleString()}</b> XP<button onclick="gcState('${P}').rewards.xp=0;gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`);
-  R.packs.forEach((p,i)=>items.push(`<div class="gc-item">${p.kind==='box'?'📦':'🎴'} <b>${p.qty}×</b> ${mlEsc(packDisplayName(p.kind,p.type,p.setId))}<button onclick="gcState('${P}').rewards.packs.splice(${i},1);gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`));
+  R.packs.forEach((p,i)=>items.push(`<div class="gc-item">${rwIco(p.kind==='box'?'box':'pack',p.setId)} <b>${p.qty}×</b> ${mlEsc(packDisplayName(p.kind,p.type,p.setId))}<button onclick="gcState('${P}').rewards.packs.splice(${i},1);gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`));
   R.cards.forEach((c,i)=>items.push(`<div class="gc-item"><img class="th" src="${getImg(c.cid)}" alt=""> <b>${c.qty}×</b> ${mlEsc(DB[c.cid]?.name||c.cid)} <span style="color:#6b6b8a">${mlEsc(gcpMeta(c.cid))}</span> ${c.foil!=='none'?`· <span style="color:${(VARIANT_META[c.foil]||{}).accent}">${mlEsc((VARIANT_META[c.foil]||{}).label||c.foil)}</span>`:''}<button onclick="gcState('${P}').rewards.cards.splice(${i},1);gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`));
   R.cosmetics.forEach((id,i)=>{ const it=cosItem(id); items.push(`<div class="gc-item">${(COS_TYPES[it?.type]||{}).icon||'✨'} ${mlEsc(it?it.name:id)}<button onclick="gcState('${P}').rewards.cosmetics.splice(${i},1);gcRenderCompose('${P}')" aria-label="Remove">✕</button></div>`); });
   host.innerHTML=`<h4>${ctx==='code'?(S.editing?'EDIT CODE':'CREATE A CODE'):'MESSAGE & REWARDS'}</h4>
@@ -41446,13 +41493,13 @@ function gcRenderCompose(ctx){
     <textarea class="ml-ta" id="gc-${P}-body" maxlength="4000" oninput="gcState('${P}').body=this.value">${mlEsc(S.body)}</textarea>
     <label class="gc-row" style="font-size:11px;color:#e9e4ff;cursor:pointer"><input type="checkbox" ${S.popup?'checked':''} onchange="gcState('${P}').popup=this.checked"> Show as a popup when they log in</label>
     <h4 style="margin-top:12px">ATTACH REWARDS</h4>
-    <div class="gc-row"><input class="ml-in" type="number" min="0" placeholder="Celestium" id="gc-${P}-cel"><button class="dk-btn" style="padding:8px 12px" onclick="gcAddNum('${P}','celestium')">+ 💠</button>
+    <div class="gc-row"><input class="ml-in" type="number" min="0" placeholder="Celestium" id="gc-${P}-cel"><button class="dk-btn" style="padding:8px 12px" onclick="gcAddNum('${P}','celestium')">+ ${rwIco('celestium')}</button>
       <input class="ml-in" type="number" min="0" placeholder="XP" id="gc-${P}-xp"><button class="dk-btn" style="padding:8px 12px" onclick="gcAddNum('${P}','xp')">+ ⭐</button></div>
     <div class="gc-row"><select class="ml-sel" id="gc-${P}-pk"><option value="pack">Pack</option><option value="box">Booster Box</option></select>
       <select class="ml-sel" id="gc-${P}-pt"><option value="basic">Basic</option><option value="premium">Premium</option><option value="event">Event</option></select>
       <select class="ml-sel" id="gc-${P}-ps">${gcSetsOpts()}</select>
       <input class="ml-in" type="number" min="1" value="1" id="gc-${P}-pq" style="max-width:70px" aria-label="Pack quantity">
-      <button class="dk-btn" style="padding:8px 12px" onclick="gcAddPack('${P}')">+ 🎴</button></div>
+      <button class="dk-btn" style="padding:8px 12px" onclick="gcAddPack('${P}')">+ ${rwIco('pack')}</button></div>
     <div class="gc-row"><button class="dk-btn" style="flex:1;padding:10px 12px" onclick="gcOpenCardPicker('${P}')">🃏 PICK CARDS TO GIFT…</button></div>
     <div class="gc-row"><select class="ml-sel" id="gc-${P}-cos">${gcCosOpts()}</select><button class="dk-btn" style="padding:8px 12px" onclick="gcAddCos('${P}')">+ ✨</button></div>
     <div class="gc-list">${items.join('')||'<span class="ml-note">No rewards attached — this will be a plain message.</span>'}</div>
@@ -41641,7 +41688,7 @@ async function gcLoadCodes(){
       ${c.event_name?`<div class="gc-code-ev">${mlEsc(c.event_name)}</div>`:''}
       <div class="ml-note">🕒 ${mlEsc(win)} · 👥 ${mlEsc(gcAudienceText(c.audience||'all',c.audience_days))}</div>
       <div style="color:#9d93c4;font-size:11px">✉ ${mlEsc(c.subject||'')}</div>
-      <div class="ml-rw">${mlRewardLines(c.rewards).map(l=>`<span>${mlEsc(l)}</span>`).join('')||'<span>no rewards</span>'}</div>
+      <div class="ml-rw">${mlRewardHtml(c.rewards)||'<span>no rewards</span>'}</div>
       <div class="gc-code-act">
         <button class="dk-btn" onclick="gcEditCode(${i})">✎ EDIT</button>
         <button class="dk-btn" onclick="gcCopy(_gc.codes[${i}].code,this)">⧉ COPY CODE</button>
@@ -41736,7 +41783,8 @@ function wgMine(w){ return wgStake(w,wgSide(w)||'host'); }
 function wgTheirs(w){ return wgStake(w,wgSide(w)==='host'?'guest':'host'); }
 function wgPackName(p){ return p.name||(typeof packDisplayName==='function'?packDisplayName(p.kind||'pack',p.type||'basic',p.setId||'base_set'):(p.type+' pack')); }
 function wgPacksText(list){ return (list||[]).map(p=>(p.qty||1)+'× '+wgPackName(p)).join(', '); }
-function wgStakeText(s){ const bits=[]; if(s.cel) bits.push(wgFmt(s.cel)+' 💠'); if(s.packs.length) bits.push(wgPacksText(s.packs)); return bits.join(' + ')||'nothing'; }
+function wgStakeHtml(s){ const bits=[]; if(s.cel) bits.push(wgFmt(s.cel)+' '+rwIco('celestium')); (s.packs||[]).forEach(p=>bits.push(rwIco(p.kind==='box'?'box':'pack',p.setId)+' '+(p.qty||1)+'× '+wgEsc(wgPackName(p)))); return bits.join(' + ')||'nothing'; }   // build 10.63
+function wgStakeText(s){ const bits=[]; if(s.cel) bits.push(wgFmt(s.cel)+' Celestium'); if(s.packs.length) bits.push(wgPacksText(s.packs)); return bits.join(' + ')||'nothing'; }
 function wgHasStakes(w){ return !!w&&((Number(w.host_cel)||0)+(Number(w.guest_cel)||0)>0||(w.host_packs||[]).length>0||(w.guest_packs||[]).length>0||w.host_ok||w.guest_ok); }
 function wgRoomReady(){
   return !!(typeof _onlineRoom!=='undefined'&&_onlineRoom&&_onlineRoom.code&&!(_onlineRoom.is_2v2||_onlineRoom.game_mode==='2v2')
@@ -41811,7 +41859,7 @@ function wgRender(){
         +`<button data-k="${wgEsc(p.key)}" onclick="wgPack(this.dataset.k,-1)" ${(q<=0||locked||_wg.busy)?'disabled':''} aria-label="One less">−</button><b>${q}</b>`
         +`<button data-k="${wgEsc(p.key)}" onclick="wgPack(this.dataset.k,1)" ${(q>=p.have||locked||_wg.busy)?'disabled':''} aria-label="One more">+</button><i>/${p.have}</i></span></div>`; }).join('')
     :'<div class="wg-none">No sealed packs or boxes.</div>';
-  const theirPacks=th.packs.length?th.packs.map(p=>`<div class="wg-prow"><span>${p.kind==='box'?'📦':'🎴'} ${wgEsc(wgPackName(p))}</span><b>×${p.qty}</b></div>`).join(''):'';
+  const theirPacks=th.packs.length?th.packs.map(p=>`<div class="wg-prow"><span>${rwIco(p.kind==='box'?'box':'pack',p.setId)} ${wgEsc(wgPackName(p))}</span><b>×${p.qty}</b></div>`).join(''):'';
   const won=Number(st.won_today)||0, capLeft=Math.max(0,(Number(cfg.dailyCap)||0)-won), prize=wgPrize(th.cel);
   const potEmpty=!(me.cel+th.cel>0||me.packs.length||th.packs.length);
   let action='', status='';
@@ -41831,16 +41879,16 @@ function wgRender(){
       <button class="wg-link" onclick="wgCancel()" ${_wg.busy?'disabled':''}>call it off</button></div>
     <div class="wg-cols">
       <div class="wg-col"><h5><span>YOU PUT UP</span>${me.ok?'<span class="wg-ok">✓ ACCEPTED</span>':''}</h5>
-        <div class="wg-cel"><input type="number" class="admin-input" min="0" max="${Math.min(cfg.maxStake,celAvail)}" step="100" value="${d.cel}" onchange="wgSetCel(this.value)" ${dis} aria-label="Celestium stake"><span>💠</span><span class="wg-none">max ${wgFmt(Math.min(cfg.maxStake,celAvail))}</span></div>
+        <div class="wg-cel"><input type="number" class="admin-input" min="0" max="${Math.min(cfg.maxStake,celAvail)}" step="100" value="${d.cel}" onchange="wgSetCel(this.value)" ${dis} aria-label="Celestium stake"><span>${rwIco('celestium')}</span><span class="wg-none">max ${wgFmt(Math.min(cfg.maxStake,celAvail))}</span></div>
         <div class="wg-chips">${chips}</div>
         <div class="wg-sub">SEALED PACKS · BOXES</div>${packRows}
       </div>
       <div class="wg-col"><h5><span title="${wgEsc(th.name)}">THEY PUT UP</span>${th.ok?'<span class="wg-ok">✓ ACCEPTED</span>':'<span class="wg-wait">DECIDING…</span>'}</h5>
-        <div class="wg-theirs">${th.cel?wgFmt(th.cel)+' 💠':(th.packs.length?'':'<span class="wg-none">Nothing yet</span>')}</div>${theirPacks}
+        <div class="wg-theirs">${th.cel?wgFmt(th.cel)+' '+rwIco('celestium'):(th.packs.length?'':'<span class="wg-none">Nothing yet</span>')}</div>${theirPacks}
       </div>
     </div>
-    <div class="wg-odds">If you win: <b class="win">+${wgFmt(prize)} 💠</b>${th.packs.length?' + '+wgEsc(wgPacksText(th.packs)):''} <span class="wg-none">(your own stake comes back too)</span><br>
-      If you lose: <b class="lose">${me.cel||me.packs.length?'−'+wgEsc(wgStakeText(me)):'nothing'}</b> · Won today: ${wgFmt(won)} / ${wgFmt(cfg.dailyCap)}${prize>capLeft?' <b class="lose">— over your daily cap</b>':''}</div>
+    <div class="wg-odds">If you win: <b class="win">+${wgFmt(prize)} ${rwIco('celestium')}</b>${th.packs.length?' + '+wgEsc(wgPacksText(th.packs)):''} <span class="wg-none">(your own stake comes back too)</span><br>
+      If you lose: <b class="lose">${me.cel||me.packs.length?'−'+wgStakeHtml(me):'nothing'}</b> · Won today: ${wgFmt(won)} / ${wgFmt(cfg.dailyCap)}${prize>capLeft?' <b class="lose">— over your daily cap</b>':''}</div>
     <div class="wg-actions">${action}<span class="wg-status">${status}</span></div>
     ${_wg.msg?`<div class="wg-err">${wgEsc(_wg.msg)}</div>`:''}
   </div>`;
@@ -41944,19 +41992,19 @@ function wgOnMatchStart(room){
       if(typeof renderAll==='function') renderAll(); } }catch(e){} },1800); })();
   _wg.pingT=setInterval(()=>{ if(_wg.live&&G&&G.onlineMode&&!G.gameOver) wgRpc('wager_ping',{p_id:_wg.live.id}); else { clearInterval(_wg.pingT); _wg.pingT=null; } },120000);
 }
-function wgWinLine(text,color){
+function wgWinLine(text,color,html){
   const modal=document.getElementById('win-modal');
   if(!modal||!modal.classList.contains('open')){ if(typeof mlToast==='function') mlToast(text); return; }
   let el=document.getElementById('win-wager');
   if(!el){ const cel=document.getElementById('win-celestium'); el=document.createElement('div'); el.id='win-wager';
     el.style.cssText='margin:6px auto 0;max-width:380px;font-size:11px;line-height:1.5;letter-spacing:.3px;text-align:center';
     if(cel&&cel.parentNode) cel.parentNode.insertBefore(el,cel.nextSibling); else modal.appendChild(el); }
-  el.style.color=color||'#c4c0dc'; el.textContent=text;
+  el.style.color=color||'#c4c0dc'; if(html) el.innerHTML=text; else el.textContent=text;
 }
 function wgShowOutcome(w){
   if(!w) return; const th=wgTheirs(w);
   if(w.status==='settled'){
-    if(w.winner_id===_celUserId) wgWinLine(`⚖ Wager won: +${wgFmt(w.profit_cel)} 💠${th.packs.length?' + '+wgPacksText(th.packs):''}, with your own stake back. It lands in your mailbox and is claimed automatically.`,'#fbbf24');
+    if(w.winner_id===_celUserId) wgWinLine(`⚖ Wager won: +${wgFmt(w.profit_cel)} ${rwIco('celestium')}${th.packs.length?' + '+wgEsc(wgPacksText(th.packs)):''}, with your own stake back. It lands in your mailbox and is claimed automatically.`,'#fbbf24',true);
     else wgWinLine(`⚖ Wager lost — your stake goes to ${th.name}.`,'#fca5a5');
     wgClaimSoon();
   } else if(w.status==='disputed') wgWinLine('⚖ Both players claimed the win, so an admin will review this wager. Both stakes stay held until then.','#fbbf24');
@@ -41995,7 +42043,7 @@ async function wgAutoClaim(){
   try{ for(const m of list){
     const tag=m.attachments.wager_tag||'', bet=/^bet_/.test(tag), pay=tag==='payout'||tag==='bet_payout';
     const ok=await mlClaim(m.id,{quiet:!pay,title:bet?'BET WON':'WAGER WON',sub:bet?'Your share of the watcher bets':'Winnings from your wagered match',src:pay?(bet?'Bet winnings':'Wager winnings'):(bet?'Bet refund':'Wager refund')});
-    if(ok&&!pay&&typeof mlToast==='function') mlToast((bet?'🎲 Bet refunded: ':'⚖ Wager stake returned: ')+mlRewardLines(m.attachments).join(' · '));
+    if(ok&&!pay&&typeof mlToast==='function') mlToast((bet?'🎲 Bet refunded: ':'⚖ Wager stake returned: ')+mlRewardHtml(m.attachments,' · '));
   } }finally{ _wg.claiming=false; }
 }
 async function wgLeaveRoom(){ const w=_wg.cur; if(w&&['open','locked'].includes(w.status)){ const r=await wgRpc('wager_cancel',{p_id:w.id}); wgAdopt(r); wgNotify(); } wgReset(); }
@@ -42013,14 +42061,14 @@ async function wgOpenHistory(){
   if(_wg.missing||(err&&/function|schema cache/i.test(err))){ body.innerHTML='<div class="ml-empty">Wagers aren\'t set up on the server yet.</div>'; return; }
   const cfg=wgCfg(), g=st&&st.gate;
   const gate=g?(g.unlocked?'<span style="color:#86efac">✓ Unlocked</span>':`🔒 Unlocks at Level ${g.needLevel} + ${g.needOnline} online matches — you: Level ${g.level}, ${Math.min(g.online,g.needOnline)}/${g.needOnline}`):'';
-  const head=`<div class="wg-hist-head"><div>${gate}</div><div>Won today: <b>${wgFmt(st&&st.won_today)}</b> / ${wgFmt(cfg.dailyCap)} 💠 · resets at 00:00 UTC</div>
-    <div class="wg-none">Stakes: up to ${wgFmt(cfg.maxStake)} 💠 a side plus any sealed packs or boxes · ${cfg.housePct}% house cut on Celestium won.</div></div>`;
+  const head=`<div class="wg-hist-head"><div>${gate}</div><div>Won today: <b>${wgFmt(st&&st.won_today)}</b> / ${wgFmt(cfg.dailyCap)} ${rwIco('celestium')} · resets at 00:00 UTC</div>
+    <div class="wg-none">Stakes: up to ${wgFmt(cfg.maxStake)} ${rwIco('celestium')} a side plus any sealed packs or boxes · ${cfg.housePct}% house cut on Celestium won.</div></div>`;
   const chip=(w)=>{ const mine=w.winner_id===_celUserId;
     if(w.status==='settled') return mine?`<span class="wg-tag win">WON +${wgFmt(w.profit_cel)}</span>`:'<span class="wg-tag lose">LOST</span>';
     return {open:'<span class="wg-tag">SETTING UP</span>',locked:'<span class="wg-tag">LOCKED</span>',live:'<span class="wg-tag">IN PROGRESS</span>',disputed:'<span class="wg-tag warn">UNDER REVIEW</span>',void:'<span class="wg-tag">VOID · REFUNDED</span>',cancelled:'<span class="wg-tag">CALLED OFF</span>'}[w.status]||w.status; };
   const list=rows.length?rows.map(w=>{ const me=wgMine(w), th=wgTheirs(w);
       return `<div class="wg-hrow"><div class="wg-hwho">vs <b>${wgEsc(th.name)}</b><span class="wg-none"> · ${typeof mlWhen==='function'?mlWhen(w.created_at):''}</span></div>
-        <div class="wg-hst">You: ${wgEsc(wgStakeText(me))}<br>Them: ${wgEsc(wgStakeText(th))}</div><div>${chip(w)}</div></div>`; }).join('')
+        <div class="wg-hst">You: ${wgStakeHtml(me)}<br>Them: ${wgStakeHtml(th)}</div><div>${chip(w)}</div></div>`; }).join('')
     :'<div class="ml-empty">No wagers yet. Open a private room and add one from the waiting room.</div>';
   body.innerHTML=head+`<div class="wg-hist">${list}</div>`;
   if(typeof grHistoryInto==='function') grHistoryInto(body);
@@ -42763,7 +42811,7 @@ function grRenderBets(){
     if(seated&&pv&&s.phase!=='wait'){   // the two players see the pot, not the bet buttons
       const tot=(+pv.pot_host||0)+(+pv.pot_guest||0);
       if(tot>0){ const ms=pv.host_id===me?'host':'guest', os=ms==='host'?'guest':'host';
-        body=`<div class="gr-h">🎲 WATCHER BETS <span class="gr-dim">· pot ${fmt(tot)} 💠</span></div><div class="gr-dim">${fmt(pv['pot_'+ms])} 💠 on you (${pv['n_'+ms]||0}) · ${fmt(pv['pot_'+os])} 💠 on ${prEsc(pv[os+'_name'])} (${pv['n_'+os]||0})</div>`; }
+        body=`<div class="gr-h">🎲 WATCHER BETS <span class="gr-dim">· pot ${fmt(tot)} ${rwIco('celestium')}</span></div><div class="gr-dim">${fmt(pv['pot_'+ms])} ${rwIco('celestium')} on you (${pv['n_'+ms]||0}) · ${fmt(pv['pot_'+os])} ${rwIco('celestium')} on ${prEsc(pv[os+'_name'])} (${pv['n_'+os]||0})</div>`; }
     } else if(!seated&&s.pool&&!pv&&s.phase!=='wait') body='<div class="gr-h">🎲 WATCHER BETS</div><div class="gr-dim">Loading the pot…</div>';
     body=(last?`<div class="gr-h">🎲 YOUR LAST BET</div>${last}`:'')+body;
     if(!body){ box.style.display='none'; grSet(box,''); return; }
@@ -42774,17 +42822,17 @@ function grRenderBets(){
   const hn=pv.host_name||grNm(s.champ), gn=pv.guest_name||grNm(s.chall), mine=pv.mine&&pv.mine.status==='open'?pv.mine:null;
   const est=(side,stake)=>{ let W=side==='host'?H:Gs, L=side==='host'?Gs:H; if(mine){ if(mine.side===side) W-=+mine.cel; else L-=+mine.cel; } W+=stake; return stake+Math.floor(stake*L*(100-cut)/(100*Math.max(1,W))); };
   if(last) body+=`<div class="gr-h">🎲 YOUR LAST BET</div>${last}`;
-  body+=`<div class="gr-h">🎲 WATCHER BETS <span class="gr-dim">· pot ${fmt(tot)} 💠</span></div>
-    <div class="gr-pots"><div class="gr-pot h" style="flex:${Math.max(12,pct)}"><b>${prEsc(hn)}</b><span>${fmt(H)} 💠 · ${pv.n_host||0} bet${pv.n_host==1?'':'s'}</span></div>
-      <div class="gr-pot g" style="flex:${Math.max(12,100-pct)}"><b>${prEsc(gn)}</b><span>${fmt(Gs)} 💠 · ${pv.n_guest||0} bet${pv.n_guest==1?'':'s'}</span></div></div>`;
-  if(mine) body+=`<div class="gr-mybet">Your bet: <b>${fmt(mine.cel)} 💠</b> on <b>${prEsc(mine.side==='host'?hn:gn)}</b> · if they win you get about <b class="win">${fmt(est(mine.side,+mine.cel))} 💠</b></div>`;
+  body+=`<div class="gr-h">🎲 WATCHER BETS <span class="gr-dim">· pot ${fmt(tot)} ${rwIco('celestium')}</span></div>
+    <div class="gr-pots"><div class="gr-pot h" style="flex:${Math.max(12,pct)}"><b>${prEsc(hn)}</b><span>${fmt(H)} ${rwIco('celestium')} · ${pv.n_host||0} bet${pv.n_host==1?'':'s'}</span></div>
+      <div class="gr-pot g" style="flex:${Math.max(12,100-pct)}"><b>${prEsc(gn)}</b><span>${fmt(Gs)} ${rwIco('celestium')} · ${pv.n_guest||0} bet${pv.n_guest==1?'':'s'}</span></div></div>`;
+  if(mine) body+=`<div class="gr-mybet">Your bet: <b>${fmt(mine.cel)} ${rwIco('celestium')}</b> on <b>${prEsc(mine.side==='host'?hn:gn)}</b> · if they win you get about <b class="win">${fmt(est(mine.side,+mine.cel))} ${rwIco('celestium')}</b></div>`;
   if(pv.status==='open'){
     const g=(typeof _wg!=='undefined'&&_wg.st)?_wg.st.gate:null;
     if(_gr.pmsg==='locked'||(g&&!g.unlocked)){ body+=`<div class="gr-dim">🔒 Betting unlocks at <b>Level ${(g&&g.needLevel)||10}</b> and <b>${(g&&g.needOnline)||20} online matches</b>${g?` · you: Level ${g.level} · ${Math.min(g.online,g.needOnline)}/${g.needOnline}`:''}.</div>`; }
     else {
       const chips=[100,500,1000,2500,5000].filter(v=>v<=maxS).map(v=>`<button class="wg-chip" onclick="grBetChip(${v})">${v>=1000?(v/1000)+'K':v}</button>`).join('');
       const dis=_gr.betBusy?'disabled':'';
-      body+=`<div class="gr-betrow"><input id="gr-bet-amt" type="number" class="admin-input" min="1" max="${maxS}" step="100" value="${mine?mine.cel:500}" aria-label="Bet amount in Celestium"><span>💠</span><div class="wg-chips">${chips}</div></div>
+      body+=`<div class="gr-betrow"><input id="gr-bet-amt" type="number" class="admin-input" min="1" max="${maxS}" step="100" value="${mine?mine.cel:500}" aria-label="Bet amount in Celestium"><span>${rwIco('celestium')}</span><div class="wg-chips">${chips}</div></div>
         <div class="gr-betbtns"><button class="wg-btn go" ${dis} onclick="grBet('host')">BET ON ${prEsc(hn).toUpperCase()}</button><button class="wg-btn go" ${dis} onclick="grBet('guest')">BET ON ${prEsc(gn).toUpperCase()}</button>
         ${mine?`<button class="wg-link" ${dis} onclick="grUnbet()">take my bet back</button>`:''}</div>
         <div class="gr-dim">Celestium only · bets close when the match starts · if your player wins you get your bet back plus your share of the other side's bets (${cut}% house cut).</div>`;
@@ -42804,11 +42852,11 @@ function grBetResult(pv){
   const fmt=n=>Number(n||0).toLocaleString(), m=pv.mine, w=pv.winner_id===pv.host_id?pv.host_name:(pv.winner_id===pv.guest_id?pv.guest_name:null);
   if(!m) return '';
   let t='';
-  if(pv.status==='settled') t=m.status==='won'?`🏆 ${prEsc(w||'Your pick')} won — you get <b class="win">${fmt(m.payout)} 💠</b> (+${fmt(m.profit)}). It's claimed from your mailbox automatically.`
-      :m.status==='lost'?`💀 ${prEsc(w||'The other player')} won — your ${fmt(m.cel)} 💠 bet is gone.`:`↩ Nobody bet on the other side, so your ${fmt(m.cel)} 💠 came back.`;
-  else if(['void','cancelled'].includes(pv.status)) t=`↩ That match didn't happen — your ${fmt(m.cel)} 💠 came back.`;
+  if(pv.status==='settled') t=m.status==='won'?`🏆 ${prEsc(w||'Your pick')} won — you get <b class="win">${fmt(m.payout)} ${rwIco('celestium')}</b> (+${fmt(m.profit)}). It's claimed from your mailbox automatically.`
+      :m.status==='lost'?`💀 ${prEsc(w||'The other player')} won — your ${fmt(m.cel)} ${rwIco('celestium')} bet is gone.`:`↩ Nobody bet on the other side, so your ${fmt(m.cel)} ${rwIco('celestium')} came back.`;
+  else if(['void','cancelled'].includes(pv.status)) t=`↩ That match didn't happen — your ${fmt(m.cel)} ${rwIco('celestium')} came back.`;
   else if(pv.status==='disputed') t='⚖ Both players claimed the win — an admin will settle the bets.';
-  else if(pv.status==='live') t=`⏳ Your ${fmt(m.cel)} 💠 on ${prEsc(m.side==='host'?pv.host_name:pv.guest_name)} — waiting for the result…`;
+  else if(pv.status==='live') t=`⏳ Your ${fmt(m.cel)} ${rwIco('celestium')} on ${prEsc(m.side==='host'?pv.host_name:pv.guest_name)} — waiting for the result…`;
   return t?`<div class="gr-dim gr-last-bet">${t}</div>`:'';
 }
 
@@ -42974,7 +43022,7 @@ async function grHistoryInto(body){
   const fmt=n=>Number(n||0).toLocaleString();
   const chip=b=>b.status==='won'?`<span class="wg-tag win">WON +${fmt(b.profit)}</span>`:b.status==='lost'?'<span class="wg-tag lose">LOST</span>':b.status==='refunded'?'<span class="wg-tag">REFUNDED</span>':(b.pool_status==='disputed'?'<span class="wg-tag warn">UNDER REVIEW</span>':'<span class="wg-tag">IN PLAY</span>');
   const html=`<div class="wg-hist-head" style="margin-top:14px"><div><b>🎲 Watcher bets</b></div></div><div class="wg-hist">${r.map(b=>`<div class="wg-hrow"><div class="wg-hwho"><b>${prEsc(b.host_name||'?')}</b> vs <b>${prEsc(b.guest_name||'?')}</b><span class="wg-none"> · ${typeof mlWhen==='function'?mlWhen(b.created_at):''}</span></div>
-    <div class="wg-hst">${fmt(b.cel)} 💠 on ${prEsc(b.side==='host'?b.host_name:b.guest_name)}</div><div>${chip(b)}</div></div>`).join('')}</div>`;
+    <div class="wg-hst">${fmt(b.cel)} ${rwIco('celestium')} on ${prEsc(b.side==='host'?b.host_name:b.guest_name)}</div><div>${chip(b)}</div></div>`).join('')}</div>`;
   body.insertAdjacentHTML('beforeend',html);
 }
 const _grAdm={rows:[]};
@@ -42991,7 +43039,7 @@ async function grAdminPools(){
     const rep=`H: ${w.host_report?prEsc(nm(w,w.host_report)):'—'}<br>G: ${w.guest_report?prEsc(nm(w,w.guest_report)):'—'}`;
     const res=w.status==='settled'?`<br><span style="color:#86efac">→ ${prEsc(nm(w,w.winner_id))} (${prEsc(w.resolved_by||'')}) paid ${fmt(w.paid)} · cut ${fmt(w.house_cut)}</span>`:(w.note?`<br><span class="wg-none">${prEsc(w.note)}</span>`:'');
     return `<tr><td>${typeof mlWhen==='function'?mlWhen(w.created_at):''}<br><span class="wg-none">${prEsc(w.room_code)}</span></td>
-      <td><b style="color:#f0d58a;font-weight:400">${prEsc(w.host_name)}</b> ${fmt(w.pot_host)} 💠<br>${prEsc(w.guest_name)} ${fmt(w.pot_guest)} 💠</td>
+      <td><b style="color:#f0d58a;font-weight:400">${prEsc(w.host_name)}</b> ${fmt(w.pot_host)} ${rwIco('celestium')}<br>${prEsc(w.guest_name)} ${fmt(w.pot_guest)} ${rwIco('celestium')}</td>
       <td><b>${prEsc(String(w.status).toUpperCase())}</b>${res}</td><td>${rep}</td>
       <td style="white-space:nowrap">${open&&w.status!=='open'?`<button class="dk-btn" onclick="grAdminResolve('${w.id}','host')">Pay host side</button> <button class="dk-btn" onclick="grAdminResolve('${w.id}','guest')">Pay guest side</button> `:''}${open?`<button class="dk-btn" onclick="grAdminResolve('${w.id}',null)">Void</button>`:''}</td></tr>`; }).join('');
 }
@@ -43635,7 +43683,7 @@ function evSecretPopup(){
       </div>
       <div class="hs-earn"><div class="hs-lbl">DEFEAT HIM TO EARN</div>
         <div class="hs-cards">${card('harvest_curse_hoc','INSTANT · SECRET RARE',evQty(m,'harvest_curse_hoc'))}${card('oak_ripper_hoc','HERALD · SECRET RARE',evQty(m,'oak_ripper_hoc'))}
-          <div class="hs-cel"><b>+${m.cel}</b><small>CELESTIUM</small></div></div></div>
+          <div class="hs-cel">${rwIco('celestium','','rw-md')}<b>+${m.cel}</b><small>CELESTIUM</small></div></div></div>
       <div class="hs-meta">🍂 ${evEsc(m.n.toUpperCase())} · ${m.prizes} PRIZES · HARD CPU · BOTH SIDES START WITH A HARVEST COURT</div>
       <div class="hs-btns"><button type="button" class="hs-go" onclick="evSecretFace()">⚔ FACE HIM</button><button type="button" class="hs-later" onclick="evSecretClose()">LATER</button></div>
     </div>`;
@@ -43832,7 +43880,7 @@ function evOpenMission(i){
     <div class="hv-pan-b"><h4>${evEsc(m.n)}</h4><div class="hv-foe">VS ${evEsc(m.foe.toUpperCase())} · ${m.prizes} PRIZES · ${({easy:'EASY',medium:'MEDIUM',hard:'HARD'})[m.ai]} CPU</div>
       <p>${evEsc(m.line)}</p>${rules?`<div class="hv-rules">${rules}</div>`:''}
       <div class="hv-lbl">${done?'CLEARED ✓ — REPLAY FOR PRACTICE':'FIRST-CLEAR REWARDS'}</div>
-      <div class="hv-prw">${m.cards.map(c=>`<div>${evThumb(c,{n:evQty(m,c),big:true})}<span>${evQty(m,c)>1?evQty(m,c)+'× ':''}${evEsc(DB[c]?.name||c)}</span></div>`).join('')}<div class="cel"><b>+${m.cel}</b><span>CELESTIUM</span></div>${m.final?`<div>${evCosMini('back_harvest_of_courts')}<span>Card back (clear the Road)</span></div>`:''}</div>
+      <div class="hv-prw">${m.cards.map(c=>`<div>${evThumb(c,{n:evQty(m,c),big:true})}<span>${evQty(m,c)>1?evQty(m,c)+'× ':''}${evEsc(DB[c]?.name||c)}</span></div>`).join('')}<div class="cel"><b>${rwIco('celestium','','rw-md')}+${m.cel}</b><span>CELESTIUM</span></div>${m.final?`<div>${evCosMini('back_harvest_of_courts')}<span>Card back (clear the Road)</span></div>`:''}</div>
       ${open?`<div class="hv-lbl">YOUR DECK</div><div class="hv-decks">${deckHtml}</div>`:`<div class="hv-none">🔒 Clear “${evEsc(EV_MISSIONS[i-1].n)}” first.</div>`}
       <button type="button" class="hv-go" ${can?'':'disabled'} onclick="evFight(${i})">${!live?'THE EVENT HAS ENDED':done?(m.secret?'REPLAY THE BATTLE':'REPLAY MISSION'):(m.secret?'⚔ FACE THE HARVEST KING':'FIGHT')}</button></div></div>`;
   ov.classList.add('on');
@@ -43976,7 +44024,7 @@ function evShowReveal(r){
     if(x.cid){ const vm=VARIANT_META[x.finish]||VARIANT_META.none; const u=getImg(x.cid);
       return `<div class="hv-rv-c${x.finish!=='none'?' holo':''}" style="--k:${k};--acc:${vm.accent}"><div class="hv-rv-img" data-holo="${x.finish}" data-zc="${x.cid}" data-zf="${x.finish}" role="button" tabindex="0" title="Tap to view">${u?`<img src="${u}" alt="">`:''}</div><b>${evEsc(DB[x.cid]?.name||x.cid)}${x.n>1?' ×'+x.n:''}</b><small>${x.roll?(x.finish!=='none'?'✨ '+vm.label.toUpperCase()+'!':'2ND COPY · REGULAR'):vm.label}</small></div>`; }
     if(x.cos){ const it=cosItem(x.cos); return `<div class="hv-rv-c cos" style="--k:${k}">${evCosArt(it)}<b>${evEsc(it?it.name:x.cos)}</b><small>${evEsc((EV_TYPE[it&&it.type]||'Cosmetic').toUpperCase())}</small></div>`; }
-    if(x.cel) return `<div class="hv-rv-c cel" style="--k:${k}"><div class="hv-rv-cel">+${x.cel}</div><b>Celestium</b><small>MISSION REWARD</small></div>`;
+    if(x.cel) return `<div class="hv-rv-c cel" style="--k:${k}"><div class="hv-rv-cel">${rwIco('celestium','','rw-big')}+${x.cel}</div><b>Celestium</b><small>MISSION REWARD</small></div>`;
     return ''; }).join('');
   ov.innerHTML=`<div class="hv-rv"><small>${evEsc(r.sub||'')}</small><h3>${evEsc(r.title)}</h3>${holoHit?'<div class="hv-rv-hit">✨ HOLO PULL ✨</div>':''}<div class="hv-rv-g">${tiles}</div><button type="button" class="hv-go" onclick="evCloseReveal()">COLLECT</button></div>`;
   ov.querySelectorAll('.hv-rv-img[data-holo]').forEach(w=>{ const f=w.dataset.holo; if(f&&f!=='none'&&typeof _applyHoloStyleToWrap==='function') try{ _applyHoloStyleToWrap(w,f); }catch(e){} });
@@ -44150,7 +44198,7 @@ function trSetupHtml(){
     <div class="tr-group"><h4 class="tr-h">YOUR DECK</h4><div class="tr-decks">${deckHtml}</div></div>
   </div><div><div class="tr-panel tr-sum"><h4 class="tr-h">YOUR TRIAL</h4>
     <dl><dt>PATH</dt><dd>${TR_PATHS[S.path].n} · ${TR_PATHS[S.path].f}</dd><dt>RULES</dt><dd>${TR_RULESETS[S.rules].n}</dd><dt>RANK</dt><dd>${TR_TIERS[S.tier].n} · ${TR_TIERS[S.tier].t}</dd><dt>DECK</dt><dd>${d?trEsc(d.name):'—'}</dd>
-    <dt>PAYOUT</dt><dd>${Math.round(30*TR_TIERS[S.tier].m)} Celestium${craftOn()?` + ${Math.round(20*TR_TIERS[S.tier].m)} Court Shards`:''} per win · full clear: +${Math.round(150*TR_TIERS[S.tier].m)}${craftOn()?` / +${Math.round(200*TR_TIERS[S.tier].m)}`:''} and ${S.tier==='lord'?'2 Premium Packs':S.tier==='knight'?'2 Basic Packs':'1 Basic Pack'}</dd></dl>
+    <dt>PAYOUT</dt><dd>${rwIco('celestium')} ${Math.round(30*TR_TIERS[S.tier].m)} Celestium${craftOn()?` + ${rwIco('shards')} ${Math.round(20*TR_TIERS[S.tier].m)} Court Shards`:''} per win · full clear: +${Math.round(150*TR_TIERS[S.tier].m)}${craftOn()?` / +${Math.round(200*TR_TIERS[S.tier].m)}`:''} and ${S.tier==='lord'?'2 Premium Packs':S.tier==='knight'?'2 Basic Packs':'1 Basic Pack'}</dd></dl>
     <button type="button" class="tr-go" ${d?'':'disabled'} onclick="trBegin()">BEGIN THE TRIAL</button>
     <div class="tr-rec">${rec?`Best on this path: <b>${rec.best}</b> win${rec.best===1?'':'s'} · ${rec.clears} clear${rec.clears===1?'':'s'} in ${rec.runs} Trial${rec.runs===1?'':'s'}`:'No Trials on this path yet.'}</div>
   </div></div></div>`;
@@ -44313,7 +44361,7 @@ function trResultHtml(){
   const run=_tr.run, won=run.status==='won', p=run.payout||{cel:0,sh:0};
   const why=won?'You took the High Throne. The Courts bow.':run.abandoned?'You walked away from the Trial.':run.left?`You left the fight at ${trStepName(run.lostAt)} — that counts as a loss.`:`You fell at ${trStepName(run.lostAt)}.`;
   return `<div class="tr-result ${won?'':'lost'}"><div class="tr-ovin"><span class="tr-stamp">${won?'TRIAL COMPLETE':'THE TRIAL ENDS'}</span><p>${why}<br>${trEsc(run.deckName)} · ${TR_PATHS[run.path].n} · ${TR_RULESETS[run.rules].n} · ${TR_TIERS[run.tier].n}</p></div>
-    <div class="tr-pay"><div><b>${run.wins}</b><span>COURTS WON</span></div><div><b>+${(p.cel||0).toLocaleString()}</b><span>CELESTIUM</span></div>${p.sh?`<div><b>+${p.sh.toLocaleString()}</b><span>COURT SHARDS</span></div>`:''}${p.packs?`<div><b>+${p.packs.n}</b><span>${p.packs.type==='premium'?'PREMIUM':'BASIC'} PACK${p.packs.n===1?'':'S'}</span></div>`:''}</div>
+    <div class="tr-pay"><div><b>${run.wins}</b><span>COURTS WON</span></div><div>${rwIco('celestium')}<b>+${(p.cel||0).toLocaleString()}</b><span>CELESTIUM</span></div>${p.sh?`<div>${rwIco('shards')}<b>+${p.sh.toLocaleString()}</b><span>COURT SHARDS</span></div>`:''}${p.packs?`<div>${rwIco('pack')}<b>+${p.packs.n}</b><span>${p.packs.type==='premium'?'PREMIUM':'BASIC'} PACK${p.packs.n===1?'':'S'}</span></div>`:''}</div>
     ${run.boons.length?`<div class="tr-note">Boons this run: ${run.boons.map(k=>TR_BOONS[k].i+' '+TR_BOONS[k].n).join(' · ')}</div>`:''}
     <button type="button" class="tr-go tr-cta" onclick="trNewRun()">BEGIN A NEW TRIAL</button></div>`;
 }
@@ -44610,7 +44658,7 @@ function ltSetupHtml(){
     :'<div class="tr-none">No set has cards yet.</div>';
   const mix=ltMix(S.sets,LT_PACKS[S.format]), hs=ltHeralds(S.sets), D=ltData(), rec=D.rec||{};
   const pay=ltPayTable(), shOn=typeof craftOn==='function'&&craftOn();
-  const payRow=(p,w)=>`<div class="lt-payrow"><b>${w} win${w===1?'':'s'}</b><span>${p.cel} Celestium${shOn&&p.sh?` · ${p.sh} Shards`:''}${p.pk?` · ${p.pk} Basic Pack${p.pk===1?'':'s'}`:''}</span></div>`;
+  const payRow=(p,w)=>`<div class="lt-payrow"><b>${w} win${w===1?'':'s'}</b><span>${rwIco('celestium')} ${p.cel} Celestium${shOn&&p.sh?` · ${rwIco('shards')} ${p.sh} Shards`:''}${p.pk?` · ${rwIco('pack')} ${p.pk} Basic Pack${p.pk===1?'':'s'}`:''}</span></div>`;
   const small=S.sets.length===1&&(sets.find(s=>s.id===S.sets[0])||{}).cards<30;
   const ok=S.sets.length&&hs.length&&!(S.type==='rewards'&&used);
   return `<div class="tr-setup"><div>
@@ -44804,7 +44852,7 @@ function ltResultHtml(){
   const why=top?'Three wins. Your deck held up.':run.abandoned?'You ended the run early.':`Your run ended after ${run.wins+run.losses} fight${run.wins+run.losses===1?'':'s'}.`;
   return `<div class="tr-result ${top?'':'lost'}"><div class="tr-ovin"><span class="tr-stamp">${top?'3 WINS':'RUN OVER'}</span><p>${why}<br>${LT_FORMATS[run.format].n} · ${ltEsc(ltMixText(run.mix))} · ${LT_RUNS[run.type].n}</p></div>
     <div class="tr-pay"><div><b>${run.wins}</b><span>WINS</span></div><div><b>${run.losses}</b><span>LOSSES</span></div>
-      ${p?`<div><b>+${(p.cel||0).toLocaleString()}</b><span>CELESTIUM</span></div>${p.sh?`<div><b>+${p.sh}</b><span>COURT SHARDS</span></div>`:''}${p.pk?`<div><b>+${p.pk}</b><span>BASIC PACK${p.pk===1?'':'S'}</span></div>`:''}`:'<div><b>—</b><span>PRACTICE · NO REWARDS</span></div>'}</div>
+      ${p?`<div>${rwIco('celestium')}<b>+${(p.cel||0).toLocaleString()}</b><span>CELESTIUM</span></div>${p.sh?`<div>${rwIco('shards')}<b>+${p.sh}</b><span>COURT SHARDS</span></div>`:''}${p.pk?`<div>${rwIco('pack')}<b>+${p.pk}</b><span>BASIC PACK${p.pk===1?'':'S'}</span></div>`:''}`:'<div><b>—</b><span>PRACTICE · NO REWARDS</span></div>'}</div>
     ${p&&p.lock?'<div class="tr-note">Rewards weren\'t paid: the economy lock is on.</div>':''}
     <div class="tr-note">The cards were borrowed for this run and go back now.</div>
     <button type="button" class="tr-go tr-cta" onclick="ltNewRun()">NEW RUN</button></div>`;
@@ -45007,7 +45055,7 @@ function arcRewardItems(F){ const R=F.reward||{}, out=[];
 function arcTowerHtml(T,D){
   const rows=T.floors.map((F,i)=>{
     const open=arcFloorOpen(T,i,D), done=!!D.cleared[T.id+':'+i], boss=!!F.boss;
-    const rw=arcRewardItems(F).map(x=>x.cid?`<img src="${getImg(x.cid)||''}" alt="" loading="lazy" data-zc="${x.cid}" data-zf="${x.finish}" title="${evEsc((DB[x.cid]?.name||x.cid)+' · '+(VARIANT_META[x.finish]||VARIANT_META.none).label)}">`:x.cel?`<span>+${x.cel} CEL</span>`:`<span>+${x.lv} LEVELS</span>`).join('');
+    const rw=arcRewardItems(F).map(x=>x.cid?`<img src="${getImg(x.cid)||''}" alt="" loading="lazy" data-zc="${x.cid}" data-zf="${x.finish}" title="${evEsc((DB[x.cid]?.name||x.cid)+' · '+(VARIANT_META[x.finish]||VARIANT_META.none).label)}">`:x.cel?`<span>${rwIco('celestium')} +${x.cel}</span>`:`<span>+${x.lv} LEVELS</span>`).join('');
     return `<button type="button" class="ar-fl${boss?' boss':''}" data-fl="${i}" ${open?`onclick="arcOpenFloor('${T.id}',${i})"`:'disabled'}><span class="no">FLOOR ${ARC_ROMAN[i]}${boss?' · BOSS':''}</span>
       <div class="pt" style="background-image:url('${getImg(F.pt)||''}')"></div>
       <div class="bd"><b>${evEsc(F.n)} — ${evEsc(F.title)}</b><em>VS ${evEsc(F.foe.toUpperCase())} · ${ARC_AI[F.ai]} CPU · ${F.prizes} PRIZES</em><div class="rw">${rw}</div></div>
@@ -45035,7 +45083,7 @@ function arcOpenFloor(tid,i){
   const rules=(F.rules||[]).map(r=>`<div class="ar-rule">${r.i} <b>${evEsc(r.n)}</b> — ${evEsc(r.t)}</div>`).join('');
   const prw=arcRewardItems(F).map(x=>{ if(x.cid){ const vm=VARIANT_META[x.finish]||VARIANT_META.none;
       return `<div><div class="im" data-zc="${x.cid}" data-zf="${x.finish}" role="button" tabindex="0" title="Tap to view"><img src="${getImg(x.cid)||''}" alt="" loading="lazy"></div>${evEsc(DB[x.cid]?.name||x.cid)}<em style="color:${vm.accent}">${vm.label.toUpperCase()}${x.ex?' · EXCLUSIVE':''}</em></div>`; }
-    if(x.cel) return `<div><div class="big ar-big-cel">+${x.cel}</div>Celestium</div>`;
+    if(x.cel) return `<div><div class="big ar-big-cel">${rwIco('celestium')}+${x.cel}</div>Celestium</div>`;
     return `<div><div class="big ar-big-lv">+${x.lv}</div>Levels</div>`; }).join('');
   const deckHtml=decks.length?decks.map(d=>{ const h=d.cards.find(id=>DB[id]&&DB[id].type==='herald'); const img=h&&getImg(h);
       return `<button type="button" class="ar-deck${_arc.deck===d.id?' on':''}" onclick="arcPickDeck('${d.id}')">${img?`<img src="${img}" alt="" loading="lazy">`:'<span>🂠</span>'}<div><b>${evEsc(d.name)}</b><small>${d.preset?'STARTER':'60 CARDS'}</small></div></button>`; }).join('')
@@ -45261,7 +45309,7 @@ function arcShowReveal(title,sub,items,note){
   const tiles=(items||[]).map((x,k)=>{
     if(x.cid){ const vm=VARIANT_META[x.finish]||VARIANT_META.none;
       return `<div class="c" style="--k:${k};--acc:${vm.accent}"><div class="im" data-holo="${x.finish}" data-zc="${x.cid}" data-zf="${x.finish}" role="button" tabindex="0" title="Tap to view"><img src="${getImg(x.cid)||''}" alt=""></div><b>${evEsc(DB[x.cid]?.name||x.cid)}${x.n>1?' ×'+x.n:''}</b><em>${vm.label.toUpperCase()}${x.ex?' · EXCLUSIVE':''}</em></div>`; }
-    if(x.cel) return `<div class="c" style="--k:${k};--acc:#fbbf24"><div class="big ar-big-cel">+${x.cel}</div><b>Celestium</b><em>REWARD</em></div>`;
+    if(x.cel) return `<div class="c" style="--k:${k};--acc:#fbbf24"><div class="big ar-big-cel">${rwIco('celestium')}+${x.cel}</div><b>Celestium</b><em>REWARD</em></div>`;
     return `<div class="c" style="--k:${k};--acc:#22d3ee"><div class="big ar-big-lv">+${x.lv}</div><b>Levels</b><em>LEVEL UP</em></div>`; }).join('');
   ov.innerHTML=`<div class="rv"><small>${evEsc(sub||'')}</small><h3>${evEsc(title)}</h3><div class="g">${tiles}</div>${note?`<div class="note">${evEsc(note)}</div>`:''}<button type="button" class="ar-go" style="max-width:320px" onclick="arcCloseReveal()">COLLECT</button></div>`;
   ov.querySelectorAll('.im[data-holo]').forEach(w=>{ const f=w.dataset.holo; if(f&&f!=='none'&&typeof _applyHoloStyleToWrap==='function') try{ _applyHoloStyleToWrap(w,f); }catch(e){} });
@@ -45417,7 +45465,7 @@ function bp3Thumb(r,pg,big){
   if(r.type==='card'){ const u=getImg(r.cid); return u?`<img src="${u}" alt="" loading="lazy">`:'<span class="em">🎴</span>'; }
   if(r.type==='celestium') return `<img src="${BP3_CEL}" alt="" style="width:70%">`;
   if(r.type==='shards') return `<img src="${typeof CS_ICON!=='undefined'?CS_ICON:''}" alt="" style="width:62%">`;
-  if(r.type==='pack') return `<img src="${typeof PACK_ART!=='undefined'?PACK_ART:''}" alt="">`;
+  if(r.type==='pack') return `<img src="${rwArt('pack',r.setId||'base_set')}" alt="">`;
   const c=r.cos||{};
   if(c.type==='back'||c.type==='mat') return c.img?`<img src="${c.img}" alt="" loading="lazy" style="${c.type==='mat'?'width:100%;height:60%;object-fit:cover':'height:100%;aspect-ratio:63/88;object-fit:cover'}">`:'<span class="em">🂠</span>';
   if(c.type==='frame') return `<div class="mini-ring" style="--r1:${(c.ring||['#e8c570'])[0]};--r2:${(c.ring||['#e8c570','#e8c57088'])[1]}"></div>`;
@@ -45430,7 +45478,7 @@ function bp3Art(r,pg){
   if(r.type==='card'){ const u=getImg(r.cid); return `<div class="card">${u?`<img src="${u}" alt="">`:''}${r.finish&&r.finish!=='none'?'<i class="holo"></i>':''}</div>`; }
   if(r.type==='celestium') return `<img class="coin" src="${BP3_CEL}" alt=""><b class="amt b3-f">+${(+r.amount||0).toLocaleString()}</b>`;
   if(r.type==='shards') return `<img class="coin" src="${typeof CS_ICON!=='undefined'?CS_ICON:''}" alt=""><b class="amt b3-f">+${(+r.amount||0).toLocaleString()}</b>`;
-  if(r.type==='pack') return `<img class="pack" src="${typeof PACK_ART!=='undefined'?PACK_ART:''}" alt=""><b class="amt b3-f">×${+r.amount||1}</b>`;
+  if(r.type==='pack') return `<img class="pack" src="${rwArt('pack',r.setId||'base_set')}" alt=""><b class="amt b3-f">×${+r.amount||1}</b>`;
   const c=r.cos||{};
   if(c.type==='back') return c.img?`<img class="back" src="${c.img}" alt="">`:'';
   if(c.type==='mat') return `<div class="mat" style="background-image:url('${c.img||''}')"></div>`;
