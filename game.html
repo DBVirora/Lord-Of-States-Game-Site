@@ -10065,7 +10065,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.60 · Latte, Rebuild Sadala & Void Toll</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.61 · Card Quotes</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -11169,6 +11169,11 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.60'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.61', date:'2026-11-27',
+    rules:["WEB_BUILD '10.61'. GAME_BUILD stays '10.60' (no rules change).",
+      "CARD QUOTES — the line printed under a card's abilities is stored in DB[cid].quote (one field; `flavor` is retired — cardMeta still falls back to c.flavor). All 236 card scans were checked: 16 cards print a quote and all 16 are now in the data. Admin card_meta overrides (Registry editor) still win over the card's own quote.",
+      "Quotes by card: magnus_ssg_bse 'Stand with the Court… or be removed from it.' · magnus_ssb_bse 'The throne does not argue. Neither do I.' · korra_promo · korra_halloween_promo · geo_radar_bse (already in) · NOW FIXED (were `flavor`): virora_surface_pt, saiyan_mage_bse, saiyan_pup_bse, sage_mode_virora_shop, pavi_nisha_team_promo · NOW ADDED: glacynth_fruit_bse \"Grown only in the frost orchards outside Veelden. One bite, and the mind clears like winter air.\", surana_sss_bse \"Don't ever disrespect me again Saiyan...\", vildrex_herald \"I am the strongest in the multiverse..\", zaria_bse 'The Goddess of War', saiyan_blood 'The Saiyan Warriors Are One Of A Kind...', volaris_ssg 'Truly You Must Not Know Royalty.' (copy the exact strings from game.html).",
+      "REGISTRY: the quote now shows once a card is SIGHTED (not only when owned) — it's printed on the card anyway. A card with none says 'NO QUOTE ON THIS CARD'. The RECORD (bio) is still locked until you own a copy: '🔒 SEALED — Register this card (own a copy) to read its record.'"] },
   { build:'10.60', date:'2026-11-26',
     cards:[{id:'vuruna_latte_bse', set:'base_set', number:'080/150', rarity:'uncommon', scan:"Sets/BASE SET/080-150 (Vuruna's Cookies and Cream Blueberry Latte).png", newAbilities:['Midnight Comfort'],
         note:"Vuruna's Cookies and Cream Blueberry Latte · Instant · Uncommon · cost 2 · color 'purple' · subtypes ['Instant','Consumable'] · race 'Consumable' · sym '☕'. Menu art: Main Menu Images/Vurunas Cookies and Cream Blueberry Latte.jpg."},
@@ -12651,7 +12656,7 @@ const DB={
   vermynth_fruit_bse:{id:'vermynth_fruit_bse',rarity:'uncommon',name:'Vermynth Fruit',color:'green',charName:'Vermynth Fruit',subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:4,atk:0,hp:0,sym:'🥝',setId:'base_set',cardNumber:'076/150',nextForms:[],
     abilities:[{label:'Vermynth Fruit',type:'instant',cost:0,text:'Heals one of your characters on the field for 4 HP while also adding 2 ATK Power.'}],transforms:[]},
   // ── GLACYNTH FRUIT — BSE Instant (Consumable). BLUE (protection + status cleanse). 077/150 Common. build 10.42
-  glacynth_fruit_bse:{id:'glacynth_fruit_bse',rarity:'common',name:'Glacynth Fruit',color:'blue',charName:'Glacynth Fruit',subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:1,atk:0,hp:0,sym:'❄️',setId:'base_set',cardNumber:'077/150',nextForms:[],
+  glacynth_fruit_bse:{id:'glacynth_fruit_bse',quote:"Grown only in the frost orchards outside Veelden. One bite, and the mind clears like winter air.",rarity:'common',name:'Glacynth Fruit',color:'blue',charName:'Glacynth Fruit',subtypes:['Instant','Consumable'],type:'instant',race:'Consumable',cost:1,atk:0,hp:0,sym:'❄️',setId:'base_set',cardNumber:'077/150',nextForms:[],
     abilities:[{label:'Frostbloom Ward',type:'instant',cost:0,text:"Choose one of your characters. Remove Freeze and Confusion from it. It can't be targeted by opposing abilities until your next turn."}],transforms:[]},
   // ── MAGNUS (Base) — BSE transform-line starter (Royal • Saiyan). BLUE (control). 022/150 Common.
   magnus_base_bse:{id:'magnus_base_bse',rarity:'common',name:'Magnus',color:'blue',charName:'Magnus',charLine:'magnus',formTier:'base',subtypes:['Royal','Saiyan'],type:'base_char',race:'Royal Saiyan',cost:3,atk:2,hp:2,sym:'MAG',setId:'base_set',cardNumber:'022/150',canAttackLocations:true,nextForms:['ssj1','ssg'],
@@ -12676,7 +12681,7 @@ const DB={
   //    exclusive:'playtest' → hidden from packs, shop, registry, rules grid, random/AI decks and every
   //    card list unless the viewer is an admin or owns a copy (see cardHiddenFor / isCardPlayable).
   virora_surface_pt:{id:'virora_surface_pt',rarity:'legend',exclusive:'playtest',name:'Virora (Surface Technique)',color:'purple',charName:'Virora',charLine:'virora_surface_pt',subtypes:['Celestial','Saiyan'],type:'char',race:'Celestial Saiyan',cost:9,atk:5,hp:11,sym:'VST',setId:'promo',cardNumber:'PT-001',nextForms:[],
-    flavor:"I usually respect all my opponents but ive been itching to get my hands on you for a long time now.",
+    quote:"I usually respect all my opponents but ive been itching to get my hands on you for a long time now.",
     abilities:[{label:'Pink Horizon',type:'passive',cost:0,text:'When this card is dealt combat damage, the attacker gets -2 Attack until end of their next turn.'},
       {label:'Surface Rasengan',type:'activated',cost:3,limit:'once_per_turn',text:'Deal 3 damage to target opposing character. If this destroys it, Freeze another opposing character. Cost: 3 Energy'},
       {label:'Sadala Roll Call',type:'activated',cost:0,text:'Roll a 3-sided die. If it lands on 2, search your deck for a Saiyan character card, reveal it, and put it into your hand. Shuffle your deck after.'}],transforms:[]},
@@ -12699,7 +12704,7 @@ const DB={
   // ── ZARIA (BSE 127/150) — build 10.18. "The Goddess of War". RED. Standalone Character played from hand (no line).
   //    Combat Mastery: +2 damage when she attacks a character whose printed cost is higher than hers. Tactical Authority: other Prime
   //    characters +1 Attack. Divine Command: 3⚡ once per game — your characters +2/+2 until the end of your turn (fc._dcmd).
-  zaria_bse:{id:'zaria_bse',rarity:'legend',name:'Zaria',color:'red',charName:'Zaria',subtypes:['Prime','God'],type:'char',race:'Prime God',cost:7,atk:7,hp:6,sym:'ZAR',setId:'base_set',cardNumber:'127/150',keywords:[],nextForms:[],quote:'The Goddess of War',
+  zaria_bse:{id:'zaria_bse',quote:'The Goddess of War',rarity:'legend',name:'Zaria',color:'red',charName:'Zaria',subtypes:['Prime','God'],type:'char',race:'Prime God',cost:7,atk:7,hp:6,sym:'ZAR',setId:'base_set',cardNumber:'127/150',keywords:[],nextForms:[],quote:'The Goddess of War',
     abilities:[{label:'Combat Mastery',type:'triggered',cost:0,text:'When this card attacks a character with a higher cost, it deals +2 damage.'},
       {label:'Tactical Authority',type:'passive',cost:0,text:'Your other Prime characters get +1 Attack.'},
       {label:'Divine Command',type:'activated',cost:3,limit:'once_per_game',text:'Pay 3 Energy: Your characters get +2 Attack and +2 Health until the end of your turn. (Once per game)'}]},
@@ -12721,7 +12726,7 @@ const DB={
       {label:"Death's Offering",type:'triggered',cost:0,text:'When you sacrifice this card, choose one of your other characters. It gets +3/+2 until it leaves the field.'}]},
   // ── SURANA (SSS) "Super Saiyan Scarlet" (BSE 030/150) — build 10.18. Surana's form after SSG (god path; Surana has no SSB).
   //    BLACK. noTapOnAbility: Blood Rite is free but must not tap her, or its +3 Attack could never be used.
-  surana_sss_bse:{id:'surana_sss_bse',rarity:'legend',name:'Surana (SSS)',color:'black',charName:'Surana',charLine:'surana',formTier:'sss',path:'god',transformOnly:true,noTapOnAbility:true,subtypes:['Omega','Celestial','Saiyan God'],type:'char',race:'Omega Celestial Saiyan',cost:10,atk:12,hp:9,sym:'SURSSS',setId:'base_set',cardNumber:'030/150',keywords:[],nextForms:[],
+  surana_sss_bse:{id:'surana_sss_bse',quote:"Don't ever disrespect me again Saiyan...",rarity:'legend',name:'Surana (SSS)',color:'black',charName:'Surana',charLine:'surana',formTier:'sss',path:'god',transformOnly:true,noTapOnAbility:true,subtypes:['Omega','Celestial','Saiyan God'],type:'char',race:'Omega Celestial Saiyan',cost:10,atk:12,hp:9,sym:'SURSSS',setId:'base_set',cardNumber:'030/150',keywords:[],nextForms:[],
     abilities:[{label:'Scarlet Siphon',type:'triggered',cost:0,text:'Whenever this card deals combat damage to a character, that character gets −2 Attack and this card heals 2.'},
       {label:'Blood Rite',type:'activated',cost:0,limit:'once_per_turn',text:'Flip a coin, if tails you may sacrifice one of your other characters: If you do this card gets +3 Attack until the end of your turn and heals 3 damage. (Once per turn)'},
       {label:'Crimson Cataclysm',type:'activated',cost:5,limit:'once_per_game',text:'Pay 5 Energy: Deal 3 damage to each opponent character. (Once per game)'}]},
@@ -12929,13 +12934,13 @@ const DB={
   // ── SAIYAN MAGE (BSE 048/150) — build 10.51. Purple Uncommon. Nebula Snare: on entry, coin flip → heads: Confuse a target foe.
   //    Arcane Ascension: the first transformation its controller plays each turn costs 1 less (transformCostFor; pl._tfPlayTurn).
   saiyan_mage_bse:{id:'saiyan_mage_bse',rarity:'uncommon',name:'Saiyan Mage',color:'purple',charName:'Saiyan Mage',subtypes:['Saiyan','Mage'],type:'char',race:'Saiyan',cost:4,atk:3,hp:4,sym:'MAGE',setId:'base_set',cardNumber:'048/150',keywords:[],nextForms:[],
-    flavor:'Every Saiyan fights with their fists. I fight with the stars.',
+    quote:'Every Saiyan fights with their fists. I fight with the stars.',
     abilities:[{label:'Nebula Snare',type:'triggered',cost:0,text:'When this card enters your field, flip a coin. If heads, target opposing character becomes Confused.'},
       {label:'Arcane Ascension',type:'passive',cost:0,text:'The first transformation you play each turn costs 1 less Energy.'}],transforms:[]},
   // ── SAIYAN PUP (BSE 053/150) — build 10.51. Yellow Common. Zoomies = Burst Speed. Fetch: when it attacks, if you control another
   //    Saiyan character, draw 1 (triggerFetch from the shared on-attack hook triggerFlameSpiral).
   saiyan_pup_bse:{id:'saiyan_pup_bse',rarity:'common',name:'Saiyan Pup',color:'yellow',charName:'Saiyan Pup',subtypes:['Beast','Saiyan'],type:'char',race:'Beast Saiyan',cost:2,atk:2,hp:1,sym:'PUP',setId:'base_set',cardNumber:'053/150',keywords:['burst_speed'],nextForms:[],
-    flavor:"Planet Sadala's friendliest K9. First to every fight, last to stop wagging.",
+    quote:"Planet Sadala's friendliest K9. First to every fight, last to stop wagging.",
     abilities:[{label:'Zoomies',type:'passive',cost:0,text:'Burst Speed (this card can attack the turn it enters your field).'},
       {label:'Fetch',type:'triggered',cost:0,text:'When this card attacks, if you control another Saiyan character, draw 1 card.'}],transforms:[]},
   // ── TWIN TORNADOES (BSE 088/150) — build 10.51. Instant, Red Common. Rending Gale: 2 damage to each of up to two target foes.
@@ -12957,7 +12962,7 @@ const DB={
   //    Sage Stillness (start of turn: didn't attack last turn → +1 Energy) · Surface Palm (3⚡ once per turn: 3 damage, −2 Attack
   //    until the end of your next turn) · Mirror of Nature (5⚡ once per game: use another character's activated ability for free).
   sage_mode_virora_shop:{id:'sage_mode_virora_shop',rarity:'legend',name:'Sage Mode Virora (Surface Technique)',color:'purple',charName:'Virora',charLine:'sage_mode_virora_shop',subtypes:['Royal','Saiyan','Celestial Sage'],type:'char',race:'Royal Saiyan',cost:7,atk:7,hp:6,sym:'SMV',setId:'shop',cardNumber:'SHOP',keywords:[],nextForms:[],
-    flavor:"So this is what it feels like... nature's Ki and the Surfacer's power, flowing through me as one.",
+    quote:"So this is what it feels like... nature's Ki and the Surfacer's power, flowing through me as one.",
     abilities:[{label:'Sage Stillness',type:'passive',cost:0,text:"At the start of your turn, if this card didn't attack during your last turn, gain 1 Energy."},
       {label:'Surface Palm',type:'activated',cost:3,limit:'once_per_turn',text:'Pay 3 Energy: Deal 3 damage to target opposing character. It gets −2 Attack until the end of your next turn. (Once per turn)'},
       {label:'Mirror of Nature',type:'activated',cost:5,limit:'once_per_game',text:"Pay 5 Energy: Choose another character's activated ability that isn't Once per game. Use it now without paying its Energy cost. (Once per game)"}],transforms:[]},
@@ -13068,7 +13073,7 @@ const DB={
   //    Elemental Lead: Pavi's Lead = Guardian, +3 Health · Nisha's Lead = +2 Attack, Burns the defender
   //    (STANCE_ABILITIES 'Elemental Lead@pavi' / '@nisha'). Twin Bond (killCard → twinBondSearch): Pavi + Nisha from the deck.
   pavi_nisha_team_promo:{id:'pavi_nisha_team_promo',rarity:'mythic',name:'Pavi & Nisha',color:'green',colors:['green','red'],charName:'Pavi & Nisha',subtypes:['Avatar','Bender','Team'],type:'team',race:'Avatar Bender',cost:10,atk:9,hp:9,sym:'P&N',setId:'promo',cardNumber:'PROMO',keywords:[],nextForms:[],exclusive:'arcade',
-    flavor:'The Avatars Of A New Era!',
+    quote:'The Avatars Of A New Era!',
     abilities:[{label:'Twin Avatars',type:'triggered',cost:0,text:'When this card enters your field, and at the start of each of your turns, choose who leads: Pavi or Nisha. The leader stays until your next turn.'},
       {label:'Elemental Lead',type:'passive',cost:0,text:'Pavi leads (Air & Earth): Guardian and +3 Defense. Nisha leads (Fire & Water): +2 Attack, and when this card attacks, the defender is Burned.'},
       {label:'Twin Bond',type:'triggered',cost:0,text:'When this card is destroyed, search your deck for Pavi and Nisha and put them into your hand.'}]},
@@ -13230,7 +13235,7 @@ const DB={
     abilities:[{label:'Entry Draw',type:'triggered',cost:0,text:'When Volaris enters the field: draw 2 cards.'},{label:'Mindful Insight',type:'activated',cost:0,limit:'once_per_turn',text:'Flip coin — Heads: place a Location card from hand free of cost.'}],transforms:['volaris_ssj','volaris_ssg'],path:null},
   volaris_ssj:{id:'volaris_ssj',rarity:'rare',color:'blue',name:'Volaris (SSJ)',charName:'Volaris',subtypes:['Royal Saiyan','Fighter'],type:'char',race:'Royal Saiyan',cost:3,atk:4,hp:4,sym:'VSSJ',transformOnly:true,
     abilities:[{label:'Shining Light',type:'activated',cost:2,limit:'once_per_turn',text:'Search deck for 1 Powerup or Equipment. If another Royal Saiyan on field: pick 2 instead or 1 of each.'},{label:'Equipment Nullifier',type:'passive',cost:0,text:"Opponent's Equipment card abilities are disabled while Volaris (SSJ) is on the field."}],transforms:[],path:'saiyan'},
-  volaris_ssg:{id:'volaris_ssg',rarity:'rare',name:'Volaris (SSG)',color:'blue',charName:'Volaris',subtypes:['Royal Saiyan','Fighter','God'],type:'char',race:'Royal Saiyan',cost:5,atk:6,hp:7,sym:'VSSG',transformOnly:true,
+  volaris_ssg:{id:'volaris_ssg',quote:'Truly You Must Not Know Royalty.',rarity:'rare',name:'Volaris (SSG)',color:'blue',charName:'Volaris',subtypes:['Royal Saiyan','Fighter','God'],type:'char',race:'Royal Saiyan',cost:5,atk:6,hp:7,sym:'VSSG',transformOnly:true,
     abilities:[{label:'God Synergy',type:'triggered',cost:0,text:'If any other Level 2 God Path transformed card is in play by you: draw 2 cards.'},{label:'Instant Search',type:'activated',cost:2,limit:'once_per_turn',text:'Flip coin — Heads: search deck for an Instant card, add to hand. Shuffle deck after.'}],transforms:['volaris_ssb'],path:'god'},
   volaris_ssb:{id:'volaris_ssb',rarity:'legend',name:'Volaris (SSB)',color:'blue',charName:'Volaris',subtypes:['Royal Saiyan','Fighter','God','SSB'],type:'char',race:'Royal Saiyan',cost:7,atk:8,hp:10,sym:'VSSB',transformOnly:true,keywords:['breakthrough'],
     abilities:[{label:'Support Boost',type:'passive',cost:0,text:'If any Support characters you placed are in play: +3 ATK/+4 HP to each char next to this card on field.'},{label:'Token Summon',type:'activated',cost:2,limit:'once_per_turn',text:'Summon 2 Tokens and place them on the field.'}],transforms:[],path:'god'},
@@ -13304,7 +13309,7 @@ const DB={
     abilities:[{label:'Terrain Scan',type:'passive',cost:0,text:'Equipped character can attack Locations.'},
       {label:'Deep Ping',type:'activated',cost:0,text:"Look at the top card of target opponent's deck. Put it back on the bottom of their deck."}],transforms:[]},
   // ── INSTANT ──
-  saiyan_blood:{id:'saiyan_blood',rarity:'rare',color:'red',name:'Saiyan Blood',charName:'Saiyan Blood',subtypes:['Instant','Saiyan'],type:'instant',race:'Instant',cost:2,atk:0,hp:0,sym:'🩸',
+  saiyan_blood:{id:'saiyan_blood',quote:'The Saiyan Warriors Are One Of A Kind...',rarity:'rare',color:'red',name:'Saiyan Blood',charName:'Saiyan Blood',subtypes:['Instant','Saiyan'],type:'instant',race:'Instant',cost:2,atk:0,hp:0,sym:'🩸',
     abilities:[{label:'Saiyan Fortify',type:'activated',cost:0,text:'Attach to a Fighter: +2 DEF. If Fighter is Saiyan (any subtype): +3 DEF instead. Can be used as attachment for Lazarus transform cost reduction.'}],transforms:[]},
 
   nature_focus:{id:'nature_focus',rarity:'uncommon',setId:'base_set',cardNumber:'070/150',color:'yellow',name:'Nature Focus',charName:'Nature Focus',subtypes:['Ability'],type:'instant',race:'Ability',cost:0,atk:0,hp:0,sym:'🍃',
@@ -13518,7 +13523,7 @@ const DB={
   //    Void Gate: once per turn, after one of your characters attacks, you may pay 2⚡ → another character that hasn't attacked may attack.
   //    Void Collapse: 5⚡, once per game — an opposing character with a printed cost of 4 or less goes to the Rift.
   //    Arch-Nemesis: Vildrex and your characters deal +1 damage to Saiyan characters (dealDamage → archNemesisBonus).
-  vildrex_herald:{id:'vildrex_herald',rarity:'mythic',name:'Vildrex',type:'herald',race:'Void Celestial',cost:0,atk:12,hp:12,sym:'👑',subtypes:['Void','Celestial'],color:'purple',keywords:[],
+  vildrex_herald:{id:'vildrex_herald',quote:"I am the strongest in the multiverse..",rarity:'mythic',name:'Vildrex',type:'herald',race:'Void Celestial',cost:0,atk:12,hp:12,sym:'👑',subtypes:['Void','Celestial'],color:'purple',keywords:[],
     heraldFlip:null,autoFlip:false,setId:'base_set',cardNumber:'149/150',
     abilities:[
       {type:'triggered',label:'Void Gate',cost:2,text:"Once per turn, after one of your characters attacks, you may pay 2 Energy. If you do, another of your characters that hasn't attacked this turn may attack."},
@@ -27479,7 +27484,7 @@ async function saveCardMeta(){
 }
 function cardMeta(cid){
   const c=DB[cid]||{}; const m=_cardMeta[cid]||{};
-  return { number:m.number||c.cardNumber||'', setId:getCardSet(cid), rarity:m.rarity||c.rarity||'common', name:m.name||c.name||cid, quote:m.quote||c.quote||'', bio:m.bio||c.bio||c.lore||'' };
+  return { number:m.number||c.cardNumber||'', setId:getCardSet(cid), rarity:m.rarity||c.rarity||'common', name:m.name||c.name||cid, quote:m.quote||c.quote||c.flavor||'', bio:m.bio||c.bio||c.lore||'' };
 }
 function cardNumberSort(n){ const m=String(n||'').match(/(\d+)/); return m?parseInt(m[1],10):9999; }
 
@@ -27579,11 +27584,11 @@ function registrySelect(cid,quiet){
     h+=`<div class="reg-sealed">This card has not been sighted.<br><br>FOUND IN: ${(setLabel(getCardSet(cid))||'Promo').toUpperCase()} PACKS<br>Play against it or pull it to add it to the Registry.</div>`;
   } else {
     if(c.type!=='energy_card'&&c.type!=='instant'&&c.type!=='equipment') h+=`<div class="reg-stats"><span>⚡ ${c.cost||0}</span><span>⚔ ${c.atk||0}</span><span>♥ ${c.hp||0}</span></div>`; else h+=`<div class="reg-stats"><span>⚡ ${c.cost||0}</span></div>`;
+    h+=m.quote?`<div class="reg-quote">❝ ${escapeHtml(m.quote)} ❞</div>`:`<div class="reg-quote empty">NO QUOTE ON THIS CARD</div>`;   // build 10.61: shown once sighted
     if(st==='registered'){
-      h+=m.quote?`<div class="reg-quote">❝ ${escapeHtml(m.quote)} ❞</div>`:`<div class="reg-quote empty">NO QUOTE RECORDED YET</div>`;
       h+=`<div class="reg-sec">RECORD</div><div class="reg-bio">${m.bio?escapeHtml(m.bio).replace(/\n/g,'<br>'):'<span style="color:#6b7280">No record written for this card yet.</span>'}</div>`;
     } else {
-      h+=`<div class="reg-sealed">🔒 SEALED — Register this card (own a copy) to read its quote and record.</div>`;
+      h+=`<div class="reg-sealed">🔒 SEALED — Register this card (own a copy) to read its record.</div>`;
     }
     if(c.abilities&&c.abilities.length){ h+='<div class="reg-sec">ABILITIES</div>'+c.abilities.map(a=>`<div class="reg-abl"><span class="kind">${(a.type||'').toUpperCase()}${a.cost?' '+a.cost+'⚡':''}</span><b>${escapeHtml(a.label||'')}</b><div>${escapeHtml(a.text||'')}</div></div>`).join(''); }
     if(c.keywords&&c.keywords.length) h+=`<div class="reg-tags">${c.keywords.map(k=>`<span class="reg-tag">${(KEYWORDS[k]&&KEYWORDS[k].label)||k}</span>`).join('')}</div>`;
@@ -31563,7 +31568,7 @@ function econBuildRewards(){
     add(arcKey(T,i),{celestium:+R.cel||0,cards:(R.cards||[]).map(x=>(x.foil&&x.foil!=='none')?{cid:x.cid,qty:x.qty||1,foil:x.foil}:{cid:x.cid,qty:x.qty||1})}); })); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.60';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.61';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
