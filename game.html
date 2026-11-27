@@ -10065,7 +10065,7 @@ window.hideBootVeil=function(){ var v=document.getElementById('boot-veil'); if(!
 
 <!-- AUTH HUD -->
 <script>try{var _gs0=JSON.parse(localStorage.getItem('loc_game_settings')||'{}'),_ts=_gs0.textScale;if(_ts)document.documentElement.style.setProperty('--ui-scale',String(Math.min(1.3,Math.max(.9,+_ts||1))));if(_gs0.popPrompts!=='center')document.body.classList.add('pop-pr-side');if(_gs0.popCombat!=='center')document.body.classList.add('pop-cb-side');}catch(e){document.body.classList.add('pop-pr-side','pop-cb-side');}</script>
-<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.61 · Card Quotes</div>
+<div id="build-tag" style="position:fixed;left:6px;bottom:4px;z-index:99999;font-size:9px;color:rgba(200,164,74,.55);font-family:monospace;pointer-events:none">build 10.62 · Registry Ownership Fix</div>
 <div id="auth-bar">
   <div class="hud-logo">LORD OF <span>COURTS</span></div>
   <div class="hud-identity">
@@ -11169,6 +11169,10 @@ const GH2='https://raw.githubusercontent.com/DBVirora/VCU-Lord-Of-States-Scans/5
 // ═══════════════════════════════════════════════════════════════════════
 const GAME_BUILD='10.60'; // rules version — must match the opponent's client (web or PC) for online play
 const GODOT_SYNC=[
+  { build:'10.62', date:'2026-11-27',
+    rules:["WEB_BUILD '10.62'. GAME_BUILD stays '10.60' (no rules change).",
+      "REGISTRY OWNERSHIP — copies you own = MAX(collection[cid], sum of collection_foil[cid][every finish]). The Registry used only collection[cid], while the Collection and deck builder read collection_foil, so a card recorded only per finish (e.g. a holo) showed UNREGISTERED (no quote, cardback). registryState(cid) now uses that count, and so does cardHiddenFor (exclusive cards).",
+      "ADMIN 'Every card x4' ON — the Registry SCREEN treats every card as owned: the grid, search, sort and the card page (quote + record) show every entry in full, and COPIES reads '∞' when no real copies. Progress counters ('X / Y REGISTERED' in the Registry, main menu and profile), the Registry-complete cosmetic and crafting's sighted check still use real copies only."] },
   { build:'10.61', date:'2026-11-27',
     rules:["WEB_BUILD '10.61'. GAME_BUILD stays '10.60' (no rules change).",
       "CARD QUOTES — the line printed under a card's abilities is stored in DB[cid].quote (one field; `flavor` is retired — cardMeta still falls back to c.flavor). All 236 card scans were checked: 16 cards print a quote and all 16 are now in the data. Admin card_meta overrides (Registry editor) still win over the card's own quote.",
@@ -27455,8 +27459,19 @@ function markRegistered(cid){
   if(!_registry.first[cid]){ _registry.first[cid]=Date.now(); _registry.sighted[cid]=_registry.sighted[cid]||_registry.first[cid]; saveRegistry(); updateRegistryBadge(); }
   if(typeof cosCheckUnlocks==='function') cosCheckUnlocks();
 }
+// build 10.62: copies you own = the larger of the copy total (collection) and the per-finish counts (collection_foil),
+// so the Registry agrees with the Collection and deck builder.
+function registryCopies(cid){
+  const t=+((typeof _collection!=='undefined'&&_collection&&_collection[cid])||0)||0;
+  const f=(typeof _collectionFoil!=='undefined'&&_collectionFoil&&_collectionFoil[cid])||{};
+  const v=Object.keys(f).reduce((n,k)=>n+(+f[k]||0),0);
+  return Math.max(t,v);
+}
+// What the Registry SHOWS: an admin with "Every card x4" on owns every card, so every entry opens in full.
+// Progress counters, the Registry-complete reward and crafting keep using registryState (real copies only).
+function registryView(cid){ const st=registryState(cid); return (st!=='registered'&&typeof adminHasUnlimitedCards==='function'&&adminHasUnlimitedCards())?'registered':st; }
 function registryState(cid){
-  if((typeof getCollectionCount==='function'?getCollectionCount(cid):(_collection[cid]||0))>0) return 'registered';
+  if(registryCopies(cid)>0) return 'registered';
   if(_registry.sighted[cid]||_registry.first[cid]) return 'sighted';
   return 'unregistered';
 }
@@ -27500,12 +27515,12 @@ function registryEntries(){
   let ids=Object.keys(DB).filter(registryEligible);
   if(_reg.set==='__all__'){} else if(_reg.set==='__none__'){ ids=ids.filter(id=>!getCardSet(id)); } else ids=ids.filter(id=>getCardSet(id)===_reg.set);
   if(_reg.rarity!=='all') ids=ids.filter(id=>(_reg.rarity==='herald'?DB[id].type==='herald':cardMeta(id).rarity===_reg.rarity));
-  if(_reg.q){ const q=_reg.q.toLowerCase(); ids=ids.filter(id=>{ const st=registryState(id); const m=cardMeta(id); return (st!=='unregistered'&&m.name.toLowerCase().includes(q))||String(m.number).toLowerCase().includes(q); }); }
+  if(_reg.q){ const q=_reg.q.toLowerCase(); ids=ids.filter(id=>{ const st=registryView(id); const m=cardMeta(id); return (st!=='unregistered'&&m.name.toLowerCase().includes(q))||String(m.number).toLowerCase().includes(q); }); }
   const rr={common:0,uncommon:1,rare:2,legend:3,mythic:4,secret:5}; const so={registered:0,sighted:1,unregistered:2};
   ids.sort((a,b)=>{ const A=cardMeta(a),B=cardMeta(b);
     if(_reg.sort==='rarity'){ const d=(rr[B.rarity]||0)-(rr[A.rarity]||0); if(d) return d; }
-    if(_reg.sort==='name'){ return (registryState(a)==='unregistered'?'~':A.name).localeCompare(registryState(b)==='unregistered'?'~':B.name); }
-    if(_reg.sort==='status'){ const d=so[registryState(a)]-so[registryState(b)]; if(d) return d; }
+    if(_reg.sort==='name'){ return (registryView(a)==='unregistered'?'~':A.name).localeCompare(registryView(b)==='unregistered'?'~':B.name); }
+    if(_reg.sort==='status'){ const d=so[registryView(a)]-so[registryView(b)]; if(d) return d; }
     const d=cardNumberSort(A.number)-cardNumberSort(B.number); if(d) return d; return A.name.localeCompare(B.name); });
   return ids;
 }
@@ -27530,7 +27545,7 @@ function renderRegistry(){
   // list
   const list=document.getElementById('reg-entries'); list.innerHTML='';
   if(!ids.length){ list.innerHTML='<div style="padding:20px;text-align:center;color:#6b7280;font-size:12px">No entries match.</div>'; }
-  ids.forEach(id=>{ const st=registryState(id); const m=cardMeta(id); const url=getImg(id);
+  ids.forEach(id=>{ const st=registryView(id); const m=cardMeta(id); const url=getImg(id);
     const d=document.createElement('div'); d.className='reg-entry '+(st==='unregistered'?'unreg':st); d.dataset.cid=id;
     const isNew=st==='registered'&&_registry.first[id]&&!_registry.seen[id];
     const turl=st==='unregistered'?(getImg('cardback')||url):url;
@@ -27553,7 +27568,7 @@ function registrySelect(cid,quiet){
   const backUrl=getImg('cardback'); if(backUrl){ const bi=document.createElement('img'); bi.src=backUrl; bi.alt='Card back'; back.appendChild(bi); applyScanTrim(bi); } else back.innerHTML='<div style="display:grid;place-items:center;height:100%;font-size:40px">⚔️</div>';
   obj.appendChild(front); obj.appendChild(back);
   if(!cid){ document.getElementById('reg-head').innerHTML=''; document.getElementById('reg-body').innerHTML='<div class="reg-sealed">No entries in this view.</div>'; document.getElementById('reg-finishes').innerHTML=''; obj.innerHTML=''; return; }
-  const c=DB[cid]; const m=cardMeta(cid); const st=registryState(cid);
+  const c=DB[cid]; const m=cardMeta(cid); const st=registryView(cid);
   const firstView=st==='registered'&&_registry.first[cid]&&!_registry.seen[cid];
   if(st==='registered'){ if(!_registry.seen[cid]){ _registry.seen[cid]=true; saveRegistry(); updateRegistryBadge(); } }
   // subject card
@@ -27592,7 +27607,7 @@ function registrySelect(cid,quiet){
     }
     if(c.abilities&&c.abilities.length){ h+='<div class="reg-sec">ABILITIES</div>'+c.abilities.map(a=>`<div class="reg-abl"><span class="kind">${(a.type||'').toUpperCase()}${a.cost?' '+a.cost+'⚡':''}</span><b>${escapeHtml(a.label||'')}</b><div>${escapeHtml(a.text||'')}</div></div>`).join(''); }
     if(c.keywords&&c.keywords.length) h+=`<div class="reg-tags">${c.keywords.map(k=>`<span class="reg-tag">${(KEYWORDS[k]&&KEYWORDS[k].label)||k}</span>`).join('')}</div>`;
-    const cnt=_collection[cid]||0; const fins=VARIANT_ORDER.filter(v=>(_collectionFoil[cid]||{})[v]>0).length;
+    const cnt=(typeof adminHasUnlimitedCards==='function'&&adminHasUnlimitedCards()&&!registryCopies(cid))?'∞':registryCopies(cid); const fins=VARIANT_ORDER.filter(v=>(_collectionFoil[cid]||{})[v]>0).length;
     const decks=Object.values(SAVED_DECKS||{}).filter(d=>d&&Array.isArray(d.cards)&&d.cards.includes(cid)).length;
     h+=`<div class="reg-sec">REGISTRY</div><div class="reg-status">
       <div>STATUS<b class="${st==='registered'?'reg':'sig'}">${st==='registered'?'REGISTERED':'SIGHTED'}</b></div>
@@ -31568,7 +31583,7 @@ function econBuildRewards(){
     add(arcKey(T,i),{celestium:+R.cel||0,cards:(R.cards||[]).map(x=>(x.foil&&x.foil!=='none')?{cid:x.cid,qty:x.qty||1,foil:x.foil}:{cid:x.cid,qty:x.qty||1})}); })); }catch(e){}
   return rw;
 }
-const WEB_BUILD='10.61';   // display build (GAME_BUILD = the rules version for online play)
+const WEB_BUILD='10.62';   // display build (GAME_BUILD = the rules version for online play)
 // Card lists are worked out as a regular player sees them (switched-off and exclusive cards left out), whoever publishes.
 function econPlayable(id){ const c=DB[id]; return !!c&&!c.exclusive&&!(typeof _disabledCards!=='undefined'&&_disabledCards[id]); }
 function econSetOf(id){ return (typeof getCardSet==='function')?getCardSet(id):((DB[id]&&DB[id].setId)||''); }
@@ -32841,7 +32856,7 @@ async function saveNewsEditor(){
 // Admin: everything is playable
 // Non-admin: blocked if in _disabledCards
 // PLAYTEST EXCLUSIVES: invisible to anyone who isn't an admin and doesn't own a copy.
-function cardHiddenFor(cid){ const c=DB[cid]; if(!c||!c.exclusive) return false; if(typeof isAdmin==='function'&&isAdmin()) return false; return !((typeof _collection!=='undefined'&&_collection[cid])>0); }
+function cardHiddenFor(cid){ const c=DB[cid]; if(!c||!c.exclusive) return false; if(typeof isAdmin==='function'&&isAdmin()) return false; return !((typeof registryCopies==='function'?registryCopies(cid):((typeof _collection!=='undefined'&&_collection[cid])||0))>0); }
 function pteBadge(cid,compact){ const c=DB[cid]; if(!c||c.exclusive!=='playtest') return ''; return compact?'<span class="pte-badge sm">★ PLAYTEST EXCLUSIVE</span>':'<div class="pte-badge"><b>★ PLAYTEST EXCLUSIVE ★</b><span>SUPER ULTRA RARE · ONLY GIVEN TO PLAYTESTERS</span></div>'; }
 function isCardPlayable(cardId){
   if(isAdmin()) return true;
